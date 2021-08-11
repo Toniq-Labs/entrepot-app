@@ -73,25 +73,18 @@ export default function Listing(props) {
               </div>
             </a>
             
-            
-            <Grid container>
-              <Grid item md={6} sm={12} xs={12}>
-              <Typography style={{fontSize: 12, textAlign:"left", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                <small>Price</small><br />
+
+              <Typography style={{fontSize: 18, textAlign:"center", fontWeight:"bold"}} color={"inherit"} gutterBottom>
                 {_showListingPrice(props.listing[1].price)} ICP
               </Typography>
-              </Grid>
               {props.loggedIn ? 
-              <Grid item md={6} sm={12} xs={12}>
-                <Typography style={{fontSize: 12, textAlign:"right"}} color={"inherit"} gutterBottom>
-                  { _isLocked(props.listing[1]) ? 
-                    <>Unlocks <Timestamp relative autoUpdate date={Number(props.listing[1].locked[0]/1000000000n)} /></>
-                  : 
-                    <Button onClick={buy} variant="outlined" color="primary">Buy</Button>
-                  }
-                </Typography>
-              </Grid> : ""}
-            </Grid>
+              <Typography style={{fontSize: 12, textAlign:"center"}} color={"inherit"} gutterBottom>
+                { _isLocked(props.listing[1]) ? 
+                  <>Unlocks <Timestamp relative autoUpdate date={Number(props.listing[1].locked[0]/1000000000n)} /></>
+                : 
+                  <Button onClick={buy} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Buy Now</Button>
+                }
+              </Typography>: ""}
           </CardContent>
         </Card>
     </Grid>

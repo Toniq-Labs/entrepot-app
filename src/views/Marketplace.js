@@ -256,7 +256,7 @@ export default function Marketplace(props) {
                   value={showing}
                   onChange={changeShowing}
                 >
-                  <MenuItem value={"all"}>All Listings</MenuItem>
+                  <MenuItem value={"all"}>Current Listings</MenuItem>
                   <MenuItem value={"sold"}>Sold Listings</MenuItem>
                 </Select>
               </FormControl>
@@ -267,14 +267,15 @@ export default function Marketplace(props) {
                   value={sort}
                   onChange={changeSort}
                 >
-                  {showing === "all" ? <MenuItem value={"recent"}>Recently Listed</MenuItem> : ""}
+                  {/*showing === "all" ? <MenuItem value={"recent"}>Recently Listed</MenuItem> : ""*/}
                   {showing === "sold" ? <MenuItem value={"recent"}>Recently Sold</MenuItem> : ""}
                   <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
                   <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
                   <MenuItem value={"mint_number"}>Minting #</MenuItem>
                   {showing === "all" ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
                   <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
-                  <MenuItem value={"oldest"}>Oldest</MenuItem>
+                  {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
+                  {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
                 </Select>
               </FormControl>
               {showing === "all" ? 
