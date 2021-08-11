@@ -1,0 +1,66 @@
+{
+  "name": "Entrepot",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@dfinity/agent": "^0.8.9",
+    "@dfinity/auth-client": "^0.8.9",
+    "@dfinity/identity": "^0.8.9",
+    "@fontsource/roboto": "^4.4.5",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@toruslabs/openlogin": "^0.9.0",
+    "axios": "^0.21.1",
+    "bigint-conversion": "^2.1.12",
+    "bip39": "^3.0.4",
+    "ethereum-blockies-base64": "^1.0.2",
+    "json-bigint": "^1.0.0",
+    "query-string": "^4.3.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "react-timestamp": "^5.1.0",
+    "sjcl": "^1.0.8",
+    "starkbank-ecdsa": "^1.1.2",
+    "use-file-picker": "^1.3.0",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "prebuild": "react-scripts build && serve -s build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version",
+      "last 2 edge version"
+    ],
+    "development": [
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version",
+      "last 2 edge version"
+    ]
+  },
+  "devDependencies": {
+    "ic-stoic-identity": "^1.2.1",
+    "redux": "^4.1.0",
+    "webpack": "4.44.2"
+  }
+}
