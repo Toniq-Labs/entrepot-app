@@ -167,7 +167,17 @@ export default function Sidebar(props) {
         </ListItem>
       </List> : ""}
       
-      
+      <Divider />
+      <List>
+      <ListSubheader>
+        Sell NFTs
+      </ListSubheader>
+        <ListItem>
+          <ListItemText 
+            primary={"You can sell your NFTs directly from your Stoic Wallet."}
+            />
+        </ListItem>
+      </List>
       { props.address !== false && myCollections.length ? 
       <>
       <Divider />
