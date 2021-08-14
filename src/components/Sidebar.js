@@ -1,13 +1,19 @@
 import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
+//import Menu from '@material-ui/core/Menu';
+//import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import StorefrontIcon from '@material-ui/icons/Storefront';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
@@ -47,10 +53,14 @@ export default function Sidebar(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [balance, setBalance] = React.useState(false);
   const [myCollections, setMyCollections] = React.useState([]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const refreshClick = async () => {
     props.loader(true); 
     await refresh(); 
     props.loader(false);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
   const refresh = async () => {
     if (props.address){
@@ -97,27 +107,49 @@ export default function Sidebar(props) {
               <Blockie address={props.address} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText 
+          <ListItemText
             primaryTypographyProps={{noWrap:true}} 
             secondaryTypographyProps={{noWrap:true}} 
-            primary={(balance !== false ? _showListingPrice(balance)+" ICP" : "Loading...")}
-            secondary={props.address} />
+            primary={<>
+              My Wallet
+              {/*<IconButton style={{marginTop:"-5px"}} size="small" onClick={(e) => setAnchorEl(e.currentTarget)} edge="end">*/}
+              <IconButton style={{marginTop:"-5px"}} size="small" onClick={refreshClick} edge="end">
+                <CachedIcon />
+              </IconButton>
+              {/*<Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+              </Menu>*/}
+            </>}
+            secondary={<>
+              {props.address.substr(0,20)+"..."}
+              <SnackbarButton
+                message="Address Copied"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                onClick={() => clipboardCopy(props.address)}
+              >
+                <IconButton style={{marginTop:"-5px"}} size="small" edge="end">
+                  <FileCopyIcon style={{fontSize:"1em"}} />
+                </IconButton>
+              </SnackbarButton>
+            </>} />
         </ListItem>
         <ListItem>
-          <Button onClick={refreshClick} startIcon={<CachedIcon />} fullWidth variant="outlined" style={{color:"black", marginRight:20}}>Refresh</Button>
-          <SnackbarButton
-            message="Address Copied"
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            onClick={() => clipboardCopy(props.address)}
-          >
-            <Button startIcon={<FileCopyIcon />} fullWidth variant="outlined" style={{color:"black"}}>Copy</Button>
-          </SnackbarButton>
+          <Typography style={{width:"100%",textAlign:"center",fontWeight:"bold"}}>
+          {(balance !== false ? _showListingPrice(balance)+" ICP" : "Loading...")}
+          </Typography>
         </ListItem>
         <ListItem>
-          <Button onClick={props.logout} fullWidth variant="contained" color="secondary" style={{fontWeight:"bold",color:"black"}}>Logout</Button>
+          <Button onClick={props.logout} fullWidth variant="contained" color="secondary" style={{fontWeight:"bold",color:"white"}}>Logout</Button>
         </ListItem>
       </List> : ""}
       { props.address === false ? 
@@ -127,25 +159,13 @@ export default function Sidebar(props) {
       </ListSubheader>
         <ListItem>
           <ListItemText 
-            primary={"Connect your wallet to buy NFTs directly from the marketplace."}
+            primary={"Connect your wallet to buy and sell NFTs directly from the marketplace."}
             />
         </ListItem>
         <ListItem>
           <Button onClick={props.login} startIcon={<img alt="S" src="stoic.png" style={{height:26}} />} fullWidth variant="contained" color="primary" style={{fontWeight:"bold",color:"black"}}> Login with Stoic</Button>
         </ListItem>
       </List> : ""}
-      
-      <Divider />
-      <List>
-      <ListSubheader>
-        Sell NFTs
-      </ListSubheader>
-        <ListItem>
-          <ListItemText 
-            primary={"You can sell your NFTs directly from your Stoic Wallet."}
-            />
-        </ListItem>
-      </List>
       
       
       { props.address !== false && myCollections.length ? 
@@ -155,8 +175,14 @@ export default function Sidebar(props) {
         <ListSubheader>
           My Collections
         </ListSubheader>
+        {props.view !== false ?
+        <ListItem button onClick={() => props.setView(false)}>
+          <ListItemIcon><StorefrontIcon /></ListItemIcon>
+          <ListItemText primary="Back to Marketplace" />
+        </ListItem> : ""}
+        {/*<ListItem key={collection.canister + "-" + collection.count} selected={props.view == collection.canister} button onClick={() => props.setView(collection.canister)}>*/}
         {myCollections.map(collection => {
-          return (<ListItem key={collection.canister + "-" + collection.count}>
+          return (<ListItem key={collection.canister + "-" + collection.count} selected={props.view === collection.canister}>
             <ListItemAvatar>
               <Avatar>
                 <img alt={collection.name} src={"collections/"+collection.canister+".jpg"} style={{height:64}} />
@@ -168,14 +194,14 @@ export default function Sidebar(props) {
         })}
       </List> </>: ""}
       
-      <div style={{width: drawerWidth-1, zIndex: 10, backgroundColor:'white', position:"fixed", bottom:0, textAlign:'center'}} className={classes.toolbar}>
+      <div style={{width: drawerWidth-1, zIndex: 10, backgroundColor:'white', position:"fixed", bottom:0, textAlign:'center'}} >
         <span style={{position:'absolute', bottom:'10px', left:'0', right:'0'}}>Developed by ToniqLabs</span>
       </div>
     </div>
   );
   
   return (
-    <nav className={classes.drawer} aria-label="mailbox folders">
+    <nav aria-label="mailbox folders">
       <Hidden smUp implementation="css">
         <Drawer
           container={container}

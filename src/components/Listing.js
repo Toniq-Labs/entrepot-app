@@ -37,6 +37,13 @@ export default function Listing(props) {
       width: "100%",
       height: "100%",
       margin: "0 auto"
+    },
+    avatarImg2: {
+      position: "absolute",
+      top: "0%",
+      left: "16.66%",
+      height: "100%",
+      margin: "0 auto"
     }
   };
   const _isLocked = listing => {
@@ -59,16 +66,21 @@ export default function Listing(props) {
                   <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} rel="noreferrer" target="_blank">{"#"+(props.listing[0]+1)}</a></Tooltip>
                 </Typography>
               </Grid>
+              {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ?
               <Grid item md={6} sm={6} xs={12}>
                 <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
                   <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
                 </Typography>
-              </Grid>
+              </Grid> : ""}
             </Grid>
 
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
+                {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ?
                 <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                :
+                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="circle"  />
               </div>
             </a>
