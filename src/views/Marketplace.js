@@ -169,7 +169,7 @@ export default function Marketplace(props) {
       <main style={styles.content}>      
         <div style={styles.root}>
           {view === false ?
-          <Listings identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" };
+          <Listings identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
         </div>
       </main>
     </>
