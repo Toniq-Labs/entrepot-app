@@ -67,8 +67,8 @@ export default function Marketplace(props) {
         c = Math.round(b * txcomm);
         try {
           if (b > txmin) {
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, props.address, BigInt(b-(txfee + c)), BigInt(txfee));
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9", BigInt(c-txfee), BigInt(txfee));
+            await _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
+            await _api.token().transfer(identity.getPrincipal().toText(), payment, "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9", BigInt(c-txfee), txfee);
           }
           await _api.canister(collections[j].canister).removePayments([payment]);
           console.log("Payment extracted successfully");
