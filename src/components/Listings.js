@@ -51,8 +51,13 @@ export default function Listings(props) {
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('price_asc');
   const [showing, setShowing] = React.useState('all');
+  const [wearableFilter, setWearableFilter] = React.useState('all');
   const [collection, setCollection] = React.useState('e3izy-jiaaa-aaaah-qacbq-cai');
 
+  const changeWearableFilter = async (event) => {
+    setPage(1);
+    setWearableFilter(event.target.value);
+  };
   const changeCollection = async (event) => {
     setSort('price_asc');
     setShowing('all');
@@ -107,6 +112,13 @@ export default function Listings(props) {
       props.error(e);
     };
   };
+  const applyFilters = a => {
+    if (collection === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
+      var map = ["accessories","hats","eyewear","pets"];
+      a = a.filter(_a => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter);
+    };
+    return a;
+  };
   const _updates = async () => {
     await refresh();
   };
@@ -117,14 +129,14 @@ export default function Listings(props) {
     c = c ?? collection;
     if (s === "all") {      
       var listings = await api.canister(c).listings();
-      setListings(listings);
+      setListings(applyFilters(listings));
     } else {
       var txs = await api.canister(c).transactions()
       var nt = txs;
       if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
         nt = txs.slice(82);
       }
-      setTransactions(nt);
+      setTransactions(applyFilters(nt));
     }    
   }
   
@@ -150,6 +162,11 @@ export default function Listings(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
+  React.useEffect(() => {
+    props.loader(true);
+    refresh().finally(() => props.loader(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wearableFilter]);
   return (
     <>
       <div style={styles.empty}>
@@ -182,7 +199,7 @@ export default function Listings(props) {
             </Select>
           </FormControl>
           
-          <FormControl >
+          <FormControl style={{marginRight:20}}>
             <InputLabel>Sort by</InputLabel>
             <Select
               value={sort}
@@ -199,6 +216,22 @@ export default function Listings(props) {
               {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
             </Select>
           </FormControl>
+          
+          {collection === "tde7l-3qaaa-aaaah-qansa-cai" ? 
+          <FormControl style={{minWidth:120}}>
+            <InputLabel>Wearable Type</InputLabel>
+            <Select
+              value={wearableFilter}
+              onChange={changeWearableFilter}
+            >
+              <MenuItem value={"all"}>All Wearables</MenuItem>
+              <MenuItem value={"pets"}>Pets</MenuItem>
+              <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
+              <MenuItem value={"hats"}>Hats/Hair</MenuItem>
+              <MenuItem value={"eyewear"}>Eyewear</MenuItem>
+            </Select>
+          </FormControl> : "" }
+          
           {showing === "all" ? 
             (listings.length > perPage ?
               (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(listings.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )
