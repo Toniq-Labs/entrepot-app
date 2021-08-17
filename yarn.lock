@@ -5459,10 +5459,10 @@
   "resolved" "https://registry.npmjs.org/hyphenate-style-name/-/hyphenate-style-name-1.0.4.tgz"
   "version" "1.0.4"
 
-"ic-stoic-identity@^1.2.1":
-  "integrity" "sha512-EQVlVarIPIZt1cjeBxb3437QY1HEynlvzfIUGcQnH6Ih2ODCWv5Eq1+uTmMkVkShi8cQm1JVppkCg0dpkG1wWQ=="
-  "resolved" "https://registry.npmjs.org/ic-stoic-identity/-/ic-stoic-identity-1.2.1.tgz"
-  "version" "1.2.1"
+"ic-stoic-identity@^1.3.0":
+  "integrity" "sha512-DnsfFY0aNqH07buCPSSq1hgIVsgwPS+d1gILZUlbWnB71CnzAFn/llX6uAhGUw37cJ+rlKLxeN73/3zto8YRIQ=="
+  "resolved" "https://registry.npmjs.org/ic-stoic-identity/-/ic-stoic-identity-1.3.0.tgz"
+  "version" "1.3.0"
   dependencies:
     "@dfinity/agent" "^0.9.1"
     "@dfinity/identity" "^0.9.1"

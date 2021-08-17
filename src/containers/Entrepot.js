@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
       color: '#00d092',
       borderBottom: '3px solid #00d092',
     },
+    [theme.breakpoints.down('xs')]: {
+      display: "none",
+    },
   }
 
 }));

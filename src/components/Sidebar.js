@@ -95,6 +95,7 @@ export default function Sidebar(props) {
   
   const accountsList = (
     <div style={{marginTop:73, marginBottom: 100}}>
+      <Button variant={"contained"} onClick={props.onClose} color={"primary"} style={{fontWeight:"bold", margin:"0 auto", position:"absolute", top:"18px", left:"15px", right:"15px", width:"270px"}}>Close Wallet</Button>
       <Divider />
       { props.address !== false ? 
       <List>

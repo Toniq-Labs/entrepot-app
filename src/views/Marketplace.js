@@ -1,8 +1,9 @@
 /* global BigInt */
 import React from 'react';
 import extjs from '../ic/extjs.js';
-import { useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Listings from '../components/Listings';
+import Button from '@material-ui/core/Button';
 import {StoicIdentity} from "ic-stoic-identity";
 import Sidebar from '../components/Sidebar';
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -25,7 +26,6 @@ const collections = [
 ];
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
-
   // Remember the latest callback.
   React.useEffect(() => {
     savedCallback.current = callback;
@@ -42,11 +42,32 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+const useStyles = makeStyles((theme) => ({
+  walletBtn : {
+    [theme.breakpoints.up('sm')]: {
+      display: "none",
+    },
+  },
+  content : {
+    flexGrow: 1,
+    marginTop: 73,
+    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: 300,
+    },
+  },
+}));
 export default function Marketplace(props) {
   const [identity, setIdentity] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [address, setAddress] = React.useState(false);
+  const [accounts, setAccounts] = React.useState(false);
   const [view, setView] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
   
   const _updates = async () => {
     await processPayments();
@@ -102,16 +123,13 @@ export default function Marketplace(props) {
     };
   };
   const theme = useTheme();
+  const classes = useStyles();
   const styles = {
     root : {
       flexGrow: 1,
       padding: theme.spacing(3),
     },
-    content : {
-      flexGrow: 1,
-      marginTop: 73,
-      marginLeft: 300
-    },
+
     empty : {
       maxWidth:800,
       margin : "0 auto",
@@ -155,19 +173,24 @@ export default function Marketplace(props) {
   React.useEffect(() => {
     if (identity) {
       setLoggedIn(true);
+      identity.accounts().then(accs => {
+        setAccounts(JSON.parse(accs));
+      });
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
     } else {
       setLoggedIn(false);
       setAddress(false);
+      setAccounts(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identity]);
   
   return (
     <>
-      <Sidebar view={view} setView={setView} loader={props.loader} logout={logout} login={login} collections={collections} address={address} />
-      <main style={styles.content}>      
+      <Sidebar view={view} setView={setView} loader={props.loader} logout={logout} login={login} collections={collections} accounts={accounts} address={address} onClose={handleDrawerToggle} open={mobileOpen} />
+      <main className={classes.content}>      
         <div style={styles.root}>
+          <Button className={classes.walletBtn} fullWidth variant={"contained"} onClick={handleDrawerToggle} color={"primary"} style={{fontWeight:"bold", margin:"0 auto"}}>View Wallet</Button>
           {view === false ?
           <Listings identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
         </div>

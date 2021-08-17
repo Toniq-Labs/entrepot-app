@@ -18,6 +18,7 @@
     "bigint-conversion": "^2.1.12",
     "bip39": "^3.0.4",
     "ethereum-blockies-base64": "^1.0.2",
+    "ic-stoic-identity": "^1.3.0",
     "json-bigint": "^1.0.0",
     "query-string": "^4.3.4",
     "react": "^17.0.2",
@@ -59,7 +60,6 @@
     ]
   },
   "devDependencies": {
-    "ic-stoic-identity": "^1.2.1",
     "redux": "^4.1.0",
     "webpack": "4.44.2"
   }
