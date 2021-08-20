@@ -113,12 +113,12 @@ export default function Marketplace(props) {
       var a, b, refund;
       for(var i = 0; i < refunds[0].length; i++) {
         refund = refunds[0][i];
-        a = extjs.toAddress(identity.getPrincipal(), refund);
+        a = extjs.toAddress(identity.getPrincipal().toText(), refund);
         b = Number(await api.token().getBalance(a));
         try {
           if (b > txfee) {
             //Process refunds
-            await _api.token().transfer(identity.getPrincipal(), refund, "07ce335b2451bec20426497d97afb0352d89dc3f1286bf26909ecb90cf370c76", BigInt(b-txfee), BigInt(txfee));
+            await _api.token().transfer(identity.getPrincipal().toText(), refund, "07ce335b2451bec20426497d97afb0352d89dc3f1286bf26909ecb90cf370c76", BigInt(b-txfee), txfee);
           }
           await _api.canister(collections[j].canister).removeRefunds([refund]);
           console.log("Refund removed successfully");
