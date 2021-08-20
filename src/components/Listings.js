@@ -11,7 +11,7 @@ import { useTheme } from '@material-ui/core/styles';
 import Listing from './Listing';
 import Sold from './Sold';
 const api = extjs.connect("https://boundary.ic0.app/");
-const perPage = 30;
+const perPage = 60;
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -59,6 +59,7 @@ export default function Listings(props) {
     setWearableFilter(event.target.value);
   };
   const changeCollection = async (event) => {
+    setWearableFilter('all');
     setSort('price_asc');
     setShowing('all');
     setCollection(event.target.value);
@@ -74,6 +75,7 @@ export default function Listings(props) {
     setSort(event.target.value);
   };
   const changeShowing = (event) => {
+    setWearableFilter('all');
     setPage(1);
     setShowing(event.target.value);
     if (event.target.value === "all") {
@@ -210,14 +212,14 @@ export default function Listings(props) {
               <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
               <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
-              {showing === "all" ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
-              <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
+              {showing === "all" && ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
+              { ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
               {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
               {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
             </Select>
           </FormControl>
           
-          {collection === "tde7l-3qaaa-aaaah-qansa-cai" ? 
+          {showing === "all" && ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection) >= 0 ? 
           <FormControl style={{minWidth:120}}>
             <InputLabel>Wearable Type</InputLabel>
             <Select

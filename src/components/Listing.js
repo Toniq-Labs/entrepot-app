@@ -76,7 +76,7 @@ export default function Listing(props) {
 
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai"  || props.collection === "tde7l-3qaaa-aaaah-qansa-cai" ?
+                {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ?
                 <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
                 :
                 <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />

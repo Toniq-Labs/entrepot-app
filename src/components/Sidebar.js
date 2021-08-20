@@ -69,7 +69,10 @@ export default function Sidebar(props) {
       var collection, mcs = [];
       for(var i = 0; i < props.collections.length; i++) {
         collection = props.collections[i];
-        var tokens = await api.token(collection.canister).getTokens(props.address);
+        console.log(collection.canister);
+        try{
+          var tokens = await api.token(collection.canister).getTokens(props.address);
+        } catch(e) {continue};
         if (tokens.length) {
           mcs.push({
             ...collection,

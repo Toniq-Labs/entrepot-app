@@ -23,6 +23,10 @@ const collections = [
     canister : "tde7l-3qaaa-aaaah-qansa-cai",
     name : "Cronic Wearables"
   },
+  {
+    canister : "gevsk-tqaaa-aaaah-qaoca-cai",
+    name : "ICmojis"
+  },
 ];
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
