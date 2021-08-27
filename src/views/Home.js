@@ -24,36 +24,15 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '56.25%', // 16:9
   },
 }));
-export default function About(props) {
+export default function Home(props) {
   const classes = useStyles();
 
   return (
   <div style={{width:"100%", display:"block", position:"relative"}}>
     <div style={{maxWidth:1200, margin:"120px auto 0px", paddingBottom:200}}>
-      <h1 style={{textAlign:"center"}}>About Entrepot</h1>
+      <h1 style={{textAlign:"center"}}>Welcome to Entrepot</h1>
       <p style={{textAlign:"center",fontSize:"1.3em"}}>By definition, an entrepôt is a port, city, or trading post where merchandise may be imported, stored or traded. Such centers played a critical role in trade during the days of wind-powered shipping. We developed <strong>Entrepot.app</strong> to provide a similar role in the digital world - a trading post where users can store and trade digital assets in a decentralized, non-custodial way.</p>
-      <Grid style={{textAlign:"center", marginTop:50,marginBottom:50}} container spacing={5}>
-        <Grid item md={3}>
-          <img style={{width:100}} alt="Low Fees" src="/icon/fee.png" />
-          <h2>Low Fees</h2>
-          <p style={{fontSize:"1.1em"}}>We charge a 0.5% marketplace fee, and collection creators can charge a 1.0% for a total fee of <strong>1.5%</strong></p>
-        </Grid>
-        <Grid item md={3}>
-          <img style={{width:100}} alt="Low Fees" src="/icon/wallet.png" />
-          <h2>Non-custodial</h2>
-          <p style={{fontSize:"1.1em"}}>All assets remain in your full control - we never take custody any of your digital assets</p>
-        </Grid>
-        <Grid item md={3}>
-          <img style={{width:100}} alt="Low Fees" src="/icon/artist.png" />
-          <h2>Custom Collections</h2>
-          <p style={{fontSize:"1.1em"}}>We plan to work with a wide range of talented curators, artists and developers</p>
-        </Grid>
-        <Grid item md={3}>
-          <img style={{width:100}} alt="Low Fees" src="/icon/infinity.png" />
-          <h2>First on the IC</h2>
-          <p style={{fontSize:"1.1em"}}>Entrepot.app is the first NFT marketplace and DEFI solution on the Internet Computer</p>
-        </Grid>
-      </Grid>
+      
       
       <h1 style={{textAlign:"center"}}>Upcoming Collections</h1>
       <Grid container spacing={1}>
@@ -116,6 +95,29 @@ export default function About(props) {
               </Typography>
             </CardContent>
           </Card>
+        </Grid>
+      </Grid>
+      
+      <Grid style={{textAlign:"center", marginTop:50,marginBottom:50}} container spacing={5}>
+        <Grid item md={3}>
+          <img style={{width:100}} alt="Low Fees" src="/icon/fee.png" />
+          <h2>Low Fees</h2>
+          <p style={{fontSize:"1.1em"}}>We charge a 0.5% marketplace fee, and collection creators can charge a 1.0% for a total fee of <strong>1.5%</strong></p>
+        </Grid>
+        <Grid item md={3}>
+          <img style={{width:100}} alt="Low Fees" src="/icon/wallet.png" />
+          <h2>Non-custodial</h2>
+          <p style={{fontSize:"1.1em"}}>All assets remain in your full control - we never take custody any of your digital assets</p>
+        </Grid>
+        <Grid item md={3}>
+          <img style={{width:100}} alt="Low Fees" src="/icon/artist.png" />
+          <h2>Custom Collections</h2>
+          <p style={{fontSize:"1.1em"}}>We plan to work with a wide range of talented curators, artists and developers</p>
+        </Grid>
+        <Grid item md={3}>
+          <img style={{width:100}} alt="Low Fees" src="/icon/infinity.png" />
+          <h2>First on the IC</h2>
+          <p style={{fontSize:"1.1em"}}>Entrepot.app is the first NFT marketplace and DEFI solution on the Internet Computer</p>
         </Grid>
       </Grid>
     </div>

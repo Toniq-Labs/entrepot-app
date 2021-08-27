@@ -8,9 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import Pagination from '@material-ui/lab/Pagination';
 import extjs from '../ic/extjs.js';
 import { useTheme } from '@material-ui/core/styles';
-import Listing from './Listing';
-import Sold from './Sold';
-import BuyForm from './BuyForm';
+import NFT from './NFT';
+import ListingForm from './ListingForm';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -46,97 +45,52 @@ const _showListingPrice = n => {
   return n.toFixed(8).replace(/0{1,6}$/, '');
 };
 
-const emptyListing = {
-  pricing : "",
-  img : "",
-};
-export default function Listings(props) {
-  const [listings, setListings] = React.useState(false);
+export default function Wallet(props) {
+  const [nfts, setListings] = React.useState(false);
   const [transactions, setTransactions] = React.useState(false);
   const [page, setPage] = React.useState(1);
-  const [sort, setSort] = React.useState('price_asc');
+  const [sort, setSort] = React.useState('mint_number');
   const [showing, setShowing] = React.useState('all');
   const [wearableFilter, setWearableFilter] = React.useState('all');
-  const [collection, setCollection] = React.useState('e3izy-jiaaa-aaaah-qacbq-cai');
-  const [buyFormData, setBuyFormData] = React.useState(emptyListing); 
-  const [showBuyForm, setShowBuyForm] = React.useState(false);
+  const [openListingForm, setOpenListingForm] = React.useState(false);
+  const [tokenNFT, setTokenNFT] = React.useState('');
 
   const changeWearableFilter = async (event) => {
     setPage(1);
     setWearableFilter(event.target.value);
   };
-  const changeCollection = async (event) => {
-    setWearableFilter('all');
-    setSort('price_asc');
-    setShowing('all');
-    setCollection(event.target.value);
-    setListings(false);
-    setTransactions(false);
-    setPage(1);
-    props.loader(true);     
-    await refresh('all', event.target.value);
-    props.loader(false);  
+  const closeListingForm = () => {
+    setOpenListingForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const listNft = (id) => {
+    setTokenNFT(id);
+    setOpenListingForm(true);
   }
+
   const changeSort = (event) => {
     setPage(1);
     setSort(event.target.value);
   };
-  const buyForm = (price, img) => {
-    return new Promise(async (resolve, reject) => {
-      setBuyFormData({
-        price : price,
-        img : img,
-        handler : (v) => {
-          setShowBuyForm(false);
-          resolve(v);
-          setTimeout(() => setBuyFormData(emptyListing), 100);
-        },
-      });
-      setShowBuyForm(true);
-    })
-  };
-  const changeShowing = (event) => {
-    setWearableFilter('all');
-    setPage(1);
-    setShowing(event.target.value);
-    if (event.target.value === "all") {
-      setSort('price_asc');
-    } else {
-      setSort('recent');
-    }
-    refresh(event.target.value);
-  };
-  const buy = async (collection, listing) => {
-    var tokenid = extjs.encodeTokenId(collection, listing[0])
-    try {
-      var answer = await buyForm(_showListingPrice(listing[1].price), "https://" + collection + ".raw.ic0.app/?tokenid="+tokenid);
-      if (!answer) {
-        return props.loader(false);
-      };
-      props.loader(true);
-      const api = extjs.connect("https://boundary.ic0.app/", props.identity);
-      var r = await api.canister(collection).lock(tokenid, listing[1].price, props.address, _getRandomBytes());
-      if (r.hasOwnProperty("err")) throw r.err;
-      var paytoaddress = r.ok;
-      await api.token().transfer(props.identity.getPrincipal(), 0, paytoaddress, listing[1].price, 10000);
-      var r3;
-      while(true){
-        try {
-          r3 = await api.canister(collection).settle(tokenid);
-          if (r3.hasOwnProperty("ok")) break;
-        } catch (e) {}
+  const list = async (id, price) => {
+    //Submit to blockchain here
+    props.loader(true);
+    const api = extjs.connect("https://boundary.ic0.app/", props.identity);
+    api.token(id).list(0, price).then(r => {
+      if (r) {
+        refresh();
+        return props.alert("Transaction complete", "Your listing has been updated");
+      } else {        
+        return props.error("Something went wrong with this transfer");
       }
+    }).catch(e => {
+      return props.error("There was an error: " + e);
+    }).finally(() => {
       props.loader(false);
-      props.alert("Transaction complete", "Your purchase was made successfully - your NFT will be sent to your props.address shortly");
-      refresh();
-    } catch (e) {
-      console.log(e);
-      props.loader(false);
-      props.error(e);
-    };
+    });
   };
   const applyFilters = a => {
-    if (collection === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
+    if (props.collection === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
       var map = ["accessories","hats","eyewear","pets"];
       a = a.filter(_a => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter);
     };
@@ -147,20 +101,10 @@ export default function Listings(props) {
   };
 
   
-  const refresh = async (s, c) => {
-    s = s ?? showing;
-    c = c ?? collection;
-    if (s === "all") {      
-      var listings = await api.canister(c).listings();
-      setListings(applyFilters(listings));
-    } else {
-      var txs = await api.canister(c).transactions()
-      var nt = txs;
-      if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-        nt = txs.slice(82);
-      }
-      setTransactions(applyFilters(nt));
-    }    
+  const refresh = async (c) => {
+    c = c ?? props.collection;
+    var nfts = await api.token(c).getTokens(props.address)
+    setListings(applyFilters(nfts)); 
   }
   
   const theme = useTheme();
@@ -176,14 +120,15 @@ export default function Listings(props) {
     },
   };
   
-  useInterval(_updates, 10 *1000);
+  //useInterval(_updates, 10 *1000);
   React.useEffect(() => {
+    setListings([]);
     props.loader(true);        
     _updates().then(() => {
       props.loader(false);        
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.collection]);
   
   React.useEffect(() => {
     props.loader(true);
@@ -192,35 +137,8 @@ export default function Listings(props) {
   }, [wearableFilter]);
   return (
     <>
-      <div style={styles.empty}>
-        <h1>
-          Browse Collections:
-          <FormControl >
-            <Select
-              style={{marginLeft:10,fontSize: "0.95em", fontWeight:"bold",paddingBottom:0,color:"#00d092"}}
-              value={collection}
-              onChange={changeCollection}
-            > 
-            {props.collections.map(collection => {
-              return (<MenuItem key={collection.canister} value={collection.canister}>{collection.name}</MenuItem>)
-            })}
-              <MenuItem disabled value={""}>More coming soon!</MenuItem>
-            </Select>
-          </FormControl>
-        </h1>
-      </div>
       <>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>
-          <FormControl style={{marginRight:20}}>
-            <InputLabel>Showing</InputLabel>
-            <Select
-              value={showing}
-              onChange={changeShowing}
-            >
-              <MenuItem value={"all"}>Current Listings</MenuItem>
-              <MenuItem value={"sold"}>Sold Listings</MenuItem>
-            </Select>
-          </FormControl>
           
           <FormControl style={{marginRight:20}}>
             <InputLabel>Sort by</InputLabel>
@@ -228,19 +146,13 @@ export default function Listings(props) {
               value={sort}
               onChange={changeSort}
             >
-              {/*showing === "all" ? <MenuItem value={"recent"}>Recently Listed</MenuItem> : ""*/}
-              {showing === "sold" ? <MenuItem value={"recent"}>Recently Sold</MenuItem> : ""}
-              <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
-              <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
-              {showing === "all" && ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
-              { ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
-              {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
-              {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
+              {["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(props.collection) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
+              { ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(props.collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
             </Select>
           </FormControl>
           
-          {showing === "all" && ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection) >= 0 ? 
+          {["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(props.collection) >= 0 ? 
           <FormControl style={{minWidth:120}}>
             <InputLabel>Wearable Type</InputLabel>
             <Select
@@ -255,22 +167,16 @@ export default function Listings(props) {
             </Select>
           </FormControl> : "" }
           
-          {showing === "all" ? 
-            (listings.length > perPage ?
-              (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(listings.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )
-            :
-            (transactions.length > perPage ?
-            (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(transactions.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "")
-          }
+          {nfts.length > perPage ?
+          (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" }
         </div>
-        {showing === "all" ? 
-          <>{listings === false ?
+          <>{nfts === false ?
             <div style={styles.empty}>
               <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">Loading...</Typography>
             </div> :
-            <>{listings.length === 0 ?
+            <>{nfts.length === 0 ?
               <div style={styles.empty}>
-                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">There are currently no listings right now</Typography>
+                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">There are currently no nfts right now</Typography>
               </div> :
               <>
                 <div style={styles.grid}>
@@ -281,96 +187,40 @@ export default function Listings(props) {
                     justifyContent="flex-start"
                     alignItems="flex-start"
                   >
-                    {listings.slice().sort((a,b) => {
+                    {nfts.slice().sort((a,b) => {
                       switch(sort) {
-                        case "price_asc":
-                          return Number(a[1].price)-Number(b[1].price);
-                        case "price_desc":
-                          return Number(b[1].price)-Number(a[1].price);
                         case "gri":
-                          return (Number(gridata[b[0]])*100)-(Number(gridata[a[0]])*100);
+                          return (Number(gridata[b.index])*100)-(Number(gridata[a.index])*100);
                         case "recent":
                           return 1;
                         case "oldest":
                           return -1;
                         case "mint_number":
-                          return a[0]-b[0];
+                          return a.index-b.index;
                         case "type":
-                          var _a = a[2].nonfungible.metadata[0][30]%41;
-                          var _b = b[2].nonfungible.metadata[0][30]%41;
+                          var _a = a.metadata[0][30]%41;
+                          var _b = b.metadata[0][30]%41;
                           if (_a === 2) _a = 1;
                           if (_a > 1) _a = 2;
                           if (_b === 2) _b = 1;
                           if (_b > 1) _b = 2;
-                          var d = _a-_b;
-                          if (d === 0) {
-                            if (Number(a[1].price)>Number(b[1].price)) return 1;
-                            if (Number(a[1].price)<Number(b[1].price)) return -1;
-                          };
+                          var d = _a - _b;
                           return d;
                         default:
                           return 0;
                       };
-                    }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((listing, i) => {
-                      return (<Listing gri={gridata[listing[0]]} loggedIn={props.loggedIn} collection={collection} buy={buy} key={listing[0]+"-"+i} listing={listing} />)
-                    })}
-                  </Grid>
-                </div>
-              </>
-            }</>
-          }</> : 
-          <>{transactions === false ?
-            <div style={styles.empty}>
-              <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">Loading...</Typography>
-            </div> :
-            <>{transactions.length === 0 ?
-              <div style={styles.empty}>
-                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">There are currently no sold transactions for this collection</Typography>
-              </div> :
-              <>
-                <div style={styles.grid}>
-                  <Grid
-                    container
-                    spacing={2}
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                  >
-                    {transactions.slice().sort((a,b) => {
-                      switch(sort) {
-                        case "price_asc":
-                          return Number(a.price)-Number(b.price);
-                        case "price_desc":
-                          return Number(b.price)-Number(a.price);
-                        case "gri":
-                          return (Number(gridata[extjs.decodeTokenId(b.token).index])*100)-(Number(gridata[extjs.decodeTokenId(a.token).index])*100);
-                        case "recent":
-                          return -1;
-                        case "oldest":
-                          return 1;
-                        case "mint_number":
-                          return extjs.decodeTokenId(a.token).index-extjs.decodeTokenId(b.token).index;
-                        default:
-                          return 0;
-                      };
-                    }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((transaction, i) => {
-                      return (<Sold gri={gridata[extjs.decodeTokenId(transaction.token).index]} key={transaction.token + i} collection={collection} transaction={transaction} />)
+                    }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
+                      return (<NFT gri={gridata[nft.index]} loggedIn={props.loggedIn} listNft={listNft} collection={props.collection} key={nft.id+"-"+i} nft={nft} />)
                     })}
                   </Grid>
                 </div>
               </>
             }</>
           }</>
-        }
-        {showing === "all" ? 
-          (listings.length > perPage ?
-            (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(listings.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )
-          :
-          (transactions.length > perPage ?
-          (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(transactions.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "")
-        }
+        {(nfts.length > perPage ?
+        (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </>
-<BuyForm open={showBuyForm} {...buyFormData} />
+      <ListingForm list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
     </>
   )
 }

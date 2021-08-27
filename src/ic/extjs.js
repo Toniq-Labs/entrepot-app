@@ -150,12 +150,19 @@ class ExtConnection {
       },
       getTokens : (aid) => {
         return new Promise((resolve, reject) => {
-          if (typeof api.tokens == 'undefined') reject("Not supported");
+          if (typeof api.tokens_ext == 'undefined') reject("Not supported");
           else {
             try {
-              api.tokens(aid).then(r => {
+              api.tokens_ext(aid).then(r => {
                 if (typeof r.ok != 'undefined') {
-                  resolve(r.ok.map(x => tokenIdentifier(tokenObj.canister, x)));
+                  resolve(r.ok.map(d => {
+                    return {
+                      index : d[0],
+                      id : tokenIdentifier(tokenObj.canister, d[0]),
+                      listing : d[1].length ? d[1][0] : false,
+                      metadata : d[2].length ? d[2][0] : false,
+                    }
+                  }));
                 }else if (typeof r.err != 'undefined') reject(r.err)
                 else reject(r);
               }).catch(reject);

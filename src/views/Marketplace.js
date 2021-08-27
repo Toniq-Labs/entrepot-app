@@ -3,6 +3,7 @@ import React from 'react';
 import extjs from '../ic/extjs.js';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Listings from '../components/Listings';
+import Wallet from '../components/Wallet';
 import Button from '@material-ui/core/Button';
 import {StoicIdentity} from "ic-stoic-identity";
 import Sidebar from '../components/Sidebar';
@@ -197,6 +198,8 @@ export default function Marketplace(props) {
           <Button className={classes.walletBtn} fullWidth variant={"contained"} onClick={handleDrawerToggle} color={"primary"} style={{fontWeight:"bold", margin:"0 auto"}}>View Wallet</Button>
           {view === false ?
           <Listings identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
+          {view !== false ?
+          <Wallet identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} collection={view} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
         </div>
       </main>
     </>

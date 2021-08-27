@@ -5,7 +5,8 @@ import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Marketplace from '../views/Marketplace';
-import About from '../views/About';
+import Create from '../views/Create';
+import Home from '../views/Home';
 import Contact from '../views/Contact';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,13 +55,17 @@ const useStyles = makeStyles((theme) => ({
 
 
   const routes = {
+    'home' : {
+      title : "Home",
+      view : Home
+    },
     'marketplace' : {
       title : "Marketplace",
       view : Marketplace
     },
-    'about' : {
-      title : "About",
-      view : About
+    'create' : {
+      title : "Create",
+      view : Create
     },
     'contact' : {
       title : "Contact",
@@ -68,19 +73,30 @@ const useStyles = makeStyles((theme) => ({
     },
   };
 //Helpers
-
+var current = 'home';
+var path = "";
+var root = window.location.href.split("#", 2);
+if (root.length > 1) {
+  var paths = root[1].split("/", 2);
+  if (routes.hasOwnProperty(paths[0])) current = paths[0];
+  path = paths[1] ?? "";
+};
+var np = root[0] + (current != "home" ? "#" + current : "");
+if (window.location.href != np) window.location.href = np;
 export default function Entrepot(props) {
   const classes = useStyles();
-  const [route, setRoute] = React.useState('marketplace');
+  const [route, setRoute] = React.useState(current);
 
   const renderView = (r) => {
     switch(r){
       default:
       case "marketplace":
-        return React.createElement(routes[r].view, {...props, changeRoute : changeRoute})
+        return React.createElement(routes[r].view, {...props, changeRoute : changeRoute, collection : path})
     }
   }
   const changeRoute = (r) => {
+    var np = root[0] + (r != "home" ? "#" + r : "");
+    if (window.location.href != np) window.location.href = np;
     setRoute(r);
   };
   
@@ -90,12 +106,12 @@ export default function Entrepot(props) {
       <AppBar position="fixed" style={{ background: 'white' }}>
         <Toolbar>
           <Typography variant="h6" noWrap>
-            <img alt="Entrepot" src="logo.jpg" style={{height:64}} />
+            <img onClick={() => changeRoute('home')} alt="Entrepot" src="logo.jpg" style={{height:64}} />
           </Typography>
           <div className={classes.grow} />
-          <Button onClick={() => setRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
-          <Button onClick={() => setRoute('about')} className={classes.button + (route === 'about' ? " selected" : "")} color="inherit">About</Button>
-          <Button onClick={() => setRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
+          <Button onClick={() => changeRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
+          <Button onClick={() => changeRoute('create')} className={classes.button + (route === 'create' ? " selected" : "")} color="inherit">Create</Button>
+          <Button onClick={() => changeRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
         </Toolbar>
       </AppBar>
       {renderView(route)}
