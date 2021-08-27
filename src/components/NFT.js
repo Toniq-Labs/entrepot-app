@@ -70,9 +70,9 @@ export default function NFT(props) {
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
                 {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ?
-                <img alt={props.nft.id} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} onLoad={() => setImgLoaded(true)} />
+                <img alt={props.nft.id} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + props.nft.id} onLoad={() => setImgLoaded(true)} />
                 :
-                <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} onLoad={() => setImgLoaded(true)} />
+                <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + props.nft.id} onLoad={() => setImgLoaded(true)} />
                 }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="circle"  />
               </div>

@@ -77,9 +77,9 @@ export default function Listing(props) {
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
                 {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ?
-                <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
                 :
-                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
                 }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="circle"  />
               </div>

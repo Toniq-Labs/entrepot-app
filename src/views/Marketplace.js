@@ -14,19 +14,28 @@ const txcomm = 0.015;
 const collections = [
   {
     canister : "e3izy-jiaaa-aaaah-qacbq-cai",
-    name : "Cronic Critters"
+    name : "Cronic Critters",
+    mature : false
   },
   {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
-    name : "ICP News"
+    name : "ICP News",
+    mature : false
   },
   {
     canister : "tde7l-3qaaa-aaaah-qansa-cai",
-    name : "Cronic Wearables"
+    name : "Cronic Wearables",
+    mature : false
   },
   {
     canister : "gevsk-tqaaa-aaaah-qaoca-cai",
-    name : "ICmojis"
+    name : "ICmojis",
+    mature : false
+  },
+  {
+    canister : "owuqd-dyaaa-aaaah-qapxq-cai",
+    name : "ICPuzzle",
+    mature : true
   },
 ];
 function useInterval(callback, delay) {

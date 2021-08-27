@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import Chip from '@material-ui/core/Chip';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -202,7 +203,7 @@ export default function Listings(props) {
               onChange={changeCollection}
             > 
             {props.collections.map(collection => {
-              return (<MenuItem key={collection.canister} value={collection.canister}>{collection.name}</MenuItem>)
+              return (<MenuItem key={collection.canister} value={collection.canister}>{collection.name}{collection.mature ? <Chip style={{marginLeft:"10px"}} variant="outlined" size="small" label="Mature" /> : ""}</MenuItem>)
             })}
               <MenuItem disabled value={""}>More coming soon!</MenuItem>
             </Select>
