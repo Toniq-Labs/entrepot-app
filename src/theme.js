@@ -3,6 +3,9 @@ import { createTheme  } from '@material-ui/core/styles';
 
 // A custom theme for this app
 const theme = createTheme ({
+  typography: {
+    //fontFamily: "'Poppins', sans-serif",
+  },
   palette: {
     primary: {
       main: '#00d092',

@@ -10,6 +10,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
   },
+  heading: {
+    textAlign:"center",
+    marginTop:"40px",
+  },
   footer: {
     textAlign: "center",
     position: "absolute",
@@ -25,10 +29,29 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '56.25%', // 16:9
   },
   marketBtn : {
+    marginTop:10,
+    display: "block",
     [theme.breakpoints.up('sm')]: {
-      display: "none",
+      width: "350px",
+      fontSize: "1.1em"
     },
   },
+  banner : {
+    position : "relative",
+  },
+  bannerimg : {
+    maxWidth: "100%"
+  },
+  anchor : {
+    position: "absolute",
+    bottom: "-15px",
+    background: "white",
+    borderRadius: "100%",
+    padding: "5px",
+    width: "40px",
+    border: "1px solid black",
+    left: 'calc(50% - 20px)',
+  }
 }));
 export default function Home(props) {
   const classes = useStyles();
@@ -36,12 +59,16 @@ export default function Home(props) {
   return (
   <div style={{width:"100%", display:"block", position:"relative"}}>
     <div style={{maxWidth:1200, margin:"120px auto 0px", paddingBottom:200}}>
-      <h1 style={{textAlign:"center"}}>Welcome to Entrepot</h1>
+      <div className={classes.banner}>
+        <img className={classes.bannerimg} src="/banner/rotm.png" />
+        <img className={classes.anchor} src="/icon/anchor.png" />
+      </div>
+      <h1 className={classes.heading}>Welcome to Entrepot</h1>
       <p style={{textAlign:"center",fontSize:"1.3em",padding:"0 30px"}}>By definition, an entrepôt is a port, city, or trading post where merchandise may be imported, stored or traded. Such centers played a critical role in trade during the days of wind-powered shipping. We developed <strong>Entrepot.app</strong> to provide a similar role in the digital world - a trading post where users can store and trade digital assets in a decentralized, non-custodial way.
       
-      <Button className={classes.marketBtn} fullWidth variant={"contained"} onClick={() => props.changeRoute('marketplace')} color={"primary"} style={{fontWeight:"bold", margin:"20px auto"}}>Explore the Marketplace</Button>
+      <Button className={classes.marketBtn} fullWidth variant={"outlined"} onClick={() => props.changeRoute('marketplace')} color={"primary"} style={{fontWeight:"bold", margin:"20px auto"}}>Explore the Marketplace</Button>
       </p>
-      <h1 style={{textAlign:"center"}}>Upcoming Collections</h1>
+      <h1 className={classes.heading}>Our Collections</h1>
       <Grid container direction="row" justifyContent="center" alignItems="center">
         {/*<Grid item md={4}>
           <Card className={classes.root}>

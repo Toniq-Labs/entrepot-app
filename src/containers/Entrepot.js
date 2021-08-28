@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginLeft:40, 
     fontSize:"1.2em", 
+    fontWeight:"bold",
     borderBottom: '3px solid transparent',
     borderRadius: 0,
     height:73,
@@ -106,12 +107,12 @@ export default function Entrepot(props) {
       <AppBar position="fixed" style={{ background: 'white' }}>
         <Toolbar>
           <Typography variant="h6" noWrap>
-            <img onClick={() => changeRoute('home')} alt="Entrepot" src="logo.jpg" style={{height:64}} />
+            <img onClick={() => changeRoute('home')} alt="Entrepot" src="logo.jpg" style={{height:64, cursor: "pointer"}} />
           </Typography>
           <div className={classes.grow} />
-          <Button onClick={() => changeRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
-          <Button onClick={() => changeRoute('create')} className={classes.button + (route === 'create' ? " selected" : "")} color="inherit">Create</Button>
-          <Button onClick={() => changeRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
+          <Button startIcon={<img style={{width:20}}src="/icon/marketplace.png" />} onClick={() => changeRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
+          <Button startIcon={<img style={{width:20}}src="/icon/create.png" />} onClick={() => changeRoute('create')} className={classes.button + (route === 'create' ? " selected" : "")} color="inherit">Create</Button>
+          <Button startIcon={<img style={{width:20}}src="/icon/support.png" />} onClick={() => changeRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
         </Toolbar>
       </AppBar>
       {renderView(route)}
