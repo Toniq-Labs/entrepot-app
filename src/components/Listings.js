@@ -369,7 +369,7 @@ export default function Listings(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((transaction, i) => {
-                      return (<Sold gri={gridata(collection, extjs.decodeTokenId(transaction.token).index)} key={transaction.token + i} collection={collection} transaction={transaction} />)
+                      return (<Sold gri={getGri(collection, extjs.decodeTokenId(transaction.token).index)} key={transaction.token + i} collection={collection} transaction={transaction} />)
                     })}
                   </Grid>
                 </div>
