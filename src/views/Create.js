@@ -76,13 +76,13 @@ export default function Create(props) {
           <Card className={classes.root}>
             <CardMedia
               className={classes.media}
-              image="/collections/icmojis.jpg"
-              title="ICmojis"
+              image="/collections/starverse.jpg"
+              title="Starverse"
             />
             <CardContent>
-              <h3>ICmojis</h3>
+              <h3>Starverse</h3>
               <Typography variant="body1" color="textSecondary" component="p">
-                Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!
+                Starverse is the result of collaborative efforts between Mac and Mir, the ToniqLabs team, and theam team from DSCVR.
               </Typography>
             </CardContent>
           </Card>

@@ -18,6 +18,11 @@ const collections = [
     mature : false
   },
   {
+    canister : "nbg4r-saaaa-aaaah-qap7a-cai",
+    name : "Starverse",
+    mature : false
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false
@@ -84,58 +89,58 @@ export default function Marketplace(props) {
   };
   
   const _updates = async () => {
-    await processPayments();
-    await processRefunds();
+    // await processPayments();
+    // await processRefunds();
   };
-  const processPayments = async () => {
-    const _api = extjs.connect("https://boundary.ic0.app/", identity);
-    for(var j = 0; j < collections.length; j++){
-      var payments = await _api.canister(collections[j].canister).payments();
-      if (payments.length === 0) continue;
-      if (payments[0].length === 0) continue;
-      console.log("Payments found: " + payments[0].length);
-      var a, b, c, payment;
-      for(var i = 0; i < payments[0].length; i++) {
-        payment = payments[0][i];
-        a = extjs.toAddress(identity.getPrincipal().toText(), payment);
-        b = Number(await api.token().getBalance(a));
-        c = Math.round(b * txcomm);
-        try {
-          if (b > txmin) {
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9", BigInt(c-txfee), txfee);
-          }
-          await _api.canister(collections[j].canister).removePayments([payment]);
-          console.log("Payment extracted successfully");
-        } catch (e) {
-          console.log(e);
-        };
-      };
-    };
-  };
-  const processRefunds = async () => {
-    const _api = extjs.connect("https://boundary.ic0.app/", identity);
-    for(var j = 0; j < collections.length; j++){
-      var refunds = await _api.canister(collections[j].canister).refunds();
-      if (refunds.length === 0) continue;
-      if (refunds[0].length === 0) continue;
-      console.log("Refunds found: " + refunds[0].length);
-      var a, b, refund;
-      for(var i = 0; i < refunds[0].length; i++) {
-        refund = refunds[0][i];
-        a = extjs.toAddress(identity.getPrincipal().toText(), refund);
-        b = Number(await api.token().getBalance(a));
-        try {
-          if (b > txfee) {
-            //Process refunds
-            await _api.token().transfer(identity.getPrincipal().toText(), refund, "07ce335b2451bec20426497d97afb0352d89dc3f1286bf26909ecb90cf370c76", BigInt(b-txfee), txfee);
-          }
-          await _api.canister(collections[j].canister).removeRefunds([refund]);
-          console.log("Refund removed successfully");
-        } catch (e) {};
-      };
-    };
-  };
+  // const processPayments = async () => {
+    // const _api = extjs.connect("https://boundary.ic0.app/", identity);
+    // for(var j = 0; j < collections.length; j++){
+      // var payments = await _api.canister(collections[j].canister).payments();
+      // if (payments.length === 0) continue;
+      // if (payments[0].length === 0) continue;
+      // console.log("Payments found: " + payments[0].length);
+      // var a, b, c, payment;
+      // for(var i = 0; i < payments[0].length; i++) {
+        // payment = payments[0][i];
+        // a = extjs.toAddress(identity.getPrincipal().toText(), payment);
+        // b = Number(await api.token().getBalance(a));
+        // c = Math.round(b * txcomm);
+        // try {
+          // if (b > txmin) {
+            // await _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
+            // await _api.token().transfer(identity.getPrincipal().toText(), payment, "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9", BigInt(c-txfee), txfee);
+          // }
+          // await _api.canister(collections[j].canister).removePayments([payment]);
+          // console.log("Payment extracted successfully");
+        // } catch (e) {
+          // console.log(e);
+        // };
+      // };
+    // };
+  // };
+  // const processRefunds = async () => {
+    // const _api = extjs.connect("https://boundary.ic0.app/", identity);
+    // for(var j = 0; j < collections.length; j++){
+      // var refunds = await _api.canister(collections[j].canister).refunds();
+      // if (refunds.length === 0) continue;
+      // if (refunds[0].length === 0) continue;
+      // console.log("Refunds found: " + refunds[0].length);
+      // var a, b, refund;
+      // for(var i = 0; i < refunds[0].length; i++) {
+        // refund = refunds[0][i];
+        // a = extjs.toAddress(identity.getPrincipal().toText(), refund);
+        // b = Number(await api.token().getBalance(a));
+        // try {
+          // if (b > txfee) {
+            // //Process refunds
+            // await _api.token().transfer(identity.getPrincipal().toText(), refund, "07ce335b2451bec20426497d97afb0352d89dc3f1286bf26909ecb90cf370c76", BigInt(b-txfee), txfee);
+          // }
+          // await _api.canister(collections[j].canister).removeRefunds([refund]);
+          // console.log("Refund removed successfully");
+        // } catch (e) {};
+      // };
+    // };
+  // };
   const theme = useTheme();
   const classes = useStyles();
   const styles = {

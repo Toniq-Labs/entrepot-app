@@ -62,6 +62,12 @@ export default function Sold(props) {
                   <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + transaction.token} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
                 </Typography>
               </Grid> : ""}
+              {props.collection === "nbg4r-saaaa-aaaah-qap7a-cai" ?
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid> : ""}
             </Grid>
 
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} target="_blank" rel="noreferrer">
@@ -71,7 +77,7 @@ export default function Sold(props) {
                 :
                 <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
                 }
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="circle"  />
+                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="square"  />
               </div>
             </a>
             
