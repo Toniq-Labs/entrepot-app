@@ -60,8 +60,8 @@ export default function Home(props) {
   <div style={{width:"100%", display:"block", position:"relative"}}>
     <div style={{maxWidth:1200, margin:"120px auto 0px", paddingBottom:200}}>
       <div className={classes.banner}>
-        <img className={classes.bannerimg} src="/banner/starverse.png" />
-        <img className={classes.anchor} src="/icon/anchor.png" />
+        <img alt="starverse" className={classes.bannerimg} src="/banner/starverse.png" />
+        <img alt="anchor" className={classes.anchor} src="/icon/anchor.png" />
       </div>
       <h1 className={classes.heading}>Welcome to Entrepot</h1>
       <p style={{textAlign:"center",fontSize:"1.3em",padding:"0 30px"}}>By definition, an entrepôt is a port, city, or trading post where merchandise may be imported, stored or traded. Such centers played a critical role in trade during the days of wind-powered shipping. We developed <strong>Entrepot.app</strong> to provide a similar role in the digital world - a trading post where users can store and trade digital assets in a decentralized, non-custodial way.

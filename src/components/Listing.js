@@ -57,7 +57,7 @@ export default function Listing(props) {
   };
   
   return (
-    <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={12}>
+    <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={6}>
         <Card>
           <CardContent>
             <Grid container>
@@ -87,7 +87,7 @@ export default function Listing(props) {
                 :
                 <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
                 }
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="square"  />
+                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
               </div>
             </a>
             

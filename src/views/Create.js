@@ -31,7 +31,7 @@ export default function Create(props) {
   <div style={{width:"100%", display:"block", position:"relative"}}>
     <div style={{maxWidth:1200, margin:"120px auto 0px", paddingBottom:200}}>
       <h1 style={{textAlign:"center"}}>Create, mint, release!</h1>
-      <p style={{textAlign:"center",fontSize:"1.3em"}}>If you would like to release your own collection of NFTs on the Entrepot.app marketplace then please complete <a href="https://docs.google.com/forms/d/e/1FAIpQLSfijChkKNI8SESLIavMspahNeE5Mio84TjDwspmlV7EEd4iCA/viewform" target="_blank">this form</a> and we will be in touch!</p>
+      <p style={{textAlign:"center",fontSize:"1.3em"}}>If you would like to release your own collection of NFTs on the Entrepot.app marketplace then please complete <a href="https://docs.google.com/forms/d/e/1FAIpQLSfijChkKNI8SESLIavMspahNeE5Mio84TjDwspmlV7EEd4iCA/viewform" rel="noreferrer" target="_blank">this form</a> and we will be in touch!</p>
       <Grid style={{textAlign:"center", marginTop:50,marginBottom:50}} container spacing={5}>
         <Grid item md={3}>
           <img style={{width:100}} alt="Low Fees" src="/icon/fee.png" />

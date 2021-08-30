@@ -7,7 +7,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import extjs from '../ic/extjs.js';
 
 export default function ListingForm(props) {
   const [price, setPrice] = React.useState(props.nft.price);
@@ -24,7 +23,6 @@ export default function ListingForm(props) {
   };
   const _submit = p => {
     //Submit to blockchain here
-    var _price = p;
     handleClose();
     props.list(props.nft.id, p);
   };

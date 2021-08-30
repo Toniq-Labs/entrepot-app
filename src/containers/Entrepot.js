@@ -82,8 +82,8 @@ if (root.length > 1) {
   if (routes.hasOwnProperty(paths[0])) current = paths[0];
   path = paths[1] ?? "";
 };
-var np = root[0] + (current != "home" ? "#" + current : "");
-if (window.location.href != np) window.location.href = np;
+var np = root[0] + (current !== "home" ? "#" + current : "");
+if (window.location.href !== np) window.location.href = np;
 export default function Entrepot(props) {
   const classes = useStyles();
   const [route, setRoute] = React.useState(current);
@@ -96,8 +96,8 @@ export default function Entrepot(props) {
     }
   }
   const changeRoute = (r) => {
-    var np = root[0] + (r != "home" ? "#" + r : "");
-    if (window.location.href != np) window.location.href = np;
+    var np = root[0] + (r !== "home" ? "#" + r : "");
+    if (window.location.href !== np) window.location.href = np;
     setRoute(r);
   };
   
@@ -110,9 +110,9 @@ export default function Entrepot(props) {
             <img onClick={() => changeRoute('home')} alt="Entrepot" src="logo.jpg" style={{height:64, cursor: "pointer"}} />
           </Typography>
           <div className={classes.grow} />
-          <Button startIcon={<img style={{width:20}}src="/icon/marketplace.png" />} onClick={() => changeRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
-          <Button startIcon={<img style={{width:20}}src="/icon/create.png" />} onClick={() => changeRoute('create')} className={classes.button + (route === 'create' ? " selected" : "")} color="inherit">Create</Button>
-          <Button startIcon={<img style={{width:20}}src="/icon/support.png" />} onClick={() => changeRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
+          <Button startIcon={<img alt="marketplace" style={{width:20}}src="/icon/marketplace.png" />} onClick={() => changeRoute('marketplace')} className={classes.button + (route === 'marketplace' ? " selected" : "")} color="inherit">Marketplace</Button>
+          <Button startIcon={<img alt="create" style={{width:20}}src="/icon/create.png" />} onClick={() => changeRoute('create')} className={classes.button + (route === 'create' ? " selected" : "")} color="inherit">Create</Button>
+          <Button startIcon={<img alt="contact" style={{width:20}}src="/icon/support.png" />} onClick={() => changeRoute('contact')} className={classes.button + (route === 'contact' ? " selected" : "")} color="inherit">Support</Button>
         </Toolbar>
       </AppBar>
       {renderView(route)}

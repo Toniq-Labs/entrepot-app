@@ -21,7 +21,7 @@ export default function BuyForm(props) {
     >
       <DialogTitle id="alert-dialog-title">You are about to make a purchase!</DialogTitle>
       <DialogContent>
-        <img src={props.img} style={{maxHeight:"200px", margin:"0px auto 20px", display:"block"}}/>
+        <img alt="NFT" src={props.img} style={{maxHeight:"200px", margin:"0px auto 20px", display:"block"}}/>
         <DialogContentText id="alert-dialog-description">
           You are about to purchase this NFT from your connected wallet for: <br />
           <strong><span style={{fontSize:"1.5em",color:"red"}}>{props.price} ICP</span></strong><br />

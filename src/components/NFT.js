@@ -6,8 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
-import Timestamp from 'react-timestamp';
-import extjs from '../ic/extjs.js';
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, '');
@@ -45,12 +43,10 @@ export default function NFT(props) {
       margin: "0 auto"
     }
   };
-  const buy = async () => {
-    return props.buy(props.collection, props.listing);
-  };
+
   
   return (
-    <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={12}>
+    <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={6}>
         <Card>
           <CardContent>
             <Grid container>
@@ -65,6 +61,12 @@ export default function NFT(props) {
                   <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
                 </Typography>
               </Grid> : ""}
+              {props.collection === "nbg4r-saaaa-aaaah-qap7a-cai" ?
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid> : ""}
             </Grid>
 
             <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} target="_blank" rel="noreferrer">
@@ -74,7 +76,7 @@ export default function NFT(props) {
                 :
                 <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + props.nft.id} onLoad={() => setImgLoaded(true)} />
                 }
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="circle"  />
+                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
               </div>
             </a>
             

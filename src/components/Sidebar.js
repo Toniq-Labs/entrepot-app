@@ -12,7 +12,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import StorefrontIcon from '@material-ui/icons/Storefront';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
@@ -69,7 +68,6 @@ export default function Sidebar(props) {
       var collection, mcs = [];
       for(var i = 0; i < props.collections.length; i++) {
         collection = props.collections[i];
-        console.log(collection.canister);
         try{
           var tokens = await api.token(collection.canister).getTokens(props.address);
         } catch(e) {continue};
@@ -115,7 +113,7 @@ export default function Sidebar(props) {
             primaryTypographyProps={{noWrap:true}} 
             secondaryTypographyProps={{noWrap:true}} 
             primary={<>
-              My Wallet
+              Main
               {/*<IconButton style={{marginTop:"-5px"}} size="small" onClick={(e) => setAnchorEl(e.currentTarget)} edge="end">*/}
               <IconButton style={{marginTop:"-5px"}} size="small" onClick={refreshClick} edge="end">
                 <CachedIcon />
@@ -170,7 +168,6 @@ export default function Sidebar(props) {
           <Button onClick={props.login} startIcon={<img alt="S" src="stoic.png" style={{height:26}} />} fullWidth variant="contained" color="primary" style={{fontWeight:"bold",color:"black"}}> Login with Stoic</Button>
         </ListItem>
       </List> : ""}
-      
       <Divider />
       <List>
       <ListSubheader>
@@ -178,25 +175,28 @@ export default function Sidebar(props) {
       </ListSubheader>
         <ListItem>
           <ListItemText 
-            primary={"You can sell your NFTs directly from your Stoic Wallet."}
+            primary={"Login and sell your NFTs directly through Entrepot! Just select one of your collections below to get started."}
             />
         </ListItem>
       </List>
+
       { props.address !== false && myCollections.length ? 
       <>
       <Divider />
       <List>
         <ListSubheader>
           My Collections
+          {props.view !== false ?
+          <ListItemSecondaryAction>
+            <ListItemIcon>
+              <Button color={"primary"} variant={"contained"} onClick={() => props.setView(false)} style={{marginTop:"3px", marginLeft:"30px"}} size="small" edge="end">
+                Back
+              </Button>
+            </ListItemIcon>
+          </ListItemSecondaryAction> : ""}
         </ListSubheader>
-        {props.view !== false ?
-        <ListItem button onClick={() => props.setView(false)}>
-          <ListItemIcon><StorefrontIcon /></ListItemIcon>
-          <ListItemText primary="Back to Marketplace" />
-        </ListItem> : ""}
-        {/*<ListItem key={collection.canister + "-" + collection.count} selected={props.view == collection.canister} button onClick={() => props.setView(collection.canister)}>*/}
         {myCollections.map(collection => {
-          return (<ListItem key={collection.canister + "-" + collection.count} selected={props.view === collection.canister}>
+          return (<ListItem key={collection.canister + "-" + collection.count} selected={props.view === collection.canister} button onClick={() => props.setView(collection)}>
             <ListItemAvatar>
               <Avatar>
                 <img alt={collection.name} src={"collections/"+collection.canister+".jpg"} style={{height:64}} />
