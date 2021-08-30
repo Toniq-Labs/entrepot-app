@@ -131,9 +131,8 @@ export default function Listings(props) {
       props.alert("Transaction complete", "Your purchase was made successfully - your NFT will be sent to your props.address shortly");
       refresh();
     } catch (e) {
-      console.log(e);
       props.loader(false);
-      props.error(e);
+      props.alert("There was an error", e.Other);
     };
   };
   const applyFilters = a => {

@@ -98,7 +98,7 @@ export default function Listing(props) {
               {props.loggedIn ? 
               <Typography style={{fontSize: 12, textAlign:"center"}} color={"inherit"} gutterBottom>
                 { _isLocked(props.listing[1]) ? 
-                  <>Unlocks <Timestamp relative autoUpdate date={Number(props.listing[1].locked[0]/1000000000n)} /></>
+                  <span style={{display:"block",marginBottom:22}}>Unlocks <Timestamp relative autoUpdate date={Number(props.listing[1].locked[0]/1000000000n)} /></span>
                 : 
                   <Button onClick={buy} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Buy Now</Button>
                 }
