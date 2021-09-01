@@ -112,7 +112,8 @@ export default function Listings(props) {
   const buy = async (collection, listing) => {
     var tokenid = extjs.encodeTokenId(collection, listing[0])
     try {
-      var answer = await buyForm(_showListingPrice(listing[1].price), "https://" + collection + ".raw.ic0.app/?tokenid="+tokenid);
+      var img = (collection === "bxdf4-baaaa-aaaah-qaruq-cai" ? "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/"+listing[0] : "https://" + collection + ".raw.ic0.app/?tokenid="+tokenid);
+      var answer = await buyForm(_showListingPrice(listing[1].price), img);
       if (!answer) {
         return props.loader(false);
       };
@@ -134,7 +135,8 @@ export default function Listings(props) {
       refresh();
     } catch (e) {
       props.loader(false);
-      props.alert("There was an error", e.Other);
+      console.log(e);
+      props.alert("There was an error", e.Other ?? "Canister failed to load");
     };
   };
   const applyFilters = a => {
