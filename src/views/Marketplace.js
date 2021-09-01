@@ -25,6 +25,12 @@ const collections = [
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
   },
   {
+    canister : "bxdf4-baaaa-aaaah-qaruq-cai",
+    name : "Wrapped ICPunks",
+    mature : false,
+    comaddress : "38bc2ce470085db3a3223806e61946f645106915a0a7da8fa9368969db7a3264",
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,

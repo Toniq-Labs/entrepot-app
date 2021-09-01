@@ -14,7 +14,7 @@ export default function Sold(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const transaction = props.transaction;
   const index = extjs.decodeTokenId(transaction.token).index;
-  const tokenid = extjs.encodeTokenId(props.collection, index);
+  const tokenid = transaction.token;
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -46,6 +46,18 @@ export default function Sold(props) {
       margin: "0 auto"
     }
   };
+  const mintNumber = () => {
+    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return index;
+    else return index+1;
+  }
+  const nftImg = () => {
+    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
+    else return "https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
+  };
+  const nftLink = () => {
+    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
+    return "https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid;
+  };
   return (
     <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={6}>
         <Card>
@@ -53,7 +65,7 @@ export default function Sold(props) {
             <Grid container>
               <Grid item md={6} sm={6} xs={6}>
                 <Typography style={{fontSize: 11, textAlign:"left", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                  <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} rel="noreferrer" target="_blank">{"#"+(index+1)}</a></Tooltip>
+                  <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} rel="noreferrer" target="_blank">{"#"+(mintNumber())}</a></Tooltip>
                 </Typography>
               </Grid>
               {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ?
@@ -68,14 +80,20 @@ export default function Sold(props) {
                   <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
                 </Typography>
               </Grid> : ""}
+              {props.collection === "bxdf4-baaaa-aaaah-qaruq-cai" ?
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific ICPunk relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + mintNumber()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid> : ""}
             </Grid>
 
-            <a href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} target="_blank" rel="noreferrer">
+            <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
                 {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai"  ?
-                <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
                 :
-                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={"https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid} onLoad={() => setImgLoaded(true)} />
+                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
                 }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
               </div>

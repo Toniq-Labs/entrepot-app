@@ -84,7 +84,7 @@ export default function Home(props) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>*/}
+        </Grid>
         <Grid item md={4} style={{marginBottom:20}}>
           <Card className={classes.root}>
             <CardMedia
@@ -96,6 +96,21 @@ export default function Home(props) {
               <h3>ICmojis</h3>
               <Typography variant="body1" color="textSecondary" component="p">
                 Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>*/}
+        <Grid item md={4} style={{marginBottom:20}}>
+          <Card className={classes.root}>
+            <CardMedia
+              className={classes.media}
+              image="/collections/icpunks.jpg"
+              title="ICPunks"
+            />
+            <CardContent>
+              <h3>ICPunks</h3>
+              <Typography variant="body1" color="textSecondary" component="p">
+                Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer, wrap them using <a href="https://stoicwallet.com" target="_blank" rel="noreferrer">StoicWallet</a> and trade them on the Marketplace!
               </Typography>
             </CardContent>
           </Card>

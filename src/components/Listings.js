@@ -59,7 +59,8 @@ export default function Listings(props) {
   const [sort, setSort] = React.useState('price_asc');
   const [showing, setShowing] = React.useState('all');
   const [wearableFilter, setWearableFilter] = React.useState('all');
-  const [collection, setCollection] = React.useState('nbg4r-saaaa-aaaah-qap7a-cai');
+  //const [collection, setCollection] = React.useState('nbg4r-saaaa-aaaah-qap7a-cai');
+  const [collection, setCollection] = React.useState('bxdf4-baaaa-aaaah-qaruq-cai');
   const [buyFormData, setBuyFormData] = React.useState(emptyListing); 
   const [showBuyForm, setShowBuyForm] = React.useState(false);
 
@@ -208,6 +209,8 @@ export default function Listings(props) {
             </Select>
           </FormControl>
         </h1>
+        {collection == "bxdf4-baaaa-aaaah-qaruq-cai" ?
+        <p style={{fontSize:"1.2em"}}>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer, wrap them using <a href="https://stoicwallet.com" target="_blank" rel="noreferrer">StoicWallet</a> and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></p> : ""}
       </div>
       <>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>
@@ -234,7 +237,7 @@ export default function Listings(props) {
               <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
               {showing === "all" && ["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
-              { ["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
+              { ["bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
               {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
               {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
             </Select>
