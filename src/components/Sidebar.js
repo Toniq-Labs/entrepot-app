@@ -84,13 +84,13 @@ export default function Sidebar(props) {
   React.useEffect(() => {
     refresh();
     if (intv) clearInterval(intv);
-    intv = setInterval(refresh, 5 *1000);
+    intv = setInterval(refresh, 30 *1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     refresh();
     if (intv) clearInterval(intv);
-    intv = setInterval(refresh, 5 *1000);
+    intv = setInterval(refresh, 30 *1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.address]);
   
