@@ -117,15 +117,21 @@ export default function Listings(props) {
       if (!answer) {
         return props.loader(false);
       };
-      props.loader(true);
+      props.loader(true, "Locking NFT...");
+      console.log("Locking NFT");
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api.canister(collection).lock(tokenid, listing[1].price, props.address, _getRandomBytes());
       if (r.hasOwnProperty("err")) throw r.err;
       var paytoaddress = r.ok;
+      console.log("Transferring ICP...");
+      props.loader(true, "Transferring ICP...");
       await api.token().transfer(props.identity.getPrincipal(), 0, paytoaddress, listing[1].price, 10000);
       var r3;
       while(true){
         try {
+          
+          console.log("Settling purchase...");
+          props.loader(true, "Settling purchase...");
           r3 = await api.canister(collection).settle(tokenid);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}

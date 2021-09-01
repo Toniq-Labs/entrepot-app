@@ -18,6 +18,7 @@ const emptyAlert = {
 export default function App() {
   const classes = useStyles();
   const [loaderOpen, setLoaderOpen] = React.useState(false);
+  const [loaderText, setLoaderText] = React.useState(""); 
   const [alertData, setAlertData] = React.useState(emptyAlert); 
   const [confirmData, setConfirmData] = React.useState(emptyAlert); 
   const [showAlert, setShowAlert] = React.useState(false);
@@ -62,8 +63,12 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loader = (l) => {
+  const loader = (l, t) => {
+    setLoaderText(t);
     setLoaderOpen(l);
+    if (!l) {  
+      setLoaderText("");
+    }
   };
   
   return (
@@ -71,6 +76,7 @@ export default function App() {
       <Entrepot error={error} alert={alert} confirm={confirm} loader={loader} />
       <Backdrop className={classes.backdrop} open={loaderOpen}>
         <CircularProgress color="inherit" />
+        <h2 style={{position:"absolute", marginTop:"120px"}}>{loaderText ?? "Loading..."}</h2>
       </Backdrop>
       <AlertDialog open={showAlert} title={alertData.title} message={alertData.message} buttonLabel={alertData.buttonLabel} handler={alertData.handler} />
       <ConfirmDialog open={showConfirm} title={confirmData.title} message={confirmData.message} buttonCancel={confirmData.buttonCancel} buttonConfirm={confirmData.buttonConfirm} handler={confirmData.handler} />
