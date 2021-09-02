@@ -129,8 +129,6 @@ export default function Listings(props) {
       var r3;
       while(true){
         try {
-          
-          console.log("Settling purchase...");
           props.loader(true, "Settling purchase...");
           r3 = await api.canister(collection).settle(tokenid);
           if (r3.hasOwnProperty("ok")) break;
@@ -142,7 +140,7 @@ export default function Listings(props) {
     } catch (e) {
       props.loader(false);
       console.log(e);
-      props.alert("There was an error", e.Other ?? "Canister failed to load");
+      props.alert("There was an error", e.Other ?? "You may need to disable cookies or try a different browser");
     };
   };
   const applyFilters = a => {
