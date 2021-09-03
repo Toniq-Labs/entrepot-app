@@ -216,7 +216,7 @@ export default function Listings(props) {
           </FormControl>
         </h1>
         {collection == "bxdf4-baaaa-aaaah-qaruq-cai" ?
-        <p style={{fontSize:"1.2em"}}>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer, wrap them using <a href="https://stoicwallet.com" target="_blank" rel="noreferrer">StoicWallet</a> and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></p> : ""}
+        <p style={{fontSize:"1.2em"}}>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer! You can wrap and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></p> : ""}
       </div>
       <>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>

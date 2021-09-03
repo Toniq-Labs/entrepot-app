@@ -26,7 +26,7 @@ const collections = [
   },
   {
     canister : "bxdf4-baaaa-aaaah-qaruq-cai",
-    name : "Wrapped ICPunks",
+    name : "ICPunks",
     mature : false,
     comaddress : "38bc2ce470085db3a3223806e61946f645106915a0a7da8fa9368969db7a3264",
   },
