@@ -203,7 +203,7 @@ export default function Marketplace(props) {
         break;
         case "plug":
           const result = await window.ic.plug.requestConnect({
-            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai"]
+            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
           });
           if (result) {
             var id = await window.ic.plug.agent._identity;
@@ -248,7 +248,7 @@ export default function Marketplace(props) {
             if (connected){
               if (!window.ic.plug.agent) {
                 await window.ic.plug.createAgent({
-                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai"]
+                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
                 })
               }
               var id = await window.ic.plug.agent._identity;
