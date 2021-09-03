@@ -280,7 +280,7 @@ export default function Marketplace(props) {
   
   return (
     <>
-      <Sidebar view={view} setView={setView} account={accounts.length > 0 ? accounts[currentAccount] : false} loader={props.loader} logout={logout} login={login} collections={collections} currentAccount={currentAccount} accounts={accounts} onClose={handleDrawerToggle} open={mobileOpen} />
+      <Sidebar identity={identity} view={view} setView={setView} account={accounts.length > 0 ? accounts[currentAccount] : false} loader={props.loader} logout={logout} login={login} collections={collections} currentAccount={currentAccount} accounts={accounts} onClose={handleDrawerToggle} open={mobileOpen} />
       <main className={classes.content}>      
         <div style={styles.root}>
           <Button className={classes.walletBtn} fullWidth variant={"contained"} onClick={handleDrawerToggle} color={"primary"} style={{fontWeight:"bold", margin:"0 auto"}}>View Wallet</Button>

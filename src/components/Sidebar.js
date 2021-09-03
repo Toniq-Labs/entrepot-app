@@ -76,6 +76,10 @@ export default function Sidebar(props) {
         collection = props.collections[i];
         try{
           var tokens = await api.token(collection.canister).getTokens(props.account.address);
+          if (collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai") {
+            tokens = tokens.map(a => {a.wrapped = true; return a});
+            tokens = tokens.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+          };
         } catch(e) {continue};
         if (tokens.length) {
           mcs.push({
