@@ -190,8 +190,11 @@ class ExtConnection {
                           metadata : d[2].length ? d[2][0] : false,
                         }
                       }));
-                    }else if (typeof r.err != 'undefined') reject(r.err)
-                    else reject(r);
+                    }else if (typeof r.err != 'undefined') {
+                      if (r.err.hasOwnProperty("Other") && r.err.Other === "No tokens") {
+                        resolve([]);
+                      } else reject(r.err)
+                    } else reject(r);
                   }).catch(reject);
                 } catch(e) {
                   reject(e);
