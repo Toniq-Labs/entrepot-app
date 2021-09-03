@@ -1,3 +1,4 @@
+/* global BigInt */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -11,6 +12,7 @@ import getNri from '../ic/nftv.js';
 import { useTheme } from '@material-ui/core/styles';
 import NFT from './NFT';
 import ListingForm from './ListingForm';
+import TransferForm from './TransferForm';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -36,11 +38,12 @@ function useInterval(callback, delay) {
 
 
 export default function Wallet(props) {
-  const [nfts, setListings] = React.useState(false);
+  const [nfts, setNfts] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
   const [wearableFilter, setWearableFilter] = React.useState('all');
   const [openListingForm, setOpenListingForm] = React.useState(false);
+  const [openTransferForm, setOpenTransferForm] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
 
   const changeWearableFilter = async (event) => {
@@ -51,16 +54,90 @@ export default function Wallet(props) {
     setOpenListingForm(false);
     setTimeout(() => setTokenNFT(''), 300);
   };
-  const listNft = (id) => {
-    setTokenNFT(id);
+  const closeTransferForm = () => {
+    setOpenTransferForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const listNft = (token) => {
+    setTokenNFT(token);
     setOpenListingForm(true);
   }
+  const cancelNft = (token) => {
+    list(token.id, 0);
+  }
+  const unwrapNft = async (token) => {
+    props.loader(true, "Unwrapping NFT...");
+    //hot api, will sign as identity - BE CAREFUL
+    var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").unwrap(token.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
+    if (!r) {
+      props.loader(false);
+      return props.error("Couldn't unwrap!");
+    }
+    props.loader(true, "Loading NFTs...");
+    await refresh();
+    props.loader(false);
+    return props.alert("Success!", "Your NFT has been unwrapped!");
+  }
+  const transferNft = async (token) => {
+    setTokenNFT(token);
+    setOpenTransferForm(true);
+  };
+  const wrapAndlistNft = async (token) => {
+    var v = await props.confirm("We need to wrap this", "You are trying to list a non-compatiable NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
+    if (v) {
+      props.loader(true, "Creating wrapper...this may take a few minutes");
+      try{
+        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").wrap(token.id);
+        if (!r) return error("There was an error wrapping this NFT!");
+        props.loader(true, "Sending NFT to wrapper...");
+        //var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("qcg3w-tyaaa-aaaah-qakea-cai").transfer_to(props.identity.getPrincipal(), token.id);
+        var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).token(token.id).transfer(props.identity.getPrincipal().toText(), props.currentAccount, "bxdf4-baaaa-aaaah-qaruq-cai", BigInt(1), BigInt(0), "00", false);
+        if (!r2) return error("There was an error wrapping this NFT!");
+        props.loader(true, "Wrapping NFT...");
+        var r3 = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").mint(token.id);
+        if (!r) return error("There was an error wrapping this NFT!");
+        props.loader(true, "Loading NFTs...");
+        await refresh();
+        props.loader(false);
+        //New token id
+        console.log(token);
+        token.id = extjs.encodeTokenId("bxdf4-baaaa-aaaah-qaruq-cai", token.index);
+        token.canister = "bxdf4-baaaa-aaaah-qaruq-cai";
+        token.wrapped = true;
+        console.log(token);
+        listNft(token);
+      } catch(e) {
+        props.loader(false);
+        console.log(e);
+        return error("Unknown error!");
+      };
+    }
+  }
 
+  const error = (e) => {
+    props.loader(false);
+    props.error(e);
+  }
   const changeSort = (event) => {
     setPage(1);
     setSort(event.target.value);
   };
+  const transfer = async (id, address) => {
+    props.loader(true, "Transferring NFT...");
+    try {
+      var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).token(id).transfer(props.identity.getPrincipal().toText(), props.currentAccount, address, BigInt(1), BigInt(0), "00", false);
+      if (!r2) return error("There was an error transferring this NFT!");
+      props.loader(true, "Loading NFTs...");
+      await refresh();
+      props.loader(false);
+      return props.alert("Transaction complete", "Your listing has been updated");
+    } catch (e) {
+      props.loader(false);
+      return props.error(e);
+    };
+  };
   const list = async (id, price) => {
+    console.log(id, price);
     //Submit to blockchain here
     props.loader(true);
     const api = extjs.connect("https://boundary.ic0.app/", props.identity);
@@ -91,8 +168,12 @@ export default function Wallet(props) {
   
   const refresh = async (c) => {
     c = c ?? props.collection.canister;
-    var nfts = await api.token(c).getTokens(props.address)
-    setListings(applyFilters(nfts)); 
+    var nfts = await api.token(c).getTokens(props.account.address);
+    if (c === "bxdf4-baaaa-aaaah-qaruq-cai") {
+      nfts = nfts.map(a => {a.wrapped = true; return a});
+      nfts = nfts.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+    };
+    setNfts(applyFilters(nfts)); 
   }
   
   const theme = useTheme();
@@ -110,7 +191,7 @@ export default function Wallet(props) {
   
   useInterval(_updates, 10 *1000);
   React.useEffect(() => {
-    setListings([]);
+    setNfts([]);
     props.loader(true);        
     _updates().then(() => {
       props.loader(false);        
@@ -217,7 +298,7 @@ export default function Wallet(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<NFT gri={getNri(props.collection.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} collection={props.collection.canister} key={nft.id+"-"+i} nft={nft} />)
+                      return (<NFT gri={getNri(props.collection.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={props.collection.canister} key={nft.id+"-"+i} nft={nft} />)
                     })}
                   </Grid>
                 </div>
@@ -227,6 +308,7 @@ export default function Wallet(props) {
         {(nfts.length > perPage ?
         (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </>
+      <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
       <ListingForm list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
     </>
   )

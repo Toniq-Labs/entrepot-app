@@ -120,7 +120,7 @@ export default function Listings(props) {
       props.loader(true, "Locking NFT...");
       console.log("Locking NFT");
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
-      var r = await api.canister(collection).lock(tokenid, listing[1].price, props.address, _getRandomBytes());
+      var r = await api.canister(collection).lock(tokenid, listing[1].price, props.account.address, _getRandomBytes());
       if (r.hasOwnProperty("err")) throw r.err;
       var paytoaddress = r.ok;
       console.log("Transferring ICP...");
@@ -135,7 +135,7 @@ export default function Listings(props) {
         } catch (e) {}
       }
       props.loader(false);
-      props.alert("Transaction complete", "Your purchase was made successfully - your NFT will be sent to your props.address shortly");
+      props.alert("Transaction complete", "Your purchase was made successfully - your NFT will be sent to your address shortly");
       refresh();
     } catch (e) {
       props.loader(false);

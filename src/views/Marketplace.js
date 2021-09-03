@@ -93,6 +93,7 @@ export default function Marketplace(props) {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [address, setAddress] = React.useState(false);
   const [accounts, setAccounts] = React.useState(false);
+  const [currentAccount, setCurrentAccount] = React.useState(0);
   const [view, setView] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -178,35 +179,96 @@ export default function Marketplace(props) {
   };
   
   const logout = async () => {
+    localStorage.removeItem("_loginType");
     StoicIdentity.disconnect();
     setIdentity(false);
+    setAccounts([]);
   };
-  const login = async () => {
+  const login = async (t) => {
     props.loader(true);
-    var id = await StoicIdentity.connect();
-    if (id) {
-      setIdentity(id);
-    }
+    try {
+      switch(t) {
+        case "stoic":
+            var id = await StoicIdentity.connect();
+            if (id) {
+              setIdentity(id);
+              id.accounts().then(accs => {
+                setAccounts(JSON.parse(accs));
+              });
+              setCurrentAccount(0);
+              localStorage.setItem("_loginType", t);
+            } else {
+              throw "Failed to connect to your wallet";
+            }
+        break;
+        case "plug":
+          const result = await window.ic.plug.requestConnect({
+            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai"]
+          });
+          if (result) {
+            var id = await window.ic.plug.agent._identity;
+            setIdentity(id);
+            setAccounts([{
+              name : "PlugWallet",
+              address : extjs.toAddress(id.getPrincipal().toText(), 0)
+            }]);
+            setCurrentAccount(0);
+            localStorage.setItem("_loginType", t);
+          } else {
+            throw "Failed to connect to your wallet";
+          }
+        break;
+      };
+    } catch (e) {
+      props.error(e);
+    };
     props.loader(false);
   };
   
   useInterval(_updates, 30 *1000);
   React.useEffect(() => {
-    StoicIdentity.load().then(async identity => {
-      if (identity !== false) {
-        //ID is a already connected wallet!
-        setIdentity(identity);
+    var t = localStorage.getItem("_loginType");
+    if (t) {
+      switch(t){
+        case "stoic":
+          StoicIdentity.load().then(async identity => {
+            if (identity !== false) {
+              //ID is a already connected wallet!
+              setIdentity(identity);
+              identity.accounts().then(accs => {
+                console.log(JSON.parse(accs));
+                setAccounts(JSON.parse(accs));
+              });
+            }
+          })
+        break;
+        case "plug":
+          (async () => {
+            const connected = await window.ic.plug.isConnected();
+            if (connected){
+              if (!window.ic.plug.agent) {
+                await window.ic.plug.createAgent({
+                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai"]
+                })
+              }
+              var id = await window.ic.plug.agent._identity;
+              setIdentity(id);
+              setAccounts([{
+                name : "PlugWallet",
+                address : extjs.toAddress(id.getPrincipal().toText(), 0)
+              }]);
+              
+            }
+          })();
+        break;
       }
-    })
+    }
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     if (identity) {
       setLoggedIn(true);
-      identity.accounts().then(accs => {
-        setAccounts(JSON.parse(accs));
-      });
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
     } else {
       setLoggedIn(false);
@@ -218,14 +280,14 @@ export default function Marketplace(props) {
   
   return (
     <>
-      <Sidebar view={view} setView={setView} loader={props.loader} logout={logout} login={login} collections={collections} accounts={accounts} address={address} onClose={handleDrawerToggle} open={mobileOpen} />
+      <Sidebar view={view} setView={setView} account={accounts.length > 0 ? accounts[currentAccount] : false} loader={props.loader} logout={logout} login={login} collections={collections} currentAccount={currentAccount} accounts={accounts} onClose={handleDrawerToggle} open={mobileOpen} />
       <main className={classes.content}>      
         <div style={styles.root}>
           <Button className={classes.walletBtn} fullWidth variant={"contained"} onClick={handleDrawerToggle} color={"primary"} style={{fontWeight:"bold", margin:"0 auto"}}>View Wallet</Button>
           {view === false ?
-          <Listings identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
+          <Listings identity={identity} confirm={props.confirm} account={accounts.length > 0 ? accounts[currentAccount] : false} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
           {view !== false ?
-          <Wallet identity={identity} confirm={props.confirm} address={address} loggedIn={loggedIn} collections={collections} collection={view} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
+          <Wallet identity={identity} confirm={props.confirm} currentAccount={currentAccount} account={accounts.length > 0 ? accounts[currentAccount] : false} loggedIn={loggedIn} collections={collections} collection={view} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
         </div>
       </main>
     </>

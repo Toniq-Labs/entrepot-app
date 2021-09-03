@@ -1,6 +1,8 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -12,6 +14,7 @@ const _showListingPrice = n => {
 };
 export default function NFT(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -95,6 +98,8 @@ export default function NFT(props) {
                 <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
                 }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+                {props.nft.canister === "bxdf4-baaaa-aaaah-qaruq-cai" ?
+                <span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span> : ""}
               </div>
             </a>
             
@@ -106,10 +111,42 @@ export default function NFT(props) {
               {props.loggedIn ? 
               <Typography style={{fontSize: 12, textAlign:"center"}} color={"inherit"} gutterBottom>
                 {!props.nft.listing ?
-                <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Sell NFT</Button>
+                  <>
+                  
+                  {props.nft.canister !== "bxdf4-baaaa-aaaah-qaruq-cai" && props.nft.canister !== "qcg3w-tyaaa-aaaah-qakea-cai" ?
+                  <>
+                    <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
+                    <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
+                  </>: "" }
+                  
+                  {props.nft.canister === "qcg3w-tyaaa-aaaah-qakea-cai" ?
+                  <>
+                    <Button onClick={() => props.wrapAndlistNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
+                    <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
+                  </>: "" }
+                  
+                  {props.nft.canister === "bxdf4-baaaa-aaaah-qaruq-cai" ?
+                  <>
+                    <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
+                    <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
+                    <Menu
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={() => setAnchorEl(null)}
+                    >
+                      <MenuItem onClick={() => {setAnchorEl(null); props.transferNft(props.nft)}}>Transfer</MenuItem>
+                      <MenuItem onClick={() => {setAnchorEl(null); props.unwrapNft(props.nft)}}>Unwrap</MenuItem>
+                    </Menu>
+                  </>: ""}
+                  </>
                 : <>
                 <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Update</Button>
-                <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Cancel</Button>
+                <Button onClick={() => props.cancelNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Cancel</Button>
                 
                 </>}
               

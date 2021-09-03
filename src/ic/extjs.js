@@ -1,6 +1,7 @@
 /* global BigInt */
-import { Actor, HttpAgent, Principal } from "@dfinity/agent";  
-import { LEDGER_CANISTER_ID, GOVERNANCE_CANISTER_ID, NNS_CANISTER_ID, CYCLES_MINTING_CANISTER_ID, getCyclesTopupSubAccount, rosettaApi, principalToAccountIdentifier, toHexString, from32bits, to32bits, isHex, getSubAccountArray, fromHexString } from "./utils.js";
+import { Actor, HttpAgent } from "@dfinity/agent";  
+import { Principal } from "@dfinity/principal";  
+import { LEDGER_CANISTER_ID, GOVERNANCE_CANISTER_ID, NNS_CANISTER_ID, CYCLES_MINTING_CANISTER_ID, getCyclesTopupSubAccount, rosettaApi, principalToAccountIdentifier, toHexString, from32bits, to32bits, isHex, getSubAccountArray, fromHexString, validatePrincipal   } from "./utils.js";
 
 import ledgerIDL from './candid/ledger.did.js';
 import governanceIDL from './candid/governance.did.js';
@@ -8,6 +9,8 @@ import nnsIDL from './candid/nns.did.js';
 import hzldIDL from './candid/hzld.did.js'; //hardcode to hzld...
 import extIDL from './candid/ext.did.js';
 import advancedIDL from './candid/advanced.did.js';
+import wrapperIDL from './candid/wrapper.did.js';
+import icpunksIDL from './candid/icpunks.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -21,13 +24,13 @@ const tokenIdentifier = (principal, index) => {
   const padding = Buffer("\x0Atid");
   const array = new Uint8Array([
       ...padding,
-      ...Principal.fromText(principal).toBlob(),
+      ...Principal.fromText(principal).toUint8Array(),
       ...to32bits(index),
   ]);
-  return Principal.fromBlob(array).toText();
+  return Principal.fromUint8Array(array).toText();
 };
 const decodeTokenId = (tid) => {
-  var p = [...Principal.fromText(tid).toBlob()];
+  var p = [...Principal.fromText(tid).toUint8Array()];
   var padding = p.splice(0, 4);
   if (toHexString(padding) !== toHexString(Buffer("\x0Atid"))) {
     return {
@@ -38,7 +41,7 @@ const decodeTokenId = (tid) => {
   } else {
     return {
       index : from32bits(p.splice(-4)), 
-      canister : Principal.fromBlob(p).toText(),
+      canister : Principal.fromUint8Array(p).toText(),
       token : tid
     };
   }
@@ -62,6 +65,8 @@ class ExtConnection {
     [NNS_CANISTER_ID] : _preloadedIdls['nns'],
     "qz7gu-giaaa-aaaaf-qaaka-cai" : _preloadedIdls['hzld'],
     "kxh4l-cyaaa-aaaah-qadaq-cai" : advancedIDL,
+    "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
+    "qcg3w-tyaaa-aaaah-qakea-cai" : icpunksIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
@@ -118,7 +123,7 @@ class ExtConnection {
       }
     }
     if (!this._canisters.hasOwnProperty(cid)){
-      this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});
+      this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});        
     }
     return this._canisters[cid];
   }
@@ -148,28 +153,52 @@ class ExtConnection {
           }
         });
       },
-      getTokens : (aid) => {
+      getTokens : (aid, principal) => {
         return new Promise((resolve, reject) => {
-          if (typeof api.tokens_ext == 'undefined') reject("Not supported");
-          else {
-            try {
-              api.tokens_ext(aid).then(r => {
-                if (typeof r.ok != 'undefined') {
-                  resolve(r.ok.map(d => {
+          switch(tokenObj.canister) {
+            case "qcg3w-tyaaa-aaaah-qakea-cai":
+            case "jzg5e-giaaa-aaaah-qaqda-cai":
+              if (aid !== principalToAccountIdentifier(principal, 0)) {
+                resolve([]);
+              } else {
+                api.user_tokens(Principal.fromText(principal)).then(r => {
+                  resolve(r.map(x => {
                     return {
-                      index : d[0],
-                      id : tokenIdentifier(tokenObj.canister, d[0]),
-                      listing : d[1].length ? d[1][0] : false,
-                      metadata : d[2].length ? d[2][0] : false,
+                      id : tokenIdentifier(tokenObj.canister, Number(x)),
+                      canister : tokenObj.canister,
+                      index : Number(x),
+                      listing : false,
+                      metadata : false,
+                      wrapped : false,
                     }
                   }));
-                }else if (typeof r.err != 'undefined') reject(r.err)
-                else reject(r);
-              }).catch(reject);
-            } catch(e) {
-              reject(e);
-            };
-          };
+                });
+              }
+            break;
+            default:
+              if (typeof api.tokens_ext == 'undefined') reject("Not supported");
+              else {
+                try {
+                  api.tokens_ext(aid).then(r => {
+                    if (typeof r.ok != 'undefined') {
+                      resolve(r.ok.map(d => {
+                        return {
+                          index : d[0],
+                          id : tokenIdentifier(tokenObj.canister, d[0]),
+                          canister : tokenObj.canister,
+                          listing : d[1].length ? d[1][0] : false,
+                          metadata : d[2].length ? d[2][0] : false,
+                        }
+                      }));
+                    }else if (typeof r.err != 'undefined') reject(r.err)
+                    else reject(r);
+                  }).catch(reject);
+                } catch(e) {
+                  reject(e);
+                };
+              };
+            break;
+          }
         });
       },
       getMetadata : () => {
@@ -339,6 +368,17 @@ class ExtConnection {
               }).catch(reject);
               //Notify here
             break;
+            case "qcg3w-tyaaa-aaaah-qakea-cai":
+            case "jzg5e-giaaa-aaaah-qaqda-cai":
+              if (!validatePrincipal(to_user)) reject("ICPunks does no support traditional addresses, you must use a Principal");
+              api.transfer_to(Principal.fromText(to_user), tokenObj.index).then(b => {
+                if (b) {          
+                  resolve(true);
+                } else {
+                  reject("Something went wrong");
+                }
+              }).catch(reject);
+            break;
             case "qz7gu-giaaa-aaaaf-qaaka-cai":
               args = {
                 "to" : Principal.fromText(to_user), 
@@ -367,7 +407,7 @@ class ExtConnection {
               };
               api.transfer(args).then(b => {
                 if (typeof b.ok != 'undefined') {
-                  resolve(true);
+                  resolve(b.ok);
                 } else {
                   reject(JSON.stringify(b.err));
                 }
@@ -414,10 +454,14 @@ class ExtConnection {
   }
  
   _makeAgent() {
-    var args = {};
-    if (this._identity) args['identity'] = this._identity;
-    if (this._host) args['host'] = this._host;
-    this._agent = new HttpAgent(args);
+    if (window?.ic?.plug?.agent) {
+      this._agent = window.ic.plug.agent;
+    } else {
+      var args = {};
+      if (this._identity) args['identity'] = this._identity;
+      if (this._host) args['host'] = this._host;
+      this._agent = new HttpAgent(args);
+    }
   };
 };
 
@@ -426,6 +470,7 @@ const extjs = {
   decodeTokenId : decodeTokenId,
   encodeTokenId : tokenIdentifier,
   toAddress : principalToAccountIdentifier,
+  toSubaccount : getSubAccountArray,
 };
 export default extjs;
 //window.extjs = extjs.connect;
