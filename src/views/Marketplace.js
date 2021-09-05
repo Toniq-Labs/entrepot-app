@@ -120,8 +120,8 @@ export default function Marketplace(props) {
         c = Math.round(b * txcomm);
         try {
           if (b > txmin) {
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
-            await _api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), txfee);
+            _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
+            _api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), txfee);
           }
           await _api.canister(collections[j].canister).removePayments([payment]);
           console.log("Payment extracted successfully");
@@ -185,7 +185,7 @@ export default function Marketplace(props) {
     setAccounts([]);
   };
   const login = async (t) => {
-    props.loader(true);
+    props.loader(true, "Connecting your wallet...");
     try {
       switch(t) {
         case "stoic":
