@@ -140,7 +140,7 @@ export default function Listings(props) {
     } catch (e) {
       props.loader(false);
       console.log(e);
-      props.alert("There was an error", e.Other ?? "You may need to disable cookies or try a different browser");
+      props.alert("There was an error", e.Other ?? "You may need to enable cookies or try a different browser");
     };
   };
   const applyFilters = a => {
