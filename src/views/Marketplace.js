@@ -17,42 +17,49 @@ const collections = [
     name : "Cronic Critters",
     mature : false,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb : (<>Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics  incorporates breeding mechanics, wearable NFTs and a p2e minigame ecosystem and more. Join the <a href="https://t.me/cronic_fun" target="_blank" rel="noreferrer">Telegram group</a> or read more on <a href="https://toniqlabs.medium.com/cronics-breeding-and-supply-604fa374776d" target="_blank" rel="noreferrer">Medium</a></>)
   },
   {
     canister : "nbg4r-saaaa-aaaah-qap7a-cai",
     name : "Starverse",
     mature : false,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb:false,
   },
   {
     canister : "bxdf4-baaaa-aaaah-qaruq-cai",
     name : "ICPunks",
     mature : false,
     comaddress : "38bc2ce470085db3a3223806e61946f645106915a0a7da8fa9368969db7a3264",
+    blurb : (<>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer! You can wrap and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></>)
   },
   {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb:false,
   },
   {
     canister : "tde7l-3qaaa-aaaah-qansa-cai",
     name : "Cronic Wearables",
     mature : false,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb:false,
   },
   {
     canister : "gevsk-tqaaa-aaaah-qaoca-cai",
     name : "ICmojis",
     mature : false,
     comaddress : "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",
+    blurb:false,
   },
   {
     canister : "owuqd-dyaaa-aaaah-qapxq-cai",
     name : "ICPuzzle",
     mature : true,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb:false,
   },
 ];
 function useInterval(callback, delay) {
@@ -119,11 +126,13 @@ export default function Marketplace(props) {
         b = Number(await api.token().getBalance(a));
         c = Math.round(b * txcomm);
         try {
+          var txs = [];
           if (b > txmin) {
-            _api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee);
-            _api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), txfee);
+            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee));
+            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), txfee));
           }
-          await _api.canister(collections[j].canister).removePayments([payment]);
+          await Promise.all(txs);
+          await _api.canister(collections[j].canister).removePayments([payment]);          
           console.log("Payment extracted successfully");
         } catch (e) {
           console.log(e);
@@ -187,9 +196,10 @@ export default function Marketplace(props) {
   const login = async (t) => {
     props.loader(true, "Connecting your wallet...");
     try {
+      var id;
       switch(t) {
         case "stoic":
-            var id = await StoicIdentity.connect();
+            id = await StoicIdentity.connect();
             if (id) {
               setIdentity(id);
               id.accounts().then(accs => {
@@ -198,7 +208,7 @@ export default function Marketplace(props) {
               setCurrentAccount(0);
               localStorage.setItem("_loginType", t);
             } else {
-              throw "Failed to connect to your wallet";
+              throw new Error("Failed to connect to your wallet");
             }
         break;
         case "plug":
@@ -206,7 +216,7 @@ export default function Marketplace(props) {
             whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
           });
           if (result) {
-            var id = await window.ic.plug.agent._identity;
+            id = await window.ic.plug.agent._identity;
             setIdentity(id);
             setAccounts([{
               name : "PlugWallet",
@@ -215,8 +225,10 @@ export default function Marketplace(props) {
             setCurrentAccount(0);
             localStorage.setItem("_loginType", t);
           } else {
-            throw "Failed to connect to your wallet";
+            throw new Error("Failed to connect to your wallet");
           }
+        break;
+        default:
         break;
       };
     } catch (e) {
@@ -260,6 +272,8 @@ export default function Marketplace(props) {
               
             }
           })();
+        break;
+        default:
         break;
       }
     }

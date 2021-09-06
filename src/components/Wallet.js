@@ -94,7 +94,7 @@ export default function Wallet(props) {
         var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).token(token.id).transfer(props.identity.getPrincipal().toText(), props.currentAccount, "bxdf4-baaaa-aaaah-qaruq-cai", BigInt(1), BigInt(0), "00", false);
         if (!r2) return error("There was an error wrapping this NFT!");
         props.loader(true, "Wrapping NFT...");
-        var r3 = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").mint(token.id);
+        await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").mint(token.id);
         if (!r) return error("There was an error wrapping this NFT!");
         props.loader(true, "Loading NFTs...");
         await refresh();

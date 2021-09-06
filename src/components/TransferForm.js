@@ -1,4 +1,3 @@
-/* global BigInt */
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -12,9 +11,6 @@ import Alert from '@material-ui/lab/Alert';
 export default function TransferForm(props) {
   const [address, setAddress] = React.useState("");
         
-  const error = (e) => {
-    props.error(e);
-  }
   const _submit = () => {
     //Validate address
     handleClose();
