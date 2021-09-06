@@ -60,7 +60,7 @@ export default function Listings(props) {
   const [showing, setShowing] = React.useState('all');
   const [wearableFilter, setWearableFilter] = React.useState('all');
   //const [collection, setCollection] = React.useState('nbg4r-saaaa-aaaah-qap7a-cai');
-  const [collection, setCollection] = React.useState('bxdf4-baaaa-aaaah-qaruq-cai');
+  const [collection, setCollection] = React.useState('e3izy-jiaaa-aaaah-qacbq-cai');
   const [buyFormData, setBuyFormData] = React.useState(emptyListing); 
   const [showBuyForm, setShowBuyForm] = React.useState(false);
 
@@ -118,12 +118,10 @@ export default function Listings(props) {
         return props.loader(false);
       };
       props.loader(true, "Locking NFT...");
-      console.log("Locking NFT");
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api.canister(collection).lock(tokenid, listing[1].price, props.account.address, _getRandomBytes());
       if (r.hasOwnProperty("err")) throw r.err;
       var paytoaddress = r.ok;
-      console.log("Transferring ICP...");
       props.loader(true, "Transferring ICP...");
       await api.token().transfer(props.identity.getPrincipal(), 0, paytoaddress, listing[1].price, 10000);
       var r3;
