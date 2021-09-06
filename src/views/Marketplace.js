@@ -10,12 +10,12 @@ import Sidebar from '../components/Sidebar';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
 const txmin = 100000;
-const txcomm = 0.015;
 const collections = [
   {
     canister : "e3izy-jiaaa-aaaah-qacbq-cai",
     name : "Cronic Critters",
     mature : false,
+    commission : 0.015,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb : (<>Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics  incorporates breeding mechanics, wearable NFTs and a p2e minigame ecosystem and more. Join the <a href="https://t.me/cronic_fun" target="_blank" rel="noreferrer">Telegram group</a> or read more on <a href="https://toniqlabs.medium.com/cronics-breeding-and-supply-604fa374776d" target="_blank" rel="noreferrer">Medium</a></>)
   },
@@ -23,6 +23,7 @@ const collections = [
     canister : "nbg4r-saaaa-aaaah-qap7a-cai",
     name : "Starverse",
     mature : false,
+    commission : 0.015,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb:false,
   },
@@ -30,13 +31,15 @@ const collections = [
     canister : "bxdf4-baaaa-aaaah-qaruq-cai",
     name : "ICPunks",
     mature : false,
-    comaddress : "38bc2ce470085db3a3223806e61946f645106915a0a7da8fa9368969db7a3264",
+    commission : 0.03,
+    comaddress : "c47942416fa8e7151f679d57a6b2d2e01a92fecd5e6f9ac99f6db548ea4f37aa",
     blurb : (<>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer! You can wrap and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></>)
   },
   {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,
+    commission : 0.015,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb:false,
   },
@@ -44,6 +47,7 @@ const collections = [
     canister : "tde7l-3qaaa-aaaah-qansa-cai",
     name : "Cronic Wearables",
     mature : false,
+    commission : 0.015,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb:false,
   },
@@ -51,6 +55,7 @@ const collections = [
     canister : "gevsk-tqaaa-aaaah-qaoca-cai",
     name : "ICmojis",
     mature : false,
+    commission : 0.015,
     comaddress : "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",
     blurb:false,
   },
@@ -58,6 +63,7 @@ const collections = [
     canister : "owuqd-dyaaa-aaaah-qapxq-cai",
     name : "ICPuzzle",
     mature : true,
+    commission : 0.015,
     comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb:false,
   },
@@ -95,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+var processingPayments = false, processingRefunds = false;
 export default function Marketplace(props) {
   const [identity, setIdentity] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
@@ -103,7 +110,6 @@ export default function Marketplace(props) {
   const [currentAccount, setCurrentAccount] = React.useState(0);
   const [view, setView] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -113,6 +119,8 @@ export default function Marketplace(props) {
     await processRefunds();
   };
   const processPayments = async () => {
+    if (processingPayments) return;
+    processingPayments = true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
     for(var j = 0; j < collections.length; j++){
       var payments = await _api.canister(collections[j].canister).payments();
@@ -124,7 +132,7 @@ export default function Marketplace(props) {
         payment = payments[0][i];
         a = extjs.toAddress(identity.getPrincipal().toText(), payment);
         b = Number(await api.token().getBalance(a));
-        c = Math.round(b * txcomm);
+        c = Math.round(b * collections[j].commission);
         try {
           var txs = [];
           if (b > txmin) {
@@ -139,8 +147,11 @@ export default function Marketplace(props) {
         };
       };
     };
+    processingPayments = false;
   };
   const processRefunds = async () => {
+    if (processingRefunds) return;
+    processingRefunds = true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
     for(var j = 0; j < collections.length; j++){
       var refunds = await _api.canister(collections[j].canister).refunds();
@@ -162,6 +173,7 @@ export default function Marketplace(props) {
         } catch (e) {};
       };
     };
+    processingRefunds = false;
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -237,7 +249,7 @@ export default function Marketplace(props) {
     props.loader(false);
   };
   
-  useInterval(_updates, 30 *1000);
+  useInterval(_updates, 60 *1000);
   React.useEffect(() => {
     var t = localStorage.getItem("_loginType");
     if (t) {

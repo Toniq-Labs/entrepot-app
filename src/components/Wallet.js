@@ -137,7 +137,6 @@ export default function Wallet(props) {
     };
   };
   const list = async (id, price) => {
-    console.log(id, price);
     //Submit to blockchain here
     props.loader(true);
     const api = extjs.connect("https://boundary.ic0.app/", props.identity);
@@ -309,7 +308,7 @@ export default function Wallet(props) {
         (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </>
       <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
-      <ListingForm list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <ListingForm collection={props.collection.canister} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
     </>
   )
 }

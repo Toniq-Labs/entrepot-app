@@ -36,7 +36,7 @@ export default function Create(props) {
         <Grid item md={3}>
           <img style={{width:100}} alt="Low Fees" src="/icon/fee.png" />
           <h2>Low Fees</h2>
-          <p style={{fontSize:"1.1em"}}>We charge a 0.5% marketplace fee, and collection creators can charge a 1.0% for a total fee of <strong>1.5%</strong></p>
+          <p style={{fontSize:"1.1em"}}>We charge a <strong>0.5%</strong> Marketplace fee, and collection creators can charge a Royalty fee of up to <strong>2.5%</strong></p>
         </Grid>
         <Grid item md={3}>
           <img style={{width:100}} alt="Low Fees" src="/icon/wallet.png" />

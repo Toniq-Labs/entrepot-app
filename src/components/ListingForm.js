@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Alert from '@material-ui/lab/Alert';
 
 export default function ListingForm(props) {
   const [price, setPrice] = React.useState(props.nft.price);
@@ -19,7 +20,7 @@ export default function ListingForm(props) {
   }
   const save = () => {
     if (price < 0.01) return error("Min sale amount is 0.01 ICP"); 
-    _submit(BigInt(price*(10**8)));
+    _submit(BigInt(Math.floor(price*(10**8))));
   };
   const _submit = p => {
     //Submit to blockchain here
@@ -40,10 +41,14 @@ export default function ListingForm(props) {
       <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth >
         <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Marketplace Listing</DialogTitle>
         <DialogContent>
-        {props.nft.price === 0 ?
-        <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter a price below to create a new marketplace listing. Once you save the listing, it becomes available to the public. There is a 1.5% commission fee on all sales</DialogContentText> : ""}
+        {!props.nft.price ?
+        <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter a price below to create a new marketplace listing. Once you save the listing, it becomes available to the public.</DialogContentText> : ""}
          {props.nft.price > 0 ?
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Use the form to update the price of your listing, or Cancel the listing below</DialogContentText> : ""}
+        {props.collection === "bxdf4-baaaa-aaaah-qaruq-cai" ?
+          <Alert severity="warning"><strong>3%</strong> of the sale price will be deducted <strong>once sold</strong>. This is made of up a <strong>2.5% Royalty fee</strong> for the Creators, and a <strong>0.5% Marketplace fee</strong></Alert> :
+          <Alert severity="warning"><strong>1.5%</strong> of the sale price will be deducted <strong>once sold</strong>. This is made of up a <strong>1% Royalty fee</strong> for the Creators, and a <strong>0.5% Marketplace fee</strong></Alert> 
+        }
           <TextField
             style={{width:'100%'}}
             margin="dense"
