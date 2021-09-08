@@ -11,6 +11,7 @@ import extIDL from './candid/ext.did.js';
 import advancedIDL from './candid/advanced.did.js';
 import wrapperIDL from './candid/wrapper.did.js';
 import icpunksIDL from './candid/icpunks.did.js';
+import logIDL from './candid/log.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -67,6 +68,7 @@ class ExtConnection {
     "kxh4l-cyaaa-aaaah-qadaq-cai" : advancedIDL,
     "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
     "qcg3w-tyaaa-aaaah-qakea-cai" : icpunksIDL,
+    "qgsqp-byaaa-aaaah-qbi4q-cai" : logIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {

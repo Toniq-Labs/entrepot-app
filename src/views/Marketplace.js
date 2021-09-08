@@ -225,7 +225,7 @@ export default function Marketplace(props) {
         break;
         case "plug":
           const result = await window.ic.plug.requestConnect({
-            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
+            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
           });
           if (result) {
             id = await window.ic.plug.agent._identity;
@@ -272,7 +272,7 @@ export default function Marketplace(props) {
             if (connected){
               if (!window.ic.plug.agent) {
                 await window.ic.plug.createAgent({
-                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai"]
+                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
                 })
               }
               var id = await window.ic.plug.agent._identity;
@@ -294,6 +294,7 @@ export default function Marketplace(props) {
   }, []);
   React.useEffect(() => {
     if (identity) {
+      extjs.connect("https://boundary.ic0.app/", identity).canister("qgsqp-byaaa-aaaah-qbi4q-cai").log();
       setLoggedIn(true);
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
     } else {
