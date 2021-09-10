@@ -44,6 +44,14 @@ const collections = [
     blurb:(<>IC Drip are randomly generated meta-commerce shopping carts for outfits and personas stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use IC Drip in any way you want. <a href="https://dvr6e-lqaaa-aaaai-qam5a-cai.raw.ic0.app/" target="_blank" rel="noreferrer">IC Drip Website</a></>),
   },
   {
+    canister : "73xld-saaaa-aaaah-qbjya-cai",
+    name : "Wing",
+    mature : false,
+    commission : 0.02,
+    comaddress : "1d978f4f38d19dca4218832e856c956678de0aa470cd492f5d8ac4377db6f2a2",
+    blurb:(<>To escape from containment and restriction, releasing the stressors held so long in the body, Wings’s ego is jettisoned as she explores a more fundamental form of existence, expressing her humanity in this elemental piece.<br />She is framed within the themes of air, water, to take flight on chalky cliff tops overlooking distant horizons, to express the existential freedom that lives within. No borders.<br />And so through this series I invite the viewer to celebrate their own sovereignty of consciousness; to be bold as we emerge from our cocoons and open ourselves up to the world and each other again.</>),
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,

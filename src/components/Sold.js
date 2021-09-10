@@ -48,6 +48,7 @@ export default function Sold(props) {
   };
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return index;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return index;
     else return index+1;
   }
   const nftImg = () => {

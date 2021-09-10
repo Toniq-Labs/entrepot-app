@@ -57,6 +57,7 @@ export default function Listing(props) {
   };
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return props.listing[0];
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return props.listing[0];
     else return props.listing[0]+1;
   }
   const nftImg = () => {

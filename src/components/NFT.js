@@ -48,6 +48,7 @@ export default function NFT(props) {
   };
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return props.nft.index;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return props.nft.index;
     else return props.nft.index+1;
   }
   const nftImg = () => {
