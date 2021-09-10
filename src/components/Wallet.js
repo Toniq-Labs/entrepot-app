@@ -36,7 +36,10 @@ function useInterval(callback, delay) {
 }
 
 
-
+const canisterMap= {
+  "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
+  "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
+};
 export default function Wallet(props) {
   const [nfts, setNfts] = React.useState(false);
   const [page, setPage] = React.useState(1);
@@ -67,8 +70,10 @@ export default function Wallet(props) {
   }
   const unwrapNft = async (token) => {
     props.loader(true, "Unwrapping NFT...");
+    var canister = extjs.decodeTokenId(token.id).canister;
+    console.log(canister);
     //hot api, will sign as identity - BE CAREFUL
-    var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").unwrap(token.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
+    var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister(canister).unwrap(token.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
     if (!r) {
       props.loader(false);
       return props.error("Couldn't unwrap!");
@@ -85,24 +90,25 @@ export default function Wallet(props) {
   const wrapAndlistNft = async (token) => {
     var v = await props.confirm("We need to wrap this", "You are trying to list a non-compatiable NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
     if (v) {
+      var canister = canisterMap[extjs.decodeTokenId(token.id).canister];
+      console.log(canister);
       props.loader(true, "Creating wrapper...this may take a few minutes");
       try{
-        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").wrap(token.id);
+        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister(canister).wrap(token.id);
         if (!r) return error("There was an error wrapping this NFT!");
         props.loader(true, "Sending NFT to wrapper...");
         //var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("qcg3w-tyaaa-aaaah-qakea-cai").transfer_to(props.identity.getPrincipal(), token.id);
-        var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).token(token.id).transfer(props.identity.getPrincipal().toText(), props.currentAccount, "bxdf4-baaaa-aaaah-qaruq-cai", BigInt(1), BigInt(0), "00", false);
+        var r2 = await extjs.connect("https://boundary.ic0.app/", props.identity).token(token.id).transfer(props.identity.getPrincipal().toText(), props.currentAccount, canister, BigInt(1), BigInt(0), "00", false);
         if (!r2) return error("There was an error wrapping this NFT!");
         props.loader(true, "Wrapping NFT...");
-        await extjs.connect("https://boundary.ic0.app/", props.identity).canister("bxdf4-baaaa-aaaah-qaruq-cai").mint(token.id);
+        await extjs.connect("https://boundary.ic0.app/", props.identity).canister(canister).mint(token.id);
         if (!r) return error("There was an error wrapping this NFT!");
         props.loader(true, "Loading NFTs...");
         await refresh();
         props.loader(false);
         //New token id
-        console.log(token);
-        token.id = extjs.encodeTokenId("bxdf4-baaaa-aaaah-qaruq-cai", token.index);
-        token.canister = "bxdf4-baaaa-aaaah-qaruq-cai";
+        token.id = extjs.encodeTokenId(canister, token.index);
+        token.canister = canister;
         token.wrapped = true;
         console.log(token);
         listNft(token);
@@ -171,6 +177,9 @@ export default function Wallet(props) {
     if (c === "bxdf4-baaaa-aaaah-qaruq-cai") {
       nfts = nfts.map(a => {a.wrapped = true; return a});
       nfts = nfts.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+    }else if (c === "3db6u-aiaaa-aaaah-qbjbq-cai") {
+      nfts = nfts.map(a => {a.wrapped = true; return a});
+      nfts = nfts.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
     };
     setNfts(applyFilters(nfts)); 
   }

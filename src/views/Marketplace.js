@@ -36,6 +36,14 @@ const collections = [
     blurb : (<>Are you down with the clown? Get your hands on the latest NFT to hit the Internet Computer! You can wrap and trade them on the Marketplace! <strong>Wrapped ICPunks are 1:1 wrapped versions of actual ICPunks</strong> - you can read more about how to wrap, unwrap, and how safe it is <a href="https://medium.com/@toniqlabs/wrapped-nfts-8c91fd3a4c1" target="_blank" rel="noreferrer">here</a></>)
   },
   {
+    canister : "3db6u-aiaaa-aaaah-qbjbq-cai",
+    name : "IC Drip",
+    mature : false,
+    commission : 0.015,
+    comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb:(<>IC Drip are randomly generated meta-commerce shopping carts for outfits and personas stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use IC Drip in any way you want. <a href="https://dvr6e-lqaaa-aaaai-qam5a-cai.raw.ic0.app/" target="_blank" rel="noreferrer">IC Drip Website</a></>),
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,
@@ -225,7 +233,7 @@ export default function Marketplace(props) {
         break;
         case "plug":
           const result = await window.ic.plug.requestConnect({
-            whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
+            whitelist : [...collections.map(a => a.canister), "d3ttm-qaaaa-aaaai-qam4a-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
           });
           if (result) {
             id = await window.ic.plug.agent._identity;
@@ -260,7 +268,6 @@ export default function Marketplace(props) {
               //ID is a already connected wallet!
               setIdentity(identity);
               identity.accounts().then(accs => {
-                console.log(JSON.parse(accs));
                 setAccounts(JSON.parse(accs));
               });
             }
@@ -272,7 +279,7 @@ export default function Marketplace(props) {
             if (connected){
               if (!window.ic.plug.agent) {
                 await window.ic.plug.createAgent({
-                  whitelist : [...collections.map(a => a.canister), "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
+                  whitelist : [...collections.map(a => a.canister), "d3ttm-qaaaa-aaaai-qam4a-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "ryjl3-tyaaa-aaaaa-aaaba-cai", "qgsqp-byaaa-aaaah-qbi4q-cai"]
                 })
               }
               var id = await window.ic.plug.agent._identity;

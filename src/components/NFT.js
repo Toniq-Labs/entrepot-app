@@ -52,13 +52,45 @@ export default function NFT(props) {
   }
   const nftImg = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
     else return "https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + props.nft.id;
   };
   const nftLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
     return "https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id;
   };
-
+  const wrappedCanisters = ["3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
+  const unwrappedCanisters = ["qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
+  const showWrapped = () => {
+    if (wrappedCanisters.indexOf(props.nft.canister) >= 0)
+      return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span>);
+    else return "";
+  };
+  const showNri = () => {
+    switch(props.collection){
+      case "e3izy-jiaaa-aaaah-qacbq-cai":
+      return (<Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid>);
+      case "nbg4r-saaaa-aaaah-qap7a-cai":
+      return (<Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid>);
+      case "bxdf4-baaaa-aaaah-qaruq-cai":
+      return (<Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific ICPunk relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + mintNumber()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid>);
+      default:
+      return "";
+    }
+  };
   
   return (
     <Grid style={{height:'100%'}} item xl={2} lg={3} md={4} sm={6} xs={6}>
@@ -70,24 +102,8 @@ export default function NFT(props) {
                   <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">{"#"+(mintNumber())}</a></Tooltip>
                 </Typography>
               </Grid>
-              {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ?
-              <Grid item md={6} sm={6} xs={6}>
-                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
-                </Typography>
-              </Grid> : ""}
-              {props.collection === "nbg4r-saaaa-aaaah-qap7a-cai" ?
-              <Grid item md={6} sm={6} xs={6}>
-                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
-                </Typography>
-              </Grid> : ""}
-              {props.collection === "bxdf4-baaaa-aaaah-qaruq-cai" ?
-              <Grid item md={6} sm={6} xs={6}>
-                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific ICPunk relative to others. It does not include Mint # or Twin Status as factors in this index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + mintNumber()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
-                </Typography>
-              </Grid> : ""}
+
+              {showNri()}
             </Grid>
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
@@ -98,8 +114,7 @@ export default function NFT(props) {
                 <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
                 }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
-                {props.nft.canister === "bxdf4-baaaa-aaaah-qaruq-cai" ?
-                <span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span> : ""}
+                {showWrapped()}
               </div>
             </a>
             
@@ -113,19 +128,19 @@ export default function NFT(props) {
                 {!props.nft.listing ?
                   <>
                   
-                  {props.nft.canister !== "bxdf4-baaaa-aaaah-qaruq-cai" && props.nft.canister !== "qcg3w-tyaaa-aaaah-qakea-cai" ?
+                  {wrappedCanisters.concat(unwrappedCanisters).indexOf(props.nft.canister) < 0 ?
                   <>
                     <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
                     <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
                   </>: "" }
                   
-                  {props.nft.canister === "qcg3w-tyaaa-aaaah-qakea-cai" ?
+                  {unwrappedCanisters.indexOf(props.nft.canister) >= 0 ?
                   <>
                     <Button onClick={() => props.wrapAndlistNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
                     <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
                   </>: "" }
                   
-                  {props.nft.canister === "bxdf4-baaaa-aaaah-qaruq-cai" ?
+                  {wrappedCanisters.indexOf(props.nft.canister) >= 0 ?
                   <>
                     <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
                     <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>

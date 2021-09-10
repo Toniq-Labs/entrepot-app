@@ -12,6 +12,7 @@ import advancedIDL from './candid/advanced.did.js';
 import wrapperIDL from './candid/wrapper.did.js';
 import icpunksIDL from './candid/icpunks.did.js';
 import logIDL from './candid/log.did.js';
+import icdripIDL from './candid/icdrip.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -69,6 +70,8 @@ class ExtConnection {
     "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
     "qcg3w-tyaaa-aaaah-qakea-cai" : icpunksIDL,
     "qgsqp-byaaa-aaaah-qbi4q-cai" : logIDL,
+    "d3ttm-qaaaa-aaaai-qam4a-cai" : icdripIDL,
+    "3db6u-aiaaa-aaaah-qbjbq-cai" : wrapperIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
@@ -160,6 +163,7 @@ class ExtConnection {
           switch(tokenObj.canister) {
             case "qcg3w-tyaaa-aaaah-qakea-cai":
             case "jzg5e-giaaa-aaaah-qaqda-cai":
+            case "d3ttm-qaaaa-aaaai-qam4a-cai":
               if (aid !== principalToAccountIdentifier(principal, 0)) {
                 resolve([]);
               } else {
@@ -375,7 +379,8 @@ class ExtConnection {
             break;
             case "qcg3w-tyaaa-aaaah-qakea-cai":
             case "jzg5e-giaaa-aaaah-qaqda-cai":
-              if (!validatePrincipal(to_user)) reject("ICPunks does no support traditional addresses, you must use a Principal");
+            case "d3ttm-qaaaa-aaaai-qam4a-cai":
+              if (!validatePrincipal(to_user)) reject("This does not support traditional addresses, you must use a Principal");
               api.transfer_to(Principal.fromText(to_user), tokenObj.index).then(b => {
                 if (b) {          
                   resolve(true);
