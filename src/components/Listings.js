@@ -241,7 +241,7 @@ export default function Listings(props) {
               <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
               {showing === "all" && ["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
-              { ["bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
+              { ["3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
               {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
               {showing === "sold" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""}
             </Select>
