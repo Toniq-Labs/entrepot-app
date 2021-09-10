@@ -52,10 +52,12 @@ export default function Sold(props) {
   }
   const nftImg = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
-    else return "https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
+    return "https://"+props.collection+".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
   };
   const nftLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
     return "https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid;
   };
   return (
