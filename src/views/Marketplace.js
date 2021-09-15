@@ -152,11 +152,10 @@ export default function Marketplace(props) {
         try {
           var txs = [];
           if (b > txmin) {
-            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), txfee));
-            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), txfee));
+            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, address, BigInt(b-(txfee + c)), BigInt(txfee)));
+            txs.push(_api.token().transfer(identity.getPrincipal().toText(), payment, collections[j].comaddress, BigInt(c-txfee), BigInt(txfee)));
           }
           await Promise.all(txs);
-          await _api.canister(collections[j].canister).removePayments([payment]);          
           console.log("Payment extracted successfully");
         } catch (e) {
           console.log(e);
