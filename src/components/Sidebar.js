@@ -24,7 +24,25 @@ import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
 
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 const api = extjs.connect("https://boundary.ic0.app/");
 const drawerWidth = 300;
 
@@ -95,18 +113,18 @@ export default function Sidebar(props) {
       setMyCollections(mcs);
     }
   };
+  useInterval(refresh, 30 *1000);
   React.useEffect(() => {
     refresh();
-    if (intv) clearInterval(intv);
-    intv = setInterval(refresh, 30 *1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     refresh();
-    if (intv) clearInterval(intv);
-    intv = setInterval(refresh, 30 *1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
+  React.useEffect(() => {
+    props.setBalance(balance);
+  }, [balance]);
   
   const accountsList = (
     <div style={{marginTop:73, marginBottom: 100}}>

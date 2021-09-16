@@ -110,6 +110,7 @@ export default function Listings(props) {
     refresh(event.target.value);
   };
   const buy = async (collection, listing) => {
+    if (props.balance < (listing[1].price + 10000n)) return props.alert("There was an error", "Your balance is insufficient to complete this transaction");
     var tokenid = extjs.encodeTokenId(collection, listing[0])
     try {
       var img = (collection === "bxdf4-baaaa-aaaah-qaruq-cai" ? "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/"+listing[0] : "https://" + collection + ".raw.ic0.app/?tokenid="+tokenid);

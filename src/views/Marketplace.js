@@ -122,6 +122,7 @@ export default function Marketplace(props) {
   const [identity, setIdentity] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [address, setAddress] = React.useState(false);
+  const [balance, setBalance] = React.useState(0);
   const [accounts, setAccounts] = React.useState(false);
   const [currentAccount, setCurrentAccount] = React.useState(0);
   const [view, setView] = React.useState(false);
@@ -321,12 +322,12 @@ export default function Marketplace(props) {
   
   return (
     <>
-      <Sidebar identity={identity} view={view} setView={setView} account={accounts.length > 0 ? accounts[currentAccount] : false} loader={props.loader} logout={logout} login={login} collections={collections} currentAccount={currentAccount} accounts={accounts} onClose={handleDrawerToggle} open={mobileOpen} />
+      <Sidebar setBalance={setBalance} identity={identity} view={view} setView={setView} account={accounts.length > 0 ? accounts[currentAccount] : false} loader={props.loader} logout={logout} login={login} collections={collections} currentAccount={currentAccount} accounts={accounts} onClose={handleDrawerToggle} open={mobileOpen} />
       <main className={classes.content}>      
         <div style={styles.root}>
           <Button className={classes.walletBtn} fullWidth variant={"contained"} onClick={handleDrawerToggle} color={"primary"} style={{fontWeight:"bold", margin:"0 auto"}}>View Wallet</Button>
           {view === false ?
-          <Listings identity={identity} confirm={props.confirm} account={accounts.length > 0 ? accounts[currentAccount] : false} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
+          <Listings balance={balance} identity={identity} confirm={props.confirm} account={accounts.length > 0 ? accounts[currentAccount] : false} loggedIn={loggedIn} collections={collections} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
           {view !== false ?
           <Wallet identity={identity} confirm={props.confirm} currentAccount={currentAccount} account={accounts.length > 0 ? accounts[currentAccount] : false} loggedIn={loggedIn} collections={collections} collection={view} loader={props.loader} alert={props.alert} error={props.error}  />: "" }
         </div>
