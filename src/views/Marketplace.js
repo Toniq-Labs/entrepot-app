@@ -52,6 +52,14 @@ const collections = [
     blurb:(<>To escape from containment and restriction, releasing the stressors held so long in the body, Wings’s ego is jettisoned as she explores a more fundamental form of existence, expressing her humanity in this elemental piece.<br />She is framed within the themes of air, water, to take flight on chalky cliff tops overlooking distant horizons, to express the existential freedom that lives within. No borders.<br />And so through this series I invite the viewer to celebrate their own sovereignty of consciousness; to be bold as we emerge from our cocoons and open ourselves up to the world and each other again.</>),
   },
   {
+    canister : "kss7i-hqaaa-aaaah-qbvmq-cai",
+    name : "ICelebrity",
+    mature : false,
+    commission : 0.03,
+    comaddress : "8b6840cb0e67738e69dbb6d79a3963f7bd93c35f593a393be5cc39cd59ed993e",
+    blurb:false,
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,
