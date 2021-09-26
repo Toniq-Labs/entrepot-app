@@ -60,6 +60,14 @@ const collections = [
     blurb:false,
   },
   {
+    canister : "k4qsa-4aaaa-aaaah-qbvnq-cai",
+    name : "Faceted Meninas",
+    mature : false,
+    commission : 0.015,
+    comaddress : "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
+    blurb:(<>Faceted Meninas is a creature species that holds the power of the universe to act as a magic pillar giving their allies the essence of outer worlds to maximize their powers.</>),
+  },
+  {
     canister : "uzhxd-ziaaa-aaaah-qanaq-cai",
     name : "ICP News",
     mature : false,
@@ -88,7 +96,7 @@ const collections = [
     name : "ICPuzzle",
     mature : true,
     commission : 0.015,
-    comaddress : "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    comaddress : "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
     blurb:false,
   },
 ];
