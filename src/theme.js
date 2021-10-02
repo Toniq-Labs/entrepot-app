@@ -1,40 +1,40 @@
-import { red } from '@material-ui/core/colors';
-import { createTheme  } from '@material-ui/core/styles';
+import { red } from "@material-ui/core/colors";
+import { createTheme } from "@material-ui/core/styles";
 
 // A custom theme for this app
-const theme = createTheme ({
+const theme = createTheme({
   typography: {
-    //fontFamily: "'Poppins', sans-serif",
+    fontFamily: "Poppins",
   },
   palette: {
     primary: {
-      main: '#00d092',
+      main: "#00d092",
     },
     secondary: {
-      main: '#00b894',
+      main: "#00b894",
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#fafafa',
+      default: "#fafafa",
     },
   },
   overrides: {
     MuiIconButton: {
-      label : {
-        color : "#00b894"
-      }
+      label: {
+        color: "#00b894",
+      },
     },
     MuiAvatar: {
       colorDefault: {
-        backgroundColor : '#00b894',
-        color : 'white'
+        backgroundColor: "#00b894",
+        color: "white",
       },
     },
     MuiListItemIcon: {
       root: {
-        color : '#00b894'
+        color: "#00b894",
       },
     },
   },
