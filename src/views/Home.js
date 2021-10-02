@@ -60,7 +60,7 @@ export default function Home(props) {
   <div style={{width:"100%", display:"block", position:"relative"}}>
     <div style={{maxWidth:1200, margin:"120px auto 0px", paddingBottom:200}}>
       <div className={classes.banner}>
-        <img alt="starverse" className={classes.bannerimg} src="/banner/starverse.png" />
+        <img alt="starverse" className={classes.bannerimg} src="/banner/puppies.png" />
         <img alt="anchor" className={classes.anchor} src="/icon/anchor.png" />
       </div>
       <h1 className={classes.heading}>Welcome to Entrepot</h1>
