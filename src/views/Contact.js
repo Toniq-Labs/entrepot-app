@@ -24,9 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   heading: {
-    [theme.breakpoints.down("sm")]: {
-      textAlign: "center",
-    },
+    textAlign: "center",
   },
   footer: {
     textAlign: "center",

@@ -138,7 +138,7 @@ const collections = [
   {
     canister: "k4qsa-4aaaa-aaaah-qbvnq-cai",
     name: "Faceted Meninas",
-    route: "facetedmeninas",
+    route: "faceted-meninas",
     mature: false,
     commission: 0.015,
     comaddress:
@@ -155,7 +155,7 @@ const collections = [
     canister: "uzhxd-ziaaa-aaaah-qanaq-cai",
     name: "ICP News",
     mature: false,
-    route: "icpnews",
+    route: "icp-news",
     commission: 0.015,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
@@ -164,7 +164,7 @@ const collections = [
   {
     canister: "tde7l-3qaaa-aaaah-qansa-cai",
     name: "Cronic Wearables",
-    route: "cronicwearables",
+    route: "wearables",
     mature: false,
     commission: 0.015,
     comaddress:

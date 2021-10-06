@@ -111,37 +111,37 @@ export default function Home(props) {
             justifyContent="center"
             alignItems="center"
           >
-            {/*<Grid item md={4}>
-          <Card className={classes.root}>
-            <CardMedia
-              className={classes.media}
-              image="/collections/cronic-wearables.jpg"
-              title="Cronic Wearables"
-            />
-            <CardContent>
-              <h3>Cronic Wearables</h3>
-              <Typography variant="body1" color="textSecondary" component="p">
-                We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item md={4} style={{marginBottom:20}}>
-          <Card className={classes.root}>
-            <CardMedia
-              className={classes.media}
-              image="/collections/icmojis.jpg"
-              title="ICmojis"
-            />
-            <CardContent>
-              <h3>ICmojis</h3>
-              <Typography variant="body1" color="textSecondary" component="p">
-                Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>*/}
-            <Grid item md={4} style={{ marginBottom: 20 }}>
+            <Grid item md={4}>
+              <Card className={classes.root}>
+                <CardMedia
+                  className={classes.media}
+                  image="/collections/cronic-wearables.jpg"
+                  title="Cronic Wearables"
+                />
+                <CardContent>
+                  <h3>Cronic Wearables</h3>
+                  <Typography variant="body1" color="textSecondary" component="p">
+                    We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item md={4} style={{marginBottom:20}}>
+              <Card className={classes.root}>
+                <CardMedia
+                  className={classes.media}
+                  image="/collections/icmojis.jpg"
+                  title="ICmojis"
+                />
+                <CardContent>
+                  <h3>ICmojis</h3>
+                  <Typography variant="body1" color="textSecondary" component="p">
+                    Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            {/*<Grid item md={4} style={{ marginBottom: 20 }}>
               <Card className={classes.root}>
                 <CardMedia
                   className={classes.media}
@@ -168,7 +168,7 @@ export default function Home(props) {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid>*/}
             <Grid item md={4} style={{ marginBottom: 20 }}>
               <Card className={classes.root}>
                 <CardMedia
@@ -185,12 +185,12 @@ export default function Home(props) {
                   >
                     Another blockchain game by ToniqLabs, the first set of Magni
                     NFTs will be available for sale exclusively on{" "}
-                    <strong>Entrepot.app</strong>. Coming September 2021!
+                    <strong>Entrepot.app</strong>. Coming November 2021!
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item md={4} style={{ marginBottom: 20 }}>
+            {/*<Grid item md={4} style={{ marginBottom: 20 }}>
               <Card className={classes.root}>
                 <CardMedia
                   className={classes.media}
@@ -210,7 +210,7 @@ export default function Home(props) {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid>*/}
           </Grid>
 
           <Grid

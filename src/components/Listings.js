@@ -284,9 +284,6 @@ export default function Listings(props) {
                   </MenuItem>
                 );
               })}
-              <MenuItem disabled value={""}>
-                More coming soon!
-              </MenuItem>
             </Select>
           </FormControl>
         </h1>
