@@ -209,13 +209,13 @@ export default function Sidebar(props) {
           >
             <MenuItem onClick ={()=> login('stoic')}>
               <ListItemIcon>
-                <img alt="S" src="stoic.png" style={{height:26}} />
+                <img alt="S" src="/stoic.png" style={{height:26}} />
               </ListItemIcon>
               <ListItemText primary="StoicWallet" />
             </MenuItem>
             <MenuItem onClick={() => login('plug')}>
               <ListItemIcon>
-                <img alt="S" src="plug.png" style={{height:26}} />
+                <img alt="S" src="/plug.png" style={{height:26}} />
               </ListItemIcon>
               <ListItemText primary="Plug Wallet" />
             </MenuItem>
@@ -249,7 +249,7 @@ export default function Sidebar(props) {
                 return (<ListItem key={collection.canister + "-" + collection.count} selected={props.view === collection.canister} button onClick={() => props.setView(collection)}>
                   <ListItemAvatar>
                     <Avatar>
-                      <img alt={collection.name} src={"collections/"+collection.canister+".jpg"} style={{height:64}} />
+                      <img alt={collection.name} src={"/collections/"+collection.canister+".jpg"} style={{height:64}} />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText>{collection.name}</ListItemText>

@@ -205,12 +205,12 @@ export default function Listing(props) {
 
   const handleClick = () => {
     const id = props.listing[0];
-    history.push(`/collections/${id}`);
+    history.push(`/marketplace/token/${tokenid}`);
   };
 
   return (
     <Grid style={{ height: "100%" }} item xl={2} lg={3} md={4} sm={6} xs={6}>
-      <Card onClick={handleClick} style={{ cursor: "pointer" }}>
+      <Card>
         <CardContent>
           <Grid container>
             <Grid item md={6} sm={6} xs={6}>
@@ -224,61 +224,49 @@ export default function Listing(props) {
                 gutterBottom
               >
                 <Tooltip title="View in browser">
-                  <a
+                  <span
                     style={{ color: "black", textDecoration: "none" }}
-                    // href={
-                    //   "https://" +
-                    //   props.collection +
-                    //   ".raw.ic0.app/?tokenid=" +
-                    //   tokenid
-                    // }
-                    rel="noreferrer"
-                    // target="_blank"
                   >
                     {"#" + mintNumber()}
-                  </a>
+                  </span>
                 </Tooltip>
               </Typography>
             </Grid>
             {showNri()}
           </Grid>
-
-          <a
-            // href={nftLink()}
-            rel="noreferrer"
-          >
-            <div style={{ ...styles.avatarSkeletonContainer }}>
-              {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ? (
-                <img
-                  alt={tokenid}
-                  style={{
-                    ...styles.avatarImg,
-                    display: imgLoaded ? "block" : "none",
-                  }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                />
-              ) : (
-                <img
-                  alt={tokenid}
-                  style={{
-                    ...styles.avatarImg2,
-                    display: imgLoaded ? "block" : "none",
-                  }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                />
-              )}
-              <Skeleton
+          
+          <a href={nftLink()} rel="noreferrer" target="_blank">
+          <div style={{ ...styles.avatarSkeletonContainer }}>
+            {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ? (
+              <img
+                alt={tokenid}
                 style={{
-                  ...styles.avatarLoader,
-                  display: imgLoaded ? "none" : "block",
+                  ...styles.avatarImg,
+                  display: imgLoaded ? "block" : "none",
                 }}
-                variant="rect"
+                src={nftImg()}
+                onLoad={() => setImgLoaded(true)}
               />
-            </div>
+            ) : (
+              <img
+                alt={tokenid}
+                style={{
+                  ...styles.avatarImg2,
+                  display: imgLoaded ? "block" : "none",
+                }}
+                src={nftImg()}
+                onLoad={() => setImgLoaded(true)}
+              />
+            )}
+            <Skeleton
+              style={{
+                ...styles.avatarLoader,
+                display: imgLoaded ? "none" : "block",
+              }}
+              variant="rect"
+            />
+          </div>
           </a>
-
           <Typography
             style={{
               fontSize: 18,

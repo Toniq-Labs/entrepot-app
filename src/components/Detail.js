@@ -33,8 +33,15 @@ import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import Navbar from "../containers/Navbar";
+import extjs from "../ic/extjs.js";
+import {
+  useParams
+} from "react-router-dom";
 
-const Product = () => {
+const Detail = () => {
+  let { tokenid } = useParams();
+  let { index, canister} = extjs.decodeTokenId(tokenid);
+  
   const classes = useStyles();
   const [openProperties, setOpenProperties] = useState(true);
   const [openDetails, setOpenDetails] = useState(true);
@@ -61,7 +68,6 @@ const Product = () => {
             <div
               style={{
                 border: "1px solid #E9ECEE",
-                height: "100%",
                 marginBottom: "20px",
               }}
             >
@@ -80,7 +86,7 @@ const Product = () => {
               </div>
 
               <img
-                src="mind.jpg"
+                src={"https://"+canister+".raw.ic0.app/?tokenid="+tokenid}
                 alt=""
                 style={{
                   cursor: "pointer",
@@ -90,250 +96,6 @@ const Product = () => {
                 }}
               />
             </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={7}>
-            <div className={classes.personal}>
-              <Typography variant="h6" style={{ color: "#648DE2" }}>
-                The Personal Work (2021-2020)
-              </Typography>
-              <div className={classes.iconsBorder}>
-                <RefreshIcon
-                  style={{
-                    borderRight: "1px solid #d5d5d5",
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    padding: "5px",
-                    height: "40px",
-                  }}
-                />
-                <ExitToAppIcon
-                  style={{
-                    borderRight: "1px solid #d5d5d5",
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    padding: "5px",
-                    height: "40px",
-                  }}
-                />
-                <ShareIcon
-                  style={{
-                    borderRight: "1px solid #d5d5d5",
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    padding: "5px",
-                    height: "40px",
-                  }}
-                />
-                <MoreVertIcon
-                  style={{
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    padding: "5px",
-                    height: "40px",
-                  }}
-                />
-              </div>
-            </div>
-            <Typography variant="h4" className={classes.typo}>
-              Where is Your Mind?
-            </Typography>
-            <div className={classes.icon}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-
-                  paddingRight: "10px",
-                }}
-              >
-                <PeopleIcon
-                  style={{
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    paddingRight: "7px",
-                    height: "40px",
-                  }}
-                />
-                <Typography variant="body1">10 owners</Typography>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingRight: "10px",
-                }}
-              >
-                <DashboardIcon
-                  style={{
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    paddingRight: "7px",
-                    height: "40px",
-                  }}
-                />
-                <Typography variant="body1">10 owners</Typography>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingRight: "10px",
-                }}
-              >
-                <VisibilityIcon
-                  style={{
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    paddingRight: "7px",
-                    height: "40px",
-                  }}
-                />
-                <Typography variant="body1">10 owners</Typography>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingRight: "10px",
-                }}
-              >
-                <FavoriteIcon
-                  style={{
-                    width: "40px",
-                    color: "rgb(37 34 34 / 54%)",
-                    paddingRight: "7px",
-                    height: "40px",
-                  }}
-                />
-                <Typography variant="body1">10 owners</Typography>
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-                padding: "20px 15px",
-                margin: "20px 0px",
-              }}
-            >
-              <Typography variant="h6">Current price</Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 0px",
-                }}
-              >
-                <AttachMoneyIcon />
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  0.88
-                </Typography>
-                <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                  ($213,56)
-                </Typography>
-              </div>
-              <div className={classes.button}>
-                <Button
-                  variant="contained"
-                  style={{
-                    backgroundColor: "#2B74DC",
-                    color: "#ffffff",
-                    textTransform: "capitalize",
-                    fontWeight: "bold",
-                    boxShadow: "none",
-                    outline: "none",
-                  }}
-                >
-                  <ShopIcon style={{ color: "#ffffff", marginRight: "10px" }} />
-                  Buy Now
-                </Button>
-                <Button className={classes.btn} variant="contained">
-                  <LocalOfferIcon
-                    style={{ color: "#2B74DC", marginRight: "10px" }}
-                  />
-                  Make Offer
-                </Button>
-              </div>
-            </div>
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-
-                margin: "20px 0px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottom: "1px solid #d5d5d5",
-                  padding: "20px",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <DetailsIcon />
-                  <Typography
-                    variant="h6"
-                    style={{ fontWeight: "bold", marginLeft: "20px" }}
-                  >
-                    Details
-                  </Typography>
-                </div>
-                <IconButton onClick={handleDetails}>
-                  {openDetails ? (
-                    <KeyboardArrowUpIcon
-                      style={{ color: "rgb(37 34 34 / 54%)" }}
-                    />
-                  ) : (
-                    <KeyboardArrowDownIcon
-                      style={{ color: "rgb(37 34 34 / 54%)" }}
-                    />
-                  )}
-                </IconButton>
-              </div>
-
-              {openDetails && (
-                <TableContainer>
-                  <Table sx={{ minWidth: 1500 }} aria-label="a dense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="left">Unit Price</TableCell>
-                        <TableCell align="left">USD Unit Price</TableCell>
-                        <TableCell align="left">Quantity</TableCell>
-                        <TableCell align="left">floor Difference</TableCell>
-                        <TableCell align="left">Expiration</TableCell>
-                        <TableCell align="left">Form</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row) => (
-                        <TableRow key={row.name}>
-                          <TableCell
-                            align="left"
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            {" "}
-                            <AttachMoneyIcon style={{ color: "red" }} />
-                            {row.name}
-                          </TableCell>
-
-                          <TableCell align="left">{row.calories}</TableCell>
-                          <TableCell align="left">{row.fat}</TableCell>
-                          <TableCell align="left">{row.carbs}</TableCell>
-                          <TableCell align="left">{row.protein}</TableCell>
-                          <TableCell align="left" style={{ color: "#648DE2" }}>
-                            {row.form}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={5}>
             <div
               style={{
                 border: "1px solid #E9ECEE",
@@ -613,6 +375,246 @@ const Product = () => {
             </div>
           </Grid>
           <Grid item xs={12} sm={12} md={7}>
+            <div className={classes.personal}>
+              <Typography variant="h6" style={{ color: "#648DE2" }}>
+                The Personal Work (2021-2020)
+              </Typography>
+              <div className={classes.iconsBorder}>
+                <RefreshIcon
+                  style={{
+                    borderRight: "1px solid #d5d5d5",
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    padding: "5px",
+                    height: "40px",
+                  }}
+                />
+                <ExitToAppIcon
+                  style={{
+                    borderRight: "1px solid #d5d5d5",
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    padding: "5px",
+                    height: "40px",
+                  }}
+                />
+                <ShareIcon
+                  style={{
+                    borderRight: "1px solid #d5d5d5",
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    padding: "5px",
+                    height: "40px",
+                  }}
+                />
+                <MoreVertIcon
+                  style={{
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    padding: "5px",
+                    height: "40px",
+                  }}
+                />
+              </div>
+            </div>
+            <Typography variant="h4" className={classes.typo}>
+              Where is Your Mind?
+            </Typography>
+            <div className={classes.icon}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+
+                  paddingRight: "10px",
+                }}
+              >
+                <PeopleIcon
+                  style={{
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    paddingRight: "7px",
+                    height: "40px",
+                  }}
+                />
+                <Typography variant="body1">10 owners</Typography>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingRight: "10px",
+                }}
+              >
+                <DashboardIcon
+                  style={{
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    paddingRight: "7px",
+                    height: "40px",
+                  }}
+                />
+                <Typography variant="body1">10 owners</Typography>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingRight: "10px",
+                }}
+              >
+                <VisibilityIcon
+                  style={{
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    paddingRight: "7px",
+                    height: "40px",
+                  }}
+                />
+                <Typography variant="body1">10 owners</Typography>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingRight: "10px",
+                }}
+              >
+                <FavoriteIcon
+                  style={{
+                    width: "40px",
+                    color: "rgb(37 34 34 / 54%)",
+                    paddingRight: "7px",
+                    height: "40px",
+                  }}
+                />
+                <Typography variant="body1">10 owners</Typography>
+              </div>
+            </div>
+
+            <div
+              style={{
+                border: "1px solid #E9ECEE",
+                padding: "20px 15px",
+                margin: "20px 0px",
+              }}
+            >
+              <Typography variant="h6">Current price</Typography>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px 0px",
+                }}
+              >
+                <AttachMoneyIcon />
+                <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                  0.88
+                </Typography>
+                <Typography variant="body2" style={{ marginLeft: "10px" }}>
+                  ($213,56)
+                </Typography>
+              </div>
+              <div className={classes.button}>
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#2B74DC",
+                    color: "#ffffff",
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                >
+                  <ShopIcon style={{ color: "#ffffff", marginRight: "10px" }} />
+                  Buy Now
+                </Button>
+                <Button className={classes.btn} variant="contained">
+                  <LocalOfferIcon
+                    style={{ color: "#2B74DC", marginRight: "10px" }}
+                  />
+                  Make Offer
+                </Button>
+              </div>
+            </div>
+            <div
+              style={{
+                border: "1px solid #E9ECEE",
+
+                margin: "20px 0px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: "1px solid #d5d5d5",
+                  padding: "20px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <DetailsIcon />
+                  <Typography
+                    variant="h6"
+                    style={{ fontWeight: "bold", marginLeft: "20px" }}
+                  >
+                    Details
+                  </Typography>
+                </div>
+                <IconButton onClick={handleDetails}>
+                  {openDetails ? (
+                    <KeyboardArrowUpIcon
+                      style={{ color: "rgb(37 34 34 / 54%)" }}
+                    />
+                  ) : (
+                    <KeyboardArrowDownIcon
+                      style={{ color: "rgb(37 34 34 / 54%)" }}
+                    />
+                  )}
+                </IconButton>
+              </div>
+
+              {openDetails && (
+                <TableContainer>
+                  <Table sx={{ minWidth: 1500 }} aria-label="a dense table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left">Unit Price</TableCell>
+                        <TableCell align="left">USD Unit Price</TableCell>
+                        <TableCell align="left">Quantity</TableCell>
+                        <TableCell align="left">floor Difference</TableCell>
+                        <TableCell align="left">Expiration</TableCell>
+                        <TableCell align="left">Form</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) => (
+                        <TableRow key={row.name}>
+                          <TableCell
+                            align="left"
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            {" "}
+                            <AttachMoneyIcon style={{ color: "red" }} />
+                            {row.name}
+                          </TableCell>
+
+                          <TableCell align="left">{row.calories}</TableCell>
+                          <TableCell align="left">{row.fat}</TableCell>
+                          <TableCell align="left">{row.carbs}</TableCell>
+                          <TableCell align="left">{row.protein}</TableCell>
+                          <TableCell align="left" style={{ color: "#648DE2" }}>
+                            {row.form}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </div>
             <div
               style={{
                 border: "1px solid #E9ECEE",
@@ -712,7 +714,7 @@ const Product = () => {
     </>
   );
 };
-export default Product;
+export default Detail;
 
 const useStyles = makeStyles((theme) => ({
   btn: {

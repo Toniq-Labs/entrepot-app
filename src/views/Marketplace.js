@@ -16,7 +16,7 @@ const collections = [
   {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
-    route: "critters",
+    route: "cronics",
     mature: false,
     commission: 0.015,
     comaddress:

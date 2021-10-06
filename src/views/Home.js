@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Home(props) {
   const classes = useStyles();
 
+  const history = useHistory();
+
   return (
     <>
       <Navbar />
@@ -98,7 +101,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => props.changeRoute("marketplace")}
+              onClick={() => history.push(`/marketplace/cronics`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >

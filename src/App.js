@@ -1,12 +1,12 @@
 import React from "react";
-import Navbar from "./containers/Navbar";
+import Navbar from "./components/Navbar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import AlertDialog from "./components/AlertDialog";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { Route, Switch } from "react-router-dom";
-import Product from "./views/Product";
+import Detail from "./components/Detail";
 import Marketplace from "./views/Marketplace";
 import Create from "./views/Create";
 import Home from "./views/Home";
@@ -81,15 +81,15 @@ export default function App() {
   return (
     <>
       <Switch>
-        <Route path="/collections/:id" exact>
-          <Product
+        <Route path="/marketplace/token/:tokenid" exact>
+          <Detail
             error={error}
             alert={alert}
             confirm={confirm}
             loader={loader}
           />
         </Route>
-        <Route path="/Marketplace/:route" exact>
+        <Route path="/marketplace/:route" exact>
           <Marketplace
             error={error}
             alert={alert}
@@ -97,7 +97,7 @@ export default function App() {
             loader={loader}
           />
         </Route>
-        <Route path="/Create" exact>
+        <Route path="/create" exact>
           <Create
             error={error}
             alert={alert}
@@ -105,7 +105,7 @@ export default function App() {
             loader={loader}
           />
         </Route>
-        <Route path="/Contact" exact>
+        <Route path="/contact" exact>
           <Contact
             error={error}
             alert={alert}
