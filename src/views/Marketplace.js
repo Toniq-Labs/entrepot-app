@@ -51,6 +51,31 @@ const collections = [
     blurb: false,
   },
   {
+    canister: "njgly-uaaaa-aaaah-qb6pa-cai",
+    name: "ICPuppies",
+    route: "icpuppies",
+    mature: false,
+    commission: 0.015,
+    comaddress:
+      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb: (
+      <>
+        10,000 randomly generated 8-bit puppy NFTs. Join the{" "}
+        <a href="discord.gg/A3rmDSjBaJ" target="_blank" rel="noreferrer">
+          Discord
+        </a>{" "}
+        or follow us on{" "}
+        <a
+          href="https://twitter.com/ICPuppies"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Twitter
+        </a>
+      </>
+    ),
+  },
+  {
     canister: "bxdf4-baaaa-aaaah-qaruq-cai",
     name: "ICPunks",
     route: "icpunks",

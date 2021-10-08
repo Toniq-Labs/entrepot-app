@@ -240,6 +240,18 @@ export default ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(TokenIndex, AccountIdentifier_3, IDL.Nat64))],
         ['query'],
       ),
+      
+    'salesStats' : IDL.Func(
+        [],
+        [
+          IDL.Bool,
+          IDL.Nat32,
+          IDL.Nat32,
+          IDL.Nat,
+          IDL.Tuple(IDL.Nat64, TokenIndex),
+        ],
+        ['query'],
+      ),
     'supply' : IDL.Func([TokenIdentifier_2], [Result_4], ['query']),
     'takeSnapshot' : IDL.Func([IDL.Text], [IDL.Nat], []),
     'tokens' : IDL.Func([AccountIdentifier_3], [Result_3], ['query']),

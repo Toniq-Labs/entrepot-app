@@ -8,6 +8,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import { Route, Switch } from "react-router-dom";
 import Detail from "./components/Detail";
 import Marketplace from "./views/Marketplace";
+import Sale from "./views/Sale";
 import Create from "./views/Create";
 import Home from "./views/Home";
 import Contact from "./views/Contact";
@@ -91,6 +92,15 @@ export default function App() {
         </Route>
         <Route path="/marketplace/:route" exact>
           <Marketplace
+            error={error}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
+        
+        <Route path="/sale/icpuppies" exact>
+          <Sale
             error={error}
             alert={alert}
             confirm={confirm}
