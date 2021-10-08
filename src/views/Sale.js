@@ -579,15 +579,20 @@ export default function Sale(props) {
             <strong>Next 2000:</strong> 0.9ICP<br />
             <strong>Final 2000:</strong> 1ICP<br />
           </p>
-          <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
-          <Button
-            variant={"contained"}
-            color={"primary"}
-            onClick={buyFromSale}
-            style={{ fontWeight: "bold", margin: "0 auto" }}
-          >
-            Adopt a Puppy for {_showListingPrice(bestPrice)} ICP
-          </Button>
+          {salesOnline ? 
+          <>
+            <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={buyFromSale}
+              style={{ fontWeight: "bold", margin: "0 auto" }}
+            >
+              Adopt a Puppy for {_showListingPrice(bestPrice)} ICP
+            </Button></>
+          :
+            <p><strong><span style={{color:"red"}}>Sorry, there are no more ICPuppies left for sale! You can buy from the Entrepot marketplace very soon!</span></strong></p>
+          }
           <br />
           <br />
           <br />
