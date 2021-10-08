@@ -262,6 +262,8 @@ export default function Sale(props) {
   const [salesOnline, setSalesOnline] = React.useState(false);
   const [sold, setSold] = React.useState(0);
   const [unsold, setUnsold] = React.useState(9000);
+  const [lostDogs, setLostDogs] = React.useState(0);
+  const [bestPrice, setBestPrice] = React.useState(100000000);
   const params = useParams();
 
   const handleDrawerToggle = () => {
@@ -274,6 +276,8 @@ export default function Sale(props) {
     setSalesOnline(stats[0]);
     setSold(stats[1]);
     setUnsold(stats[2]);
+    setLostDogs(Number(stats[3]));
+    setBestPrice(stats[4][0]);
     console.log(stats);
   };
   const theme = useTheme();
@@ -359,7 +363,7 @@ export default function Sale(props) {
   };
   
   const buyFromSale = async () => {
-    var price = getPrice(sold);
+    var price = bestPrice;
     if (balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -539,11 +543,11 @@ export default function Sale(props) {
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{sold}</span>
             </Grid>
             <Grid className={classes.stat} item xs={3}>
-              <strong>CURRENT PRICE</strong><br />
+              <strong>CURRENT TIER PRICE</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(getPrice(sold))} ICP</span>
             </Grid>
             <Grid className={classes.stat}item xs={3}>
-              <strong>REMAINING @ PRICE</strong><br />
+              <strong>REMAINING @ TIER</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{getRemaining(sold)}</span>
             </Grid>
             <Grid className={classes.stat} item xs={3}>
@@ -551,6 +555,21 @@ export default function Sale(props) {
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{unsold}</span>
             </Grid>
           </Grid>
+          <br />
+          <br />
+          {lostDogs > 0 ?
+          <Grid container spacing={2} style={{}}>
+            <Grid className={classes.stat} item xs={3}> </Grid>
+            <Grid className={classes.stat} item xs={3}>
+              <strong>LOST DOGS</strong><br />
+              <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>{lostDogs}</span>
+            </Grid>
+            <Grid className={classes.stat}item xs={3}>
+              <strong>BEST LOST DOG PRICE</strong><br />
+              <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>{_showListingPrice(bestPrice)} ICP</span>
+            </Grid>
+            <Grid className={classes.stat} item xs={3}> </Grid>
+          </Grid> : "" }
           <p><strong>10,000 randomly generated 8-bit puppy NFTs. 9,000 ICPuppy NFTs will be sold here with a tiered pricing structure:</strong></p>
           <p>
             <strong>First 1000:</strong> 0.4ICP&nbsp;&nbsp;&nbsp;<strong>Next 1000:</strong> 0.5ICP<br />
@@ -567,7 +586,7 @@ export default function Sale(props) {
             onClick={buyFromSale}
             style={{ fontWeight: "bold", margin: "0 auto" }}
           >
-            Adopt a Puppy for {_showListingPrice(getPrice(sold))} ICP
+            Adopt a Puppy for {_showListingPrice(bestPrice)} ICP
           </Button>
           <br />
           <br />
