@@ -57,7 +57,7 @@ const collections = [
     mature: false,
     commission: 0.035,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
     blurb: (
       <>
         10,000 randomly generated 8-bit puppy NFTs. Join the{" "}
