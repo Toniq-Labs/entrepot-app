@@ -18,7 +18,7 @@ const collections = [
     name: "Cronic Critters",
     route: "cronics",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
@@ -45,7 +45,7 @@ const collections = [
     name: "Starverse",
     route: "starverse",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -55,7 +55,7 @@ const collections = [
     name: "ICPuppies",
     route: "icpuppies",
     mature: false,
-    commission: 0.015,
+    commission: 0.035,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
@@ -80,7 +80,7 @@ const collections = [
     name: "ICPunks",
     route: "icpunks",
     mature: false,
-    commission: 0.03,
+    commission: 0.035,
     comaddress:
       "c47942416fa8e7151f679d57a6b2d2e01a92fecd5e6f9ac99f6db548ea4f37aa",
     blurb: (
@@ -106,7 +106,7 @@ const collections = [
     name: "IC Drip",
     route: "icdrip",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
@@ -130,7 +130,7 @@ const collections = [
     name: "Wing",
     route: "wing",
     mature: true,
-    commission: 0.02,
+    commission: 0.025,
     comaddress:
       "1d978f4f38d19dca4218832e856c956678de0aa470cd492f5d8ac4377db6f2a2",
     blurb: (
@@ -155,7 +155,7 @@ const collections = [
     name: "ICelebrity",
     route: "icelebrity",
     mature: false,
-    commission: 0.03,
+    commission: 0.035,
     comaddress:
       "8b6840cb0e67738e69dbb6d79a3963f7bd93c35f593a393be5cc39cd59ed993e",
     blurb: false,
@@ -165,7 +165,7 @@ const collections = [
     name: "Faceted Meninas",
     route: "faceted-meninas",
     mature: false,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
     blurb: (
@@ -181,7 +181,7 @@ const collections = [
     name: "ICP News",
     mature: false,
     route: "icp-news",
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -191,7 +191,7 @@ const collections = [
     name: "Cronic Wearables",
     route: "wearables",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -201,7 +201,7 @@ const collections = [
     name: "ICmojis",
     route: "icmojis",
     mature: false,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",
     blurb: false,
@@ -211,7 +211,7 @@ const collections = [
     name: "ICPuzzle",
     route: "icpuzzle",
     mature: true,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
     blurb: false,
@@ -236,8 +236,7 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-var processingPayments = false,
-  processingRefunds = false;
+var processingPayments = false;
 
 export default function Marketplace(props) {
   const [identity, setIdentity] = React.useState(false);
@@ -256,7 +255,6 @@ export default function Marketplace(props) {
 
   const _updates = async () => {
     await processPayments();
-    await processRefunds();
   };
   const processPayments = async () => {
     if (processingPayments) return;
@@ -307,40 +305,6 @@ export default function Marketplace(props) {
       }
     }
     processingPayments = false;
-  };
-  const processRefunds = async () => {
-    if (processingRefunds) return;
-    processingRefunds = true;
-    const _api = extjs.connect("https://boundary.ic0.app/", identity);
-    for (var j = 0; j < collections.length; j++) {
-      var refunds = await _api.canister(collections[j].canister).refunds();
-      if (refunds.length === 0) continue;
-      if (refunds[0].length === 0) continue;
-      console.log("Refunds found: " + refunds[0].length);
-      var a, b, refund;
-      for (var i = 0; i < refunds[0].length; i++) {
-        refund = refunds[0][i];
-        a = extjs.toAddress(identity.getPrincipal().toText(), refund);
-        b = Number(await api.token().getBalance(a));
-        try {
-          if (b > txfee) {
-            //Process refunds
-            await _api
-              .token()
-              .transfer(
-                identity.getPrincipal().toText(),
-                refund,
-                "07ce335b2451bec20426497d97afb0352d89dc3f1286bf26909ecb90cf370c76",
-                BigInt(b - txfee),
-                txfee
-              );
-          }
-          await _api.canister(collections[j].canister).removeRefunds([refund]);
-          console.log("Refund removed successfully");
-        } catch (e) {}
-      }
-    }
-    processingRefunds = false;
   };
   const theme = useTheme();
   const classes = useStyles();
