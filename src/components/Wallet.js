@@ -317,7 +317,7 @@ export default function Wallet(props) {
         (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </>
       <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
-      <ListingForm collection={props.collection.canister} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <ListingForm collections={props.collections} collection={props.collection.canister} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
     </>
   )
 }
