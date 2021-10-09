@@ -72,7 +72,7 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <a href="/sale/icpuppies"><img alt="starverse" className={classes.bannerimg} src="/banner/puppies.png" /></a>
+            <a href="/marketplace/icpuppies"><img alt="starverse" className={classes.bannerimg} src="/banner/puppies.png" /></a>
             <img
               alt="anchor"
               className={classes.anchor}
@@ -113,11 +113,11 @@ export default function Home(props) {
           >
             <Grid item md={4}>
               <Card className={classes.root}>
-                <CardMedia
+                <a href="/marketplace/wearables"><CardMedia
                   className={classes.media}
                   image="/collections/cronic-wearables.jpg"
                   title="Cronic Wearables"
-                />
+                /></a>
                 <CardContent>
                   <h3>Cronic Wearables</h3>
                   <Typography variant="body1" color="textSecondary" component="p">
@@ -128,11 +128,11 @@ export default function Home(props) {
             </Grid>
             <Grid item md={4} style={{marginBottom:20}}>
               <Card className={classes.root}>
-                <CardMedia
+                <a href="/marketplace/icmojis"><CardMedia
                   className={classes.media}
                   image="/collections/icmojis.jpg"
                   title="ICmojis"
-                />
+                /></a>
                 <CardContent>
                   <h3>ICmojis</h3>
                   <Typography variant="body1" color="textSecondary" component="p">

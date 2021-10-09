@@ -122,7 +122,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/marketplace");
+                  history.push("/marketplace/cronics");
                   handleClick();
                 }}
                 className={classes.button1}
@@ -153,7 +153,7 @@ export default function Navbar(props) {
                 style={{
                   color: route === "contact" ? "#00d092" : "#000",
                   borderBottom:
-                    route === "contact"
+                    route === "create"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}

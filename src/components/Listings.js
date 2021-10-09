@@ -61,7 +61,7 @@ export default function Listings(props) {
   const [showing, setShowing] = useState("all");
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
-  const [collection, setCollection] = useState("e3izy-jiaaa-aaaah-qacbq-cai");
+  const [collection, setCollection] = useState(props?.collections.find((ele) => ele.route === props.currentRoute)?.canister);
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
   const history = useHistory();
@@ -70,13 +70,12 @@ export default function Listings(props) {
     setPage(1);
     setWearableFilter(event.target.value);
   };
-
   useEffect(() => {
     const temp = props?.collections.find(
       (ele) => ele.route === props?.currentRoute
     );
-    setCollection(temp?.canister);
-  }, [props]);
+    _changeCollection(temp?.canister);
+  }, [props.currentRoute]);
 
   const changeCollection = async (event) => {
     const obj = props.collections.find(
@@ -85,15 +84,19 @@ export default function Listings(props) {
     history.push(`/marketplace/${obj.route}`);
 
     event.preventDefault();
+    _changeCollection();
+  };
+  
+  const _changeCollection = async c => {
     setWearableFilter("all");
     setSort("price_asc");
     setShowing("all");
-    setCollection(event.target.value);
+    setCollection(c);
     setListings(false);
     setTransactions(false);
     setPage(1);
     props.loader(true);
-    await refresh("all", event.target.value);
+    await refresh("all", c);
     props.loader(false);
   };
   const changeSort = (event) => {
