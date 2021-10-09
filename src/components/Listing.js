@@ -211,7 +211,7 @@ export default function Listing(props) {
                   style={{ color: "black", textDecoration: "none" }}
                   href={
                     "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    mintNumber()
+                    tokenid
                   }
                   rel="noreferrer"
                   target="_blank"
