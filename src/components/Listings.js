@@ -328,6 +328,7 @@ export default function Listings(props) {
                 "bxdf4-baaaa-aaaah-qaruq-cai",
                 "e3izy-jiaaa-aaaah-qacbq-cai",
                 "nbg4r-saaaa-aaaah-qap7a-cai",
+                "njgly-uaaaa-aaaah-qb6pa-cai",
               ].indexOf(collection) >= 0 ? (
                 <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
               ) : (

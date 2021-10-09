@@ -228,7 +228,7 @@ export default function Wallet(props) {
             >
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
               {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
-              { ["3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection.canister) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
+              { ["njgly-uaaaa-aaaah-qb6pa-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection.canister) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
             </Select>
           </FormControl>
           
