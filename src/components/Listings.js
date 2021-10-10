@@ -84,7 +84,7 @@ export default function Listings(props) {
     history.push(`/marketplace/${obj.route}`);
 
     event.preventDefault();
-    _changeCollection();
+    _changeCollection(event.target.value);
   };
   
   const _changeCollection = async c => {
