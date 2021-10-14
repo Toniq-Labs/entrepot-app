@@ -74,6 +74,8 @@ class ExtConnection {
     "d3ttm-qaaaa-aaaai-qam4a-cai" : icdripIDL,
     "3db6u-aiaaa-aaaah-qbjbq-cai" : wrapperIDL,
     "njgly-uaaaa-aaaah-qb6pa-cai" : icpuppy,
+    "xkbqi-2qaaa-aaaah-qbpqq-cai" : icpunksIDL,
+    "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
@@ -166,6 +168,7 @@ class ExtConnection {
             case "qcg3w-tyaaa-aaaah-qakea-cai":
             case "jzg5e-giaaa-aaaah-qaqda-cai":
             case "d3ttm-qaaaa-aaaai-qam4a-cai":
+            case "xkbqi-2qaaa-aaaah-qbpqq-cai":
               if (aid !== principalToAccountIdentifier(principal, 0)) {
                 resolve([]);
               } else {
@@ -382,6 +385,7 @@ class ExtConnection {
             case "qcg3w-tyaaa-aaaah-qakea-cai":
             case "jzg5e-giaaa-aaaah-qaqda-cai":
             case "d3ttm-qaaaa-aaaai-qam4a-cai":
+            case "xkbqi-2qaaa-aaaah-qbpqq-cai":
               if (!validatePrincipal(to_user)) reject("This does not support traditional addresses, you must use a Principal");
               api.transfer_to(Principal.fromText(to_user), tokenObj.index).then(b => {
                 if (b) {          

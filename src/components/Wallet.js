@@ -39,6 +39,7 @@ function useInterval(callback, delay) {
 const canisterMap= {
   "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
   "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
+  "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
 };
 export default function Wallet(props) {
   const [nfts, setNfts] = React.useState(false);
@@ -180,6 +181,9 @@ export default function Wallet(props) {
     }else if (c === "3db6u-aiaaa-aaaah-qbjbq-cai") {
       nfts = nfts.map(a => {a.wrapped = true; return a});
       nfts = nfts.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+    }else if (c === "q6hjz-kyaaa-aaaah-qcama-cai") {
+      nfts = nfts.map(a => {a.wrapped = true; return a});
+      nfts = nfts.concat(await api.token("xkbqi-2qaaa-aaaah-qbpqq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
     };
     setNfts(applyFilters(nfts)); 
   }

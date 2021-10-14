@@ -216,6 +216,16 @@ const collections = [
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
     blurb: false,
   },
+  {
+    canister: "q6hjz-kyaaa-aaaah-qcama-cai",
+    name: "ICPBunny",
+    route: "icpbunny",
+    mature: false,
+    commission: 0.025,
+    comaddress:
+      "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
+    blurb: false,
+  },
 ];
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -358,6 +368,7 @@ export default function Marketplace(props) {
           const result = await window.ic.plug.requestConnect({
             whitelist: [
               ...collections.map((a) => a.canister),
+              "xkbqi-2qaaa-aaaah-qbpqq-cai",
               "d3ttm-qaaaa-aaaai-qam4a-cai",
               "qcg3w-tyaaa-aaaah-qakea-cai",
               "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -412,6 +423,7 @@ export default function Marketplace(props) {
                 await window.ic.plug.createAgent({
                   whitelist: [
                     ...collections.map((a) => a.canister),
+                    "xkbqi-2qaaa-aaaah-qbpqq-cai",
                     "d3ttm-qaaaa-aaaai-qam4a-cai",
                     "qcg3w-tyaaa-aaaah-qakea-cai",
                     "ryjl3-tyaaa-aaaaa-aaaba-cai",
