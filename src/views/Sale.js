@@ -386,8 +386,14 @@ export default function Sale(props) {
     props.loader(false);
   };
   
-  const buyFromSale = async () => {
-    var price = whitelistPrice;
+  const buyFromSale = async (qty) => {
+    var ps = {
+      1 : whitelistPrice,
+      5 : 750000000n,
+      10 : 1500000000n,
+      20 : 3000000000n,
+    };
+    var price = ps[qty];
     if (balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -401,7 +407,7 @@ export default function Sale(props) {
         .canister("ahl3d-xqaaa-aaaaj-qacca-cai")
         .reserve(
           price,
-          1,
+          qty,
           accounts[currentAccount].address,
           _getRandomBytes()
         );
@@ -440,7 +446,7 @@ export default function Sale(props) {
       console.log(e);
       props.alert(
         "There was an error",
-        e.Other ?? "You may need to enable cookies or try a different browser"
+        e.Other ?? (typeof e == "string" ? e : "You may need to enable cookies or try a different browser")
       );
     }
   };
@@ -561,7 +567,7 @@ export default function Sale(props) {
           </Button>
           <div style={{maxWidth:"1200px", margin: "0 auto",textAlign:"center"}}>
           <div className={classes.banner}>
-            <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/ictuts.gif" />
+            <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/ictuts2.gif" />
           </div>
           
           <h1>Welcome to the ICTuTs Official Sale!</h1>
@@ -585,14 +591,50 @@ export default function Sale(props) {
           {salesOnline ? 
           <>
             <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
+            <Grid container spacing={2} style={{}}>
+              <Grid className={classes.stat} item sm={3}>
             <Button
               variant={"contained"}
               color={"primary"}
-              onClick={buyFromSale}
+              onClick={() => buyFromSale(1)}
               style={{ fontWeight: "bold", margin: "0 auto" }}
             >
-              Grab an ICTuT for {_showListingPrice(whitelistPrice)} ICP
-            </Button></>
+              Buy 1 ICTuT<br />for {_showListingPrice(150000000n)} ICP
+            </Button>
+            </Grid>
+              <Grid className={classes.stat} item sm={3}>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={() => buyFromSale(5)}
+              style={{ fontWeight: "bold", margin: "0 auto" }}
+            >
+              Buy 5 ICTuT<br />for {_showListingPrice(150000000n*5n)} ICP
+            </Button>
+            </Grid>
+              <Grid className={classes.stat} item sm={3}>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={() => buyFromSale(10)}
+              style={{ fontWeight: "bold", margin: "0 auto" }}
+            >
+              Buy 10 ICTuT<br />for {_showListingPrice(150000000n*10n)} ICP
+            </Button>
+            </Grid>
+              <Grid className={classes.stat} item sm={3}>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={() => buyFromSale(20)}
+              style={{ fontWeight: "bold", margin: "0 auto" }}
+            >
+              Buy 20 ICTuT<br />for {_showListingPrice(150000000n*20n)} ICP
+            </Button>
+            </Grid>
+            </Grid>
+            
+            </>
           :
             <>
             {whitelistPrice > 0 && whitelistPrice < 150000000n ?
@@ -601,7 +643,7 @@ export default function Sale(props) {
             <Button
               variant={"contained"}
               color={"primary"}
-              onClick={buyFromSale}
+              onClick={() => buyFromSale(1)}
               style={{ fontWeight: "bold", margin: "0 auto" }}
             >
               Grab a Whitelisted ICTuT for {_showListingPrice(whitelistPrice)} ICP
