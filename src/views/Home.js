@@ -72,7 +72,7 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <img alt="starverse" className={classes.bannerimg} src="/banner/ictuts.gif" />
+            <a href="/sale/ictuts"><img alt="starverse" className={classes.bannerimg} src="/banner/ictuts.gif" /></a>
             <img
               alt="anchor"
               className={classes.anchor}
@@ -97,7 +97,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace/cronics`)}
+              onClick={() => history.push(`/marketplace/ictuts`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >

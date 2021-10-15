@@ -33,11 +33,25 @@ function useInterval(callback, delay) {
 }
 const collections = [
   {
+    canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
+    name: "ICTuTs",
+    route: "ictuts",
+    mature: false,
+    commission: 0.025,
+    comaddress:
+      "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
+    blurb: (
+      <>
+        We will have all of the 10,000 NFTs available for sale at launch, there will be 5 pirce tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.
+      </>
+    ),
+  },
+  {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
     route: "cronics",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
@@ -64,7 +78,7 @@ const collections = [
     name: "Starverse",
     route: "starverse",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -74,9 +88,9 @@ const collections = [
     name: "ICPuppies",
     route: "icpuppies",
     mature: false,
-    commission: 0.015,
+    commission: 0.035,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
     blurb: (
       <>
         10,000 randomly generated 8-bit puppy NFTs. Join the{" "}
@@ -99,7 +113,7 @@ const collections = [
     name: "ICPunks",
     route: "icpunks",
     mature: false,
-    commission: 0.03,
+    commission: 0.035,
     comaddress:
       "c47942416fa8e7151f679d57a6b2d2e01a92fecd5e6f9ac99f6db548ea4f37aa",
     blurb: (
@@ -125,7 +139,7 @@ const collections = [
     name: "IC Drip",
     route: "icdrip",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
@@ -149,7 +163,7 @@ const collections = [
     name: "Wing",
     route: "wing",
     mature: true,
-    commission: 0.02,
+    commission: 0.025,
     comaddress:
       "1d978f4f38d19dca4218832e856c956678de0aa470cd492f5d8ac4377db6f2a2",
     blurb: (
@@ -174,7 +188,7 @@ const collections = [
     name: "ICelebrity",
     route: "icelebrity",
     mature: false,
-    commission: 0.03,
+    commission: 0.035,
     comaddress:
       "8b6840cb0e67738e69dbb6d79a3963f7bd93c35f593a393be5cc39cd59ed993e",
     blurb: false,
@@ -184,7 +198,7 @@ const collections = [
     name: "Faceted Meninas",
     route: "faceted-meninas",
     mature: false,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
     blurb: (
@@ -200,7 +214,7 @@ const collections = [
     name: "ICP News",
     mature: false,
     route: "icp-news",
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -210,7 +224,7 @@ const collections = [
     name: "Cronic Wearables",
     route: "wearables",
     mature: false,
-    commission: 0.015,
+    commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: false,
@@ -220,7 +234,7 @@ const collections = [
     name: "ICmojis",
     route: "icmojis",
     mature: false,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",
     blurb: false,
@@ -230,9 +244,19 @@ const collections = [
     name: "ICPuzzle",
     route: "icpuzzle",
     mature: true,
-    commission: 0.015,
+    commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
+    blurb: false,
+  },
+  {
+    canister: "q6hjz-kyaaa-aaaah-qcama-cai",
+    name: "ICPBunny",
+    route: "icpbunny",
+    mature: false,
+    commission: 0.025,
+    comaddress:
+      "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
     blurb: false,
   },
 ];
@@ -261,23 +285,23 @@ export default function Sale(props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [salesOnline, setSalesOnline] = React.useState(false);
   const [sold, setSold] = React.useState(0);
-  const [unsold, setUnsold] = React.useState(9000);
-  const [lostDogs, setLostDogs] = React.useState(0);
-  const [bestPrice, setBestPrice] = React.useState(100000000);
+  const [unsold, setUnsold] = React.useState(9937);
+  var publicPrice = 150000000n;
+  const [whitelistPrice, setWhitelistPrice] = React.useState(publicPrice);
   const params = useParams();
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const _updates = async () => {
     console.log('updating');
-    var stats = await api.token("njgly-uaaaa-aaaah-qb6pa-cai").call.salesStats();
+    if (!address) return;
+    var stats = await api.token("ahl3d-xqaaa-aaaaj-qacca-cai").call.salesStats(address);
+    console.log(stats);
     setSalesOnline(stats[0]);
-    setSold(stats[1]);
-    setUnsold(stats[2]);
-    setLostDogs(Number(stats[3]));
-    setBestPrice(stats[4][0]);
+    setUnsold(Number(stats[1]));
+    setSold(Number(stats[2]));
+    setWhitelistPrice(stats[3]);
     console.log(stats);
   };
   const theme = useTheme();
@@ -363,7 +387,7 @@ export default function Sale(props) {
   };
   
   const buyFromSale = async () => {
-    var price = bestPrice;
+    var price = whitelistPrice;
     if (balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -371,16 +395,20 @@ export default function Sale(props) {
       );
     }
     try {
-      props.loader(true, "Reserving Puppy...");
+      props.loader(true, "Reserving ICTuT...");
       const api = extjs.connect("https://boundary.ic0.app/", identity);
       var r = await api
-        .canister("njgly-uaaaa-aaaah-qb6pa-cai")
+        .canister("ahl3d-xqaaa-aaaaj-qacca-cai")
         .reserve(
           price,
+          1,
           accounts[currentAccount].address,
           _getRandomBytes()
         );
-      if (r.hasOwnProperty("err")) throw r.err;
+      console.log(r);
+      if (r.hasOwnProperty("err")) {
+        throw r.err;
+      }
       var paytoaddress = r.ok[0];
       var pricetopay = r.ok[1];
       props.loader(true, "Transferring ICP...");
@@ -397,7 +425,7 @@ export default function Sale(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("njgly-uaaaa-aaaah-qb6pa-cai").retreive(paytoaddress);
+          r3 = await api.canister("ahl3d-xqaaa-aaaaj-qacca-cai").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -417,7 +445,7 @@ export default function Sale(props) {
     }
   };
   
-  useInterval(_updates, 60 * 1000);
+  useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     _updates();
     var t = localStorage.getItem("_loginType");
@@ -533,52 +561,27 @@ export default function Sale(props) {
           </Button>
           <div style={{maxWidth:"1200px", margin: "0 auto",textAlign:"center"}}>
           <div className={classes.banner}>
-            <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/puppies.png" />
+            <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/ictuts.gif" />
           </div>
           
-          <h1>Welcome to the ICPuppy Official Sale!</h1>
+          <h1>Welcome to the ICTuTs Official Sale!</h1>
           <Grid container spacing={2} style={{}}>
-            <Grid className={classes.stat} item xs={3}>
+            <Grid className={classes.stat} item xs={4}>
               <strong>TOTAL SOLD</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{sold}</span>
             </Grid>
-            <Grid className={classes.stat} item xs={3}>
-              <strong>CURRENT TIER PRICE</strong><br />
-              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(getPrice(sold))} ICP</span>
+            <Grid className={classes.stat} item xs={4}>
+              <strong>PUBLIC PRICE</strong><br />
+              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(150000000n)} ICP</span>
             </Grid>
-            <Grid className={classes.stat}item xs={3}>
-              <strong>REMAINING @ TIER</strong><br />
-              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{getRemaining(sold)}</span>
-            </Grid>
-            <Grid className={classes.stat} item xs={3}>
+            <Grid className={classes.stat} item xs={4}>
               <strong>TOTAL UNSOLD</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{unsold}</span>
             </Grid>
           </Grid>
           <br />
           <br />
-          {lostDogs > 0 ?
-          <Grid container spacing={2} style={{}}>
-            <Grid className={classes.stat} item xs={3}> </Grid>
-            <Grid className={classes.stat} item xs={3}>
-              <strong>LOST DOGS</strong><br />
-              <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>{lostDogs}</span>
-            </Grid>
-            <Grid className={classes.stat}item xs={3}>
-              <strong>BEST LOST DOG PRICE</strong><br />
-              <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>{_showListingPrice(bestPrice)} ICP</span>
-            </Grid>
-            <Grid className={classes.stat} item xs={3}> </Grid>
-          </Grid> : "" }
-          <p><strong>10,000 randomly generated 8-bit puppy NFTs. 9,000 ICPuppy NFTs will be sold here with a tiered pricing structure:</strong></p>
-          <p>
-            <strong>First 1000:</strong> 0.4ICP&nbsp;&nbsp;&nbsp;<strong>Next 1000:</strong> 0.5ICP<br />
-            <strong>Next 1000:</strong> 0.6ICP&nbsp;&nbsp;&nbsp;
-            <strong>Next 1000:</strong> 0.7ICP<br />
-            <strong>Next 1000:</strong> 0.8ICP&nbsp;&nbsp;&nbsp;
-            <strong>Next 2000:</strong> 0.9ICP<br />
-            <strong>Final 2000:</strong> 1ICP<br />
-          </p>
+          <p><strong>We will have all of the 10,000 NFTs available for sale at launch, there will be 5 pirce tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.</strong></p>
           {salesOnline ? 
           <>
             <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
@@ -588,27 +591,27 @@ export default function Sale(props) {
               onClick={buyFromSale}
               style={{ fontWeight: "bold", margin: "0 auto" }}
             >
-              Adopt a Puppy for {_showListingPrice(bestPrice)} ICP
+              Grab an ICTuT for {_showListingPrice(whitelistPrice)} ICP
             </Button></>
           :
-            <p><strong><span style={{color:"red"}}>Sorry, there are no more ICPuppies left for sale! You can buy from the Entrepot marketplace very soon!</span></strong></p>
+            <>
+            {whitelistPrice > 0 && whitelistPrice < 150000000n ?
+          <>
+            <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={buyFromSale}
+              style={{ fontWeight: "bold", margin: "0 auto" }}
+            >
+              Grab a Whitelisted ICTuT for {_showListingPrice(whitelistPrice)} ICP
+            </Button></>
+              :
+              <p><strong><span style={{color:"red"}}>Sorry, you need to be whitelisted to buy right now, otherwise wait until 15:00 UTC! If you have been whitelisted and have not purchased an ICTuT, please wait as this can take a few seconds to load.</span></strong></p>
+            }
+            </>
           }
-          <br />
-          <br />
-          <br />
-          <hr />
-          <p>Join the{" "}
-        <a href="discord.gg/A3rmDSjBaJ" target="_blank" rel="noreferrer">
-          Discord
-        </a>{" "}
-        or follow us on{" "}
-        <a
-          href="https://twitter.com/ICPuppies"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Twitter
-        </a></p>
+
           </div>
         </div>
       </main>

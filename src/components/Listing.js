@@ -81,6 +81,30 @@ export default function Listing(props) {
 
     return "https://" +icbstorage[i % 10]+".raw.ic0.app/Token/"+i;
   };
+  const tutsimg = i => {
+    const icbstorage = ["bkf7n-yyaaa-aaaaj-qacfq-cai",
+    "dqzxr-giaaa-aaaaj-qackq-cai",
+    "dz24n-qaaaa-aaaaj-qacla-cai",
+    "d632z-5yaaa-aaaaj-qaclq-cai",
+    "ctv6x-sqaaa-aaaaj-qacma-cai",
+    "cuuyd-7iaaa-aaaaj-qacmq-cai",
+    "c5xt7-jaaaa-aaaaj-qacna-cai",
+    "c2wvl-eyaaa-aaaaj-qacnq-cai",
+    "cpreg-fqaaa-aaaaj-qacoa-cai",
+    "ciqcs-iiaaa-aaaaj-qacoq-cai",
+    "cbtjo-6aaaa-aaaaj-qacpa-cai",
+    "b7coa-zqaaa-aaaaj-qacga-cai",
+    "cgsp2-tyaaa-aaaaj-qacpq-cai",
+    "bydiu-uiaaa-aaaaj-qacgq-cai",
+    "bradi-caaaa-aaaaj-qacha-cai",
+    "bwbf4-pyaaa-aaaaj-qachq-cai",
+    "dm5na-riaaa-aaaaj-qaciq-cai",
+    "df6g4-haaaa-aaaaj-qacja-cai",
+    "dc7ai-kyaaa-aaaaj-qacjq-cai",
+    "dxyrf-lqaaa-aaaaj-qacka-cai"]
+
+    return "https://" +icbstorage[i % icbstorage.length]+".raw.ic0.app/?index="+i;
+  };
   const nftImg = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
       return (
@@ -94,6 +118,7 @@ export default function Listing(props) {
       );
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
       return icpbunnyimg(props.listing[0])
+    if (props.collection === "ahl3d-xqaaa-aaaaj-qacca-cai") return tutsimg(props.listing[0]);
     return (
       "https://" +
       props.collection +
@@ -227,6 +252,31 @@ export default function Listing(props) {
               gutterBottom
             >
               <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific ICPuppy relative to others. It does not include Mint # as a factor in this index.">
+                <a
+                  style={{ color: "black", textDecoration: "none" }}
+                  href={
+                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
+                    tokenid
+                  }
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
+                  <span style={{ color: "red" }}>*</span>
+                </a>
+              </Tooltip>
+            </Typography>
+          </Grid>
+        );
+      case "ahl3d-xqaaa-aaaaj-qacca-cai":
+        return (
+          <Grid item md={6} sm={6} xs={6}>
+            <Typography
+              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
+              color={"inherit"}
+              gutterBottom
+            >
+              <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific ICTuT relative to others. It does not include Mint # as a factor in this index.">
                 <a
                   style={{ color: "black", textDecoration: "none" }}
                   href={

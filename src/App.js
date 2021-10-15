@@ -99,7 +99,7 @@ export default function App() {
           />
         </Route>
         
-        <Route path="/sale/icpuppies" exact>
+        <Route path="/sale/ictuts" exact>
           <Sale
             error={error}
             alert={alert}

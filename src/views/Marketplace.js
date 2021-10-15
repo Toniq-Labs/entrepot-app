@@ -14,6 +14,20 @@ const txfee = 10000;
 const txmin = 100000;
 const collections = [
   {
+    canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
+    name: "ICTuTs",
+    route: "ictuts",
+    mature: false,
+    commission: 0.025,
+    comaddress:
+      "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
+    blurb: (
+      <>
+        We will have all of the 10,000 NFTs available for sale at launch, there will be 5 pirce tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.
+      </>
+    ),
+  },
+  {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
     route: "cronics",

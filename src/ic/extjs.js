@@ -14,6 +14,7 @@ import icpunksIDL from './candid/icpunks.did.js';
 import logIDL from './candid/log.did.js';
 import icdripIDL from './candid/icdrip.did.js';
 import icpuppy from './candid/icpuppy.js';
+import ictuts from './candid/ictuts.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -74,6 +75,7 @@ class ExtConnection {
     "d3ttm-qaaaa-aaaai-qam4a-cai" : icdripIDL,
     "3db6u-aiaaa-aaaah-qbjbq-cai" : wrapperIDL,
     "njgly-uaaaa-aaaah-qb6pa-cai" : icpuppy,
+    "ahl3d-xqaaa-aaaaj-qacca-cai" : ictuts,
     "xkbqi-2qaaa-aaaah-qbpqq-cai" : icpunksIDL,
     "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
   };
