@@ -288,7 +288,7 @@ export default function Sale(props) {
   const [loaded, setLoaded] = React.useState(false);
   const [sold, setSold] = React.useState(0);
   const [unsold, setUnsold] = React.useState(9937);
-  var publicPrice = 150000000n;
+  var publicPrice = 300000000n;
   const [whitelistPrice, setWhitelistPrice] = React.useState(publicPrice);
   const params = useParams();
   const handleDrawerToggle = () => {
@@ -388,9 +388,9 @@ export default function Sale(props) {
   const buyFromSale = async (qty) => {
     var ps = {
       1 : whitelistPrice,
-      5 : 750000000n,
-      10 : 1500000000n,
-      20 : 3000000000n,
+      5 : 1500000000n,
+      10 : 3000000000n,
+      20 : 6000000000n,
     };
     var price = ps[qty];
     if (balance < (price + 10000n)){
@@ -582,13 +582,13 @@ export default function Sale(props) {
             </Grid>
             <Grid className={classes.stat} item xs={3}>
               <strong>CURRENT PRICE</strong><br />
-              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(150000000n)} ICP</span>
+              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(whitelistPrice)} ICP</span>
             </Grid>
             <Grid className={classes.stat} item xs={3}>
               <strong>NEXT PRICE</strong><br />
               {Date.now() < 1634421600000  ?
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(300000000n)} ICP</span>:
-              <span style={{fontWeight:"bold",color:"#red",fontSize:"2em"}}>BURN</span>}
+              <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>BURN</span>}
             </Grid>
             <Grid className={classes.stat} item xs={3}>
               {Date.now() <= 1634508000000  ?
@@ -599,7 +599,7 @@ export default function Sale(props) {
               :
                 <>
                   <strong>TOTAL BURNT</strong><br />
-                  <span style={{fontWeight:"bold",color:"#red",fontSize:"2em"}}>{unsold}</span>                
+                  <span style={{fontWeight:"bold",color:"red",fontSize:"2em"}}>{unsold}</span>                
                 </>
               }
             </Grid>
@@ -626,7 +626,7 @@ export default function Sale(props) {
                     onClick={() => buyFromSale(1)}
                     style={{ fontWeight: "bold", margin: "0 auto" }}
                   >
-                    Buy 1 ICTuT<br />for {_showListingPrice(150000000n)} ICP
+                    Buy 1 ICTuT<br />for {_showListingPrice(whitelistPrice)} ICP
                   </Button>
                   </Grid>
                     <Grid className={classes.stat} item sm={3}>
@@ -636,7 +636,7 @@ export default function Sale(props) {
                     onClick={() => buyFromSale(5)}
                     style={{ fontWeight: "bold", margin: "0 auto" }}
                   >
-                    Buy 5 ICTuT<br />for {_showListingPrice(150000000n*5n)} ICP
+                    Buy 5 ICTuT<br />for {_showListingPrice(whitelistPrice*5n)} ICP
                   </Button>
                   </Grid>
                     <Grid className={classes.stat} item sm={3}>
@@ -646,7 +646,7 @@ export default function Sale(props) {
                     onClick={() => buyFromSale(10)}
                     style={{ fontWeight: "bold", margin: "0 auto" }}
                   >
-                    Buy 10 ICTuT<br />for {_showListingPrice(150000000n*10n)} ICP
+                    Buy 10 ICTuT<br />for {_showListingPrice(whitelistPrice*10n)} ICP
                   </Button>
                   </Grid>
                     <Grid className={classes.stat} item sm={3}>
@@ -656,7 +656,7 @@ export default function Sale(props) {
                     onClick={() => buyFromSale(20)}
                     style={{ fontWeight: "bold", margin: "0 auto" }}
                   >
-                    Buy 20 ICTuT<br />for {_showListingPrice(150000000n*20n)} ICP
+                    Buy 20 ICTuT<br />for {_showListingPrice(whitelistPrice*20n)} ICP
                   </Button>
                   </Grid>
                   </Grid>
