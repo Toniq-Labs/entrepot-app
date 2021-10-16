@@ -605,11 +605,11 @@ export default function Sale(props) {
             </Grid>
           </Grid>
           {Date.now() < 1634421600000  ?
-            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>The price will increase in <Timestamp relative autoUpdate date={1634421600}/></span></strong></p>
+            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>The price will increase <Timestamp relative autoUpdate date={1634421600}/></span></strong></p>
           :
           <>
           {Date.now() < 1634508000000  ?
-            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>All remaining ICTuTs will be burnt in <Timestamp relative autoUpdate date={1634508000}/></span></strong></p>
+            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>All remaining ICTuTs will be burnt <Timestamp relative autoUpdate date={1634508000}/></span></strong></p>
           :""}
           </>
           }
