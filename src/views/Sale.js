@@ -6,6 +6,7 @@ import Listings from "../components/Listings";
 import Wallet from "../components/Wallet";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Timestamp from "react-timestamp";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../components/Sidebar";
 import { useParams } from "react-router";
@@ -295,9 +296,7 @@ export default function Sale(props) {
   };
   
   const _updates = async () => {
-    if (!address) return;
-    var stats = await api.token("ahl3d-xqaaa-aaaaj-qacca-cai").call.salesStats(address);
-    if (!loaded) setLoaded(true);
+    var stats = await api.token("ahl3d-xqaaa-aaaaj-qacca-cai").call.salesStats("");
     setSalesOnline(stats[0]);
     setUnsold(Number(stats[1]));
     setSold(Number(stats[2]));
@@ -575,94 +574,101 @@ export default function Sale(props) {
           </div>
           
           <h1>Welcome to the ICTuTs Official Sale!</h1>
+          <p><strong>We will have all of the 10,000 NFTs available for sale at launch, there will be 5 pirce tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.</strong></p>
           <Grid container spacing={2} style={{}}>
-            <Grid className={classes.stat} item xs={4}>
+            <Grid className={classes.stat} item xs={3}>
               <strong>TOTAL SOLD</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{sold}</span>
             </Grid>
-            <Grid className={classes.stat} item xs={4}>
-              <strong>PUBLIC PRICE</strong><br />
+            <Grid className={classes.stat} item xs={3}>
+              <strong>CURRENT PRICE</strong><br />
               <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(150000000n)} ICP</span>
             </Grid>
-            <Grid className={classes.stat} item xs={4}>
-              <strong>TOTAL UNSOLD</strong><br />
-              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{unsold}</span>
+            <Grid className={classes.stat} item xs={3}>
+              <strong>NEXT PRICE</strong><br />
+              {Date.now() < 1634421600000  ?
+              <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(300000000n)} ICP</span>:
+              <span style={{fontWeight:"bold",color:"#red",fontSize:"2em"}}>BURN</span>}
             </Grid>
-          </Grid>
-          <br />
-          <br />
-          <p><strong>We will have all of the 10,000 NFTs available for sale at launch, there will be 5 pirce tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.</strong></p>
-          {!address ?
-            <>
-              <p><strong><span style={{color:"red"}}>Please login to access this sale</span></strong></p>
-            </>
-            :
-            <>
-              {!loaded ? 
+            <Grid className={classes.stat} item xs={3}>
+              {Date.now() <= 1634508000000  ?
                 <>
-                  <p><strong><span style={{color:"red"}}>Please wait while we load the sale page...</span></strong></p>
+                  <strong>TOTAL UNSOLD</strong><br />
+                  <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{unsold}</span>
                 </>
-                :
+              :
                 <>
-                {salesOnline ? 
-                  <>
-                    <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
-                    <Grid container spacing={2} style={{}}>
-                      <Grid className={classes.stat} item sm={3}>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={() => buyFromSale(1)}
-                      style={{ fontWeight: "bold", margin: "0 auto" }}
-                    >
-                      Buy 1 ICTuT<br />for {_showListingPrice(150000000n)} ICP
-                    </Button>
-                    </Grid>
-                      <Grid className={classes.stat} item sm={3}>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={() => buyFromSale(5)}
-                      style={{ fontWeight: "bold", margin: "0 auto" }}
-                    >
-                      Buy 5 ICTuT<br />for {_showListingPrice(150000000n*5n)} ICP
-                    </Button>
-                    </Grid>
-                      <Grid className={classes.stat} item sm={3}>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={() => buyFromSale(10)}
-                      style={{ fontWeight: "bold", margin: "0 auto" }}
-                    >
-                      Buy 10 ICTuT<br />for {_showListingPrice(150000000n*10n)} ICP
-                    </Button>
-                    </Grid>
-                      <Grid className={classes.stat} item sm={3}>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={() => buyFromSale(20)}
-                      style={{ fontWeight: "bold", margin: "0 auto" }}
-                    >
-                      Buy 20 ICTuT<br />for {_showListingPrice(150000000n*20n)} ICP
-                    </Button>
-                    </Grid>
-                    </Grid>
-                    
-                    </>
-                  :
-                    <>
-                    <p><strong><span style={{color:"red"}}>Sorry, the sale is now over! You can grab your ICTuT from the marketplace soon!</span></strong></p>
-                    </>
-                  }
+                  <strong>TOTAL BURNT</strong><br />
+                  <span style={{fontWeight:"bold",color:"#red",fontSize:"2em"}}>{unsold}</span>                
                 </>
               }
-            </>
+            </Grid>
+          </Grid>
+          {Date.now() < 1634421600000  ?
+            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>The price will increase in <Timestamp relative autoUpdate date={1634421600}/></span></strong></p>
+          :
+          <>
+          {Date.now() < 1634508000000  ?
+            <p><strong><span style={{fontSize:"1.5em",color:"red"}}>All remaining ICTuTs will be burnt in <Timestamp relative autoUpdate date={1634508000}/></span></strong></p>
+          :""}
+          </>
           }
-          
-          
-
+          <br />
+          <br />
+            <>
+              {salesOnline && Date.now() < 1634508000000 ? 
+                <>
+                  <Grid container spacing={2} style={{}}>
+                    <Grid className={classes.stat} item sm={3}>
+                  <Button
+                    variant={"contained"}
+                    color={"primary"}
+                    onClick={() => buyFromSale(1)}
+                    style={{ fontWeight: "bold", margin: "0 auto" }}
+                  >
+                    Buy 1 ICTuT<br />for {_showListingPrice(150000000n)} ICP
+                  </Button>
+                  </Grid>
+                    <Grid className={classes.stat} item sm={3}>
+                  <Button
+                    variant={"contained"}
+                    color={"primary"}
+                    onClick={() => buyFromSale(5)}
+                    style={{ fontWeight: "bold", margin: "0 auto" }}
+                  >
+                    Buy 5 ICTuT<br />for {_showListingPrice(150000000n*5n)} ICP
+                  </Button>
+                  </Grid>
+                    <Grid className={classes.stat} item sm={3}>
+                  <Button
+                    variant={"contained"}
+                    color={"primary"}
+                    onClick={() => buyFromSale(10)}
+                    style={{ fontWeight: "bold", margin: "0 auto" }}
+                  >
+                    Buy 10 ICTuT<br />for {_showListingPrice(150000000n*10n)} ICP
+                  </Button>
+                  </Grid>
+                    <Grid className={classes.stat} item sm={3}>
+                  <Button
+                    variant={"contained"}
+                    color={"primary"}
+                    onClick={() => buyFromSale(20)}
+                    style={{ fontWeight: "bold", margin: "0 auto" }}
+                  >
+                    Buy 20 ICTuT<br />for {_showListingPrice(150000000n*20n)} ICP
+                  </Button>
+                  </Grid>
+                  </Grid>
+                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our Terms of Service</p>
+                  
+                  </>
+                :
+                  <>
+                  <p><strong><span style={{color:"red"}}>Sorry, the sale is now over! You can grab your ICTuT from the marketplace soon!</span></strong></p>
+                  </>
+                }
+              </>
           </div>
         </div>
       </main>
