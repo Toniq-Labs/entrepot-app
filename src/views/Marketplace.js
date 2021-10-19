@@ -33,6 +33,8 @@ const collections = [
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
       <>
+        <p><strong>The Cronic's Marketplace is offline during our Public Sale (starting 18.10 3PM UTC). Please head over to the <a href="https://cronic.toniqlabs.com/" target="_blank">Cronic Dashboard</a> if you would like to participate. The marketplace will be online as soon as the sales conclude. You can still delist your Cronics during this time</strong></p>
+        <a href="https://cronic.toniqlabs.com/" target="_blank"><img style={{maxWidth:800}} src="https://cronic.toniqlabs.com/banner.png" /></a>
         Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the
         Internet Computer. Cronics incorporates breeding mechanics, wearable
         NFTs and a p2e minigame ecosystem and more. Join the{" "}
