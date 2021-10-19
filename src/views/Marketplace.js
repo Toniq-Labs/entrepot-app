@@ -21,11 +21,7 @@ const collections = [
     commission: 0.025,
     comaddress:
       "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
-    blurb: (
-      <>
-        We will have all of the 10,000 NFTs available for sale at launch, there will be 5 price tiers (Thirty NFTs will be reserved for the creators). We will try to distrube them fairly as possible by whitelisting.
-      </>
-    ),
+    blurb: false,
   },
   {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
@@ -53,6 +49,16 @@ const collections = [
         </a>
       </>
     ),
+  },
+  {
+    canister: "sr4qi-vaaaa-aaaah-qcaaq-cai",
+    name: "Internet Astronauts",
+    route: "interastrosc",
+    mature: false,
+    commission: 0.035,
+    comaddress:
+      "2be01f5e8f081c6e8784b087fb1a88dac92fdd29203c1e456a6e90950c6e6e21",
+    blurb: (<>Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.<br /><br />Holders will receive the Space Center membership where they can have fun. It lives on the Internet Computer Platform!</>),
   },
   {
     canister: "nbg4r-saaaa-aaaah-qap7a-cai",
