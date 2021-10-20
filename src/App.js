@@ -9,6 +9,7 @@ import { Route, Switch } from "react-router-dom";
 import Detail from "./components/Detail";
 import Marketplace from "./views/Marketplace";
 import Sale from "./views/Sale";
+import Mint from "./views/Mint";
 import Create from "./views/Create";
 import Home from "./views/Home";
 import Contact from "./views/Contact";
@@ -98,7 +99,14 @@ export default function App() {
             loader={loader}
           />
         </Route>
-        
+        <Route path="/mint" exact>
+          <Mint
+            error={error}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
         <Route path="/sale/ictuts" exact>
           <Sale
             error={error}

@@ -15,6 +15,8 @@ import logIDL from './candid/log.did.js';
 import icdripIDL from './candid/icdrip.did.js';
 import icpuppy from './candid/icpuppy.js';
 import ictuts from './candid/ictuts.js';
+import mintregister from './candid/mintregister.did.js';
+import nftIDL from './candid/nft.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -58,6 +60,7 @@ const _preloadedIdls = {
   'hzld' : hzldIDL,
   'nns' : nnsIDL,
   'ext' : extIDL,
+  'nft' : nftIDL,
   'default' : extIDL,
 };
 
@@ -78,6 +81,7 @@ class ExtConnection {
     "ahl3d-xqaaa-aaaaj-qacca-cai" : ictuts,
     "xkbqi-2qaaa-aaaah-qbpqq-cai" : icpunksIDL,
     "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
+    "33uhc-liaaa-aaaah-qcbra-cai" : mintregister,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
