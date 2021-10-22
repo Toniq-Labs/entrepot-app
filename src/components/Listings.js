@@ -320,14 +320,7 @@ export default function Listings(props) {
               ) : (
                 ""
               )}
-              {[
-                "3db6u-aiaaa-aaaah-qbjbq-cai",
-                "bxdf4-baaaa-aaaah-qaruq-cai",
-                "e3izy-jiaaa-aaaah-qacbq-cai",
-                "nbg4r-saaaa-aaaah-qap7a-cai",
-                "njgly-uaaaa-aaaah-qb6pa-cai",
-                "ahl3d-xqaaa-aaaaj-qacca-cai",
-              ].indexOf(collection?.canister) >= 0 ? (
+              {collection?.nftv ? (
                 <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
               ) : (
                 ""

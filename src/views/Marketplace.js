@@ -18,6 +18,7 @@ const collections = [
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
     name: "ICTuTs",
     route: "ictuts",
+    nftv : true,
     mature: false,
     commission: 0.025,
     comaddress:
@@ -28,6 +29,7 @@ const collections = [
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
     route: "cronics",
+    nftv : true,
     mature: false,
     commission: 0.025,
     comaddress:
@@ -57,6 +59,7 @@ const collections = [
     canister: "sr4qi-vaaaa-aaaah-qcaaq-cai",
     name: "Internet Astronauts",
     route: "interastrosc",
+    nftv : true,
     mature: false,
     commission: 0.035,
     comaddress:
@@ -67,6 +70,7 @@ const collections = [
     canister: "nbg4r-saaaa-aaaah-qap7a-cai",
     name: "Starverse",
     route: "starverse",
+    nftv : true,
     mature: false,
     commission: 0.025,
     comaddress:
@@ -77,6 +81,7 @@ const collections = [
     canister: "njgly-uaaaa-aaaah-qb6pa-cai",
     name: "ICPuppies",
     route: "icpuppies",
+    nftv : true,
     mature: false,
     commission: 0.035,
     comaddress:
@@ -102,6 +107,7 @@ const collections = [
     canister: "bxdf4-baaaa-aaaah-qaruq-cai",
     name: "ICPunks",
     route: "icpunks",
+    nftv : true,
     mature: false,
     commission: 0.035,
     comaddress:
@@ -128,6 +134,7 @@ const collections = [
     canister: "3db6u-aiaaa-aaaah-qbjbq-cai",
     name: "IC Drip",
     route: "icdrip",
+    nftv : true,
     mature: false,
     commission: 0.025,
     comaddress:
@@ -152,6 +159,7 @@ const collections = [
     canister: "73xld-saaaa-aaaah-qbjya-cai",
     name: "Wing",
     route: "wing",
+    nftv : false,
     mature: true,
     commission: 0.025,
     comaddress:
@@ -177,6 +185,7 @@ const collections = [
     canister: "kss7i-hqaaa-aaaah-qbvmq-cai",
     name: "ICelebrity",
     route: "icelebrity",
+    nftv : false,
     mature: false,
     commission: 0.035,
     comaddress:
@@ -187,6 +196,7 @@ const collections = [
     canister: "k4qsa-4aaaa-aaaah-qbvnq-cai",
     name: "Faceted Meninas",
     route: "faceted-meninas",
+    nftv : false,
     mature: false,
     commission: 0.02,
     comaddress:
@@ -202,6 +212,7 @@ const collections = [
   {
     canister: "uzhxd-ziaaa-aaaah-qanaq-cai",
     name: "ICP News",
+    nftv : false,
     mature: false,
     route: "icp-news",
     commission: 0.02,
@@ -213,6 +224,7 @@ const collections = [
     canister: "tde7l-3qaaa-aaaah-qansa-cai",
     name: "Cronic Wearables",
     route: "wearables",
+    nftv : false,
     mature: false,
     commission: 0.025,
     comaddress:
@@ -223,6 +235,7 @@ const collections = [
     canister: "gevsk-tqaaa-aaaah-qaoca-cai",
     name: "ICmojis",
     route: "icmojis",
+    nftv : false,
     mature: false,
     commission: 0.02,
     comaddress:
@@ -233,6 +246,7 @@ const collections = [
     canister: "owuqd-dyaaa-aaaah-qapxq-cai",
     name: "ICPuzzle",
     route: "icpuzzle",
+    nftv : false,
     mature: true,
     commission: 0.02,
     comaddress:
@@ -243,6 +257,7 @@ const collections = [
     canister: "q6hjz-kyaaa-aaaah-qcama-cai",
     name: "ICPBunny",
     route: "icpbunny",
+    nftv : false,
     mature: false,
     commission: 0.025,
     comaddress:
