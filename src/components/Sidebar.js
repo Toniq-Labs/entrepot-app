@@ -24,6 +24,7 @@ import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
+import { useHistory } from "react-router";
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -64,7 +65,9 @@ const _showListingPrice = n => {
   return n.toFixed(8).replace(/0{1,6}$/, '');
 };
 var intv = false;
+var loadedAccount = false;
 export default function Sidebar(props) {
+  const history = useHistory();
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -78,6 +81,14 @@ export default function Sidebar(props) {
     await refresh(); 
     props.loader(false);
   };
+  const selectAccount = (t) => {
+    setBalance(false);
+    setMyCollections(false);
+    props.setBalance(false)
+    props.changeAccount(t);
+    setAnchorElLogin(null)
+    loadedAccount = t;
+  };
   const login = (t) => {
    props.login(t); 
    setAnchorElLogin(null)
@@ -88,6 +99,7 @@ export default function Sidebar(props) {
   const refresh = async () => {
     if (props.account){
       var b = await api.token().getBalance(props.account.address);
+      var thisacc = loadedAccount;
       setBalance(b);
       var collection, mcs = [];
       for(var i = 0; i < props.collections.length; i++) {
@@ -113,8 +125,10 @@ export default function Sidebar(props) {
             count : tokens.length
           });
         }
+
       };
-      setMyCollections(mcs);
+      if (thisacc == loadedAccount) setMyCollections(mcs);
+      else setMyCollections(false);
     }
   };
   useInterval(refresh, 30 *1000);
@@ -123,13 +137,16 @@ export default function Sidebar(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
+    setMyCollections(false);
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
   React.useEffect(() => {
     props.setBalance(balance);
   }, [balance]);
-  
+  React.useEffect(() => {
+    loadedAccount = props.currentAccount;
+  }, [props.currentAccount]);
   const accountsList = (
     <div style={{marginTop:73, marginBottom: 100}}>
       <Button variant={"contained"} onClick={props.onClose} color={"primary"} style={{fontWeight:"bold", margin:"0 auto", position:"absolute", top:"18px", left:"15px", right:"15px", width:"270px"}}>Close Wallet</Button>
@@ -153,16 +170,6 @@ export default function Sidebar(props) {
               <IconButton style={{marginTop:"-5px"}} size="small" onClick={refreshClick} edge="end">
                 <CachedIcon />
               </IconButton>
-              {/*<Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-              </Menu>*/}
             </>}
             secondary={<>
               {props.account.address.substr(0,20)+"..."}
@@ -185,6 +192,23 @@ export default function Sidebar(props) {
           {(balance !== false ? _showListingPrice(balance)+" ICP" : "Loading...")}
           </Typography>
         </ListItem>
+        {props.accounts.length > 1 ?
+        <ListItem>
+          <Button onClick={(e) => setAnchorElLogin(e.currentTarget)} fullWidth variant="outlined" color="primary" style={{fontWeight:"bold"}}>Change Accounts</Button>
+          <Menu
+            anchorEl={anchorElLogin}
+            keepMounted
+            open={Boolean(anchorElLogin)}
+            onClose={() => setAnchorElLogin(null)}
+          >
+            {props.accounts.map((account, i) => {
+            if (account.address == props.account.address) return [];
+            return (<MenuItem key={i} onClick ={()=> selectAccount(i)}>
+             <Avatar style={{width:20, height: 20, marginRight:5}}><Blockie address={account.address} /></Avatar> <ListItemText primary={account.name} />
+            </MenuItem>)
+            })}
+          </Menu>
+        </ListItem> : "" }
         <ListItem>
           <Button onClick={props.logout} fullWidth variant="contained" color="secondary" style={{fontWeight:"bold",color:"white"}}>Logout</Button>
         </ListItem>
@@ -203,10 +227,6 @@ export default function Sidebar(props) {
           <Button onClick={(e) => setAnchorElLogin(e.currentTarget)} fullWidth variant="contained" color="primary" style={{fontWeight:"bold",color:"black"}}> Connect your Wallet</Button>
           <Menu
             anchorEl={anchorElLogin}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
             keepMounted
             open={Boolean(anchorElLogin)}
             onClose={() => setAnchorElLogin(null)}
@@ -232,10 +252,10 @@ export default function Sidebar(props) {
       <List>
         <ListSubheader>
           My Collections
-          {props.view !== false ?
+          {props.view === "wallet" ?
           <ListItemSecondaryAction>
             <ListItemIcon>
-              <Button color={"primary"} variant={"contained"} onClick={() => props.setView(false)} style={{marginTop:"3px", marginLeft:"30px"}} size="small" edge="end">
+              <Button color={"primary"} variant={"contained"} onClick={() => history.push("/marketplace/"+props.collection.route)} style={{marginTop:"3px", marginLeft:"30px"}} size="small" edge="end">
                 Back
               </Button>
             </ListItemIcon>
@@ -249,15 +269,15 @@ export default function Sidebar(props) {
             <ListItem>No collections owned</ListItem>
           :
             <>
-              {myCollections.map(collection => {
-                return (<ListItem key={collection.canister + "-" + collection.count} selected={props.view === collection.canister} button onClick={() => props.setView(collection)}>
+              {myCollections.map(_collection => {
+                return (<ListItem key={_collection.canister + "-" + _collection.count} selected={props.view === "wallet" && _collection.route == props.collection?.route} button onClick={() => history.push("/wallet/"+_collection.route)}>
                   <ListItemAvatar>
                     <Avatar>
-                      <img alt={collection.name} src={"/collections/"+collection.canister+".jpg"} style={{height:64}} />
+                      <img alt={_collection.name} src={"/collections/"+_collection.canister+".jpg"} style={{height:64}} />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText>{collection.name}</ListItemText>
-                  <ListItemSecondaryAction><Chip label={collection.count} variant="outlined" /></ListItemSecondaryAction>
+                  <ListItemText>{_collection.name}</ListItemText>
+                  <ListItemSecondaryAction><Chip label={_collection.count} variant="outlined" /></ListItemSecondaryAction>
                 </ListItem>)
               })}
             </>
@@ -266,7 +286,7 @@ export default function Sidebar(props) {
         }
       </List> </>: ""}
       
-      <div style={{width: drawerWidth-1, zIndex: 10, backgroundColor:'white', position:"fixed", bottom:0, textAlign:'center'}} >
+      <div style={{width: drawerWidth-1, zIndex: 10, height: 60, backgroundColor:'white', position:"fixed", bottom:0, textAlign:'center'}} >
         <span style={{position:'absolute', bottom:'10px', left:'0', right:'0'}}>Developed by ToniqLabs<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></span>
       </div>
     </div>

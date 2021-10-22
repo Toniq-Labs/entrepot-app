@@ -8,7 +8,6 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import { Route, Switch } from "react-router-dom";
 import Detail from "./components/Detail";
 import Marketplace from "./views/Marketplace";
-import Sale from "./views/Sale";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
 import Home from "./views/Home";
@@ -94,6 +93,25 @@ export default function App() {
         <Route path="/marketplace/:route" exact>
           <Marketplace
             error={error}
+            view={"listings"}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
+        <Route path="/wallet/:route" exact>
+          <Marketplace
+            error={error}
+            view={"wallet"}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
+        <Route path="/sale/ictuts" exact>
+          <Marketplace
+            error={error}
+            view={"sale"}
             alert={alert}
             confirm={confirm}
             loader={loader}
@@ -101,14 +119,6 @@ export default function App() {
         </Route>
         <Route path="/mint" exact>
           <Mint
-            error={error}
-            alert={alert}
-            confirm={confirm}
-            loader={loader}
-          />
-        </Route>
-        <Route path="/sale/ictuts" exact>
-          <Sale
             error={error}
             alert={alert}
             confirm={confirm}

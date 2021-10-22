@@ -4,6 +4,7 @@ import extjs from "../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Listings from "../components/Listings";
 import Wallet from "../components/Wallet";
+import Sale from "../components/Sale";
 import Button from "@material-ui/core/Button";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../components/Sidebar";
@@ -277,18 +278,17 @@ export default function Marketplace(props) {
   const [balance, setBalance] = React.useState(0);
   const [accounts, setAccounts] = React.useState(false);
   const [currentAccount, setCurrentAccount] = React.useState(0);
-  const [view, setView] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const params = useParams();
-
+  const [collection, setCollection] = React.useState(collections.find(e => e.route === params?.route));
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
   const _updates = async () => {
     await processPayments();
   };
   const processPayments = async () => {
+    if (!identity) return;
     if (processingPayments) return;
     processingPayments = true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
@@ -367,6 +367,7 @@ export default function Marketplace(props) {
     StoicIdentity.disconnect();
     setIdentity(false);
     setAccounts([]);
+    setBalance(0);
   };
   const login = async (t) => {
     props.loader(true, "Connecting your wallet...");
@@ -422,6 +423,10 @@ export default function Marketplace(props) {
   };
 
   useInterval(_updates, 60 * 1000);
+  React.useEffect(() => {
+    console.log(params?.route);
+    setCollection(collections.find(e => e.route === params?.route));
+  }, [params.route]);
   React.useEffect(() => {
     var t = localStorage.getItem("_loginType");
     if (t) {
@@ -491,16 +496,17 @@ export default function Marketplace(props) {
     <>
       <Navbar />
       <Sidebar
+        view={props.view}
         setBalance={setBalance}
         identity={identity}
-        view={view}
-        setView={setView}
         account={accounts.length > 0 ? accounts[currentAccount] : false}
         loader={props.loader}
         logout={logout}
         login={login}
         collections={collections}
+        collection={collection}
         currentAccount={currentAccount}
+        changeAccount={setCurrentAccount}
         accounts={accounts}
         onClose={handleDrawerToggle}
         open={mobileOpen}
@@ -517,31 +523,52 @@ export default function Marketplace(props) {
           >
             View Wallet
           </Button>
-          {view === false ? (
+          {props.view === "listings" ? (
             <Listings
+              view={"listings"}
               balance={balance}
-              identity={identity}
-              confirm={props.confirm}
-              account={accounts.length > 0 ? accounts[currentAccount] : false}
-              loggedIn={loggedIn}
-              collections={collections}
-              loader={props.loader}
-              alert={props.alert}
-              error={props.error}
-              currentRoute={params?.route}
-            />
-          ) : (
-            ""
-          )}
-          {view !== false ? (
-            <Wallet
               identity={identity}
               confirm={props.confirm}
               currentAccount={currentAccount}
               account={accounts.length > 0 ? accounts[currentAccount] : false}
               loggedIn={loggedIn}
               collections={collections}
-              collection={view}
+              collection={collection}
+              loader={props.loader}
+              alert={props.alert}
+              error={props.error}
+            />
+          ) : (
+            ""
+          )}
+          {props.view === "wallet" ? (
+            <Wallet
+              view={"wallet"}
+              identity={identity}
+              confirm={props.confirm}
+              currentAccount={currentAccount}
+              account={accounts.length > 0 ? accounts[currentAccount] : false}
+              loggedIn={loggedIn}
+              collections={collections}
+              collection={collection}
+              loader={props.loader}
+              alert={props.alert}
+              error={props.error}
+            />
+          ) : (
+            ""
+          )}
+          {props.view === "sale" ? (
+            <Sale
+              view={"wallet"}
+              identity={identity}
+              balance={balance}
+              confirm={props.confirm}
+              currentAccount={currentAccount}
+              account={accounts.length > 0 ? accounts[currentAccount] : false}
+              loggedIn={loggedIn}
+              collections={collections}
+              collection={collection}
               loader={props.loader}
               alert={props.alert}
               error={props.error}

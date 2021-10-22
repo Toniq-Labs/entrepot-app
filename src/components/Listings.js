@@ -61,7 +61,7 @@ export default function Listings(props) {
   const [showing, setShowing] = useState("all");
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
-  const [collection, setCollection] = useState(props?.collections.find((ele) => ele.route === props.currentRoute)?.canister);
+  const [collection, setCollection] = useState(props.collection);
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
   const history = useHistory();
@@ -71,20 +71,14 @@ export default function Listings(props) {
     setWearableFilter(event.target.value);
   };
   useEffect(() => {
-    const temp = props?.collections.find(
-      (ele) => ele.route === props?.currentRoute
-    );
-    _changeCollection(temp?.canister);
-  }, [props.currentRoute]);
+    if (props.collection) _changeCollection(props.collection);
+  }, [props.collection]);
 
   const changeCollection = async (event) => {
-    const obj = props.collections.find(
-      (ele) => ele.canister === event.target.value
-    );
-    history.push(`/marketplace/${obj.route}`);
-
+    const _collection = props.collections.find(e => e.canister === event.target.value);
+    history.push(`/marketplace/${collection.route}`);
     event.preventDefault();
-    _changeCollection(event.target.value);
+    _changeCollection(_collection);
   };
   
   const _changeCollection = async c => {
@@ -96,7 +90,7 @@ export default function Listings(props) {
     setTransactions(false);
     setPage(1);
     props.loader(true);
-    await refresh("all", c);
+    await refresh("all", c.canister);
     props.loader(false);
   };
   const changeSort = (event) => {
@@ -130,19 +124,19 @@ export default function Listings(props) {
     }
     refresh(event.target.value);
   };
-  const buy = async (collection, listing) => {
+  const buy = async (canisterId, listing) => {
     if (props.balance < listing[1].price + 10000n)
       return props.alert(
         "There was an error",
         "Your balance is insufficient to complete this transaction"
       );
-    var tokenid = extjs.encodeTokenId(collection, listing[0]);
+    var tokenid = extjs.encodeTokenId(canisterId, listing[0]);
     try {
       var img =
-        collection === "bxdf4-baaaa-aaaah-qaruq-cai"
+        canisterId === "bxdf4-baaaa-aaaah-qaruq-cai"
           ? "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
             listing[0]
-          : "https://" + collection + ".raw.ic0.app/?tokenid=" + tokenid;
+          : "https://" + canisterId + ".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
       var answer = await buyForm(_showListingPrice(listing[1].price), img);
       if (!answer) {
         return props.loader(false);
@@ -150,7 +144,7 @@ export default function Listings(props) {
       props.loader(true, "Locking NFT...");
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister(collection)
+        .canister(canisterId)
         .lock(
           tokenid,
           listing[1].price,
@@ -164,7 +158,7 @@ export default function Listings(props) {
         .token()
         .transfer(
           props.identity.getPrincipal(),
-          0,
+          props.currentAccount,
           paytoaddress,
           listing[1].price,
           10000
@@ -173,7 +167,7 @@ export default function Listings(props) {
       while (true) {
         try {
           props.loader(true, "Settling purchase...");
-          r3 = await api.canister(collection).settle(tokenid);
+          r3 = await api.canister(canisterId).settle(tokenid);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -194,7 +188,7 @@ export default function Listings(props) {
   };
   const applyFilters = (a) => {
     if (
-      collection === "tde7l-3qaaa-aaaah-qansa-cai" &&
+      collection?.canister === "tde7l-3qaaa-aaaah-qansa-cai" &&
       wearableFilter !== "all"
     ) {
       var map = ["accessories", "hats", "eyewear", "pets"];
@@ -210,7 +204,7 @@ export default function Listings(props) {
 
   const refresh = async (s, c) => {
     s = s ?? showing;
-    c = c ?? collection;
+    c = c ?? collection?.canister;
     if (s === "all") {
       var listings = await api.canister(c).listings();
       setListings(applyFilters(listings));
@@ -264,17 +258,17 @@ export default function Listings(props) {
                 paddingBottom: 0,
                 color: "#00d092",
               }}
-              value={collection}
+              value={collection?.canister}
               onChange={changeCollection}
             >
-              {props.collections.map((collection) => {
+              {props.collections.map((_collection) => {
                 return (
                   <MenuItem
-                    key={collection.canister}
-                    value={collection.canister}
+                    key={_collection.canister}
+                    value={_collection.canister}
                   >
-                    {collection.name}
-                    {collection.mature ? (
+                    {_collection.name}
+                    {_collection.mature ? (
                       <Chip
                         style={{ marginLeft: "10px" }}
                         variant="outlined"
@@ -292,7 +286,7 @@ export default function Listings(props) {
         </h1>
 
         <p style={{ fontSize: "1.2em" }}>
-          {props.collections.find((c) => c.canister === collection).blurb}
+          {collection?.blurb}
         </p>
       </div>
       <>
@@ -321,7 +315,7 @@ export default function Listings(props) {
               [
                 "e3izy-jiaaa-aaaah-qacbq-cai",
                 "nbg4r-saaaa-aaaah-qap7a-cai",
-              ].indexOf(collection) >= 0 ? (
+              ].indexOf(collection?.canister) >= 0 ? (
                 <MenuItem value={"type"}>Rare Type</MenuItem>
               ) : (
                 ""
@@ -333,7 +327,7 @@ export default function Listings(props) {
                 "nbg4r-saaaa-aaaah-qap7a-cai",
                 "njgly-uaaaa-aaaah-qb6pa-cai",
                 "ahl3d-xqaaa-aaaaj-qacca-cai",
-              ].indexOf(collection) >= 0 ? (
+              ].indexOf(collection?.canister) >= 0 ? (
                 <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
               ) : (
                 ""
@@ -348,7 +342,7 @@ export default function Listings(props) {
           </FormControl>
 
           {showing === "all" &&
-          ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection) >= 0 ? (
+          ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
             <FormControl style={{ minWidth: 120 }}>
               <InputLabel>Wearable Type</InputLabel>
               <Select value={wearableFilter} onChange={changeWearableFilter}>
@@ -431,8 +425,8 @@ export default function Listings(props) {
                                 return Number(b[1].price) - Number(a[1].price);
                               case "gri":
                                 return (
-                                  Number(getNri(collection, b[0])) * 100 -
-                                  Number(getNri(collection, a[0])) * 100
+                                  Number(getNri(collection?.canister, b[0])) * 100 -
+                                  Number(getNri(collection?.canister, a[0])) * 100
                                 );
                               case "recent":
                                 return 1;
@@ -443,7 +437,7 @@ export default function Listings(props) {
                               case "type":
                                 var _a, _b, d;
                                 if (
-                                  collection === "nbg4r-saaaa-aaaah-qap7a-cai"
+                                  collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai"
                                 ) {
                                   _a = a[2].nonfungible.metadata[0][0];
                                   _b = b[2].nonfungible.metadata[0][0];
@@ -482,9 +476,9 @@ export default function Listings(props) {
                           .map((listing, i) => {
                             return (
                               <Listing
-                                gri={getNri(collection, listing[0])}
+                                gri={getNri(collection?.canister, listing[0])}
                                 loggedIn={props.loggedIn}
-                                collection={collection}
+                                collection={collection?.canister}
                                 buy={buy}
                                 key={listing[0] + "-" + i}
                                 listing={listing}
@@ -545,14 +539,14 @@ export default function Listings(props) {
                                 return (
                                   Number(
                                     getNri(
-                                      collection,
+                                      collection?.canister,
                                       extjs.decodeTokenId(b.token).index
                                     )
                                   ) *
                                     100 -
                                   Number(
                                     getNri(
-                                      collection,
+                                      collection?.canister,
                                       extjs.decodeTokenId(a.token).index
                                     )
                                   ) *
@@ -579,11 +573,11 @@ export default function Listings(props) {
                             return (
                               <Sold
                                 gri={getNri(
-                                  collection,
+                                  collection?.canister,
                                   extjs.decodeTokenId(transaction.token).index
                                 )}
                                 key={transaction.token + i}
-                                collection={collection}
+                                collection={collection?.canister}
                                 transaction={transaction}
                               />
                             );

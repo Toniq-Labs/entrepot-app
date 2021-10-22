@@ -1,11 +1,13 @@
 /* global BigInt */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Grid from '@material-ui/core/Grid';
+import { useHistory } from "react-router";
 import Pagination from '@material-ui/lab/Pagination';
 import extjs from '../ic/extjs.js';
 import getNri from '../ic/nftv.js';
@@ -42,6 +44,7 @@ const canisterMap= {
   "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
 };
 export default function Wallet(props) {
+  const history = useHistory();
   const [nfts, setNfts] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
@@ -89,7 +92,7 @@ export default function Wallet(props) {
     setOpenTransferForm(true);
   };
   const wrapAndlistNft = async (token) => {
-    var v = await props.confirm("We need to wrap this", "You are trying to list a non-compatiable NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
+    var v = await props.confirm("We need to wrap this", "You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
     if (v) {
       var canister = canisterMap[extjs.decodeTokenId(token.id).canister];
       console.log(canister);
@@ -161,31 +164,35 @@ export default function Wallet(props) {
     });
   };
   const applyFilters = a => {
-    if (props.collection.canister === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
+    if (props.collection?.canister === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
       var map = ["accessories","hats","eyewear","pets"];
       a = a.filter(_a => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter);
     };
     return a;
   };
   const _updates = async () => {
-    await refresh();
+    if (props.account.address){
+      await refresh();
+    }
   };
 
   
   const refresh = async (c) => {
-    c = c ?? props.collection.canister;
-    var nfts = await api.token(c).getTokens(props.account.address);
-    if (c === "bxdf4-baaaa-aaaah-qaruq-cai") {
-      nfts = nfts.map(a => {a.wrapped = true; return a});
-      nfts = nfts.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-    }else if (c === "3db6u-aiaaa-aaaah-qbjbq-cai") {
-      nfts = nfts.map(a => {a.wrapped = true; return a});
-      nfts = nfts.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-    }else if (c === "q6hjz-kyaaa-aaaah-qcama-cai") {
-      nfts = nfts.map(a => {a.wrapped = true; return a});
-      nfts = nfts.concat(await api.token("xkbqi-2qaaa-aaaah-qbpqq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+    if (props.account.address && props.collection?.canister){
+      c = c ?? props.collection.canister;
+      var nfts = await api.token(c).getTokens(props.account.address);
+      if (c === "bxdf4-baaaa-aaaah-qaruq-cai") {
+        nfts = nfts.map(a => {a.wrapped = true; return a});
+        nfts = nfts.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+      }else if (c === "3db6u-aiaaa-aaaah-qbjbq-cai") {
+        nfts = nfts.map(a => {a.wrapped = true; return a});
+        nfts = nfts.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+      }else if (c === "q6hjz-kyaaa-aaaah-qcama-cai") {
+        nfts = nfts.map(a => {a.wrapped = true; return a});
+        nfts = nfts.concat(await api.token("xkbqi-2qaaa-aaaah-qbpqq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+      };
+      setNfts(applyFilters(nfts)); 
     };
-    setNfts(applyFilters(nfts)); 
   }
   
   const theme = useTheme();
@@ -200,7 +207,6 @@ export default function Wallet(props) {
       padding: theme.spacing(2)
     },
   };
-  
   useInterval(_updates, 10 *1000);
   React.useEffect(() => {
     setNfts([]);
@@ -209,7 +215,7 @@ export default function Wallet(props) {
       props.loader(false);        
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.collection]);
+  }, [props.account.address, props.collection]);
   
   React.useEffect(() => {
     props.loader(true);
@@ -219,11 +225,13 @@ export default function Wallet(props) {
   return (
     <>
       <div style={styles.empty}>
-        <h1>My NFTs: <span style={{color: "#00d092"}}>{props.collection.name}</span></h1>
+        <h1>My NFTs: <span style={{color: "#00d092"}}>{props.collection?.name}</span></h1>
+        <Button variant={"outlined"} color="primary" onClick={() => history.push("/marketplace/"+props.collection.route)} ><strong>Return to Marketplace</strong></Button>
       </div>
       <>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>
-          
+          {nfts.length >0 ?
+          <>
           <FormControl style={{marginRight:20}}>
             <InputLabel>Sort by</InputLabel>
             <Select
@@ -231,13 +239,13 @@ export default function Wallet(props) {
               onChange={changeSort}
             >
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
-              {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
+              {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection?.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
               { [
-                "ahl3d-xqaaa-aaaaj-qacca-cai","njgly-uaaaa-aaaah-qb6pa-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection.canister) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
+                "ahl3d-xqaaa-aaaaj-qacca-cai","njgly-uaaaa-aaaah-qb6pa-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai", "e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(props.collection?.canister) >= 0 ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
             </Select>
           </FormControl>
           
-          {["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(props.collection.canister) >= 0 ? 
+          {["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(props.collection?.canister) >= 0 ? 
           <FormControl style={{minWidth:120}}>
             <InputLabel>Wearable Type</InputLabel>
             <Select
@@ -251,7 +259,7 @@ export default function Wallet(props) {
               <MenuItem value={"eyewear"}>Eyewear</MenuItem>
             </Select>
           </FormControl> : "" }
-          
+          </> : ""}
           {nfts.length > perPage ?
           (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" }
         </div>
@@ -261,7 +269,7 @@ export default function Wallet(props) {
             </div> :
             <>{nfts.length === 0 ?
               <div style={styles.empty}>
-                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">There are currently no nfts right now</Typography>
+                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">You own no NFTs in this collection!</Typography>
               </div> :
               <>
                 <div style={styles.grid}>
@@ -275,7 +283,7 @@ export default function Wallet(props) {
                     {nfts.slice().sort((a,b) => {
                       switch(sort) {
                         case "gri":
-                          return (Number(getNri(props.collection.canister, b.index))*100)-(Number(getNri(props.collection.canister, a.index))*100);
+                          return (Number(getNri(props.collection?.canister, b.index))*100)-(Number(getNri(props.collection?.canister, a.index))*100);
                         case "recent":
                           return 1;
                         case "oldest":
@@ -284,7 +292,7 @@ export default function Wallet(props) {
                           return a.index-b.index;
                         case "type":
                           var _a, _b, d;
-                          if (props.collection.canister === "nbg4r-saaaa-aaaah-qap7a-cai") {
+                          if (props.collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai") {
                             _a = a[2].nonfungible.metadata[0][0];
                             _b = b[2].nonfungible.metadata[0][0];
                             d = _b-_a;
@@ -311,7 +319,7 @@ export default function Wallet(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<NFT gri={getNri(props.collection.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={props.collection.canister} key={nft.id+"-"+i} nft={nft} />)
+                      return (<NFT gri={getNri(props.collection?.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={props.collection?.canister} key={nft.id+"-"+i} nft={nft} />)
                     })}
                   </Grid>
                 </div>
@@ -322,7 +330,7 @@ export default function Wallet(props) {
         (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </>
       <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
-      <ListingForm collections={props.collections} collection={props.collection.canister} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <ListingForm collections={props.collections} collection={props.collection} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
     </>
   )
 }

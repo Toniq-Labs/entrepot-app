@@ -11,7 +11,6 @@ import Alert from '@material-ui/lab/Alert';
 
 export default function ListingForm(props) {
   const [price, setPrice] = React.useState(props.nft.price);
-  const [data, setData] = React.useState(props.collections.find(a => a.canister === props.collection));
   const error = (e) => {
     props.error(e);
   }
@@ -35,10 +34,6 @@ export default function ListingForm(props) {
     setPrice(props.nft.listing ? Number(props.nft.listing.price)/100000000 : 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.nft]);
-  React.useEffect(() => {
-    setData(props.collections.find(a => a.canister === props.collection));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.collection]);
 
   return (
     <>
@@ -49,7 +44,7 @@ export default function ListingForm(props) {
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter a price below to create a new marketplace listing. Once you save the listing, it becomes available to the public.</DialogContentText> : ""}
          {props.nft.price > 0 ?
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Use the form to update the price of your listing, or Cancel the listing below</DialogContentText> : ""}
-        <Alert severity="warning"><strong>{(data.commission*100).toFixed(1)}%</strong> of the sale price will be deducted <strong>once sold</strong>. This is made of up a <strong>{(data.commission*100-1).toFixed(1)}% Royalty fee</strong> for the Creators, and a <strong>1% Marketplace fee</strong></Alert>
+        <Alert severity="warning"><strong>{(props.collection?.commission*100).toFixed(1)}%</strong> of the sale price will be deducted <strong>once sold</strong>. This is made of up a <strong>{(props.collection?.commission*100-1).toFixed(1)}% Royalty fee</strong> for the Creators, and a <strong>1% Marketplace fee</strong></Alert>
           <TextField
             style={{width:'100%'}}
             margin="dense"

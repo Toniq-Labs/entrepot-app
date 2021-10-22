@@ -26,7 +26,7 @@ export default function TransferForm(props) {
         <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Transfer NFT</DialogTitle>
         <DialogContent>
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter the address or Principal you want to send the NFT to.</DialogContentText>
-        <Alert severity="error">Beware, Plug Wallet does not support EXT tokens.</Alert>
+        <Alert severity="error">Beware, not all wallets support all tokens.</Alert>
           <TextField
             style={{width:'100%'}}
             margin="dense"
