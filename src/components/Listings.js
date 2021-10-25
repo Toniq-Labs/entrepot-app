@@ -76,7 +76,7 @@ export default function Listings(props) {
 
   const changeCollection = async (event) => {
     const _collection = props.collections.find(e => e.canister === event.target.value);
-    history.push(`/marketplace/${collection.route}`);
+    history.push(`/marketplace/${_collection.route}`);
     event.preventDefault();
     _changeCollection(_collection);
   };

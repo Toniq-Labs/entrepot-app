@@ -73,7 +73,7 @@ export default function Home(props) {
         >
           <div className={classes.banner}>
             {/*<a href="/sale/ictuts"><img alt="starverse" className={classes.bannerimg} src="/banner/ictuts2.gif" /></a>*/}
-            <img alt="starverse" className={classes.bannerimg} src="/banner/icgallery.jpg" />
+            <img alt="starverse" className={classes.bannerimg} src="/banner/ic3d.jpg" />
             <img
               alt="anchor"
               className={classes.anchor}
@@ -98,7 +98,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace/ictuts`)}
+              onClick={() => history.push(`/marketplace/cronics`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >
@@ -112,7 +112,7 @@ export default function Home(props) {
             justifyContent="center"
             alignItems="center"
           >
-            <Grid item md={4}>
+            <Grid item md={4} style={{marginBottom:20}}>
               <Card className={classes.root}>
                 <a href="/marketplace/wearables"><CardMedia
                   className={classes.media}

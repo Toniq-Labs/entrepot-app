@@ -150,7 +150,7 @@ export default function Wallet(props) {
     //Submit to blockchain here
     props.loader(true);
     const api = extjs.connect("https://boundary.ic0.app/", props.identity);
-    api.token(id).list(0, price).then(r => {
+    api.token(id).list(props.currentAccount, price).then(r => {
       if (r) {
         refresh();
         return props.alert("Transaction complete", "Your listing has been updated");

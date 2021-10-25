@@ -15,17 +15,6 @@ const txfee = 10000;
 const txmin = 100000;
 const collections = [
   {
-    canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
-    name: "ICTuTs",
-    route: "ictuts",
-    nftv : true,
-    mature: false,
-    commission: 0.025,
-    comaddress:
-      "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
-    blurb: false,
-  },
-  {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
     route: "cronics",
@@ -36,8 +25,8 @@ const collections = [
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (
       <>
-        <p><strong>The Cronic's Marketplace is offline during our Public Sale (starting 18.10 3PM UTC). Please head over to the <a href="https://cronic.toniqlabs.com/" target="_blank">Cronic Dashboard</a> if you would like to participate. The marketplace will be online as soon as the sales conclude. You can still delist your Cronics during this time</strong></p>
-        <a href="https://cronic.toniqlabs.com/" target="_blank"><img style={{maxWidth:800}} src="https://cronic.toniqlabs.com/banner.png" /></a>
+        <p style={{display:"none"}}><strong>The Cronic's Marketplace is offline during our Public Sale (starting 18.10 3PM UTC). Please head over to the <a href="https://cronic.toniqlabs.com/" target="_blank">Cronic Dashboard</a> if you would like to participate. The marketplace will be online as soon as the sales conclude. You can still delist your Cronics during this time</strong></p>
+        <a style={{display:"none"}} href="https://cronic.toniqlabs.com/" target="_blank"><img style={{maxWidth:800}} src="https://cronic.toniqlabs.com/banner.png" /></a>
         Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the
         Internet Computer. Cronics incorporates breeding mechanics, wearable
         NFTs and a p2e minigame ecosystem and more. Join the{" "}
@@ -54,6 +43,17 @@ const collections = [
         </a>
       </>
     ),
+  },
+  {
+    canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
+    name: "ICTuTs",
+    route: "ictuts",
+    nftv : true,
+    mature: false,
+    commission: 0.025,
+    comaddress:
+      "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
+    blurb: false,
   },
   {
     canister: "sr4qi-vaaaa-aaaah-qcaaq-cai",

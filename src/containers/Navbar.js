@@ -48,7 +48,7 @@ export default function Navbar(props) {
               />
             }
             onClick={() => {
-              history.push("/marketplace/ictuts");
+              history.push("/marketplace/cronics");
               handleClick();
             }}
             className={classes.button}
@@ -122,7 +122,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/marketplace/ictuts");
+                  history.push("/marketplace/cronics");
                   handleClick();
                 }}
                 className={classes.button1}
