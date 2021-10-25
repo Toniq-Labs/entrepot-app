@@ -45,6 +45,16 @@ const collections = [
     ),
   },
   {
+    canister: "pnpu4-3aaaa-aaaah-qcceq-cai",
+    name: "Infinite Chimps",
+    route: "infinite-chimps",
+    nftv : false,
+    mature: false,
+    commission: 0.025,
+    comaddress: "90d2fd9f8c4005da2ebf73579a4f571763d21ce35ed4c32e83b3158cb68c7c45",
+    blurb: false,
+  },
+  {
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
     name: "ICTuTs",
     route: "ictuts",
