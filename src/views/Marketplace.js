@@ -250,7 +250,7 @@ const collections = [
     commission: 0.02,
     comaddress:
       "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",
-    blurb: false,
+    blurb: (<>ICmojis are playable characters in ICmoji Origins - a multiplayer strategy game built on the Internet Computer. Learn more at our <a href="https://icmoji.com/" target="_blank">website</a></>),
   },
   {
     canister: "owuqd-dyaaa-aaaah-qapxq-cai",
