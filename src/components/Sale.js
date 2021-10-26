@@ -166,11 +166,11 @@ export default function Sale(props) {
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? assets.length : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item xs={3}>
-            <strong>YOUR PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
+            <strong>CURRENT PRICE</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>6 ICP</span>
           </Grid>
           <Grid className={classes.stat} item xs={3}>
-            <strong>QUANTITY @ PRICE</strong><br />
+            <strong>AVAILABLE @ PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{quantity}</span>
           </Grid>
           <Grid className={classes.stat} item xs={3}>
