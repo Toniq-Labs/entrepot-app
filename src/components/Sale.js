@@ -161,19 +161,19 @@ export default function Sale(props) {
       <div style={styles.empty}>
         <h1>MoonWalkers</h1>
         <Grid container spacing={2} style={{}}>
-          <Grid className={classes.stat} item xs={3}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? assets.length : "Loading..."}</span>
           </Grid>
-          <Grid className={classes.stat} item xs={3}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>CURRENT PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>6 ICP</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
           </Grid>
-          <Grid className={classes.stat} item xs={3}>
-            <strong>AVAILABLE @ PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{quantity}</span>
+          <Grid className={classes.stat} item md={3} xs={6}>
+            <strong>PRICE INCREASES</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>Every 24 hours</span>
           </Grid>
-          <Grid className={classes.stat} item xs={3}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? 9000-assets.length : "Loading..."}</span>
           </Grid>
