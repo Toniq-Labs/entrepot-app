@@ -108,7 +108,7 @@ export default function App() {
             loader={loader}
           />
         </Route>
-        <Route path="/sale/ictuts" exact>
+        <Route path="/sale/moonwalkers" exact>
           <Marketplace
             error={error}
             view={"sale"}
