@@ -163,7 +163,7 @@ export default function Sale(props) {
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item xs={3}>
             <strong>AVAILABLE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? assets.length+1 : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? assets.length : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item xs={3}>
             <strong>YOUR PRICE</strong><br />
@@ -175,7 +175,7 @@ export default function Sale(props) {
           </Grid>
           <Grid className={classes.stat} item xs={3}>
             <strong>SOLD</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? 9000-1-assets.length : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{assets ? 9000-assets.length : "Loading..."}</span>
           </Grid>
         </Grid>
       </div>
