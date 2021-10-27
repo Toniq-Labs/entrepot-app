@@ -145,7 +145,14 @@ export default function Sale(props) {
       );
     }
   };
-  
+  const getNextIncreaseTime = () => {
+    var next = 1635260400000;
+    var now = Date.now();
+    while(now > next){
+      next += 86400000;
+    };
+    return next/1000;
+  };
   useInterval(_updates, 60 * 1000);
   React.useEffect(() => {
     _updates();
@@ -171,7 +178,7 @@ export default function Sale(props) {
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>PRICE INCREASES</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>Every 24 hours</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}><Timestamp relative autoUpdate date={getNextIncreaseTime()} /></span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
