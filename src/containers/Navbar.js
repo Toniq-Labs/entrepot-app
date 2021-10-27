@@ -38,7 +38,24 @@ export default function Navbar(props) {
             />
           </Typography>
           <div className={classes.grow} />
+          <Button
 
+            onClick={() => {
+              history.push("/sale/moonwalkers");
+              handleClick();
+            }}
+            className={classes.button}
+            style={{
+              color: route === "sale" ? "#00d092" : "#000",
+              borderBottom:
+                route === "sale"
+                  ? "3px solid #00d092"
+                  : "3px solid transparent",
+            }}
+            color="inherit"
+          >
+            LATEST NFT SALE
+          </Button>
           <Button
             startIcon={
               <img
@@ -48,7 +65,7 @@ export default function Navbar(props) {
               />
             }
             onClick={() => {
-              history.push("/marketplace/cronics");
+              history.push("/marketplace/moonwalkers");
               handleClick();
             }}
             className={classes.button}
@@ -114,6 +131,23 @@ export default function Navbar(props) {
           {open && (
             <div className={classes.smNav} onClick={() => setOpen(false)}>
               <Button
+                onClick={() => {
+                  history.push("/sale/moonwalkers");
+                  handleClick();
+                }}
+                className={classes.button1}
+                style={{
+                  color: route === "sale" ? "#00d092" : "#000",
+                  borderBottom:
+                    route === "sale"
+                      ? "3px solid #00d092"
+                      : "3px solid transparent",
+                }}
+                color="inherit"
+              >
+                Latest NFT Sale
+              </Button>
+              <Button
                 startIcon={
                   <img
                     alt="marketplace"
@@ -122,7 +156,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/marketplace/cronics");
+                  history.push("/marketplace/moonwalkers");
                   handleClick();
                 }}
                 className={classes.button1}

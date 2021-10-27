@@ -15,6 +15,17 @@ const txfee = 10000;
 const txmin = 100000;
 const collections = [
   {
+    canister: "er7d4-6iaaa-aaaaj-qac2q-cai",
+    name: "MoonWalkers",
+    route: "moonwalkers",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress: "2455059d792289741fb4c3128be9dfcf25474e161923c78c37bd53c457b24e60",
+    blurb: (<><p>The MoonWalker's marketplace will open after the completion of the <a href="/sale/moonwalkers">public sale</a>.</p>
+        <a href="/sale/moonwalkers"><img style={{maxWidth:800}} src="https://entrepot.app/banner/icgallery2.jpg" /></a></>),
+  },
+  {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
     name: "Cronic Critters",
     route: "cronics",
@@ -44,16 +55,7 @@ const collections = [
       </>
     ),
   },
-  {
-    canister: "er7d4-6iaaa-aaaaj-qac2q-cai",
-    name: "MoonWalkers",
-    route: "moonwalkers",
-    nftv : false,
-    mature: false,
-    commission: 0.035,
-    comaddress: "2455059d792289741fb4c3128be9dfcf25474e161923c78c37bd53c457b24e60",
-    blurb: false,
-  },
+
   {
     canister: "pnpu4-3aaaa-aaaah-qcceq-cai",
     name: "Infinite Chimps",
