@@ -4,6 +4,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Chip from "@material-ui/core/Chip";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import Box from "@material-ui/core/Box";
+import Collapse from "@material-ui/core/Collapse";
+import Slider from "@material-ui/core/Slider";
+import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid, makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
@@ -52,12 +56,107 @@ const emptyListing = {
   pricing: "",
   img: "",
 };
+
+const getGenes = genes => {
+  var geneSegments = [
+    decodeToSegment([genes[0], genes[1], genes[2]]),
+    decodeToSegment([genes[3], genes[4], genes[5]]),
+    decodeToSegment([genes[6], genes[7], genes[8]]),
+    decodeToSegment([genes[9], genes[10], genes[11]]),
+    decodeToSegment([genes[12], genes[13], genes[14]]),
+    decodeToSegment([genes[15], genes[16], genes[17]]),
+    decodeToSegment([genes[18], genes[19], genes[20]]),
+    decodeToSegment([genes[21], genes[22], genes[23]]),
+    decodeToSegment([genes[24], genes[25], genes[26]]),
+    decodeToSegment([genes[27], genes[28], genes[29]]),
+  ];
+  return {
+    //Temp mapping for old mouth/accessory trait
+    legacy : {
+      mouth : getGeneOptions(10, geneSegments[3][0], geneSegments[3][1]).dominant,
+      accessory : getGeneOptions(7, geneSegments[4][0], geneSegments[4][1]).dominant,
+    },
+    //Visutal traits
+    visual : {
+      background : getGeneOptions(6, geneSegments[0][0], geneSegments[0][1]),
+      pattern : getGeneOptions(10, geneSegments[1][0], geneSegments[1][1]),
+      face : getGeneOptions(10, geneSegments[2][0], geneSegments[2][1]),
+      eyes : getGeneOptions(10, geneSegments[5][0], geneSegments[5][1]),
+      hair : getGeneOptions(7, geneSegments[4][0], geneSegments[4][1]),
+    },
+    color : {
+      //Colors
+      background : getGeneOptions(24, geneSegments[6][0], geneSegments[6][1]),
+      pattern : getGeneOptions(24, geneSegments[7][0], geneSegments[7][1]),
+      face : getGeneOptions(24, geneSegments[8][0], geneSegments[8][1]),
+      eyes : getGeneOptions(24, geneSegments[9][0], geneSegments[9][1]),
+      hair : getGeneOptions(24, geneSegments[3][0], geneSegments[3][1]),
+    },
+    //Animation: 0 = pulse, 1 & 2 = spin
+    animation : genes[30] % 41,
+
+    //Battle stats TBC, 0-63 representing relative strengths but not end values
+    battle : {
+      health : getGene(geneSegments[0][2], geneSegments[0][3]),
+      speed : getGene(geneSegments[1][2], geneSegments[1][3]),
+      attack : getGene(geneSegments[2][2], geneSegments[2][3]),
+      range : getGene(geneSegments[3][2], geneSegments[3][3]),
+      magic : getGene(geneSegments[4][2], geneSegments[4][3]),
+      defense : getGene(geneSegments[5][2], geneSegments[5][3]),
+      resistance : getGene(geneSegments[6][2], geneSegments[6][3]),
+      basic : getGene(geneSegments[7][2], geneSegments[7][3]),
+      special : getGene(geneSegments[8][2], geneSegments[8][3]),
+      base : getGene(geneSegments[9][2], geneSegments[9][3]),
+    }
+  };
+};
+
+const getGene = (s1, s2) => {
+  return {
+    dominant : s1,
+    recessive : s2,
+  };
+};
+
+const getGeneOptions = (options, s1, s2) => {
+  return {
+    dominant : (s1 % options) + 1,
+    recessive : (s2 % options) + 1,
+  };
+};
+
+const decodeToSegment = x => {
+  return [(x[0] >> 2 & 63), (((x[0] & 3) << 4) + (x[1] >> 4 & 15)), (((x[1] & 15 ) << 2) + (x[2] >> 6 & 3)), (x[2] & 63)]
+};
+
 export default function Listings(props) {
   const classes = useStyles();
   const [listings, setListings] = useState(false);
+  const [allListings, setAllListings] = useState(false);
   const [transactions, setTransactions] = useState(false);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
+  const [collapseOpen, setCollapseOpen] = useState(false);
+  const [healthDominantValue, setHealthDominantValue] = React.useState([0, 63]);
+  const [healthRecessiveValue, setHealthRecessiveValue] = React.useState([0, 63]);
+  const [speedDominantValue, setSpeedDominantValue] = React.useState([0, 63]);
+  const [speedRecessiveValue, setSpeedRecessiveValue] = React.useState([0, 63]);
+  const [attackDominantValue, setAttackDominantValue] = React.useState([0, 63]);
+  const [attackRecessiveValue, setAttackRecessiveValue] = React.useState([0, 63]);
+  const [rangeDominantValue, setRangeDominantValue] = React.useState([0, 63]);
+  const [rangeRecessiveValue, setRangeRecessiveValue] = React.useState([0, 63]);
+  const [magicDominantValue, setMagicDominantValue] = React.useState([0, 63]);
+  const [magicRecessiveValue, setMagicRecessiveValue] = React.useState([0, 63]);
+  const [defenseDominantValue, setDefenseDominantValue] = React.useState([0, 63]);
+  const [defenseRecessiveValue, setDefenseRecessiveValue] = React.useState([0, 63]);
+  const [resistanceDominantValue, setResistanceDominantValue] = React.useState([0, 63]);
+  const [resistanceRecessiveValue, setResistanceRecessiveValue] = React.useState([0, 63]);
+  const [basicDominantValue, setBasicDominantValue] = React.useState([0, 63]);
+  const [basicRecessiveValue, setBasicRecessiveValue] = React.useState([0, 63]);
+  const [specialDominantValue, setSpecialDominantValue] = React.useState([0, 63]);
+  const [specialRecessiveValue, setSpecialRecessiveValue] = React.useState([0, 63]);
+  const [baseDominantValue, setBaseDominantValue] = React.useState([0, 63]);
+  const [baseRecessiveValue, setBaseRecessiveValue] = React.useState([0, 63]);
   const [showing, setShowing] = useState("all");
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
@@ -80,7 +179,7 @@ export default function Listings(props) {
     event.preventDefault();
     _changeCollection(_collection);
   };
-  
+
   const _changeCollection = async c => {
     setWearableFilter("all");
     setSort("price_asc");
@@ -96,6 +195,135 @@ export default function Listings(props) {
   const changeSort = (event) => {
     setPage(1);
     setSort(event.target.value);
+  };
+
+  const handleHealthDominantValueChange = (event, newHealthDominantValue) => {
+    setHealthDominantValue(newHealthDominantValue);
+  };
+
+  const handleHealthRecessiveValueChange = (event, newHealthRecessiveValue) => {
+    setHealthRecessiveValue(newHealthRecessiveValue);
+  };
+
+  const handleSpeedDominantValueChange = (event, newSpeedDominantValue) => {
+    setSpeedDominantValue(newSpeedDominantValue);
+  };
+
+  const handleSpeedRecessiveValueChange = (event, newSpeedRecessiveValue) => {
+    setSpeedRecessiveValue(newSpeedRecessiveValue);
+  };
+
+  const handleAttackDominantValueChange = (event, newAttackDominantValue) => {
+    setAttackDominantValue(newAttackDominantValue);
+  };
+
+  const handleAttackRecessiveValueChange = (event, newAttackRecessiveValue) => {
+    setAttackRecessiveValue(newAttackRecessiveValue);
+  };
+
+  const handleRangeDominantValueChange = (event, newRangeDominantValue) => {
+    setRangeDominantValue(newRangeDominantValue);
+  };
+
+  const handleRangeRecessiveValueChange = (event, newRangeRecessiveValue) => {
+    setRangeRecessiveValue(newRangeRecessiveValue);
+  };
+
+  const handleMagicDominantValueChange = (event, newMagicDominantValue) => {
+    setMagicDominantValue(newMagicDominantValue);
+  };
+
+  const handleMagicRecessiveValueChange = (event, newMagicRecessiveValue) => {
+    setMagicRecessiveValue(newMagicRecessiveValue);
+  };
+
+  const handleDefenseDominantValueChange = (event, newDefenseDominantValue) => {
+    setDefenseDominantValue(newDefenseDominantValue);
+  };
+
+  const handleDefenseRecessiveValueChange = (event, newDefenseRecessiveValue) => {
+    setDefenseRecessiveValue(newDefenseRecessiveValue);
+  };
+
+  const handleResistanceDominantValueChange = (event, newResistanceDominantValue) => {
+    setResistanceDominantValue(newResistanceDominantValue);
+  };
+
+  const handleResistanceRecessiveValueChange = (event, newResistanceRecessiveValue) => {
+    setResistanceRecessiveValue(newResistanceRecessiveValue);
+  };
+
+  const handleBasicDominantValueChange = (event, newBasicDominantValue) => {
+    setBasicDominantValue(newBasicDominantValue);
+  };
+
+  const handleBasicRecessiveValueChange = (event, newBasicRecessiveValue) => {
+    setBasicRecessiveValue(newBasicRecessiveValue);
+  };
+
+  const handleSpecialDominantValueChange = (event, newSpecialDominantValue) => {
+    setSpecialDominantValue(newSpecialDominantValue);
+  };
+
+  const handleSpecialRecessiveValueChange = (event, newSpecialRecessiveValue) => {
+    setSpecialRecessiveValue(newSpecialRecessiveValue);
+  };
+
+  const handleBaseDominantValueChange = (event, newBaseDominantValue) => {
+    setBaseDominantValue(newBaseDominantValue);
+  };
+
+  const handleBaseRecessiveValueChange = (event, newBaseRecessiveValue) => {
+    setBaseRecessiveValue(newBaseRecessiveValue);
+  };
+
+  const handleFiltersChange = () => {
+    setListings(applyAdvancedFilters(listings));
+  };
+
+  const applyAdvancedFilters = (a) => {
+    return a.filter(
+      (_a) => healthDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
+              && healthDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
+              && healthRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
+              && healthRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
+              && speedDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
+              && speedDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
+              && speedRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
+              && speedRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
+              && attackDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
+              && attackDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
+              && attackRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
+              && attackRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
+              && rangeDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
+              && rangeDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
+              && rangeRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
+              && rangeRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
+              && magicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
+              && magicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
+              && magicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
+              && magicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
+              && defenseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
+              && defenseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
+              && defenseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
+              && defenseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
+              && resistanceDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
+              && resistanceDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
+              && resistanceRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
+              && resistanceRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
+              && basicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
+              && basicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
+              && basicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
+              && basicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
+              && specialDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
+              && specialDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
+              && specialRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
+              && specialRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
+              && baseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
+              && baseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
+              && baseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
+              && baseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
+            )
   };
 
   const buyForm = (price, img) => {
@@ -186,7 +414,7 @@ export default function Listings(props) {
       );
     }
   };
-  const applyFilters = (a) => {
+  const applyFilters = (a, s) => {
     if (
       collection?.canister === "tde7l-3qaaa-aaaah-qansa-cai" &&
       wearableFilter !== "all"
@@ -195,6 +423,11 @@ export default function Listings(props) {
       a = a.filter(
         (_a) => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter
       );
+    } else if (
+      collection?.canister === "e3izy-jiaaa-aaaah-qacbq-cai" &&
+      s === "all"
+    ) {
+      a = applyAdvancedFilters(a);
     }
     return a;
   };
@@ -207,14 +440,15 @@ export default function Listings(props) {
     c = c ?? collection?.canister;
     if (s === "all") {
       var listings = await api.canister(c).listings();
-      setListings(applyFilters(listings));
+      setAllListings(listings);
+      setListings(applyFilters(listings, s));
     } else {
       var txs = await api.canister(c).transactions();
       var nt = txs;
       if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
         nt = txs.slice(82);
       }
-      setTransactions(applyFilters(nt));
+      setTransactions(applyFilters(nt, s));
     }
   };
   const theme = useTheme();
@@ -333,7 +567,298 @@ export default function Listings(props) {
               )}
             </Select>
           </FormControl>
-
+          {showing === "all" &&
+          ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
+            <div style={{ display: "inline" }}>
+              <Button style={{ marginTop: "10px" }}
+                variant={"outlined"}
+                onClick={() => setCollapseOpen(!collapseOpen)}
+                aria-expanded={collapseOpen}>
+                Advanced Filters
+              </Button>
+            </div>
+          ) : (
+            ""
+          )}
+          {showing === "all" &&
+          ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
+            <div style={{ marginTop: "20px" }}>
+              <Collapse in={collapseOpen}>
+                <form style={{ "flex-flow": "row wrap", display: "flex" }}>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Base:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={baseDominantValue}
+                        onChange={handleBaseDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={baseRecessiveValue}
+                        onChange={handleBaseRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Health:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={healthDominantValue}
+                        onChange={handleHealthDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={healthRecessiveValue}
+                        onChange={handleHealthRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Speed:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={speedDominantValue}
+                        onChange={handleSpeedDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={speedRecessiveValue}
+                        onChange={handleSpeedRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Attack:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={attackDominantValue}
+                        onChange={handleAttackDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={attackRecessiveValue}
+                        onChange={handleAttackRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Range:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={rangeDominantValue}
+                        onChange={handleRangeDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={rangeRecessiveValue}
+                        onChange={handleRangeRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Magic:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={magicDominantValue}
+                        onChange={handleMagicDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={magicRecessiveValue}
+                        onChange={handleMagicRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Defense:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={defenseDominantValue}
+                        onChange={handleDefenseDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={defenseRecessiveValue}
+                        onChange={handleDefenseRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel style={{fontWeight:"bold"}}>Resistance:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={resistanceDominantValue}
+                        onChange={handleResistanceDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={resistanceRecessiveValue}
+                        onChange={handleResistanceRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  {/*<div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel>Basic:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={basicDominantValue}
+                        onChange={handleBasicDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={basicRecessiveValue}
+                        onChange={handleBasicRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>
+                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                    <InputLabel>Special:</InputLabel>
+                    <br/>
+                    <InputLabel>Dominant:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={specialDominantValue}
+                        onChange={handleSpecialDominantValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                    <InputLabel>Recessive:</InputLabel>
+                    <Box sx={{ width: 150 }}>
+                      <Slider
+                        value={specialRecessiveValue}
+                        onChange={handleSpecialRecessiveValueChange}
+                        min={0}
+                        step={1}
+                        max={63}
+                        valueLabelDisplay="auto"
+                      />
+                    </Box>
+                  </div>*/}
+                </form>
+                <div style={{ marginTop: "20px", display: "grid" }}>
+                  <Button variant="contained"
+                  color="primary"
+                  style={{ backgroundColor: "#003240", color: "white", margin: "auto" }}
+                    onClick={handleFiltersChange}>
+                    Apply
+                  </Button>
+                </div>
+              </Collapse>
+            </div>
+          ) : (
+            ""
+          )}
           {showing === "all" &&
           ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
             <FormControl style={{ minWidth: 120 }}>
