@@ -72,7 +72,7 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <a href="/sale/moonwalkers"><img alt="starverse" className={classes.bannerimg} src="/banner/icgallery2.jpg" /></a>
+            <img alt="starverse" className={classes.bannerimg} src="/banner/ic3d.jpg" />
               {/*<img
               alt="anchor"
               className={classes.anchor}
