@@ -4,7 +4,8 @@ import extjs from "../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Listings from "../components/Listings";
 import Wallet from "../components/Wallet";
-import Sale from "../components/Sale";
+import Moonwalkers from "../components/sale/Moonwalkers";
+import IC3D from "../components/sale/IC3D";
 import Button from "@material-ui/core/Button";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../components/Sidebar";
@@ -87,6 +88,17 @@ const collections = [
     comaddress:
       "2be01f5e8f081c6e8784b087fb1a88dac92fdd29203c1e456a6e90950c6e6e21",
     blurb: (<>Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.<br /><br />Holders will receive the Space Center membership where they can have fun. It lives on the Internet Computer Platform!</>),
+  },
+  {
+    canister: "nfvlz-jaaaa-aaaah-qcciq-cai",
+    name: "IC3D",
+    route: "ic3d",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress: "b29f5dc935f0457df12c9f91a58d77e192a0acb00694ca473d342063d375656c",
+    blurb: (<><p>The IC3D marketplace will open after the completion of the <a href="/sale/ic3d">public sale</a>.</p>
+        <a href="/sale/ic3d"><img style={{maxWidth:800}} src="https://entrepot.app/banner/ic3d.jpg" /></a></>),
   },
   {
     canister: "nbg4r-saaaa-aaaah-qap7a-cai",
@@ -595,24 +607,40 @@ export default function Marketplace(props) {
           ) : (
             ""
           )}
-          {props.view === "sale" ? (
-            <Sale
-              view={"wallet"}
-              identity={identity}
-              balance={balance}
-              confirm={props.confirm}
-              currentAccount={currentAccount}
-              account={accounts.length > 0 ? accounts[currentAccount] : false}
-              loggedIn={loggedIn}
-              collections={collections}
-              collection={collection}
-              loader={props.loader}
-              alert={props.alert}
-              error={props.error}
-            />
-          ) : (
-            ""
-          )}
+          {props.view === "sale" ? 
+            <>{props.sale === "moonwalkers" ? 
+              <Moonwalkers
+                view={"wallet"}
+                identity={identity}
+                balance={balance}
+                confirm={props.confirm}
+                currentAccount={currentAccount}
+                account={accounts.length > 0 ? accounts[currentAccount] : false}
+                loggedIn={loggedIn}
+                collections={collections}
+                collection={collection}
+                loader={props.loader}
+                alert={props.alert}
+                error={props.error}
+            /> : ""}</>
+           : ""}
+          {props.view === "sale" ? 
+            <>{props.sale === "ic3d" ? 
+              <IC3D
+                view={"wallet"}
+                identity={identity}
+                balance={balance}
+                confirm={props.confirm}
+                currentAccount={currentAccount}
+                account={accounts.length > 0 ? accounts[currentAccount] : false}
+                loggedIn={loggedIn}
+                collections={collections}
+                collection={collection}
+                loader={props.loader}
+                alert={props.alert}
+                error={props.error}
+            /> : ""}</>
+           : ""}
         </div>
       </main>
     </>

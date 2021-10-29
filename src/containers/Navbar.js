@@ -41,7 +41,7 @@ export default function Navbar(props) {
           <Button
 
             onClick={() => {
-              history.push("/sale/moonwalkers");
+              history.push("/sale/ic3d");
               handleClick();
             }}
             className={classes.button}
@@ -132,7 +132,7 @@ export default function Navbar(props) {
             <div className={classes.smNav} onClick={() => setOpen(false)}>
               <Button
                 onClick={() => {
-                  history.push("/sale/moonwalkers");
+                  history.push("/sale/ic3d");
                   handleClick();
                 }}
                 className={classes.button1}

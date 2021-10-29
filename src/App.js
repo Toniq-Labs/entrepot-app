@@ -112,6 +112,17 @@ export default function App() {
           <Marketplace
             error={error}
             view={"sale"}
+            sale={"moonwalkers"}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
+        <Route path="/sale/ic3d" exact>
+          <Marketplace
+            error={error}
+            view={"sale"}
+            sale={"ic3d"}
             alert={alert}
             confirm={confirm}
             loader={loader}
