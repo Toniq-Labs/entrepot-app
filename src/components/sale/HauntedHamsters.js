@@ -160,8 +160,8 @@ export default function HauntedHamsters(props) {
       <div style={styles.empty}>
         <div className={classes.banner}>
           <img style={{height:300}} alt="Haunted Hamsters" className={classes.bannerimg} src="/banner/hauntedhamsters.jpg" />
+        <h1>Welcome to the official Haunted Hamsters Public Sale</h1>
         </div>
-        <h1>Welcome to the offical Haunted Hamsters Public Sale</h1>
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />
