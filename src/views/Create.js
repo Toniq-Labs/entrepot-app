@@ -6,9 +6,11 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles, Container } from "@material-ui/core";
 import Navbar from "../containers/Navbar";
+import Features from "../components/Features";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
+    maxWidth: 345,
   },
   main: {
     display: "flex",
@@ -16,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     height: "100vh",
     width: "100%",
+  },
+  heading: {
+    textAlign: "center",
+    marginTop: "40px",
   },
   center: {
     display: "flex",
@@ -49,11 +55,38 @@ const useStyles = makeStyles((theme) => ({
 export default function Create(props) {
   const classes = useStyles();
 
+  var cards = [
+    {
+      title : "Cronic Wearables",
+      link : "/marketplace/wearables",
+      image : "/collections/cronic-wearables.jpg",
+      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+    },
+    {
+      title : "ICmojis",
+      link : "/marketplace/icmojis",
+      image : "/collections/icmojis.jpg",
+      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+    },
+    {
+      title : "Rise of the Magni",
+      link : "/",
+      image : "/collections/rotm.jpg",
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+    },
+  
+  ];
   return (
     <>
       <Navbar />
-      <div className={classes.main}>
-        <Container maxWidth="xl" className={classes.container}>
+      <div style={{ width: "100%", display: "block", position: "relative" }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "120px auto 0px",
+            paddingBottom: 200,
+          }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12}>
               <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
@@ -72,130 +105,35 @@ export default function Create(props) {
                 and we will be in touch!
               </p>
             </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-              <div className={classes.center}>
-                <img
-                  style={{ width: 100 }}
-                  alt="Low Fees"
-                  src="/icon/fee.png"
-                />
-                <h2>Low Fees</h2>
-                <p style={{ fontSize: "1.1em", textAlign: "center" }}>
-                  We charge a <strong>0.5%</strong> Marketplace fee, and
-                  collection creators can charge a Royalty fee of up to{" "}
-                  <strong>2.5%</strong>
-                </p>
-              </div>
-            </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-              <div className={classes.center}>
-                <img
-                  style={{ width: 100 }}
-                  alt="Low Fees"
-                  src="/icon/wallet.png"
-                />
-                <h2>Non-custodial</h2>
-                <p style={{ fontSize: "1.1em", textAlign: "center" }}>
-                  All assets remain in your full control - we never take custody
-                  any of your digital assets
-                </p>
-              </div>
-            </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-              <div className={classes.center}>
-                <img
-                  style={{ width: 100 }}
-                  alt="Low Fees"
-                  src="/icon/artist.png"
-                />
-                <h2>Custom Collections</h2>
-                <p style={{ fontSize: "1.1em", textAlign: "center" }}>
-                  We plan to work with a wide range of talented curators,
-                  artists and developers
-                </p>
-              </div>
-            </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-              <div className={classes.center}>
-                <img
-                  style={{ width: 100 }}
-                  alt="Low Fees"
-                  src="/icon/infinity.png"
-                />
-                <h2>First on the IC</h2>
-                <p style={{ fontSize: "1.1em", textAlign: "center" }}>
-                  Entrepot.app is the first NFT marketplace and DEFI solution on
-                  the Internet Computer
-                </p>
-              </div>
-            </Grid>
-            <Grid item xs={12}>
-              <h1 style={{ textAlign: "center" }}>Upcoming Collections</h1>
-            </Grid>
-            <Grid item md={4}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/starverse.jpg"
-                  title="Starverse"
-                />
-                <CardContent>
-                  <h3>Starverse</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Starverse is the result of collaborative efforts between Mac
-                    and Mir, the ToniqLabs team, and theam team from DSCVR.
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/rotm.jpg"
-                  title="Rise of the Magni"
-                />
-                <CardContent>
-                  <h3>Rise of the Magni</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Another blockchain game by ToniqLabs, the first set of Magni
-                    NFTs will be available for sale exclusively on{" "}
-                    <strong>Entrepot.app</strong>. Coming September 2021!
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item md={4}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/icpnews.jpg"
-                  title="Digital Artists"
-                />
-                <CardContent>
-                  <h3>Curated Artwork</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    We are working with a number of digital artists and
-                    developers to curate an collections of digital media,
-                    including some amazing work by ICP News.
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
           </Grid>
-        </Container>
+          <Features />
+          <h1 className={classes.heading}>Our Collections</h1>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {
+              cards.map((card, i) => {
+                return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
+                  <Card className={classes.root}>
+                    <a href={card.link}><CardMedia
+                      className={classes.media}
+                      image={card.image}
+                      title={card.title}
+                    /></a>
+                    <CardContent>
+                      <h3>{card.title}</h3>
+                      <Typography variant="body1" color="textSecondary" component="p"
+                      >{card.content}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>);
+              })
+            }
+          </Grid>
+        </div>
 
         <div className={classes.footer}>
           <Typography variant="body1">

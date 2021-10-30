@@ -6,6 +6,7 @@ import Listings from "../components/Listings";
 import Wallet from "../components/Wallet";
 import Moonwalkers from "../components/sale/Moonwalkers";
 import IC3D from "../components/sale/IC3D";
+import HauntedHamsters from "../components/sale/HauntedHamsters";
 import Button from "@material-ui/core/Button";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../components/Sidebar";
@@ -627,6 +628,24 @@ export default function Marketplace(props) {
           {props.view === "sale" ? 
             <>{props.sale === "ic3d" ? 
               <IC3D
+                view={"wallet"}
+                identity={identity}
+                balance={balance}
+                confirm={props.confirm}
+                currentAccount={currentAccount}
+                account={accounts.length > 0 ? accounts[currentAccount] : false}
+                loggedIn={loggedIn}
+                collections={collections}
+                collection={collection}
+                loader={props.loader}
+                alert={props.alert}
+                error={props.error}
+            /> : ""}</>
+           : ""}
+           
+          {props.view === "sale" ? 
+            <>{props.sale === "hauntedhamsters" ? 
+              <HauntedHamsters
                 view={"wallet"}
                 identity={identity}
                 balance={balance}

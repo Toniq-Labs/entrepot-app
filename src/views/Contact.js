@@ -39,7 +39,13 @@ export default function Contact(props) {
     <>
       <Navbar />
       <div className={classes.main}>
-        <Container maxWidth="xl" className={classes.container}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "120px auto 0px",
+            paddingBottom: 200,
+          }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={12}>
               <h1 style={{ textAlign: "center" }}>Contact Us</h1>
@@ -48,7 +54,7 @@ export default function Contact(props) {
               <p style={{ textAlign: "center", fontSize: "1.3em" }}>
                 Entrepot.app is developed by ToniqLabs. If you need to talk to
                 us about anything, you can email us at{" "}
-                <a href="mailto:toniqlabs@gmail.com">toniqlabs@gmail.com</a> or
+                <a href="mailto:support@toniqlans.com">support@toniqlans.com</a> or
                 contact us on{" "}
                 <a
                   href="https://twitter.com/toniqlabs"
@@ -145,7 +151,7 @@ export default function Contact(props) {
               </p>
             </Grid>
           </Grid>
-        </Container>
+        </div>
 
         <div className={classes.footer}>
           <Typography variant="body1">

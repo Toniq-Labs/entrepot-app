@@ -128,6 +128,16 @@ export default function App() {
             loader={loader}
           />
         </Route>
+        <Route path="/sale/hauntedhamsters" exact>
+          <Marketplace
+            error={error}
+            view={"sale"}
+            sale={"hauntedhamsters"}
+            alert={alert}
+            confirm={confirm}
+            loader={loader}
+          />
+        </Route>
         <Route path="/mint" exact>
           <Mint
             error={error}

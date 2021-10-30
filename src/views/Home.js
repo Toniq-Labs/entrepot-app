@@ -8,6 +8,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Navbar from "../containers/Navbar";
+import Features from "../components/Features";
+import Carousel from 'react-material-ui-carousel'
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
@@ -43,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerimg: {
     maxWidth: "100%",
+    borderRadius: "30px",
+    height:485
   },
   anchor: {
     position: "absolute",
@@ -59,7 +63,45 @@ export default function Home(props) {
   const classes = useStyles();
 
   const history = useHistory();
-
+  var items = [
+      {
+          link: "/sale/ic3d",
+          img: "/banner/ic3d.jpg"
+      },
+      {
+          link: "/sale/moonwalkers",
+          img: "/banner/icgallery2.jpg"
+      },
+      {
+          link: "/sale/hauntedhamsters",
+          img: "/banner/hauntedhamsters.jpg"
+      },
+      {
+          link: false,
+          img: "/banner/rotm.png"
+      },
+  ];
+  var cards = [
+    {
+      title : "Cronic Wearables",
+      link : "/marketplace/wearables",
+      image : "/collections/cronic-wearables.jpg",
+      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+    },
+    {
+      title : "ICmojis",
+      link : "/marketplace/icmojis",
+      image : "/collections/icmojis.jpg",
+      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+    },
+    {
+      title : "Rise of the Magni",
+      link : "/",
+      image : "/collections/rotm.jpg",
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+    },
+  
+  ];
   return (
     <>
       <Navbar />
@@ -72,12 +114,17 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <a href="/sale/ic3d"><img alt="starverse" className={classes.bannerimg} src="/banner/ic3d.jpg" /></a>
-              {/*<img
-              alt="anchor"
-              className={classes.anchor}
-              src="/icon/anchor.png"
-              />*/}
+            <Carousel interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
+              {
+                items.map( (item, i) => {
+                  if (item.link) {
+                    return (<a href={item.link}><img className={classes.bannerimg} src={item.img} /></a>)
+                  } else {
+                    return (<img className={classes.bannerimg} src={item.img} />)
+                  };
+                })
+              }
+            </Carousel>
           </div>
           <h1 className={classes.heading}>Welcome to Entrepot</h1>
           <p
@@ -104,168 +151,34 @@ export default function Home(props) {
               Explore the Marketplace
             </Button>
           </p>
-          <h1 className={classes.heading}>Our Collections</h1>
+          <h1 className={classes.heading}>Latest Collections</h1>
           <Grid
             container
             direction="row"
             justifyContent="center"
             alignItems="center"
           >
-            <Grid item md={4} style={{marginBottom:20}}>
-              <Card className={classes.root}>
-                <a href="/marketplace/wearables"><CardMedia
-                  className={classes.media}
-                  image="/collections/cronic-wearables.jpg"
-                  title="Cronic Wearables"
-                /></a>
-                <CardContent>
-                  <h3>Cronic Wearables</h3>
-                  <Typography variant="body1" color="textSecondary" component="p">
-                    We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item md={4} style={{marginBottom:20}}>
-              <Card className={classes.root}>
-                <a href="/marketplace/icmojis"><CardMedia
-                  className={classes.media}
-                  image="/collections/icmojis.jpg"
-                  title="ICmojis"
-                /></a>
-                <CardContent>
-                  <h3>ICmojis</h3>
-                  <Typography variant="body1" color="textSecondary" component="p">
-                    Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            {/*<Grid item md={4} style={{ marginBottom: 20 }}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/icpunks.jpg"
-                  title="ICPunks"
-                />
-                <CardContent>
-                  <h3>ICPunks</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Are you down with the clown? Get your hands on the latest
-                    NFT to hit the Internet Computer, wrap them using{" "}
-                    <a
-                      href="https://stoicwallet.com"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      StoicWallet
-                    </a>{" "}
-                    and trade them on the Marketplace!
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>*/}
-            <Grid item md={4} style={{ marginBottom: 20 }}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/rotm.jpg"
-                  title="Rise of the Magni"
-                />
-                <CardContent>
-                  <h3>Rise of the Magni</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Another blockchain game by ToniqLabs, the first set of Magni
-                    NFTs will be available for sale exclusively on{" "}
-                    <strong>Entrepot.app</strong>. Coming November 2021!
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            {/*<Grid item md={4} style={{ marginBottom: 20 }}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image="/collections/icpnews.jpg"
-                  title="Digital Artists"
-                />
-                <CardContent>
-                  <h3>Curated Artwork</h3>
-                  <Typography
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    We are working with a number of digital artists and
-                    developers to curate an collections of digital media,
-                    including some amazing work by ICP News.
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>*/}
+            {
+              cards.slice(0,3).map((card, i) => {
+                return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
+                  <Card className={classes.root}>
+                    <a href={card.link}><CardMedia
+                      className={classes.media}
+                      image={card.image}
+                      title={card.title}
+                    /></a>
+                    <CardContent>
+                      <h3>{card.title}</h3>
+                      <Typography variant="body1" color="textSecondary" component="p"
+                      >{card.content}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>);
+              })
+            }
           </Grid>
 
-          <Grid
-            style={{ textAlign: "center", marginTop: 50, marginBottom: 50 }}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Grid item md={3}>
-              <img style={{ width: 100 }} alt="Low Fees" src="/icon/fee.png" />
-              <h2>Low Fees</h2>
-              <p style={{ fontSize: "1.1em" }}>
-                We charge a <strong>0.5%</strong> Marketplace fee, and
-                collection creators can charge a Royalty fee of up to{" "}
-                <strong>2.5%</strong>
-              </p>
-            </Grid>
-            <Grid item md={3}>
-              <img
-                style={{ width: 100 }}
-                alt="Low Fees"
-                src="/icon/wallet.png"
-              />
-              <h2>Non-custodial</h2>
-              <p style={{ fontSize: "1.1em", padding: "0 20px" }}>
-                All assets remain in your full control - we never take custody
-                any of your digital assets
-              </p>
-            </Grid>
-            <Grid item md={3}>
-              <img
-                style={{ width: 100 }}
-                alt="Low Fees"
-                src="/icon/artist.png"
-              />
-              <h2>Custom Collections</h2>
-              <p style={{ fontSize: "1.1em", padding: "0 20px" }}>
-                We plan to work with a wide range of talented curators, artists
-                and developers
-              </p>
-            </Grid>
-            <Grid item md={3}>
-              <img
-                style={{ width: 100 }}
-                alt="Low Fees"
-                src="/icon/infinity.png"
-              />
-              <h2>First on the IC</h2>
-              <p style={{ fontSize: "1.1em", padding: "0 20px" }}>
-                Entrepot.app is the first NFT marketplace and DEFI solution on
-                the Internet Computer
-              </p>
-            </Grid>
-          </Grid>
+          <Features />
         </div>
         <div className={classes.footer}>
           <Typography variant="body1">
