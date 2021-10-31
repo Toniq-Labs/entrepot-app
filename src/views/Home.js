@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
   bannerimg: {
     maxWidth: "100%",
     borderRadius: "30px",
-    height:485
   },
   anchor: {
     position: "absolute",

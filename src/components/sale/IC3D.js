@@ -160,7 +160,7 @@ export default function IC3D(props) {
         <div className={classes.banner}>
           <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/ic3d.jpg" />
         </div>
-        <h1>Welcome to the offical IC3D Public Sale</h1>
+        <h1>Welcome to the official IC3D Public Sale</h1>
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />
