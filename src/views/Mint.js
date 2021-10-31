@@ -1,3 +1,4 @@
+/* global BigInt */
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -158,6 +159,88 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "56.25%", // 16:9
   },
 }));
+function CSVToArray( strData, strDelimiter ){
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = (strDelimiter || ",");
+
+    // Create a regular expression to parse the CSV values.
+    var objPattern = new RegExp(
+        (
+            // Delimiters.
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+            // Quoted fields.
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+            // Standard fields.
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+        ),
+        "gi"
+        );
+
+
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    var arrData = [[]];
+
+    // Create an array to hold our individual pattern
+    // matching groups.
+    var arrMatches = null;
+
+
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while (arrMatches = objPattern.exec( strData )){
+
+        // Get the delimiter that was found.
+        var strMatchedDelimiter = arrMatches[ 1 ];
+
+        // Check to see if the given delimiter has a length
+        // (is not the start of string) and if it matches
+        // field delimiter. If id does not, then we know
+        // that this delimiter is a row delimiter.
+        if (
+            strMatchedDelimiter.length &&
+            strMatchedDelimiter !== strDelimiter
+            ){
+
+            // Since we have reached a new row of data,
+            // add an empty row to our data array.
+            arrData.push( [] );
+
+        }
+
+        var strMatchedValue;
+
+        // Now that we have our delimiter out of the way,
+        // let's check to see which kind of value we
+        // captured (quoted or unquoted).
+        if (arrMatches[ 2 ]){
+
+            // We found a quoted value. When we capture
+            // this value, unescape any double quotes.
+            strMatchedValue = arrMatches[ 2 ].replace(
+                new RegExp( "\"\"", "g" ),
+                "\""
+                );
+
+        } else {
+
+            // We found a non-quoted value.
+            strMatchedValue = arrMatches[ 3 ];
+
+        }
+
+
+        // Now that we have our value string, let's add
+        // it to the data array.
+        arrData[ arrData.length - 1 ].push( strMatchedValue );
+    }
+
+    // Return the parsed data.
+    return( arrData );
+}
 export default function Mint(props) {
   const [identity, setIdentity] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
@@ -167,6 +250,7 @@ export default function Mint(props) {
   const [canisters, setCanisters] = React.useState([]);
   const [canister, setCanister] = React.useState(false);
   const [selectedFiles, setSelectedFiles] = React.useState([]);
+  const [selectedFiles2, setSelectedFiles2] = React.useState([]);
   const [currentAccount, setCurrentAccount] = React.useState(0);
   const classes = useStyles();
   const chunkSize = 1048576;
@@ -179,8 +263,65 @@ export default function Mint(props) {
       setCanister(newcans[0]);
     }
   };
+  const selectFiles2 = (e) => {
+    setSelectedFiles2(e.target.files);
+  };
   const selectFiles = (e) => {
     setSelectedFiles(e.target.files);
+  };
+  const transferaction = async () => {
+    if (!selectedFiles2.length) return props.error("Please select a file first");
+    if (!canister) return props.error("Please select a canister first");
+    var v = await props.confirm("Are you sure?", "Please ensure your have selected the right file and you clicked the right advanced action - Bulk Transfer");
+    if (!v) return;
+    props.loader(true, "Attempting Bulk transfer...");
+    var API = extjs.connect("https://boundary.ic0.app/", identity);
+    var _api = API.canister(canister, 'nft');
+    var reader = new FileReader();
+    reader.onload = function(){
+      var data = CSVToArray(reader.result).map(a => [Number(a[0]), a[1]]);
+      _api.transfer_bulk(data).then(r => {
+        console.log(r);
+        props.loader(false);
+        if (r.length == 0) {
+          props.allert("Success", "Bulk transfer successful");
+        } else {          
+          props.error(r.length + " transfers failed...");
+        };
+      }).catch(e => {
+        props.loader(false);
+        console.log(e);
+        props.error("There was an error");
+      });
+    };
+    reader.readAsText(selectedFiles2[0]);
+  };
+  const listaction = async () => {
+    if (!selectedFiles2.length) return props.error("Please select a file first");
+    if (!canister) return props.error("Please select a canister first");
+    var v = await props.confirm("Are you sure?", "Please ensure your have selected the right file and you clicked the right advanced action - Bulk List");
+    if (!v) return;
+    props.loader(true, "Attempting Bulk list...");
+    var API = extjs.connect("https://boundary.ic0.app/", identity);
+    var _api = API.canister(canister, 'nft');
+    var reader = new FileReader();
+    reader.onload = function(){
+      var data = CSVToArray(reader.result).map(a => [Number(a[0]), BigInt(a[1])]);
+      _api.list_bulk(data).then(r => {
+        console.log(r);
+        props.loader(false);
+        if (r.length == 0) {
+          props.alert("Success", "Bulk list successful");
+        } else {          
+          props.error(r.length + " listings failed...");
+        };
+      }).catch(e => {
+        props.loader(false);
+        console.log(e);
+        props.error("There was an error");
+      });
+    };
+    reader.readAsText(selectedFiles2[0]);
   };
   const mintaction = async () => {
     if (!selectedFiles.length) return props.error("Please select a file first");
@@ -336,10 +477,16 @@ export default function Mint(props) {
                 </h1>
                 {canister ?
                 <>
-                <input type="file" onChange={selectFiles} multiple /><br /><br />
-                <Button onClick={mintaction} variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>Mint as NFTs</Button>
-                <Button href={"https://"+canister+".raw.ic0.app"} target="_blank" variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>View Canister</Button>
-                <Button onClick={() => clipboardCopy(canister)} target="_blank" variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white" }}>Copy Canister ID</Button>
+                  <input type="file" onChange={selectFiles} multiple /><br /><br />
+                  <Button onClick={mintaction} variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>Mint as NFTs</Button>
+                  <Button href={"https://"+canister+".raw.ic0.app"} target="_blank" variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>View Canister</Button>
+                  <Button onClick={() => clipboardCopy(canister)} target="_blank" variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white" }}>Copy Canister ID</Button>
+                  <br /><br />
+                  <hr />
+                  <h2>Advanced Options</h2>
+                  <input type="file" onChange={selectFiles2} /><br /><br />
+                  <Button onClick={transferaction} variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>Bulk Transfer</Button>
+                  <Button onClick={listaction} variant="contained" color="primary" style={{ backgroundColor: "#003240", color: "white", marginRight:10 }}>Bulk List</Button>
                 </>
                 : ""}
               </div>

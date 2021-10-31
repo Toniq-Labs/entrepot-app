@@ -299,8 +299,8 @@ export default function Listings(props) {
         return props.loader(false);
       }
       props.loader(true, "Locking NFT...");
-      const api = extjs.connect("https://boundary.ic0.app/", props.identity);
-      var r = await api
+      const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
+      var r = await _api
         .canister(canisterId)
         .lock(
           tokenid,
@@ -311,7 +311,7 @@ export default function Listings(props) {
       if (r.hasOwnProperty("err")) throw r.err;
       var paytoaddress = r.ok;
       props.loader(true, "Transferring ICP...");
-      await api
+      await _api
         .token()
         .transfer(
           props.identity.getPrincipal(),
@@ -324,7 +324,7 @@ export default function Listings(props) {
       while (true) {
         try {
           props.loader(true, "Settling purchase...");
-          r3 = await api.canister(canisterId).settle(tokenid);
+          r3 = await _api.canister(canisterId).settle(tokenid);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -368,9 +368,11 @@ export default function Listings(props) {
     s = s ?? showing;
     c = c ?? collection?.canister;
     if (s === "all") {
-      var listings = await api.canister(c).listings();
-      setAllListings(listings);
-      setListings(applyFilters(listings, s, c));
+      try{
+        var listings = await api.canister(c).listings();
+        setAllListings(listings);
+        setListings(applyFilters(listings, s, c));
+      } catch(e) {};
     } else {
       var txs = await api.canister(c).transactions();
       var nt = txs;
@@ -421,7 +423,7 @@ export default function Listings(props) {
                 paddingBottom: 0,
                 color: "#00d092",
               }}
-              value={collection?.canister}
+              value={typeof collection?.canister == "undefined" ? "er7d4-6iaaa-aaaaj-qac2q-cai" : collection.canister}
               onChange={changeCollection}
             >
               {props.collections.map((_collection) => {

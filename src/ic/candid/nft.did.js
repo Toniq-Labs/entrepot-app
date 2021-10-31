@@ -221,6 +221,16 @@ export default ({ IDL }) => {
     'transactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
     'updateThumb' : IDL.Func([IDL.Text, File], [IDL.Opt(IDL.Nat)], []),
+    'transfer_bulk' : IDL.Func(
+        [IDL.Vec(IDL.Tuple(TokenIndex, AccountIdentifier))],
+        [IDL.Vec(IDL.Tuple(TokenIndex, AccountIdentifier))],
+        [],
+      ),
+    'list_bulk' : IDL.Func(
+        [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Nat64))],
+        [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Nat64))],
+        [],
+      ),
   });
 };
 export const init = ({ IDL }) => { return []; };
