@@ -49,7 +49,7 @@ export default function HauntedHamsters(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(66000000n);
   const [remaining, setRemaining] = React.useState(6500);
-  const [startTime, setStartTime] = React.useState(1635692400000);
+  const [startTime, setStartTime] = React.useState(1635710400000);
 
   const params = useParams();
   
