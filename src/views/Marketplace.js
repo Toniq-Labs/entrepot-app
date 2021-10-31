@@ -69,6 +69,17 @@ const collections = [
     blurb: false,
   },
   {
+    canister: "bid2t-gyaaa-aaaah-qcdea-cai",
+    name: "Haunted Hamsters",
+    route: "hauntedhamsters",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress: "35b902472e845179b3d6ad9ff7079fee6bcadb4e0ca870230ba7a79757fa88fb",
+    blurb: (<><p>The Haunted Hamters marketplace will open after the completion of the <a href="/sale/hauntedhamsters">public sale</a>.</p>
+        <a href="/sale/hauntedhamsters"><img style={{maxWidth:800}} src="/banner/hauntedhamsters.jpg" /></a></>),
+  },
+  {
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
     name: "ICTuTs",
     route: "ictuts",

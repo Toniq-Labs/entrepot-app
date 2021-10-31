@@ -54,10 +54,10 @@ export default function HauntedHamsters(props) {
   const params = useParams();
   
   const _updates = async () => {
-    // var stats = await api.token("nfvlz-jaaaa-aaaah-qcciq-cai").call.salesStats((props.account ? props.account.address : ""));
-    // setStartTime(Number(stats[0]/1000000n));
-    // setPrice(stats[1]);
-    // setRemaining(Number(stats[2]));
+    var stats = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").salesStats((props.account ? props.account.address : ""));
+    setStartTime(Number(stats[0]/1000000n));
+    setPrice(stats[1]);
+    setRemaining(Number(stats[2]));
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -83,7 +83,6 @@ export default function HauntedHamsters(props) {
     },
   };
   const buyFromSale = async (qty, price) => {
-    return false;
     if (props.balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -94,13 +93,13 @@ export default function HauntedHamsters(props) {
     if (!v) return;
     try {
       if (qty === 1) {
-        props.loader(true, "Reserving IC3D Scene...");
+        props.loader(true, "Reserving Haunted Hamster...");
       } else {
-        props.loader(true, "Reserving IC3D Scenes...");
+        props.loader(true, "Reserving Haunted Hamsters..");
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister("nfvlz-jaaaa-aaaah-qcciq-cai")
+        .canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale")
         .reserve(
           price,
           qty,
@@ -126,7 +125,7 @@ export default function HauntedHamsters(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("nfvlz-jaaaa-aaaah-qcciq-cai").retreive(paytoaddress);
+          r3 = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -150,10 +149,10 @@ export default function HauntedHamsters(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   var buyOptions = [
-    [1, 200000000n],
-    [5, 1000000000n],
-    [10, 2000000000n],
-    [20, 4000000000n],
+    [1, 66000000n],
+    [5, 330000000n],
+    [10, 660000000n],
+    [20, 1320000000n],
   ]
   return (
     <>
@@ -195,12 +194,12 @@ export default function HauntedHamsters(props) {
                           onClick={() => buyFromSale(o[0], o[1])}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} IC3D Scene{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
+                          Buy {o[0]} Haunted Hamster{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
                         </Button>
                       </Grid>);
                     })}
                   </Grid>
-                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking the button below you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
                   
                 </> :
                 <>
@@ -209,7 +208,7 @@ export default function HauntedHamsters(props) {
               }
             </>
           : 
-            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your IC3D scenes from the marketplace soon!</span></strong></p>
+            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Haunted Hamster from the marketplace soon!</span></strong></p>
           }</>
         }
       </div>

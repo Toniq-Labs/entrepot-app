@@ -63,6 +63,7 @@ const _preloadedIdls = {
   'nns' : nnsIDL,
   'ext' : extIDL,
   'nft' : nftIDL,
+  'sale' : ic3dIDL,
   'default' : extIDL,
 };
 
