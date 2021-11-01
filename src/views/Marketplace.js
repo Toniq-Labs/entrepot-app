@@ -64,9 +64,9 @@ const collections = [
     route: "infinite-chimps",
     nftv : false,
     mature: false,
-    commission: 0.025,
+    commission: 0.035,
     comaddress: "90d2fd9f8c4005da2ebf73579a4f571763d21ce35ed4c32e83b3158cb68c7c45",
-    blurb: false,
+    blurb: (<p>100% of initial sales proceeds and 3% of resales go to Chimpanzee Sanctuary Northwest. The sanctuary provides a 'forever home' for chimpanzees discarded from the entertainment and biomedical testing industries. Every Infinite Chimp in this NFT collection is a portrait of a rescued chimp that now lives peacefully at the sanctuary.</p>),
   },
   {
     canister: "bid2t-gyaaa-aaaah-qcdea-cai",
@@ -198,6 +198,38 @@ const collections = [
         >
           IC Drip Website
         </a>
+      </>
+    ),
+  },
+  {
+    canister: "b5el6-hqaaa-aaaah-qcdhq-cai",
+    name: "Wild & West",
+    route: "wildwest",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress:
+      "9616e04724bd990eda94a848cbfe0dab273d6d663dee7e40e6e314fb34395dcd",
+    blurb: (
+      <>
+        <p>Wild and West: The Journey Begins. We’re excited to have you! Here are some of the amazing perks you get for participating in our pre-sale: access to the "Maverick" role in Discord along with its very own exclusive channel, daily NFT updates, and the chance to help us decide rarity. You will also be granted access to Keak the moment it launches, the chance to learn how genesis works, and any first glimpses at all future projects (collaborations and other). For more information <a href="https://t.co/v7Gy1l1ILi" target="_blank">click here</a>. We can’t thank you enough for all of your support. Welcome to the Wild and West!</p>
+        <strong>Important: These NFTs are placeholder NFTs, holders will receive the real Minted NFTs on December 1st. All placeholders are equal.</strong>
+      </>
+    ),
+  },
+  {
+    canister: "btggw-4aaaa-aaaah-qcdgq-cai",
+    name: "IC Pumpkins",
+    route: "icpumpkins",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress:
+      "9616e04724bd990eda94a848cbfe0dab273d6d663dee7e40e6e314fb34395dcd",
+    blurb: (
+      <>
+        <p>Halloween lovers only! ICPumpkin is 2222 unique pumpkins! The collection consists of 20 really different cool characters, each with their own mood and costume for this holiday. Halloween isn’t just for candy anymore!
+Specially for internet computer. Follow us on twitter: <a href="https://twitter.com/ICPumpkin" target="_blank">@ICPumpkin</a></p>
       </>
     ),
   },
