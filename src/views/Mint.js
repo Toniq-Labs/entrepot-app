@@ -16,15 +16,15 @@ import { clipboardCopy } from '../utils';
 import { StoicIdentity } from "ic-stoic-identity";
 import extjs from "../ic/extjs.js";
 function generateThumbnail(file, boundBox){
-  if (!boundBox || boundBox.length != 2){
-    throw "You need to give the boundBox"
-  }
-  var scaleRatio = Math.min(...boundBox) / Math.max(file.width, file.height);
-  var canvas = document.createElement("canvas")
-  var tt = file.type.split("/");
-  const ctx = canvas.getContext("2d");
-  if (tt[0] == "image") {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    var tt = file.type.split("/");
+    if (tt[0] == "image") {
+      if (!boundBox || boundBox.length != 2){
+        throw "You need to give the boundBox"
+      }
+      var scaleRatio = Math.min(...boundBox) / Math.max(file.width, file.height);
+      var canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d");
       var reader = new FileReader();
       reader.onload = function(event){
           var img = new Image();
@@ -46,49 +46,57 @@ function generateThumbnail(file, boundBox){
           img.src = event.target.result;
       }
       reader.readAsDataURL(file);
-    })
-  } 
-  // else if (tt[0] == "video") {
-    // return new Promise((resolve, reject) => {
-      // gifshot.createGIF({
-        // 'gifWidth': boundBox[0],
-        // 'gifHeight': boundBox[1],
-        // 'video': [URL.createObjectURL(file)]
-      // },function(obj) {
-        // if(!obj.error) {
-          // resolve(dataURItoBlob(obj.image))
-        // }
-      // });
-      // if (false){
-        // const videoPlayer = document.createElement('video');
-        // videoPlayer.setAttribute('src', URL.createObjectURL(file));
-        // videoPlayer.load();
-        // videoPlayer.addEventListener('error', (ex) => {
-          // reject("error when loading video file", ex);
-        // });
-        // videoPlayer.addEventListener('loadedmetadata', () => {
-          // setTimeout(() => {
-            // videoPlayer.currentTime = 0.5;
-          // }, 200);
-          // videoPlayer.addEventListener('seeked', () => {
-            // var scaleRatio = Math.min(...boundBox) / Math.max(videoPlayer.videoWidth, videoPlayer.videoWidth)
-            // let w = videoPlayer.videoWidth*scaleRatio
-            // let h = videoPlayer.videoWidth*scaleRatio
-            // canvas.width = w;
-            // canvas.height = h;
-            // ctx.drawImage(videoPlayer, 0, 0, w, h);
-            // ctx.canvas.toBlob(
-              // blob => {
-                // resolve(blob);
-              // },
-              // "image/png",
-              // 1 /* quality */
-            // );
-          // });
-        // });
-      // };
-    // });
-  // }
+    } 
+    else if (tt[0] == "video") {
+      if (!boundBox || boundBox.length != 2){
+        throw "You need to give the boundBox"
+      }
+      var scaleRatio = Math.min(...boundBox) / Math.max(file.width, file.height);
+      var canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d");
+
+      window.gifshot.createGIF({
+        'gifWidth': boundBox[0],
+        'gifHeight': boundBox[1],
+        'video': [URL.createObjectURL(file)]
+      },function(obj) {
+        if(!obj.error) {
+          resolve(dataURItoBlob(obj.image))
+        }
+      });
+      if (false){
+        const videoPlayer = document.createElement('video');
+        videoPlayer.setAttribute('src', URL.createObjectURL(file));
+        videoPlayer.load();
+        videoPlayer.addEventListener('error', (ex) => {
+          reject("error when loading video file", ex);
+        });
+        videoPlayer.addEventListener('loadedmetadata', () => {
+          setTimeout(() => {
+            videoPlayer.currentTime = 0.5;
+          }, 200);
+          videoPlayer.addEventListener('seeked', () => {
+            var scaleRatio = Math.min(...boundBox) / Math.max(videoPlayer.videoWidth, videoPlayer.videoWidth)
+            let w = videoPlayer.videoWidth*scaleRatio
+            let h = videoPlayer.videoWidth*scaleRatio
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(videoPlayer, 0, 0, w, h);
+            ctx.canvas.toBlob(
+              blob => {
+                resolve(blob);
+              },
+              "image/png",
+              1 /* quality */
+            );
+          });
+        });
+      };
+    }
+    else {
+      resolve(dataURItoBlob("data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAA8AAD/4QMraHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjMtYzAxMSA2Ni4xNDU2NjEsIDIwMTIvMDIvMDYtMTQ6NTY6MjcgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkNBODNCRDVFM0I2NzExRUNBRDFERUNGRTBFMTMxMDAzIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkNBODNCRDVGM0I2NzExRUNBRDFERUNGRTBFMTMxMDAzIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6Q0E4M0JENUMzQjY3MTFFQ0FEMURFQ0ZFMEUxMzEwMDMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6Q0E4M0JENUQzQjY3MTFFQ0FEMURFQ0ZFMEUxMzEwMDMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAAGBAQEBQQGBQUGCQYFBgkLCAYG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"))
+    };
+  });
 }
 function dataURItoBlob(dataURI) {
   var byteString = atob(dataURI.split(',')[1]);

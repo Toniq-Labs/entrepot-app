@@ -92,6 +92,7 @@ export default function Listings(props) {
   const [collection, setCollection] = useState(props.collection);
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
+  const [listingDialogOpen, setListingDialogOpen] = useState(false);
   const history = useHistory();
 
   const changeWearableFilter = async (event) => {
@@ -124,6 +125,10 @@ export default function Listings(props) {
   const changeSort = (event) => {
     setPage(1);
     setSort(event.target.value);
+  };
+
+  const changeListingDialogOpen = (dialogOpen) => {
+    setListingDialogOpen(dialogOpen);
   };
 
   const handleHealthDominantValueChange = (event, newHealthDominantValue) => {
@@ -343,6 +348,7 @@ export default function Listings(props) {
       );
     }
   };
+
   const applyFilters = (a, s, c) => {
     if (
       c === "tde7l-3qaaa-aaaah-qansa-cai" &&
@@ -365,21 +371,27 @@ export default function Listings(props) {
   };
 
   const refresh = async (s, c) => {
-    s = s ?? showing;
-    c = c ?? collection?.canister;
-    if (s === "all") {
-      try{
-        var listings = await api.canister(c).listings();
-        setAllListings(listings);
-        setListings(applyFilters(listings, s, c));
-      } catch(e) {};
-    } else {
-      var txs = await api.canister(c).transactions();
-      var nt = txs;
-      if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-        nt = txs.slice(82);
+    if (!listingDialogOpen) {
+      s = s ?? showing;
+      c = c ?? collection?.canister;
+      if (s === "all") {
+        try{
+          if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
+            var txs = await api.canister(c).transactions();
+            setTransactions(txs.slice(82));
+          }
+          var listings = await api.canister(c).listings();
+          setAllListings(listings);
+          setListings(applyFilters(listings, s, c));
+        } catch(e) {};
+      } else {
+        var txs = await api.canister(c).transactions();
+        var nt = txs;
+        if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
+          nt = txs.slice(82);
+        }
+        setTransactions(applyFilters(nt, s, c));
       }
-      setTransactions(applyFilters(nt, s, c));
     }
   };
   const theme = useTheme();
@@ -931,6 +943,8 @@ export default function Listings(props) {
                                 buy={buy}
                                 key={listing[0] + "-" + i}
                                 listing={listing}
+                                transactions={transactions}
+                                onListingDialogChange={changeListingDialogOpen}
                               />
                             );
                           })}
