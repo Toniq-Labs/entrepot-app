@@ -608,7 +608,7 @@ export default function Marketplace(props) {
         case "plug":
           const result = await window.ic.plug.requestConnect({
             whitelist: [
-              ...collections.map((a) => a.canister),
+              ...collections.filter(a => _isCanister(a.canister)).map((a) => a.canister),
               "xkbqi-2qaaa-aaaah-qbpqq-cai",
               "d3ttm-qaaaa-aaaai-qam4a-cai",
               "qcg3w-tyaaa-aaaah-qakea-cai",
@@ -667,7 +667,7 @@ export default function Marketplace(props) {
               if (!window.ic.plug.agent) {
                 await window.ic.plug.createAgent({
                   whitelist: [
-                    ...collections.map((a) => a.canister),
+                    ...collections.filter(a => _isCanister(a.canister)).map((a) => a.canister),
                     "xkbqi-2qaaa-aaaah-qbpqq-cai",
                     "d3ttm-qaaaa-aaaai-qam4a-cai",
                     "qcg3w-tyaaa-aaaah-qakea-cai",
@@ -767,7 +767,7 @@ export default function Marketplace(props) {
               currentAccount={currentAccount}
               account={accounts.length > 0 ? accounts[currentAccount] : false}
               loggedIn={loggedIn}
-              collections={collections}
+              collections={collections.filter(a => _isCanister(a.canister))}
               collection={collection}
               loader={props.loader}
               alert={props.alert}

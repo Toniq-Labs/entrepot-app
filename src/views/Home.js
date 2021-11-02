@@ -117,9 +117,9 @@ export default function Home(props) {
               {
                 items.map( (item, i) => {
                   if (item.link) {
-                    return (<a href={item.link}><img className={classes.bannerimg} src={item.img} /></a>)
+                    return (<a key={i} href={item.link}><img className={classes.bannerimg} src={item.img} /></a>)
                   } else {
-                    return (<img className={classes.bannerimg} src={item.img} />)
+                    return (<img key={i} className={classes.bannerimg} src={item.img} />)
                   };
                 })
               }
