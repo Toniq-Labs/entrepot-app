@@ -20,7 +20,7 @@ const collections = [
     canister: "oeee4-qaaaa-aaaak-qaaeq-cai",
     name: "Motoko Day Drop",
     route: "motoko",
-    nftv : false,
+    nftv : true,
     mature: false,
     commission: 0.035,
     comaddress: "09b739076e074550862930ca17f662485076a6af60cc1b0e9a1f50b058d767c9",
