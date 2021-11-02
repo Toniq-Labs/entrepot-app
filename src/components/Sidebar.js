@@ -96,6 +96,9 @@ export default function Sidebar(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const _isCanister = c => {
+    return c.length == 27 && c.split("-").length == 5;
+  };
   const refresh = async () => {
     if (props.account){
       var b = await api.token().getBalance(props.account.address);
@@ -104,6 +107,7 @@ export default function Sidebar(props) {
       var collection, mcs = [];
       for(var i = 0; i < props.collections.length; i++) {
         collection = props.collections[i];
+        if (!_isCanister(collection.canister)) continue
         try{
           var tokens = await api.token(collection.canister).getTokens(props.account.address);
           if (collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai") {

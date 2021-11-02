@@ -370,7 +370,6 @@ export default function Listings(props) {
     await refresh();
   };
   const _isCanister = c => {
-    console.log(c);
     return c.length == 27 && c.split("-").length == 5;
   };
   const refresh = async (s, c) => {

@@ -176,10 +176,14 @@ export default function Wallet(props) {
     }
   };
 
+  const _isCanister = c => {
+    return c.length == 27 && c.split("-").length == 5;
+  };
   
   const refresh = async (c) => {
     if (props.account.address && props.collection?.canister){
       c = c ?? props.collection.canister;
+      if (!_isCanister(c)) return;
       var nfts = await api.token(c).getTokens(props.account.address);
       if (c === "bxdf4-baaaa-aaaah-qaruq-cai") {
         nfts = nfts.map(a => {a.wrapped = true; return a});
