@@ -401,7 +401,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     comaddress:
       "60879ff49717bfef81b15288d6359a96b5705e2d3918d1f14bba1441ea84a539",
     blurb: (<>The work of Paris-based Ludo (Ludovic Vernhet) explores a world where biotechnological chimeras offer to merge plants and animals with our technological universe. Through his work, Ludo aims to reveal the opposites that cohabit our world, often taking unlikely pairings to absurd lengths. These dualities are reconciled by the artist through the creation of hybrid organisms.
-Drawn with the precision of botanical illustrations, this new order of hybrid organisms is both elegant and ferocious, simple & sometimes caustic. Butterflies become brass knuckles; carnivorous plants bare rows of hunting-knife teeth; bees hover hidden behind gas masks and goggles; automatic weapons crown the head of sunflowers; human skulls cluster together like grapes.<br /><br /><Button data-paperform-id="iconic21ludo" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
+Drawn with the precision of botanical illustrations, this new order of hybrid organisms is both elegant and ferocious, simple & sometimes caustic. Butterflies become brass knuckles; carnivorous plants bare rows of hunting-knife teeth; bees hover hidden behind gas masks and goggles; automatic weapons crown the head of sunflowers; human skulls cluster together like grapes.<br /><br /><strong>Art will be on sale after BTC integration</strong><br /><br /><Button data-paperform-id="iconic21ludo" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {
@@ -438,7 +438,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
     commission: 0.1,
     comaddress:
       "3e3dc266e28772960518ceb5a263606e0d21a2fb5ec8c68c98740ca78b1bb60a",
-    blurb: (<>Ryan P. Griffin is a visual artist based out of Los Angeles, CA. Griffin uses projected light as a vehicle to activate the environment in a poetic, performative and public way.  The artist's practice incorporates drawing, painting, photography, animation and video, while extending these traditions through contemporary digital media tools to share unique experiences. The artist organizes frequent happenings thru his ongoing project at Projected Visions, using projected light to radically repurpose place.<br /><br /><Button data-paperform-id="iconic21pattern" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
+    blurb: (<>Ryan P. Griffin is a visual artist based out of Los Angeles, CA. Griffin uses projected light as a vehicle to activate the environment in a poetic, performative and public way.  The artist's practice incorporates drawing, painting, photography, animation and video, while extending these traditions through contemporary digital media tools to share unique experiences. The artist organizes frequent happenings thru his ongoing project at Projected Visions, using projected light to radically repurpose place.<br /><br /><strong>Art will be ready soon for minting</strong><br /><br /><Button data-paperform-id="iconic21pattern" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {
@@ -450,7 +450,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
     commission: 0.1,
     comaddress:
       "ad7027bba25b9e97a865ead26d7367de958278a0ea758d5f80f75ecf6b185516",
-    blurb: (<>An illustrator, artist currently based in New York City, Chloe tackles visual storytelling through illustration with experience in branding, concept art, character design, editorial, NFTs, as well as her own private practice. She graduated with a BFA from the Rhode Island School of Design and has since been honored most recently by the Art Directors Club with a Silver Cube in their 100th Annual Awards, one of the most prestigious design accolades. She also does collaborations overseas in Asia and has had solo shows in Shanghai and Wuhan. Her most recent collaborative project with Bored Ape Yacht Club NFTs sold at Sothebys for 24 million.</>),
+    blurb: (<>An illustrator, artist currently based in New York City, Chloe tackles visual storytelling through illustration with experience in branding, concept art, character design, editorial, NFTs, as well as her own private practice. She graduated with a BFA from the Rhode Island School of Design and has since been honored most recently by the Art Directors Club with a Silver Cube in their 100th Annual Awards, one of the most prestigious design accolades. She also does collaborations overseas in Asia and has had solo shows in Shanghai and Wuhan.<br /><br /><strong>Art for display only</strong></>),
   },
 ];
 function useInterval(callback, delay) {

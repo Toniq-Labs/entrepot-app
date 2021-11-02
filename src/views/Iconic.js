@@ -101,7 +101,7 @@ export default function Sale(props) {
     {
       title : "Ludo",
       link : "/marketplace/ludo",
-      image : "/collections/icmojis.jpg",
+      image : "/collections/ludo.jpg",
       content : (<>The work of Paris-based Ludo (Ludovic Vernhet) explores a world where biotechnological chimeras offer to merge plants and animals with our technological universe.</>),
     },
     {
@@ -120,7 +120,7 @@ export default function Sale(props) {
     {
       title : "Ryan P. Griffin",
       link : "/marketplace/ryanpgriffin",
-      image : "/collections/icmojis.jpg",
+      image : "/collections/ryangriffin.jpg",
       content : (<>Ryan P. Griffin is a visual artist based out of Los Angeles, CA. Griffin uses projected light as a vehicle to activate the environment in a poetic, performative and public way.</>),
     },
     {
@@ -143,20 +143,21 @@ export default function Sale(props) {
           }}
         >
           <h1 className={classes.heading}>The Iconic Collection 2021</h1>
-          <p
+          <div
             style={{
               textAlign: "center",
               fontSize: "1.3em",
               padding: "0 30px",
             }}
-          >
-            By definition, an entrepôt is a port, city, or trading post where
-            merchandise may be imported, stored or traded. Such centers played a
-            critical role in trade during the days of wind-powered shipping. We
-            developed <strong>Entrepot.app</strong> to provide a similar role in
-            the digital world - a trading post where users can store and trade
-            digital assets in a decentralized, non-custodial way.
-          </p>
+          ><p>The ICONIC art installation is a celebration of NFT artists on the Internet Computer blockchain (or “IC” for short). The exhibit features artists from all over the world, including New York, Los Angeles, Miami, Singapore, Japan, Istanbul, and Paris.</p>
+
+<p>Much of the depiction around our relationship with technology in the media is overwhelmingly negative. Films and shows such as Blade Runner, The Matrix, Minority Report, Ghost in the Shell, and so on present a bleak dystopia, where technology is wielded in a way to control and surveil the populace.</p>
+
+<p>In contrast, ICONIC seeks to reframe our relationship with technology and imagine how technology can be used to bridge and connect humanity, as well as empower the individual, through decentralized technologies such as the Internet Computer. The artwork featured in the exhibit brims with scintillating techno-optimism for the future, with pieces that are unabashedly bold, dynamic, energetic, and full of life. In this brave new world, it is the artists and creators who wield the power, for art is the most distilled expression of the human condition.</p>
+
+<p>To this end, NFTs have become a powerful new vehicle for artists to share their creative vision. The most innovative artists have always used new technology and media as a means to amplify their core message.</p>
+
+<p><strong>Enjoy ICONIC, and let’s dream of a brighter, more colorful future, one where technology ignites in us once again a sense of wonder and hope.</strong></p></div>
           <Grid
             container
             direction="row"
