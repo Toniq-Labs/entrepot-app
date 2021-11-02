@@ -39,87 +39,41 @@ export default function Navbar(props) {
           </Typography>
           <div className={classes.grow} />
           <Button
-
             onClick={() => {
-              history.push("/sale/hauntedhamsters");
+              history.push("/sale");
               handleClick();
             }}
-            className={classes.button}
-            style={{
-              color: route === "sale" ? "#00d092" : "#000",
-              borderBottom:
-                route === "sale"
-                  ? "3px solid #00d092"
-                  : "3px solid transparent",
-            }}
+            className={(route === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
             color="inherit"
           >
-            LATEST NFT SALE
+            NFT SALES
           </Button>
           <Button
-            startIcon={
-              <img
-                alt="marketplace"
-                style={{ width: 20 }}
-                src="/icon/marketplace.png"
-              />
-            }
             onClick={() => {
               history.push("/marketplace/moonwalkers");
               handleClick();
             }}
-            className={classes.button}
-            style={{
-              color: route === "marketplace" ? "#00d092" : "#000",
-              borderBottom:
-                route === "marketplace"
-                  ? "3px solid #00d092"
-                  : "3px solid transparent",
-            }}
+            className={(route === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
             color="inherit"
           >
             Marketplace
           </Button>
           <Button
-            startIcon={
-              <img alt="create" style={{ width: 20 }} src="/icon/create.png" />
-            }
             onClick={() => {
               history.push("/create");
               handleClick();
             }}
-            className={classes.button}
-            style={{
-              color: route === "create" ? "#00d092" : "#000",
-              borderBottom:
-                route === "create"
-                  ? "3px solid #00d092"
-                  : "3px solid transparent",
-            }}
+            className={(route === "create" ? "selected " : "")+[classes.button, classes.create].join(' ')}
             color="inherit"
           >
             Create
           </Button>
           <Button
-            startIcon={
-              <img
-                alt="contact"
-                style={{ width: 20 }}
-                src="/icon/support.png"
-              />
-            }
             onClick={() => {
               history.push("/contact");
               handleClick();
             }}
-            className={classes.button}
-            style={{
-              color: route === "contact" ? "#00d092" : "#000",
-              borderBottom:
-                route === "contact"
-                  ? "3px solid #00d092"
-                  : "3px solid transparent",
-            }}
+            className={(route === "contact" ? "selected " : "")+[classes.button, classes.contact].join(' ')}
             color="inherit"
           >
             Support
@@ -132,7 +86,7 @@ export default function Navbar(props) {
             <div className={classes.smNav} onClick={() => setOpen(false)}>
               <Button
                 onClick={() => {
-                  history.push("/sale/hauntedhamsters");
+                  history.push("/sale");
                   handleClick();
                 }}
                 className={classes.button1}
@@ -145,7 +99,7 @@ export default function Navbar(props) {
                 }}
                 color="inherit"
               >
-                Latest NFT Sale
+                NFT SALES
               </Button>
               <Button
                 startIcon={
@@ -267,6 +221,46 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
   },
+  sale: {
+    backgroundImage : "url('/icon/anchor.png')",
+    backgroundRepeat : "no-repeat",
+    backgroundSize : "20px",
+    backgroundPosition: "0 49%",
+    paddingLeft : 30,
+    "&:hover, &.selected": {
+      backgroundImage : "url('/icon/anchor-g.png')",      
+    },
+  },
+  marketplace: {
+    backgroundImage : "url('/icon/marketplace.png')",
+    backgroundRepeat : "no-repeat",
+    backgroundSize : "20px",
+    backgroundPosition: "0 49%",
+    paddingLeft : 30,
+    "&:hover, &.selected": {
+      backgroundImage : "url('/icon/marketplace-g.png')",      
+    },
+  },
+  create: {
+    backgroundImage : "url('/icon/create.png')",
+    backgroundRepeat : "no-repeat",
+    backgroundSize : "20px",
+    backgroundPosition: "0 49%",
+    paddingLeft : 30,
+    "&:hover, &.selected": {
+      backgroundImage : "url('/icon/create-g.png')",      
+    },
+  },
+  contact: {
+    backgroundImage : "url('/icon/support.png')",
+    backgroundRepeat : "no-repeat",
+    backgroundSize : "20px",
+    backgroundPosition: "0 49%",
+    paddingLeft : 30,
+    "&:hover, &.selected": {
+      backgroundImage : "url('/icon/support-g.png')",      
+    },
+  },
   button: {
     marginLeft: 40,
     fontSize: "1.2em",
@@ -274,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "3px solid transparent",
     borderRadius: 0,
     height: 73,
-    "&:hover": {
+    "&:hover, &.selected": {
       color: "#00d092 !important",
       backgroundColor: "#fff",
       borderBottom: "3px solid #00d092 !important",

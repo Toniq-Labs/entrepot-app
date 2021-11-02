@@ -11,6 +11,8 @@ import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
 import Home from "./views/Home";
+import Iconic from "./views/Iconic";
+import Sale from "./views/Sale";
 import Contact from "./views/Contact";
 
 const useStyles = makeStyles((theme) => ({
@@ -164,6 +166,12 @@ export default function App() {
         </Route>
         <Route path="/" exact>
           <Home error={error} alert={alert} confirm={confirm} loader={loader} />
+        </Route>
+        <Route path="/iconic2021" exact>
+          <Iconic error={error} alert={alert} confirm={confirm} loader={loader} />
+        </Route>
+        <Route path="/sale" exact>
+          <Sale error={error} alert={alert} confirm={confirm} loader={loader} />
         </Route>
       </Switch>
       <Backdrop className={classes.backdrop} open={loaderOpen}>

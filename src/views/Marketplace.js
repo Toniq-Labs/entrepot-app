@@ -68,6 +68,17 @@ const collections = [
     comaddress: "90d2fd9f8c4005da2ebf73579a4f571763d21ce35ed4c32e83b3158cb68c7c45",
     blurb: (<p>100% of initial sales proceeds and 3% of resales go to Chimpanzee Sanctuary Northwest. The sanctuary provides a 'forever home' for chimpanzees discarded from the entertainment and biomedical testing industries. Every Infinite Chimp in this NFT collection is a portrait of a rescued chimp that now lives peacefully at the sanctuary.</p>),
   },
+
+  {
+    canister: "oeee4-qaaaa-aaaak-qaaeq-cai",
+    name: "Motoko Drop",
+    route: "motokodrop",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress: "09b739076e074550862930ca17f662485076a6af60cc1b0e9a1f50b058d767c9",
+    blurb: false,
+  },
   {
     canister: "bid2t-gyaaa-aaaah-qcdea-cai",
     name: "Haunted Hamsters",
@@ -342,6 +353,114 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
       "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
     blurb: false,
   },
+  
+  
+  {
+    canister: "dv6u3-vqaaa-aaaah-qcdlq-cai",
+    name: "Tyler Monsein & Dakota Light-Smith",
+    route: "tylerdakota",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "f9deb8b1752f6230f1f86c9ca0b7c613120733acadd3a3279ea843523f22d974",
+    blurb: (<>Tyler and Dakota are a writer / designer team interested in semiotics and altered states. This is a video series in which common phrases become hypnotic mantras.</>),
+  },
+  
+  {
+    canister: "crt3j-mqaaa-aaaah-qcdnq-cai",
+    name: "Neil White",
+    route: "neilwhite",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "6d4aba3426e332add7b55d88a005805b436e98bec092f42e89510596a3ac8ee5",
+    blurb: (<>Neil White is a Miami-based contemporary artist. His work focuses on ironic portraits of historical icons and social commentary in the form of robots. He employs both digital art and studio painting mediums in a hyperrealistic pop art style.</>),
+  },
+  
+  {
+    canister: "cnxby-3qaaa-aaaah-qcdpq-cai",
+    name: "André Wee",
+    route: "andrewee",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
+    blurb: (<>André Wee, a newcomer to the NFT Art scene, is an experimental illustrator
+that jumps between both the virtual and physical world when he creates
+his craft. The works that he creates blend Technology with Art as André
+discovers newer ways of engaging with his viewers with creative
+storytelling and imagery. Aside from putting pencil to paper and pushing
+digital paint across a virtual canvas, André also works with animated layers
+hidden within the physical world through Augmented reality where he
+embeds narratives within his illustrations.
+</>),
+  },
+  
+  {
+    canister: "ludo",
+    name: "Ludo",
+    route: "ludo",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "60879ff49717bfef81b15288d6359a96b5705e2d3918d1f14bba1441ea84a539",
+    blurb: (<>The work of Paris-based Ludo (Ludovic Vernhet) explores a world where biotechnological chimeras offer to merge plants and animals with our technological universe. Through his work, Ludo aims to reveal the opposites that cohabit our world, often taking unlikely pairings to absurd lengths. These dualities are reconciled by the artist through the creation of hybrid organisms.
+Drawn with the precision of botanical illustrations, this new order of hybrid organisms is both elegant and ferocious, simple & sometimes caustic. Butterflies become brass knuckles; carnivorous plants bare rows of hunting-knife teeth; bees hover hidden behind gas masks and goggles; automatic weapons crown the head of sunflowers; human skulls cluster together like grapes.<br /><div data-paperform-id="iconic21ludo"></div>
+</>),
+  },
+  
+  {
+    canister: "ckwhm-wiaaa-aaaah-qcdpa-cai",
+    name: "PatternBased",
+    route: "patternbased",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "fa603565b08636498f83d493c33b8cab22ddeb59eae7ffde782a5f3f35634c6d",
+    blurb: (<>PatternBased is a boutique creative label at the intersection of art and technology. PatternBased is Siori Kitajima and Joseph Minadeo. Siori Kitajima is a multimedia visual artist who explores complexity and abstraction through a variety of mediums: from canvas painting to coding. Joseph Minadeo is a film composer and multimedia artist inspired by nature and technology. Both are the characters in a film that the protagonist visits to accomplish a technical task: the geek helpers. As technical artists, they celebrate the potential of generative / procedural art and are currently exploring the world of decentralization including NFTs.</>),
+  },
+  
+  {
+    canister: "cdvmq-aaaaa-aaaah-qcdoq-cai",
+    name: "Selay Karasu",
+    route: "selaykarasu",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "b4e5130404276e730dbf04515621ccae616f6665a451c0ad57daa6d2c668b62e",
+    blurb: (<>Selay Karasu is a multidisciplinary artist and creative director based in Istanbul.
+10 years in the industry she did numerous projection mapping and public art installations. Her A/V performances were exhibited on substantial platforms around the globe such as CERN Particle Physics Laboratory, Society For Arts And Technology [SAT], MOMA NY, Burning Man Festival (USA), WIRED, Fubiz, Vimeo(Staff Pick), Prix Ars Electronica, Signal Light Festival (CZ), IX Immersion Experience Symposium (CAN).	</>),
+  },
+  
+  {
+    canister: "ryanpgriffin",
+    name: "Ryan P. Griffin",
+    route: "ryanpgriffin",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "3e3dc266e28772960518ceb5a263606e0d21a2fb5ec8c68c98740ca78b1bb60a",
+    blurb: (<>Ryan P. Griffin is a visual artist based out of Los Angeles, CA. Griffin uses projected light as a vehicle to activate the environment in a poetic, performative and public way.  The artist's practice incorporates drawing, painting, photography, animation and video, while extending these traditions through contemporary digital media tools to share unique experiences. The artist organizes frequent happenings thru his ongoing project at Projected Visions, using projected light to radically repurpose place.</>),
+  },
+  
+  {
+    canister: "chloeyeemay",
+    name: "Chloe Yee May",
+    route: "chloeyeemay",
+    nftv : false,
+    mature: false,
+    commission: 0.1,
+    comaddress:
+      "ad7027bba25b9e97a865ead26d7367de958278a0ea758d5f80f75ecf6b185516",
+    blurb: (<>An illustrator, artist currently based in New York City, Chloe tackles visual storytelling through illustration with experience in branding, concept art, character design, editorial, NFTs, as well as her own private practice. She graduated with a BFA from the Rhode Island School of Design and has since been honored most recently by the Art Directors Club with a Silver Cube in their 100th Annual Awards, one of the most prestigious design accolades. She also does collaborations overseas in Asia and has had solo shows in Shanghai and Wuhan. Her most recent collaborative project with Bored Ape Yacht Club NFTs sold at Sothebys for 24 million.</>),
+  },
 ];
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -380,12 +499,17 @@ export default function Marketplace(props) {
   const _updates = async () => {
     await processPayments();
   };
+  const _isCanister = c => {
+    console.log(c);
+    return c.length == 27 && c.split("-").length == 5;
+  };
   const processPayments = async () => {
     if (!identity) return;
     if (processingPayments) return;
     processingPayments = true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
     for (var j = 0; j < collections.length; j++) {
+      if (!_isCanister(collections[j].canister)) continue;
       var payments = await _api.canister(collections[j].canister).payments();
       if (payments.length === 0) continue;
       if (payments[0].length === 0) continue;

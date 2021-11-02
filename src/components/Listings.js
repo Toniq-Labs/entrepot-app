@@ -369,11 +369,15 @@ export default function Listings(props) {
   const _updates = async () => {
     await refresh();
   };
-
+  const _isCanister = c => {
+    console.log(c);
+    return c.length == 27 && c.split("-").length == 5;
+  };
   const refresh = async (s, c) => {
     if (!listingDialogOpen) {
       s = s ?? showing;
       c = c ?? collection?.canister;
+      if (!_isCanister(c)) return;
       if (s === "all") {
         try{
           if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
@@ -466,6 +470,7 @@ export default function Listings(props) {
           {collection?.blurb}
         </p>
       </div>
+      {_isCanister(collection.canister) ?
       <>
         <div style={{ marginLeft: "20px", marginTop: "10px" }}>
           <FormControl style={{ marginRight: 20 }}>
@@ -1076,7 +1081,7 @@ export default function Listings(props) {
         ) : (
           ""
         )}
-      </>
+      </> : ""}
       <BuyForm open={showBuyForm} {...buyFormData} />
     </>
   );
