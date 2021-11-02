@@ -353,6 +353,17 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
       "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
     blurb: false,
   },
+  {
+    canister: "eb7r3-myaaa-aaaah-qcdya-cai",
+    name: "Iconic2021",
+    route: "iconic2021",
+    nftv : false,
+    mature: false,
+    commission: 0.035,
+    comaddress:
+      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+    blurb: false,
+  },
   
   
   {
