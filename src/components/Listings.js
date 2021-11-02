@@ -17,6 +17,7 @@ import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
 import Listing from "./Listing";
 import Sold from "./Sold";
+import SoldListing from "./SoldListing";
 import BuyForm from "./BuyForm";
 import { useHistory } from "react-router";
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -63,6 +64,7 @@ export default function Listings(props) {
   const [listings, setListings] = useState(false);
   const [allListings, setAllListings] = useState(false);
   const [transactions, setTransactions] = useState(false);
+  const [tempTx, setTempTx] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -117,6 +119,7 @@ export default function Listings(props) {
     setCollection(c);
     setListings(false);
     setTransactions(false);
+    setTempTx([]);
     setPage(1);
     props.loader(true);
     await refresh("all", c.canister);
@@ -386,6 +389,14 @@ export default function Listings(props) {
           var listings = await api.canister(c).listings();
           setAllListings(listings);
           setListings(applyFilters(listings, s, c));
+          
+          if (["cdvmq-aaaaa-aaaah-qcdoq-cai", "ckwhm-wiaaa-aaaah-qcdpa-cai", "cnxby-3qaaa-aaaah-qcdpq-cai", "crt3j-mqaaa-aaaah-qcdnq-cai", "dv6u3-vqaaa-aaaah-qcdlq-cai"].indexOf(c) >= 0){
+            var txs = await api.canister(c).transactions();
+            var nt = txs;
+            setTempTx(applyFilters(nt, s, c));
+          }
+          
+          
         } catch(e) {};
       } else {
         var txs = await api.canister(c).transactions();
@@ -951,7 +962,19 @@ export default function Listings(props) {
                                 onListingDialogChange={changeListingDialogOpen}
                               />
                             );
-                          })}
+                          }).concat(tempTx.map((transaction, i) => {
+                            return (
+                              <SoldListing
+                                gri={getNri(
+                                  collection?.canister,
+                                  extjs.decodeTokenId(transaction.token).index
+                                )}
+                                key={transaction.token + i}
+                                collection={collection?.canister}
+                                transaction={transaction}
+                              />
+                            );
+                          }))}
                       </Grid>
                     </div>
                   </>
