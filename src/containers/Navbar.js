@@ -50,7 +50,7 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              history.push("/marketplace/moonwalkers");
+              history.push("/marketplace/motoko");
               handleClick();
             }}
             className={(route === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
@@ -110,7 +110,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/marketplace/moonwalkers");
+                  history.push("/marketplace/motoko");
                   handleClick();
                 }}
                 className={classes.button1}

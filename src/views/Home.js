@@ -143,7 +143,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace/moonwalkers`)}
+              onClick={() => history.push(`/marketplace/motoko`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >
