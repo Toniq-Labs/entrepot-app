@@ -696,10 +696,10 @@ export default function Marketplace(props) {
   }, []);
   React.useEffect(() => {
     if (identity) {
-      extjs
-        .connect("https://boundary.ic0.app/", identity)
-        .canister("qgsqp-byaaa-aaaah-qbi4q-cai")
-        .log();
+      // extjs
+        // .connect("https://boundary.ic0.app/", identity)
+        // .canister("qgsqp-byaaa-aaaah-qbi4q-cai")
+        // .log();
       setLoggedIn(true);
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
     } else {

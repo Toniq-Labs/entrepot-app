@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
+import Alert from '@material-ui/lab/Alert';
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid, makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
@@ -475,7 +476,7 @@ export default function Listings(props) {
             </Select>
           </FormControl>
         </h1>
-
+        {collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""}
         <p style={{ fontSize: "1.2em" }}>
           {collection?.blurb}
         </p>
@@ -871,7 +872,7 @@ export default function Listings(props) {
               </div>
             ) : (
               <>
-                {listings.length === 0 ? (
+                {listings.concat(tempTx).length === 0 ? (
                   <div style={styles.empty}>
                     <Typography
                       paragraph

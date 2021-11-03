@@ -105,6 +105,8 @@ export default function Sidebar(props) {
       var thisacc = loadedAccount;
       setBalance(b);
       var collection, mcs = [];
+      var firstrun = false;
+      if (myCollections === false || myCollections.length === 0) firstrun = true;
       for(var i = 0; i < props.collections.length; i++) {
         collection = props.collections[i];
         if (!_isCanister(collection.canister)) continue
@@ -128,8 +130,12 @@ export default function Sidebar(props) {
             ...collection,
             count : tokens.length
           });
+          if (firstrun) {
+            if (thisacc == loadedAccount) setMyCollections(mcs);
+            else setMyCollections(false);
+          }
         }
-
+        
       };
       if (thisacc == loadedAccount) setMyCollections(mcs);
       else setMyCollections(false);
@@ -153,8 +159,6 @@ export default function Sidebar(props) {
   }, [props.currentAccount]);
   const accountsList = (
     <div style={{marginTop:73, marginBottom: 100}}>
-      <Button variant={"contained"} onClick={props.onClose} color={"primary"} style={{fontWeight:"bold", margin:"0 auto", position:"absolute", top:"18px", left:"15px", right:"15px", width:"270px"}}>Close Wallet</Button>
-      <Divider />
       { props.account !== false ? 
       <List>
         <ListSubheader>
