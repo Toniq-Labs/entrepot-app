@@ -43,7 +43,7 @@ export default function Navbar(props) {
           <Typography variant="h6" noWrap>
             <a onClick={() => goTo("/")}><img
               alt="Entrepot"
-              src="/logo3.png"
+              src="/logo.jpg"
               style={{ height: 64, cursor: "pointer" }}
             /></a>
           </Typography>

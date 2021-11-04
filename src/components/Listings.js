@@ -465,7 +465,7 @@ export default function Listings(props) {
         </div>
         <div style={styles.details}>
           <Grid container direction="row" alignItems="center" spacing={2}>
-            <Grid item md={3}>
+            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
               {stats === false ? <strong>Loading Statistics...</strong> :
               <>{stats === null ? "" :
                 <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
@@ -484,10 +484,10 @@ export default function Listings(props) {
                 </Grid>}
               </>}
             </Grid>
-            <Grid item md={6} style={{textAlign:"center"}}>
+            <Grid item md={6} xs={12} style={{textAlign:"center"}}>
               <h1>{collection.name}</h1>
             </Grid>
-            <Grid item md={3} style={{textAlign:"right"}}>
+            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
               <ul className={classes.socials}>
                 {['telegram', 'twitter', 'medium', 'd'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
                   return (<li><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
@@ -1136,10 +1136,11 @@ export default function Listings(props) {
 
 const useStyles = makeStyles((theme) => ({
   socials: {
+    padding:0,
     listStyle: "none",
     "& li" : {
       display:"inline-block",
-      marginLeft:10,
+      margin:"0 10px",
     },
   },
   drawer: {

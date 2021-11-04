@@ -37,11 +37,11 @@ export default function Contact(props) {
   const classes = useStyles();
   return (
     <>
-      <div className={classes.main}>
+      <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
             maxWidth: 1200,
-            margin: "0px auto",
+            margin: "0px auto", minHeight:"calc(100vh - 213px)"
           }}
         >
           <Grid container spacing={2}>
