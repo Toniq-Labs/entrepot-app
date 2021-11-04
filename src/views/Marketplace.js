@@ -135,46 +135,46 @@ export default function Marketplace(props) {
                 switch (sort) {
                   case "listings_asc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == a.canister).stats.listings) - Number(stats.find(x => x.canister == b.canister).stats.listings);
                   break;
                   case "listings_desc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == b.canister).stats.listings) - Number(stats.find(x => x.canister == a.canister).stats.listings);
                   break;
                   case "total_asc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == a.canister).stats.floor) - Number(stats.find(x => x.canister == b.canister).stats.floor);
+                    return Number(stats.find(x => x.canister == a.canister).stats.total) - Number(stats.find(x => x.canister == b.canister).stats.total);
                   break;
                   case "total_desc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == b.canister).stats.total) - Number(stats.find(x => x.canister == a.canister).stats.total);
                   break;
                   case "floor_asc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == a.canister).stats.floor) - Number(stats.find(x => x.canister == b.canister).stats.floor);
                   break;

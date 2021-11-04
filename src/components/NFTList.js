@@ -159,11 +159,14 @@ export default function NFTList(props) {
     api.token(id).list(props.currentAccount, price).then(r => {
       if (r) {
         refresh();
+        props.loader(false);
         return props.alert("Transaction complete", "Your listing has been updated");
       } else {        
+        props.loader(false);
         return props.error("Something went wrong with this transfer");
       }
     }).catch(e => {
+      props.loader(false);
       return props.error("There was an error: " + e);
     }).finally(() => {
       props.loader(false);
