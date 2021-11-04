@@ -78,13 +78,11 @@ export default function Create(props) {
   ];
   return (
     <>
-      <Navbar />
       <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
             maxWidth: 1200,
-            margin: "120px auto 0px",
-            paddingBottom: 200,
+            margin: "0px auto",
           }}
         >
           <Grid container spacing={2}>
@@ -133,12 +131,6 @@ export default function Create(props) {
               })
             }
           </Grid>
-        </div>
-
-        <div className={classes.footer}>
-          <Typography variant="body1">
-            Developed by ToniqLabs &copy; All rights reserved 2021
-          </Typography>
         </div>
       </div>
     </>

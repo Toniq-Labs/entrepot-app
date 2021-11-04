@@ -61,7 +61,6 @@ const Detail = () => {
   };
   return (
     <>
-      <Navbar />
       <Container maxWidth="xl" className={classes.container}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={12} md={5}>

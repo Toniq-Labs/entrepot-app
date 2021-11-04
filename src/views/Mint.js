@@ -250,20 +250,14 @@ function CSVToArray( strData, strDelimiter ){
     return( arrData );
 }
 export default function Mint(props) {
-  const [identity, setIdentity] = React.useState(false);
-  const [loggedIn, setLoggedIn] = React.useState(false);
-  const [address, setAddress] = React.useState(false);
-  const [balance, setBalance] = React.useState(0);
-  const [accounts, setAccounts] = React.useState(false);
   const [canisters, setCanisters] = React.useState([]);
   const [canister, setCanister] = React.useState(false);
   const [selectedFiles, setSelectedFiles] = React.useState([]);
   const [selectedFiles2, setSelectedFiles2] = React.useState([]);
-  const [currentAccount, setCurrentAccount] = React.useState(0);
   const classes = useStyles();
   const chunkSize = 1048576;
   const _updates = async () => {
-    const api = extjs.connect("https://boundary.ic0.app/", identity);
+    const api = extjs.connect("https://boundary.ic0.app/", props.identity);
     var cs = await api.canister("33uhc-liaaa-aaaah-qcbra-cai").getCanisters();
     var newcans = cs.map(p => p.toText());
     setCanisters(newcans);
@@ -283,7 +277,7 @@ export default function Mint(props) {
     var v = await props.confirm("Are you sure?", "Please ensure your have selected the right file and you clicked the right advanced action - Bulk Transfer");
     if (!v) return;
     props.loader(true, "Attempting Bulk transfer...");
-    var API = extjs.connect("https://boundary.ic0.app/", identity);
+    var API = extjs.connect("https://boundary.ic0.app/", props.identity);
     var _api = API.canister(canister, 'nft');
     var reader = new FileReader();
     reader.onload = function(){
@@ -310,7 +304,7 @@ export default function Mint(props) {
     var v = await props.confirm("Are you sure?", "Please ensure your have selected the right file and you clicked the right advanced action - Bulk List");
     if (!v) return;
     props.loader(true, "Attempting Bulk list...");
-    var API = extjs.connect("https://boundary.ic0.app/", identity);
+    var API = extjs.connect("https://boundary.ic0.app/", props.identity);
     var _api = API.canister(canister, 'nft');
     var reader = new FileReader();
     reader.onload = function(){
@@ -334,7 +328,7 @@ export default function Mint(props) {
   const mintaction = async () => {
     if (!selectedFiles.length) return props.error("Please select a file first");
     if (!canister) return props.error("Please select a canister first");
-    var API = extjs.connect("https://boundary.ic0.app/", identity);
+    var API = extjs.connect("https://boundary.ic0.app/", props.identity);
     var _api = API.canister(canister, 'nft');
     for(var i = 0; i < selectedFiles.length; i++) {
       props.loader(true, "Working on "+selectedFiles[i].name);
@@ -377,7 +371,7 @@ export default function Mint(props) {
       }
       props.loader(true, "Asset loaded, minting NFT...");
       var r = await _api.mintNFT({
-        to : address,
+        to : props.address,
         asset : assetId
       });
       console.log(r);
@@ -394,62 +388,15 @@ export default function Mint(props) {
   useInterval(_updates, 30 * 1000);
   React.useEffect(() => {
     _updates();
-    var t = localStorage.getItem("_loginType");
-    if (t) {
-      switch (t) {
-        case "stoic":
-          StoicIdentity.load().then(async (identity) => {
-            if (identity !== false) {
-              //ID is a already connected wallet!
-              setIdentity(identity);
-              identity.accounts().then((accs) => {
-                setAccounts(JSON.parse(accs));
-              });
-            }
-          });
-          break;
-        case "plug":
-          (async () => {
-            const connected = await window.ic.plug.isConnected();
-            if (connected) {
-              if (!window.ic.plug.agent) {
-                await window.ic.plug.createAgent({
-                  whitelist: ["33uhc-liaaa-aaaah-qcbra-cai"],
-                });
-              }
-              var id = await window.ic.plug.agent._identity;
-              setIdentity(id);
-              setAccounts([
-                {
-                  name: "PlugWallet",
-                  address: extjs.toAddress(id.getPrincipal().toText(), 0),
-                },
-              ]);
-            }
-          })();
-          break;
-        default:
-          break;
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     _updates();
-    if (identity) {
-      setLoggedIn(true);
-      setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
-    } else {
-      setLoggedIn(false);
-      setAddress(false);
-      setAccounts(false);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [identity]);
+  }, [props.identity]);
   
   return (
     <>
-      <Navbar />
       <div className={classes.main}>
         <Container maxWidth="xl" className={classes.container}>
           <Grid container spacing={2}>
@@ -501,11 +448,6 @@ export default function Mint(props) {
             </Grid>
           </Grid>
         </Container>
-        <div className={classes.footer}>
-          <Typography variant="body1">
-            Developed by ToniqLabs &copy; All rights reserved 2021
-          </Typography>
-        </div>
       </div>
     </>
   );

@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: "100vh",
+    height: "calc(100vh - 221px)",
     width: "100%",
   },
   container: {
@@ -37,13 +37,11 @@ export default function Contact(props) {
   const classes = useStyles();
   return (
     <>
-      <Navbar />
-      <div className={classes.main}>
+      <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
             maxWidth: 1200,
-            margin: "120px auto 0px",
-            paddingBottom: 200,
+            margin: "0px auto", minHeight:"calc(100vh - 213px)"
           }}
         >
           <Grid container spacing={2}>
@@ -54,7 +52,7 @@ export default function Contact(props) {
               <p style={{ textAlign: "center", fontSize: "1.3em" }}>
                 Entrepot.app is developed by ToniqLabs. If you need to talk to
                 us about anything, you can email us at{" "}
-                <a href="mailto:support@toniqlans.com">support@toniqlans.com</a> or
+                <a href="mailto:support@toniqlabs.com">support@toniqlabs.com</a> or
                 contact us on{" "}
                 <a
                   href="https://twitter.com/toniqlabs"
@@ -151,12 +149,6 @@ export default function Contact(props) {
               </p>
             </Grid>
           </Grid>
-        </div>
-
-        <div className={classes.footer}>
-          <Typography variant="body1">
-            Developed by ToniqLabs &copy; All rights reserved 2021
-          </Typography>
         </div>
       </div>
     </>

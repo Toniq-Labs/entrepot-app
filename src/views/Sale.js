@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Infernal Vampire Colony",
+      link : "/sale/ivc",
+      image : "/banner/vamp1.jpg",
+      content : (<>Infernal Vampire Colony is an initial collection of 666 Vampires, with another 6000 to be released in future!</>),
+    },
+    {
       title : "Haunted Hamsters",
       link : "/sale/hauntedhamsters",
       image : "/banner/hauntedhamsters.jpg",
@@ -102,21 +108,19 @@ export default function Iconic(props) {
   ];
   return (
     <>
-      <Navbar />
       <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
             maxWidth: 1200,
-            margin: "120px auto 0px",
-            paddingBottom: 200,
+            margin: "0px auto",
           }}
         >
           <h1 className={classes.heading}>The latest NFT launches on the Internet Computer!</h1>
 
           <Grid
             container
+            spacing={2}
             direction="row"
-            justifyContent="center"
             alignItems="center"
           >
             {
@@ -139,7 +143,7 @@ export default function Iconic(props) {
                       <h3>{card.title}</h3>
                       <Typography style={{display:"block", height:"125px", overflow:"hidden", textOverflow: "ellipsis"}} variant="body1" color="textSecondary" component="p"
                       >{card.content}</Typography>
-                      <strong>{card.link ? <a href={card.link} style={{color:"black"}}>View Collection</a> : "Collection coming soon" }</strong>
+                      <strong>{card.link ? <a href={card.link} style={{color:"black"}}>View Sale</a> : "Sale coming soon" }</strong>
                     </CardContent>
                   </Card>
                 </Grid>);
@@ -157,11 +161,6 @@ export default function Iconic(props) {
             Get in touch with our team to list your NFT to launch on the Internet Computer with Entrepot!
           </p>
           <Features />
-        </div>
-        <div className={classes.footer}>
-          <Typography variant="body1">
-            Developed by ToniqLabs &copy; All rights reserved 2021
-          </Typography>
         </div>
       </div>
     </>

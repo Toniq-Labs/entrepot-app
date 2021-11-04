@@ -18,16 +18,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginTop: "40px",
   },
-  footer: {
-    textAlign: "center",
-    position: "absolute",
-    bottom: 0,
-    width: "100% !important",
-    height: "100px !important",
-    background: "#091216",
-    color: "white",
-    paddingTop: 30,
-  },
   media: {
     height: 0,
     paddingTop: "56.25%", // 16:9
@@ -63,6 +53,10 @@ export default function Home(props) {
 
   const history = useHistory();
   var items = [
+      {
+          link: "/sale/ivc",
+          img: "/banner/vamp1.jpg"
+      },
       {
           link: "/sale/ic3d",
           img: "/banner/ic3d.jpg"
@@ -103,13 +97,11 @@ export default function Home(props) {
   ];
   return (
     <>
-      <Navbar />
       <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
             maxWidth: 1200,
-            margin: "120px auto 0px",
-            paddingBottom: 200,
+            margin: "0px auto",
           }}
         >
           <div className={classes.banner}>
@@ -143,7 +135,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace/motoko`)}
+              onClick={() => history.push(`/marketplace`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >
@@ -178,11 +170,6 @@ export default function Home(props) {
           </Grid>
 
           <Features />
-        </div>
-        <div className={classes.footer}>
-          <Typography variant="body1">
-            Developed by ToniqLabs &copy; All rights reserved 2021
-          </Typography>
         </div>
       </div>
     </>

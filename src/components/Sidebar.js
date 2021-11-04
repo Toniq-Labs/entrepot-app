@@ -66,7 +66,7 @@ const _showListingPrice = n => {
 };
 var intv = false;
 var loadedAccount = false;
-export default function Sidebar(props) {
+export default function Wallet(props) {
   const history = useHistory();
   const { window } = props;
   const classes = useStyles();

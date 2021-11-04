@@ -5,6 +5,8 @@ import Chip from "@material-ui/core/Chip";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Drawer from '@material-ui/core/Drawer';
 import Collapse from "@material-ui/core/Collapse";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
@@ -17,12 +19,16 @@ import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
 import Listing from "./Listing";
+import Avatar from '@material-ui/core/Avatar';
 import Sold from "./Sold";
 import SoldListing from "./SoldListing";
 import BuyForm from "./BuyForm";
+import { useParams } from "react-router";
 import { useHistory } from "react-router";
+import collections from '../ic/collections.js';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
+const drawerWidth = 0;//300;
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -61,7 +67,9 @@ const emptyListing = {
 };
 
 export default function Listings(props) {
+  const params = useParams();
   const classes = useStyles();
+  const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
   const [allListings, setAllListings] = useState(false);
   const [transactions, setTransactions] = useState(false);
@@ -69,6 +77,7 @@ export default function Listings(props) {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
   const [collapseOpen, setCollapseOpen] = useState(false);
+  
   const [healthDominantValue, setHealthDominantValue] = React.useState([0, 63]);
   const [healthRecessiveValue, setHealthRecessiveValue] = React.useState([0, 63]);
   const [speedDominantValue, setSpeedDominantValue] = React.useState([0, 63]);
@@ -92,7 +101,7 @@ export default function Listings(props) {
   const [showing, setShowing] = useState("all");
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
-  const [collection, setCollection] = useState(props.collection);
+  const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
   const [listingDialogOpen, setListingDialogOpen] = useState(false);
@@ -105,6 +114,9 @@ export default function Listings(props) {
   useEffect(() => {
     if (props.collection) _changeCollection(props.collection);
   }, [props.collection]);
+  React.useEffect(() => {
+    _changeCollection(collections.find(e => e.route === params?.route));
+  }, [params.route]);
 
   const changeCollection = async (event) => {
     const _collection = props.collections.find(e => e.canister === event.target.value);
@@ -122,9 +134,7 @@ export default function Listings(props) {
     setTransactions(false);
     setTempTx([]);
     setPage(1);
-    props.loader(true);
     await refresh("all", c.canister);
-    props.loader(false);
   };
   const changeSort = (event) => {
     setPage(1);
@@ -380,7 +390,14 @@ export default function Listings(props) {
     if (!listingDialogOpen) {
       s = s ?? showing;
       c = c ?? collection?.canister;
-      if (!_isCanister(c)) return;
+      if (!_isCanister(c)) return setListings([]);
+      if (!collection.market) return setListings([]);
+      try {
+        var r = await api.token(collection.canister).stats();
+        setStats(r);
+      } catch (e) {
+        setStats(null);
+      };
       if (s === "all") {
         try{
           if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
@@ -407,14 +424,20 @@ export default function Listings(props) {
         }
         setTransactions(applyFilters(nt, s, c));
       }
+      
     }
   };
   const theme = useTheme();
   const styles = {
     empty: {
-      maxWidth: 800,
+      maxWidth: 1200,
       margin: "0 auto",
       textAlign: "center",
+    },
+    details: {
+      textAlign: "center",
+      paddingBottom:50,
+      marginBottom:50,
     },
     grid: {
       flexGrow: 1,
@@ -424,697 +447,718 @@ export default function Listings(props) {
 
   useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
-    props.loader(true);
-    _updates().then(() => {
-      props.loader(false);
-    });
+    _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
-    props.loader(true);
-    refresh().finally(() => props.loader(false));
+    refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wearableFilter]);
   return (
-    <>
-      <div style={styles.empty}>
-        <h1>
-          Browse Collections:
-          <FormControl>
-            <Select
-              style={{
-                marginLeft: 10,
-                fontSize: "0.95em",
-                fontWeight: "bold",
-                paddingBottom: 0,
-                color: "#00d092",
-              }}
-              value={typeof collection?.canister == "undefined" ? "er7d4-6iaaa-aaaaj-qac2q-cai" : collection.canister}
-              onChange={changeCollection}
-            >
-              {props.collections.map((_collection) => {
-                return (
-                  <MenuItem
-                    key={_collection.canister}
-                    value={_collection.canister}
-                  >
-                    {_collection.name}
-                    {_collection.mature ? (
-                      <Chip
-                        style={{ marginLeft: "10px" }}
-                        variant="outlined"
-                        size="small"
-                        label="Mature"
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </h1>
-        {collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""}
-        <p style={{ fontSize: "1.2em" }}>
-          {collection?.blurb}
-        </p>
-      </div>
-      {_isCanister(collection.canister) ?
-      <>
-        <div style={{ marginLeft: "20px", marginTop: "10px" }}>
-          <FormControl style={{ marginRight: 20 }}>
-            <InputLabel>Showing</InputLabel>
-            <Select value={showing} onChange={changeShowing}>
-              <MenuItem value={"all"}>Current Listings</MenuItem>
-              <MenuItem value={"sold"}>Sold Listings</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl style={{ marginRight: 20 }}>
-            <InputLabel>Sort by</InputLabel>
-            <Select value={sort} onChange={changeSort}>
-              {/*showing === "all" ? <MenuItem value={"recent"}>Recently Listed</MenuItem> : ""*/}
-              {showing === "sold" ? (
-                <MenuItem value={"recent"}>Recently Sold</MenuItem>
-              ) : (
-                ""
-              )}
-              <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
-              <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
-              <MenuItem value={"mint_number"}>Minting #</MenuItem>
-              {showing === "all" &&
-              [
-                "e3izy-jiaaa-aaaah-qacbq-cai",
-                "nbg4r-saaaa-aaaah-qap7a-cai",
-              ].indexOf(collection?.canister) >= 0 ? (
-                <MenuItem value={"type"}>Rare Type</MenuItem>
-              ) : (
-                ""
-              )}
-              {collection?.nftv ? (
-                <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
-              ) : (
-                ""
-              )}
-              {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
-              {showing === "sold" ? (
-                <MenuItem value={"oldest"}>Oldest</MenuItem>
-              ) : (
-                ""
-              )}
-            </Select>
-          </FormControl>
-          {showing === "all" &&
-          ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
-            <div style={{ display: "inline" }}>
-              <Button style={{ marginTop: "10px" }}
-                variant={"outlined"}
-                onClick={() => setCollapseOpen(!collapseOpen)}
-                aria-expanded={collapseOpen}>
-                Advanced Filters
-              </Button>
-            </div>
-          ) : (
-            ""
-          )}
-          {showing === "all" &&
-          ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
-            <div style={{ marginTop: "20px" }}>
-              <Collapse in={collapseOpen}>
-                <form style={{ "flex-flow": "row wrap", display: "flex" }}>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Base:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={baseDominantValue}
-                        onChange={handleBaseDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={baseRecessiveValue}
-                        onChange={handleBaseRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Health:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={healthDominantValue}
-                        onChange={handleHealthDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={healthRecessiveValue}
-                        onChange={handleHealthRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Speed:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={speedDominantValue}
-                        onChange={handleSpeedDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={speedRecessiveValue}
-                        onChange={handleSpeedRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Attack:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={attackDominantValue}
-                        onChange={handleAttackDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={attackRecessiveValue}
-                        onChange={handleAttackRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Range:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={rangeDominantValue}
-                        onChange={handleRangeDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={rangeRecessiveValue}
-                        onChange={handleRangeRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Magic:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={magicDominantValue}
-                        onChange={handleMagicDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={magicRecessiveValue}
-                        onChange={handleMagicRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Defense:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={defenseDominantValue}
-                        onChange={handleDefenseDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={defenseRecessiveValue}
-                        onChange={handleDefenseRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel style={{fontWeight:"bold"}}>Resistance:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={resistanceDominantValue}
-                        onChange={handleResistanceDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={resistanceRecessiveValue}
-                        onChange={handleResistanceRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  {/*<div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel>Basic:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={basicDominantValue}
-                        onChange={handleBasicDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={basicRecessiveValue}
-                        onChange={handleBasicRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>
-                  <div style={{ marginTop: "20px", marginLeft: "30px" }}>
-                    <InputLabel>Special:</InputLabel>
-                    <br/>
-                    <InputLabel>Dominant:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={specialDominantValue}
-                        onChange={handleSpecialDominantValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <InputLabel>Recessive:</InputLabel>
-                    <Box sx={{ width: 150 }}>
-                      <Slider
-                        value={specialRecessiveValue}
-                        onChange={handleSpecialRecessiveValueChange}
-                        min={0}
-                        step={1}
-                        max={63}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                  </div>*/}
-                </form>
-                <div style={{ marginTop: "20px", display: "grid" }}>
-                  <Button variant="contained"
-                  color="primary"
-                  style={{ backgroundColor: "#003240", color: "white", margin: "auto" }}
-                    onClick={handleFiltersChange}>
-                    Apply
-                  </Button>
-                </div>
-              </Collapse>
-            </div>
-          ) : (
-            ""
-          )}
-          {showing === "all" &&
-          ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
-            <FormControl style={{ minWidth: 120 }}>
-              <InputLabel>Wearable Type</InputLabel>
-              <Select value={wearableFilter} onChange={changeWearableFilter}>
-                <MenuItem value={"all"}>All Wearables</MenuItem>
-                <MenuItem value={"pets"}>Pets</MenuItem>
-                <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
-                <MenuItem value={"hats"}>Hats/Hair</MenuItem>
-                <MenuItem value={"eyewear"}>Eyewear</MenuItem>
+    <div style={{ maxWidth:1200, margin:"0 auto", minHeight:"calc(100vh - 221px)"}}>
+      {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
+      </Drawer>*/}
+      <div style={{marginLeft:drawerWidth, paddingBottom:100}}>
+        <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
+          <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={"/collections/"+collection.canister+".jpg"} />
+        </div>
+        <div style={styles.details}>
+          <Grid container direction="row" alignItems="center" spacing={2}>
+            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
+              {stats === false ? <strong>Loading Statistics...</strong> :
+              <>{stats === null ? "" :
+                <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
+                  <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                    <span style={{color:"#00d092"}}>Volume</span><br />
+                    <strong>{stats.total} ICP</strong>
+                  </Grid>
+                  <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                    <span style={{color:"#00d092"}}>Listings</span><br />
+                    <strong>{stats.listings}</strong>
+                  </Grid>
+                  <Grid item md={4}>
+                    <span style={{color:"#00d092"}}>Floor Price</span><br />
+                    <strong>{stats.floor} ICP</strong>
+                  </Grid>
+                </Grid>}
+              </>}
+            </Grid>
+            <Grid item md={6} xs={12} style={{textAlign:"center"}}>
+              <h1>{collection.name}</h1>
+            </Grid>
+            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
+              <ul className={classes.socials}>
+                {['telegram', 'twitter', 'medium', 'd'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+                  return (<li><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
+                })}
+              </ul>
+            </Grid>
+          </Grid>
+          {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
+          <p style={{ marginTop:50,fontSize: "1.2em" }}>
+            {collection?.blurb}
+          </p>
+        </div>
+        {_isCanister(collection.canister) && collection.market ?
+        <>
+          <div style={{ marginLeft: "20px", marginTop: "10px" }}>
+            <FormControl style={{ marginRight: 20 }}>
+              <InputLabel>Showing</InputLabel>
+              <Select value={showing} onChange={changeShowing}>
+                <MenuItem value={"all"}>Current Listings</MenuItem>
+                <MenuItem value={"sold"}>Sold Listings</MenuItem>
               </Select>
             </FormControl>
-          ) : (
-            ""
-          )}
 
-          {showing === "all" ? (
-            listings.length > perPage ? (
+            <FormControl style={{ marginRight: 20 }}>
+              <InputLabel>Sort by</InputLabel>
+              <Select value={sort} onChange={changeSort}>
+                {/*showing === "all" ? <MenuItem value={"recent"}>Recently Listed</MenuItem> : ""*/}
+                {showing === "sold" ? (
+                  <MenuItem value={"recent"}>Recently Sold</MenuItem>
+                ) : (
+                  ""
+                )}
+                <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
+                <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
+                <MenuItem value={"mint_number"}>Minting #</MenuItem>
+                {showing === "all" &&
+                [
+                  "e3izy-jiaaa-aaaah-qacbq-cai",
+                  "nbg4r-saaaa-aaaah-qap7a-cai",
+                ].indexOf(collection?.canister) >= 0 ? (
+                  <MenuItem value={"type"}>Rare Type</MenuItem>
+                ) : (
+                  ""
+                )}
+                {collection?.nftv ? (
+                  <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
+                ) : (
+                  ""
+                )}
+                {/*showing === "all" ? <MenuItem value={"oldest"}>Oldest</MenuItem> : ""*/}
+                {showing === "sold" ? (
+                  <MenuItem value={"oldest"}>Oldest</MenuItem>
+                ) : (
+                  ""
+                )}
+              </Select>
+            </FormControl>
+            {showing === "all" &&
+            ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <div style={{ display: "inline" }}>
+                <Button style={{ marginTop: "10px" }}
+                  variant={"outlined"}
+                  onClick={() => setCollapseOpen(!collapseOpen)}
+                  aria-expanded={collapseOpen}>
+                  Advanced Filters
+                </Button>
+              </div>
+            ) : (
+              ""
+            )}
+            
+            {showing === "all" &&
+            ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ minWidth: 120 }}>
+                <InputLabel>Wearable Type</InputLabel>
+                <Select value={wearableFilter} onChange={changeWearableFilter}>
+                  <MenuItem value={"all"}>All Wearables</MenuItem>
+                  <MenuItem value={"pets"}>Pets</MenuItem>
+                  <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
+                  <MenuItem value={"hats"}>Hats/Hair</MenuItem>
+                  <MenuItem value={"eyewear"}>Eyewear</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" ? (
+              listings.length > perPage ? (
+                <Pagination
+                  className={classes.pagi}
+                  size="small"
+                  count={Math.ceil(listings.length / perPage)}
+                  page={page}
+                  onChange={(e, v) => setPage(v)}
+                />
+              ) : (
+                ""
+              )
+            ) : transactions.length > perPage ? (
               <Pagination
                 className={classes.pagi}
                 size="small"
-                count={Math.ceil(listings.length / perPage)}
+                count={Math.ceil(transactions.length / perPage)}
                 page={page}
                 onChange={(e, v) => setPage(v)}
               />
             ) : (
               ""
-            )
-          ) : transactions.length > perPage ? (
-            <Pagination
-              className={classes.pagi}
-              size="small"
-              count={Math.ceil(transactions.length / perPage)}
-              page={page}
-              onChange={(e, v) => setPage(v)}
-            />
+            )}
+            
+            {showing === "all" &&
+            ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <div style={{ marginTop: "20px" }}>
+                <Collapse in={collapseOpen}>
+                  <form style={{ "flex-flow": "row wrap", display: "flex" }}>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Base:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={baseDominantValue}
+                          onChange={handleBaseDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={baseRecessiveValue}
+                          onChange={handleBaseRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Health:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={healthDominantValue}
+                          onChange={handleHealthDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={healthRecessiveValue}
+                          onChange={handleHealthRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Speed:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={speedDominantValue}
+                          onChange={handleSpeedDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={speedRecessiveValue}
+                          onChange={handleSpeedRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Attack:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={attackDominantValue}
+                          onChange={handleAttackDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={attackRecessiveValue}
+                          onChange={handleAttackRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Range:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={rangeDominantValue}
+                          onChange={handleRangeDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={rangeRecessiveValue}
+                          onChange={handleRangeRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Magic:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={magicDominantValue}
+                          onChange={handleMagicDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={magicRecessiveValue}
+                          onChange={handleMagicRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Defense:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={defenseDominantValue}
+                          onChange={handleDefenseDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={defenseRecessiveValue}
+                          onChange={handleDefenseRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel style={{fontWeight:"bold"}}>Resistance:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={resistanceDominantValue}
+                          onChange={handleResistanceDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={resistanceRecessiveValue}
+                          onChange={handleResistanceRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    {/*<div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel>Basic:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={basicDominantValue}
+                          onChange={handleBasicDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={basicRecessiveValue}
+                          onChange={handleBasicRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>
+                    <div style={{ marginTop: "20px", marginLeft: "30px" }}>
+                      <InputLabel>Special:</InputLabel>
+                      <br/>
+                      <InputLabel>Dominant:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={specialDominantValue}
+                          onChange={handleSpecialDominantValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                      <InputLabel>Recessive:</InputLabel>
+                      <Box sx={{ width: 150 }}>
+                        <Slider
+                          value={specialRecessiveValue}
+                          onChange={handleSpecialRecessiveValueChange}
+                          min={0}
+                          step={1}
+                          max={63}
+                          valueLabelDisplay="auto"
+                        />
+                      </Box>
+                    </div>*/}
+                  </form>
+                  <div style={{ marginTop: "20px", display: "grid" }}>
+                    <Button variant="contained"
+                    color="primary"
+                    style={{ backgroundColor: "#003240", color: "white", margin: "auto" }}
+                      onClick={handleFiltersChange}>
+                      Apply
+                    </Button>
+                  </div>
+                </Collapse>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+          {showing === "all" ? (
+            <>
+              {listings === false ? (
+                <div style={styles.empty}>
+                  <Typography
+                    paragraph
+                    style={{ paddingTop: 20, fontWeight: "bold" }}
+                    align="center"
+                  >
+                    Loading...
+                  </Typography>
+                  <CircularProgress color="inherit" />
+                </div>
+              ) : (
+                <>
+                  {listings.concat(tempTx).length === 0 ? (
+                    <div style={styles.empty}>
+                      <Typography
+                        paragraph
+                        style={{ paddingTop: 20, fontWeight: "bold" }}
+                        align="center"
+                      >
+                        There are currently no listings right now
+                      </Typography>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={styles.grid}>
+                        <Grid
+                          container
+                          spacing={2}
+                          direction="row"
+                          justifyContent="flex-start"
+                          alignItems="flex-start"
+                        >
+                          {listings
+                            .slice()
+                            .sort((a, b) => {
+                              switch (sort) {
+                                case "price_asc":
+                                  return Number(a[1].price) - Number(b[1].price);
+                                case "price_desc":
+                                  return Number(b[1].price) - Number(a[1].price);
+                                case "gri":
+                                  return (
+                                    Number(getNri(collection?.canister, b[0])) * 100 -
+                                    Number(getNri(collection?.canister, a[0])) * 100
+                                  );
+                                case "recent":
+                                  return 1;
+                                case "oldest":
+                                  return -1;
+                                case "mint_number":
+                                  return a[0] - b[0];
+                                case "type":
+                                  var _a, _b, d;
+                                  if (
+                                    collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai"
+                                  ) {
+                                    _a = a[2].nonfungible.metadata[0][0];
+                                    _b = b[2].nonfungible.metadata[0][0];
+                                    d = _b - _a;
+                                    if (d === 0) {
+                                      if (Number(a[1].price) > Number(b[1].price))
+                                        return 1;
+                                      if (Number(a[1].price) < Number(b[1].price))
+                                        return -1;
+                                    }
+                                    return d;
+                                  } else {
+                                    _a = a[2].nonfungible.metadata[0][30] % 41;
+                                    _b = b[2].nonfungible.metadata[0][30] % 41;
+                                    if (_a === 2) _a = 1;
+                                    if (_a > 1) _a = 2;
+                                    if (_b === 2) _b = 1;
+                                    if (_b > 1) _b = 2;
+                                    d = _a - _b;
+                                    if (d === 0) {
+                                      if (Number(a[1].price) > Number(b[1].price))
+                                        return 1;
+                                      if (Number(a[1].price) < Number(b[1].price))
+                                        return -1;
+                                    }
+                                    return d;
+                                  }
+                                default:
+                                  return 0;
+                              }
+                            })
+                            .filter(
+                              (token, i) =>
+                                i >= (page - 1) * perPage && i < page * perPage
+                            )
+                            .map((listing, i) => {
+                              return (
+                                <Listing
+                                  gri={getNri(collection?.canister, listing[0])}
+                                  loggedIn={props.loggedIn}
+                                  collection={collection?.canister}
+                                  buy={buy}
+                                  key={listing[0] + "-" + i}
+                                  listing={listing}
+                                  transactions={transactions}
+                                  onListingDialogChange={changeListingDialogOpen}
+                                />
+                              );
+                            }).concat(tempTx.map((transaction, i) => {
+                              return (
+                                <SoldListing
+                                  gri={getNri(
+                                    collection?.canister,
+                                    extjs.decodeTokenId(transaction.token).index
+                                  )}
+                                  key={transaction.token + i}
+                                  collection={collection?.canister}
+                                  transaction={transaction}
+                                />
+                              );
+                            }))}
+                        </Grid>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </>
           ) : (
-            ""
+            <>
+              {transactions === false ? (
+                <div style={styles.empty}>
+                  <Typography
+                    paragraph
+                    style={{ paddingTop: 20, fontWeight: "bold" }}
+                    align="center"
+                  >
+                    Loading...
+                  </Typography>
+                </div>
+              ) : (
+                <>
+                  {transactions.length === 0 ? (
+                    <div style={styles.empty}>
+                      <Typography
+                        paragraph
+                        style={{ paddingTop: 20, fontWeight: "bold" }}
+                        align="center"
+                      >
+                        There are currently no sold transactions for this
+                        collection
+                      </Typography>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={styles.grid}>
+                        <Grid
+                          container
+                          spacing={2}
+                          direction="row"
+                          justifyContent="flex-start"
+                          alignItems="flex-start"
+                        >
+                          {transactions
+                            .slice()
+                            .sort((a, b) => {
+                              switch (sort) {
+                                case "price_asc":
+                                  return Number(a.price) - Number(b.price);
+                                case "price_desc":
+                                  return Number(b.price) - Number(a.price);
+                                case "gri":
+                                  return (
+                                    Number(
+                                      getNri(
+                                        collection?.canister,
+                                        extjs.decodeTokenId(b.token).index
+                                      )
+                                    ) *
+                                      100 -
+                                    Number(
+                                      getNri(
+                                        collection?.canister,
+                                        extjs.decodeTokenId(a.token).index
+                                      )
+                                    ) *
+                                      100
+                                  );
+                                case "recent":
+                                  return -1;
+                                case "oldest":
+                                  return 1;
+                                case "mint_number":
+                                  return (
+                                    extjs.decodeTokenId(a.token).index -
+                                    extjs.decodeTokenId(b.token).index
+                                  );
+                                default:
+                                  return 0;
+                              }
+                            })
+                            .filter(
+                              (token, i) =>
+                                i >= (page - 1) * perPage && i < page * perPage
+                            )
+                            .map((transaction, i) => {
+                              return (
+                                <Sold
+                                  gri={getNri(
+                                    collection?.canister,
+                                    extjs.decodeTokenId(transaction.token).index
+                                  )}
+                                  key={transaction.token + i}
+                                  collection={collection?.canister}
+                                  transaction={transaction}
+                                />
+                              );
+                            })}
+                        </Grid>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </>
           )}
-        </div>
-        {showing === "all" ? (
-          <>
-            {listings === false ? (
-              <div style={styles.empty}>
-                <Typography
-                  paragraph
-                  style={{ paddingTop: 20, fontWeight: "bold" }}
-                  align="center"
-                >
-                  Loading...
-                </Typography>
-              </div>
+          
+          {showing === "all" ? (
+              listings.length > perPage ? (
+                <Pagination
+                  className={classes.pagi}
+                  size="small"
+                  count={Math.ceil(listings.length / perPage)}
+                  page={page}
+                  onChange={(e, v) => setPage(v)}
+                />
+              ) : (
+                ""
+              )
+            ) : transactions.length > perPage ? (
+              <Pagination
+                className={classes.pagi}
+                size="small"
+                count={Math.ceil(transactions.length / perPage)}
+                page={page}
+                onChange={(e, v) => setPage(v)}
+              />
             ) : (
-              <>
-                {listings.concat(tempTx).length === 0 ? (
-                  <div style={styles.empty}>
-                    <Typography
-                      paragraph
-                      style={{ paddingTop: 20, fontWeight: "bold" }}
-                      align="center"
-                    >
-                      There are currently no listings right now
-                    </Typography>
-                  </div>
-                ) : (
-                  <>
-                    <div style={styles.grid}>
-                      <Grid
-                        container
-                        spacing={2}
-                        direction="row"
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
-                      >
-                        {listings
-                          .slice()
-                          .sort((a, b) => {
-                            switch (sort) {
-                              case "price_asc":
-                                return Number(a[1].price) - Number(b[1].price);
-                              case "price_desc":
-                                return Number(b[1].price) - Number(a[1].price);
-                              case "gri":
-                                return (
-                                  Number(getNri(collection?.canister, b[0])) * 100 -
-                                  Number(getNri(collection?.canister, a[0])) * 100
-                                );
-                              case "recent":
-                                return 1;
-                              case "oldest":
-                                return -1;
-                              case "mint_number":
-                                return a[0] - b[0];
-                              case "type":
-                                var _a, _b, d;
-                                if (
-                                  collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai"
-                                ) {
-                                  _a = a[2].nonfungible.metadata[0][0];
-                                  _b = b[2].nonfungible.metadata[0][0];
-                                  d = _b - _a;
-                                  if (d === 0) {
-                                    if (Number(a[1].price) > Number(b[1].price))
-                                      return 1;
-                                    if (Number(a[1].price) < Number(b[1].price))
-                                      return -1;
-                                  }
-                                  return d;
-                                } else {
-                                  _a = a[2].nonfungible.metadata[0][30] % 41;
-                                  _b = b[2].nonfungible.metadata[0][30] % 41;
-                                  if (_a === 2) _a = 1;
-                                  if (_a > 1) _a = 2;
-                                  if (_b === 2) _b = 1;
-                                  if (_b > 1) _b = 2;
-                                  d = _a - _b;
-                                  if (d === 0) {
-                                    if (Number(a[1].price) > Number(b[1].price))
-                                      return 1;
-                                    if (Number(a[1].price) < Number(b[1].price))
-                                      return -1;
-                                  }
-                                  return d;
-                                }
-                              default:
-                                return 0;
-                            }
-                          })
-                          .filter(
-                            (token, i) =>
-                              i >= (page - 1) * perPage && i < page * perPage
-                          )
-                          .map((listing, i) => {
-                            return (
-                              <Listing
-                                gri={getNri(collection?.canister, listing[0])}
-                                loggedIn={props.loggedIn}
-                                collection={collection?.canister}
-                                buy={buy}
-                                key={listing[0] + "-" + i}
-                                listing={listing}
-                                transactions={transactions}
-                                onListingDialogChange={changeListingDialogOpen}
-                              />
-                            );
-                          }).concat(tempTx.map((transaction, i) => {
-                            return (
-                              <SoldListing
-                                gri={getNri(
-                                  collection?.canister,
-                                  extjs.decodeTokenId(transaction.token).index
-                                )}
-                                key={transaction.token + i}
-                                collection={collection?.canister}
-                                transaction={transaction}
-                              />
-                            );
-                          }))}
-                      </Grid>
-                    </div>
-                  </>
-                )}
-              </>
+              ""
             )}
-          </>
-        ) : (
-          <>
-            {transactions === false ? (
-              <div style={styles.empty}>
-                <Typography
-                  paragraph
-                  style={{ paddingTop: 20, fontWeight: "bold" }}
-                  align="center"
-                >
-                  Loading...
-                </Typography>
-              </div>
-            ) : (
-              <>
-                {transactions.length === 0 ? (
-                  <div style={styles.empty}>
-                    <Typography
-                      paragraph
-                      style={{ paddingTop: 20, fontWeight: "bold" }}
-                      align="center"
-                    >
-                      There are currently no sold transactions for this
-                      collection
-                    </Typography>
-                  </div>
-                ) : (
-                  <>
-                    <div style={styles.grid}>
-                      <Grid
-                        container
-                        spacing={2}
-                        direction="row"
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
-                      >
-                        {transactions
-                          .slice()
-                          .sort((a, b) => {
-                            switch (sort) {
-                              case "price_asc":
-                                return Number(a.price) - Number(b.price);
-                              case "price_desc":
-                                return Number(b.price) - Number(a.price);
-                              case "gri":
-                                return (
-                                  Number(
-                                    getNri(
-                                      collection?.canister,
-                                      extjs.decodeTokenId(b.token).index
-                                    )
-                                  ) *
-                                    100 -
-                                  Number(
-                                    getNri(
-                                      collection?.canister,
-                                      extjs.decodeTokenId(a.token).index
-                                    )
-                                  ) *
-                                    100
-                                );
-                              case "recent":
-                                return -1;
-                              case "oldest":
-                                return 1;
-                              case "mint_number":
-                                return (
-                                  extjs.decodeTokenId(a.token).index -
-                                  extjs.decodeTokenId(b.token).index
-                                );
-                              default:
-                                return 0;
-                            }
-                          })
-                          .filter(
-                            (token, i) =>
-                              i >= (page - 1) * perPage && i < page * perPage
-                          )
-                          .map((transaction, i) => {
-                            return (
-                              <Sold
-                                gri={getNri(
-                                  collection?.canister,
-                                  extjs.decodeTokenId(transaction.token).index
-                                )}
-                                key={transaction.token + i}
-                                collection={collection?.canister}
-                                transaction={transaction}
-                              />
-                            );
-                          })}
-                      </Grid>
-                    </div>
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-        {showing === "all" ? (
-          listings.length > perPage ? (
-            <Pagination
-              className={classes.pagi}
-              size="small"
-              count={Math.ceil(listings.length / perPage)}
-              page={page}
-              onChange={(e, v) => setPage(v)}
-            />
-          ) : (
-            ""
-          )
-        ) : transactions.length > perPage ? (
-          <Pagination
-            className={classes.pagi}
-            size="small"
-            count={Math.ceil(transactions.length / perPage)}
-            page={page}
-            onChange={(e, v) => setPage(v)}
-          />
-        ) : (
-          ""
-        )}
-      </> : ""}
-      <BuyForm open={showBuyForm} {...buyFormData} />
-    </>
+        </> : ""}
+        <BuyForm open={showBuyForm} {...buyFormData} />
+      </div>
+    </div>
   );
 }
 
 const useStyles = makeStyles((theme) => ({
+  socials: {
+    padding:0,
+    listStyle: "none",
+    "& li" : {
+      display:"inline-block",
+      margin:"0 10px",
+    },
+  },
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+    zIndex: 1
+  },
   pagi: {
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: "5px",
+    marginTop: "20px",
+    float: "right",
     marginBottom: "20px",
     [theme.breakpoints.down("xs")]: {
       justifyContent: "center",

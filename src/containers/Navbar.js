@@ -5,7 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-
+import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import { IconButton, makeStyles } from "@material-ui/core";
 
@@ -13,11 +13,15 @@ export default function Navbar(props) {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState("");
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleClick = () => {
     const temp = history.location.pathname.split("/")[1];
     setRoute(temp);
+  };
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   useEffect(() => {
@@ -25,6 +29,7 @@ export default function Navbar(props) {
   });
 
   return (
+    <>
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" style={{ background: "white" }}>
@@ -173,12 +178,48 @@ export default function Navbar(props) {
               >
                 Support
               </Button>
+              <Button
+                startIcon={
+                  <img
+                    alt="contact"
+                    style={{ width: 20 }}
+                    src="/icon/support.png"
+                  />
+                }
+                onClick={handleDrawerToggle}
+                className={classes.button1}
+                style={{
+                  color: "#000",
+                  borderBottom:"3px solid transparent",
+                }}
+                color="inherit"
+              >
+                Wallet
+              </Button>
             </div>
           )}
         </Toolbar>
       </AppBar>
       {props.children}
     </div>
+    
+    <Wallet
+      view={props.view}
+      setBalance={props.setBalance}
+      identity={props.identity}
+      account={props.account}
+      loader={props.loader}
+      logout={props.logout}
+      login={props.login}
+      collection={props.collection}
+      collections={props.collections}
+      currentAccount={props.currentAccount}
+      changeAccount={props.setCurrentAccount}
+      accounts={props.accounts}
+      onClose={handleDrawerToggle}
+      open={mobileOpen}
+    />
+    </>
   );
 }
 
