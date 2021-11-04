@@ -209,7 +209,7 @@ export default function Navbar(props) {
       collection={props.collection}
       collections={props.collections}
       currentAccount={props.currentAccount}
-      changeAccount={props.setCurrentAccount}
+      changeAccount={props.changeAccount}
       accounts={props.accounts}
       close={() => setWalletOpen(false)}
       open={walletOpen}
