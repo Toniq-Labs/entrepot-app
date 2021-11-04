@@ -173,6 +173,26 @@ class ExtConnection {
           }
         });
       },
+      stats : () => {
+        return new Promise((resolve, reject) => {
+          try {
+            api.stats().then(r => {
+              resolve({
+                total : (Number(r[0]/1000000n)/100).toFixed(2),
+                high : (Number(r[1]/1000000n)/100).toFixed(2),
+                low : (Number(r[2]/1000000n)/100).toFixed(2),
+                floor : (Number(r[3]/1000000n)/100).toFixed(2),
+                listings : Number(r[4]),
+                tokens : Number(r[5]),
+                sales : Number(r[6]),
+                average : (Number((r[0]/r[5])/1000000n)/100).toFixed(2),
+              });
+            }).catch(reject);
+          } catch(e) {
+            reject(e);
+          };
+        });
+      },
       getTokens : (aid, principal) => {
         return new Promise((resolve, reject) => {
           switch(tokenObj.canister) {

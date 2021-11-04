@@ -133,7 +133,6 @@ export default function Sale(props) {
   ];
   return (
     <>
-      <Navbar />
       <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{

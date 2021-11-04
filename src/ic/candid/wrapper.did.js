@@ -185,6 +185,11 @@ export default ({ IDL }) => {
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
     'unwrap' : IDL.Func([TokenIdentifier, IDL.Opt(SubAccount)], [IDL.Bool], []),
     'wrap' : IDL.Func([TokenIdentifier], [IDL.Bool], []),
+    'stats' : IDL.Func(
+        [],
+        [IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat, IDL.Nat, IDL.Nat],
+        ['query'],
+      ),
   });
   return nft_canister;
 };

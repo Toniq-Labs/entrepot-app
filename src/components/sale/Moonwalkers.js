@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import extjs from "../../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Listings from "../Listings";
-import Wallet from "../Wallet";
 import SaleListing from "../SaleListing";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -166,7 +164,7 @@ export default function Moonwalkers(props) {
   }, [props.account]);
   
   return (
-    <>
+    <div style={{minHeight:"calc(100vh - 221px)"}}>
       <div style={styles.empty}>
         <h1>MoonWalkers</h1>
         <Grid container spacing={2} style={{}}>
@@ -261,7 +259,7 @@ export default function Moonwalkers(props) {
             ""
         )}
       </>
-    </>
+    </div>
   );
 }
 

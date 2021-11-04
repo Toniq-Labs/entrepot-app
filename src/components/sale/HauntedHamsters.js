@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import extjs from "../../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Listings from "../Listings";
-import Wallet from "../Wallet";
 import SaleListing from "../SaleListing";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -62,24 +60,11 @@ export default function HauntedHamsters(props) {
   const theme = useTheme();
   const classes = useStyles();
   const styles = {
-    root: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-
-    empty: {
-      maxWidth: 800,
+    main: {
+      maxWidth: 1200,
       margin: "0 auto",
       textAlign: "center",
-    },
-    grid: {
-      flexGrow: 1,
-      padding: theme.spacing(2),
-    },
-
-    largeIcon: {
-      width: 60,
-      height: 60,
+      minHeight:"calc(100vh - 221px)"
     },
   };
   const buyFromSale = async (qty, price) => {
@@ -156,9 +141,9 @@ export default function HauntedHamsters(props) {
   ]
   return (
     <>
-      <div style={styles.empty}>
+      <div style={styles.main}>
         <div className={classes.banner}>
-          <img style={{height:300}} alt="Haunted Hamsters" className={classes.bannerimg} src="/banner/hauntedhamsters.jpg" />
+        <div style={{width: "100%", height: 300, backgroundPosition: "center", backgroundSize: "cover",backgroundImage:"url('/banner/hauntedhamsters.jpg')"}}></div>
         <h1>Welcome to the official Haunted Hamsters Public Sale</h1>
         </div>
         <Grid container spacing={2} style={{}}>

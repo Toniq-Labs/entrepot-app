@@ -231,6 +231,11 @@ export default ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Nat64))],
         [],
       ),
+    'stats' : IDL.Func(
+        [],
+        [IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat, IDL.Nat, IDL.Nat],
+        ['query'],
+      ),
   });
 };
 export const init = ({ IDL }) => { return []; };

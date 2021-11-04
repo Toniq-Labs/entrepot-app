@@ -260,6 +260,11 @@ export default ({ IDL }) => {
     'tokens_ext' : IDL.Func([AccountIdentifier_3], [Result_2], ['query']),
     'transactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
+    'stats' : IDL.Func(
+        [],
+        [IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat, IDL.Nat, IDL.Nat],
+        ['query'],
+      ),
   });
   return Canister;
 };
