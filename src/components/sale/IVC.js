@@ -47,7 +47,7 @@ export default function IVC(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(100000000n);
   const [remaining, setRemaining] = React.useState(642);
-  const [startTime, setStartTime] = React.useState(1636124400000);
+  const [startTime, setStartTime] = React.useState(1636131600000);
 
   const params = useParams();
   
