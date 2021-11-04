@@ -489,7 +489,7 @@ export default function Listings(props) {
             </Grid>
             <Grid item md={3} xs={12} style={{textAlign:"center"}}>
               <ul className={classes.socials}>
-                {['telegram', 'twitter', 'medium', 'd'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+                {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
                   return (<li><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
                 })}
               </ul>
