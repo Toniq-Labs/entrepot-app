@@ -7,7 +7,7 @@ var collections = [
     brief : "10,000 Motokos dropped by DFINITY",
     name: "Motoko Day Drop",
     keywords : "",
-    banner : "/banner/motoko.jpg",
+    banner : "/banner/motoko2.jpg",
     discord : "https://t.co/fD0VHKGaFu?amp=1",
     twitter : "https://twitter.com/pokedstudiouk",
     route: "motoko",
@@ -227,6 +227,7 @@ var collections = [
     name: "Wild and West",
     brief : "Collection by the Wild and West team",
     route: "wildwest",
+    banner:"/banner/ww.png",
     keywords : "",
     nftv : false,
     mature: false,
@@ -236,7 +237,7 @@ var collections = [
       "9616e04724bd990eda94a848cbfe0dab273d6d663dee7e40e6e314fb34395dcd",
     blurb: (
       <>
-        <p>Wild and West: The Journey Begins. We’re excited to have you! Here are some of the amazing perks you get for participating in our pre-sale: access to the "Maverick" role in Discord along with its very own exclusive channel, daily NFT updates, and the chance to help us decide rarity. You will also be granted access to Keak the moment it launches, the chance to learn how genesis works, and any first glimpses at all future projects (collaborations and other). For more information <a href="https://t.co/v7Gy1l1ILi" target="_blank">click here</a>. We can’t thank you enough for all of your support. Welcome to the Wild and West!</p>
+        <p>Wild and West: The Journey Begins. We're excited to have you! Here are some of the amazing perks you get for participating in our pre-sale: access to the "Maverick" role in Discord along with its very own exclusive channel, daily NFT updates, and the chance to help us decide rarity. You will also be granted access to Keak the moment it launches, the chance to learn how genesis works, and any first glimpses at all future projects (collaborations and other). For more information <a href="https://t.co/v7Gy1l1ILi" target="_blank">click here</a>. We can't thank you enough for all of your support. Welcome to the Wild and West!</p>
         <strong>Important: These NFTs are placeholder NFTs, holders will receive the real Minted NFTs on December 1st. All placeholders are equal.</strong>
       </>
     ),
@@ -275,7 +276,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     blurb: (
       <>
         To escape from containment and restriction, releasing the stressors held
-        so long in the body, Wings’s ego is jettisoned as she explores a more
+        so long in the body, Wings's ego is jettisoned as she explores a more
         fundamental form of existence, expressing her humanity in this elemental
         piece.
         <br />

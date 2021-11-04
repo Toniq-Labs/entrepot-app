@@ -58,6 +58,10 @@ export default function Home(props) {
           img: "/banner/vamp1.jpg"
       },
       {
+          link: "/marketplace/wildwest",
+          img: "/banner/ww.png"
+      },
+      {
           link: "/sale/ic3d",
           img: "/banner/ic3d.jpg"
       },
