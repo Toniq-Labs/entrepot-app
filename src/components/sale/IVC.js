@@ -71,7 +71,6 @@ export default function IVC(props) {
     },
   };
   const buyFromSale = async (qty, price) => {
-    return false;
     if (props.balance < (price + 10000n)){
       return props.alert(
         "There was an error",
