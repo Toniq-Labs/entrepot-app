@@ -6,6 +6,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Drawer from '@material-ui/core/Drawer';
 import Collapse from "@material-ui/core/Collapse";
 import Slider from "@material-ui/core/Slider";
@@ -26,6 +28,8 @@ import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useHistory } from "react-router";
 import collections from '../ic/collections.js';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 const drawerWidth = 0;//300;
@@ -78,6 +82,7 @@ export default function Listings(props) {
   const [sort, setSort] = useState("price_asc");
   const [collapseOpen, setCollapseOpen] = useState(false);
   
+  const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const [healthDominantValue, setHealthDominantValue] = React.useState([0, 63]);
   const [healthRecessiveValue, setHealthRecessiveValue] = React.useState([0, 63]);
   const [speedDominantValue, setSpeedDominantValue] = React.useState([0, 63]);
@@ -444,7 +449,10 @@ export default function Listings(props) {
       padding: theme.spacing(2),
     },
   };
-
+  const changeGrid = (e, a) => {
+    localStorage.setItem("_gridSize", a);
+    setGridSize(a)
+  }
   useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     _updates();
@@ -455,54 +463,64 @@ export default function Listings(props) {
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wearableFilter]);
-  return (
-    <div style={{ maxWidth:1200, margin:"0 auto", minHeight:"calc(100vh - 221px)"}}>
+  return (//maxWidth:1200, margin:"0 auto",
+    <div style={{ minHeight:"calc(100vh - 221px)"}}>
       {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
       </Drawer>*/}
       <div style={{marginLeft:drawerWidth, paddingBottom:100}}>
-        <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
-          <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={"/collections/"+collection.canister+".jpg"} />
-        </div>
-        <div style={styles.details}>
-          <Grid container direction="row" alignItems="center" spacing={2}>
-            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
-              {stats === false ? <strong>Loading Statistics...</strong> :
-              <>{stats === null ? "" :
-                <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
-                  <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                    <span style={{color:"#00d092"}}>Volume</span><br />
-                    <strong>{stats.total} ICP</strong>
-                  </Grid>
-                  <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                    <span style={{color:"#00d092"}}>Listings</span><br />
-                    <strong>{stats.listings}</strong>
-                  </Grid>
-                  <Grid item md={4}>
-                    <span style={{color:"#00d092"}}>Floor Price</span><br />
-                    <strong>{stats.floor} ICP</strong>
-                  </Grid>
-                </Grid>}
-              </>}
+        <div style={{maxWidth:1200, margin:"0 auto 50px",}}>
+          <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
+            <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={"/collections/"+collection.canister+".jpg"} />
+          </div>
+          <div style={{textAlign:"center"}}>
+            <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
+              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
+                {stats === false ? <strong>Loading Statistics...</strong> :
+                <>{stats === null ? "" :
+                  <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
+                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                      <span style={{color:"#00d092"}}>Volume</span><br />
+                      <strong>{stats.total} ICP</strong>
+                    </Grid>
+                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                      <span style={{color:"#00d092"}}>Listings</span><br />
+                      <strong>{stats.listings}</strong>
+                    </Grid>
+                    <Grid item md={4}>
+                      <span style={{color:"#00d092"}}>Floor Price</span><br />
+                      <strong>{stats.floor} ICP</strong>
+                    </Grid>
+                  </Grid>}
+                </>}
+              </Grid>
+              <Grid item md={4} xs={12}>
+              </Grid>
+              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
+                <ul className={classes.socials}>
+                  {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+                    return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
+                  })}
+                </ul>
+              </Grid>
             </Grid>
-            <Grid item md={6} xs={12} style={{textAlign:"center"}}>
-              <h1>{collection.name}</h1>
-            </Grid>
-            <Grid item md={3} xs={12} style={{textAlign:"center"}}>
-              <ul className={classes.socials}>
-                {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
-                  return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
-                })}
-              </ul>
-            </Grid>
-          </Grid>
-          {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
-          <p style={{ marginTop:50,fontSize: "1.2em" }}>
-            {collection?.blurb}
-          </p>
+            <h1>{collection.name}</h1>
+            {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
+            <p style={{ marginTop:50,fontSize: "1.2em" }}>
+              {collection?.blurb}
+            </p>
+          </div>
         </div>
         {_isCanister(collection.canister) && collection.market ?
-        <>
-          <div style={{ marginLeft: "20px", marginTop: "10px" }}>
+        <div style={(gridSize === "small" ? {width:1200,margin:"0 auto", marginTop: "10px"} : {marginLeft: "20px", marginTop: "10px"})}>
+          <div className={classes.filters} style={{marginLeft: "20px", marginTop: "10px"}}>
+            <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
+              <ToggleButton value={"small"}>
+                <ViewModuleIcon />
+              </ToggleButton>
+              <ToggleButton value={"large"}>
+                <ViewComfyIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Showing</InputLabel>
               <Select value={showing} onChange={changeShowing}>
@@ -975,6 +993,7 @@ export default function Listings(props) {
                             .map((listing, i) => {
                               return (
                                 <Listing
+                                  gridSize={gridSize}
                                   gri={getNri(collection?.canister, listing[0])}
                                   loggedIn={props.loggedIn}
                                   collection={collection?.canister}
@@ -988,6 +1007,7 @@ export default function Listings(props) {
                             }).concat(tempTx.map((transaction, i) => {
                               return (
                                 <SoldListing
+                                  gridSize={gridSize}
                                   gri={getNri(
                                     collection?.canister,
                                     extjs.decodeTokenId(transaction.token).index
@@ -1127,7 +1147,7 @@ export default function Listings(props) {
             ) : (
               ""
             )}
-        </> : ""}
+        </div> : ""}
         <BuyForm open={showBuyForm} {...buyFormData} />
       </div>
     </div>
@@ -1153,6 +1173,17 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     zIndex: 1
+  },
+  filters: {
+    [theme.breakpoints.down("sm")]: {
+      textAlign:"center",
+    },
+  },
+  stats: {
+    marginTop:-80,
+    [theme.breakpoints.down("xs")]: {
+      marginTop:0,
+    },
   },
   pagi: {
     display: "flex",
