@@ -21,6 +21,7 @@ import Iconic from "./views/Iconic";
 import Sale from "./views/Sale";
 import Contact from "./views/Contact";
 import Moonwalkers from "./components/sale/Moonwalkers";
+import DfinityBulls from "./components/sale/DfinityBulls";
 import IC3D from "./components/sale/IC3D";
 import IVC from "./components/sale/IVC";
 import HauntedHamsters from "./components/sale/HauntedHamsters";
@@ -358,6 +359,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"moonwalkers"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/dfinitybulls" exact>
+              <DfinityBulls
+                error={error}
+                view={"sale"}
+                sale={"dfinitybulls"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

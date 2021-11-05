@@ -64,6 +64,7 @@ export default function Marketplace(props) {
       } else {
         (c => {
           api.token(c).stats().then(r => {
+            console.log(r);
             res = {
               canister : c,
               stats : r
@@ -226,7 +227,7 @@ export default function Marketplace(props) {
                               <span style={{color:"#00d092"}}>Floor Price</span><br />
                               <strong>{stats.find(a => a.canister == collection.canister).stats.floor} ICP</strong>
                             </Grid>
-                          </Grid> : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span> }
+                          </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
                         </> 
                       : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
                     </CardContent>

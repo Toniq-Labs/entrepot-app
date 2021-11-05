@@ -27,7 +27,7 @@ var collections = [
     banner : "/banner/icgallery2.jpg",
     nftv : false,
     mature: false,
-    market : false,
+    market : true,
     commission: 0.035,
     comaddress: "2455059d792289741fb4c3128be9dfcf25474e161923c78c37bd53c457b24e60",
     blurb: (<><p>The MoonWalker's marketplace will open after the completion of the <a href="/sale/moonwalkers">public sale</a>.</p></>),

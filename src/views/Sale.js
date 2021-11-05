@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Dfinity Bulls",
+      link : "/sale/dfinitybulls",
+      image : "/banner/bulls.jpg",
+      content : (<>Get one of 8888 minted Dfinity Bulls by the owners of the Dfinity Bulls Telegram Community!</>),
+    },
+    {
       title : "Infernal Vampire Colony",
       link : "/sale/ivc",
       image : "/banner/vamp1.jpg",
