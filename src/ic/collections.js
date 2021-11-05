@@ -12,7 +12,7 @@ var collections = [
     avatar : "/collections/ivc/avatar.png",
     collection : "/collections/ivc/collection.jpg",
     discord : "https://discord.gg/mA5cXdAtwe",
-    twitter : "https://twitter.com/IVC",
+    twitter : "https://twitter.com/IVCNFT",
     web : "https://www.infernalvampires.com",
     route: "ivc",
     nftv : false,
@@ -20,7 +20,7 @@ var collections = [
     market : false,
     commission: 0.035,
     comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
-    blurb: (<><p>There are 6666 Vampire characters imprisoned in a cave by their enemies. 666 of the Infernal Vampires manage to escape from the cave. The remaining 6000 Vampire characters still remain imprisoned in the cave. They will be in the Gen2 collection with the same character outlines but badly injured, with a lot of damage. The reason why we have created our collection as two different generations is that we have created our story first. As a result, there will be two different generation in our collection. Gen1 includes 666 Vampires and Gen2 includes 6000 Vampires. The collection which we created based on our story will have a solid foundation behind it when we move to Metaverse.</p><Button href="/sale/ivc" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Buy from Public Sale</Button></>),
+    blurb: (<><p>Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!</p><Button href="/sale/ivc" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Buy from Public Sale</Button></>),
   },
   {
     canister: "oeee4-qaaaa-aaaak-qaaeq-cai",

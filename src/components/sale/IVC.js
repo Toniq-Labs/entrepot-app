@@ -171,7 +171,7 @@ export default function IVC(props) {
         : 
           <>{remaining > 0 ?
             <>
-              {Date.now() <= startTime ? 
+              {Date.now() >= startTime ? 
                 <>
                   <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                     {buyOptions.map(o => {
