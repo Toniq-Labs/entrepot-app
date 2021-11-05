@@ -77,7 +77,6 @@ export default function Listings(props) {
   const [listings, setListings] = useState(false);
   const [allListings, setAllListings] = useState(false);
   const [transactions, setTransactions] = useState(false);
-  const [tempTx, setTempTx] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -137,7 +136,6 @@ export default function Listings(props) {
     setCollection(c);
     setListings(false);
     setTransactions(false);
-    setTempTx([]);
     setPage(1);
     await refresh("all", c.canister);
   };
@@ -416,7 +414,6 @@ export default function Listings(props) {
           if (["cdvmq-aaaaa-aaaah-qcdoq-cai", "ckwhm-wiaaa-aaaah-qcdpa-cai", "cnxby-3qaaa-aaaah-qcdpq-cai", "crt3j-mqaaa-aaaah-qcdnq-cai", "dv6u3-vqaaa-aaaah-qcdlq-cai"].indexOf(c) >= 0){
             var txs = await api.canister(c).transactions();
             var nt = txs;
-            setTempTx(applyFilters(nt, s, c));
           }
           
           
@@ -487,8 +484,8 @@ export default function Listings(props) {
                       <strong>{stats.listings}</strong>
                     </Grid>
                     <Grid item md={4}>
-                      <span style={{color:"#00d092"}}>Floor Price</span><br />
-                      <strong>{stats.floor} ICP</strong>
+                      <span style={{color:"#00d092"}}>Avg Price</span><br />
+                      <strong>{stats.average} ICP</strong>
                     </Grid>
                   </Grid>}
                 </>}
@@ -912,7 +909,7 @@ export default function Listings(props) {
                 </div>
               ) : (
                 <>
-                  {listings.concat(tempTx).length === 0 ? (
+                  {listings.length === 0 ? (
                     <div style={styles.empty}>
                       <Typography
                         paragraph
@@ -1004,20 +1001,7 @@ export default function Listings(props) {
                                   onListingDialogChange={changeListingDialogOpen}
                                 />
                               );
-                            }).concat(tempTx.map((transaction, i) => {
-                              return (
-                                <SoldListing
-                                  gridSize={gridSize}
-                                  gri={getNri(
-                                    collection?.canister,
-                                    extjs.decodeTokenId(transaction.token).index
-                                  )}
-                                  key={transaction.token + i}
-                                  collection={collection?.canister}
-                                  transaction={transaction}
-                                />
-                              );
-                            }))}
+                            })}
                         </Grid>
                       </div>
                     </>
@@ -1105,6 +1089,7 @@ export default function Listings(props) {
                             .map((transaction, i) => {
                               return (
                                 <Sold
+                                  gridSize={gridSize}
                                   gri={getNri(
                                     collection?.canister,
                                     extjs.decodeTokenId(transaction.token).index
@@ -1180,7 +1165,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   stats: {
-    marginTop:-80,
+    marginTop:-70,
+    minHeight:81,
     [theme.breakpoints.down("xs")]: {
       marginTop:0,
     },

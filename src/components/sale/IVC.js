@@ -48,14 +48,17 @@ export default function IVC(props) {
   const [price, setPrice] = React.useState(100000000n);
   const [remaining, setRemaining] = React.useState(642);
   const [startTime, setStartTime] = React.useState(1636131600000);
-
+  const [whitelist, setWhitelist] = React.useState(false);
+  var presale = 1636128000000;
   const params = useParams();
   
   const _updates = async () => {
-    // var stats = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").salesStats((props.account ? props.account.address : ""));
-    // setStartTime(Number(stats[0]/1000000n));
-    // setPrice(stats[1]);
-    // setRemaining(Number(stats[2]));
+    var stats = await api.canister("gyuaf-kqaaa-aaaah-qceka-cai", "sale").salesStats((props.account ? props.account.address : ""));
+    if (Number(stats[0]/1000000n) < 1636131600000) {
+      setWhitelist(true);
+    };
+    setPrice(stats[1]);
+    setRemaining(Number(stats[2]));
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -79,13 +82,13 @@ export default function IVC(props) {
     if (!v) return;
     try {
       if (qty === 1) {
-        props.loader(true, "Reserving Haunted Hamster...");
+        props.loader(true, "Reserving Vampire...");
       } else {
-        props.loader(true, "Reserving Haunted Hamsters..");
+        props.loader(true, "Reserving Vampires..");
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale")
+        .canister("gyuaf-kqaaa-aaaah-qceka-cai", "sale")
         .reserve(
           price,
           qty,
@@ -111,7 +114,7 @@ export default function IVC(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").retreive(paytoaddress);
+          r3 = await api.canister("gyuaf-kqaaa-aaaah-qceka-cai", "sale").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -136,9 +139,8 @@ export default function IVC(props) {
   }, []);
   var buyOptions = [
     [1, 100000000n],
-    [5, 500000000n],
-    [10, 1000000000n],
-    [20, 2000000000n],
+    [2, 200000000n],
+    [3, 300000000n],
   ]
   return (
     <>
@@ -147,16 +149,16 @@ export default function IVC(props) {
         <div style={{width: "100%", height: 484, backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/banner/vamp1.jpg')"}}></div>
         <h1>Welcome to the official Infernal Vampire Colony sale</h1>
         </div>
-        <Grid container spacing={2} style={{}}>
-          <Grid className={classes.stat} item md={4} xs={6}>
+        <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? remaining : "Loading..."}</span>
           </Grid>
-          <Grid className={classes.stat} item md={4} xs={6}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SALE PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
           </Grid>
-          <Grid className={classes.stat} item md={4} xs={6}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 642-remaining : "Loading..."}</span>
           </Grid>
@@ -169,9 +171,9 @@ export default function IVC(props) {
         : 
           <>{remaining > 0 ?
             <>
-              {Date.now() >= startTime ? 
+              {Date.now() <= startTime ? 
                 <>
-                  <Grid container spacing={2} style={{}}>
+                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                     {buyOptions.map(o => {
                       return (<Grid className={classes.stat} item sm={3}>
                         <Button
@@ -180,7 +182,7 @@ export default function IVC(props) {
                           onClick={() => buyFromSale(o[0], o[1])}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} Haunted Hamster{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
+                          Buy {o[0]} Vampire{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
                         </Button>
                       </Grid>);
                     })}
@@ -189,12 +191,31 @@ export default function IVC(props) {
                   
                 </> :
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
+                  {whitelist ? 
+                    <>
+                      <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist!</span></strong></p>
+                      {Date.now() >= presale ? 
+                        <>
+                          <Button
+                            variant={"contained"}
+                            color={"primary"}
+                            onClick={() => buyFromSale(1, price)}
+                            style={{ fontWeight: "bold", margin: "0 auto" }}
+                          >
+                            Buy 1 Vampire<br />for {_showListingPrice(price)} ICP
+                          </Button>
+                          <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                        </> :
+                        <p><strong><span style={{fontSize:"20px",color:"black"}}>The pre-sale starts <Timestamp relative autoUpdate date={presale/1000} />!</span></strong></p>
+                      }
+                    </> :
+                    <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
+                  }
                 </>
               }
             </>
           : 
-            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Haunted Hamster from the marketplace soon!</span></strong></p>
+            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Vampire from the marketplace soon!</span></strong></p>
           }</>
         }
       </div>

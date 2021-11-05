@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import extjs from "../../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Alert from '@material-ui/lab/Alert';
 import Typography from "@material-ui/core/Typography";
 import SaleListing from "../SaleListing";
 import Button from "@material-ui/core/Button";
@@ -45,7 +46,7 @@ const _getRandomBytes = () => {
 };
 export default function IC3D(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(200000000n);
+  const [price, setPrice] = React.useState(50000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1635526800000);
 
@@ -60,25 +61,11 @@ export default function IC3D(props) {
   const theme = useTheme();
   const classes = useStyles();
   const styles = {
-    root: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-
-    empty: {
-      maxWidth: 800,
+    main: {
+      maxWidth: 1200,
       margin: "0 auto",
       textAlign: "center",
-      minHeight : "calc(100vh - 221px)",
-    },
-    grid: {
-      flexGrow: 1,
-      padding: theme.spacing(2),
-    },
-
-    largeIcon: {
-      width: 60,
-      height: 60,
+      minHeight:"calc(100vh - 221px)"
     },
   };
   const buyFromSale = async (qty, price) => {
@@ -148,28 +135,29 @@ export default function IC3D(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   var buyOptions = [
-    [1, 200000000n],
-    [5, 1000000000n],
-    [10, 2000000000n],
-    [20, 4000000000n],
+    [1, 50000000n],
+    [5, 250000000n],
+    [10, 500000000n],
+    [20, 1000000000n],
   ]
   return (
     <>
+      <div style={styles.main}>
       <div style={styles.empty}>
         <div className={classes.banner}>
-          <img style={{height:300}} alt="starverse" className={classes.bannerimg} src="/banner/ic3d.jpg" />
+          <div style={{width: "100%", height: 484, backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/banner/ic3d.jpg')"}}></div>
         </div>
         <h1>Welcome to the official IC3D Public Sale</h1>
-        <Grid container spacing={2} style={{}}>
-          <Grid className={classes.stat} item md={4} xs={6}>
+        <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? remaining : "Loading..."}</span>
           </Grid>
-          <Grid className={classes.stat} item md={4} xs={6}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SALE PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
           </Grid>
-          <Grid className={classes.stat} item md={4} xs={6}>
+          <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 7000-remaining : "Loading..."}</span>
           </Grid>
@@ -184,7 +172,8 @@ export default function IC3D(props) {
             <>
               {Date.now() >= startTime ? 
                 <>
-                  <Grid container spacing={2} style={{}}>
+                  <Alert style={{marginBottom:30}} severity="warning"><strong>Anyone who purchased an NFT when the price was 2ICP will receive 4 free NFTs via airdrop in the near future</strong></Alert>
+                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                     {buyOptions.map(o => {
                       return (<Grid className={classes.stat} item sm={3}>
                         <Button
@@ -210,6 +199,7 @@ export default function IC3D(props) {
             <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your IC3D scenes from the marketplace soon!</span></strong></p>
           }</>
         }
+      </div>
       </div>
       
     </>
