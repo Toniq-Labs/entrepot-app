@@ -151,7 +151,7 @@ export default function IVC(props) {
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SALE PRICE</strong><br />
@@ -159,7 +159,7 @@ export default function IVC(props) {
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 642-remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? 642-remaining : "Loading..."}</span>
           </Grid>
         </Grid>
         <br /><br />
