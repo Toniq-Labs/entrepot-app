@@ -489,7 +489,7 @@ export default function Listing(props) {
   };
 
   return (
-    <Grid style={{ height: "100%" }} item xl={(props.gridSize === "small" ? 3 : 2)} lg={3} md={4} sm={6} xs={6}>
+    <Grid style={{ height: "100%" }} item xl={(props.gridSize === "small" ? 3 : 2)} lg={(props.gridSize === "small" ? 3 : 2)} md={4} sm={6} xs={6}>
       <Card>
         <CardContent>
           <Grid container>
