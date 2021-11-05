@@ -485,7 +485,7 @@ export default function Listings(props) {
                     </Grid>
                     <Grid item md={4}>
                       <span style={{color:"#00d092"}}>Avg Price</span><br />
-                      <strong>{stats.average} ICP</strong>
+                      <strong>{stats.average == "-" ? "-" : stats.average+" ICP"}</strong>
                     </Grid>
                   </Grid>}
                 </>}

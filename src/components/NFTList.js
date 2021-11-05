@@ -6,6 +6,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
 import { useHistory } from "react-router";
 import { useParams } from "react-router";
@@ -55,6 +59,11 @@ export default function NFTList(props) {
   const [openListingForm, setOpenListingForm] = React.useState(false);
   const [openTransferForm, setOpenTransferForm] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
+  const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSizeNFT") ?? "small");
+  const changeGrid = (e, a) => {
+    localStorage.setItem("_gridSizeNFT", a);
+    setGridSize(a)
+  }
 
   React.useEffect(() => {
     setCollection(props.collections.find(e => e.route === params?.route));
@@ -101,7 +110,6 @@ export default function NFTList(props) {
     var v = await props.confirm("We need to wrap this", "You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
     if (v) {
       var canister = canisterMap[extjs.decodeTokenId(token.id).canister];
-      console.log(canister);
       props.loader(true, "Creating wrapper...this may take a few minutes");
       try{
         var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister(canister).wrap(token.id);
@@ -241,10 +249,18 @@ export default function NFTList(props) {
         <h1>My NFTs: <span style={{color: "#00d092"}}>{collection?.name}</span></h1>
         <Button variant={"outlined"} color="primary" onClick={() => history.push("/marketplace/"+collection.route)} ><strong>Go to Marketplace</strong></Button>
       </div>
-      <div style={{maxWidth:1200, margin:"0 auto"}}>
+      <div style={(gridSize === "small" ? {width:1200,margin:"0 auto", marginTop: "10px"} : {marginLeft: "20px", marginTop: "10px"})}>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>
           {nfts.length >0 ?
           <>
+          <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
+            <ToggleButton value={"small"}>
+              <ViewModuleIcon />
+            </ToggleButton>
+            <ToggleButton value={"large"}>
+              <ViewComfyIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
           <FormControl style={{marginRight:20}}>
             <InputLabel>Sort by</InputLabel>
             <Select
@@ -274,6 +290,7 @@ export default function NFTList(props) {
           </> : ""}
           {nfts.length > perPage ?
           (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" }
+          
         </div>
           <>{nfts === false ?
             <div style={styles.empty}>
@@ -331,7 +348,7 @@ export default function NFTList(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<NFT gri={getNri(collection?.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={collection?.canister} key={nft.id+"-"+i} nft={nft} />)
+                      return (<NFT gridSize={gridSize} gri={getNri(collection?.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={collection?.canister} key={nft.id+"-"+i} nft={nft} />)
                     })}
                   </Grid>
                 </div>

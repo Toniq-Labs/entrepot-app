@@ -88,6 +88,12 @@ export default function NFT(props) {
   };
   const showNri = () => {
     switch(props.collection){
+      case "gyuaf-kqaaa-aaaah-qceka-cai":
+      return (<Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  <Tooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Vampire relative to others. It does not include Mint #, Twin Status or Animation within the index."><a style={{color:"black",textDecoration: 'none' }} href={"https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
+                </Typography>
+              </Grid>);
       case "oeee4-qaaaa-aaaak-qaaeq-cai":
       return (<Grid item md={6} sm={6} xs={6}>
                 <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
@@ -142,7 +148,7 @@ export default function NFT(props) {
   };
   
   return (
-    <Grid style={{height:'100%'}} item xl={3} lg={3} md={4} sm={6} xs={6}>
+    <Grid style={{height:'100%'}} item xl={(props.gridSize === "small" ? 3 : 2)} lg={(props.gridSize === "small" ? 3 : 2)} md={4} sm={6} xs={6}>
         <Card>
           <CardContent>
             <Grid container>

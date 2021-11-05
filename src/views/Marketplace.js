@@ -64,7 +64,6 @@ export default function Marketplace(props) {
       } else {
         (c => {
           api.token(c).stats().then(r => {
-            console.log(r);
             res = {
               canister : c,
               stats : r
