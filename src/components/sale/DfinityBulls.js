@@ -46,16 +46,21 @@ const _getRandomBytes = () => {
 export default function DfinityBulls(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(100000000n);
-  const [remaining, setRemaining] = React.useState(8000);
+  const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1636207200000);
+  const [whitelist, setWhitelist] = React.useState(false);
+  var whitelistend = 1636293600000;
+  var presaleprice = 80000000n;
 
   const params = useParams();
   
   const _updates = async () => {
-    // var stats = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").salesStats((props.account ? props.account.address : ""));
-    // setStartTime(Number(stats[0]/1000000n));
-    // setPrice(stats[1]);
-    // setRemaining(Number(stats[2]));
+    var stats = await api.canister("dknxi-2iaaa-aaaah-qceuq-cai", "sale").salesStats((props.account ? props.account.address : ""));
+    setStartTime(Number(stats[0]/1000000n));
+    if (stats[1] == presaleprice) {
+      setWhitelist(true);
+    }
+    setRemaining(Number(stats[2]));
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -68,7 +73,6 @@ export default function DfinityBulls(props) {
     },
   };
   const buyFromSale = async (qty, price) => {
-    return false;
     if (props.balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -85,7 +89,7 @@ export default function DfinityBulls(props) {
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale")
+        .canister("dknxi-2iaaa-aaaah-qceuq-cai", "sale")
         .reserve(
           price,
           qty,
@@ -111,7 +115,7 @@ export default function DfinityBulls(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("bid2t-gyaaa-aaaah-qcdea-cai", "sale").retreive(paytoaddress);
+          r3 = await api.canister("dknxi-2iaaa-aaaah-qceuq-cai", "sale").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -138,7 +142,7 @@ export default function DfinityBulls(props) {
     [1, 100000000n],
     [5, 500000000n],
     [10, 1000000000n],
-    [20, 2000000000n],
+    [20, 1600000000n],
   ]
   return (
     <>
@@ -150,7 +154,7 @@ export default function DfinityBulls(props) {
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>SALE PRICE</strong><br />
@@ -158,7 +162,7 @@ export default function DfinityBulls(props) {
           </Grid>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>SOLD</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 8000-remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? 8000-remaining : "Loading..."}</span>
           </Grid>
         </Grid>
         <br /><br />
@@ -169,6 +173,11 @@ export default function DfinityBulls(props) {
         : 
           <>{remaining > 0 ?
             <>
+              {whitelist ? 
+                <>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint 1 NFT at 0.8ICP for the first 24 hours only!</span></strong></p>
+                </>:""
+              }
               {Date.now() >= startTime ? 
                 <>
                   <Grid container spacing={2} style={{}}>
@@ -177,10 +186,10 @@ export default function DfinityBulls(props) {
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale(o[0], o[1])}
+                          onClick={() => buyFromSale(o[0], (o[1] == presaleprice && whitelist ? presaleprice : o[1]))}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} Haunted Hamster{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
+                          Buy {o[0]} Dfinity Bull{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o[1] == price && whitelist ? presaleprice : o[1]))} ICP
                         </Button>
                       </Grid>);
                     })}
@@ -194,7 +203,7 @@ export default function DfinityBulls(props) {
               }
             </>
           : 
-            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Haunted Hamster from the marketplace soon!</span></strong></p>
+            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Dfinity Bull from the marketplace soon!</span></strong></p>
           }</>
         }
       </div>
