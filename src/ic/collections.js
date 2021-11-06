@@ -3,6 +3,24 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "dknxi-2iaaa-aaaah-qceuq-cai",
+    name: "Dfinity Bulls",
+    brief : "8888 Dfinity Bulls of the IC",
+    description : "The bulls of the IC - P2E game coming soon",
+    keywords : "bulls dfinity",
+    banner : "/banner/bulls.jpg",
+    //discord : "https://discord.gg/mA5cXdAtwe",
+    //twitter : "https://twitter.com/IVCNFT",
+    //web : "https://www.infernalvampires.com",
+    route: "dfinitybulls",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
+    blurb: (<><p>The bulls of the IC - P2E game coming soon</p><Button href="/sale/dfinitybulls" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Buy from Public Sale</Button></>),
+  },
+  {
     canister: "gyuaf-kqaaa-aaaah-qceka-cai",
     name: "Infernal Vampire Colony",
     brief : "666 Bloodthirsty Infernal Vampires",
