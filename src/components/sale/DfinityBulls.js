@@ -151,7 +151,7 @@ export default function DfinityBulls(props) {
         <div style={{width: "100%", height: 484, backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/banner/bulls.jpg')"}}></div>
         <h1>Welcome to the official Dfinity Bulls sale</h1>
         </div>
-        <Grid container spacing={2} style={{}}>
+        <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
@@ -180,16 +180,25 @@ export default function DfinityBulls(props) {
               }
               {Date.now() >= startTime ? 
                 <>
-                  <Grid container spacing={2} style={{}}>
-                    {buyOptions.map(o => {
+                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+                    {whitelist ? 
+                      <Button
+                        variant={"contained"}
+                        color={"primary"}
+                        onClick={() => buyFromSale(1, presaleprice)}
+                        style={{ fontWeight: "bold", margin: "0 auto" }}
+                      >
+                        Buy 1 Dfinity Bull<br />for {_showListingPrice(presaleprice)} ICP
+                      </Button>
+                    : buyOptions.map(o => {
                       return (<Grid className={classes.stat} item sm={3}>
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale(o[0], (o[1] == presaleprice && whitelist ? presaleprice : o[1]))}
+                          onClick={() => buyFromSale(o[0], o[1])}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} Dfinity Bull{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o[1] == price && whitelist ? presaleprice : o[1]))} ICP
+                          Buy {o[0]} Dfinity Bull{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
                         </Button>
                       </Grid>);
                     })}
