@@ -48,6 +48,7 @@ export default function HauntedHamsters(props) {
   const [price, setPrice] = React.useState(66000000n);
   const [remaining, setRemaining] = React.useState(6500);
   const [startTime, setStartTime] = React.useState(1635724800000);
+  var saleOver = true;  
 
   const params = useParams();
   
@@ -166,7 +167,7 @@ export default function HauntedHamsters(props) {
             <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
           </>
         : 
-          <>{remaining > 0 ?
+          <>{(!saleOver && remaining > 0) ?
             <>
               {Date.now() >= startTime ? 
                 <>

@@ -3,12 +3,34 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "ag2h7-riaaa-aaaah-qce6q-cai",
+    name: "P2J",
+    brief : "NFT by Canistore",
+    description : "P2J NFT by Canistore",
+    keywords : "bulls dfinity",
+    banner : "/collections/p2j/banner.png",
+    avatar : "/collections/p2j/avatar.png",
+    collection : "/collections/p2j/collection.png",
+    twitter : "https://twitter.com/canistore",
+    //discord : "https://discord.gg/mA5cXdAtwe",
+    //web : "https://www.infernalvampires.com",
+    route: "p2j",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "1139e8bf919647a9e630f41982324ea535ccd67ac4b101644bb1dba8ecf155e3",
+    blurb: (<><p>P2J NFT by Canistore</p></>),
+  },
+  {
     canister: "dknxi-2iaaa-aaaah-qceuq-cai",
     name: "Dfinity Bulls",
     brief : "8888 Dfinity Bulls of the IC",
     description : "The bulls of the IC - P2E game coming soon",
     keywords : "bulls dfinity",
-    banner : "/banner/bulls.jpg",
+    banner : "/collections/bulls/banner.png",
+    avatar : "/collections/bulls/avatar.jpg",
+    collection : "/collections/bulls/collection.png",
     //discord : "https://discord.gg/mA5cXdAtwe",
     //twitter : "https://twitter.com/IVCNFT",
     //web : "https://www.infernalvampires.com",
@@ -54,7 +76,7 @@ var collections = [
     market : true,
     commission: 0.035,
     comaddress: "09b739076e074550862930ca17f662485076a6af60cc1b0e9a1f50b058d767c9",
-    blurb: (<><p>10,000 Motoko Ghosts designed by Jon Ball of Pokedstudios were distributed to the community on the 1 year birthday of the Motoko Programming language. 7,000 airdropped to DSCVR users and 3000 distributed to in-person attendees of NFT.NYC 2021.</p></>),
+    blurb: (<><p>On the Motoko programming language's 2nd birthday, the DFINITY Foundation distributed 10,000 Motoko ghosts designed by Jon Ball of Pokedstudios to the community.</p></>),
   },
   {
     canister: "er7d4-6iaaa-aaaaj-qac2q-cai",
@@ -105,16 +127,24 @@ var collections = [
   {
     canister: "bid2t-gyaaa-aaaah-qcdea-cai",
     name: "Haunted Hamsters",
-    brief : "6666 Haunted and spooky Hamsters",
+    brief : "2500 Haunted Hamsters ready to spook",
     route: "hauntedhamsters",
-    banner : "/banner/hauntedhamsters.jpg",
+    banner : "/collections/hh/banner.jpg",
+    avatar : "/collections/hh/avatar.jpg",
+    collection : "/collections/hh/collection.jpg",
+    description : "Haunted Hamsters are 2500 hamsters, who have been haunted on the hill of Hamsterville. They come merged from 10 spooky themed traits, and are now living on the ICP blockchain.",
     keywords : "",
-    nftv : false,
+    web : "https://www.hauntedhamsters.io",
+    telegram : "https://t.me/joinchat/3KX8XkSEcREzYTMx",
+    medium : "https://medium.com/@hauntedhamsters",
+    discord : "https://discord.com/invite/rngMQQxa",
+    twitter : "https://twitter.com/hauntedhamsters",
+    nftv : true,
     mature: false,
-    market : false,
+    market : true,
     commission: 0.035,
     comaddress: "35b902472e845179b3d6ad9ff7079fee6bcadb4e0ca870230ba7a79757fa88fb",
-    blurb: (<><p>The Haunted Hamters marketplace will open after the completion of the <a href="/sale/hauntedhamsters">public sale</a>.</p></>),
+    blurb: (<><p>Haunted Hamsters are 2500 hamsters, who have been haunted on the hill of Hamsterville. They come merged from 10 spooky themed traits, and are now living on the ICP blockchain.</p></>),
   },
   {
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
@@ -184,9 +214,17 @@ var collections = [
   {
     canister: "njgly-uaaaa-aaaah-qb6pa-cai",
     name: "ICPuppies",
-    brief : "10,000 8-bit Puppies",
+    brief : "10,000 unique randomly generated 8-bit puppies",
+    description : "ICPuppies is a randomly generated 8-bit puppy NFT collection. Half of the initial sale profits will be directed towards charities as well as a portion of all resale volume.",
     route: "icpuppies",
-    keywords : "",
+    keywords : "puppies icpuppies nft charity 8-bit pixel dog doge puppy",
+    banner : "/collections/icpuppy/banner.jpg",
+    avatar : "/collections/icpuppy/avatar.jpg",
+    //collection : "/collections/iasc/collection.jpg",
+    discord : "https://discord.gg/A3rmDSjBaJ",
+    twitter : "https://twitter.com/ICPuppies",
+    medium : "https://medium.com/@ICPuppies",
+    web : "https://icpuppies.io",
     nftv : true,
     mature: false,
     market : true,
@@ -194,20 +232,32 @@ var collections = [
     comaddress:
       "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
     blurb: (
-      <>
-        10,000 randomly generated 8-bit puppy NFTs. Join the{" "}
-        <a href="discord.gg/A3rmDSjBaJ" target="_blank" rel="noreferrer">
-          Discord
-        </a>{" "}
-        or follow us on{" "}
-        <a
-          href="https://twitter.com/ICPuppies"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Twitter
-        </a>
-      </>
+      <>ICPuppies was created with the idea of being a fun, easy-going collection that's very accessible to all newcomers to the Internet Computer NFT world. We're inspired by the retro 8-bit video game aesthetic as we feel it's appealing to people everywhere.<br /><br />Half of the initial launch profits are directed towards charities and on top of that, a portion of our resale volume goes to our partners at Infinite Charity Project, forever! 
+</>
+    ),
+  },
+  {
+    canister: "ep54t-xiaaa-aaaah-qcdza-cai",
+    name: "ICPuppies Wearables",
+    brief : "Wearable collection for owners of ICPuppies",
+    description : "ICPuppies Wearables are accessories for your favorite puppies on the Internet Computer. We will airdrop these during limited special events or holidays.",
+    route: "icpuppies-wearables",
+    keywords : "puppies icpuppies nft charity 8-bit pixel dog doge puppy wearable ",
+    banner : "/collections/icpuppy/banner.jpg",
+    avatar : "/collections/icpuppy/avatar2.jpg",
+    //collection : "/collections/iasc/collection.jpg",
+    discord : "https://discord.gg/A3rmDSjBaJ",
+    twitter : "https://twitter.com/ICPuppies",
+    medium : "https://medium.com/@ICPuppies",
+    web : "https://icpuppies.io",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress:
+      "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
+    blurb: (
+      <>These wearables will be dropped to ICPuppies holders during special events, holidays or specific occasions. The first wearable collection was dropped during Halloween, with more to come in the future.</>
     ),
   },
   {
@@ -402,11 +452,20 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     canister: "gevsk-tqaaa-aaaah-qaoca-cai",
     name: "ICmojis",
     route: "icmojis",
-    brief : "Unique emojis on the IC",
+    keywords : "bulls dfinity",
+    banner : "/collections/icmoji/banner.png",
+    avatar : "/collections/icmoji/avatar.jpg",
+    collection : "/collections/icmoji/collection.jpg",
+    medium : "https://medium.com/@icmojis",
+    telegram : "https://t.me/icmojis",
+    discord : "https://discord.gg/mu2c6SG44E",
+    twitter : "https://twitter.com/icmoji",
+    web : "https://icmoji.com/",
+    brief : "ICmojis are playable characters in ICmoji Origins",
     nftv : false,
     mature: false,
     market : true,
-    keywords : "",
+    keywords : "ICmoji, ICmojis, Origins, Game, Card, Emoji, Emote, Reaction",
     commission: 0.02,
     comaddress:
       "df13f7ef228d7213c452edc3e52854bc17dd4189dfc0468d8cb77403e52b5a69",

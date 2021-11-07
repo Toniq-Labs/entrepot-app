@@ -54,6 +54,14 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
+          link: false,
+          img: "/banner/bh.png"
+      },
+      {
+          link: "/marketplace/p2j",
+          img: "/banner/canistore.png"
+      },
+      {
           link: "/sale/dfinitybulls",
           img: "/banner/bulls.jpg"
       },

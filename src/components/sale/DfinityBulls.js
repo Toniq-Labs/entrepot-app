@@ -51,7 +51,7 @@ export default function DfinityBulls(props) {
   const [whitelist, setWhitelist] = React.useState(false);
   var whitelistend = 1636293600000;
   var presaleprice = 80000000n;
-
+  var saleOver = false;  
   const params = useParams();
   
   const _updates = async () => {
@@ -171,7 +171,7 @@ export default function DfinityBulls(props) {
             <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
           </>
         : 
-          <>{remaining > 0 ?
+          <>{(!saleOver && remaining > 0) ?
             <>
               {whitelist ? 
                 <>

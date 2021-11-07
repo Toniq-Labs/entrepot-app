@@ -466,8 +466,8 @@ export default function Listings(props) {
       </Drawer>*/}
       <div style={{marginLeft:drawerWidth, paddingBottom:100}}>
         <div style={{maxWidth:1200, margin:"0 auto 50px",}}>
-          <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
-            <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={"/collections/"+collection.canister+".jpg"} />
+          <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
+            <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={(typeof collection.avatar != 'undefiend' && collection.avatar ? collection.avatar : "/collections/"+collection.canister+".jpg")} />
           </div>
           <div style={{textAlign:"center"}}>
             <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
