@@ -3,6 +3,28 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "dylar-wyaaa-aaaah-qcexq-cai",
+    name: "Flight",
+    brief : "Wing takes flight",
+    description : "Wing embodies the feeling of freedom",
+    keywords : "#photography #movement # #dance #freedom #ICPhotographer",
+    banner : "/collections/flight/banner.jpg",
+    avatar : "/collections/flight/avatar.jpg",
+    collection : "/collections/flight/collection.jpg",
+    discord : "https://discord.com/invite/CSrZck25st",
+    twitter : "https://twitter.com/olisav",
+    web : "https://www.icphotographers.com/",
+    route: "flight",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "4dbdfc6d6bdab7851bfc7839da5c3df06d10f89ab61cf0c136b70812da27d608",
+    blurb: (<>Rare are the moments when technology so drastically emprove the lives of so many.
+We are living through something profoundly special, and as an artist, I have never felt
+so free. This piece is dedicated to all those that helped me find myself here.</>),
+  },
+  {
     canister: "ag2h7-riaaa-aaaah-qce6q-cai",
     name: "P2J",
     brief : "NFT by Canistore",
@@ -192,7 +214,7 @@ var collections = [
     banner : "/banner/ic3d.jpg",
     nftv : false,
     mature: false,
-    market : false,
+    market : true,
     commission: 0.035,
     comaddress: "b29f5dc935f0457df12c9f91a58d77e192a0acb00694ca473d342063d375656c",
     blurb: (<><p>The IC3D marketplace will open after the completion of the <a href="/sale/ic3d">public sale</a>.</p></>),

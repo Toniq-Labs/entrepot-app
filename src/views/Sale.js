@@ -86,18 +86,18 @@ export default function Iconic(props) {
       image : "/banner/bulls.jpg",
       content : (<>Get one of 8888 minted Dfinity Bulls by the owners of the Dfinity Bulls Telegram Community!</>),
     },
-    {
-      title : "Infernal Vampire Colony",
-      link : "/sale/ivc",
-      image : "/banner/vamp1.jpg",
-      content : (<>Infernal Vampire Colony is an initial collection of 666 Vampires, with another 6000 to be released in future!</>),
-    },
-    {
-      title : "Haunted Hamsters",
-      link : "/sale/hauntedhamsters",
-      image : "/banner/hauntedhamsters.jpg",
-      content : (<>Haunted Hamsters are 6666 hamsters, who have been haunted on the hill of Hamsterville. They come with various traits, and are now living on the blockchain ready to spook!</>),
-    },
+    // {
+      // title : "Infernal Vampire Colony",
+      // link : "/sale/ivc",
+      // image : "/banner/vamp1.jpg",
+      // content : (<>Infernal Vampire Colony is an initial collection of 666 Vampires, with another 6000 to be released in future!</>),
+    // },
+    // {
+      // title : "Haunted Hamsters",
+      // link : "/sale/hauntedhamsters",
+      // image : "/banner/hauntedhamsters.jpg",
+      // content : (<>Haunted Hamsters are 6666 hamsters, who have been haunted on the hill of Hamsterville. They come with various traits, and are now living on the blockchain ready to spook!</>),
+    // },
     {
       title : "IC3D",
       link : "/sale/ic3d",
