@@ -20,7 +20,7 @@ var collections = [
     mature: false,
     market : true,
     commission: 0.035,
-    comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
+    comaddress: "ace16992dcde53c7c67b396b65924be0e19bed8704a2a68b9cc794d100c3cd17",
     blurb: (<><p>500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past. This collection features 5 groups of Robots that exist in the eastern waste lands near former Delta city. The Battle bots, they are tough and are used to hard work, entertainment bots constructed from old video game and junk food toy parts found in the giant rubbish heaps of former Antarctica. Wild bots have become deranged after the giant solar flare of 2453AD. The god class has come to rule much of eastern earth, they have abilities beyond normal bots. The masters are a secret society of robots that have links to the off world colony of Europa base 7.</p><Button href="/sale/poked" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Go to Sale</Button></>),
   },
   {
@@ -85,7 +85,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     mature: false,
     market : true,
     commission: 0.035,
-    comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
+    comaddress: "ae5cf8b282013bffd28908f1c4afad389a07e474a02f9a8e48bcc07cc63b05b4",
     blurb: (<><p>The bulls of the IC - P2E game coming soon</p><Button href="/sale/dfinitybulls" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Buy from Public Sale</Button></>),
   },
   {

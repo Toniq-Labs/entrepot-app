@@ -68,7 +68,8 @@ export default function Poked(props) {
     setRemaining2(Number(stats[1]));
     setRemaining3(Number(stats[2]));
     setRemaining4(Number(stats[3]));
-    setWhitelist(stats[4]);
+    if (stats[4] === false) setWhitelist(stats[4]);
+    if (stats[4] === true) setWhitelist(stats[4]);
   };
   const theme = useTheme();
   const classes = useStyles();
