@@ -49,6 +49,7 @@ export default function IC3D(props) {
   const [price, setPrice] = React.useState(50000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1635526800000);
+  var saleOver = true;  
 
   const params = useParams();
   
@@ -168,7 +169,7 @@ export default function IC3D(props) {
             <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
           </>
         : 
-          <>{remaining > 0 ?
+          <>{(!saleOver && remaining > 0) ?
             <>
               {Date.now() >= startTime ? 
                 <>

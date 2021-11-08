@@ -98,12 +98,12 @@ export default function Iconic(props) {
       // image : "/banner/hauntedhamsters.jpg",
       // content : (<>Haunted Hamsters are 6666 hamsters, who have been haunted on the hill of Hamsterville. They come with various traits, and are now living on the blockchain ready to spook!</>),
     // },
-    {
-      title : "IC3D",
-      link : "/sale/ic3d",
-      image : "/banner/ic3d.jpg",
-      content : (<>IC3D NFT is in the business of creating and selling 3D NFTs to collectors, gamers, and traders in the Internet Computer ecosystem.</>),
-    },
+    // {
+      // title : "IC3D",
+      // link : "/sale/ic3d",
+      // image : "/banner/ic3d.jpg",
+      // content : (<>IC3D NFT is in the business of creating and selling 3D NFTs to collectors, gamers, and traders in the Internet Computer ecosystem.</>),
+    // },
     {
       title : "3D MoonWalkers",
       link : "/sale/moonwalkers",
