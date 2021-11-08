@@ -54,6 +54,10 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
+          link: "/sale/poked",
+          img: "/banner/poked.jpg"
+      },
+      {
           link: false,
           img: "/banner/bh.png"
       },
@@ -66,24 +70,12 @@ export default function Home(props) {
           img: "/banner/bulls.jpg"
       },
       {
-          link: "/sale/ivc",
-          img: "/banner/vamp1.jpg"
-      },
-      {
           link: "/marketplace/wildwest",
           img: "/banner/ww.png"
       },
       {
-          link: "/sale/ic3d",
-          img: "/banner/ic3d.jpg"
-      },
-      {
           link: "/sale/moonwalkers",
           img: "/banner/icgallery2.jpg"
-      },
-      {
-          link: "/sale/hauntedhamsters",
-          img: "/banner/hauntedhamsters.jpg"
       },
       {
           link: false,

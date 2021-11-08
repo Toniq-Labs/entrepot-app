@@ -25,6 +25,7 @@ import DfinityBulls from "./components/sale/DfinityBulls";
 import IC3D from "./components/sale/IC3D";
 import IVC from "./components/sale/IVC";
 import HauntedHamsters from "./components/sale/HauntedHamsters";
+import Poked from "./components/sale/Poked";
 import _c from './ic/collections.js';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -369,6 +370,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"dfinitybulls"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/poked" exact>
+              <Poked
+                error={error}
+                view={"sale"}
+                sale={"poked"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

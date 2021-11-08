@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Poked Bots",
+      link : "/sale/poked",
+      image : "/banner/poked.jpg",
+      content : (<>500 years from now humans have left earth and only the Robots remain. Robots have managed to create new identities based on relics they have found from earths past</>),
+    },
+    {
       title : "Dfinity Bulls",
       link : "/sale/dfinitybulls",
       image : "/banner/bulls.jpg",

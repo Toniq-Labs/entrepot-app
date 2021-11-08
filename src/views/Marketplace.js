@@ -37,7 +37,7 @@ export default function Marketplace(props) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [sort, setSort] = React.useState("recent");
+  const [sort, setSort] = React.useState("featured");
   const [query, setQuery] = React.useState("");
   const [stats, setStats] = React.useState([]);
   const styles = {
@@ -52,7 +52,7 @@ export default function Marketplace(props) {
   };
   const _getStats = async () => {
     for(var i = 0; i < collections.length; i++){
-      var res;
+      var res, total = 0;
       if (_stats.findIndex(a => collections[i].canister == a.canister) >= 0) continue;
       if (!collections[i].market) {
         res = {
@@ -68,6 +68,8 @@ export default function Marketplace(props) {
               canister : c,
               stats : r
             };
+            total += Number(r.total);
+            console.log(total);
             _stats.push(res);
             setStats(a => [...a, res]);
           }).catch(e => {
@@ -111,6 +113,7 @@ export default function Marketplace(props) {
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Sort by</InputLabel>
               <Select value={sort} onChange={changeSort}>
+                <MenuItem value={"featured"}>Featured</MenuItem>
                 <MenuItem value={"recent"}>Recently Listed</MenuItem>
                 <MenuItem value={"listings_asc"}>Listings: Low to High</MenuItem>
                 <MenuItem value={"listings_desc"}>Listings: High to Low</MenuItem>
@@ -133,6 +136,9 @@ export default function Marketplace(props) {
             {
               collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
                 switch (sort) {
+                  case "featured":
+                    return b.priority - a.priority;              
+                  break;
                   case "listings_asc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;

@@ -3,7 +3,29 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "bzsui-sqaaa-aaaah-qce2a-cai",
+    priority : 101,
+    name: "Poked bots",
+    brief : "10,000 generated mutant Robots",
+    description : "500 years from now humans have left earth and only the Robots remain. Robots have managed to create new identities based on relics they have found from earths past",
+    keywords : "pokedstudio robot NFT dfinty icp collectable Solana etherium trade crypto market ",
+    banner : "/collections/poked/banner.jpg",
+    avatar : "/collections/poked/avatar.jpg",
+    collection : "/collections/poked/collection.jpg",
+    discord : "https://discord.gg/PokedStudioNFT",
+    twitter : "https://twitter.com/pokedstud",
+    web : "https://www.pokedstudiobotsnft.co.uk",
+    route: "poked",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
+    blurb: (<><p>500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past. This collection features 5 groups of Robots that exist in the eastern waste lands near former Delta city. The Battle bots, they are tough and are used to hard work, entertainment bots constructed from old video game and junk food toy parts found in the giant rubbish heaps of former Antarctica. Wild bots have become deranged after the giant solar flare of 2453AD. The god class has come to rule much of eastern earth, they have abilities beyond normal bots. The masters are a secret society of robots that have links to the off world colony of Europa base 7.</p><Button href="/sale/poked" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Go to Sale</Button></>),
+  },
+  {
     canister: "dylar-wyaaa-aaaah-qcexq-cai",
+    priority : 10,
     name: "Flight",
     brief : "Wing takes flight",
     description : "Wing embodies the feeling of freedom",
@@ -26,6 +48,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "ag2h7-riaaa-aaaah-qce6q-cai",
+    priority : 10,
     name: "P2J",
     brief : "NFT by Canistore",
     description : "P2J NFT by Canistore",
@@ -46,6 +69,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "dknxi-2iaaa-aaaah-qceuq-cai",
+    priority : 10,
     name: "Dfinity Bulls",
     brief : "8888 Dfinity Bulls of the IC",
     description : "The bulls of the IC - P2E game coming soon",
@@ -66,6 +90,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "gyuaf-kqaaa-aaaah-qceka-cai",
+    priority : 10,
     name: "Infernal Vampire Colony",
     brief : "666 Bloodthirsty Infernal Vampires",
     description : "Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!",
@@ -86,6 +111,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "oeee4-qaaaa-aaaak-qaaeq-cai",
+    priority : 10000,
     brief : "10,000 Motokos dropped by DFINITY",
     name: "Motoko Day Drop",
     keywords : "",
@@ -102,6 +128,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "er7d4-6iaaa-aaaaj-qac2q-cai",
+    priority : 10,
     name: "MoonWalkers",
     brief : "9999 3D MoonWalkers by IC Gallery",
     route: "moonwalkers",
@@ -116,6 +143,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "e3izy-jiaaa-aaaah-qacbq-cai",
+    priority : 1000,
     name: "Cronic Critters",
     brief : "The first IC NFT by Toniq",
     route: "cronics",
@@ -134,6 +162,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
 
   {
     canister: "pnpu4-3aaaa-aaaah-qcceq-cai",
+    priority : 10,
     name: "Infinite Chimps",
     brief : "A collaboration of goodness",
     route: "infinite-chimps",
@@ -148,6 +177,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
 
   {
     canister: "bid2t-gyaaa-aaaah-qcdea-cai",
+    priority : 10,
     name: "Haunted Hamsters",
     brief : "2500 Haunted Hamsters ready to spook",
     route: "hauntedhamsters",
@@ -170,6 +200,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
+    priority : 10,
     name: "ICTuTs",
     brief : "10,000 NFTs based on King TuT",
     route: "ictuts",
@@ -185,6 +216,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "sr4qi-vaaaa-aaaah-qcaaq-cai",
+    priority : 10,
     name: "Internet Astronauts - IASC",
     brief : "10,000 Internet Astronauts given to top ICP users",
     description : "Internet Astronauts is a collection of 10,000 collectibles only found on the Internet Computer! Internet Astronauts can have small privileges on various dApps on ICP.",
@@ -207,6 +239,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "nfvlz-jaaaa-aaaah-qcciq-cai",
+    priority : 10,
     name: "IC3D",
     brief : "10,000 3D Scenes made of 60,000 NFTs",
     route: "ic3d",
@@ -221,6 +254,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "nbg4r-saaaa-aaaah-qap7a-cai",
+    priority : 10,
     name: "Starverse",
     brief : "The first free NFT airdrop",
     route: "starverse",
@@ -235,6 +269,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "njgly-uaaaa-aaaah-qb6pa-cai",
+    priority : 10,
     name: "ICPuppies",
     brief : "10,000 unique randomly generated 8-bit puppies",
     description : "ICPuppies is a randomly generated 8-bit puppy NFT collection. Half of the initial sale profits will be directed towards charities as well as a portion of all resale volume.",
@@ -260,6 +295,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "ep54t-xiaaa-aaaah-qcdza-cai",
+    priority : 10,
     name: "ICPuppies Wearables",
     brief : "Wearable collection for owners of ICPuppies",
     description : "ICPuppies Wearables are accessories for your favorite puppies on the Internet Computer. We will airdrop these during limited special events or holidays.",
@@ -284,6 +320,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "bxdf4-baaaa-aaaah-qaruq-cai",
+    priority : 100,
     name: "ICPunks",
     brief : "10,000 ICPunks - 2nd NFT on the IC",
     route: "icpunks",
@@ -314,6 +351,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "3db6u-aiaaa-aaaah-qbjbq-cai",
+    priority : 10,
     name: "IC Drip",
     brief : "Drip on the IC",
     route: "icdrip",
@@ -342,6 +380,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "b5el6-hqaaa-aaaah-qcdhq-cai",
+    priority : 10,
     name: "Wild and West",
     brief : "Collection by the Wild and West team",
     route: "wildwest",
@@ -362,6 +401,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
   },
   {
     canister: "btggw-4aaaa-aaaah-qcdgq-cai",
+    priority : 10,
     name: "IC Pumpkins",
     brief : "Halloween themed pumpkins",
     route: "icpumpkins",
@@ -381,6 +421,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "73xld-saaaa-aaaah-qbjya-cai",
+    priority : 10,
     name: "Wing",
     keywords : "",
     route: "wing",
@@ -410,6 +451,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "kss7i-hqaaa-aaaah-qbvmq-cai",
+    priority : 10,
     name: "ICelebrity",
     brief : "100 Handrawn celeberities",
     route: "icelebrity",
@@ -424,6 +466,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "k4qsa-4aaaa-aaaah-qbvnq-cai",
+    priority : 10,
     name: "Faceted Meninas",
     brief : "Unique 3D Meninas",
     route: "faceted-meninas",
@@ -444,6 +487,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "uzhxd-ziaaa-aaaah-qanaq-cai",
+    priority : 10,
     name: "ICP News",
     brief : "Art by ICP News",
     nftv : false,
@@ -458,6 +502,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "tde7l-3qaaa-aaaah-qansa-cai",
+    priority : 10,
     name: "Cronic Wearables",
     brief : "Wearables for your Cronic",
     route: "wearables",
@@ -472,6 +517,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "gevsk-tqaaa-aaaah-qaoca-cai",
+    priority : 10,
     name: "ICmojis",
     route: "icmojis",
     keywords : "bulls dfinity",
@@ -495,6 +541,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "owuqd-dyaaa-aaaah-qapxq-cai",
+    priority : 10,
     name: "ICPuzzle",
     brief : "Find where you fit in the puzzle",
     route: "icpuzzle",
@@ -509,6 +556,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "q6hjz-kyaaa-aaaah-qcama-cai",
+    priority : 10,
     name: "ICPBunny",
     brief : "10,000 ICBunnies on the IC",
     route: "icpbunny",
@@ -522,6 +570,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   },
   {
     canister: "eb7r3-myaaa-aaaah-qcdya-cai",
+    priority : 10,
     name: "Iconic2021",
     brief : "The Iconic 2021 curated collection",
     route: "iconic2021",
@@ -538,6 +587,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   
   {
     canister: "dv6u3-vqaaa-aaaah-qcdlq-cai",
+    priority : 10,
     name: "Tyler & Dakota",
     route: "tylerdakota",
     brief : "An Iconic 2021 Collection",
@@ -553,6 +603,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   
   {
     canister: "crt3j-mqaaa-aaaah-qcdnq-cai",
+    priority : 10,
     name: "Neil White",
     route: "neilwhite",
     brief : "An Iconic 2021 Collection",
@@ -568,6 +619,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   
   {
     canister: "cnxby-3qaaa-aaaah-qcdpq-cai",
+    priority : 10,
     name: "Andre Wee",
     route: "andrewee",
     brief : "An Iconic 2021 Collection",
@@ -583,6 +635,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
   
   {
     canister: "ludo",
+    priority : 10,
     name: "Ludo",
     route: "ludo",
     brief : "An Iconic 2021 Collection",
@@ -599,6 +652,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
   
   {
     canister: "ckwhm-wiaaa-aaaah-qcdpa-cai",
+    priority : 10,
     name: "PatternBased",
     route: "patternbased",
     brief : "An Iconic 2021 Collection",
@@ -614,6 +668,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
   
   {
     canister: "cdvmq-aaaaa-aaaah-qcdoq-cai",
+    priority : 10,
     name: "Selay Karasu",
     route: "selaykarasu",
     brief : "An Iconic 2021 Collection",
@@ -630,6 +685,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
   
   {
     canister: "ryanpgriffin",
+    priority : 10,
     name: "Ryan P. Griffin",
     route: "ryanpgriffin",
     brief : "An Iconic 2021 Collection",
@@ -645,6 +701,7 @@ Drawn with the precision of botanical illustrations, this new order of hybrid or
   
   {
     canister: "chloeyeemay",
+    priority : 10,
     name: "Chloe Yee May",
     route: "chloeyeemay",
     brief : "An Iconic 2021 Collection",
