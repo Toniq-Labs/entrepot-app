@@ -196,7 +196,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     market : true,
     commission: 0.035,
     comaddress: "35b902472e845179b3d6ad9ff7079fee6bcadb4e0ca870230ba7a79757fa88fb",
-    blurb: (<><p>Haunted Hamsters are 2500 hamsters, who have been haunted on the hill of Hamsterville. They come merged from 10 spooky themed traits, and are now living on the ICP blockchain.</p></>),
+    blurb: (<><p>Haunted Hamsters are 3333 hamsters, who have been haunted on the hill of Hamsterville. They come merged from 10 spooky themed traits, and are now living on the ICP blockchain.</p></>),
   },
   {
     canister: "ahl3d-xqaaa-aaaaj-qacca-cai",
