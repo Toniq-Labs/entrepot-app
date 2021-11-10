@@ -27,6 +27,7 @@ import IC3D from "./components/sale/IC3D";
 import IVC from "./components/sale/IVC";
 import HauntedHamsters from "./components/sale/HauntedHamsters";
 import Poked from "./components/sale/Poked";
+import BlockchainHeroes from "./components/sale/BlockchainHeroes";
 import _c from './ic/collections.js';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     marginTop: 73,
+    paddingBottom:50,
 
   },
   footer: {
@@ -371,6 +373,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"dfinitybulls"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/blockchain-heroes" exact>
+              <BlockchainHeroes
+                error={error}
+                view={"sale"}
+                sale={"blockchain-heroes"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

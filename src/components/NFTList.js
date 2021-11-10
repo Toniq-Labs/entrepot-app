@@ -20,6 +20,7 @@ import { useTheme } from '@material-ui/core/styles';
 import NFT from './NFT';
 import ListingForm from './ListingForm';
 import TransferForm from './TransferForm';
+import Opener from './Opener';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -54,6 +55,7 @@ export default function NFTList(props) {
   const [nfts, setNfts] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
+  const [playOpener, setPlayOpener] = React.useState(false);
   const [wearableFilter, setWearableFilter] = React.useState('all');
   const [collection, setCollection] = React.useState(props.collections.find(e => e.route === params?.route));
   const [openListingForm, setOpenListingForm] = React.useState(false);
@@ -80,6 +82,14 @@ export default function NFTList(props) {
     setOpenTransferForm(false);
     setTimeout(() => setTokenNFT(''), 300);
   };
+  const unpackNft = (token) => {
+    setTokenNFT(token);
+    setPlayOpener(true);
+  };
+  const closeUnpackNft = (token) => {
+    setPlayOpener(false)
+    setTimeout(() => setTokenNFT(''), 300);
+  };
   const listNft = (token) => {
     setTokenNFT(token);
     setOpenListingForm(true);
@@ -90,7 +100,6 @@ export default function NFTList(props) {
   const unwrapNft = async (token) => {
     props.loader(true, "Unwrapping NFT...");
     var canister = extjs.decodeTokenId(token.id).canister;
-    console.log(canister);
     //hot api, will sign as identity - BE CAREFUL
     var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister(canister).unwrap(token.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
     if (!r) {
@@ -128,7 +137,6 @@ export default function NFTList(props) {
         token.id = extjs.encodeTokenId(canister, token.index);
         token.canister = canister;
         token.wrapped = true;
-        console.log(token);
         listNft(token);
       } catch(e) {
         props.loader(false);
@@ -348,7 +356,7 @@ export default function NFTList(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<NFT gridSize={gridSize} gri={getNri(collection?.canister, nft.index)} loggedIn={props.loggedIn} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={collection?.canister} key={nft.id+"-"+i} nft={nft} />)
+                      return (<NFT gridSize={gridSize} gri={getNri(collection?.canister, nft.index)} loggedIn={props.loggedIn} unpackNft={unpackNft} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={collection?.canister} key={nft.id+"-"+i} nft={nft} />)
                     })}
                   </Grid>
                 </div>
@@ -360,6 +368,7 @@ export default function NFTList(props) {
       </div>
       <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
       <ListingForm collections={props.collections} collection={collection} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <Opener alert={props.alert} nft={tokenNFT} identity={props.identity} currentAccount={props.currentAccount} open={playOpener} onEnd={closeUnpackNft} />
     </div>
   )
 }

@@ -43,6 +43,10 @@ export default ({ IDL }) => {
   const BalanceResponse = BalanceResponse_2;
   const TokenIdentifier_2 = TokenIdentifier;
   const CommonError = CommonError_2;
+  const Result_11 = IDL.Variant({
+    'ok' : IDL.Vec(IDL.Tuple(TokenIndex, Metadata)),
+    'err' : CommonError,
+  });
   const Result_7 = IDL.Variant({
     'ok' : AccountIdentifier_3,
     'err' : CommonError,
@@ -258,6 +262,7 @@ export default ({ IDL }) => {
     'tokens_ext' : IDL.Func([AccountIdentifier_3], [Result_2], ['query']),
     'transactions' : IDL.Func([], [IDL.Vec(Transaction2)], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
+    'unpack' : IDL.Func([TokenIdentifier, IDL.Opt(SubAccount)], [Result_11], []),
     'stats' : IDL.Func(
         [],
         [IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat64, IDL.Nat, IDL.Nat, IDL.Nat],

@@ -24,6 +24,30 @@ var collections = [
     blurb: (<><p>500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past. This collection features 5 groups of Robots that exist in the eastern waste lands near former Delta city. The Battle bots, they are tough and are used to hard work, entertainment bots constructed from old video game and junk food toy parts found in the giant rubbish heaps of former Antarctica. Wild bots have become deranged after the giant solar flare of 2453AD. The god class has come to rule much of eastern earth, they have abilities beyond normal bots. The masters are a secret society of robots that have links to the off world colony of Europa base 7.</p><Button href="/sale/poked" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Go to Sale</Button></>),
   },
   {
+    canister: "poyn6-dyaaa-aaaah-qcfzq-cai",
+    priority : 10,
+    name: "Blockchain Heroes",
+    brief : "50 original heroes in 6 variations",
+    description : "Be a part of blockchain history as the first ICP launch featuring packs of cards comes your way in the form of the best-selling Blockchain Heroes! Collect all 50 heroes in six unique variations!",
+    keywords : "heroes cards collecting",
+    banner : "/collections/bh/banner.png",
+    avatar : "/collections/bh/avatar.png",
+    collection : "/collections/bh/collection.jpg",
+    discord : "https://discord.gg/herohq",
+    twitter : "https://twitter.com/bc_heroes",
+    web : "http://bcheroes.com",
+    route: "blockchain-heroes",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "9e4c5a298aa65baf99cbf4056f443b2c499d4c6d07f4030c5474885f6803d9d0",
+    blurb: (<><p>Entrepot is thrilled to welcome the best-selling Blockchain Heroes series to Internet Computer! Originally presented on the WAX blockchain in Summer of 2020, Blockchain Heroes is a set of 50 super heroes inspired by real-world blockchain and crypto personalities. When the initial set was offered in August 2020, 12500 packs sold out in just 20 minutes! Since that time, the team has released two additional series, with the latter selling out in just 35 seconds.</p>
+<p>Now we are pleased to issue the original 50 heroes on ICP with all NEW variations. 5000 packs are being made available, with each pack containing five (5) random hero cards from the set. Each of the fifty heroes is available in common, uncommon, rare, epic, legendary and mythic variations, with odds of getting variations decreasing as the rarity increases. Packs will be made available at 12 pm EST on November 12th for just 1.5 ICP! If previous sales of Blockchain Heroes are any indication, we expect this sale to go very fast. So be locked and loaded with your ICP to grab yours.</p>
+<p>Will you get an epic Captain Crypto, a legendary Lady Lightning or the elusive mythic Genesis? Grab your packs and rip them open to find out!
+</p></>),
+  },
+  {
     canister: "dylar-wyaaa-aaaah-qcexq-cai",
     priority : 10,
     name: "Flight",

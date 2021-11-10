@@ -58,7 +58,7 @@ export default function Home(props) {
           img: "/banner/poked.jpg"
       },
       {
-          link: false,
+          link: "/sale/blockchain-heroes",
           img: "/banner/bh.png"
       },
       {

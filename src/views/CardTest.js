@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
+import Flip from "../components/Flip";
 import Carousel from 'react-material-ui-carousel'
 import HoverVideoPlayer from 'react-hover-video-player';
 const useStyles = makeStyles((theme) => ({
@@ -76,58 +77,7 @@ export default function CardTest(props) {
   const showPack = () => {
     setPlayOpen(false);
   };
-  const history = useHistory();
-  var items = [
-      {
-          link: "/sale/poked",
-          img: "/banner/poked.jpg"
-      },
-      {
-          link: false,
-          img: "/banner/bh.png"
-      },
-      {
-          link: "/marketplace/p2j",
-          img: "/banner/canistore.png"
-      },
-      {
-          link: "/sale/dfinitybulls",
-          img: "/banner/bulls.jpg"
-      },
-      {
-          link: "/marketplace/wildwest",
-          img: "/banner/ww.png"
-      },
-      {
-          link: "/sale/moonwalkers",
-          img: "/banner/icgallery2.jpg"
-      },
-      {
-          link: false,
-          img: "/banner/rotm.png"
-      },
-  ];
-  var cards = [
-    {
-      title : "Cronic Wearables",
-      link : "/marketplace/wearables",
-      image : "/collections/cronic-wearables.jpg",
-      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
-    },
-    {
-      title : "ICmojis",
-      link : "/marketplace/icmojis",
-      image : "/collections/icmojis.jpg",
-      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
-    },
-    {
-      title : "Rise of the Magni",
-      link : "/",
-      image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
-    },
-  
-  ];
+  const rnum = (min, max) => Math.floor(Math.random() * (max - min +1)) + min;
   return (
     <>
       {playOpen ? <HoverVideoPlayer videoRef={hoverVideoRef} muted={false} volume={0.3} style={{backgroundColor:"black",position:"fixed",left:0,right:0,top:0,bottom:0,zIndex:1700}} focused={playOpen} loop={false} videoSrc="/opening.mp4" /> : ""}
@@ -162,7 +112,7 @@ export default function CardTest(props) {
             <h2>You've just opened a pack!</h2>
             <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
             {openerCards.map(a => {
-              return (<Grid key={a} item md={2}><img  src={"/test/"+a} style={{boxShadow:"rgb(255 255 255) 0px 0px 8px",borderRadius:8,width:250,height:350,marginRight:20}} /></Grid>)
+              return (<Grid key={a} item md={2}><Flip card={[rnum(1,50), rnum(0,5)]} /></Grid>)
             })}
             </Grid>
             <Button variant={"outlined"} onClick={closePack} color={"primary"} style={{ fontWeight: "bold", margin: "20px auto" }}>Continue</Button>

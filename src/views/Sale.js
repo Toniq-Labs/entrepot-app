@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Blockchain Heroes",
+      link : "/sale/blockchain-heroes",
+      image : "/collections/bh/collection.jpg",
+      content : (<>Be a part of blockchain history as the first ICP launch featuring packs of cards comes your way in the form of the best-selling Blockchain Heroes! Collect all 50 heroes!</>),
+    },
+    {
       title : "Poked Bots",
       link : "/sale/poked",
       image : "/banner/poked.jpg",

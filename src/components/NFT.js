@@ -36,15 +36,34 @@ export default function NFT(props) {
       left: "0%",
       width: "100%",
       height: "100%",
-      margin: "0 auto"
+      margin: "0 auto",
+      objectFit: "contain",
     },
-    avatarImg2: {
-      position: "absolute",
-      top: "0%",
-      left: "16.66%",
-      height: "100%",
-      margin: "0 auto"
+  };
+  const getButtons = () => {
+    var buttons = [];
+    if(props.nft.listing) {      
+      buttons.push(["Update", () => props.listNft(props.nft)]);
+      buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+    } else {
+      if (wrappedCanisters.concat(unwrappedCanisters).indexOf(props.nft.canister) < 0) {
+        buttons.push(["Sell", () => props.listNft(props.nft)]);
+        buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+      } else {
+        if (unwrappedCanisters.indexOf(props.nft.canister) >= 0) {
+          buttons.push(["Sell", () => props.wrapAndlistNft(props.nft)]);
+          buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+        } else {
+          buttons.push(["Sell", () => props.listNft(props.nft)]);
+          buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+          buttons.push(["Unwrap", () => props.unwrapNft(props.nft)]);
+        };
+      }
+      if (props.nft.canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && props.nft.index >= 25000) {
+        buttons.push(["Open", () => props.unpackNft(props.nft)]);
+      };
     }
+    return buttons;
   };
   const icpbunnyimg = i => {
     const icbstorage = ['efqhu-yqaaa-aaaaf-qaeda-cai',
@@ -175,11 +194,7 @@ export default function NFT(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ?
                 <img alt={props.nft.id} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                :
-                <img alt={props.nft.id} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
                 {showWrapped()}
               </div>
@@ -191,8 +206,34 @@ export default function NFT(props) {
               </Typography> : 
               <Typography style={{fontSize: 13, textAlign:"center", fontWeight:"bold"}} color={"inherit"} gutterBottom>Not Listed</Typography> }
               {props.loggedIn ? 
-              <Typography style={{fontSize: 12, textAlign:"center"}} color={"inherit"} gutterBottom>
-                {!props.nft.listing ?
+                <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 
+                  {getButtons().length > 0 ?
+                    <>
+                      <Grid item lg={4} md={6}><Button onClick={() => getButtons()[0][1]()} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
+                      {getButtons().length == 2 ?
+                        <Grid item lg={4} md={6}><Button onClick={() => getButtons()[1][1]()} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
+                      :
+                      <Grid item lg={4} md={6}>
+                        <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
+                        <Menu
+                          anchorEl={anchorEl}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={() => setAnchorEl(null)}
+                        >
+                          {getButtons().slice(1).map(a => {
+                            return (<MenuItem onClick={() => {setAnchorEl(null); a[1]()}}>{a[0]}</MenuItem>);
+                          })}
+                        </Menu>
+                      </Grid>
+                      }
+                    </>
+                  : "" }
+                {/*!props.nft.listing ?
                   <>
                   
                   {wrappedCanisters.concat(unwrappedCanisters).indexOf(props.nft.canister) < 0 ?
@@ -230,9 +271,9 @@ export default function NFT(props) {
                 <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Update</Button>
                 <Button onClick={() => props.cancelNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Cancel</Button>
                 
-                </>}
+                </>*/}
               
-              </Typography>: ""}
+              </Grid>: ""}
           </CardContent>
         </Card>
     </Grid>

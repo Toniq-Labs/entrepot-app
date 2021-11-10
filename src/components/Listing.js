@@ -198,13 +198,7 @@ export default function Listing(props) {
       width: "100%",
       height: "100%",
       margin: "0 auto",
-    },
-    avatarImg2: {
-      position: "absolute",
-      top: "0%",
-      left: "16.66%",
-      height: "100%",
-      margin: "0 auto",
+      objectFit: "contain",
     },
   };
   const _isLocked = (listing) => {
@@ -599,27 +593,7 @@ export default function Listing(props) {
           {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? (
             <a href={nftLink()} rel="noreferrer" target="_blank">
             <div style={{ ...styles.avatarSkeletonContainer }}>
-              {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai" ? (
-                <img
-                  alt={tokenid}
-                  style={{
-                    ...styles.avatarImg,
-                    display: imgLoaded ? "block" : "none",
-                  }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                />
-              ) : (
-                <img
-                  alt={tokenid}
-                  style={{
-                    ...styles.avatarImg2,
-                    display: imgLoaded ? "block" : "none",
-                  }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                />
-              )}
+              <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} />
               <Skeleton
                 style={{
                   ...styles.avatarLoader,
