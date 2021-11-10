@@ -278,6 +278,31 @@ export default function Listing(props) {
   };
   const showNri = () => {
     switch (props.collection) {
+      case "bzsui-sqaaa-aaaah-qce2a-cai":
+        return (
+          <Grid item md={6} sm={6} xs={6}>
+            <Typography
+              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
+              color={"inherit"}
+              gutterBottom
+            >
+              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Bot relative to others. It does not include Mint #, Twin Status or Animation within the index.">
+                <a
+                  style={{ color: "black", textDecoration: "none" }}
+                  href={
+                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
+                    tokenid
+                  }
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
+                  <span style={{ color: "red" }}>*</span>
+                </a>
+              </MuiTooltip>
+            </Typography>
+          </Grid>
+        );
       case "bid2t-gyaaa-aaaah-qcdea-cai":
         return (
           <Grid item md={6} sm={6} xs={6}>

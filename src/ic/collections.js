@@ -16,7 +16,7 @@ var collections = [
     twitter : "https://twitter.com/pokedstud",
     web : "https://www.pokedstudiobotsnft.co.uk",
     route: "poked",
-    nftv : false,
+    nftv : true,
     mature: false,
     market : true,
     commission: 0.035,

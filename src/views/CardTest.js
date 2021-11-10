@@ -1,0 +1,175 @@
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Backdrop from "@material-ui/core/Backdrop";
+import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
+import Navbar from "../containers/Navbar";
+import Features from "../components/Features";
+import Carousel from 'react-material-ui-carousel'
+import HoverVideoPlayer from 'react-hover-video-player';
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 345,
+  },
+  heading: {
+    textAlign: "center",
+    marginTop: "40px",
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+  },
+  marketBtn: {
+    marginTop: 10,
+    display: "block",
+    [theme.breakpoints.up("sm")]: {
+      width: "350px",
+      fontSize: "1.1em",
+    },
+  },
+  banner: {
+    position: "relative",
+  },
+  bannerimg: {
+    maxWidth: "100%",
+    borderRadius: "30px",
+  },
+  anchor: {
+    position: "absolute",
+    bottom: "-15px",
+    background: "white",
+    borderRadius: "100%",
+    padding: "5px",
+    width: "40px",
+    border: "1px solid black",
+    left: "calc(50% - 20px)",
+  },
+}));
+export default function CardTest(props) {
+  const classes = useStyles();
+  const [playOpen, setPlayOpen] = React.useState(false);
+  const [openerOpen, setOpenerOpen] = React.useState(false);
+  const [openerCards, setOpenerCards] = React.useState([]);
+  const hoverVideoRef = React.useRef();
+  
+  React.useEffect(() => {
+    if (playOpen){
+      const videoElement = hoverVideoRef.current;
+      videoElement.onended = showPack;
+    }
+  }, [playOpen]);
+  const openPack = async () => {
+    setPlayOpen(true);
+    setOpenerOpen(true);
+    setTimeout(() => setOpenerCards(["1E_Genesis.gif","16L_GreatGecko.gif","22M_TheEmissary.gif","7U_Master-Control.jpg","8L_Stampede.gif"]), 11000);
+  };
+  const closePack = () => {
+    setOpenerCards([]);
+    setOpenerOpen(false);
+  };
+  const showPack = () => {
+    setPlayOpen(false);
+  };
+  const history = useHistory();
+  var items = [
+      {
+          link: "/sale/poked",
+          img: "/banner/poked.jpg"
+      },
+      {
+          link: false,
+          img: "/banner/bh.png"
+      },
+      {
+          link: "/marketplace/p2j",
+          img: "/banner/canistore.png"
+      },
+      {
+          link: "/sale/dfinitybulls",
+          img: "/banner/bulls.jpg"
+      },
+      {
+          link: "/marketplace/wildwest",
+          img: "/banner/ww.png"
+      },
+      {
+          link: "/sale/moonwalkers",
+          img: "/banner/icgallery2.jpg"
+      },
+      {
+          link: false,
+          img: "/banner/rotm.png"
+      },
+  ];
+  var cards = [
+    {
+      title : "Cronic Wearables",
+      link : "/marketplace/wearables",
+      image : "/collections/cronic-wearables.jpg",
+      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+    },
+    {
+      title : "ICmojis",
+      link : "/marketplace/icmojis",
+      image : "/collections/icmojis.jpg",
+      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+    },
+    {
+      title : "Rise of the Magni",
+      link : "/",
+      image : "/collections/rotm.jpg",
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+    },
+  
+  ];
+  return (
+    <>
+      {playOpen ? <HoverVideoPlayer videoRef={hoverVideoRef} muted={false} volume={0.3} style={{backgroundColor:"black",position:"fixed",left:0,right:0,top:0,bottom:0,zIndex:1700}} focused={playOpen} loop={false} videoSrc="/opening.mp4" /> : ""}
+      <div style={{ width: "100%", display: "block", position: "relative",minHeight:"calc(100vh - 221px)"}}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0px auto",
+            textAlign:"center"
+          }}
+        >
+          <img src="/test/pack.jpg" style={{width:350,height:350,marginRight:20}} />
+          <Button
+            className={classes.marketBtn}
+            fullWidth
+            variant={"outlined"}
+            onClick={openPack}
+            color={"primary"}
+            style={{ fontWeight: "bold", margin: "20px auto" }}
+          >
+            Open Pack
+          </Button>
+          
+        </div>
+        <Backdrop style={{backgroundColor:"rgba(0,0,0,.8)",zIndex:1600,color:"white"}} open={openerOpen}>
+          {openerCards.length === 0 ?
+            <><CircularProgress color="inherit" />
+            <h2 style={{ position: "absolute", marginTop: "120px" }}>Opening pack...</h2></>
+          :
+          <>
+            <div style={{textAlign:"center",width:1600,margin:"0 auto"}}>
+            <h2>You've just opened a pack!</h2>
+            <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
+            {openerCards.map(a => {
+              return (<Grid key={a} item md={2}><img  src={"/test/"+a} style={{boxShadow:"rgb(255 255 255) 0px 0px 8px",borderRadius:8,width:250,height:350,marginRight:20}} /></Grid>)
+            })}
+            </Grid>
+            <Button variant={"outlined"} onClick={closePack} color={"primary"} style={{ fontWeight: "bold", margin: "20px auto" }}>Continue</Button>
+            </div>
+          </>}
+        </Backdrop>
+      </div>
+    </>
+  );
+}

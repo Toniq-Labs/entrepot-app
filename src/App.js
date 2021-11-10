@@ -16,6 +16,7 @@ import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
 import Home from "./views/Home";
+import CardTest from "./views/CardTest";
 import Typography from "@material-ui/core/Typography";
 import Iconic from "./views/Iconic";
 import Sale from "./views/Sale";
@@ -438,6 +439,9 @@ export default function App() {
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
+            </Route>
+            <Route path="/cardtest" exact>
+              <CardTest error={error} alert={alert} confirm={confirm} loader={loader} />
             </Route>
             <Route path="/" exact>
               <Home error={error} alert={alert} confirm={confirm} loader={loader} />
