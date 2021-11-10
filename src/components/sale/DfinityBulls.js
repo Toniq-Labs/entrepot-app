@@ -45,7 +45,7 @@ const _getRandomBytes = () => {
 };
 export default function DfinityBulls(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(100000000n);
+  const [price, setPrice] = React.useState(50000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1636207200000);
   const [whitelist, setWhitelist] = React.useState(false);
@@ -139,16 +139,16 @@ export default function DfinityBulls(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   var buyOptions = [
-    [1, 100000000n],
-    [5, 500000000n],
-    [10, 1000000000n],
-    [20, 1600000000n],
+    [1, 50000000n],
+    [5, 250000000n],
+    [10, 500000000n],
+    [20, 800000000n],
   ]
   return (
     <>
       <div style={styles.main}>
         <div className={classes.banner}>
-        <div style={{width: "100%", height: 484, backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/banner/bulls.jpg')"}}></div>
+        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/collections/bulls/banner.png')"}}></div>
         <h1>Welcome to the official Dfinity Bulls sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>

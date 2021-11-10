@@ -168,6 +168,7 @@ export default function BlockchainHeroes(props) {
           <Flip id={2} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[22,2]} />
           <Flip id={3} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[31,3]} />
           <Flip id={4} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[1,4]} />
+          <Flip id={4} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[12,5]} />
         </Grid>
         </div>
         <br /><br />
