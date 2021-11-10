@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop:0,
     marginLeft:0,
     zIndex:1,
+    "&.small" : {
+      width: 180,
+      height: 252,
+    },
     "&.flipped" : {
       transform: "rotate3d(-1, -1, 0, 180deg)",
       zIndex:10,
@@ -68,7 +72,7 @@ export default function Flip(props) {
   }
   return (
   <Grid item md={2}>
-    <div className={classes.box + (flipped ? " flipped" : "")} onClick={flip}>
+    <div className={classes.box + (flipped ? " flipped" : "")  + (props.small ? " small" : "") } onClick={flip}>
       <div className={classes.front}>
         <CircularProgress style={{margin:"40% auto 0",display:(imageLoaded ? "none" : "block")}} color="inherit" />
         <img style={{display:(!imageLoaded ? "none" : "block")}} onLoad={() => setImageLoaded(true)}  src={"https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.ic0.app/?asset="+props.card[0]+tmap[props.card[1]]+"&type=thumbnail"} />

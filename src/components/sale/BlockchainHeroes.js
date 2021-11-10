@@ -12,6 +12,7 @@ import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
 import Navbar from "../../containers/Navbar.js";
+import Flip from "../Flip";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -43,6 +44,7 @@ const _getRandomBytes = () => {
   }
   return bs;
 };
+var subs = [];
 export default function BlockchainHeroes(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(150000000n);
@@ -50,6 +52,15 @@ export default function BlockchainHeroes(props) {
   const [startTime, setStartTime] = React.useState(1636729200000);
   var saleOver = false;  
 
+  const onFlip = async a => {
+    for(var i = 0; i < subs.length; i++){
+      if (i == a) continue;
+      subs[i]();
+    };
+  };
+  const flipSubscriber = async (i, a) => {
+    subs[i] = a;
+  };
   const params = useParams();
   
   const _updates = async () => {
@@ -146,7 +157,22 @@ export default function BlockchainHeroes(props) {
         <div className={classes.banner}>
         <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/collections/bh/banner.png')"}}></div>
         <h1>Welcome to the official Blockchain Heroes sale</h1>
+        <p>Entrepot is thrilled to welcome the best-selling Blockchain Heroes series to the Internet Computer! Originally presented on the WAX blockchain in Summer of 2020, Blockchain Heroes is a set of 50 super heroes inspired by real-world blockchain and crypto personalities. When the initial set was offered in August 2020, 12500 packs sold out in just 20 minutes! Since that time, the team has released two additional series, with the latter selling out in just 35 seconds.</p>
+<p>Now we are pleased to issue the original 50 heroes on ICP with all NEW variations. 5000 packs are being made available, with each pack containing five (5) random hero cards from the set. Each of the fifty heroes is available in common, uncommon, rare, epic, legendary and mythic variations, with odds of getting variations decreasing as the rarity increases. Packs will be made available at 12 pm EST on November 12th for just 1.5 ICP! If previous sales of Blockchain Heroes are any indication, we expect this sale to go very fast. So be locked and loaded with your ICP to grab yours.</p>
+<p>Will you get an epic Captain Crypto, a legendary Lady Lightning or the elusive mythic Genesis? Grab your packs and rip them open to find out!
+</p>
+        <br /><br />
+        <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
+          <Flip id={0} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[3,0]} />
+          <Flip id={1} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[40,1]} />
+          <Flip id={2} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[22,2]} />
+          <Flip id={3} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[31,3]} />
+          <Flip id={4} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[1,4]} />
+        </Grid>
         </div>
+        <br /><br />
+        <hr />
+        <br /><br />
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />

@@ -26,7 +26,6 @@ export default function Opener(props) {
     };
   }, [playOpen]);
   const onFlip = async a => {
-    console.log(a, subs.length);
     for(var i = 0; i < subs.length; i++){
       if (i == a) continue;
       subs[i]();
@@ -34,7 +33,6 @@ export default function Opener(props) {
   };
   const flipSubscriber = async (i, a) => {
     subs[i] = a;
-    console.log(subs);
   };
   const openPack = async () => {
     setPlayOpen(true);
