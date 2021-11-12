@@ -48,7 +48,7 @@ var subs = [];
 export default function BlockchainHeroes(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(150000000n);
-  const [remaining, setRemaining] = React.useState(5000);
+  const [remaining, setRemaining] = React.useState(4950);
   const [startTime, setStartTime] = React.useState(1636729200000);
   var saleOver = false;  
 
@@ -90,9 +90,9 @@ export default function BlockchainHeroes(props) {
     if (!v) return;
     try {
       if (qty === 1) {
-        props.loader(true, "Reserving Bot...");
+        props.loader(true, "Reserving Pack...");
       } else {
-        props.loader(true, "Reserving Bots..");
+        props.loader(true, "Reserving Packs..");
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
@@ -208,7 +208,7 @@ export default function BlockchainHeroes(props) {
                           onClick={() => buyFromSale(o[0], o[1])}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} Hero{o[0] === 1 ? "" : "es"}<br />for {_showListingPrice(o[1])} ICP
+                          Buy {o[0]} Pack{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
                         </Button>
                       </Grid>);
                     })}
