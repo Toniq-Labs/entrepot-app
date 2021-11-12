@@ -542,6 +542,7 @@ export default function Listings(props) {
                 [
                   "e3izy-jiaaa-aaaah-qacbq-cai",
                   "nbg4r-saaaa-aaaah-qap7a-cai",
+                  "poyn6-dyaaa-aaaah-qcfzq-cai",
                 ].indexOf(collection?.canister) >= 0 ? (
                   <MenuItem value={"type"}>Rare Type</MenuItem>
                 ) : (
@@ -949,6 +950,12 @@ export default function Listings(props) {
                                 case "mint_number":
                                   return a[0] - b[0];
                                 case "type":
+                                  if (collection?.canister === "poyn6-dyaaa-aaaah-qcfzq-cai") {
+                                    if (a.metadata[0] === 0 && b.metadata[0] === 0) return 0;
+                                    else if (a.metadata[0] === 0) return 1;
+                                    else if (b.metadata[0] === 0) return -1;
+                                    return b.metadata[1] - a.metadata[1];
+                                  } 
                                   var _a, _b, d;
                                   if (
                                     collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai"

@@ -276,7 +276,7 @@ export default function NFTList(props) {
               onChange={changeSort}
             >
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
-              {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai"].indexOf(collection?.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
+              {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai", "poyn6-dyaaa-aaaah-qcfzq-cai"].indexOf(collection?.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
               { collection.nftv ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
             </Select>
           </FormControl>
@@ -328,6 +328,12 @@ export default function NFTList(props) {
                         case "mint_number":
                           return a.index-b.index;
                         case "type":
+                          if (collection?.canister === "poyn6-dyaaa-aaaah-qcfzq-cai") {
+                            if (a.metadata[0] === 0 && b.metadata[0] === 0) return 0;
+                            else if (a.metadata[0] === 0) return 1;
+                            else if (b.metadata[0] === 0) return -1;
+                            return b.metadata[1] - a.metadata[1];
+                          } 
                           var _a, _b, d;
                           if (collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai") {
                             _a = a[2].nonfungible.metadata[0][0];

@@ -73,6 +73,7 @@ export default function Sold(props) {
       return icpbunnyimg(index)
     return "https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid;
   };
+  var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   return (
     <Grid style={{height:'100%'}} item xl={(props.gridSize === "small" ? 3 : 2)} lg={(props.gridSize === "small" ? 3 : 2)} md={4} sm={6} xs={6}>
         <Card>
@@ -83,6 +84,12 @@ export default function Sold(props) {
                   <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} rel="noreferrer" target="_blank">{"#"+(mintNumber())}</a></Tooltip>
                 </Typography>
               </Grid>
+              {props.collection === "poyn6-dyaaa-aaaah-qcfzq-cai" ?
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  {(props.nft.metadata[0] === 0 ? "Pack" : t[props.nft.metadata[1]])}
+                </Typography>
+              </Grid> : ""}
               {props.collection === "bzsui-sqaaa-aaaah-qce2a-cai" ?
               <Grid item md={6} sm={6} xs={6}>
                 <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>

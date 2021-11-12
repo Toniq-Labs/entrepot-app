@@ -105,8 +105,16 @@ export default function NFT(props) {
       return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span>);
     else return "";
   };
+  var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   const showNri = () => {
+    console.log()
     switch(props.collection){
+      case "poyn6-dyaaa-aaaah-qcfzq-cai":
+      return (<Grid item md={6} sm={6} xs={6}>
+                <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+                  {(props.nft.metadata[0] === 0 ? "Pack" : t[props.nft.metadata[1]])}
+                </Typography>
+              </Grid>);
       case "bzsui-sqaaa-aaaah-qce2a-cai":
       return (<Grid item md={6} sm={6} xs={6}>
                 <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
@@ -184,9 +192,10 @@ export default function NFT(props) {
           <CardContent>
             <Grid container>
               <Grid item md={6} sm={6} xs={6}>
+                {props.collection != "poyn6-dyaaa-aaaah-qcfzq-cai" || props.nft.index < 25000 ?
                 <Typography style={{fontSize: 11, textAlign:"left", fontWeight:"bold"}} color={"inherit"} gutterBottom>
                   <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">{"#"+(mintNumber())}</a></Tooltip>
-                </Typography>
+                </Typography> : ""}
               </Grid>
 
               {showNri()}
