@@ -13,7 +13,7 @@ var collections = [
     avatar : "/collections/poked/avatar.jpg",
     collection : "/collections/poked/collection.jpg",
     discord : "https://discord.gg/PokedStudioNFT",
-    twitter : "https://twitter.com/pokedstud",
+    twitter : "https://twitter.com/pokedstudiouk",
     web : "https://www.pokedstudiobotsnft.co.uk",
     route: "poked",
     nftv : true,

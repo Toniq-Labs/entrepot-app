@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 var tmap = ["C","U","R","E","L","M"];
+var tmap2 = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
 export default function Flip(props) {
   const classes = useStyles();
   const [imageLoaded, setImageLoaded] = React.useState(false);
@@ -81,5 +82,6 @@ export default function Flip(props) {
         <img src={"https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.ic0.app/?asset="+props.card[0]+"B&type=thumbnail"} />
       </div>
     </div>
+    {props.showRarity && !flipped ? <p><strong>{tmap2[props.card[1]]}</strong></p> : ""}
   </Grid>);
 };

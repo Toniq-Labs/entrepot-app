@@ -161,14 +161,15 @@ export default function BlockchainHeroes(props) {
 <p>Now we are pleased to issue the original 50 heroes on ICP with all NEW variations. 5000 packs are being made available, with each pack containing five (5) random hero cards from the set. Each of the fifty heroes is available in common, uncommon, rare, epic, legendary and mythic variations, with odds of getting variations decreasing as the rarity increases. Packs will be made available at 12 pm EST on November 12th for just 1.5 ICP! If previous sales of Blockchain Heroes are any indication, we expect this sale to go very fast. So be locked and loaded with your ICP to grab yours.</p>
 <p>Will you get an epic Captain Crypto, a legendary Lady Lightning or the elusive mythic Genesis? Grab your packs and rip them open to find out!
 </p>
-        <br /><br />
+        <br />
+        <p><strong>Click a card to read the character's lore!</strong></p>
         <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
-          <Flip id={0} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[3,0]} />
-          <Flip id={1} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[40,1]} />
-          <Flip id={2} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[22,2]} />
-          <Flip id={3} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[31,3]} />
-          <Flip id={4} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[1,4]} />
-          <Flip id={4} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[12,5]} />
+          <Flip id={0} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[3,0]} />
+          <Flip id={1} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[40,1]} />
+          <Flip id={2} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[22,2]} />
+          <Flip id={3} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[31,3]} />
+          <Flip id={4} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[1,4]} />
+          <Flip id={4} showRarity={true} small={true} onFlip={onFlip} flipSubscriber={flipSubscriber} card={[12,5]} />
         </Grid>
         </div>
         <br /><br />
