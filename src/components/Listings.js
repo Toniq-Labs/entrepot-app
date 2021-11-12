@@ -19,7 +19,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import getGenes from "./CronicStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
-import { useTheme } from "@material-ui/core/styles";
+import { styled, useTheme } from "@material-ui/core/styles";
 import Listing from "./Listing";
 import Avatar from '@material-ui/core/Avatar';
 import Sold from "./Sold";
@@ -30,6 +30,20 @@ import { useHistory } from "react-router";
 import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import PropTypes from 'prop-types';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 const drawerWidth = 0;//300;
@@ -70,6 +84,76 @@ const emptyListing = {
   img: "",
 };
 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
+const BootstrapDialogTitle = (props) => {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+};
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  '&:before': {
+    display: 'none',
+  },
+}));
+
+const AccordionSummary = styled((props) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, .05)'
+      : 'rgba(0, 0, 0, .03)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)',
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: '1px solid rgba(0, 0, 0, .125)',
+}));
+
 export default function Listings(props) {
   const params = useParams();
   const classes = useStyles();
@@ -80,7 +164,8 @@ export default function Listings(props) {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
   const [collapseOpen, setCollapseOpen] = useState(false);
-  
+  const [characteristicsFilterOpen, setCharacteristicsFilterOpen] = useState(false);
+  const [characteristicsFilters, setCharacteristicsFilters] = useState([]);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const [healthDominantValue, setHealthDominantValue] = React.useState([0, 63]);
   const [healthRecessiveValue, setHealthRecessiveValue] = React.useState([0, 63]);
@@ -228,53 +313,86 @@ export default function Listings(props) {
     setBaseRecessiveValue(newBaseRecessiveValue);
   };
 
-  const handleFiltersChange = () => {
-    setListings(applyAdvancedFilters(listings));
+  const handleFiltersChange = async () => {
+    setCharacteristicsFilterOpen(false);
+    props.loader(true)
+    await refresh(showing, collection.canister, true);
+    props.loader(false)
+  };
+
+  const handleCheckboxChange = (e, i, j) => {
+    if (characteristicsFilters.length === 0) {
+      for (var k = 0; k < collection.data.characteristics.length; k++) {
+        characteristicsFilters.push([]);
+      }
+    }
+    if (e.target.checked) {
+      characteristicsFilters[i].push(j);
+    } else {
+      for (var l = 0; l < characteristicsFilters[i].length; l++) {
+        if (characteristicsFilters[i][l] === j) {
+          characteristicsFilters[i].splice(l,1);
+        }
+      }
+    }
   };
 
   const applyAdvancedFilters = (a) => {
-    return a.filter(
-      (_a) => healthDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
-              && healthDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
-              && healthRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
-              && healthRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
-              && speedDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
-              && speedDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
-              && speedRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
-              && speedRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
-              && attackDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
-              && attackDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
-              && attackRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
-              && attackRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
-              && rangeDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
-              && rangeDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
-              && rangeRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
-              && rangeRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
-              && magicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
-              && magicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
-              && magicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
-              && magicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
-              && defenseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
-              && defenseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
-              && defenseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
-              && defenseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
-              && resistanceDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
-              && resistanceDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
-              && resistanceRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
-              && resistanceRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
-              && basicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
-              && basicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
-              && basicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
-              && basicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
-              && specialDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
-              && specialDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
-              && specialRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
-              && specialRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
-              && baseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
-              && baseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
-              && baseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
-              && baseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
-            )
+    if (collection.canister !== "e3izy-jiaaa-aaaah-qacbq-cai") {
+      return a.filter(
+        (_a) => {
+          var result = true;
+          for (var i = 0; i < characteristicsFilters.length; i++) {
+            result = characteristicsFilters[i].length === 0 ? true : characteristicsFilters[i].includes(collection.data.tokens[_a[0]][i]);
+            if (!result) { break; }
+          }
+          return result;
+              }
+              )
+    } else {
+      return a.filter(
+        (_a) => healthDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
+                && healthDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.dominant
+                && healthRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
+                && healthRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.health.recessive
+                && speedDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
+                && speedDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.dominant
+                && speedRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
+                && speedRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.speed.recessive
+                && attackDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
+                && attackDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.dominant
+                && attackRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
+                && attackRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.attack.recessive
+                && rangeDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
+                && rangeDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.dominant
+                && rangeRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
+                && rangeRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.range.recessive
+                && magicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
+                && magicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.dominant
+                && magicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
+                && magicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.magic.recessive
+                && defenseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
+                && defenseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.dominant
+                && defenseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
+                && defenseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.defense.recessive
+                && resistanceDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
+                && resistanceDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.dominant
+                && resistanceRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
+                && resistanceRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.resistance.recessive
+                && basicDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
+                && basicDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.dominant
+                && basicRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
+                && basicRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.basic.recessive
+                && specialDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
+                && specialDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.dominant
+                && specialRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
+                && specialRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.special.recessive
+                && baseDominantValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
+                && baseDominantValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.dominant
+                && baseRecessiveValue[0] <= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
+                && baseRecessiveValue[1] >= getGenes(_a[2].nonfungible.metadata[0]).battle.base.recessive
+              )
+        }
   };
 
   const buyForm = (price, img) => {
@@ -303,6 +421,15 @@ export default function Listings(props) {
     }
     refresh(event.target.value);
   };
+
+  const handlePopupClose = () => {
+    setCharacteristicsFilterOpen(false);
+  };
+
+  const handlePopupOpen = () => {
+    setCharacteristicsFilterOpen(true);
+  };
+
   const buy = async (canisterId, listing) => {
     if (props.balance < listing[1].price + 10000n)
       return props.alert(
@@ -375,10 +502,7 @@ export default function Listings(props) {
       a = a.filter(
         (_a) => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter
       );
-    } else if (
-      c === "e3izy-jiaaa-aaaah-qacbq-cai" &&
-      s === "all"
-    ) {
+    } else if (s === "all") {
       a = applyAdvancedFilters(a);
     }
     return a;
@@ -389,8 +513,8 @@ export default function Listings(props) {
   const _isCanister = c => {
     return c.length == 27 && c.split("-").length == 5;
   };
-  const refresh = async (s, c) => {
-    if (!listingDialogOpen) {
+  const refresh = async (s, c, r) => {
+    if (!listingDialogOpen && (!characteristicsFilterOpen || r)) {
       s = s ?? showing;
       c = c ?? collection?.canister;
       if (!_isCanister(c)) return setListings([]);
@@ -403,20 +527,22 @@ export default function Listings(props) {
       };
       if (s === "all") {
         try{
+          var txs = await api.canister(c).transactions();
           if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-            var txs = await api.canister(c).transactions();
             setTransactions(txs.slice(82));
+          } else {
+            setTransactions(txs);
           }
           var listings = await api.canister(c).listings();
           setAllListings(listings);
           setListings(applyFilters(listings, s, c));
-          
+
           if (["cdvmq-aaaaa-aaaah-qcdoq-cai", "ckwhm-wiaaa-aaaah-qcdpa-cai", "cnxby-3qaaa-aaaah-qcdpq-cai", "crt3j-mqaaa-aaaah-qcdnq-cai", "dv6u3-vqaaa-aaaah-qcdlq-cai"].indexOf(c) >= 0){
             var txs = await api.canister(c).transactions();
             var nt = txs;
           }
-          
-          
+
+
         } catch(e) {};
       } else {
         var txs = await api.canister(c).transactions();
@@ -426,7 +552,7 @@ export default function Listings(props) {
         }
         setTransactions(applyFilters(nt, s, c));
       }
-      
+
     }
   };
   const theme = useTheme();
@@ -525,7 +651,6 @@ export default function Listings(props) {
                 <MenuItem value={"sold"}>Sold Listings</MenuItem>
               </Select>
             </FormControl>
-
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Sort by</InputLabel>
               <Select value={sort} onChange={changeSort}>
@@ -560,6 +685,50 @@ export default function Listings(props) {
                 )}
               </Select>
             </FormControl>
+            {showing !== "sold" && typeof collection.data !== 'undefined' ? (
+            <div style={{ display: "inline" }}>
+              <Button style={{ marginTop: "10px" }} variant={"outlined"} onClick={handlePopupOpen} >Advanced Filters</Button>
+              <BootstrapDialog
+                onClose={handlePopupClose}
+                open={characteristicsFilterOpen} maxWidth="xl"
+                style={{zIndex:1500}}
+              >
+                <BootstrapDialogTitle onClose={handlePopupClose}>
+                  {"Advanced Filters"}
+                </BootstrapDialogTitle>
+                <DialogContent dividers>
+                  {collection.data.characteristics.map((characteristic, i) => {
+                    return (
+                      <Accordion>
+                        <AccordionSummary>
+                          <Typography><strong>{characteristic}</strong></Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <FormGroup row>
+                            {collection.data.values[i].map((value, j) => {
+                            return (
+                              <FormControlLabel control={<Checkbox defaultChecked={typeof characteristicsFilters[i] !== 'undefined' && characteristicsFilters[i].includes(j)} onChange={(e) => handleCheckboxChange(e, i, j)} />} label={value + " [" + collection.data.counts[i][j] + "]"} />
+                              );
+                            })}
+                          </FormGroup>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
+                  <div style={{ marginTop: "20px", display: "grid" }}>
+                    <Button variant="contained"
+                    color="primary"
+                    style={{ backgroundColor: "#003240", color: "white", margin: "auto" }}
+                      onClick={handleFiltersChange}>
+                      Apply
+                    </Button>
+                  </div>
+                </DialogContent>
+              </BootstrapDialog>
+            </div>
+            ) : (
+              ""
+            )}
             {showing === "all" &&
             ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
               <div style={{ display: "inline" }}>
@@ -573,7 +742,7 @@ export default function Listings(props) {
             ) : (
               ""
             )}
-            
+
             {showing === "all" &&
             ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
               <FormControl style={{ minWidth: 120 }}>
@@ -590,30 +759,6 @@ export default function Listings(props) {
               ""
             )}
 
-            {showing === "all" ? (
-              listings.length > perPage ? (
-                <Pagination
-                  className={classes.pagi}
-                  size="small"
-                  count={Math.ceil(listings.length / perPage)}
-                  page={page}
-                  onChange={(e, v) => setPage(v)}
-                />
-              ) : (
-                ""
-              )
-            ) : transactions.length > perPage ? (
-              <Pagination
-                className={classes.pagi}
-                size="small"
-                count={Math.ceil(transactions.length / perPage)}
-                page={page}
-                onChange={(e, v) => setPage(v)}
-              />
-            ) : (
-              ""
-            )}
-            
             {showing === "all" &&
             ["e3izy-jiaaa-aaaah-qacbq-cai"].indexOf(collection?.canister) >= 0 ? (
               <div style={{ marginTop: "20px" }}>
@@ -895,6 +1040,29 @@ export default function Listings(props) {
             )}
           </div>
           {showing === "all" ? (
+            listings.length > perPage ? (
+              <Pagination
+                className={classes.pagi}
+                size="small"
+                count={Math.ceil(listings.length / perPage)}
+                page={page}
+                onChange={(e, v) => setPage(v)}
+              />
+            ) : (
+              ""
+            )
+          ) : transactions.length > perPage ? (
+            <Pagination
+              className={classes.pagi}
+              size="small"
+              count={Math.ceil(transactions.length / perPage)}
+              page={page}
+              onChange={(e, v) => setPage(v)}
+            />
+          ) : (
+            ""
+          )}
+          {showing === "all" ? (
             <>
               {listings === false ? (
                 <div style={styles.empty}>
@@ -993,7 +1161,7 @@ export default function Listings(props) {
                                   gridSize={gridSize}
                                   gri={getNri(collection?.canister, listing[0])}
                                   loggedIn={props.loggedIn}
-                                  collection={collection?.canister}
+                                  collection={collection}
                                   buy={buy}
                                   key={listing[0] + "-" + i}
                                   listing={listing}
@@ -1108,7 +1276,7 @@ export default function Listings(props) {
               )}
             </>
           )}
-          
+
           {showing === "all" ? (
               listings.length > perPage ? (
                 <Pagination

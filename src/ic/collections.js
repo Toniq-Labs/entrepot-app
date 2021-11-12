@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
+import * as icpuppies from "./ICPuppies.js";
+import * as pokedbots from "./PokedBots.js";
 
 var collections = [
   {
@@ -15,6 +17,7 @@ var collections = [
     discord : "https://discord.gg/PokedStudioNFT",
     twitter : "https://twitter.com/pokedstudiouk",
     web : "https://www.pokedstudiobotsnft.co.uk",
+    data : pokedbots,
     route: "poked",
     nftv : true,
     mature: false,
@@ -306,6 +309,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     twitter : "https://twitter.com/ICPuppies",
     medium : "https://medium.com/@ICPuppies",
     web : "https://icpuppies.io",
+    data : icpuppies,
     nftv : true,
     mature: false,
     market : true,
@@ -654,7 +658,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     commission: 0.1,
     comaddress:
       "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
-    blurb: (<>André Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as André discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, André also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
+    blurb: (<>AndrÃ© Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as AndrÃ© discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, AndrÃ© also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {

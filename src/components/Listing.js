@@ -125,10 +125,10 @@ export default function Listing(props) {
   const [popupOpen, setPopupOpen] = React.useState(false);
   const [sales, setSales] = React.useState([]);
   const [chartData, setChartData] = React.useState([]);
-  const genes = props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? "" : getGenes(props.listing[2].nonfungible.metadata[0]);
+  const genes = props.collection.canister !== "e3izy-jiaaa-aaaah-qacbq-cai" ? "" : getGenes(props.listing[2].nonfungible.metadata[0]);
 
   const history = useHistory();
-  const tokenid = extjs.encodeTokenId(props.collection, props.listing[0]);
+  const tokenid = extjs.encodeTokenId(props.collection.canister, props.listing[0]);
 
   const backgrounds_details = ['Hexagon', 'Snowflake', 'Diamond', 'Multi-point star', 'Circle', 'Star'];
   const patterns_details = ['Arrows', 'Diamond Up / Arrow Diag', 'Arrow Circles', 'Circle Up / Arrow Diag', 'Diamonds', 'Star Circles', 'Circle Up / Line Diag', 'Arrow Up / Circle Diag', 'Arrow Circle Up / Line Diag', 'Flower Petals'];
@@ -158,7 +158,7 @@ export default function Listing(props) {
   const handlePopupOpen = () => {
     props.onListingDialogChange(true);
     var saleTransactions = props.transactions.filter(
-      (_t) => extjs.encodeTokenId("e3izy-jiaaa-aaaah-qacbq-cai",props.listing[0]) === _t.token);
+      (_t) => extjs.encodeTokenId(props.collection.canister, props.listing[0]) === _t.token);
     if (saleTransactions.length > sales.length) {
       var volume = 0;
       var data = [];
@@ -208,15 +208,15 @@ export default function Listing(props) {
   };
 
   const buy = async () => {
-    return props.buy(props.collection, props.listing);
+    return props.buy(props.collection.canister, props.listing);
   };
 
   const mintNumber = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
+    if (props.collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai")
       return props.listing[0];
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
+    if (props.collection.canister === "3db6u-aiaaa-aaaah-qbjbq-cai")
       return props.listing[0];
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
+    if (props.collection.canister === "q6hjz-kyaaa-aaaah-qcama-cai")
       return props.listing[0];
     else return props.listing[0] + 1;
   };
@@ -236,42 +236,42 @@ export default function Listing(props) {
   };
 
   const nftImg = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
+    if (props.collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai")
       return (
         "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
         props.listing[0]
       );
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
+    if (props.collection.canister === "3db6u-aiaaa-aaaah-qbjbq-cai")
       return (
         "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" +
         props.listing[0]
       );
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
+    if (props.collection.canister === "q6hjz-kyaaa-aaaah-qcama-cai")
       return icpbunnyimg(props.listing[0])
     return (
       "https://" +
-      props.collection +
+      props.collection.canister +
       ".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" +
       tokenid
     );
   };
   const nftLink = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
+    if (props.collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai")
       return (
         "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
         props.listing[0]
       );
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
+    if (props.collection.canister === "3db6u-aiaaa-aaaah-qbjbq-cai")
       return (
         "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" +
         props.listing[0]
       );
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
+    if (props.collection.canister === "q6hjz-kyaaa-aaaah-qcama-cai")
       return icpbunnyimg(props.listing[0])
-    return "https://" + props.collection + ".raw.ic0.app/?tokenid=" + tokenid;
+    return "https://" + props.collection.canister + ".raw.ic0.app/?tokenid=" + tokenid;
   };
   const showNri = () => {
-    switch (props.collection) {
+    switch (props.collection.canister) {
       case "bzsui-sqaaa-aaaah-qce2a-cai":
         return (
           <Grid item md={6} sm={6} xs={6}>
@@ -573,220 +573,209 @@ export default function Listing(props) {
                 gutterBottom
               >
                 <MuiTooltip title="View in browser">
-                  {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ? (
                   <a href={nftLink()} style={{ color: "black", textDecoration: "none" }} rel="noreferrer" target="_blank">
                     <span>
                       {"#" + mintNumber()}
                     </span>
-                  </a> ) : (
-                    <span
-                    style={{ color: "black", textDecoration: "none" }}
-                    >
-                    {"#" + mintNumber()}
-                  </span>
-                )}
+                  </a>
                 </MuiTooltip>
               </Typography>
             </Grid>
             {showNri()}
           </Grid>
-          {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? (
-            <a href={nftLink()} rel="noreferrer" target="_blank">
             <div style={{ ...styles.avatarSkeletonContainer }}>
-              <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-              <Skeleton
-                style={{
-                  ...styles.avatarLoader,
-                  display: imgLoaded ? "none" : "block",
-                }}
-                variant="rect"
-              />
-            </div>
-            </a>
-            ) : (
-              <div style={{ ...styles.avatarSkeletonContainer }}>
-              <div>
-                <img
-                  alt={tokenid}
-                  style={{
-                    ...styles.avatarImg,
-                    display: imgLoaded ? "block" : "none",
-                  }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                  onClick={handlePopupOpen}
-                />
-              <div>
-                <BootstrapDialog
-                  onClose={handlePopupClose}
-                  open={popupOpen} maxWidth="xl"
-                  style={{zIndex:1500}}
-                >
-                  <BootstrapDialogTitle onClose={handlePopupClose}>
-                    {"Cronic #" + mintNumber()}
-                  </BootstrapDialogTitle>
-                  <DialogContent dividers>
-                  <div style={{ width : "100%", height : "100%"}}>
-                    <Grid style={{fontWeight:"bold"}} container spacing={1}>
-                      <img
-                        alt={tokenid}
-                        style={{
-                          ...styles.avatarImg,
-                          display: imgLoaded ? "block" : "none",
-                          position : "relative",
-                          width: "30%"
-                        }}
-                        src={nftImg()}
-                        onLoad={() => setImgLoaded(true)}
-                      />
-                    </Grid>
-                    <div style={{ marginTop: "20px"}}>
-                      <Typography
-                        style={{
-                          fontSize: 14,
-                          textAlign: "center",
-                        }}
-                        color={"inherit"}
-                        gutterBottom
-                      >
-                        Price:
-                      </Typography>
-                      <Typography
-                        style={{
-                          fontSize: 18,
-                          textAlign: "center",
-                          fontWeight: "bold",
-                        }}
-                        color={"inherit"}
-                        gutterBottom
-                      >
-                        {_showListingPrice(props.listing[1].price)} ICP
-                      </Typography>
-                      {props.loggedIn ? (
-                        <div style={{ display: "flex", "justify-content": "center"}}>
-                          <Button
-                            onClick={buy}
-                            color="primary"
-                            style={{ backgroundColor: "#003240", color: "white" }}
-                          >
-                            Buy Now
-                          </Button>
-                        </div>) : ("")
-                      }
-                    </div>
-                    <div style={{ marginTop: "40px"}}>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Battle Stats</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid style={{textAlign:"center"}} container spacing={1}>
-                            <Grid item xs={4}><strong>Attack</strong><br />{genes.battle.attack.dominant} ({genes.battle.attack.recessive})</Grid>
-                            <Grid item xs={4}><strong>Magic</strong><br />{genes.battle.magic.dominant} ({genes.battle.magic.recessive})</Grid>
-                            <Grid item xs={4}><strong>Range</strong><br />{genes.battle.range.dominant} ({genes.battle.range.recessive})</Grid>
-                            <Grid item xs={4}><strong>Health</strong><br />{genes.battle.health.dominant} ({genes.battle.health.recessive})</Grid>
-                            <Grid item xs={4}><strong>Defense</strong><br />{genes.battle.defense.dominant} ({genes.battle.defense.recessive})</Grid>
-                            <Grid item xs={4}><strong>Resistance</strong><br />{genes.battle.resistance.dominant} ({genes.battle.resistance.recessive})</Grid>
-                            <Grid item xs={4}><strong>Base</strong><br />{genes.battle.base.dominant} ({genes.battle.base.recessive})</Grid>
-                            <Grid item xs={4}><strong>Speed</strong><br />{genes.battle.speed.dominant} ({genes.battle.speed.recessive})</Grid>
-                          </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Properties</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <div style={{display : "flex", flexDirection : "column", width: "100%"}}>
-                            <Typography><strong>Visual</strong></Typography>
-                            <br/>
-                            <Grid style={{textAlign:"center"}} container spacing={1}>
-                              <Grid item xs={6}><strong>Background</strong><br />{backgrounds_details[genes.visual.background.dominant-1]} ({backgrounds_details[genes.visual.background.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Pattern</strong><br />{patterns_details[genes.visual.pattern.dominant-1]} ({patterns_details[genes.visual.pattern.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Face</strong><br />{faces_details[genes.visual.face.dominant-1]} ({faces_details[genes.visual.face.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Eyes</strong><br />{eyes_details[genes.visual.eyes.dominant-1]} ({eyes_details[genes.visual.eyes.recessive-1]})</Grid>
-                            </Grid>
-                            <br/>
-                            <Typography><strong>Color</strong></Typography>
-                            <br/>
-                            <Grid style={{textAlign:"center"}} container spacing={1}>
-                              <Grid item xs={6}><strong>Background</strong><br />{colors[colors_details[0][genes.color.background.dominant-1]]} ({colors[colors_details[0][genes.color.background.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Pattern</strong><br />{colors[colors_details[1][genes.color.pattern.dominant-1]]} ({colors[colors_details[1][genes.color.pattern.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Face</strong><br />{colors[colors_details[2][genes.color.face.dominant-1]]} ({colors[colors_details[2][genes.color.face.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Eyes</strong><br />{colors[colors_details[0][genes.color.eyes.dominant-1]]} ({colors[colors_details[0][genes.color.eyes.recessive-1]]})</Grid>
-                            </Grid>
-                          </div>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Price History</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                        <ResponsiveContainer height={300}>
-                          <LineChart
-                            data={chartData}
-                            margin={{
-                              top: 5,
-                              right: 30,
-                              left: 20,
-                              bottom: 5,
-                            }}
-                          >
-                            <XAxis dataKey="date" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line name="Price" type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
-                            <Line name="Average Price" type="monotone" dataKey="averagePrice" stroke="#00d092" />
-                          </LineChart>
-                        </ResponsiveContainer>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Transaction History</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                        <TableContainer component={Paper}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableHeaderCell align="left">Event</TableHeaderCell>
-                                <TableHeaderCell align="left">Price</TableHeaderCell>
-                                <TableHeaderCell align="left">Buyer</TableHeaderCell>
-                                <TableHeaderCell align="left">Date</TableHeaderCell>
-                              </TableRow>
-                            </TableHead>
-                              { sales.length > 0 ? (
-                                <TableBody>
-                                  {sales.map((row) => (
-                                    <TableRow>
-                                      <TableCell component="th" scope="row">
-                                        Sale
-                                      </TableCell>
-                                      <TableCell>{_showListingPrice(row.price)} ICP</TableCell>
-                                      <TableCell>
-                                        <a href={"https://ic.rocks/account/" + row.buyer} target="_blank">
-                                          {row.buyer}
-                                        </a>
-                                      </TableCell>
-                                      <TableCell>{_showDate(row.time)}</TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              ) : ("")
-                              }
-                          </Table>
-                        </TableContainer>
-                        </AccordionDetails>
-                      </Accordion>
-                    </div>
+              <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} onClick={handlePopupOpen} />
+              <BootstrapDialog
+                onClose={handlePopupClose}
+                open={popupOpen} maxWidth="xl"
+                style={{zIndex:1500}}
+              >
+                <BootstrapDialogTitle onClose={handlePopupClose}>
+                  {"#" + mintNumber()}
+                </BootstrapDialogTitle>
+                <DialogContent dividers>
+                <div style={{ width : "100%", height : "100%"}}>
+                  <Grid style={{fontWeight:"bold"}} container spacing={1}>
+                    <img
+                      alt={tokenid}
+                      style={{
+                        ...styles.avatarImg,
+                        display: imgLoaded ? "block" : "none",
+                        position : "relative",
+                        width: "30%",
+                        left: "0%"
+                      }}
+                      src={nftImg()}
+                      onLoad={() => setImgLoaded(true)}
+                    />
+                  </Grid>
+                  <div style={{ marginTop: "20px"}}>
+                    <Typography
+                      style={{
+                        fontSize: 14,
+                        textAlign: "center",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      Price:
+                    </Typography>
+                    <Typography
+                      style={{
+                        fontSize: 18,
+                        textAlign: "center",
+                        fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      {_showListingPrice(props.listing[1].price)} ICP
+                    </Typography>
+                    {props.loggedIn ? (
+                      <div style={{ display: "flex", "justify-content": "center"}}>
+                        <Button
+                          onClick={buy}
+                          color="primary"
+                          style={{ backgroundColor: "#003240", color: "white" }}
+                        >
+                          Buy Now
+                        </Button>
+                      </div>) : ("")
+                    }
                   </div>
-                  </DialogContent>
-                </BootstrapDialog>
-              </div>
-            </div>
+                  <div style={{ marginTop: "40px"}}>
+				          {props.collection.canister === "e3izy-jiaaa-aaaah-qacbq-cai" ? (
+                    <Accordion defaultExpanded={true}>
+                      <AccordionSummary>
+                        <Typography><strong>Battle Stats</strong></Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Grid style={{textAlign:"center"}} container spacing={1}>
+                          <Grid item xs={4}><strong>Attack</strong><br />{genes.battle.attack.dominant} ({genes.battle.attack.recessive})</Grid>
+                          <Grid item xs={4}><strong>Magic</strong><br />{genes.battle.magic.dominant} ({genes.battle.magic.recessive})</Grid>
+                          <Grid item xs={4}><strong>Range</strong><br />{genes.battle.range.dominant} ({genes.battle.range.recessive})</Grid>
+                          <Grid item xs={4}><strong>Health</strong><br />{genes.battle.health.dominant} ({genes.battle.health.recessive})</Grid>
+                          <Grid item xs={4}><strong>Defense</strong><br />{genes.battle.defense.dominant} ({genes.battle.defense.recessive})</Grid>
+                          <Grid item xs={4}><strong>Resistance</strong><br />{genes.battle.resistance.dominant} ({genes.battle.resistance.recessive})</Grid>
+                          <Grid item xs={4}><strong>Base</strong><br />{genes.battle.base.dominant} ({genes.battle.base.recessive})</Grid>
+                          <Grid item xs={4}><strong>Speed</strong><br />{genes.battle.speed.dominant} ({genes.battle.speed.recessive})</Grid>
+                        </Grid>
+                      </AccordionDetails>
+                    </Accordion>) : ("")
+                  }
+                  {props.collection.canister === "e3izy-jiaaa-aaaah-qacbq-cai" ? (
+                    <Accordion defaultExpanded={true}>
+                      <AccordionSummary>
+                        <Typography><strong>Properties</strong></Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div style={{display : "flex", flexDirection : "column", width: "100%"}}>
+                          <Typography><strong>Visual</strong></Typography>
+                          <br/>
+                          <Grid style={{textAlign:"center"}} container spacing={1}>
+                            <Grid item xs={6}><strong>Background</strong><br />{backgrounds_details[genes.visual.background.dominant-1]} ({backgrounds_details[genes.visual.background.recessive-1]})</Grid>
+                            <Grid item xs={6}><strong>Pattern</strong><br />{patterns_details[genes.visual.pattern.dominant-1]} ({patterns_details[genes.visual.pattern.recessive-1]})</Grid>
+                            <Grid item xs={6}><strong>Face</strong><br />{faces_details[genes.visual.face.dominant-1]} ({faces_details[genes.visual.face.recessive-1]})</Grid>
+                            <Grid item xs={6}><strong>Eyes</strong><br />{eyes_details[genes.visual.eyes.dominant-1]} ({eyes_details[genes.visual.eyes.recessive-1]})</Grid>
+                          </Grid>
+                          <br/>
+                          <Typography><strong>Color</strong></Typography>
+                          <br/>
+                          <Grid style={{textAlign:"center"}} container spacing={1}>
+                            <Grid item xs={6}><strong>Background</strong><br />{colors[colors_details[0][genes.color.background.dominant-1]]} ({colors[colors_details[0][genes.color.background.recessive-1]]})</Grid>
+                            <Grid item xs={6}><strong>Pattern</strong><br />{colors[colors_details[1][genes.color.pattern.dominant-1]]} ({colors[colors_details[1][genes.color.pattern.recessive-1]]})</Grid>
+                            <Grid item xs={6}><strong>Face</strong><br />{colors[colors_details[2][genes.color.face.dominant-1]]} ({colors[colors_details[2][genes.color.face.recessive-1]]})</Grid>
+                            <Grid item xs={6}><strong>Eyes</strong><br />{colors[colors_details[0][genes.color.eyes.dominant-1]]} ({colors[colors_details[0][genes.color.eyes.recessive-1]]})</Grid>
+                          </Grid>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>) : ("")
+                  }
+                  {typeof props.collection.data !== 'undefined' ? (
+                    <Accordion defaultExpanded={true}>
+                      <AccordionSummary>
+                        <Typography><strong>Properties</strong></Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div style={{display : "flex", flexDirection : "column", width: "100%"}}>
+                          <Grid style={{textAlign:"center"}} container spacing={1}>
+                            {props.collection.data.characteristics.map((characteristic, i) => {
+                              return (
+                                <Grid item xs={4}><strong>{characteristic}</strong><br />{props.collection.data.values[i][props.collection.data.tokens[props.listing[0]][i]]}</Grid>
+                              );
+                            })}
+                          </Grid>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>) : ("")
+                  }
+                  <Accordion defaultExpanded={true}>
+                    <AccordionSummary>
+                      <Typography><strong>Price History</strong></Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <ResponsiveContainer height={300}>
+                      <LineChart
+                        data={chartData}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
+                      >
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line name="Price" type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        <Line name="Average Price" type="monotone" dataKey="averagePrice" stroke="#00d092" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    </AccordionDetails>
+                  </Accordion>
+                  <Accordion defaultExpanded={true}>
+                    <AccordionSummary>
+                      <Typography><strong>Transaction History</strong></Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableHeaderCell align="left">Event</TableHeaderCell>
+                            <TableHeaderCell align="left">Price</TableHeaderCell>
+                            <TableHeaderCell align="left">Buyer</TableHeaderCell>
+                            <TableHeaderCell align="left">Date</TableHeaderCell>
+                          </TableRow>
+                        </TableHead>
+                          { sales.length > 0 ? (
+                            <TableBody>
+                              {sales.map((row) => (
+                                <TableRow>
+                                  <TableCell component="th" scope="row">
+                                    Sale
+                                  </TableCell>
+                                  <TableCell>{_showListingPrice(row.price)} ICP</TableCell>
+                                  <TableCell>
+                                    <a href={"https://ic.rocks/account/" + row.buyer} target="_blank">
+                                      {row.buyer}
+                                    </a>
+                                  </TableCell>
+                                  <TableCell>{_showDate(row.time)}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          ) : ("")
+                          }
+                      </Table>
+                    </TableContainer>
+                    </AccordionDetails>
+                  </Accordion>
+                </div>
+                </div>
+                </DialogContent>
+              </BootstrapDialog>
             <Skeleton
               style={{
                 ...styles.avatarLoader,
@@ -795,7 +784,6 @@ export default function Listing(props) {
               variant="rect"
             />
           </div>
-          )}
           <Typography
             style={{
               fontSize: 18,
