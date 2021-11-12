@@ -186,7 +186,7 @@ export default function BlockchainHeroes(props) {
           </Grid>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>SOLD</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 5000-remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 4950-remaining : "Loading..."}</span>
           </Grid>
         </Grid>
         <br /><br />
