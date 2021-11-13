@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
+import ReactPlayer from 'react-player'
 import Carousel from 'react-material-ui-carousel'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,8 @@ export default function Home(props) {
   var items = [
       {
           link: "/sale/blockchain-heroes",
-          img: "/banner/bh.png"
+          img: "/banner/bh.png",
+          video : "https://www.youtube.com/watch?v=ysz5S6PUM-U",
       },
       {
           link: "/marketplace/p2j",
@@ -113,10 +115,12 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <Carousel interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
+            <Carousel autoPlay={false} interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
               {
                 items.map( (item, i) => {
-                  if (item.link) {
+                  if (item.video) {
+                    return (<a key={i} href={item.link}><ReactPlayer style={{borderRadius:30}} width={1200} height={484}   playing={true} url='/bch-entrepot.mp4' /></a>)
+                  } else if (item.link) {
                     return (<a key={i} href={item.link}><img className={classes.bannerimg} src={item.img} /></a>)
                   } else {
                     return (<img key={i} className={classes.bannerimg} src={item.img} />)

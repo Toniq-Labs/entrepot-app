@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop:0,
     marginLeft:0,
     zIndex:1,
+    [theme.breakpoints.down("lg")]: {
+      width: 200,
+      height: 280,
+    },
     "&.small" : {
       width: 180,
       height: 252,
