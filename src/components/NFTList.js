@@ -330,8 +330,9 @@ export default function NFTList(props) {
                         case "type":
                           if (collection?.canister === "poyn6-dyaaa-aaaah-qcfzq-cai") {
                             if (a.metadata[0] === 0 && b.metadata[0] === 0) return 0;
-                            else if (a.metadata[0] === 0) return 1;
-                            else if (b.metadata[0] === 0) return -1;
+                            else if (a.metadata[0] === 0) return -1;
+                            else if (b.metadata[0] === 0) return 1;
+                            else if (a.metadata[1] === b.metadata[1]) return a.metadata[0] - b.metadata[0];
                             return b.metadata[1] - a.metadata[1];
                           } 
                           var _a, _b, d;
