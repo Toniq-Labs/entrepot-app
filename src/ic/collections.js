@@ -3,6 +3,30 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "nges7-giaaa-aaaaj-qaiya-cai",
+    priority : 100,
+    name: "Saga Legends",
+    brief : "Collectible Major Arcana for Fans of Art and Tarot",
+    description : "",
+    keywords : "saga cards tarot nft collectible arcana",
+    banner : "/collections/saga/banner.jpg",
+    avatar : "/collections/saga/avatar.jpg",
+    collection : "/collections/saga/collection.jpg",
+    twitter : "https://twitter.com/sagacards",
+    web : "https://legends.saga.cards",
+    route: "saga",
+    nftv : true,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "6aa0a13df915f5e5eb9c85e39fbf9949b86b0250a06a3be8bea78e0b23999a9b",
+    blurb: (<><p>
+      Saga is bringing Tarot into the Metaverse. These collectible Major Arcana NFTs celebrate and support our first official deck.<br/><br />
+      Listings will be available after the public sale.<br /><br />
+      <Button href="/sale/dfinitybulls" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Buy from Public Sale</Button>
+    </p></>),
+  },
+  {
     canister: "bzsui-sqaaa-aaaah-qce2a-cai",
     priority : 101,
     name: "Poked bots",
@@ -654,7 +678,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     commission: 0.1,
     comaddress:
       "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
-    blurb: (<>André Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as André discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, André also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
+    blurb: (<>Andrï¿½ Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as Andrï¿½ discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, Andrï¿½ also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {
