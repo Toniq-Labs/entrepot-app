@@ -398,7 +398,9 @@ export default function Listings(props) {
           }
           
           
-        } catch(e) {};
+        } catch(e) {
+          console.error(e);
+        };
       } else {
         var txs = await api.canister(c).transactions();
         var nt = txs;

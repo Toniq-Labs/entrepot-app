@@ -348,7 +348,9 @@ export default function Listings(props) {
           props.loader(true, "Settling purchase...");
           r3 = await _api.canister(canisterId).settle(tokenid);
           if (r3.hasOwnProperty("ok")) break;
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       }
       props.loader(false);
       props.alert(
@@ -417,7 +419,9 @@ export default function Listings(props) {
           }
           
           
-        } catch(e) {};
+        } catch(e) {
+          console.error(e);
+        };
       } else {
         var txs = await api.canister(c).transactions();
         var nt = txs;
