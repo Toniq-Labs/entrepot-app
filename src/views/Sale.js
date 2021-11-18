@@ -86,18 +86,18 @@ export default function Iconic(props) {
       image : "/collections/bh/collection.jpg",
       content : (<>Be a part of blockchain history as the first ICP launch featuring packs of cards comes your way in the form of the best-selling Blockchain Heroes! Collect all 50 heroes!</>),
     },
-    {
-      title : "Poked Bots",
-      link : "/sale/poked",
-      image : "/banner/poked.jpg",
-      content : (<>500 years from now humans have left earth and only the Robots remain. Robots have managed to create new identities based on relics they have found from earths past</>),
-    },
-    {
-      title : "Dfinity Bulls",
-      link : "/sale/dfinitybulls",
-      image : "/banner/bulls.jpg",
-      content : (<>Get one of 8888 minted Dfinity Bulls by the owners of the Dfinity Bulls Telegram Community!</>),
-    },
+    // {
+      // title : "Poked Bots",
+      // link : "/sale/poked",
+      // image : "/banner/poked.jpg",
+      // content : (<>500 years from now humans have left earth and only the Robots remain. Robots have managed to create new identities based on relics they have found from earths past</>),
+    // },
+    // {
+      // title : "Dfinity Bulls",
+      // link : "/sale/dfinitybulls",
+      // image : "/banner/bulls.jpg",
+      // content : (<>Get one of 8888 minted Dfinity Bulls by the owners of the Dfinity Bulls Telegram Community!</>),
+    // },
     // {
       // title : "Infernal Vampire Colony",
       // link : "/sale/ivc",

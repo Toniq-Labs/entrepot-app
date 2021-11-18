@@ -336,7 +336,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/marketplace" exact>
@@ -345,7 +345,7 @@ export default function App() {
                 view={"collections"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/wallet/:route" exact>
@@ -355,7 +355,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/moonwalkers" exact>
@@ -365,7 +365,7 @@ export default function App() {
                 sale={"moonwalkers"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/dfinitybulls" exact>
@@ -375,7 +375,7 @@ export default function App() {
                 sale={"dfinitybulls"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/blockchain-heroes" exact>
@@ -385,7 +385,7 @@ export default function App() {
                 sale={"blockchain-heroes"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/poked" exact>
@@ -395,7 +395,7 @@ export default function App() {
                 sale={"poked"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/ic3d" exact>
@@ -405,7 +405,7 @@ export default function App() {
                 sale={"ic3d"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/ivc" exact>
@@ -415,7 +415,7 @@ export default function App() {
                 sale={"ivc"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/sale/hauntedhamsters" exact>
@@ -425,7 +425,7 @@ export default function App() {
                 sale={"hauntedhamsters"}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/mint" exact>
@@ -433,7 +433,7 @@ export default function App() {
                 error={error}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} address={address} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} address={address} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/create" exact>
@@ -441,7 +441,7 @@ export default function App() {
                 error={error}
                 alert={alert}
                 confirm={confirm}
-                loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
             <Route path="/contact" exact>

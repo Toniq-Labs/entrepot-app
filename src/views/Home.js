@@ -64,16 +64,8 @@ export default function Home(props) {
           img: "/banner/canistore.jpg"
       },
       {
-          link: "/marketplace/poked",
-          img: "/banner/poked.jpg"
-      },
-      {
-          link: "/sale/dfinitybulls",
+          link: "/marketplace/dfinitybulls",
           img: "/banner/bulls.jpg"
-      },
-      {
-          link: "/marketplace/wildwest",
-          img: "/banner/ww.png"
       },
       {
           link: "/sale/moonwalkers",
