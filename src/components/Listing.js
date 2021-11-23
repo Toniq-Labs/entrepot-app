@@ -30,6 +30,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import MuiTableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
+import _c from '../ic/collections.js';
+var collections = _c;
+
+
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -106,20 +110,20 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
-
 const TableHead = withStyles((theme) => ({
   root: {
     backgroundColor: "#00d092"
   }
 }))(MuiTableHead);
-
 const TableHeaderCell = withStyles((theme) => ({
   root: {
     color: "black",
     "font-weight": "bold"
   }
 }))(TableCell);
-
+const getCollection = c => {
+  return collections.find(e => e.canister === c);
+};
 export default function Listing(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [popupOpen, setPopupOpen] = React.useState(false);
@@ -271,285 +275,33 @@ export default function Listing(props) {
     return "https://" + props.collection + ".raw.ic0.app/?tokenid=" + tokenid;
   };
   const showNri = () => {
-    switch (props.collection) {
-      case "bzsui-sqaaa-aaaah-qce2a-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Bot relative to others. It does not include Mint #, Twin Status or Animation within the index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "bid2t-gyaaa-aaaah-qcdea-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Hamster relative to others. It does not include Mint #, Twin Status or Animation within the index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "gyuaf-kqaaa-aaaah-qceka-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Vampire relative to others. It does not include Mint #, Twin Status or Animation within the index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "oeee4-qaaaa-aaaak-qaaeq-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Motoko relative to others. It does not include Mint #, Twin Status or Animation within the index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "e3izy-jiaaa-aaaah-qacbq-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Cronic relative to others. It does not include Mint #, Twin Status or Animation within the index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "nbg4r-saaaa-aaaah-qap7a-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific Star relative to others. It does not include Mint # or Twin Status as factors in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific ICPunk relative to others. It does not include Mint # or Twin Status as factors in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=" +
-                    mintNumber()
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "3db6u-aiaaa-aaaah-qbjbq-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific IC Drip relative to others. It does not include Mint # as a factor in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=" +
-                    mintNumber()
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "njgly-uaaaa-aaaah-qb6pa-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific ICPuppy relative to others. It does not include Mint # as a factor in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "ahl3d-xqaaa-aaaaj-qacca-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific ICTuT relative to others. It does not include Mint # as a factor in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
-        return (
-          <Grid item md={6} sm={6} xs={6}>
-            <Typography
-              style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-              color={"inherit"}
-              gutterBottom
-            >
-              <MuiTooltip title="NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the trait rarity of a specific Astronaut relative to others. It does not include Mint # as a factor in this index.">
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  href={
-                    "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                    tokenid
-                  }
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </a>
-              </MuiTooltip>
-            </Typography>
-          </Grid>
-        );
-      default:
-        return "";
-    }
+    var collection = getCollection(props.collection);
+    if (collection.nftv) {
+      return (
+        <Grid item md={6} sm={6} xs={6}>
+          <Typography
+            style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
+            color={"inherit"}
+            gutterBottom
+          >
+            <MuiTooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}>
+              <a
+                style={{ color: "black", textDecoration: "none" }}
+                href={
+                  "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
+                  tokenid
+                }
+                rel="noreferrer"
+                target="_blank"
+              >
+                NRI: {(props.gri * 100).toFixed(1)}%{" "}
+                <span style={{ color: "red" }}>*</span>
+              </a>
+            </MuiTooltip>
+          </Typography>
+        </Grid>
+      );
+    } else return "";
   };
 
   const handleClick = () => {
