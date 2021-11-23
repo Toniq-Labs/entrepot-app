@@ -15,6 +15,7 @@ var collections = [
     twitter : "https://twitter.com/sagacards",
     web : "https://legends.saga.cards",
     route: "saga",
+    unit: "Legend",
     nftv : true,
     mature: false,
     market : true,
