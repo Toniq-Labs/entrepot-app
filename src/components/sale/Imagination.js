@@ -95,27 +95,23 @@ export default function Imagination(props) {
       minHeight:"calc(100vh - 221px)"
     },
   };
-  const buyFromSale = async (qty, price) => {
+  const buyFromSale = async (type) => {
     if (props.balance < (price + 10000n)){
       return props.alert(
         "There was an error",
         "Your balance is insufficient to complete this transaction"
       );
     }
-    var v = await props.confirm("Please confirm", "Are you sure you want to continue with this purchase of " + qty + " NFT"+(qty === 1 ? "" : "s")+" for the total price of " + _showListingPrice(price) + " ICP. All transactions are final on confirmation and can't be reversed.")
+    var v = await props.confirm("Please confirm", "Are you sure you want to continue with this purchase of 1 NFT for the total price of " + _showListingPrice(price) + " ICP. All transactions are final on confirmation and can't be reversed.")
     if (!v) return;
     try {
-      if (qty === 1) {
-        props.loader(true, "Reserving Pack...");
-      } else {
-        props.loader(true, "Reserving Packs..");
-      }
+      props.loader(true, "Reserving NFT...");
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister("px5ub-qqaaa-aaaah-qcjxa-cai", "sale")
+        .canister("px5ub-qqaaa-aaaah-qcjxa-cai")
         .reserve(
           price,
-          qty,
+          type,
           props.account.address,
           _getRandomBytes()
         );
@@ -138,7 +134,7 @@ export default function Imagination(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("px5ub-qqaaa-aaaah-qcjxa-cai", "sale").retreive(paytoaddress);
+          r3 = await api.canister("px5ub-qqaaa-aaaah-qcjxa-cai").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -161,12 +157,18 @@ export default function Imagination(props) {
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  var buyOptions = [
-    [1, 150000000n],
-    [5, 750000000n],
-    [10, 1500000000n],
-    [20, 3000000000n],
-  ]
+  const getRemaining = t => {
+    switch(t){
+      case 0: return remaining0;
+      case 1: return remaining1;
+      case 2: return remaining2;
+      case 3: return remaining3;
+      case 4: return remaining4;
+      case 5: return remaining5;
+      case 6: return remaining6;
+      case 7: return remaining7;
+    };
+  };
   return (
     <>
       <div style={styles.main}>
@@ -201,33 +203,29 @@ export default function Imagination(props) {
           <>{(!saleOver && remaining > 0) ?
             <>
               {Date.now() >= startTime ? 
+                "" :
                 <>
-                  <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
-                    {[0,1,2,4,6,7,3,5].map(a => {
-                      return (<Flip2 key={a} id={a} onFlip={onFlip} flipSubscriber={flipSubscriber} front={"https://px5ub-qqaaa-aaaah-qcjxa-cai.raw.ic0.app/?asset="+a+".jpg"} back={"https://px5ub-qqaaa-aaaah-qcjxa-cai.raw.ic0.app/?asset="+a+"B.jpg"} />);
-                    })}
-                  </Grid>
-                  {/*<Grid container spacing={2} style={{}}>
-                    {buyOptions.map(o => {
-                      return (<Grid className={classes.stat} item sm={3}>
-                        <Button
-                          variant={"contained"}
-                          color={"primary"}
-                          onClick={() => buyFromSale(o[0], o[1])}
-                          style={{ fontWeight: "bold", margin: "0 auto" }}
-                        >
-                          Buy {o[0]} Pack{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
-                        </Button>
-                      </Grid>);
-                    })}
-                  </Grid>*/}
-                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
-                  
-                </> :
-                <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong><br /><br /></p>
                 </>
               }
+              <>
+                <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
+                  {[0,1,2,4,6,7,3,5].map(a => {
+                    return (<Flip2 remaining={getRemaining(a)} saleLive={Date.now() >= startTime} button={<Button
+                        variant={"contained"}
+                        color={"primary"}
+                        onClick={() => buyFromSale(a)}
+                        style={{ fontWeight: "bold", margin: "0 auto" }}
+                      >
+                        Buy for {_showListingPrice(price)} ICP
+                      </Button>} key={a} id={a} onFlip={onFlip} flipSubscriber={flipSubscriber} front={"https://px5ub-qqaaa-aaaah-qcjxa-cai.raw.ic0.app/?asset="+a+".jpg"} back={"https://px5ub-qqaaa-aaaah-qcjxa-cai.raw.ic0.app/?asset="+a+"B.jpg"} />);
+                  })}
+                </Grid>
+                <br />
+                <br />
+                <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                
+              </>
             </>
           : 
             <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Hero from the marketplace soon!</span></strong></p>

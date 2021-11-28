@@ -18,19 +18,29 @@ const useStyles = makeStyles((theme) => ({
       width: 300,
       height: 400,
     },
-    marginTop:0,
-    marginLeft:0,
+    margin:"0 auto",
     zIndex:1,
-    "&.flipped" : {
+    "&.ver.flipped" : {
       transform: "rotate3d(0, 1, 0, 180deg)",
-      zIndex:10,
-      width:400,
-      height:560,
+      zIndex:10000,
+      width:750,
+      height:1000,
       position:"fixed",
       top:"50%",
       left:"50%",
-      marginTop:-280,
-      marginLeft:-200,
+      marginTop:-500,
+      marginLeft:-375,
+    },
+    "&.hor.flipped" : {
+      transform: "rotate3d(0, 1, 0, 180deg)",
+      zIndex:10000,
+      width:1000,
+      height:750,
+      position:"fixed",
+      top:"50%",
+      left:"50%",
+      marginTop:-375,
+      marginLeft:-500,
     },
     "& img" : {
       borderRadius: 15,
@@ -75,7 +85,7 @@ export default function Flip2(props) {
     setFlipped(a => !a);
   }
   return (
-  <Grid item md={4}>
+  <Grid item md={4} style={{textAlign:"center"}}>
     <div className={classes.box + (flipped ? " flipped" : "")   + ((props.id == 3 || props.id == 5) ? " hor" : " ver")  + (props.small ? " small" : "") } onClick={flip}>
       <div className={classes.front}>
         <CircularProgress style={{margin:"40% auto 0",display:(imageLoaded ? "none" : "block")}} color="inherit" />
@@ -85,6 +95,9 @@ export default function Flip2(props) {
         <img src={props.back} />
       </div>
     </div>
-    {props.showRarity && !flipped ? <p><strong>{tmap2[props.card[1]]}<br />{tmap3[props.card[1]]}</strong></p> : ""}
+    {props.saleLive ? <>
+    <br />
+    <strong>{props.remaining > 0 ? props.remaining + " Remaining" : "SOLD OUT"}</strong><br />
+    {props.remaining > 0 ? props.button : ""}</> : ""}
   </Grid>);
 };
