@@ -951,10 +951,11 @@ export default function Listings(props) {
                                   return a[0] - b[0];
                                 case "type":
                                   if (collection?.canister === "poyn6-dyaaa-aaaah-qcfzq-cai") {
-                                    if (a.metadata[0] === 0 && b.metadata[0] === 0) return 0;
-                                    else if (a.metadata[0] === 0) return 1;
-                                    else if (b.metadata[0] === 0) return -1;
-                                    return b.metadata[1] - a.metadata[1];
+                                    if (a[2].nonfungible.metadata[0][0] === 0 && b[2].nonfungible.metadata[0][0] === 0) return 0;
+                                    else if (a[2].nonfungible.metadata[0][0] === 0) return 1;
+                                    else if (b[2].nonfungible.metadata[0][0] === 0) return -1;
+                                    else if (a[2].nonfungible.metadata[0][1] === b[2].nonfungible.metadata[0][1]) return a[2].nonfungible.metadata[0][0] - b[2].nonfungible.metadata[0][0];
+                                    return b[2].nonfungible.metadata[0][1] - a[2].nonfungible.metadata[0][1];
                                   } 
                                   var _a, _b, d;
                                   if (

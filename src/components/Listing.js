@@ -281,7 +281,15 @@ export default function Listing(props) {
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=" + props.listing[0];
     return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid;
   };
+  var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   const showNri = () => {
+    if (props.collection == "poyn6-dyaaa-aaaah-qcfzq-cai") {
+      return (<Grid item md={6} sm={6} xs={6}>
+        <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
+          {(props.listing[2].nonfungible.metadata[0][0] === 0 ? "Pack" : "#" + props.listing[2].nonfungible.metadata[0][0] + " - " + t[props.listing[2].nonfungible.metadata[0][1]])}
+        </Typography>
+      </Grid>);
+    };
     var collection = getCollection(props.collection);
     if (collection.nftv) {
       return (

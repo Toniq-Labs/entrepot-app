@@ -191,7 +191,7 @@ export default function NFTList(props) {
   const applyFilters = a => {
     if (collection?.canister === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
       var map = ["accessories","hats","eyewear","pets"];
-      a = a.filter(_a => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter);
+      a = a.filter(_a => map[_a.metadata[0]] === wearableFilter);
     };
     return a;
   };
@@ -337,8 +337,8 @@ export default function NFTList(props) {
                           } 
                           var _a, _b, d;
                           if (collection?.canister === "nbg4r-saaaa-aaaah-qap7a-cai") {
-                            _a = a[2].nonfungible.metadata[0][0];
-                            _b = b[2].nonfungible.metadata[0][0];
+                            _a = a.metadata[0];
+                            _b = b.metadata[0];
                             d = _b-_a;
                             if (d === 0) {
                               if (Number(a[1].price)>Number(b[1].price)) return 1;
@@ -346,8 +346,8 @@ export default function NFTList(props) {
                             };
                             return d;
                           } else {
-                            _a = a[2].nonfungible.metadata[0][30]%41;
-                            _b = b[2].nonfungible.metadata[0][30]%41;
+                            _a = a.metadata[30]%41;
+                            _b = b.metadata[30]%41;
                             if (_a === 2) _a = 1;
                             if (_a > 1) _a = 2;
                             if (_b === 2) _b = 1;
