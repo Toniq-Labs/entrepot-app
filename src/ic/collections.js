@@ -69,7 +69,7 @@ var collections = [
     blurb: (<><p>Entrepot is thrilled to welcome the best-selling Blockchain Heroes series to the Internet Computer! Originally presented on the WAX blockchain in Summer of 2020, Blockchain Heroes is a set of 50 super heroes inspired by real-world blockchain and crypto personalities. When the initial set was offered in August 2020, 12500 packs sold out in just 20 minutes! Since that time, the team has released two additional series, with the latter selling out in just 35 seconds.</p>
 <p>Now we are pleased to issue the original 50 heroes on ICP with all NEW variations. 5000 packs are being made available, with each pack containing five (5) random hero cards from the set. Each of the fifty heroes is available in common, uncommon, rare, epic, legendary and mythic variations, with odds of getting variations decreasing as the rarity increases. Packs will be made available at 10 am EST on November 12th for just 1.5 ICP! If previous sales of Blockchain Heroes are any indication, we expect this sale to go very fast. So be locked and loaded with your ICP to grab yours.</p>
 <p>Will you get an epic Captain Crypto, a legendary Lady Lightning or the elusive mythic Genesis? Grab your packs and rip them open to find out!
-</p><p style={{textAlign:"center"}}><Button href="/sale/blockchain-heroes" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Get Your Blockchain Heroes Packs!</Button></p></>),
+</p></>),
   },
   {
     canister: "dylar-wyaaa-aaaah-qcexq-cai",

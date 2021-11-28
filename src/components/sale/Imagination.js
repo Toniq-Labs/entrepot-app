@@ -209,7 +209,7 @@ export default function Imagination(props) {
                 </>
               }
               <>
-                <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">
+                <Grid container spacing={2} direction="row" justifyContent="center" alignItems="flex-start">
                   {[0,1,2,4,6,7,3,5].map(a => {
                     return (<Flip2 remaining={getRemaining(a)} saleLive={Date.now() >= startTime} button={<Button
                         variant={"contained"}
