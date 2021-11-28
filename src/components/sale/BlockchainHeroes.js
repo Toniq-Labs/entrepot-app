@@ -174,7 +174,8 @@ export default function BlockchainHeroes(props) {
         </div>
         <br /><br />
         <hr />
-        <br /><br />
+        {remaining === false ? 
+        <><br /><br />
         <Grid container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={4} xs={6}>
             <strong>AVAILABLE</strong><br />
@@ -189,7 +190,8 @@ export default function BlockchainHeroes(props) {
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining ? 4950-remaining : "Loading..."}</span>
           </Grid>
         </Grid>
-        <br /><br />
+        <br /><br /></>
+        : "" }
         {remaining === false ? 
           <>
             <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>

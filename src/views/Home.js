@@ -55,26 +55,17 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
-          link: "/sale/blockchain-heroes",
-          img: "/banner/bh.png",
-          video : "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+          link: "/sale/imagination",
+          img: "/banner/imagination.jpg",
       },
       {
           link: "/marketplace/p2j",
           img: "/banner/canistore.jpg"
       },
-      {
-          link: "/marketplace/dfinitybulls",
-          img: "/banner/bulls.jpg"
-      },
-      {
-          link: "/sale/moonwalkers",
-          img: "/banner/icgallery2.jpg"
-      },
-      {
-          link: false,
-          img: "/banner/rotm.png"
-      },
+      // {
+          // link: false,
+          // img: "/banner/rotm.png"
+      // },
   ];
   var cards = [
     {

@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Imagination Project",
+      link : "/sale/imagination",
+      image : "/collections/imagination/collection.jpg",
+      content : (<>The Imagination Project, created 50 photographs over the course of a year, celebrating the human imagination in all its wild and vast diversity. Visualising 400 years of groundbreaking Patents.</>),
+    },
+    {
       title : "Blockchain Heroes",
       link : "/sale/blockchain-heroes",
       image : "/collections/bh/collection.jpg",
@@ -116,12 +122,12 @@ export default function Iconic(props) {
       // image : "/banner/ic3d.jpg",
       // content : (<>IC3D NFT is in the business of creating and selling 3D NFTs to collectors, gamers, and traders in the Internet Computer ecosystem.</>),
     // },
-    {
-      title : "3D MoonWalkers",
-      link : "/sale/moonwalkers",
-      image : "/banner/icgallery2.jpg",
-      content : (<>These Animal Astronauts unlock massive influence in the growing ecosystem of the IC Gallery. The Moonwalker collection combines 3 essential forces of the Metaverse into 1 NFT.</>),
-    },
+    // {
+      // title : "3D MoonWalkers",
+      // link : "/sale/moonwalkers",
+      // image : "/banner/icgallery2.jpg",
+      // content : (<>These Animal Astronauts unlock massive influence in the growing ecosystem of the IC Gallery. The Moonwalker collection combines 3 essential forces of the Metaverse into 1 NFT.</>),
+    // },
   
   ];
   return (

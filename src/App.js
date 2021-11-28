@@ -28,6 +28,7 @@ import IVC from "./components/sale/IVC";
 import HauntedHamsters from "./components/sale/HauntedHamsters";
 import Poked from "./components/sale/Poked";
 import BlockchainHeroes from "./components/sale/BlockchainHeroes";
+import Imagination from "./components/sale/Imagination";
 import _c from './ic/collections.js';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -363,6 +364,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"moonwalkers"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/imagination" exact>
+              <Imagination
+                error={error}
+                view={"sale"}
+                sale={"imagination"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

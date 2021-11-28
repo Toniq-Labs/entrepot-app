@@ -274,6 +274,13 @@ export default function Listing(props) {
       return icpbunnyimg(props.listing[0])
     return "https://" + props.collection + ".raw.ic0.app/?tokenid=" + tokenid;
   };
+  
+  const nriLink = () => {
+    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=" + props.listing[0];
+    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=" + props.listing[0];
+    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=" + props.listing[0];
+    return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid;
+  };
   const showNri = () => {
     var collection = getCollection(props.collection);
     if (collection.nftv) {
@@ -287,10 +294,7 @@ export default function Listing(props) {
             <MuiTooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}>
               <a
                 style={{ color: "black", textDecoration: "none" }}
-                href={
-                  "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" +
-                  tokenid
-                }
+                href={nriLink()}
                 rel="noreferrer"
                 target="_blank"
               >

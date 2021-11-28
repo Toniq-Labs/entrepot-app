@@ -20,6 +20,7 @@ import nftIDL from './candid/nft.did.js';
 import moonwalkerIDL from './candid/moonwalker.did.js';
 import ic3dIDL from './candid/ic3d.did.js';
 import pokedIDL from './candid/poked.did.js';
+import imaginationIDL from './candid/imagination.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -82,6 +83,7 @@ class ExtConnection {
     "d3ttm-qaaaa-aaaai-qam4a-cai" : icdripIDL,
     "3db6u-aiaaa-aaaah-qbjbq-cai" : wrapperIDL,
     "bzsui-sqaaa-aaaah-qce2a-cai" : pokedIDL,
+    "px5ub-qqaaa-aaaah-qcjxa-cai" : imaginationIDL,
     "njgly-uaaaa-aaaah-qb6pa-cai" : icpuppy,
     "ahl3d-xqaaa-aaaaj-qacca-cai" : ictuts,
     "er7d4-6iaaa-aaaaj-qac2q-cai" : moonwalkerIDL,
