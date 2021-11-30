@@ -81,16 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "Imagination Project",
-      link : "/sale/imagination",
-      image : "/collections/imagination/collection.jpg",
-      content : (<>The Imagination Project, created 50 photographs over the course of a year, celebrating the human imagination in all its wild and vast diversity. Visualising 400 years of groundbreaking Patents.</>),
-    },
-    {
-      title : "Blockchain Heroes",
-      link : "/sale/blockchain-heroes",
-      image : "/collections/bh/collection.jpg",
-      content : (<>Be a part of blockchain history as the first ICP launch featuring packs of cards comes your way in the form of the best-selling Blockchain Heroes! Collect all 50 heroes!</>),
+      title : "ICSnakes",
+      link : "/sale/icsnakes",
+      image : "/collections/icsnakes/collection.jpg",
+      content : (<>First NFT with built-in mini-game! A collection of 10,000 randomly generated NFTs on the Internet Computer hunting for food.</>),
     },
     // {
       // title : "Poked Bots",

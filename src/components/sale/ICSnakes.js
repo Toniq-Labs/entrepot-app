@@ -50,7 +50,7 @@ export default function ICSnakes(props) {
   const [startTime, setStartTime] = React.useState(1638284400000);
   const [whitelist, setWhitelist] = React.useState(false);
   var whitelistend = 1638370800000;
-  var presaleprice = 45000000;
+  var presaleprice = 45000000n;
   var saleOver = false;  
   const params = useParams();
   
