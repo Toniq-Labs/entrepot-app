@@ -55,6 +55,10 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
+          link: "/sale/icsnakes",
+          img: "/banner/icsnakes.jpg",
+      },
+      {
           link: "/sale/imagination",
           img: "/banner/imagination.jpg",
       },

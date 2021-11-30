@@ -3,6 +3,28 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "3ifmd-wqaaa-aaaah-qckda-cai",
+    priority : 10,
+    name: "ICSnakes",
+    brief : "A collection of 10,000 randomly generated",
+    description : "First NFT with built-in mini-game! A collection of 10,000 randomly generated NFTs on the Internet Computer hunting for food.",
+    keywords : "Mini-game Snakes",
+    banner : "/collections/icsnakes/banner.jpg",
+    avatar : "/collections/icsnakes/avatar.jpg",
+    collection : "/collections/icsnakes/collection.jpg",
+    discord : "https://discord.com/invite/H9YUpwVrkQ",
+    twitter : "https://twitter.com/ICSnakes",
+    web : "https://xn--4n8h7h.ws/",
+    route: "icsnakes",
+    unit : "ICSnake",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "05860acf5b5478588e90557507d8c9c26dcff03289075c450d2dc39c6da39c28",
+    blurb: (<><p>We're bringing the first interactive NFTs to the Internet Computer! Our NFTs are not just art to show off to other collectors and appreciate, they offer an interactive experience where you can actually play with and enjoy your NFT in a whole new way. Every NFT image will have a mini-game built-in and is a unique avatar in the multiplayer game which is currently under development.</p></>),
+  },
+  {
     canister: "px5ub-qqaaa-aaaah-qcjxa-cai",
     priority : 10,
     name: "Imagination Project",
