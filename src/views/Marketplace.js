@@ -207,7 +207,7 @@ export default function Marketplace(props) {
                     return 0;
                 }
               }).map((collection, i) => {
-                return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
+                return (<Grid key={i} item md={4} sm={6} style={{ width:"100%", marginBottom: 20 }}>
                   <Card style={{height:375,}} className={classes.root}>
                     <a onClick={() => handleClick("/marketplace/"+collection.route)}><CardMedia
                       className={classes.media}

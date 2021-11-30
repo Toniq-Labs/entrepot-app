@@ -59,6 +59,10 @@ export default function Home(props) {
           img: "/banner/icsnakes.jpg",
       },
       {
+          link: "/sale/icapes",
+          img: "/banner/icapes.jpg",
+      },
+      {
           link: "/sale/imagination",
           img: "/banner/imagination.jpg",
       },
