@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "ICApes",
+      link : "/sale/icapes",
+      image : "/collections/icapes/collection.jpg",
+      content : (<>10,000 Unique Apes of Internet Computer. IC Apes are ready to take over the ecosystem.</>),
+    },
+    {
       title : "ICSnakes",
       link : "/sale/icsnakes",
       image : "/collections/icsnakes/collection.jpg",
