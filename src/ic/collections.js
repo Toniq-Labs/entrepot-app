@@ -26,7 +26,7 @@ var collections = [
     blurb: (<><p>IC Apes represent a collection of 10,000 apes. The Apes are stored on-chain in the Internet Computer. It’s the first generated Ape NFT collection for the ICP.</p><p>We make sure that every emerging product looks realistic, charismatic, strong and intelligent. We have worked for be more detailed and more realistic than alternatives in the market.</p><p>Our goal is to create a IC Ape Starter as a leading launchpad for the Internet Computer ecosystem. Also as a IC Ape Ventures, funding the innovative projects on the Internet Computer.</p></>),
   },
   {
-    canister: "zvycl-fyaaa-aaaah-qckmq-cai",
+    canister: "3ifmd-wqaaa-aaaah-qckda-cai",
     priority : 10,
     name: "ICSnakes",
     brief : "A collection of 10,000 randomly generated snake",

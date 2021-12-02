@@ -59,9 +59,7 @@ export default function ICApes(props) {
   
   const _updates = async () => {
     var stats = await api.canister("zvycl-fyaaa-aaaah-qckmq-cai").salesStats((props.account ? props.account.address : ""));
-    console.log(stats);
     setRound(stats[2][0]);
-    console.log(stats[2][0]);
     var cr = ["Round 3", "Public Round 1", "Public Round 2"].indexOf(stats[2][0]);
     setCurrentRoundNumber((cr < 0 ? 3 : cr));
     setPrice(stats[2][1]);
