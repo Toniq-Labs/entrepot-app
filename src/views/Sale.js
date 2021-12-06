@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "Tranquillity",
+      link : "/sale/tranquillity",
+      image : "/collections/tranquillity/avatar.jpg",
+      content : (<>The Tranquillity Collection is the first collection released by ICP Art - it is also a governing collection over the ART DAO.</>),
+    },
+    {
       title : "ICApes",
       link : "/sale/icapes",
       image : "/collections/icapes/collection.jpg",

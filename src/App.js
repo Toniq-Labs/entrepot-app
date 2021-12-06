@@ -21,16 +21,17 @@ import Typography from "@material-ui/core/Typography";
 import Iconic from "./views/Iconic";
 import Sale from "./views/Sale";
 import Contact from "./views/Contact";
-import Moonwalkers from "./components/sale/Moonwalkers";
-import DfinityBulls from "./components/sale/DfinityBulls";
-import IC3D from "./components/sale/IC3D";
-import IVC from "./components/sale/IVC";
-import HauntedHamsters from "./components/sale/HauntedHamsters";
-import Poked from "./components/sale/Poked";
-import BlockchainHeroes from "./components/sale/BlockchainHeroes";
+//import Moonwalkers from "./components/sale/Moonwalkers";
+//import DfinityBulls from "./components/sale/DfinityBulls";
+//import IC3D from "./components/sale/IC3D";
+//import IVC from "./components/sale/IVC";
+//import HauntedHamsters from "./components/sale/HauntedHamsters";
+//import Poked from "./components/sale/Poked";
+//import BlockchainHeroes from "./components/sale/BlockchainHeroes";
 import ICSnakes from "./components/sale/ICSnakes";
 import ICApes from "./components/sale/ICApes";
-import Imagination from "./components/sale/Imagination";
+//import Imagination from "./components/sale/Imagination";
+import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -361,51 +362,11 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
-            <Route path="/sale/moonwalkers" exact>
-              <Moonwalkers
+            <Route path="/sale/tranquillity" exact>
+              <Tranquillity
                 error={error}
                 view={"sale"}
-                sale={"moonwalkers"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/imagination" exact>
-              <Imagination
-                error={error}
-                view={"sale"}
-                sale={"imagination"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/dfinitybulls" exact>
-              <DfinityBulls
-                error={error}
-                view={"sale"}
-                sale={"dfinitybulls"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/blockchain-heroes" exact>
-              <BlockchainHeroes
-                error={error}
-                view={"sale"}
-                sale={"blockchain-heroes"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/poked" exact>
-              <Poked
-                error={error}
-                view={"sale"}
-                sale={"poked"}
+                sale={"tranquillity"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -426,36 +387,6 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icsnakes"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/ic3d" exact>
-              <IC3D
-                error={error}
-                view={"sale"}
-                sale={"ic3d"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/ivc" exact>
-              <IVC
-                error={error}
-                view={"sale"}
-                sale={"ivc"}
-                alert={alert}
-                confirm={confirm}
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/hauntedhamsters" exact>
-              <HauntedHamsters
-                error={error}
-                view={"sale"}
-                sale={"hauntedhamsters"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -485,14 +416,8 @@ export default function App() {
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
-            <Route path="/cardtest" exact>
-              <CardTest error={error} alert={alert} confirm={confirm} loader={loader} />
-            </Route>
             <Route path="/" exact>
               <Home error={error} alert={alert} confirm={confirm} loader={loader} />
-            </Route>
-            <Route path="/iconic2021" exact>
-              <Iconic error={error} alert={alert} confirm={confirm} loader={loader} />
             </Route>
             <Route path="/sale" exact>
               <Sale error={error} alert={alert} confirm={confirm} loader={loader} />

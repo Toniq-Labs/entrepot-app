@@ -3,6 +3,29 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "6243o-giaaa-aaaah-qck5q-cai",
+    priority : 10,
+    name: "Tranquillity",
+    brief : "99 Hand-Crafted Pastel Paintings",
+    description : "The Tranquillity Collection is the first collection released by ICP Art - it is also a governing collection over the ART DAO.",
+    keywords : "ART DAO GOVERNANCE",
+    banner : "/collections/tranquillity/avatar.jpg",
+    avatar : "/collections/tranquillity/avatar.jpg",
+    collection : "/collections/tranquillity/avatar.jpg",
+    discord : "https://discord.gg/pgaXM88PgQ",
+    twitter : "https://twitter.com/ICP_Art",
+    telegram : "https://t.me/TheICPArt",
+    route: "tranquillity",
+    unit : "Painting",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "2975800b3ff4ad824bdf559793c3b2bedbbdfb2350fc32d29e0274e3faa6626a",
+    blurb: (<><p>The Tranquility Collection is the first collection released by ICP Art. It is a set of 99 Hand-Crafted 1 of 1 Pastel Paintings, that governs the ART DAO.
+The ART DAO is a platform that allows the user to contribute to the creative process of creating NFTs, and decide the type of artwork they'd like to see in the ecosystem.</p></>),
+  },
+  {
     canister: "zvycl-fyaaa-aaaah-qckmq-cai",
     priority : 10,
     name: "ICApes",
