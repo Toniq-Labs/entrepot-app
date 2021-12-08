@@ -81,16 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "Tranquillity",
-      link : "/sale/tranquillity",
-      image : "/collections/tranquillity/avatar.jpg",
-      content : (<>The Tranquillity Collection is the first collection released by ICP Art - it is also a governing collection over the ART DAO.</>),
-    },
-    {
-      title : "ICApes",
-      link : "/sale/icapes",
-      image : "/collections/icapes/collection.jpg",
-      content : (<>10,000 Unique Apes of Internet Computer. IC Apes are ready to take over the ecosystem.</>),
+      title : "Yolo Octopus",
+      link : "/sale/yolo-octopus",
+      image : "/collections/yolo/avatar.jpg",
+      content : (<>'You Only Live Once' - No NFTs will sit idle. Amazing tools where u can create animation, add music & enter DIGITAL STUDIO. 3D collection will also be launched soon.</>),
     },
     {
       title : "ICSnakes",

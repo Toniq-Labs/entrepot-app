@@ -3,6 +3,28 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "xzxhy-oiaaa-aaaah-qclnq-cai",
+    priority : 10,
+    name: "YOLO Octopus",
+    brief : "8888 Octopi with YOLO lifestyle",
+    description : "'You Only Live Once' - No NFTs will sit idle. Amazing tools where u can create animation, add music & enter DIGITAL STUDIO. 3D collection will also be launched soon.",
+    keywords : "#YoloOctopus #YoloClubToken #Metaverse #YoloTools #Yolo3D",
+    banner : "/collections/yolo/banner.jpg",
+    avatar : "/collections/yolo/avatar.jpg",
+    collection : "/collections/yolo/collection.jpg",
+    discord : "https://discord.gg/GqvD72BnCH",
+    twitter : "https://twitter.com/EnterYoloClub",
+    web : "https://enteryoloclub.com/",
+    route: "yolo-octopus",
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "3610ebfa5e29be650360e20fa93622625cdddcda7b45902f160f33cfcd1ea3c1",
+    blurb: (<><p>YOLO pass launch in Q1 2022 in which you are eligible for 1. future airdrops 2. Free to use tools - Build, animate, add music and much more 3. Enter pre-mint stage for future collections 4. Limited edition merchandise 5. Free entry to digital STUDIO ?In Q1 2022 : Integration of characters in our Gaming world which is based on the concept of Play to Earn with Real Time Al generated wearables and collectibles?In Q2 2022 our land sales will begin for our metaverse backed by YOLO token.</p></>),
+  },
+  {
     canister: "6243o-giaaa-aaaah-qck5q-cai",
     priority : 10,
     name: "Tranquillity",

@@ -333,12 +333,11 @@ export default function Mint(props) {
     for(var i = 0; i < selectedFiles.length; i++) {
       props.loader(true, "Working on "+selectedFiles[i].name);
       var payload = new Uint8Array(await selectedFiles[i].arrayBuffer());
-      //var thumb = await generateThumbnail(selectedFiles[i], [300,300]);
-      //var tpayload = new Uint8Array(await thumb.arrayBuffer());
+      var thumb = await generateThumbnail(selectedFiles[i], [300,300]);
+      var tpayload = new Uint8Array(await thumb.arrayBuffer());
       var tb = [{
-        ctype : "",//thumb.type,
-        //data : [[...tpayload]]
-        data : []
+        ctype : thumb.type,
+        data : [[...tpayload]]
       }]
       var pl = [...payload];
       var args = {
