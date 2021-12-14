@@ -55,7 +55,7 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
-          link: false,
+          link: "/sale/memecake",
           img: "/banner/mc.jpg"
       },
       {

@@ -31,6 +31,7 @@ import Contact from "./views/Contact";
 import ICSnakes from "./components/sale/ICSnakes";
 import ICApes from "./components/sale/ICApes";
 import Yolo from "./components/sale/Yolo";
+import Memecake from "./components/sale/Memecake";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
@@ -368,6 +369,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"yolo-octopus"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/memecake" exact>
+              <Memecake
+                error={error}
+                view={"sale"}
+                sale={"memecake"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

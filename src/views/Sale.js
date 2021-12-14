@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "MemeCake",
+      link : "/sale/memecake",
+      image : "/collections/mc/avatar.png",
+      content : (<>'Meme Cake is a Social NFT marketplace.</>),
+    },
+    {
       title : "Yolo Octopus",
       link : "/sale/yolo-octopus",
       image : "/collections/yolo/avatar.jpg",
