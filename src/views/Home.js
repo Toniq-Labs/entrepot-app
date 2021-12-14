@@ -55,12 +55,28 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
+          link: false,
+          img: "/banner/mc.jpg"
+      },
+      {
+          link: false,
+          img: "/banner/cyman.jpg"
+      },
+      {
+          link: false,
+          img: "/banner/ickitties.png"
+      },
+      {
           link: "/sale/icsnakes",
           img: "/banner/icsnakes.jpg",
       },
       {
           link: "/marketplace/p2j",
           img: "/banner/canistore.jpg"
+      },
+      {
+          link: "/marketplace/tranquillity",
+          img: "/banner/icart.png",
       },
       // {
           // link: false,
@@ -98,15 +114,15 @@ export default function Home(props) {
           }}
         >
           <div className={classes.banner}>
-            <Carousel autoPlay={false} interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
+            <Carousel style={{height:485}} autoPlay={false} interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
               {
                 items.map( (item, i) => {
                   if (item.video) {
                     return (<a key={i} href={item.link}><ReactPlayer style={{borderRadius:30}} width={1200} height={484}   playing={true} url='/bch-entrepot.mp4' /></a>)
                   } else if (item.link) {
-                    return (<a key={i} href={item.link}><img className={classes.bannerimg} src={item.img} /></a>)
+                    return (<a key={i} href={item.link}><div style={{borderRadius:30, height:485, background: "url('"+item.img+"') center center / cover no-repeat"}}></div></a>)
                   } else {
-                    return (<img key={i} className={classes.bannerimg} src={item.img} />)
+                    return (<div key={i} style={{borderRadius:30, height:485, background: "url('"+item.img+"') center center / cover no-repeat"}}></div>)
                   };
                 })
               }
