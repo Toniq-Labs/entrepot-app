@@ -83,13 +83,13 @@ export default function Iconic(props) {
     {
       title : "MemeCake",
       link : "/sale/memecake",
-      image : "/collections/mc/avatar.png",
+      image : "/collections/mc/collection.jpg",
       content : (<>'Meme Cake is a Social NFT marketplace.</>),
     },
     {
       title : "Yolo Octopus",
       link : "/sale/yolo-octopus",
-      image : "/collections/yolo/avatar.jpg",
+      image : "/collections/yolo/collection.jpg",
       content : (<>'You Only Live Once' - No NFTs will sit idle. Amazing tools where u can create animation, add music & enter DIGITAL STUDIO. 3D collection will also be launched soon.</>),
     },
     {
