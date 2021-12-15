@@ -55,12 +55,12 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
       {
-          link: "/sale/memecake",
-          img: "/banner/mc.jpg"
+          link: "/sale/cyman",
+          img: "/banner/cyman.jpg"
       },
       {
-          link: false,
-          img: "/banner/cyman.jpg"
+          link: "/sale/memecake",
+          img: "/banner/mc.jpg"
       },
       {
           link: false,
@@ -74,10 +74,10 @@ export default function Home(props) {
           link: "/marketplace/p2j",
           img: "/banner/canistore.jpg"
       },
-      {
-          link: "/marketplace/tranquillity",
-          img: "/banner/icart.png",
-      },
+      // {
+          // link: "/marketplace/tranquillity",
+          // img: "/banner/icart.png",
+      // },
       // {
           // link: false,
           // img: "/banner/rotm.png"

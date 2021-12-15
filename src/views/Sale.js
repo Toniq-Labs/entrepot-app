@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "CYMAN",
+      link : "/sale/cyman",
+      image : "/collections/cyman/collection.jpg",
+      content : (<>'CYMAN is a collection initially composed of 7,777 fully deconstructable NFTs. CYMAN is an evolving metaversal project with the goal to span out.</>),
+    },
+    {
       title : "MemeCake",
       link : "/sale/memecake",
       image : "/collections/mc/collection.jpg",

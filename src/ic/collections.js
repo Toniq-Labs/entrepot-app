@@ -3,6 +3,28 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "xphpx-xyaaa-aaaah-qcmta-cai",
+    priority : 10,
+    name: "CYMAN",
+    brief : "7,777 randomly generated cybernetic humanoids",
+    description : "CYMAN is a collection initially composed of 7,777 fully deconstructable NFTs. CYMAN is an evolving metaversal project with the goal to span out into real world activations, brand partnerships, event ticketing and gaming collaborations.",
+    keywords : "Utility Gamefi Staking",
+    banner : "/collections/cyman/banner.jpg",
+    avatar : "/collections/cyman/avatar.jpg",
+    collection : "/collections/cyman/collection.jpg",
+    discord : "https://discord.gg/cyman",
+    twitter : "https://twitter.com/cyman_live",
+    web : "https://www.cyman.live/",
+    route: "cyman",
+    unit : "CYMAN",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "2b07d34e254e077e0ef01b1784fcd790016057781e67dbdccc59217ccad725fb",
+    blurb: (<><p>Welcome to CYMAN. Lead artist Brad Donovan has teamed up with Dfinity's own Arthur Falls, Toniq Labs, and creative studio Vesica Aotearoa to create a universe of cybernetic humanoids called CYMAN from 550BC. This project is composed of 7,777 CYMEN that will be deconstructable and eventually fully customisable. The core utility of the NFT will be as an access token for CYMAN-exclusive online media, real-world events, and gaming collaborations.</p><p>Gen0 CYMEN will be breedable as the project grows we will introduce more characters and developments into the CYMAN story that will add value to the original CYMEN.</p></>),
+  },
+  {
     canister: "txr2a-fqaaa-aaaah-qcmkq-cai",
     priority : 10,
     name: "Meme Cake",
