@@ -81,10 +81,16 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "ICPets",
+      link : "/sale/icpets",
+      image : "/collections/icpets/collection.png",
+      content : (<>Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community.</>),
+    },
+    {
       title : "CYMAN",
       link : "/sale/cyman",
       image : "/collections/cyman/collection.jpg",
-      content : (<>'CYMAN is a collection initially composed of 7,777 fully deconstructable NFTs. CYMAN is an evolving metaversal project with the goal to span out.</>),
+      content : (<>CYMAN is a collection initially composed of 7,777 fully deconstructable NFTs. CYMAN is an evolving metaversal project with the goal to span out.</>),
     },
     {
       title : "MemeCake",

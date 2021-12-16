@@ -30,6 +30,7 @@ import Contact from "./views/Contact";
 //import BlockchainHeroes from "./components/sale/BlockchainHeroes";
 import ICSnakes from "./components/sale/ICSnakes";
 import ICApes from "./components/sale/ICApes";
+import ICPets from "./components/sale/ICPets";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
@@ -380,6 +381,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"Cyman"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/icpets" exact>
+              <ICPets
+                error={error}
+                view={"sale"}
+                sale={"icpets"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
