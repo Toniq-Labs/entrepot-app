@@ -48,13 +48,13 @@ export default function ICPets(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(80000000n);
   const [remaining, setRemaining] = React.useState(false);
-  const [startTime, setStartTime] = React.useState(1639663200000);
+  const [startTime, setStartTime] = React.useState(1639666800000);
   const [whitelist, setWhitelist] = React.useState(false);
   const [round, setRound] = React.useState("Loading...");
   const [roundRemaining, setRoundRemaining] = React.useState(0);
   const [currentRoundNumber, setCurrentRoundNumber] = React.useState(2);
   var whitelistPrice = 50000000n;
-  var whitelistEnd = 1639677600000;
+  var whitelistEnd = 1639681200000;
   var totalToSell = 8757;
   var saleOver = false;  
   const params = useParams();
@@ -201,9 +201,7 @@ export default function ICPets(props) {
             <>
               {whitelist && Date.now() < whitelistEnd  ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can purchase up to 10 at the whitelist price of {_showListingPrice(whitelistPrice)} ICP!</span></strong></p>
-                    { Date.now() < startTime ?
-                    <p><strong><span style={{fontSize:"20px",color:"black"}}>The whitelist sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong><br /><br /></p> : "" }
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can purchase up to 10 at the whitelist price of {_showListingPrice(whitelistPrice)} ICP!</span></strong><br /><br /></p>
                 </> : ""
               }
               {whitelist && Date.now() >= startTime && Date.now() < whitelistEnd ? 
@@ -241,10 +239,12 @@ export default function ICPets(props) {
                   
                 </> : ""
               }
+              { Date.now() < startTime ?
+                <p><strong><span style={{fontSize:"20px",color:"black"}}>The whitelist sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong><br /><br /></p> : "" }
+              { Date.now() >= startTime && Date.now() < whitelistEnd && !whitelist ?
+                <p><strong><span style={{fontSize:"20px",color:"black"}}>You are not whitelisted to participate in the whitelist round!</span></strong><br /><br /></p> : ""}
               { Date.now() < whitelistEnd ? 
-                <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistEnd/1000} />!</span></strong></p>
-                </> : ""
+                <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistEnd/1000} />!</span></strong></p> : ""
               }
             </>
           : 
