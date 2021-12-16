@@ -149,20 +149,20 @@ export default function ICPets(props) {
     [
       [1, 65000000n],
       [3, 195000000n],
-      [5, 310000000n],
-      [20, 1180000000n],
+      [5, 325000000n],
+      [20, 1300000000n],
     ],
     [
       [1, 75000000n],
       [3, 225000000n],
-      [5, 350000000n],
-      [20, 1350000000n],
+      [5, 375000000n],
+      [20, 1500000000n],
     ],
     [
       [1, 80000000n],
       [3, 240000000n],
-      [5, 375000000n],
-      [20, 1450000000n],
+      [5, 400000000n],
+      [20, 1600000000n],
     ],
     [[]],
   ]
@@ -179,7 +179,7 @@ export default function ICPets(props) {
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{round}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>ROUND PRICE</strong><br />
+            <strong>CURRENT PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
@@ -201,7 +201,7 @@ export default function ICPets(props) {
             <>
               {whitelist && Date.now() < whitelistEnd  ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can purchase up to 10 at the whitelist price of {_showListingPrice(whitelistPrice)} ICP!</span></strong><br /><br /></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can purchase up to 10 ICPets during the whitelist period. The first 1357 ICPets are discounted to 0.50 ICP each!</span></strong><br /><br /></p>
                 </> : ""
               }
               {whitelist && Date.now() >= startTime && Date.now() < whitelistEnd ? 
@@ -210,10 +210,10 @@ export default function ICPets(props) {
                     <Button
                       variant={"contained"}
                       color={"primary"}
-                      onClick={() => buyFromSale(1, whitelistPrice)}
+                      onClick={() => buyFromSale(1, price)}
                       style={{ fontWeight: "bold", margin: "0 auto" }}
                     >
-                      Buy 1 ICPet<br />for {_showListingPrice(whitelistPrice)} ICP
+                      Buy 1 ICPet<br />for {_showListingPrice(price)} ICP
                     </Button>
                   </Grid>
                   <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
