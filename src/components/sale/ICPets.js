@@ -210,7 +210,7 @@ export default function ICPets(props) {
                     <Button
                       variant={"contained"}
                       color={"primary"}
-                      onClick={() => buyFromSale(1, price)}
+                      onClick={() => buyFromSale(1, whitelistPrice)}
                       style={{ fontWeight: "bold", margin: "0 auto" }}
                     >
                       Buy 1 ICPet<br />for {_showListingPrice(whitelistPrice)} ICP
