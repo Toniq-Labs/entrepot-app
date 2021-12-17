@@ -17,7 +17,7 @@ var collections = [
     twitter : "https://twitter.com/ICKitties",
     //medium : "https://medium.com/@icpets01/introducing-icpets-the-hold-2-earn-nft-on-the-ic-ecosystem-8111c1550caf",
     web : "https://www.ickitties.com/",
-    route: "icpets",
+    route: "ickitties",
     unit : "IC Pet",
     nftv : false,
     mature: false,
