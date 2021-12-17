@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "ICPets",
-      link : "/sale/icpets",
-      image : "/collections/icpets/collection.png",
-      content : (<>Community Revenue Focused NFT Project. ICPets is a Hold-2-Earn lifestyle aimed to increase your earnings through passive income and to build a strong community.</>),
+      title : "IC Kitties",
+      link : "/sale/ickitties",
+      image : "/collections/ickitties/collection.jpg",
+      content : (<>Get into the Kittyverse by joining one of the 7 Kingdoms of our world and discover the beautiful wonders waiting inside.</>),
     },
     {
       title : "CYMAN",

@@ -84,6 +84,7 @@ class ExtConnection {
     "d3ttm-qaaaa-aaaai-qam4a-cai" : icdripIDL,
     "3db6u-aiaaa-aaaah-qbjbq-cai" : wrapperIDL,
     "bzsui-sqaaa-aaaah-qce2a-cai" : pokedIDL,
+    "v3zkd-syaaa-aaaah-qcm5a-cai" : icapesIDL,
     "unssi-hiaaa-aaaah-qcmya-cai" : icapesIDL,
     "zvycl-fyaaa-aaaah-qckmq-cai" : icapesIDL,
     "px5ub-qqaaa-aaaah-qcjxa-cai" : imaginationIDL,
