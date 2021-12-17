@@ -110,8 +110,10 @@ export default function Sold(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
+                {props.collection === "v3zkd-syaaa-aaaah-qcm5a-cai" ? 
+                <object alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} data={nftImg()} onLoad={() => setImgLoaded(true)}></object>:<>
                 <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  /></>}
               </div>
             </a>
             

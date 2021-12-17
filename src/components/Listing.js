@@ -357,6 +357,9 @@ export default function Listing(props) {
           {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? (
             <a href={nftLink()} rel="noreferrer" target="_blank">
             <div style={{ ...styles.avatarSkeletonContainer }}>
+              {props.collection === "v3zkd-syaaa-aaaah-qcm5a-cai" ? 
+              <object alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} data={nftImg()} onLoad={() => setImgLoaded(true)}></object>
+              :<>
               <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} />
               <Skeleton
                 style={{
@@ -364,7 +367,7 @@ export default function Listing(props) {
                   display: imgLoaded ? "none" : "block",
                 }}
                 variant="rect"
-              />
+              /></>}
             </div>
             </a>
             ) : (
