@@ -153,10 +153,8 @@ export default function NFT(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection === "v3zkd-syaaa-aaaah-qcm5a-cai" ? 
-                <object alt={props.nft.id} style={{...styles.avatarImg}} data={nftImg()} onload={() => setImgLoaded(true)}></object>:<>
                 <img alt={props.nft.id} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  /></>}
+                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
                 {showWrapped()}
               </div>
             </a>
