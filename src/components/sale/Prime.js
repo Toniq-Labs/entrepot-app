@@ -191,7 +191,7 @@ export default function Prime(props) {
               }
               {whitelist && Date.now() >= startTime ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint up to 3 NFTs at 0.2ICP (limited to first 250 sold)!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint up to 3 NFTs at 0.1ICP each (limited to first 250 sold)!</span></strong></p>
                   
                   <>
                     <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
