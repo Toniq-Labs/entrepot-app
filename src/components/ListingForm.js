@@ -24,7 +24,8 @@ export default function ListingForm(props) {
   const _submit = p => {
     //Submit to blockchain here
     handleClose();
-    props.list(props.nft.id, p);
+    console.log(props.buttonLoader, 't3');
+    props.list(props.nft.id, p, props.buttonLoader);
   };
   const handleClose = () => {
     setPrice(0);

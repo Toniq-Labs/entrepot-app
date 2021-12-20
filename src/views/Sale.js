@@ -81,16 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "IC Kitties",
-      link : "/sale/ickitties",
-      image : "/collections/ickitties/collection.jpg",
-      content : (<>Get into the Kittyverse by joining one of the 7 Kingdoms of our world and discover the beautiful wonders waiting inside.</>),
-    },
-    {
-      title : "CYMAN",
-      link : "/sale/cyman",
-      image : "/collections/cyman/collection.jpg",
-      content : (<>CYMAN is a collection initially composed of 7,777 fully deconstructable NFTs. CYMAN is an evolving metaversal project with the goal to span out.</>),
+      title : "Prime8s",
+      link : "/sale/prime8s",
+      image : "/collections/prime8s/collection.jpg",
+      content : (<>Welcome to the Jungle! We've got plans in place to make ICPrime8s one of the best NFT collections on the IC. Stay tuned for more updates!</>),
     },
     {
       title : "MemeCake",

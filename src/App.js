@@ -32,6 +32,7 @@ import ICSnakes from "./components/sale/ICSnakes";
 import ICApes from "./components/sale/ICApes";
 import ICPets from "./components/sale/ICPets";
 import ICKitties from "./components/sale/ICKitties";
+import Prime from "./components/sale/Prime";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
@@ -372,6 +373,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"yolo-octopus"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/prime8s" exact>
+              <Prime
+                error={error}
+                view={"sale"}
+                sale={"prime8s"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import _c from '../ic/collections.js';
 var collections = _c;
 const _showListingPrice = n => {
@@ -21,6 +22,8 @@ const getCollection = c => {
 export default function NFT(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [currentBtn, setCurrentBtn] = React.useState(null);
+  const [currentBtnText, setCurrentBtnText] = React.useState(false);
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -46,27 +49,42 @@ export default function NFT(props) {
       objectFit: "contain",
     },
   };
+  const buttonLoader = (enabled) => {
+    if (enabled) setCurrentBtnText("Loading...");
+    else setCurrentBtnText(false);
+  };
+  const buttonPush = btn => {
+    var clickev = btn;
+    if (typeof btn == 'number') {
+      setCurrentBtn(btn)
+      clickev = getButtons()[btn][1];
+    }
+    //buttonLoader("test", false);
+    clickev();
+    //setCurrentBtn(null)
+  };
+  var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
   const getButtons = () => {
     var buttons = [];
     if(props.nft.listing) {      
-      buttons.push(["Update", () => props.listNft(props.nft)]);
-      buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+      buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft(props.nft, buttonLoader)]);
+      buttons.push(["Transfer", () => props.transferNft(props.nft, buttonLoader)]);
     } else {
       if (wrappedCanisters.concat(unwrappedCanisters).indexOf(props.nft.canister) < 0) {
-        buttons.push(["Sell", () => props.listNft(props.nft)]);
-        buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+        buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft(props.nft, buttonLoader)]);
+        buttons.push(["Transfer", () => props.transferNft(props.nft, buttonLoader)]);
       } else {
         if (unwrappedCanisters.indexOf(props.nft.canister) >= 0) {
-          buttons.push(["Sell", () => props.wrapAndlistNft(props.nft)]);
-          buttons.push(["Transfer", () => props.transferNft(props.nft)]);
+          buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.wrapAndlistNft(props.nft, buttonLoader)]);
+          buttons.push(["Transfer", () => props.transferNft(props.nft, buttonLoader)]);
         } else {
-          buttons.push(["Sell", () => props.listNft(props.nft)]);
-          buttons.push(["Transfer", () => props.transferNft(props.nft)]);
-          buttons.push(["Unwrap", () => props.unwrapNft(props.nft)]);
+          buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft(props.nft, buttonLoader)]);
+          buttons.push(["Transfer", () => props.transferNft(props.nft, buttonLoader)]);
+          buttons.push(["Unwrap", () => props.unwrapNft(props.nft, buttonLoader)]);
         };
       }
       if (props.nft.canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && props.nft.index >= 25000) {
-        buttons.push(["Open", () => props.unpackNft(props.nft)]);
+        buttons.push(["Open", () => props.unpackNft(props.nft, buttonLoader)]);
       };
     }
     return buttons;
@@ -168,11 +186,11 @@ export default function NFT(props) {
                 <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 
                   {getButtons().length > 0 ?
                     <>
-                      <Grid item lg={4} md={6}><Button onClick={() => getButtons()[0][1]()} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
+                      <Grid item lg={6} md={6}><Button onClick={() => buttonPush(0)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
                       {getButtons().length == 2 ?
-                        <Grid item lg={4} md={6}><Button onClick={() => getButtons()[1][1]()} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
+                        <Grid item lg={6} md={6}><Button onClick={() => buttonPush(1)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
                       :
-                      <Grid item lg={4} md={6}>
+                      <Grid item lg={6} md={6}>
                         <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
                         <Menu
                           anchorEl={anchorEl}
@@ -185,7 +203,7 @@ export default function NFT(props) {
                           onClose={() => setAnchorEl(null)}
                         >
                           {getButtons().slice(1).map(a => {
-                            return (<MenuItem onClick={() => {setAnchorEl(null); a[1]()}}>{a[0]}</MenuItem>);
+                            return (<MenuItem onClick={() => {setAnchorEl(null); buttonPush(a)}}>{a[0]}</MenuItem>);
                           })}
                         </Menu>
                       </Grid>

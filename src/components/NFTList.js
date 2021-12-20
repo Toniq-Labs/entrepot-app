@@ -49,6 +49,7 @@ const canisterMap= {
   "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
   "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
 };
+var buttonLoader= false;
 export default function NFTList(props) {
   const params = useParams();
   const history = useHistory();
@@ -61,6 +62,7 @@ export default function NFTList(props) {
   const [openListingForm, setOpenListingForm] = React.useState(false);
   const [openTransferForm, setOpenTransferForm] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
+  console.log(buttonLoader,'a');
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSizeNFT") ?? "small");
   const changeGrid = (e, a) => {
     localStorage.setItem("_gridSizeNFT", a);
@@ -90,8 +92,10 @@ export default function NFTList(props) {
     setPlayOpener(false)
     setTimeout(() => setTokenNFT(''), 300);
   };
-  const listNft = (token) => {
+  const listNft = (token, loader) => {
     setTokenNFT(token);
+    console.log(loader, 't1');
+    buttonLoader = loader;
     setOpenListingForm(true);
   }
   const cancelNft = (token) => {
@@ -168,25 +172,23 @@ export default function NFTList(props) {
       return props.error(e);
     };
   };
-  const list = async (id, price) => {
+  const list = async (id, price, loader) => {
     //Submit to blockchain here
-    props.loader(true);
+    console.log(loader, 't2');
+    if (loader) loader(true);
     const api = extjs.connect("https://boundary.ic0.app/", props.identity);
     api.token(id).list(props.currentAccount, price).then(r => {
       if (r) {
-        refresh();
-        props.loader(false);
-        return props.alert("Transaction complete", "Your listing has been updated");
+        refresh().then(() => (loader ? loader(false) : ""));
+        return;// props.alert("Transaction complete", "Your listing has been updated");
       } else {        
-        props.loader(false);
-        return props.error("Something went wrong with this transfer");
+        if (loader) loader(false);
+        return;// props.error("Something went wrong with this transfer");
       }
     }).catch(e => {
-      props.loader(false);
-      return props.error("There was an error: " + e);
-    }).finally(() => {
-      props.loader(false);
-    });
+      if (loader) loader(false);
+      return;// props.error("There was an error: " + e);
+    })
   };
   const applyFilters = a => {
     if (collection?.canister === "tde7l-3qaaa-aaaah-qansa-cai" && wearableFilter !== "all") {
@@ -243,6 +245,8 @@ export default function NFTList(props) {
     _updates().then(() => {
       props.loader(false);        
     });
+    //console.log(JSON.stringify(nfts.slice().sort((a,b) => (Number(getNri(collection?.canister, b.index))*100)-(Number(getNri(collection?.canister, a.index))*100)).map(a => a.index).slice(60).filter((a,i) => i % 2 == 0).slice(0,125)))
+    //console.log(nfts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account.address, collection]);
   
@@ -276,6 +280,7 @@ export default function NFTList(props) {
               onChange={changeSort}
             >
               <MenuItem value={"mint_number"}>Minting #</MenuItem>
+              <MenuItem value={"listing"}>Listing Price</MenuItem>
               {["e3izy-jiaaa-aaaah-qacbq-cai", "nbg4r-saaaa-aaaah-qap7a-cai", "poyn6-dyaaa-aaaah-qcfzq-cai"].indexOf(collection?.canister) >= 0 ? <MenuItem value={"type"}>Rare Type</MenuItem> : ""}
               { collection.nftv ? <MenuItem value={"gri"}>NFT Rarity Index</MenuItem> : "" }
             </Select>
@@ -319,6 +324,11 @@ export default function NFTList(props) {
                   >
                     {nfts.slice().sort((a,b) => {
                       switch(sort) {
+                        case "listing":
+                          if (!a.listing && !b.listing) return 0;
+                          if (!a.listing) return 1;
+                          if (!b.listing) return -1;
+                          return Number(b.listing.price)-Number(a.listing.price);
                         case "gri":
                           return (Number(getNri(collection?.canister, b.index))*100)-(Number(getNri(collection?.canister, a.index))*100);
                         case "recent":
@@ -373,8 +383,8 @@ export default function NFTList(props) {
         {(nfts.length > perPage ?
         (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(nfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
       </div>
-      <TransferForm transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
-      <ListingForm collections={props.collections} collection={collection} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <TransferForm buttonLoader={buttonLoader} transfer={transfer} alert={props.alert} open={openTransferForm} close={closeTransferForm} loader={props.loader} error={props.error} nft={tokenNFT} />
+      <ListingForm buttonLoader={buttonLoader} collections={props.collections} collection={collection} list={list} alert={props.alert} open={openListingForm} close={closeListingForm} loader={props.loader} error={props.error} nft={tokenNFT} />
       <Opener alert={props.alert} nft={tokenNFT} identity={props.identity} currentAccount={props.currentAccount} open={playOpener} onEnd={closeUnpackNft} />
     </div>
   )
