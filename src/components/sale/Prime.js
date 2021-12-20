@@ -49,7 +49,7 @@ export default function Prime(props) {
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1640012400000);
   const [whitelist, setWhitelist] = React.useState(false);
-  var presaleprice = 20000000n;
+  var presaleprice = 10000000n;
   var totalToSell = 3550;
   var saleOver = false;  
   const params = useParams();
@@ -148,7 +148,7 @@ export default function Prime(props) {
     <>
       <div style={styles.main}>
         <div className={classes.banner}>
-        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "center", backgroundSize: "cover",backgroundImage:"url('/collections/prime8s/banner.png')"}}></div>
+        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "center", backgroundSize: "cover",backgroundImage:"url('/collections/prime8s/banner.jpg')"}}></div>
         <h1>Welcome to the official Prime8s sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>

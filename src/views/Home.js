@@ -56,7 +56,7 @@ export default function Home(props) {
   var items = [
       {
           link: "/sale/prime8s",
-          img: "/banner/prime8s.png"
+          img: "/banner/prime8s.jpg"
       },
       {
           link: "/sale/memecake",
