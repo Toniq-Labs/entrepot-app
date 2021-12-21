@@ -84,13 +84,13 @@ export default function Iconic(props) {
       title : "SwordNFT",
       link : "/sale/sword",
       image : "/collections/sword/collection.jpg",
-      content : (<>NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!</>),
+      content : (<>This collection was designed with the intent of game/metaverse intergration in the future.</>),
     },
     // {
       // title : "FlokiCyberPunk",
       // link : "/sale/floki",
       // image : "/collections/floki/collection.png",
-      // content : (<>This collection was designed with the intent of game/metaverse intergration in the future.</>),
+      // content : (<>NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!</>),
     // },
     {
       title : "MemeCake",
