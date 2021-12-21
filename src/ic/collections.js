@@ -2,6 +2,62 @@ import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 
 var collections = [
+  // {
+    // canister: "5367t-oaaaa-aaaah-qcnlq-cai",
+    // priority : 10,
+    // name: "FlokiCyberPunk",
+    // brief : "Farm ICP in the game FlokiCyberPunk!",
+    // description : "NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!",
+    // keywords : "GameFi NFT",
+    // banner : "/collections/floki/banner.png",
+    // avatar : "/collections/floki/avatar.jpg",
+    // collection : "/collections/floki/collection.png",
+    // //telegram : "https://t.me/icpets",
+    // discord : "https://discord.com/invite/ytypDeM2Fv",
+    // twitter : "https://twitter.com/flokicyberpunk",
+    // //medium : "https://medium.com/@ICPrime8s",
+    // web : "https://flokicyberpunk.com/",
+    // route: "flokicyberpunk",
+    // unit : "Floki",
+    // nftv : false,
+    // mature: false,
+    // market : true,
+    // commission: 0.11,
+    // comaddress: "a1e0ae5c0fe809215a46e82b08ceb4b437dbe5e84c7480335252427e365bf3a2",
+    // blurb: (<><p>Total 4500 NFT FlokiCyberpunk in Internet Computer (ICP).</p>
+// <p>Play and earn ICP tokens depending on your NFT, the priority in the game will be<br />
+// Common (no zeros) - x2 priority,<br />
+// Rare (one zero) - x3 priority,<br />
+// Super Rare (two zeros) - x5 priority,<br />
+// Legendary (three zeros) - x7 priority,<br />
+// Unique - (four zeros) x10 priority</p>
+// <p>But even if you buy and you come across a Common, you will still have advantages over other players who do not have NFT FlokiCyberPunk!</p><p>The owners of NFT FlokiCyberPunk will have a special avatar armor, all other NFT owners will not have such armor!
+// Therefore, the owners of NFT FlokiCyberPunk can earn 2-10 times more than all other users.</p></>),
+  // },
+  {
+    canister: "4kubm-wiaaa-aaaah-qcnoa-cai",
+    priority : 10,
+    name: "TheSwordNFT - Ninjas",
+    brief : "10k Unique Ninjas from TheSwordNFT",
+    description : "This collection was designed with the intent of game/metaverse intergration in the future.",
+    keywords : "Utility Game Metaverse Miniverse RPG",
+    banner : "/collections/sword/banner.png",
+    avatar : "/collections/sword/avatar.jpg",
+    collection : "/collections/sword/collection.jpg",
+    //telegram : "https://t.me/icpets",
+    discord : "https://discord.gg/Xgc5zTrdSb",
+    twitter : "https://twitter.com/TheSwordNft",
+    //medium : "https://medium.com/@ICPrime8s",
+    web : "http://TheSwordNFT.com",
+    route: "sword",
+    unit : "SwordNFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    commission: 0.035,
+    comaddress: "0389f1b21ce2f0aa73502b2be4625969b928eff002e2ff39161b50a98c18fbcd",
+    blurb: (<><p>TheSwordNFT is a collection of Warriors and Guardians. The first series from the Warriors collection is Ninjas. These characters are designed to be a part of balanced game in which the NFT attributes play a role in game mechanics. There are 14 weapons, 3 skins, and 4 environments to choose from. If you are able to collect all 4 environments(backgrounds), there will be benefits inside the game and outside of the game.</p><p>Guardians, which will be introduced later, serve the purpose of protecting the warriors in battle. They will also have fun perks in the metaverse. Holders of the Ninja collection will be eligible for presale & drops of future collections.</p></>),
+  },
   {
     canister: "5h2fc-zaaaa-aaaah-qcnjq-cai",
     priority : 10,
@@ -23,7 +79,7 @@ var collections = [
     mature: false,
     market : true,
     commission: 0.035,
-    comaddress: "cb69faae15474a224a9d600d2b92128f2190dc62aad0059f20886727bacd4913",
+    comaddress: "a4593dfd6aa5c44c0af59e26935d607dea1f9007ddb83a56180df7e499adf13a",
     blurb: (<><p>For nearly 60 million years Prime8s have roamed the earth and now they're coming to the Internet Computer! ICPrime8s is a collection of 10,500 (total) NFTs and will be released as 5 seperate releases. Following the evolutionary timeline of Prime8s, each release will depict a different Prime8 unique with its own traits and characteristics.</p></>),
   },
   {
@@ -42,7 +98,7 @@ var collections = [
     //medium : "https://medium.com/@icpets01/introducing-icpets-the-hold-2-earn-nft-on-the-ic-ecosystem-8111c1550caf",
     web : "https://www.ickitties.com/",
     route: "ickitties",
-    unit : "IC Pet",
+    unit : "IC Kitty",
     nftv : false,
     mature: false,
     market : true,

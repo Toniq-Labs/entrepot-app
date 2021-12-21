@@ -36,6 +36,8 @@ import Prime from "./components/sale/Prime";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
+import Sword from "./components/sale/Sword";
+import Floki from "./components/sale/Floki";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
@@ -378,6 +380,16 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
+            <Route path="/sale/sword" exact>
+              <Sword
+                error={error}
+                view={"sale"}
+                sale={"sword"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
             <Route path="/sale/prime8s" exact>
               <Prime
                 error={error}
@@ -403,6 +415,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icpets"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/floki" exact>
+              <Floki
+                error={error}
+                view={"sale"}
+                sale={"floki"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

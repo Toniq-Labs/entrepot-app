@@ -62,7 +62,6 @@ export default function NFTList(props) {
   const [openListingForm, setOpenListingForm] = React.useState(false);
   const [openTransferForm, setOpenTransferForm] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
-  console.log(buttonLoader,'a');
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSizeNFT") ?? "small");
   const changeGrid = (e, a) => {
     localStorage.setItem("_gridSizeNFT", a);
@@ -94,7 +93,6 @@ export default function NFTList(props) {
   };
   const listNft = (token, loader) => {
     setTokenNFT(token);
-    console.log(loader, 't1');
     buttonLoader = loader;
     setOpenListingForm(true);
   }
@@ -174,7 +172,6 @@ export default function NFTList(props) {
   };
   const list = async (id, price, loader) => {
     //Submit to blockchain here
-    console.log(loader, 't2');
     if (loader) loader(true);
     const api = extjs.connect("https://boundary.ic0.app/", props.identity);
     api.token(id).list(props.currentAccount, price).then(r => {

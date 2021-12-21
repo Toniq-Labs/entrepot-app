@@ -81,11 +81,17 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "Prime8s",
-      link : "/sale/prime8s",
-      image : "/collections/prime8s/collection.jpg",
-      content : (<>Welcome to the Jungle! We've got plans in place to make ICPrime8s one of the best NFT collections on the IC. Stay tuned for more updates!</>),
+      title : "SwordNFT",
+      link : "/sale/sword",
+      image : "/collections/sword/collection.jpg",
+      content : (<>NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!</>),
     },
+    // {
+      // title : "FlokiCyberPunk",
+      // link : "/sale/floki",
+      // image : "/collections/floki/collection.png",
+      // content : (<>This collection was designed with the intent of game/metaverse intergration in the future.</>),
+    // },
     {
       title : "MemeCake",
       link : "/sale/memecake",
