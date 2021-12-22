@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "ICircle - Pythagoras",
+      link : "/sale/iccircle",
+      image : "/collections/iccircle/collection.jpg",
+      content : (<>ICircle is created by combining mathematics, creative coding, and aesthetic soul, which results in beautiful arts. ICircle has the power to uplift a fresh vibe into your collections</>),
+    },
+    {
       title : "SwordNFT",
       link : "/sale/sword",
       image : "/collections/sword/collection.jpg",

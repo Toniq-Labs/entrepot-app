@@ -38,6 +38,7 @@ import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
 import Sword from "./components/sale/Sword";
 import Floki from "./components/sale/Floki";
+import Circle from "./components/sale/Circle";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
@@ -425,6 +426,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"floki"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/iccircle" exact>
+              <Circle
+                error={error}
+                view={"sale"}
+                sale={"iccircle"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
