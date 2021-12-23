@@ -189,7 +189,7 @@ export default function Interitus(props) {
                 <>
                   <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint as many NFTs at 2.5ICP each for the first 1 hour (limited to the first 125 sold)!</span></strong></p>
                   
-                  {totalToSell-remaining < 1000 ?
+                  {totalToSell-remaining < 125 ?
                   <>
                     <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                       <Button
