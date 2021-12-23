@@ -47,9 +47,9 @@ export default function Circle(props) {
   const [page, setPage] = React.useState(1);
   const [price, setPrice] = React.useState(200000000n);
   const [remaining, setRemaining] = React.useState(false);
-  const [startTime, setStartTime] = React.useState(1640185200000);
+  const [startTime, setStartTime] = React.useState(1640271600000);
   const [whitelist, setWhitelist] = React.useState(false);
-  var whitelistend = 1640188800000;
+  var whitelistend = 1640271600000;
   var presaleprice = 150000000n;
   var totalToSell = 2000;
   var saleOver = false;  
@@ -149,8 +149,8 @@ export default function Circle(props) {
     <>
       <div style={styles.main}>
         <div className={classes.banner}>
-        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/collections/iccircle/banner.png')"}}></div>
-        <h1>Welcome to the official IC Circle sale</h1>
+        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/collections/icircle/banner.png')"}}></div>
+        <h1>Welcome to the official ICircle sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={3} xs={6}>
@@ -187,7 +187,7 @@ export default function Circle(props) {
               }
               {whitelist && Date.now() >= startTime && Date.now() < whitelistend ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint up to 2 NFTs at 1ICP eacch for the first 1 hour only!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint up to 2 NFTs at 1ICP each for the first 1 hour only!</span></strong></p>
                   
                   {totalToSell-remaining < 1000 ?
                   <>
@@ -215,10 +215,10 @@ export default function Circle(props) {
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale((o.length > 1 ? o[0] : price*Number(o[1])), o[1])}
+                          onClick={() => buyFromSale(o[0], (o.length > 1 ? o[1] : price*BigInt(o[0])))}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[0] : price*Number(o[1])))} ICP
+                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*BigInt(o[0])))} ICP
                         </Button>
                       </Grid>);
                     })}

@@ -181,10 +181,10 @@ export default function Floki(props) {
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale((o.length > 1 ? o[0] : price*Number(o[1])), o[1])}
+                          onClick={() => buyFromSale(o[0], (o.length > 1 ? o[1] : price*Number(o[0])))}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[0] : price*Number(o[1])))} ICP
+                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*Number(o[0])))} ICP
                         </Button>
                       </Grid>);
                     })}

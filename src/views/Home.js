@@ -59,8 +59,8 @@ export default function Home(props) {
           // img: "/banner/floki.png"
       // },
       {
-          link: "/sale/iccircle",
-          img: "/banner/iccircle.jpg"
+          link: "/sale/icircle",
+          img: "/banner/icircle.jpg"
       },
       {
           link: "/sale/sword",

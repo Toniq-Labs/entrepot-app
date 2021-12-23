@@ -39,6 +39,7 @@ import Cyman from "./components/sale/Cyman";
 import Sword from "./components/sale/Sword";
 import Floki from "./components/sale/Floki";
 import Circle from "./components/sale/Circle";
+import Interitus from "./components/sale/Interitus";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
@@ -391,6 +392,16 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
+            <Route path="/sale/interitus" exact>
+              <Interitus
+                error={error}
+                view={"sale"}
+                sale={"interitus"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
             <Route path="/sale/prime8s" exact>
               <Prime
                 error={error}
@@ -431,11 +442,11 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>
-            <Route path="/sale/iccircle" exact>
+            <Route path="/sale/icircle" exact>
               <Circle
                 error={error}
                 view={"sale"}
-                sale={"iccircle"}
+                sale={"icircle"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
