@@ -196,7 +196,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
-    commission: 0.1,
+    commission: 0.035,
     comaddress: "e4d20c3d0cfb3c62be55414af7314ab9535348ea45118471e965e39d81ee6330",
     blurb: (<><p>Welcome to CYMAN. Lead artist Brad Donovan has teamed up with Dfinity's own Arthur Falls, Toniq Labs, and creative studio Vesica Aotearoa to create a universe of cybernetic humanoids called CYMAN from 550BC. This project is composed of 7,777 CYMEN that will be deconstructable and eventually fully customisable. The core utility of the NFT will be as an access token for CYMAN-exclusive online media, real-world events, and gaming collaborations.</p><p>Gen0 CYMEN will be breedable as the project grows we will introduce more characters and developments into the CYMAN story that will add value to the original CYMEN.</p></>),
   },
