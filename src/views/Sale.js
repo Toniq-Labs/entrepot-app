@@ -81,18 +81,6 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "Elementum: Interitus",
-      link : "/sale/interitus",
-      image : "/collections/interitus/collection.jpg",
-      content : (<>Change the flow of a match with the new Interitus collection, there's an option for every playstyle!</>),
-    },
-    {
-      title : "ICircle - Pythagoras",
-      link : "/sale/icircle",
-      image : "/collections/icircle/collection.jpg",
-      content : (<>ICircle is created by combining mathematics, creative coding, and aesthetic soul, which results in beautiful arts. ICircle has the power to uplift a fresh vibe into your collections</>),
-    },
-    {
       title : "SwordNFT",
       link : "/sale/sword",
       image : "/collections/sword/collection.jpg",
@@ -104,12 +92,6 @@ export default function Iconic(props) {
       // image : "/collections/floki/collection.png",
       // content : (<>NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!</>),
     // },
-    {
-      title : "MemeCake",
-      link : "/sale/memecake",
-      image : "/collections/mc/collection.jpg",
-      content : (<>'Meme Cake is a Social NFT marketplace.</>),
-    },
     {
       title : "Yolo Octopus",
       link : "/sale/yolo-octopus",
