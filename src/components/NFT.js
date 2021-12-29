@@ -105,12 +105,14 @@ export default function NFT(props) {
   };
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return props.nft.index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return props.nft.index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return props.nft.index;
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return props.nft.index;
     else return props.nft.index+1;
   }
   const nftImg = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + props.nft.index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(props.nft.index);
     
@@ -118,6 +120,7 @@ export default function NFT(props) {
   };
   const nftLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + props.nft.index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(props.nft.index);
     return "https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id;
@@ -128,8 +131,8 @@ export default function NFT(props) {
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=" + props.nft.index;
     return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id;
   };
-  const wrappedCanisters = ["q6hjz-kyaaa-aaaah-qcama-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
-  const unwrappedCanisters = ["xkbqi-2qaaa-aaaah-qbpqq-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
+  const wrappedCanisters = ["y3b7h-siaaa-aaaah-qcnwa-cai","q6hjz-kyaaa-aaaah-qcama-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
+  const unwrappedCanisters = ["4nvhy-3qaaa-aaaah-qcnoq-cai","xkbqi-2qaaa-aaaah-qbpqq-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
   const showWrapped = () => {
     if (wrappedCanisters.indexOf(props.nft.canister) >= 0)
       return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span>);
@@ -191,7 +194,7 @@ export default function NFT(props) {
                         <Grid item lg={6} md={6}><Button onClick={() => buttonPush(1)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
                       :
                       <Grid item lg={6} md={6}>
-                        <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
+                        <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
                         <Menu
                           anchorEl={anchorEl}
                           anchorOrigin={{
@@ -202,8 +205,8 @@ export default function NFT(props) {
                           open={Boolean(anchorEl)}
                           onClose={() => setAnchorEl(null)}
                         >
-                          {getButtons().slice(1).map(a => {
-                            return (<MenuItem onClick={() => {setAnchorEl(null); buttonPush(a)}}>{a[0]}</MenuItem>);
+                          {getButtons().slice(1).map((a, i) => {
+                            return (<MenuItem key={i} onClick={() => {setAnchorEl(null); buttonPush(a[1])}}>{a[0]}</MenuItem>);
                           })}
                         </Menu>
                       </Grid>

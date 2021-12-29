@@ -218,6 +218,8 @@ export default function Listing(props) {
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
       return props.listing[0];
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
+      return props.listing[0];
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
       return props.listing[0];
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
@@ -245,6 +247,13 @@ export default function Listing(props) {
         "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
         props.listing[0]
       );
+
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
+      return (
+        "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" +
+        props.listing[0]
+      );
+      
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
       return (
         "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" +
@@ -263,6 +272,11 @@ export default function Listing(props) {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
       return (
         "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
+        props.listing[0]
+      );
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
+      return (
+        "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" +
         props.listing[0]
       );
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")

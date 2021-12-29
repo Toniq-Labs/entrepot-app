@@ -115,6 +115,10 @@ export default function Wallet(props) {
             tokens = tokens.map(a => {a.wrapped = true; return a});
             tokens = tokens.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
           } else 
+          if (collection.canister === "y3b7h-siaaa-aaaah-qcnwa-cai") {
+            tokens = tokens.map(a => {a.wrapped = true; return a});
+            tokens = tokens.concat(await api.token("4nvhy-3qaaa-aaaah-qcnoq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+          } else 
           if (collection.canister === "3db6u-aiaaa-aaaah-qbjbq-cai") {
             tokens = tokens.map(a => {a.wrapped = true; return a});
             tokens = tokens.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));

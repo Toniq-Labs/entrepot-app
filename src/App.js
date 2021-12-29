@@ -192,6 +192,7 @@ export default function App() {
             whitelist: collections.map(a => a.canister).concat([
               "xkbqi-2qaaa-aaaah-qbpqq-cai",
               "d3ttm-qaaaa-aaaai-qam4a-cai",
+              "4nvhy-3qaaa-aaaah-qcnoq-cai",
               "qcg3w-tyaaa-aaaah-qakea-cai",
               "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "qgsqp-byaaa-aaaah-qbi4q-cai",
@@ -289,6 +290,7 @@ export default function App() {
                     "xkbqi-2qaaa-aaaah-qbpqq-cai",
                     "d3ttm-qaaaa-aaaai-qam4a-cai",
                     "qcg3w-tyaaa-aaaah-qakea-cai",
+                    "4nvhy-3qaaa-aaaah-qcnoq-cai",
                     "ryjl3-tyaaa-aaaaa-aaaba-cai",
                     "qgsqp-byaaa-aaaah-qbi4q-cai",
                   ]),

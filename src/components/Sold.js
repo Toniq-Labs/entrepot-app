@@ -61,11 +61,13 @@ export default function Sold(props) {
   };
   const mintNumber = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return index;
     else return index+1;
   }
   const nftImg = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
       return icpbunnyimg(index)
@@ -73,6 +75,7 @@ export default function Sold(props) {
   };
   const nftLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
+    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
     if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
       return icpbunnyimg(index)
