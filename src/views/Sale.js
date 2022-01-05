@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "DFINITY Space Apes",
+      link : "/sale/spaceapes",
+      image : "/collections/spaceapes/collection.jpg",
+      content : (<>10,000 Space Apes came together to explore new things in the universe. Their spacecraft broke down in the Earth. Help them to send back to their planets.</>),
+    },
+    {
       title : "SwordNFT",
       link : "/sale/sword",
       image : "/collections/sword/collection.jpg",
