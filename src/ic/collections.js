@@ -19,7 +19,7 @@ var collections = [
     collection : "/collections/spaceapes/collection.jpg",
     banner : "/collections/spaceapes/banner.jpg",
     route: "spaceapes",
-    commission: 0.35,
+    commission: 0.035,
     comaddress: "4bfb366789ae6696b71f4a32fa67aa06f2b9cf26c272e4113fa564b80dd4a01c",
     unit : "NFT",
     nftv : false,
