@@ -37,7 +37,7 @@ export default function Marketplace(props) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [sort, setSort] = React.useState("featured");
+  const [sort, setSort] = React.useState("total_desc");
   const [query, setQuery] = React.useState("");
   const [stats, setStats] = React.useState([]);
   const styles = {
@@ -113,7 +113,6 @@ export default function Marketplace(props) {
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Sort by</InputLabel>
               <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"featured"}>Featured</MenuItem>
                 <MenuItem value={"recent"}>Recently Listed</MenuItem>
                 <MenuItem value={"listings_asc"}>Listings: Low to High</MenuItem>
                 <MenuItem value={"listings_desc"}>Listings: High to Low</MenuItem>
