@@ -46,21 +46,18 @@ const _getRandomBytes = () => {
 };
 export default function SpaceApes(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(120000000n);
+  const [price, setPrice] = React.useState(75000000n);
   const [remaining, setRemaining] = React.useState(false);
-  const [startTime, setStartTime] = React.useState(1641394800000);
+  const [startTime, setStartTime] = React.useState(1641567600000);
   const [round, setRound] = React.useState("Loading...");
   const [roundRemaining, setRoundRemaining] = React.useState(0);
-  const [currentRoundNumber, setCurrentRoundNumber] = React.useState(2);
-  var totalToSell = 9500;
+  var totalToSell = 1246;
   var saleOver = false;  
   const params = useParams();
   
   const _updates = async () => {
     var stats = await api.canister("3mttv-dqaaa-aaaah-qcn6q-cai").salesStats((props.account ? props.account.address : ""));
     setRound(stats[2][0]);
-    var cr = ["Round 1", "Round 2", "Round 3", "Round 4", "Round 5"].indexOf(stats[2][0]);
-    setCurrentRoundNumber((cr < 0 ? 2 : cr));
     setPrice(stats[2][1]);
     setRoundRemaining(Number(stats[2][2]));
     setRemaining(Number(stats[0]));
@@ -177,7 +174,7 @@ export default function SpaceApes(props) {
               {Date.now() >= startTime ? 
                 <>
                   <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-                    {[1,3,5,10].map(o => {
+                    {[1,2,3,4,5].map(o => {
                       return (<Grid className={classes.stat} item sm={3}>
                         <Button
                           variant={"contained"}
@@ -198,7 +195,7 @@ export default function SpaceApes(props) {
                 <p><strong><span style={{fontSize:"20px",color:"black"}}>The sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong><br /><br /></p> : "" }
             </>
           : 
-            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your Ape from the marketplace soon!</span></strong></p>
+            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is currently over but there may still be additional NFTs from failed transactions that may be recycled and put up for sale again very soon!</span></strong></p>
           }</>
         }
       </div>
