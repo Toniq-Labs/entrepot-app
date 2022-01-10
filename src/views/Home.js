@@ -59,28 +59,12 @@ export default function Home(props) {
           // img: "/banner/floki.png"
       // },
       {
-          link: "/sale/spaceapes",
-          img: "/banner/spaceapes.jpg"
+          link: "/sale/dfinitydeck",
+          img: "/banner/dfinitydeck.jpg"
       },
       {
           link: "/sale/sword",
           img: "/banner/sword.png"
-      },
-      {
-          link: "/sale/icsnakes",
-          img: "/banner/icsnakes.jpg",
-      },
-      {
-          link: "/marketplace/icircle",
-          img: "/banner/icircle.jpg"
-      },
-      {
-          link: "/marketplace/prime8s",
-          img: "/banner/prime8s.jpg"
-      },
-      {
-          link: "/marketplace/memecake",
-          img: "/banner/mc.jpg"
       },
       {
           link: "/marketplace/p2j",

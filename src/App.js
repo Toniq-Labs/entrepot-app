@@ -33,6 +33,7 @@ import ICApes from "./components/sale/ICApes";
 import ICPets from "./components/sale/ICPets";
 import ICKitties from "./components/sale/ICKitties";
 import SpaceApes from "./components/sale/SpaceApes";
+import DfinityDeck from "./components/sale/DfinityDeck";
 import Prime from "./components/sale/Prime";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
@@ -420,6 +421,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"Cyman"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/dfinitydeck" exact>
+              <DfinityDeck
+                error={error}
+                view={"sale"}
+                sale={"dfinitydeck"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

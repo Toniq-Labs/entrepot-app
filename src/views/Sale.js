@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "DFINITY Space Apes",
-      link : "/sale/spaceapes",
-      image : "/collections/spaceapes/collection.jpg",
-      content : (<>10,000 Space Apes came together to explore new things in the universe. Their spacecraft broke down in the Earth. Help them to send back to their planets.</>),
+      title : "DfinityDeck:Paradigm",
+      link : "/sale/dfinitydeck",
+      image : "/collections/dd/collection.jpg",
+      content : (<>A realistic take on a Sci-Fi deck of playing cards, created as a tribute to Dfinity's cheif scientist; Dominic Williams.</>),
     },
     {
       title : "SwordNFT",
@@ -103,12 +103,6 @@ export default function Iconic(props) {
       link : "/sale/yolo-octopus",
       image : "/collections/yolo/collection.jpg",
       content : (<>'You Only Live Once' - No NFTs will sit idle. Amazing tools where u can create animation, add music & enter DIGITAL STUDIO. 3D collection will also be launched soon.</>),
-    },
-    {
-      title : "ICSnakes",
-      link : "/sale/icsnakes",
-      image : "/collections/icsnakes/collection.jpg",
-      content : (<>First NFT with built-in mini-game! A collection of 10,000 randomly generated NFTs on the Internet Computer hunting for food.</>),
     },
     // {
       // title : "Poked Bots",
