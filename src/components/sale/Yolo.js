@@ -45,7 +45,7 @@ const _getRandomBytes = () => {
 };
 export default function Yolo(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(100000000n);
+  const [price, setPrice] = React.useState(50000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1638975600000);
   const [whitelist, setWhitelist] = React.useState(false);
@@ -140,10 +140,10 @@ export default function Yolo(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   var buyOptions = [
-    [1, 100000000n],
-    [5, 475000000n],
-    [10, 850000000n],
-    [20, 1500000000n],
+    [1, 50000000n],
+    [5, 237500000],
+    [10, 425000000],
+    [20, 750000000],
   ]
   return (
     <>

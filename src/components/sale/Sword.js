@@ -45,7 +45,7 @@ const _getRandomBytes = () => {
 };
 export default function Sword(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(123000000n);
+  const [price, setPrice] = React.useState(50000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1640109600000);
   var totalToSell = 7000;
@@ -134,10 +134,10 @@ export default function Sword(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   var buyOptions = [
-    [1, 123000000n],
-    [3, 314000000n],
-    [5, 500000000n],
-    [20, 1850000000n],
+    [1, 50000000n],
+    [3, 150000000n],
+    [5, 250000000n],
+    [20, 1000000000n],
   ]
   return (
     <>
