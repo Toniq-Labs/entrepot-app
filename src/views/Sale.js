@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "DfinityDeck:Paradigm",
-      link : "/sale/dfinitydeck",
-      image : "/collections/dd/collection.jpg",
-      content : (<>A realistic take on a Sci-Fi deck of playing cards, created as a tribute to Dfinity's cheif scientist; Dominic Williams.</>),
+      title : "ICAliens",
+      link : "/sale/icaliens",
+      image : "/collections/icaliens/collection.jpg",
+      content : (<>A Collection of 10,000 Souvenirs of our adventures for our fellow Humans minted as an NFT on ICP</>),
     },
     {
       title : "SwordNFT",
