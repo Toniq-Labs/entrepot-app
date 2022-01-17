@@ -80,7 +80,7 @@ var collections = [
     name: "ICats",
     brief : "10,000 cat clowns of ICP!",
     description : "ICats are companions to ICPunks, the most popular Internet Computer NFT collection.",
-    blurb: (<><p>ICats are companions to ICPunks, the most popular Internet Computer NFT collection. ICats were airdropped to ICPunk holders as a thank you note and a sign of what’s coming from Gigaverse Labs. There are exactly 10,000 unique ICats in the collection.</p></>),
+    blurb: (<><p>ICats are companions to ICPunks, the most popular Internet Computer NFT collection. ICats were airdropped to ICPunk holders as a thank you note and a sign of whatâ€™s coming from Gigaverse Labs. There are exactly 10,000 unique ICats in the collection.</p></>),
     keywords : "companion icpunks cats clowns",
     web : "https://icpunks.com/",
     //telegram : "https://t.me/TheICPArt",
@@ -272,7 +272,7 @@ var collections = [
     market : true,
     commission: 0.035,
     comaddress: "cb69faae15474a224a9d600d2b92128f2190dc62aad0059f20886727bacd4913",
-    blurb: (<><p>The story of ICKitties happens nowadays, in a busy city street, where kitties live peacefully. One of the kitties - Zack - walks on the sidewalk minding his own business, when all of a sudden a book drops from a window and opens in front of him.</p><p>Zack goes through the book and he finds the answer to a question that he always had - "Why are there different colored kitties? Why aren’t we all the same?"</p><p>As soon as he finds the answer, he runs to a dark alley and gathers all his friends to tell them about the long forgotten 7 kitty Kingdoms and how each kitty comes from one of the Kingdoms, ruled by 7 kings and 7 queens, and overseen by 7 gods. What Kingdom will you choose?</p></>),
+    blurb: (<><p>The story of ICKitties happens nowadays, in a busy city street, where kitties live peacefully. One of the kitties - Zack - walks on the sidewalk minding his own business, when all of a sudden a book drops from a window and opens in front of him.</p><p>Zack goes through the book and he finds the answer to a question that he always had - "Why are there different colored kitties? Why arenâ€™t we all the same?"</p><p>As soon as he finds the answer, he runs to a dark alley and gathers all his friends to tell them about the long forgotten 7 kitty Kingdoms and how each kitty comes from one of the Kingdoms, ruled by 7 kings and 7 queens, and overseen by 7 gods. What Kingdom will you choose?</p></>),
   },
   {
     canister: "unssi-hiaaa-aaaah-qcmya-cai",
@@ -296,7 +296,7 @@ var collections = [
     market : true,
     commission: 0.035,
     comaddress: "222f75cac912282d33a8ef2a396e409464b4a57ec9e347264f4952473fa3d983",
-    blurb: (<><p>ICPets are 11,111 unique beautifully designed and well-crafted pets each having its unique abilities and superpowers. They don't want to be ordinary animals anymore; they are looking forward to entering the metaverse and bringing their owners more profit! Join the Pets Gang today and get a chance to adopt your pet today (little friend!) They are waiting for you!.</p><p>ICpets NFTs is your access to Holders Rewards ?lub. NFT is not just a cute picture, our main goal is to bring value to each of ICPets Holders and to the Ecosystem itself. We are convinced that NFT collection success depends on its community strength. Mutual development and growth are possible when art collection is backed up by strong financial incentives. Therefore, we spent lots of time developing the economic aspects of the project – the unique motivation and rewards system.</p></>),
+    blurb: (<><p>ICPets are 11,111 unique beautifully designed and well-crafted pets each having its unique abilities and superpowers. They don't want to be ordinary animals anymore; they are looking forward to entering the metaverse and bringing their owners more profit! Join the Pets Gang today and get a chance to adopt your pet today (little friend!) They are waiting for you!.</p><p>ICpets NFTs is your access to Holders Rewards ?lub. NFT is not just a cute picture, our main goal is to bring value to each of ICPets Holders and to the Ecosystem itself. We are convinced that NFT collection success depends on its community strength. Mutual development and growth are possible when art collection is backed up by strong financial incentives. Therefore, we spent lots of time developing the economic aspects of the project â€“ the unique motivation and rewards system.</p></>),
   },
   {
     canister: "xphpx-xyaaa-aaaah-qcmta-cai",
@@ -324,7 +324,7 @@ var collections = [
     canister: "txr2a-fqaaa-aaaah-qcmkq-cai",
     priority : 10,
     name: "Meme Cake",
-    brief : "7,777 Dick NFT's",
+    brief : "7,777 Rich NFT by Meme Cake",
     description : "Meme Cake is a Social NFT marketplace.",
     keywords : "Marketplace, Meme, Social, NFT",
     banner : "/collections/mc/banner.jpg",
@@ -409,7 +409,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     market : true,
     commission: 0.035,
     comaddress: "598b376d9ddc5d3df21dcac0f888a7c898437a310d477d040e9b40457e3e2d35",
-    blurb: (<><p>IC Apes represent a collection of 10,000 apes. The Apes are stored on-chain in the Internet Computer. It’s the first generated Ape NFT collection for the ICP.</p><p>We make sure that every emerging product looks realistic, charismatic, strong and intelligent. We have worked for be more detailed and more realistic than alternatives in the market.</p><p>Our goal is to create a IC Ape Starter as a leading launchpad for the Internet Computer ecosystem. Also as a IC Ape Ventures, funding the innovative projects on the Internet Computer.</p></>),
+    blurb: (<><p>IC Apes represent a collection of 10,000 apes. The Apes are stored on-chain in the Internet Computer. Itâ€™s the first generated Ape NFT collection for the ICP.</p><p>We make sure that every emerging product looks realistic, charismatic, strong and intelligent. We have worked for be more detailed and more realistic than alternatives in the market.</p><p>Our goal is to create a IC Ape Starter as a leading launchpad for the Internet Computer ecosystem. Also as a IC Ape Ventures, funding the innovative projects on the Internet Computer.</p></>),
   },
   {
     canister: "3ifmd-wqaaa-aaaah-qckda-cai",
@@ -709,7 +709,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     name: "Internet Astronauts",
     unit : "Astronaut",
     brief : "10,000 Internet Astronauts",
-    description : "Internet Astronauts are collection of 10,000 end-to-end-on-chain NFT collectibles only possible through Internet Computer! Internet Astronauts are founding pass NFT’s of IC dAppverse’s.",
+    description : "Internet Astronauts are collection of 10,000 end-to-end-on-chain NFT collectibles only possible through Internet Computer! Internet Astronauts are founding pass NFTâ€™s of IC dAppverseâ€™s.",
     route: "interastrosc",
     keywords : "Internet Astronauts IASC InternetAstronauts AstronautNFT",
     banner : "/collections/iasc/banner.png",
@@ -725,7 +725,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     commission: 0.035,
     comaddress:
       "2be01f5e8f081c6e8784b087fb1a88dac92fdd29203c1e456a6e90950c6e6e21",
-    blurb: (<>Internet Astronauts are collection of 10,000 end-to-end-on-chain NFT collectibles only possible through Internet Computer! Internet Astronauts are founding pass NFT’s of IC dAppverse’s.</>),
+    blurb: (<>Internet Astronauts are collection of 10,000 end-to-end-on-chain NFT collectibles only possible through Internet Computer! Internet Astronauts are founding pass NFTâ€™s of IC dAppverseâ€™s.</>),
   },
   {
     canister: "nfvlz-jaaaa-aaaah-qcciq-cai",
@@ -1145,7 +1145,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     commission: 0.1,
     comaddress:
       "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
-    blurb: (<>André Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as André discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, André also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
+    blurb: (<>AndrÃ© Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as AndrÃ© discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, AndrÃ© also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {
