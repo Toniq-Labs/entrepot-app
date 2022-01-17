@@ -384,7 +384,7 @@ var collections = [
     mature: false,
     market : true,
     commission: 0.035,
-    comaddress: "2975800b3ff4ad824bdf559793c3b2bedbbdfb2350fc32d29e0274e3faa6626a",
+    comaddress: "e502e62e907585af779d362ff33a11d989134c9b30f491d2f363bdfb4a8e351f",
     blurb: (<><p>The Tranquility Collection is the first collection released by ICP Art. It is a set of 99 Hand-Crafted 1 of 1 Pastel Paintings, that governs the ART DAO.
 The ART DAO is a platform that allows the user to contribute to the creative process of creating NFTs, and decide the type of artwork they'd like to see in the ecosystem.</p></>),
   },
