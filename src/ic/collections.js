@@ -1069,7 +1069,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     priority : 10,
     name: "ICPBunny",
     unit : "Bunny",
-    brief : "10,000 ICBunnies on the IC",
+    brief : "10,000 Yield-able and breedable NFTs",
     route: "icpbunny",
     nftv : true,
     mature: false,
@@ -1077,7 +1077,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     commission: 0.025,
     comaddress:
       "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
-    blurb: false,
+    blurb: (<>10,000 ICPBunny NFTs live in BunnyIsland powered by Internet Computers and earn ICPCarrots daily and breed baby bunnies periodically. Holding ICPBunny is an entry ticket for BunnyDAO. 3D Bunny are the avatars for the Bunny metaverse in development.</>),
   },
   {
     canister: "eb7r3-myaaa-aaaah-qcdya-cai",
