@@ -37,15 +37,9 @@ export default function SoldListing(props) {
       left: "0%",
       width: "100%",
       height: "100%",
-      margin: "0 auto"
+      margin: "0 auto",
+      objectFit: "contain",
     },
-    avatarImg2: {
-      position: "absolute",
-      top: "0%",
-      left: "16.66%",
-      height: "100%",
-      margin: "0 auto"
-    }
   };
   const mintNumber = () => {
     return EntrepotNFTMintNumber(props.collection, index);
@@ -118,12 +112,12 @@ export default function SoldListing(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection !== "uzhxd-ziaaa-aaaah-qanaq-cai"  ?
+                {props.collection == "jeghr-iaaaa-aaaah-qco7q-cai" ? (
+                <embed alt={tokenid} style={{ ...styles.avatarImg, display: "block", }} src={nftImg()}/>
+                ) : (<>
                 <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                :
-                <img alt={tokenid} style={{...styles.avatarImg2, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                }
                 <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+                </>)};
               </div>
             </a>
             

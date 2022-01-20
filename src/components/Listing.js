@@ -305,7 +305,14 @@ export default function Listing(props) {
             </Grid>
             {showNri()}
           </Grid>
-          {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? (
+          {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? 
+            (props.collection == "jeghr-iaaaa-aaaah-qco7q-cai" ? (
+            <a href={nftLink()} rel="noreferrer" target="_blank">
+            <div style={{ ...styles.avatarSkeletonContainer }}>
+              <embed alt={tokenid} style={{ ...styles.avatarImg, display: "block", }} src={nftImg()}/>
+            </div>
+            </a> )
+            : (
             <a href={nftLink()} rel="noreferrer" target="_blank">
             <div style={{ ...styles.avatarSkeletonContainer }}>
               <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} />
@@ -317,8 +324,9 @@ export default function Listing(props) {
                 variant="rect"
               />
             </div>
-            </a>
-            ) : (
+            </a> 
+            ))
+             : (
               <div style={{ ...styles.avatarSkeletonContainer }}>
               <div>
                 <img

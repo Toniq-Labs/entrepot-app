@@ -88,6 +88,7 @@ EntrepotNFTMintNumber = (collection, index, id) => {
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return index;
   if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return index;
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return index;
+  if (collection === "jeghr-iaaaa-aaaah-qco7q-cai") return index;
   return index + 1;
 },
 numf = (n, d) => {
