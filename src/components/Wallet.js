@@ -126,6 +126,10 @@ export default function Wallet(props) {
           if (collection.canister === "q6hjz-kyaaa-aaaah-qcama-cai") {
             tokens = tokens.map(a => {a.wrapped = true; return a});
             tokens = tokens.concat(await api.token("xkbqi-2qaaa-aaaah-qbpqq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+          } else 
+          if (collection.canister === "jeghr-iaaaa-aaaah-qco7q-cai") {
+            tokens = tokens.map(a => {a.wrapped = true; return a});
+            tokens = tokens.concat(await api.token("fl5nr-xiaaa-aaaai-qbjmq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
           }
         } catch(e) {continue};
         if (tokens.length) {

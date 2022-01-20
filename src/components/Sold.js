@@ -7,6 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 import extjs from '../ic/extjs.js';
 import _c from '../ic/collections.js';
+import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber} from '../utils.js';
 var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
@@ -45,41 +46,14 @@ export default function Sold(props) {
       objectFit: "contain",
     },
   };
-  const icpbunnyimg = i => {
-    const icbstorage = ['efqhu-yqaaa-aaaaf-qaeda-cai',
-    'ecrba-viaaa-aaaaf-qaedq-cai',
-    'fp7fo-2aaaa-aaaaf-qaeea-cai',
-    'fi6d2-xyaaa-aaaaf-qaeeq-cai',
-    'fb5ig-bqaaa-aaaaf-qaefa-cai',
-    'fg4os-miaaa-aaaaf-qaefq-cai',
-    'ft377-naaaa-aaaaf-qaega-cai',
-    'fu2zl-ayaaa-aaaaf-qaegq-cai',
-    'f5zsx-wqaaa-aaaaf-qaeha-cai',
-    'f2yud-3iaaa-aaaaf-qaehq-cai']
-
-    return "https://" +icbstorage[i % 10]+".raw.ic0.app/Token/"+i;
-  };
   const mintNumber = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return index;
-    else return index+1;
-  }
+    return EntrepotNFTMintNumber(props.collection, index);
+  };
   const nftImg = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
-      return icpbunnyimg(index)
-    return "https://"+props.collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + tokenid;
+    return EntrepotNFTImage(props.collection, index, tokenid);
   };
   const nftLink = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
-      return icpbunnyimg(index)
-    return "https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid;
+    return EntrepotNFTLink(props.collection, index, tokenid);
   };
   const nriLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=" + index;

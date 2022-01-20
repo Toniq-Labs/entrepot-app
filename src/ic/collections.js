@@ -3,6 +3,40 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "jeghr-iaaaa-aaaah-qco7q-cai",
+    priority : 10,
+    name: "ICTurtles",
+    brief : "10,000 customizable Turtles built on P2E",
+    description : "Customizable & breedable NFTS, built on GameFi, dropping with accessories, providing passive income to holders! Collect 3 of a particular background to get a free dungeon airdrop!",
+    blurb: (<><p>Welcome to ICTurtles, an NFT project based around customizability, GameFI, DeFI, and other novel game integrations! We have been awarded a $25k grant from Dfinity help build out their vision! Some unique utility of the project include:</p><p>
+    - mutable metadata and customizable art with accessories/breeding 👒<br />
+    - automated passive-income distribution 💰<br />
+    - explorable environments minted on-chain 🌎<br />
+    - P2E game integrations 🎮<br />
+    - audio NFT integrations 🔈<br />
+    - Faction and team game mechanics 🏘️<br />
+    - DAO-governed community treasury 🤑<br />
+    - and more! 🚀</p>
+<p>We are currently building an explorable P2E/GameFi dungeon-based game with unique interactions with different turtles. Each dungeon is stored on-chain and varies widely with its difficulty, allowed team size, puzzles, and combat! Completing these challenges will give you rewards! There will be large-scale competitions with factions and even more rewards! This game will be designed with different standards in mind, and will be interoperable with your favorite NFTs! Conquer different dungeons and collect your own unique universe!</p>
+<p>Another key aspect of our roadmap is the DAO-governed community treasury, which goes hand and hand with our passive income and Defi applications. Turtle holders will have a direct stake in any revenue streams of the project. This includes royalties and future native token rewards. ICTurtles' ambitions also stretch beyond just an NFT project. There are many plans to create NFT infrastructure that benefits the IC as a whole. Turtle holders will be rewarded with all these developments.</p></>),
+    keywords : "NFT GameFi P2E customizability accessory wearable breeding yielding metaverse gaming DeFi staking",
+    web : "https://icturtles.com/",
+    //telegram : "https://t.me/+odsWbiTXIfQyYmE0",
+    discord : "https://discord.gg/n77xjyspDR",
+    twitter : "https://twitter.com/ic_turtles",
+    medium : "https://medium.com/@icturtlesnft",
+    avatar : "/collections/icturtles/avatar.png",
+    collection : "/collections/icturtles/collection.png",
+    banner : "/collections/icturtles/banner.png",
+    route: "icturtles",
+    commission: 0.035,
+    comaddress: "5409c563ada78980a91ac0e9642b50b5b4d82d2003cddaad4a801fcd6b8d6ab7",
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+  },
+  {
     canister: "p5jg7-6aaaa-aaaah-qcolq-cai",
     priority : 10,
     name: "ICAliens",

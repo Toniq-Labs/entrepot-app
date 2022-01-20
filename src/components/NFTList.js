@@ -45,6 +45,7 @@ function useInterval(callback, delay) {
 
 
 const canisterMap= {
+  "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai",
   "4nvhy-3qaaa-aaaah-qcnoq-cai" : "y3b7h-siaaa-aaaah-qcnwa-cai",
   "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
   "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
@@ -222,6 +223,9 @@ export default function NFTList(props) {
       }else if (c === "y3b7h-siaaa-aaaah-qcnwa-cai") {
         nfts = nfts.map(a => {a.wrapped = true; return a});
         nfts = nfts.concat(await api.token("4nvhy-3qaaa-aaaah-qcnoq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
+      }else if (c === "jeghr-iaaaa-aaaah-qco7q-cai") {
+        nfts = nfts.map(a => {a.wrapped = true; return a});
+        nfts = nfts.concat(await api.token("fl5nr-xiaaa-aaaai-qbjmq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
       };
       setNfts(applyFilters(nfts)); 
     };

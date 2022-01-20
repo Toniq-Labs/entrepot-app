@@ -31,6 +31,7 @@ import MuiTableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
 import _c from '../ic/collections.js';
+import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber } from '../utils';
 var collections = _c;
 
 
@@ -216,77 +217,13 @@ export default function Listing(props) {
   };
 
   const mintNumber = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
-      return props.listing[0];
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
-      return props.listing[0];
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
-      return props.listing[0];
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
-      return props.listing[0];
-    else return props.listing[0] + 1;
+    return EntrepotNFTMintNumber(props.collection, props.listing[0]);
   };
-  const icpbunnyimg = i => {
-    const icbstorage = ['efqhu-yqaaa-aaaaf-qaeda-cai',
-    'ecrba-viaaa-aaaaf-qaedq-cai',
-    'fp7fo-2aaaa-aaaaf-qaeea-cai',
-    'fi6d2-xyaaa-aaaaf-qaeeq-cai',
-    'fb5ig-bqaaa-aaaaf-qaefa-cai',
-    'fg4os-miaaa-aaaaf-qaefq-cai',
-    'ft377-naaaa-aaaaf-qaega-cai',
-    'fu2zl-ayaaa-aaaaf-qaegq-cai',
-    'f5zsx-wqaaa-aaaaf-qaeha-cai',
-    'f2yud-3iaaa-aaaaf-qaehq-cai']
-
-    return "https://" +icbstorage[i % 10]+".raw.ic0.app/Token/"+i;
-  };
-
   const nftImg = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
-      return (
-        "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
-        props.listing[0]
-      );
-
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
-      return (
-        "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" +
-        props.listing[0]
-      );
-      
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
-      return (
-        "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" +
-        props.listing[0]
-      );
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
-      return icpbunnyimg(props.listing[0])
-    return (
-      "https://" +
-      props.collection +
-      ".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" +
-      tokenid
-    );
+    return EntrepotNFTImage(props.collection, props.listing[0], tokenid);
   };
   const nftLink = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai")
-      return (
-        "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
-        props.listing[0]
-      );
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai")
-      return (
-        "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" +
-        props.listing[0]
-      );
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai")
-      return (
-        "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" +
-        props.listing[0]
-      );
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai")
-      return icpbunnyimg(props.listing[0])
-    return "https://" + props.collection + ".raw.ic0.app/?tokenid=" + tokenid;
+    return EntrepotNFTLink(props.collection, props.listing[0], tokenid);
   };
   
   const nriLink = () => {

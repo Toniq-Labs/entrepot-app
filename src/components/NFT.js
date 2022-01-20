@@ -10,6 +10,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import _c from '../ic/collections.js';
+import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber} from '../utils.js';
 var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
@@ -89,41 +90,14 @@ export default function NFT(props) {
     }
     return buttons;
   };
-  const icpbunnyimg = i => {
-    const icbstorage = ['efqhu-yqaaa-aaaaf-qaeda-cai',
-    'ecrba-viaaa-aaaaf-qaedq-cai',
-    'fp7fo-2aaaa-aaaaf-qaeea-cai',
-    'fi6d2-xyaaa-aaaaf-qaeeq-cai',
-    'fb5ig-bqaaa-aaaaf-qaefa-cai',
-    'fg4os-miaaa-aaaaf-qaefq-cai',
-    'ft377-naaaa-aaaaf-qaega-cai',
-    'fu2zl-ayaaa-aaaaf-qaegq-cai',
-    'f5zsx-wqaaa-aaaaf-qaeha-cai',
-    'f2yud-3iaaa-aaaaf-qaehq-cai']
-
-    return "https://" +icbstorage[i % 10]+".raw.ic0.app/Token/"+i;
-  };
   const mintNumber = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return props.nft.index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return props.nft.index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return props.nft.index;
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return props.nft.index;
-    else return props.nft.index+1;
+    return EntrepotNFTMintNumber(props.collection, props.nft.index);
   }
   const nftImg = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + props.nft.index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(props.nft.index);
-    
-    return "https://"+props.collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + props.nft.id;
+    return EntrepotNFTImage(props.collection, props.nft.index, props.nft.id);
   };
   const nftLink = () => {
-    if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + props.nft.index;
-    if (props.collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + props.nft.index;
-    if (props.collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + props.nft.index;
-    if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(props.nft.index);
-    return "https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id;
+    return EntrepotNFTLink(props.collection, props.nft.index, props.nft.id);
   };
   const nriLink = () => {
     if (props.collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=" + props.nft.index;
@@ -131,8 +105,8 @@ export default function NFT(props) {
     if (props.collection === "q6hjz-kyaaa-aaaah-qcama-cai") return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=" + props.nft.index;
     return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + props.nft.id;
   };
-  const wrappedCanisters = ["y3b7h-siaaa-aaaah-qcnwa-cai","q6hjz-kyaaa-aaaah-qcama-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
-  const unwrappedCanisters = ["4nvhy-3qaaa-aaaah-qcnoq-cai","xkbqi-2qaaa-aaaah-qbpqq-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
+  const wrappedCanisters = ["jeghr-iaaaa-aaaah-qco7q-cai","y3b7h-siaaa-aaaah-qcnwa-cai","q6hjz-kyaaa-aaaah-qcama-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
+  const unwrappedCanisters = ["fl5nr-xiaaa-aaaai-qbjmq-cai","4nvhy-3qaaa-aaaah-qcnoq-cai","xkbqi-2qaaa-aaaah-qbpqq-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
   const showWrapped = () => {
     if (wrappedCanisters.indexOf(props.nft.canister) >= 0)
       return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>WRAPPED</span>);

@@ -21,6 +21,7 @@ import moonwalkerIDL from './candid/moonwalker.did.js';
 import ic3dIDL from './candid/ic3d.did.js';
 import pokedIDL from './candid/poked.did.js';
 import icapesIDL from './candid/icapes.did.js';
+import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
@@ -80,6 +81,7 @@ class ExtConnection {
     "kxh4l-cyaaa-aaaah-qadaq-cai" : advancedIDL,
     "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
     "y3b7h-siaaa-aaaah-qcnwa-cai" : wrapperIDL,
+    "jeghr-iaaaa-aaaah-qco7q-cai" : wrapperIDL,
     "4nvhy-3qaaa-aaaah-qcnoq-cai" : icpunksIDL,
     "qcg3w-tyaaa-aaaah-qakea-cai" : icpunksIDL,
     "qgsqp-byaaa-aaaah-qbi4q-cai" : logIDL,
@@ -97,6 +99,7 @@ class ExtConnection {
     "nfvlz-jaaaa-aaaah-qcciq-cai" : ic3dIDL,
     "xkbqi-2qaaa-aaaah-qbpqq-cai" : icpunksIDL,
     "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
+    "fl5nr-xiaaa-aaaai-qbjmq-cai" : departureIDL,
     "33uhc-liaaa-aaaah-qcbra-cai" : mintregister,
   };
   _metadata = {
@@ -221,6 +224,25 @@ class ExtConnection {
                       id : tokenIdentifier(tokenObj.canister, Number(x)),
                       canister : tokenObj.canister,
                       index : Number(x),
+                      listing : false,
+                      metadata : false,
+                      wrapped : false,
+                    }
+                  }));
+                });
+              }
+            break;
+            //Departure
+            case "fl5nr-xiaaa-aaaai-qbjmq-cai":
+              if (aid !== principalToAccountIdentifier(principal, 0)) {
+                resolve([]);
+              } else {
+                api.getAllNFT(Principal.fromText(principal)).then(r => {
+                  resolve(r.map(x => {
+                    return {
+                      id : tokenIdentifier(tokenObj.canister, Number(x[0])),
+                      canister : tokenObj.canister,
+                      index : Number(x[0]),
                       listing : false,
                       metadata : false,
                       wrapped : false,
@@ -433,6 +455,16 @@ class ExtConnection {
               if (!validatePrincipal(to_user)) reject("This does not support traditional addresses, you must use a Principal");
               api.transfer_to(Principal.fromText(to_user), tokenObj.index).then(b => {
                 if (b) {          
+                  resolve(true);
+                } else {
+                  reject("Something went wrong");
+                }
+              }).catch(reject);
+            break;
+            case "fl5nr-xiaaa-aaaai-qbjmq-cai":
+              if (!validatePrincipal(to_user)) reject("This does not support traditional addresses, you must use a Principal");
+              api.transferFrom(Principal.fromText(from_principal), Principal.fromText(to_user), tokenObj.index).then(b => {
+                if (b.hasOwnProperty('ok')) {          
                   resolve(true);
                 } else {
                   reject("Something went wrong");
