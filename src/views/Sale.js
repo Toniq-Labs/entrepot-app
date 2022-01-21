@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "ICAliens",
-      link : "/sale/icaliens",
-      image : "/collections/icaliens/collection.jpg",
-      content : (<>A Collection of 10,000 Souvenirs of our adventures for our fellow Humans minted as an NFT on ICP</>),
+      title : "Infernal Vampire Colony Gen2",
+      link : "/sale/ivc2",
+      image : "/collections/ivc2/collection.png",
+      content : (<>Gen2 Infernal Vampires are prisoned in the lair by their enemies for a long time. They look more terrible and more scary than Gen1 Infernal Vampires. Because Gen2 Vampires stay in the lair longer, they're closer to death than ever before.</>),
     },
     {
       title : "SwordNFT",

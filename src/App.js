@@ -43,6 +43,7 @@ import Floki from "./components/sale/Floki";
 import Circle from "./components/sale/Circle";
 import Interitus from "./components/sale/Interitus";
 import ICAliens from "./components/sale/ICAliens";
+import IVC2 from "./components/sale/IVC2";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
@@ -412,6 +413,16 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"prime8s"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/ivc2" exact>
+              <IVC2
+                error={error}
+                view={"sale"}
+                sale={"ivc2"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

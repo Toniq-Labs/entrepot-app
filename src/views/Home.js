@@ -59,12 +59,8 @@ export default function Home(props) {
           // img: "/banner/floki.png"
       // },
       {
-          link: "/sale/icaliens",
-          img: "/banner/icaliens.jpg"
-      },
-      {
-          link: "/marketplace/dfinitydeck",
-          img: "/banner/dfinitydeck.jpg"
+          link: "/sale/ivc2",
+          img: "/banner/ivc2.png"
       },
       {
           link: "/sale/sword",
