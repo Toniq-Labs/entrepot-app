@@ -58,9 +58,7 @@ export default function Yolo(props) {
   const _updates = async () => {
     var stats = await api.canister("xzxhy-oiaaa-aaaah-qclnq-cai", "sale").salesStats((props.account ? props.account.address : ""));
     setStartTime(Number(stats[0]/1000000n));
-    if (stats[1] == presaleprice) {
-      setWhitelist(true);
-    }
+
     setRemaining(Number(stats[2]));
   };
   const theme = useTheme();
