@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
+      title : "BTC Flower",
+      link : "/sale/btcflower",
+      image : "/collections/btcflower/collection.jpg",
+      content : (<>The BTC Flower: Created back in 2017 by famous contemporary artist Ludo in the physical world – now moving to digital form on the Internet Computer</>),
+    },
+    {
       title : "Infernal Vampire Colony Gen2",
       link : "/sale/ivc2",
       image : "/collections/ivc2/collection.png",

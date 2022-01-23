@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 import extjs from '../ic/extjs.js';
-import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber} from '../utils.js';
+import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, '');
@@ -112,12 +112,7 @@ export default function SoldListing(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection == "jeghr-iaaaa-aaaah-qco7q-cai" ? (
-                <embed alt={tokenid} style={{ ...styles.avatarImg, display: "block", }} src={nftImg()}/>
-                ) : (<>
-                <img alt={tokenid} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
-                </>)};
+                {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
               </div>
             </a>
             

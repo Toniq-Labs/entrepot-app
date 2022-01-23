@@ -28,6 +28,7 @@ import Contact from "./views/Contact";
 //import HauntedHamsters from "./components/sale/HauntedHamsters";
 //import Poked from "./components/sale/Poked";
 //import BlockchainHeroes from "./components/sale/BlockchainHeroes";
+import BTCFlower from "./components/sale/BTCFlower";
 import ICSnakes from "./components/sale/ICSnakes";
 import ICApes from "./components/sale/ICApes";
 import ICPets from "./components/sale/ICPets";
@@ -375,6 +376,16 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />
+            </Route>
+            <Route path="/sale/btcflower" exact>
+              <BTCFlower
+                error={error}
+                view={"sale"}
+                sale={"btcflower"}
+                alert={alert}
+                confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />
             </Route>

@@ -54,30 +54,26 @@ export default function Home(props) {
 
   const history = useHistory();
   var items = [
-      // {
-          // link: "/sale/floki",
-          // img: "/banner/floki.png"
-      // },
-      {
-          link: "/sale/ivc2",
-          img: "/banner/ivc2.png"
-      },
-      {
-          link: "/sale/sword",
-          img: "/banner/sword.png"
-      },
-      {
-          link: "/marketplace/p2j",
-          img: "/banner/canistore.jpg"
-      },
-      // {
-          // link: "/marketplace/tranquillity",
-          // img: "/banner/icart.png",
-      // },
-      // {
-          // link: false,
-          // img: "/banner/rotm.png"
-      // },
+    {
+        link: "/sale/btcflower",
+        img: "/banner/btcflower.jpg"
+    },
+    {
+        link: "/sale/yolo-octopus",
+        img: "/banner/yolo.jpg"
+    },
+    {
+        link: "/sale/ivc2",
+        img: "/banner/ivc2.png"
+    },
+    {
+        link: "/sale/sword",
+        img: "/banner/sword.png"
+    },
+    {
+        link: "/marketplace/p2j",
+        img: "/banner/canistore.jpg"
+    },
   ];
   var cards = [
     {

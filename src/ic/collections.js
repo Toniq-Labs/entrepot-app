@@ -3,6 +3,31 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "pk6rk-6aaaa-aaaae-qaazq-cai",
+    priority : 10,
+    name: "BTC Flower",
+    brief : "2009 unique, randomly generated flowers",
+    description : "The BTC Flower: Created back in 2017 by famous contemporary artist Ludo in the physical world – now moving to digital form on the Internet Computer",
+    blurb: (<><p>In early 2018, BTC Flower made its debut on the streets of Paris. An unusual kind of Ludo piece, sharing the same techno-flower chimera archetype, but with a different tone and style. R.I.P Banking System was an uplifting symbol framed with an elegantly simple message. There’s not a forced entanglement, but a genuine symbiosis of the natural and technical. Greenery keeps its original plant form with Bitcoin at its core, able to bloom from the remains of a failed Fiat system. A seed had been planted, if you will.
+BTC Flower is the digital version of the R.I.P Banking System art piece. It exists as an assortment of 2009 unique variations, the original plants that will spawn a garden commemorating accomplishments of the cryptosphere.</p></>),
+    keywords : "art ludo flower btc bitcoin streetart btcflower",
+    web : "https://btcflower.xyz/",
+    //telegram : "https://t.me/+odsWbiTXIfQyYmE0",
+    discord : "https://discord.gg/GGEFTC9PzH",
+    twitter : "https://twitter.com/btcflower",
+    medium : "https://btcflower.medium.com/",
+    avatar : "/collections/btcflower/avatar.jpg",
+    collection : "/collections/btcflower/collection.jpg",
+    banner : "/collections/btcflower/banner.jpg",
+    route: "btcflower",
+    commission: 0.085,
+    comaddress: "fd860cd46c75bd8226e222e94548c131621a962d9af5ed95104a9a7a0e5cdad2",
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+  },
+  {
     canister: "ctt6t-faaaa-aaaah-qcpbq-cai",
     priority : 10,
     name: "Infernal Vampire Colony Gen2",
@@ -1204,24 +1229,6 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     comaddress:
       "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
     blurb: (<>André Wee, a newcomer to the NFT Art scene, is an experimental illustrator that jumps between both the virtual and physical world when he creates his craft. The works that he creates blend Technology with Art as André discovers newer ways of engaging with his viewers with creative storytelling and imagery. Aside from putting pencil to paper and pushing digital paint across a virtual canvas, André also works with animated layers hidden within the physical world through Augmented reality where he embeds narratives within his illustrations.<br /><br /><Button data-paperform-id="nunweq3r" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
-  },
-  
-  {
-    canister: "ludo",
-    priority : 10,
-    name: "Ludo",
-    unit : "NFT",
-    route: "ludo",
-    brief : "An Iconic 2021 Collection",
-    nftv : false,
-    keywords : "",
-    mature: false,
-    market : false,
-    commission: 0.1,
-    comaddress:
-      "60879ff49717bfef81b15288d6359a96b5705e2d3918d1f14bba1441ea84a539",
-    blurb: (<>The work of Paris-based Ludo (Ludovic Vernhet) explores a world where biotechnological chimeras offer to merge plants and animals with our technological universe. Through his work, Ludo aims to reveal the opposites that cohabit our world, often taking unlikely pairings to absurd lengths. These dualities are reconciled by the artist through the creation of hybrid organisms.
-Drawn with the precision of botanical illustrations, this new order of hybrid organisms is both elegant and ferocious, simple & sometimes caustic. Butterflies become brass knuckles; carnivorous plants bare rows of hunting-knife teeth; bees hover hidden behind gas masks and goggles; automatic weapons crown the head of sunflowers; human skulls cluster together like grapes.<br /><br /><strong>Art will be on sale after BTC integration</strong><br /><br /><Button data-paperform-id="iconic21ludo" data-popup-button="1" variant="outlined" color={"primary"} style={{fontWeight:"bold", cursor:"pointer"}}>Subcribe for Updates!</Button></>),
   },
   
   {

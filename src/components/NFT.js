@@ -10,7 +10,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import _c from '../ic/collections.js';
-import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber} from '../utils.js';
+import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
 var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
@@ -148,12 +148,7 @@ export default function NFT(props) {
 
             <a href={nftLink()} target="_blank" rel="noreferrer">
               <div style={{...styles.avatarSkeletonContainer}}>
-                {props.collection == "jeghr-iaaaa-aaaah-qco7q-cai" ? (
-                <embed alt={props.nft.id} style={{ ...styles.avatarImg, display: "block", }} src={nftImg()}/>
-                ) : (<>
-                <img alt={props.nft.id} style={{...styles.avatarImg, display:(imgLoaded ? "block" : "none")}} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-                <Skeleton style={{...styles.avatarLoader, display:(imgLoaded ? "none" : "block")}} variant="rect"  />
-                </>)};
+                {EntrepotDisplayNFT(props.collection, props.nft.id, imgLoaded, nftImg(), () => setImgLoaded(true))}
                 {showWrapped()}
               </div>
             </a>

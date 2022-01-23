@@ -31,7 +31,7 @@ import MuiTableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
 import _c from '../ic/collections.js';
-import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber } from '../utils';
+import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT } from '../utils';
 var collections = _c;
 
 
@@ -306,26 +306,11 @@ export default function Listing(props) {
             {showNri()}
           </Grid>
           {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? 
-            (props.collection == "jeghr-iaaaa-aaaah-qco7q-cai" ? (
             <a href={nftLink()} rel="noreferrer" target="_blank">
             <div style={{ ...styles.avatarSkeletonContainer }}>
-              <embed alt={tokenid} style={{ ...styles.avatarImg, display: "block", }} src={nftImg()}/>
+              {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
             </div>
-            </a> )
-            : (
-            <a href={nftLink()} rel="noreferrer" target="_blank">
-            <div style={{ ...styles.avatarSkeletonContainer }}>
-              <img alt={tokenid} style={{ ...styles.avatarImg, display: imgLoaded ? "block" : "none", }} src={nftImg()} onLoad={() => setImgLoaded(true)} />
-              <Skeleton
-                style={{
-                  ...styles.avatarLoader,
-                  display: imgLoaded ? "none" : "block",
-                }}
-                variant="rect"
-              />
-            </div>
-            </a> 
-            ))
+            </a>
              : (
               <div style={{ ...styles.avatarSkeletonContainer }}>
               <div>

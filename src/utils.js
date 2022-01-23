@@ -1,3 +1,5 @@
+import Skeleton from "@material-ui/lab/Skeleton";
+
 function fallbackCopyTextToClipboard(text) {
   
   var textArea = document.createElement("textarea");
@@ -83,6 +85,53 @@ EntrepotNFTLink = (collection, index, id) => {
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
   return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
 },
+EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
+  var avatarImgStyle = {
+    position: "absolute",
+    top: "0%",
+    left: "0%",
+    width: "100%",
+    height: "100%",
+    margin: "0 auto",
+    objectFit: "contain",
+  }
+  var avatarLoaded = {
+    position: "absolute",
+    top: "15%",
+    left: "15%",
+    width: "70%",
+    height: "70%",
+    margin: "0 auto",
+  }
+  if (collection == "pk6rk-6aaaa-aaaae-qaazq-cai") {
+    var assetsHaveBeenShuffled = false;
+    if (assetsHaveBeenShuffled) {
+      return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image+"?autoplay=1"}/>);
+    } else {
+      return (<>
+        <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/btcflower_thumb.gif"} onLoad={onload} />
+        <Skeleton
+          style={{
+            ...avatarLoaded,
+            display: imgLoaded ? "none" : "block",
+          }}
+          variant="rect"
+        />
+      </>);
+    }
+  }
+  if (collection == "jeghr-iaaaa-aaaah-qco7q-cai") return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image}/>);
+  return (<>
+    <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={image} onLoad={onload} />
+    <Skeleton
+      style={{
+        ...avatarLoaded,
+        display: imgLoaded ? "none" : "block",
+      }}
+      variant="rect"
+    />
+  </>);
+},
 EntrepotNFTMintNumber = (collection, index, id) => {
   if (collection === "bxdf4-baaaa-aaaah-qaruq-cai") return index;
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return index;
@@ -97,5 +146,5 @@ numf = (n, d) => {
   return n.toFixed(d).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 export {
-  clipboardCopy, compressAddress, displayDate, numf, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber
+  clipboardCopy, compressAddress, displayDate, numf, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT
 };
