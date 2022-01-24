@@ -60,7 +60,7 @@ export default function Create(props) {
       title : "Cronic Wearables",
       link : "/marketplace/wearables",
       image : "/collections/cronic-wearables.jpg",
-      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+      content : (<>Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
     },
     {
       title : "ICmojis",
@@ -72,7 +72,7 @@ export default function Create(props) {
       title : "Rise of the Magni",
       link : "/",
       image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!</>),
     },
   
   ];
@@ -100,7 +100,7 @@ export default function Create(props) {
                 >
                   this form
                 </a>{" "}
-                and we will be in touch!
+                and we will be in touch! Our self-minting portal will be available for public use this year so stay tuned for updates!
               </p>
             </Grid>
           </Grid>
