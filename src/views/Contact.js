@@ -87,7 +87,7 @@ export default function Contact(props) {
                 >
                   StoicWallet
                 </a>
-                , but we will aim to add more in future.
+                , and Plug Wallet.
               </p>
             </Grid>
             <Grid item md={3}>
@@ -128,7 +128,7 @@ export default function Contact(props) {
             <Grid item md={3}>
               <h3 className={classes.heading}>I haven't received my ICP?</h3>
               <p style={{ fontSize: "1.1em", textAlign: "center" }}>
-                Please log in and wait a few minutes - payments have to be
+                Please log in and click "Check Payments" - payments have to be
                 extracted from escrow accounts once a sale is completed.
               </p>
             </Grid>
@@ -136,7 +136,7 @@ export default function Contact(props) {
               <h3 className={classes.heading}>Where can I store my NFTs?</h3>
               <p style={{ fontSize: "1.1em", textAlign: "center" }}>
                 Entrepot currently only supports NFTs using the EXT standard by
-                ToniqLabs. Currently this is just StoicWallet
+                ToniqLabs. Currently this is StoicWallet and PlugWallet.
               </p>
             </Grid>
             <Grid item md={3}>
