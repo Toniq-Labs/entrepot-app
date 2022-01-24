@@ -23,7 +23,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     commission: 0.085,
     comaddress: "fd860cd46c75bd8226e222e94548c131621a962d9af5ed95104a9a7a0e5cdad2",
     unit : "NFT",
-    nftv : false,
+    nftv : true,
     mature: false,
     market : true,
   },

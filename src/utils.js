@@ -104,9 +104,9 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     margin: "0 auto",
   }
   if (collection == "pk6rk-6aaaa-aaaae-qaazq-cai") {
-    var assetsHaveBeenShuffled = false;
+    var assetsHaveBeenShuffled = true;
     if (assetsHaveBeenShuffled) {
-      return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image+"?autoplay=1"}/>);
+      return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image+"?cc=1"}/>);
     } else {
       return (<>
         <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/btcflower_thumb.gif"} onLoad={onload} />
