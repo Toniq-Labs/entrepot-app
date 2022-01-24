@@ -29,7 +29,7 @@ export default function Features(props) {
           <p style={{ fontSize: "1.1em", textAlign: "center" }}>
             We charge a <strong>1.0%</strong> Marketplace fee, and
             collection creators can charge a Royalty fee of up to{" "}
-            <strong>2.5%</strong>
+            <strong>10%</strong>
           </p>
         </div>
       </Grid>
