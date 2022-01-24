@@ -630,7 +630,7 @@ export default function Listings(props) {
             
             {showing === "all" &&
             ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Wearable Type</InputLabel>
                 <Select value={wearableFilter} onChange={changeWearableFilter}>
                   <MenuItem value={"all"}>All Wearables</MenuItem>
@@ -646,7 +646,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Flower Texture</InputLabel>
                 <Select value={flowerFilter} onChange={changeFlowerFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -664,7 +664,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Coin Texture</InputLabel>
                 <Select value={coinFilter} onChange={changeCoinFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -682,7 +682,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Grave Texture</InputLabel>
                 <Select value={graveTextureFilter} onChange={changeGraveTextureFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -700,7 +700,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Grave Symbol</InputLabel>
                 <Select value={graveSymbolFilter} onChange={changeGraveSymbolFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -721,7 +721,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Background</InputLabel>
                 <Select value={backgroundFilter} onChange={changeBackgroundFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
@@ -736,7 +736,7 @@ export default function Listings(props) {
 
             {showing === "all" &&
             ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Pairings</InputLabel>
                 <Select value={pairingsFilter} onChange={changePairingsFilter}>
                   <MenuItem value={"all"}>All</MenuItem>
