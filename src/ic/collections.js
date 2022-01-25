@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
-    canister: "dklxm-nyaaa-aaaaj-qajza-cai",
+    canister: "nges7-giaaa-aaaaj-qaiya-cai",
     priority : 10,
     name: "Saga Legends",
     brief : "Collectible Major Arcana for Fans of Art and Tarot",
@@ -19,7 +19,7 @@ var collections = [
     collection : "/collections/saga/collection.jpg",
     route: "saga",
     commission: 0.035,
-    comaddress: "e6870c25ff325460b9a39b172a587ed56bfee9a153dae8c516ce9cbe5e7acbdc",
+    comaddress: "4308851253fa7652da0a8050ed72ca3427baf0d9a3b8ccb1370f669f954d6412",
     unit : "Legend",
     nftv : false,
     mature: false,
