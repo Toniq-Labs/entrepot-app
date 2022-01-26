@@ -17,6 +17,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { Grid, makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import getGenes from "./CronicStats.js";
+import { getTraits, getPairing} from "./BTCFlowerStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
@@ -102,6 +103,14 @@ export default function Listings(props) {
   const [specialRecessiveValue, setSpecialRecessiveValue] = React.useState([0, 63]);
   const [baseDominantValue, setBaseDominantValue] = React.useState([0, 63]);
   const [baseRecessiveValue, setBaseRecessiveValue] = React.useState([0, 63]);
+  // btc flower filtering
+  const [backgroundFilter, setBackgroundFilter] = React.useState("all");
+  const [flowerFilter, setFlowerFilter] = React.useState("all");
+  const [coinFilter, setCoinFilter] = React.useState("all");
+  const [graveTextureFilter, setGraveTextureFilter] = React.useState("all");
+  const [graveSymbolFilter, setGraveSymbolFilter] = React.useState("all");
+  const [pairingsFilter, setPairingsFilter] = React.useState("all");
+
   const [showing, setShowing] = useState("all");
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
@@ -114,6 +123,30 @@ export default function Listings(props) {
   const changeWearableFilter = async (event) => {
     setPage(1);
     setWearableFilter(event.target.value);
+  };
+  const changeFlowerFilter= async (event) => {
+    setPage(1);
+    setFlowerFilter(event.target.value);
+  };
+  const changeBackgroundFilter= async (event) => {
+    setPage(1);
+    setBackgroundFilter(event.target.value);
+  };
+  const changeGraveTextureFilter= async (event) => {
+    setPage(1);
+    setGraveTextureFilter(event.target.value);
+  };
+  const changeGraveSymbolFilter = async (event) => {
+    setPage(1);
+    setGraveSymbolFilter(event.target.value);
+  };
+  const changeCoinFilter= async (event) => {
+    setPage(1);
+    setCoinFilter(event.target.value);
+  };
+  const changePairingsFilter= async (event) => {
+    setPage(1);
+    setPairingsFilter(event.target.value);
   };
   useEffect(() => {
     if (props.collection) _changeCollection(props.collection);
@@ -230,6 +263,21 @@ export default function Listings(props) {
 
   const handleFiltersChange = () => {
     setListings(applyAdvancedFilters(listings));
+  };
+
+  const applyBtcFlowerFilters = (a) => {
+    return a.filter(
+      (_a) => {
+        let background = backgroundFilter !== "all" ? backgroundFilter === getTraits(_a[0]).background : true;
+        let flower = flowerFilter !== "all" ? flowerFilter === getTraits(_a[0]).flower : true;
+        let coin = coinFilter !== "all" ? coinFilter === getTraits(_a[0]).coin : true;
+        let graveTexture = graveTextureFilter !== "all" ? graveTextureFilter === getTraits(_a[0]).grave.split("_").pop()  : true;
+        let graveSymbol= graveSymbolFilter!== "all" ? graveSymbolFilter === getTraits(_a[0]).grave.split("_")[0]  : true;
+        let pairing = pairingsFilter !== "all" ? pairingsFilter === getPairing(getTraits(_a[0]))  : true;
+        let isFiltered = background && flower && coin && graveTexture && graveSymbol && pairing;
+        return isFiltered
+      }
+    )
   };
 
   const applyAdvancedFilters = (a) => {
@@ -380,6 +428,11 @@ export default function Listings(props) {
       s === "all"
     ) {
       a = applyAdvancedFilters(a);
+    } else if (
+      c === "pk6rk-6aaaa-aaaae-qaazq-cai" &&
+      s === "all"
+    ) {
+      a = applyBtcFlowerFilters(a);
     }
     return a;
   };
@@ -577,7 +630,7 @@ export default function Listings(props) {
             
             {showing === "all" &&
             ["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
-              <FormControl style={{ minWidth: 120 }}>
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
                 <InputLabel>Wearable Type</InputLabel>
                 <Select value={wearableFilter} onChange={changeWearableFilter}>
                   <MenuItem value={"all"}>All Wearables</MenuItem>
@@ -590,6 +643,112 @@ export default function Listings(props) {
             ) : (
               ""
             )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Flower Texture</InputLabel>
+                <Select value={flowerFilter} onChange={changeFlowerFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"gold"}>Gold</MenuItem>
+                  <MenuItem value={"diamond"}>Diamond</MenuItem>
+                  <MenuItem value={"silver"}>Silver</MenuItem>
+                  <MenuItem value={"black"}>Black</MenuItem>
+                  <MenuItem value={"green"}>Green</MenuItem>
+                  <MenuItem value={"white"}>White</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Coin Texture</InputLabel>
+                <Select value={coinFilter} onChange={changeCoinFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"gold"}>Gold</MenuItem>
+                  <MenuItem value={"diamond"}>Diamond</MenuItem>
+                  <MenuItem value={"silver"}>Silver</MenuItem>
+                  <MenuItem value={"black"}>Black</MenuItem>
+                  <MenuItem value={"green"}>Green</MenuItem>
+                  <MenuItem value={"white"}>White</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Grave Texture</InputLabel>
+                <Select value={graveTextureFilter} onChange={changeGraveTextureFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"gold"}>Gold</MenuItem>
+                  <MenuItem value={"diamond"}>Diamond</MenuItem>
+                  <MenuItem value={"silver"}>Silver</MenuItem>
+                  <MenuItem value={"black"}>Black</MenuItem>
+                  <MenuItem value={"green"}>Green</MenuItem>
+                  <MenuItem value={"white"}>White</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Grave Symbol</InputLabel>
+                <Select value={graveSymbolFilter} onChange={changeGraveSymbolFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"dollar"}>Dollar</MenuItem>
+                  <MenuItem value={"paypal"}>PayPal</MenuItem>
+                  <MenuItem value={"amex"}>Amex</MenuItem>
+                  <MenuItem value={"master"}>Master Card</MenuItem>
+                  <MenuItem value={"visa"}>Visa</MenuItem>
+                  <MenuItem value={"yuan"}>Yuan</MenuItem>
+                  <MenuItem value={"yen"}>Yen</MenuItem>
+                  <MenuItem value={"pound"}>Pound</MenuItem>
+                  <MenuItem value={"euro"}>Euro</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Background</InputLabel>
+                <Select value={backgroundFilter} onChange={changeBackgroundFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"white"}>White</MenuItem>
+                  <MenuItem value={"grey"}>Grey</MenuItem>
+                  <MenuItem value={"black"}>Black</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
+            {showing === "all" &&
+            ["pk6rk-6aaaa-aaaae-qaazq-cai"].indexOf(collection?.canister) >= 0 ? (
+              <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                <InputLabel>Pairings</InputLabel>
+                <Select value={pairingsFilter} onChange={changePairingsFilter}>
+                  <MenuItem value={"all"}>All</MenuItem>
+                  <MenuItem value={"none"}>None</MenuItem>
+                  <MenuItem value={"double"}>Double</MenuItem>
+                  <MenuItem value={"triple"}>Triple</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              ""
+            )}
+
 
             {showing === "all" ? (
               listings.length > perPage ? (
