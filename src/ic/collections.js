@@ -3,6 +3,29 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "nges7-giaaa-aaaaj-qaiya-cai",
+    priority : 10,
+    name: "Saga Legends",
+    brief : "Collectible Major Arcana for Fans of Art and Tarot",
+    description : "Saga",
+    blurb: (<><p>
+      Saga is bringing Tarot into the Metaverse. These collectible Major Arcana NFTs celebrate and support our first official deck.
+    </p></>),
+    keywords : "saga cards tarot nft collectible arcana",
+    twitter : "https://twitter.com/sagacards",
+    web : "https://legends.saga.cards",
+    banner : "/collections/saga/banner.jpg",
+    avatar : "/collections/saga/avatar.jpg",
+    collection : "/collections/saga/collection.jpg",
+    route: "saga",
+    commission: 0.035,
+    comaddress: "4308851253fa7652da0a8050ed72ca3427baf0d9a3b8ccb1370f669f954d6412",
+    unit : "Legend",
+    nftv : false,
+    mature: false,
+    market : true,
+  },
+  {
     canister: "pk6rk-6aaaa-aaaae-qaazq-cai",
     priority : 10,
     name: "BTC Flower",
