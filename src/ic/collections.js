@@ -839,7 +839,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     market : true,
     commission: 0.025,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "dc84032b8eeb93da0b339e0da3b6853265ecb74b1d27f5b08dc6d98114582af3",
     blurb: false,
   },
   {
@@ -940,7 +940,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     market : true,
     commission: 0.025,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "3fd5d8d72a8c79f4c29a91087257ecd37e25b66aafdb337236c9f0dc22b6a833",
     blurb: (
       <>
         IC Drip are randomly generated meta-commerce shopping carts for outfits
@@ -1082,7 +1082,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     route: "icp-news",
     commission: 0.02,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "692b810a610825216f72f6c267048d5c6cb422f292b26e1f08d951eb9bd4b4e6",
     blurb: false,
   },
   {
@@ -1175,7 +1175,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     commission: 0.035,
     comaddress:
-      "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
+      "babd934f0c05e28dbd90ca276a345fa977172e0c62109efd71c0b62f537782ac",
     blurb: false,
   },
   
