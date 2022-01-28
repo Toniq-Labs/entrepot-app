@@ -55,7 +55,11 @@ export default function Home(props) {
   const history = useHistory();
   var items = [
     {
-        link: "/sale/btcflower",
+        link: "/sale/frogvoxel",
+        img: "/banner/frog.jpg"
+    },
+    {
+        link: "/marketplace/btcflower",
         img: "/banner/btcflower.jpg"
     },
     {

@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const history = useHistory();
   var cards = [
     {
-      title : "BTC Flower",
-      link : "/sale/btcflower",
-      image : "/collections/btcflower/collection.jpg",
-      content : (<>The BTC Flower: Created back in 2017 by famous contemporary artist Ludo in the physical world – now moving to digital form on the Internet Computer</>),
+      title : "Frog Nation 2.0 - Voxel Assassins!!!",
+      link : "/sale/frogvoxel",
+      image : "/collections/frog2d/VoxelAvatar.png",
+      content : (<>This collection has 3 unique sets. 1000 2D Cool Pepe assassins, 420 3D Voxel Killers and 69 3D High quality Ninjas all created by Liquid ICP DAO for its valuable community.</>),
     },
     {
       title : "Infernal Vampire Colony Gen2",
