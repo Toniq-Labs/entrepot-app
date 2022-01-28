@@ -11,6 +11,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
 import Navbar from "../../containers/Navbar.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -48,6 +49,8 @@ export default function Frog(props) {
   const [price, setPrice] = React.useState(300000000n);
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1643382000000);
+
+  const history = useHistory();
   var totalToSell = 375;
   var saleOver = false;  
   const params = useParams();
@@ -192,7 +195,14 @@ export default function Frog(props) {
               }
             </>
           : 
-            <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your NFT from the marketplace soon!</span></strong></p>
+            <><p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your NFT from the marketplace!</span></strong></p>
+            <Button
+              className={classes.marketBtn}
+              variant={"outlined"}
+              onClick={() => history.push(`/marketplace/frogvoxel`)}
+              color={"primary"}
+              style={{ fontWeight: "bold", margin: "20px auto" }}
+            >Explore the Marketplace</Button></>
           }</>
         }
       </div>
