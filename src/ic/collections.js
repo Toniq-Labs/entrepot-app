@@ -828,7 +828,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
-    commission: 0.035,
+    commission: 0.06,
     comaddress:
       "2be01f5e8f081c6e8784b087fb1a88dac92fdd29203c1e456a6e90950c6e6e21",
     blurb: (<>Internet Astronauts are collection of 10,000 end-to-end-on-chain NFT collectibles only possible through Internet Computer! Internet Astronauts are founding pass NFT’s of IC dAppverse’s.</>),
