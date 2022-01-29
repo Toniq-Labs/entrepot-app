@@ -30,7 +30,7 @@
     "react-player": "^2.9.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.0",
     "react-timestamp": "^5.1.0",
     "recharts": "^2.1.8",
     "sjcl": "^1.0.8",
@@ -39,11 +39,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "serve": "react-scripts build && serve -s build",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "serve": "react-app-rewired build && serve -s build",
+    "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
     "extends": [
@@ -66,8 +66,9 @@
     ]
   },
   "devDependencies": {
+    "react-app-rewired": "^2.1.11",
     "redux": "^4.1.2",
     "serve": "^13.0.2",
-    "webpack": "4.44.2"
+    "webpack": "5.67.0"
   }
 }
