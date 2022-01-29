@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
 import Carousel from 'react-material-ui-carousel'
@@ -78,7 +78,7 @@ function shuffle(array) {
 export default function Iconic(props) {
   const classes = useStyles();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   var cards = [
     {
       title : "Frog Nation 2.0 - Voxel Assassins!!!",

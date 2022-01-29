@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
 import ReactPlayer from 'react-player'
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Home(props) {
   const classes = useStyles();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   var items = [
     {
         link: "/sale/frogvoxel",
@@ -142,7 +142,7 @@ export default function Home(props) {
               className={classes.marketBtn}
               fullWidth
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace`)}
+              onClick={() => navigate(`/marketplace`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >

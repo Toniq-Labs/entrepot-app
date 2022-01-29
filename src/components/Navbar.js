@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Button from "@material-ui/core/Button";
@@ -11,7 +11,7 @@ import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
 
 export default function Navbar(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState("");
   const [walletOpen, setWalletOpen] = React.useState(false);
@@ -19,19 +19,21 @@ export default function Navbar(props) {
 
   const handleClick = () => {
     setWalletOpen(false)
-    const temp = history.location.pathname.split("/")[1];
+    const temp = navigate.location?.pathname.split("/")[1];
     setRoute(temp);
   };
   const goTo = page => {
-    history.push(page)
+    navigate(page)
     handleClick();
   };
   const handleDrawerToggle = () => {
     setWalletOpen(!walletOpen);
   };
   React.useEffect(() => {
-    const temp = history.location.pathname.split("/")[1];
+    const temp = navigate.location?.pathname.split("/")[1];
+    if (temp) {
     setRoute(temp);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -57,7 +59,7 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              history.push("/marketplace");
+              navigate("/marketplace");
               handleClick();
             }}
             className={(route === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}

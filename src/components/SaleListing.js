@@ -10,8 +10,6 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import Button from "@material-ui/core/Button";
 import ReactPlayer from 'react-player'
 import Timestamp from "react-timestamp";
-import extjs from "../ic/extjs.js";
-import { useHistory } from "react-router-dom";
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");

@@ -24,7 +24,7 @@ import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -67,7 +67,7 @@ const _showListingPrice = n => {
 var intv = false;
 var loadedAccount = false;
 export default function Wallet(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -271,7 +271,7 @@ export default function Wallet(props) {
           {props.view === "wallet" ?
           <ListItemSecondaryAction>
             <ListItemIcon>
-              <Button color={"primary"} variant={"contained"} onClick={() => history.push("/marketplace/"+props.collection.route)} style={{marginTop:"3px", marginLeft:"30px"}} size="small" edge="end">
+              <Button color={"primary"} variant={"contained"} onClick={() => navigate("/marketplace/"+props.collection.route)} style={{marginTop:"3px", marginLeft:"30px"}} size="small" edge="end">
                 Back
               </Button>
             </ListItemIcon>
@@ -286,7 +286,7 @@ export default function Wallet(props) {
           :
             <>
               {myCollections.map(_collection => {
-                return (<ListItem key={_collection.canister + "-" + _collection.count} selected={props.view === "wallet" && _collection.route == props.collection?.route} button onClick={() => history.push("/wallet/"+_collection.route)}>
+                return (<ListItem key={_collection.canister + "-" + _collection.count} selected={props.view === "wallet" && _collection.route == props.collection?.route} button onClick={() => navigate("/wallet/"+_collection.route)}>
                   <ListItemAvatar>
                     <Avatar>
                       <img alt={_collection.name} src={"/collections/"+_collection.canister+".jpg"} style={{height:64}} />

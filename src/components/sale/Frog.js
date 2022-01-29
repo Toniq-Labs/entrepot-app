@@ -11,7 +11,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../containers/Navbar.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -50,7 +50,7 @@ export default function Frog(props) {
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1643382000000);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   var totalToSell = 375;
   var saleOver = false;  
   const params = useParams();
@@ -199,7 +199,7 @@ export default function Frog(props) {
             <Button
               className={classes.marketBtn}
               variant={"outlined"}
-              onClick={() => history.push(`/marketplace/frogvoxel`)}
+              onClick={() => navigate(`/marketplace/frogvoxel`)}
               color={"primary"}
               style={{ fontWeight: "bold", margin: "20px auto" }}
             >Explore the Marketplace</Button></>

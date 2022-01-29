@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Button from "@material-ui/core/Button";
@@ -10,14 +10,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { IconButton, makeStyles } from "@material-ui/core";
 
 export default function Navbar(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState("");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleClick = () => {
-    const temp = history.location.pathname.split("/")[1];
+    const temp = navigate.location?.pathname.split("/")[1];
     setRoute(temp);
   };
   const handleDrawerToggle = () => {
@@ -36,7 +36,7 @@ export default function Navbar(props) {
         <Toolbar>
           <Typography variant="h6" noWrap>
             <img
-              onClick={() => history.push("/")}
+              onClick={() => navigate("/")}
               alt="Entrepot"
               src="/logo.jpg"
               style={{ height: 64, cursor: "pointer" }}
@@ -45,7 +45,7 @@ export default function Navbar(props) {
           <div className={classes.grow} />
           <Button
             onClick={() => {
-              history.push("/sale");
+              navigate("/sale");
               handleClick();
             }}
             className={(route === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
@@ -55,7 +55,7 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              history.push("/marketplace/motoko");
+              navigate("/marketplace/motoko");
               handleClick();
             }}
             className={(route === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
@@ -65,7 +65,7 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              history.push("/create");
+              navigate("/create");
               handleClick();
             }}
             className={(route === "create" ? "selected " : "")+[classes.button, classes.create].join(' ')}
@@ -75,7 +75,7 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              history.push("/contact");
+              navigate("/contact");
               handleClick();
             }}
             className={(route === "contact" ? "selected " : "")+[classes.button, classes.contact].join(' ')}
@@ -91,7 +91,7 @@ export default function Navbar(props) {
             <div className={classes.smNav} onClick={() => setOpen(false)}>
               <Button
                 onClick={() => {
-                  history.push("/sale");
+                  navigate("/sale");
                   handleClick();
                 }}
                 className={classes.button1}
@@ -115,7 +115,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/marketplace/motoko");
+                  navigate("/marketplace/motoko");
                   handleClick();
                 }}
                 className={classes.button1}
@@ -139,7 +139,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/create");
+                  navigate("/create");
                   handleClick();
                 }}
                 className={classes.button1}
@@ -163,7 +163,7 @@ export default function Navbar(props) {
                   />
                 }
                 onClick={() => {
-                  history.push("/contact");
+                  navigate("/contact");
                   handleClick();
                 }}
                 className={classes.button1}

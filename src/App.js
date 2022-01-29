@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AlertDialog from "./components/AlertDialog";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { StoicIdentity } from "ic-stoic-identity";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Detail from "./components/Detail";
 import Listings from "./components/Listings";
 import NFTList from "./components/NFTList";
@@ -342,16 +342,15 @@ export default function App() {
       <Navbar view={""} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
       <main className={classes.content}>
         <div className={classes.inner}>
-          <Switch>
-            <Route path="/marketplace/token/:tokenid" exact>
+          <Routes>
+            <Route path="/marketplace/token/:tokenid" exact element={
               <Detail
                 error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader}
-              />
-            </Route>
-            <Route path="/marketplace/:route" exact>
+              />} />
+            <Route path="/marketplace/:route" exact element={
               <Listings
                 error={error}
                 view={"listings"}
@@ -359,18 +358,16 @@ export default function App() {
                 confirm={confirm}
                 loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/marketplace" exact>
+              />} />
+            <Route path="/marketplace" exact element={
               <Marketplace
                 error={error}
                 view={"collections"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/wallet/:route" exact>
+              />} />
+            <Route path="/wallet/:route" exact element={
               <NFTList
                 error={error}
                 view={"wallet"}
@@ -378,9 +375,8 @@ export default function App() {
                 confirm={confirm}
                 loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/btcflower" exact>
+              />} />
+            <Route path="/sale/btcflower" exact element={
               <BTCFlower
                 error={error}
                 view={"sale"}
@@ -388,9 +384,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/yolo-octopus" exact>
+              />} />
+            <Route path="/sale/yolo-octopus" exact element={
               <Yolo
                 error={error}
                 view={"sale"}
@@ -398,9 +393,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/sword" exact>
+              />} />
+            <Route path="/sale/sword" exact element={
               <Sword
                 error={error}
                 view={"sale"}
@@ -408,9 +402,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/interitus" exact>
+              />} />
+            <Route path="/sale/interitus" exact element={
               <Interitus
                 error={error}
                 view={"sale"}
@@ -418,9 +411,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/frogvoxel" exact>
+              />} />
+            <Route path="/sale/frogvoxel" exact element={
               <Frog
                 error={error}
                 view={"sale"}
@@ -428,9 +420,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/prime8s" exact>
+              />} />
+            <Route path="/sale/prime8s" exact element={
               <Prime
                 error={error}
                 view={"sale"}
@@ -438,9 +429,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/ivc2" exact>
+              />} />
+            <Route path="/sale/ivc2" exact element={
               <IVC2
                 error={error}
                 view={"sale"}
@@ -448,9 +438,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/Cyman" exact>
+              />} />
+            <Route path="/sale/Cyman" exact element={
               <Cyman
                 error={error}
                 view={"sale"}
@@ -458,9 +447,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/dfinitydeck" exact>
+              />} />
+            <Route path="/sale/dfinitydeck" exact element={
               <DfinityDeck
                 error={error}
                 view={"sale"}
@@ -468,9 +456,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/ickitties" exact>
+              />} />
+            <Route path="/sale/ickitties" exact element={
               <ICKitties
                 error={error}
                 view={"sale"}
@@ -478,9 +465,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/floki" exact>
+              />} />
+            <Route path="/sale/floki" exact element={
               <Floki
                 error={error}
                 view={"sale"}
@@ -488,9 +474,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/icircle" exact>
+              />} />
+            <Route path="/sale/icircle" exact element={
               <Circle
                 error={error}
                 view={"sale"}
@@ -498,9 +483,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/icpets" exact>
+              />} />
+            <Route path="/sale/icpets" exact element={
               <ICPets
                 error={error}
                 view={"sale"}
@@ -508,9 +492,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/memecake" exact>
+              />} />
+            <Route path="/sale/memecake" exact element={
               <Memecake
                 error={error}
                 view={"sale"}
@@ -518,9 +501,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/tranquillity" exact>
+              />} />
+            <Route path="/sale/tranquillity" exact element={
               <Tranquillity
                 error={error}
                 view={"sale"}
@@ -528,9 +510,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/icapes" exact>
+              />} />
+            <Route path="/sale/icapes" exact element={
               <ICApes
                 error={error}
                 view={"sale"}
@@ -538,9 +519,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/icaliens" exact>
+              />} />
+            <Route path="/sale/icaliens" exact element={
               <ICAliens
                 error={error}
                 view={"sale"}
@@ -548,9 +528,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/icsnakes" exact>
+              />} />
+            <Route path="/sale/icsnakes" exact element={
               <ICSnakes
                 error={error}
                 view={"sale"}
@@ -558,9 +537,8 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/sale/spaceapes" exact>
+              />} />
+            <Route path="/sale/spaceapes" exact element={
               <SpaceApes
                 error={error}
                 view={"sale"}
@@ -568,39 +546,33 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/mint" exact>
+              />} />
+            <Route path="/mint" exact element={
               <Mint
                 error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} address={address} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/create" exact>
+              />} />
+            <Route path="/create" exact element={
               <Create
                 error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/contact" exact>
+              />} />
+            <Route path="/contact" exact element={
               <Contact
                 error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-              />
-            </Route>
-            <Route path="/" exact>
-              <Home error={error} alert={alert} confirm={confirm} loader={loader} />
-            </Route>
-            <Route path="/sale" exact>
-              <Sale error={error} alert={alert} confirm={confirm} loader={loader} />
-            </Route>
-          </Switch>
+              />} />
+            <Route path="/" exact element={
+              <Home error={error} alert={alert} confirm={confirm} loader={loader} />} />
+            <Route path="/sale" exact element={
+              <Sale error={error} alert={alert} confirm={confirm} loader={loader} />} />
+          </Routes>
         </div>
       </main>
       {footer}

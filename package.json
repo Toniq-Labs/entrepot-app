@@ -29,7 +29,7 @@
     "react-material-ui-carousel": "^2.3.5",
     "react-player": "^2.9.0",
     "react-redux": "^7.2.6",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
     "react-timestamp": "^5.1.0",
     "recharts": "^2.1.8",

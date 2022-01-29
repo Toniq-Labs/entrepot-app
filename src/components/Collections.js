@@ -20,7 +20,7 @@ import Listing from "./Listing";
 import Sold from "./Sold";
 import SoldListing from "./SoldListing";
 import BuyForm from "./BuyForm";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -96,7 +96,7 @@ export default function Listings(props) {
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
   const [listingDialogOpen, setListingDialogOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const changeWearableFilter = async (event) => {
     setPage(1);
@@ -108,7 +108,7 @@ export default function Listings(props) {
 
   const changeCollection = async (event) => {
     const _collection = props.collections.find(e => e.canister === event.target.value);
-    history.push(`/marketplace/${_collection.route}`);
+    navigate(`/marketplace/${_collection.route}`);
     event.preventDefault();
     _changeCollection(_collection);
   };

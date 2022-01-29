@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import extjs from "../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import NFTList from "../components/NFTList";
 import Listings from "../components/Listings";
 import Button from "@material-ui/core/Button";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 var _stats = [];
 export default function Marketplace(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
   const theme = useTheme();
   const [sort, setSort] = React.useState("total_desc");
@@ -93,7 +93,7 @@ export default function Marketplace(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleClick = (a) => {
-    history.push(a);
+    navigate(a);
   };
   return (
     <>

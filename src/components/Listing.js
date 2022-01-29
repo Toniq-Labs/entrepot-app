@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Timestamp from "react-timestamp";
 import extjs from "../ic/extjs.js";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -132,7 +132,7 @@ export default function Listing(props) {
   const [chartData, setChartData] = React.useState([]);
   const genes = props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? "" : getGenes(props.listing[2].nonfungible.metadata[0]);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const tokenid = extjs.encodeTokenId(props.collection, props.listing[0]);
 
   const backgrounds_details = ['Hexagon', 'Snowflake', 'Diamond', 'Multi-point star', 'Circle', 'Star'];
@@ -269,7 +269,7 @@ export default function Listing(props) {
 
   const handleClick = () => {
     const id = props.listing[0];
-    history.push(`/marketplace/token/${tokenid}`);
+    navigate(`/marketplace/token/${tokenid}`);
   };
 
   return (

@@ -11,7 +11,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import Pagination from '@material-ui/lab/Pagination';
 import extjs from '../ic/extjs.js';
@@ -54,7 +54,7 @@ const canisterMap= {
 var buttonLoader= false;
 export default function NFTList(props) {
   const params = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [nfts, setNfts] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
@@ -264,7 +264,7 @@ export default function NFTList(props) {
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
       <div style={styles.empty}>
         <h1>My NFTs: <span style={{color: "#00d092"}}>{collection?.name}</span></h1>
-        <Button variant={"outlined"} color="primary" onClick={() => history.push("/marketplace/"+collection.route)} ><strong>Go to Marketplace</strong></Button>
+        <Button variant={"outlined"} color="primary" onClick={() => navigate("/marketplace/"+collection.route)} ><strong>Go to Marketplace</strong></Button>
       </div>
       <div style={(gridSize === "small" ? {width:1200,margin:"0 auto", marginTop: "10px"} : {marginLeft: "20px", marginTop: "10px"})}>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>

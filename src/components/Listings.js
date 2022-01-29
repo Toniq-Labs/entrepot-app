@@ -27,7 +27,7 @@ import Sold from "./Sold";
 import SoldListing from "./SoldListing";
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
@@ -118,7 +118,7 @@ export default function Listings(props) {
   const [buyFormData, setBuyFormData] = useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = useState(false);
   const [listingDialogOpen, setListingDialogOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const changeWearableFilter = async (event) => {
     setPage(1);
@@ -157,7 +157,7 @@ export default function Listings(props) {
 
   const changeCollection = async (event) => {
     const _collection = props.collections.find(e => e.canister === event.target.value);
-    history.push(`/marketplace/${_collection.route}`);
+    navigate(`/marketplace/${_collection.route}`);
     event.preventDefault();
     _changeCollection(_collection);
   };
