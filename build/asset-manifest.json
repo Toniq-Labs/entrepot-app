@@ -1,22 +1,24 @@
 {
   "files": {
-    "main.js": "/static/js/main.ec908f15.chunk.js",
-    "main.js.map": "/static/js/main.ec908f15.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.cf8bb843.js",
-    "runtime-main.js.map": "/static/js/runtime-main.cf8bb843.js.map",
-    "static/css/2.8c49bb0a.chunk.css": "/static/css/2.8c49bb0a.chunk.css",
-    "static/js/2.7e0b3aa4.chunk.js": "/static/js/2.7e0b3aa4.chunk.js",
-    "static/js/2.7e0b3aa4.chunk.js.map": "/static/js/2.7e0b3aa4.chunk.js.map",
+    "main.css": "/static/css/main.84d2e440.css",
+    "main.js": "/static/js/main.2a82a631.js",
+    "static/js/357.155a616b.js": "/static/js/357.155a616b.js",
+    "static/media/roboto-all-400-normal.woff": "/static/media/roboto-all-400-normal.376ea5d93f71583052f6.woff",
+    "static/media/roboto-latin-400-normal.woff2": "/static/media/roboto-latin-400-normal.4673b4537a84c7f7a130.woff2",
+    "static/media/roboto-cyrillic-ext-400-normal.woff2": "/static/media/roboto-cyrillic-ext-400-normal.493afe7ae8ecfe268800.woff2",
+    "static/media/roboto-latin-ext-400-normal.woff2": "/static/media/roboto-latin-ext-400-normal.c3dcdbd5bb4d4af80817.woff2",
+    "static/media/roboto-cyrillic-400-normal.woff2": "/static/media/roboto-cyrillic-400-normal.5e493812deabd1d01e60.woff2",
+    "static/media/roboto-greek-400-normal.woff2": "/static/media/roboto-greek-400-normal.1cbfc636c911faa4d0ca.woff2",
+    "static/media/roboto-vietnamese-400-normal.woff2": "/static/media/roboto-vietnamese-400-normal.c0bec65d01f776c00c91.woff2",
+    "static/media/roboto-greek-ext-400-normal.woff2": "/static/media/roboto-greek-ext-400-normal.bb723e8458c9c653e505.woff2",
     "index.html": "/index.html",
-    "static/css/2.8c49bb0a.chunk.css.map": "/static/css/2.8c49bb0a.chunk.css.map",
-    "static/js/2.7e0b3aa4.chunk.js.LICENSE.txt": "/static/js/2.7e0b3aa4.chunk.js.LICENSE.txt",
-    "static/js/main.ec908f15.chunk.js.LICENSE.txt": "/static/js/main.ec908f15.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2"
+    "main.84d2e440.css.map": "/static/css/main.84d2e440.css.map",
+    "main.2a82a631.js.map": "/static/js/main.2a82a631.js.map",
+    "357.155a616b.js.map": "/static/js/357.155a616b.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.cf8bb843.js",
-    "static/css/2.8c49bb0a.chunk.css",
-    "static/js/2.7e0b3aa4.chunk.js",
-    "static/js/main.ec908f15.chunk.js"
+    "static/js/357.155a616b.js",
+    "static/css/main.84d2e440.css",
+    "static/js/main.2a82a631.js"
   ]
 }
