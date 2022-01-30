@@ -21,7 +21,7 @@ var collections = [
     commission: 0.06,
     comaddress: "e79294525640950f3628ed5f67cc4fc1b5bb1065b640f4446661ef9fab278c10",
     unit : "NFT",
-    nftv : false,
+    nftv : true,
     mature: false,
     market : true,
   },
