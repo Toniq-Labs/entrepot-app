@@ -39,11 +39,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "npm install && react-app-rewired start",
+    "build": "npm test && react-app-rewired build",
+    "test": "npm run format -- --check && react-app-rewired test --watchAll=false --passWithNoTests",
     "serve": "react-app-rewired build && serve -s build",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "format": "prettier \"./**/*.+(js|json|ts|tsx|html|css|md|toml|yml|yaml)\" --write"
   },
   "eslintConfig": {
     "extends": [
@@ -66,6 +67,11 @@
     ]
   },
   "devDependencies": {
+    "prettier": "^2.5.1",
+    "prettier-plugin-jsdoc": "^0.3.30",
+    "prettier-plugin-organize-imports": "^2.3.4",
+    "prettier-plugin-packagejson": "^2.2.15",
+    "prettier-plugin-sort-json": "^0.0.2",
     "react-app-rewired": "^2.1.11",
     "redux": "^4.1.2",
     "serve": "^13.0.2",
