@@ -1,80 +1,80 @@
 {
-  "name": "Entrepot",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@dfinity/agent": "^0.10.2",
-    "@dfinity/auth-client": "^0.10.2",
-    "@dfinity/candid": "^0.10.2",
-    "@dfinity/principal": "^0.10.2",
-    "@fontsource/roboto": "^4.5.2",
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.60",
-    "@mui/icons-material": "^5.3.1",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "@toruslabs/openlogin": "^1.4.0",
-    "axios": "^0.25.0",
-    "bigint-conversion": "^2.2.1",
-    "bip39": "^3.0.4",
-    "ethereum-blockies-base64": "^1.0.2",
-    "ic-stoic-identity": "^2.0.0",
-    "json-bigint": "^1.0.0",
-    "query-string": "^7.1.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-hover-video-player": "^9.4.0",
-    "react-material-ui-carousel": "^2.3.5",
-    "react-player": "^2.9.0",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
-    "react-timestamp": "^5.1.0",
-    "recharts": "^2.1.8",
-    "sjcl": "^1.0.8",
-    "starkbank-ecdsa": "^1.1.4",
-    "use-file-picker": "^1.4.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "npm install && react-app-rewired start",
-    "build": "npm test && react-app-rewired build",
-    "test": "npm run format -- --check && react-app-rewired test --watchAll=false --passWithNoTests",
-    "serve": "react-app-rewired build && serve -s build",
-    "eject": "react-app-rewired eject",
-    "format": "prettier \"./**/*.+(js|json|ts|tsx|html|css|md|toml|yml|yaml)\" --write"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version",
-      "last 2 edge version"
-    ],
-    "development": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version",
-      "last 2 edge version"
-    ]
-  },
-  "devDependencies": {
-    "prettier": "^2.5.1",
-    "prettier-plugin-jsdoc": "^0.3.30",
-    "prettier-plugin-organize-imports": "^2.3.4",
-    "prettier-plugin-packagejson": "^2.2.15",
-    "prettier-plugin-sort-json": "^0.0.2",
-    "react-app-rewired": "^2.1.11",
-    "redux": "^4.1.2",
-    "serve": "^13.0.2",
-    "webpack": "5.67.0"
-  }
+    "name": "Entrepot",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "npm test && react-app-rewired build",
+        "eject": "react-app-rewired eject",
+        "format": "prettier \"./**/*.+(js|json|ts|tsx|html|css|md|toml|yml|yaml)\" --write",
+        "serve": "react-app-rewired build && serve -s build",
+        "start": "npm install && react-app-rewired start",
+        "test": "npm run format -- --check && react-app-rewired test --watchAll=false --passWithNoTests"
+    },
+    "browserslist": {
+        "production": [
+            "last 2 chrome version",
+            "last 2 firefox version",
+            "last 2 safari version",
+            "last 2 edge version"
+        ],
+        "development": [
+            "last 2 chrome version",
+            "last 2 firefox version",
+            "last 2 safari version",
+            "last 2 edge version"
+        ]
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "dependencies": {
+        "@dfinity/agent": "^0.10.2",
+        "@dfinity/auth-client": "^0.10.2",
+        "@dfinity/candid": "^0.10.2",
+        "@dfinity/principal": "^0.10.2",
+        "@fontsource/roboto": "^4.5.2",
+        "@material-ui/core": "^4.11.4",
+        "@material-ui/icons": "^4.11.2",
+        "@material-ui/lab": "^4.0.0-alpha.60",
+        "@mui/icons-material": "^5.3.1",
+        "@testing-library/jest-dom": "^5.16.1",
+        "@testing-library/react": "^12.1.2",
+        "@testing-library/user-event": "^13.5.0",
+        "@toruslabs/openlogin": "^1.4.0",
+        "axios": "^0.25.0",
+        "bigint-conversion": "^2.2.1",
+        "bip39": "^3.0.4",
+        "ethereum-blockies-base64": "^1.0.2",
+        "ic-stoic-identity": "^2.0.0",
+        "json-bigint": "^1.0.0",
+        "query-string": "^7.1.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-hover-video-player": "^9.4.0",
+        "react-material-ui-carousel": "^2.3.5",
+        "react-player": "^2.9.0",
+        "react-redux": "^7.2.6",
+        "react-router-dom": "^6.2.1",
+        "react-scripts": "5.0.0",
+        "react-timestamp": "^5.1.0",
+        "recharts": "^2.1.8",
+        "sjcl": "^1.0.8",
+        "starkbank-ecdsa": "^1.1.4",
+        "use-file-picker": "^1.4.1",
+        "web-vitals": "^2.1.4"
+    },
+    "devDependencies": {
+        "prettier": "^2.5.1",
+        "prettier-plugin-jsdoc": "^0.3.30",
+        "prettier-plugin-organize-imports": "^2.3.4",
+        "prettier-plugin-packagejson": "^2.2.15",
+        "prettier-plugin-sort-json": "^0.0.2",
+        "react-app-rewired": "^2.1.11",
+        "redux": "^4.1.2",
+        "serve": "^13.0.2",
+        "webpack": "5.67.0"
+    }
 }
