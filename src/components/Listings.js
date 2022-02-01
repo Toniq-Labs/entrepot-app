@@ -391,13 +391,8 @@ export default function Listings(props) {
           10000
         );
       var r3;
-      while (true) {
-        try {
-          props.loader(true, "Settling purchase...");
-          r3 = await _api.canister(canisterId).settle(tokenid);
-          if (r3.hasOwnProperty("ok")) break;
-        } catch (e) {}
-      }
+      props.loader(true, "Settling purchase...");
+      await _api.canister(canisterId).settle(tokenid);
       props.loader(false);
       props.alert(
         "Transaction complete",

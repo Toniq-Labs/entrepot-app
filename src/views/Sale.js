@@ -81,12 +81,6 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "Frog Nation 2.0 - Voxel Assassins!!!",
-      link : "/sale/frogvoxel",
-      image : "/collections/frog2d/VoxelAvatar.png",
-      content : (<>This collection has 3 unique sets. 1000 2D Cool Pepe assassins, 420 3D Voxel Killers and 69 3D High quality Ninjas all created by Liquid ICP DAO for its valuable community.</>),
-    },
-    {
       title : "Infernal Vampire Colony Gen2",
       link : "/sale/ivc2",
       image : "/collections/ivc2/collection.png",

@@ -816,7 +816,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
-    commission: 0.025,
+    commission: 0.035,
     comaddress:"c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (<>Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics incorporates breeding mechanics, wearable NFTs and a p2e minigame ecosystem and more.</>),
   },
