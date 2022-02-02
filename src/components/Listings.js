@@ -390,6 +390,9 @@ export default function Listings(props) {
           listing[1].price,
           10000
         );
+      var r3;
+      props.loader(true, "Settling purchase...");
+      await _api.canister(canisterId).settle(tokenid);
       props.loader(false);
       props.alert(
         "Transaction complete",
