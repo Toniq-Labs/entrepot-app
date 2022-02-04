@@ -55,7 +55,7 @@ export default function Navbar(props) {
             className={(route === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
             color="inherit"
           >
-            NFT SALES
+            Launchpad
           </Button>
           <Button
             onClick={() => {
@@ -113,7 +113,7 @@ export default function Navbar(props) {
                 }}
                 color="inherit"
               >
-                NFT SALES
+                Launchpad
               </Button>
               <Button
                 startIcon={

@@ -11,7 +11,6 @@ import Pagination from "@material-ui/lab/Pagination";
 import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
-import Alert from '@material-ui/lab/Alert';
 import Navbar from "../../containers/Navbar.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -44,26 +43,24 @@ const _getRandomBytes = () => {
   }
   return bs;
 };
-export default function IVC2(props) {
+export default function ICPics(props) {
   const [page, setPage] = React.useState(1);
-  const [price, setPrice] = React.useState(120000000n);
+  const [price, setPrice] = React.useState(125000000n);
   const [remaining, setRemaining] = React.useState(false);
-  const [startTime, setStartTime] = React.useState(1642777200000);
-  const [round, setRound] = React.useState("Loading...");
-  const [roundRemaining, setRoundRemaining] = React.useState(0);
-  const [currentRoundNumber, setCurrentRoundNumber] = React.useState(2);
-  var totalToSell = 5000;
-  var saleOver = true;  
+  const [startTime, setStartTime] = React.useState(1643986800000);
+  const [whitelist, setWhitelist] = React.useState(false);
+  var totalToSell = 1000;
+  var saleOver = false;  
   const params = useParams();
   
   const _updates = async () => {
-    var stats = await api.canister("ctt6t-faaaa-aaaah-qcpbq-cai").salesStats((props.account ? props.account.address : ""));
-    setRound(stats[2][0]);
-    var cr = ["Round 1", "Round 2", "Round 3"].indexOf(stats[2][0]);
-    setCurrentRoundNumber((cr < 0 ? 2 : cr));
-    setPrice(stats[2][1]);
-    setRoundRemaining(Number(stats[2][2]));
-    setRemaining(Number(stats[0]));
+    try{
+      var stats = await api.canister("jntyp-yiaaa-aaaah-qcr3q-cai", "sale").salesStats((props.account ? props.account.address : ""));
+      setStartTime(Number(stats[0]/1000000n));
+      setRemaining(Number(stats[2]));
+    } catch (e) {
+      setRemaining(totalToSell);
+    };
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -92,7 +89,7 @@ export default function IVC2(props) {
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister("ctt6t-faaaa-aaaah-qcpbq-cai", "sale")
+        .canister("jntyp-yiaaa-aaaah-qcr3q-cai", "sale")
         .reserve(
           price,
           qty,
@@ -118,7 +115,7 @@ export default function IVC2(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister("ctt6t-faaaa-aaaah-qcpbq-cai", "sale").retreive(paytoaddress);
+          r3 = await api.canister("jntyp-yiaaa-aaaah-qcr3q-cai", "sale").retreive(paytoaddress);
           if (r3.hasOwnProperty("ok")) break;
         } catch (e) {}
       }
@@ -141,25 +138,27 @@ export default function IVC2(props) {
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  var buyOptions = [
+    [1, 125000000n],
+    [2, 230000000n],
+    [3, 330000000n],
+    [4, 400000000n],
+  ];
   return (
     <>
       <div style={styles.main}>
         <div className={classes.banner}>
-        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "center", backgroundSize: "cover",backgroundImage:"url('/collections/ivc2/banner.png')"}}></div>
-        <h1>Welcome to the official Infernal Vampire Colony Gen2 sale</h1>
+        <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('/collections/icpics/banner.jpg')"}}></div>
+        <h1>Welcome to the official ICPics sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
           <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>ROUND</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{round}</span>
+            <strong>AVAILABLE</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>CURRENT PRICE</strong><br />
+            <strong>SALE PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
-          </Grid>
-          <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>REMAINING</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{roundRemaining}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
@@ -175,27 +174,27 @@ export default function IVC2(props) {
           <>{(!saleOver && remaining > 0) ?
             <>
               {Date.now() >= startTime ? 
-                <>
+                <>                  
                   <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-                    {[1,3,5,10].map(o => {
+                    {buyOptions.map(o => {
                       return (<Grid className={classes.stat} item sm={3}>
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale(o, BigInt(o)*price)}
+                          onClick={() => buyFromSale(o[0], o[1])}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {o} {o === 1 ? "NFT" : "NFTs"}<br />for {_showListingPrice(BigInt(o)*price)} ICP
+                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[1])} ICP
                         </Button>
                       </Grid>);
                     })}
                   </Grid>
                   <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
-                  
-                </> : ""
+                </> : 
+                <>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
+                </>
               }
-              { Date.now() < startTime ?
-                <p><strong><span style={{fontSize:"20px",color:"black"}}>The sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong><br /><br /></p> : "" }
             </>
           : 
             <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, the sale is now over! You can grab your NFT from the marketplace soon!</span></strong></p>

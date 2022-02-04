@@ -42,6 +42,7 @@ import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
 import Sword from "./components/sale/Sword";
 import Floki from "./components/sale/Floki";
+import ICPics from "./components/sale/ICPics";
 import Circle from "./components/sale/Circle";
 import Interitus from "./components/sale/Interitus";
 import ICAliens from "./components/sale/ICAliens";
@@ -399,6 +400,15 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"sword"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/sale/icpics" exact element={
+              <ICPics
+                error={error}
+                view={"sale"}
+                sale={"icpics"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
