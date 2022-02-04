@@ -13,6 +13,13 @@ import Collapse from "@material-ui/core/Collapse";
 import Slider from "@material-ui/core/Slider";
 import Button from "@material-ui/core/Button";
 import Alert from '@material-ui/lab/Alert';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
 import InputLabel from "@material-ui/core/InputLabel";
 import { Grid, makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
@@ -24,7 +31,6 @@ import { useTheme } from "@material-ui/core/styles";
 import Listing from "./Listing";
 import Avatar from '@material-ui/core/Avatar';
 import Sold from "./Sold";
-import SoldListing from "./SoldListing";
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
@@ -498,6 +504,9 @@ export default function Listings(props) {
     localStorage.setItem("_gridSize", a);
     setGridSize(a)
   }
+  
+ 
+  
   useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     _updates();
@@ -556,7 +565,7 @@ export default function Listings(props) {
           </div>
         </div>
         {_isCanister(collection.canister) && collection.market ?
-        <div style={(gridSize === "small" ? {width:1200,margin:"0 auto", marginTop: "10px"} : {marginLeft: "20px", marginTop: "10px"})}>
+        <div style={{marginLeft: "20px", marginTop: "10px"}}>
           <div className={classes.filters} style={{marginLeft: "20px", marginTop: "10px"}}>
             <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
               <ToggleButton value={"small"}>
@@ -1081,8 +1090,8 @@ export default function Listings(props) {
                           container
                           spacing={2}
                           direction="row"
-                          justifyContent="flex-start"
-                          alignItems="flex-start"
+                          justifyContent="center"
+                          alignItems="center"
                         >
                           {listings
                             .slice()
@@ -1171,7 +1180,8 @@ export default function Listings(props) {
                 </>
               )}
             </>
-          ) : (
+          ) : ""}
+          {showing === "sold" ? (
             <>
               {transactions === false ? (
                 <div style={styles.empty}>
@@ -1192,84 +1202,93 @@ export default function Listings(props) {
                         style={{ paddingTop: 20, fontWeight: "bold" }}
                         align="center"
                       >
-                        There are currently no sold transactions for this
+                        There are currently no activity for this
                         collection
                       </Typography>
                     </div>
                   ) : (
                     <>
                       <div style={styles.grid}>
-                        <Grid
-                          container
-                          spacing={2}
-                          direction="row"
-                          justifyContent="flex-start"
-                          alignItems="flex-start"
-                        >
-                          {transactions
-                            .slice()
-                            .sort((a, b) => {
-                              switch (sort) {
-                                case "price_asc":
-                                  return Number(a.price) - Number(b.price);
-                                case "price_desc":
-                                  return Number(b.price) - Number(a.price);
-                                case "gri":
-                                  return (
-                                    Number(
-                                      getNri(
-                                        collection?.canister,
+                        <TableContainer>
+                          <Table style={{width:"100%"}}>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell align="left"><strong>Item</strong></TableCell>
+                                <TableCell align="center"><strong>Price</strong></TableCell>
+                                <TableCell align="center"><strong>From</strong></TableCell>
+                                <TableCell align="center"><strong>To</strong></TableCell>
+                                <TableCell align="center"><strong>Time</strong></TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {transactions
+                                .slice()
+                                .sort((a, b) => Number(b.time) - Number(a.time))
+                               .sort((a, b) => {
+                                  switch (sort) {
+                                    case "recent":
+                                      return Number(b.time) - Number(a.time);
+                                    case "oldest":
+                                      return Number(a.time) - Number(b.time);
+                                    case "price_asc":
+                                      return Number(a.price) - Number(b.price);
+                                    case "price_desc":
+                                      return Number(b.price) - Number(a.price);
+                                    case "gri":
+                                      return (
+                                        Number(
+                                          getNri(
+                                            collection?.canister,
+                                            extjs.decodeTokenId(b.token).index
+                                          )
+                                        ) *
+                                          100 -
+                                        Number(
+                                          getNri(
+                                            collection?.canister,
+                                            extjs.decodeTokenId(a.token).index
+                                          )
+                                        ) *
+                                          100
+                                      );
+                                    case "mint_number":
+                                      return (
+                                        extjs.decodeTokenId(a.token).index -
                                         extjs.decodeTokenId(b.token).index
-                                      )
-                                    ) *
-                                      100 -
-                                    Number(
-                                      getNri(
-                                        collection?.canister,
-                                        extjs.decodeTokenId(a.token).index
-                                      )
-                                    ) *
-                                      100
-                                  );
-                                case "recent":
-                                  return -1;
-                                case "oldest":
-                                  return 1;
-                                case "mint_number":
+                                      );
+                                    default:
+                                      return 0;
+                                  }
+                                })
+                                .filter(
+                                  (token, i) =>
+                                    i >= (page - 1) * perPage && i < page * perPage
+                                )
+                                .map((transaction, i) => {
                                   return (
-                                    extjs.decodeTokenId(a.token).index -
-                                    extjs.decodeTokenId(b.token).index
+                                    <Sold
+                                      gri={getNri(
+                                        collection?.canister,
+                                        extjs.decodeTokenId(transaction.token).index
+                                      )}
+                                      key={transaction.token + i}
+                                      collection={collection?.canister}
+                                      transaction={transaction}
+                                    />
                                   );
-                                default:
-                                  return 0;
+                                })
                               }
-                            })
-                            .filter(
-                              (token, i) =>
-                                i >= (page - 1) * perPage && i < page * perPage
-                            )
-                            .map((transaction, i) => {
-                              return (
-                                <Sold
-                                  gridSize={gridSize}
-                                  gri={getNri(
-                                    collection?.canister,
-                                    extjs.decodeTokenId(transaction.token).index
-                                  )}
-                                  key={transaction.token + i}
-                                  collection={collection?.canister}
-                                  transaction={transaction}
-                                />
-                              );
-                            })}
-                        </Grid>
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
                       </div>
                     </>
                   )}
                 </>
               )}
             </>
-          )}
+          ) : ""}
           
           {showing === "all" ? (
               listings.length > perPage ? (
