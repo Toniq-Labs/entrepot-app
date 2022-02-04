@@ -55,8 +55,8 @@ export default function Home(props) {
   const navigate = useNavigate();
   var items = [
     {
-        link: "/sale/frogvoxel",
-        img: "/banner/frog.jpg"
+        link: "/sale/icpics",
+        img: "/banner/icpics.jpg"
     },
     {
         link: "/marketplace/btcflower",
@@ -65,10 +65,6 @@ export default function Home(props) {
     {
         link: "/sale/yolo-octopus",
         img: "/banner/yolo.jpg"
-    },
-    {
-        link: "/sale/ivc2",
-        img: "/banner/ivc2.png"
     },
     {
         link: "/sale/sword",

@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "Infernal Vampire Colony Gen2",
-      link : "/sale/ivc2",
-      image : "/collections/ivc2/collection.png",
-      content : (<>Gen2 Infernal Vampires are prisoned in the lair by their enemies for a long time. They look more terrible and more scary than Gen1 Infernal Vampires. Because Gen2 Vampires stay in the lair longer, they're closer to death than ever before.</>),
+      title : "ICPics",
+      link : "/sale/icpics",
+      image : "/collections/icpics/collection.png",
+      content : (<>This collection contains ethnic art AI renderings. With more than 94 countries from seven continents, there is one that everybody can relate to! More to come in next ventures!</>),
     },
     {
       title : "SwordNFT",
