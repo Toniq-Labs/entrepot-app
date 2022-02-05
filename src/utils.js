@@ -1,5 +1,8 @@
 import React from "react";
 import Skeleton from "@material-ui/lab/Skeleton";
+import collections from './ic/collections.js';
+import extjs from "./ic/extjs.js";
+const api = extjs.connect("https://boundary.ic0.app/");
 
 function fallbackCopyTextToClipboard(text) {
   
@@ -25,7 +28,42 @@ function fallbackCopyTextToClipboard(text) {
 
   document.body.removeChild(textArea);
 }
-
+var _stats = [];
+const _getStats = async () => {
+    var pxs = [];
+    var _ts = [];
+    for(var i = 0; i < collections.length; i++){
+      if (!collections[i].market) {
+        _ts.push({
+          canister : collections[i].canister,
+          stats : false
+        });
+      } else {
+        pxs.push((c => api.token(c).stats().then(r => {
+          return {canister : c, stats : r}
+        }))(collections[i].canister));
+      }
+    };
+    const results = await Promise.all(pxs.map(p => p.catch(e => e)));
+    const validResults = results.filter(result => !(result instanceof Error));
+    _stats = validResults.concat(_ts);
+    return _stats;
+    // (c => {
+      // api.token(c).stats().then(r => {
+        // res = {
+          // canister : c,
+          // stats : r
+        // };
+        // _stats.push(res);
+      // }).catch(e => {
+        // res = {
+          // canister : c,
+          // stats : false
+        // };
+        // _stats.push(res);
+      // });
+    // })(collections[i].canister);
+  };
 const icpbunnyimg = i => {
   const icbstorage = ['efqhu-yqaaa-aaaaf-qaeda-cai',
   'ecrba-viaaa-aaaaf-qaedq-cai',
@@ -141,11 +179,21 @@ EntrepotNFTMintNumber = (collection, index, id) => {
   if (collection === "jeghr-iaaaa-aaaah-qco7q-cai") return index;
   return index + 1;
 },
+EntrepotAllStats = () => {
+  return _stats;
+},
+EntrepotCollectionStats = c => {
+  return _stats.filter(a => a.canister === c)[0].stats;
+},
+EntrepotUpdateStats = async () => {
+  await _getStats();
+  return _stats;
+},
 numf = (n, d) => {
   if (n === "N/A") return n;
   d = (d ?? 2);
   return n.toFixed(d).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 export {
-  clipboardCopy, compressAddress, displayDate, numf, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT
+  clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats
 };
