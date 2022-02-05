@@ -11,6 +11,7 @@ import { StoicIdentity } from "ic-stoic-identity";
 import { Route, Routes } from "react-router-dom";
 import Detail from "./components/Detail";
 import Listings from "./components/Listings";
+import Activity from "./components/Activity";
 import NFTList from "./components/NFTList";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
@@ -50,6 +51,7 @@ import IVC2 from "./components/sale/IVC2";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
+import legacyPrincipalPayouts from './payments.json';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
@@ -121,52 +123,63 @@ export default function App() {
     if (!identity) return;
     if (processingPayments) return;
     processingPayments = true;
-    const _api = extjs.connect("https://boundary.ic0.app/", identity);
-    for (var j = 0; j < collections.length; j++) {
-      var payments = await _api.canister(collections[j].canister).payments();
-      if (payments.length === 0) continue;
-      if (payments[0].length === 0) continue;
-      console.log("Payments found: " + payments[0].length);
-      var a, b, c, payment;
-      for (var i = 0; i < payments[0].length; i++) {
-        payment = payments[0][i];
-        a = extjs.toAddress(identity.getPrincipal().toText(), payment);
-        b = Number(await api.token().getBalance(a));
-        c = Math.round(b * collections[j].commission);
-        try {
-          var txs = [];
-          if (b > txmin) {
-            txs.push(
-              _api
-                .token()
-                .transfer(
-                  identity.getPrincipal().toText(),
-                  payment,
-                  address,
-                  BigInt(b - (txfee + c)),
-                  BigInt(txfee)
-                )
-            );
-            txs.push(
-              _api
-                .token()
-                .transfer(
-                  identity.getPrincipal().toText(),
-                  payment,
-                  collections[j].comaddress,
-                  BigInt(c - txfee),
-                  BigInt(txfee)
-                )
-            );
-          }
-          await Promise.all(txs);
-          console.log("Payment extracted successfully");
-        } catch (e) {
-          console.log(e);
-        }
+    
+    //Process legacy payments first
+    if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
+      for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
+        await _processPaymentForCanister(canister);
       }
+    };
+    for (var j = 0; j < collections.length; j++) {
+      await _processPaymentForCanister(collections[j]);
     }
     processingPayments = false;
+    return true;
+  };
+  const _processPaymentForCanister = async _collection => {
+    const _api = extjs.connect("https://boundary.ic0.app/", identity);
+    var payments = await _api.canister(_collection.canister).payments();
+    if (payments.length === 0) return true;
+    if (payments[0].length === 0) return true;
+    console.log("Payments found: " + payments[0].length);
+    var a, b, c, payment;
+    for (var i = 0; i < payments[0].length; i++) {
+      payment = payments[0][i];
+      a = extjs.toAddress(identity.getPrincipal().toText(), payment);
+      b = Number(await api.token().getBalance(a));
+      c = Math.round(b * _collection.commission);
+      try {
+        var txs = [];
+        if (b > txmin) {
+          txs.push(
+            _api
+              .token()
+              .transfer(
+                identity.getPrincipal().toText(),
+                payment,
+                address,
+                BigInt(b - (txfee + c)),
+                BigInt(txfee)
+              )
+          );
+          txs.push(
+            _api
+              .token()
+              .transfer(
+                identity.getPrincipal().toText(),
+                payment,
+                _collection.comaddress,
+                BigInt(c - txfee),
+                BigInt(txfee)
+              )
+          );
+        }
+        await Promise.all(txs);
+        console.log("Payment extracted successfully");
+      } catch (e) {
+        console.log(e);
+      }
+    }
     return true;
   };
   const logout = async () => {
@@ -324,6 +337,15 @@ export default function App() {
     if (identity) {
       setLoggedIn(true);
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
+      //This is where we check for payments
+      if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
+        for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
+          if (legacyPrincipalPayouts[identity.getPrincipal().toText()][canister].length) {
+            alert("You have payments owing, please use the Check Payments button");
+            break;
+          };
+        }
+      };
     } else {
       setLoggedIn(false);
       setAddress(false);
@@ -344,12 +366,21 @@ export default function App() {
       <main className={classes.content}>
         <div className={classes.inner}>
           <Routes>
-            <Route path="/marketplace/token/:tokenid" exact element={
+            <Route path="/marketplace/asset/:tokenid" exact element={
               <Detail
                 error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader}
+              />} />
+            <Route path="/marketplace/:route/activity" exact element={
+              <Activity
+                error={error}
+                view={"listings"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/marketplace/:route" exact element={
               <Listings
