@@ -43,6 +43,8 @@ import { useNavigate } from "react-router";
 import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import PriceICP from './PriceICP';
+import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
 
 
@@ -156,7 +158,7 @@ export default function Activity(props) {
   };
  
   
-  //useInterval(_updates, 10 * 1000);
+  useInterval(_updates, 60 * 1000);
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     _updates();
@@ -175,50 +177,8 @@ export default function Activity(props) {
       <div style={{marginLeft:drawerWidth, paddingBottom:100}}>
         
         <div style={{maxWidth:1200, margin:"0 auto 0",}}>
-          <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
-            <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={(typeof collection.avatar != 'undefiend' && collection.avatar ? collection.avatar : "/collections/"+collection.canister+".jpg")} />
-          </div>
           <div style={{textAlign:"center"}}>
-            <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
-              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
-                {stats === false ? <strong>Loading Statistics...</strong> :
-                <>{stats === null ? "" :
-                  <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
-                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                      <span style={{color:"#00d092"}}>Volume</span><br />
-                      <strong>{stats.total} ICP</strong>
-                    </Grid>
-                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                      <span style={{color:"#00d092"}}>Listings</span><br />
-                      <strong>{stats.listings}</strong>
-                    </Grid>
-                    <Grid item md={4}>
-                      <span style={{color:"#00d092"}}>Avg Price</span><br />
-                      <strong>{stats.average == "-" ? "-" : stats.average+" ICP"}</strong>
-                    </Grid>
-                  </Grid>}
-                </>}
-              </Grid>
-              <Grid item md={4} xs={12}>
-              </Grid>
-              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
-                <ul className={classes.socials}>
-                  {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
-                    return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
-                  })}
-                </ul>
-              </Grid>
-            </Grid>
-            <div style={{width:760, margin:"0 auto"}}>
-              <h1>{collection.name}</h1>
-              {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
-              <p ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", "-webkit-mask" : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden", marginTop:50,fontSize: "1.2em" }}>
-                {collection?.blurb}
-              </p>
-              {collapseBlurb ? (
-              <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
-              ) : ""}
-            </div>
+            <CollectionDetails classes={classes} stats={stats} collection={collection} />
             <Tabs
               value={"sold"}
               indicatorColor="primary"

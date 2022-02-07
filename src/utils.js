@@ -28,7 +28,7 @@ function fallbackCopyTextToClipboard(text) {
 
   document.body.removeChild(textArea);
 }
-var _stats = [];
+var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {};
 const _getStats = async () => {
     var pxs = [];
     var _ts = [];
@@ -114,6 +114,7 @@ EntrepotNFTImage = (collection, index, id) => {
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
   if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
+  if (collection === "pk6rk-6aaaa-aaaae-qaazq-cai") return "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + id;
   return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
 },
 EntrepotNFTLink = (collection, index, id) => {
@@ -133,6 +134,7 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     height: "100%",
     margin: "0 auto",
     objectFit: "contain",
+    borderRadius:"4px",
   }
   var avatarLoaded = {
     position: "absolute",
@@ -140,24 +142,7 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     left: "15%",
     width: "70%",
     height: "70%",
-    margin: "0 auto",
-  }
-  if (collection == "pk6rk-6aaaa-aaaae-qaazq-cai") {
-    var assetsHaveBeenShuffled = true;
-    if (assetsHaveBeenShuffled) {
-      return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image+"?cc=1"}/>);
-    } else {
-      return (<>
-        <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/btcflower_thumb.gif"} onLoad={onload} />
-        <Skeleton
-          style={{
-            ...avatarLoaded,
-            display: imgLoaded ? "none" : "block",
-          }}
-          variant="rect"
-        />
-      </>);
-    }
+    margin: "0 auto", 
   }
   if (collection == "jeghr-iaaaa-aaaah-qco7q-cai") return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image}/>);
   return (<>
@@ -183,11 +168,60 @@ EntrepotAllStats = () => {
   return _stats;
 },
 EntrepotCollectionStats = c => {
-  return _stats.filter(a => a.canister === c)[0].stats;
+  var s = _stats.filter(a => a.canister === c);
+  if (s.length) return s[0].stats;
+  else return false;
 },
 EntrepotUpdateStats = async () => {
   await _getStats();
   return _stats;
+},
+EntrepotUpdateUSD = async () => {
+  var b = await api.canister("rkp4c-7iaaa-aaaaa-aaaca-cai").get_icp_xdr_conversion_rate();
+  var b2 = await fetch("https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7").then(r => r.json());
+  _rate = Number(b.data.xdr_permyriad_per_icp/10000n)*(b2.hasOwnProperty("XDR_USD") ? b2.XDR_USD : 1.399013);
+  return _rate;
+},
+EntrepotGetICPUSD = n => {
+  if (_rate) return (_rate*(Number(n) / 100000000)).toFixed(2);
+  else return false;
+},
+EntrepotClearLiked = async () => {
+  _identity = false;
+  _liked = [];
+},
+EntrepotUpdateLiked = async identity => {
+  if (identity) _identity = identity;
+  if (_identity) {
+    const _api = extjs.connect("https://boundary.ic0.app/", _identity);
+    _liked = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
+  }
+},
+EntrepotIsLiked = tokenid => {
+  return (_liked.indexOf(tokenid) >= 0);
+},
+EntrepotLike = async tokenid => {
+  if (!_identity) return;
+  const _api = extjs.connect("https://boundary.ic0.app/", _identity);
+  var a = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").like(tokenid);
+  _liked.push(tokenid);
+},
+EntrepotUnike = async tokenid => {
+  if (!_identity) return;
+  const _api = extjs.connect("https://boundary.ic0.app/", _identity);
+  await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").unlike(tokenid);
+  _liked = _liked.filter(a => a != tokenid);
+},
+EntrepotGetLikes = async (tokenid, skipCache) => {
+  if (tokenLikes.hasOwnProperty(tokenid) && !skipCache) {
+    api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").likes(tokenid).then(likes => {      
+      tokenLikes[tokenid] = Number(likes);
+    });
+  } else {
+    var likes = await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").likes(tokenid);
+    tokenLikes[tokenid] = Number(likes);
+  };
+  return (tokenLikes[tokenid] < 0 ? 0 : tokenLikes[tokenid]);
 },
 numf = (n, d) => {
   if (n === "N/A") return n;
@@ -195,5 +229,6 @@ numf = (n, d) => {
   return n.toFixed(d).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 export {
-  clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats
+  clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats, EntrepotUpdateUSD, EntrepotGetICPUSD, EntrepotUpdateLiked, 
+  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked
 };

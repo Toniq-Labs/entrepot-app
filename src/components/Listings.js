@@ -23,8 +23,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import InputLabel from "@material-ui/core/InputLabel";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import { Grid, makeStyles } from "@material-ui/core";
@@ -35,13 +33,14 @@ import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
 import Listing from "./Listing";
-import Avatar from '@material-ui/core/Avatar';
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import PriceICP from './PriceICP';
+import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -89,13 +88,8 @@ export default function Listings(props) {
   const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
   const [allListings, setAllListings] = useState(false);
-  const [transactions, setTransactions] = useState(false);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("price_asc");
-  
-  const [collapseBlurb, setCollapseBlurb] = useState(false);
-  const [isBlurbOpen, setIsBlurbOpen] = useState(false);
-  const [blurbElement, setBlurbElement] = useState(false);
   
   
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -184,7 +178,6 @@ export default function Listings(props) {
     setSort("price_asc");
     setCollection(c);
     setListings(false);
-    setTransactions(false);
     setPage(1);
     await refresh(c.canister);
   };
@@ -347,6 +340,7 @@ export default function Listings(props) {
         price: price,
         img: img,
         handler: (v) => {
+          console.log(v);
           setShowBuyForm(false);
           resolve(v);
           setTimeout(() => setBuyFormData(emptyListing), 100);
@@ -369,7 +363,7 @@ export default function Listings(props) {
           ? "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
             listing[0]
           : "https://" + canisterId + ".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
-      var answer = await buyForm(_showListingPrice(listing[1].price), img);
+      var answer = await buyForm(listing[1].price, img);
       if (!answer) {
         return props.loader(false);
       }
@@ -442,6 +436,7 @@ export default function Listings(props) {
   const _isCanister = c => {
     return c.length == 27 && c.split("-").length == 5;
   };
+  
   const refresh = async (s, c) => {
     if (!listingDialogOpen) {
       c = c ?? collection?.canister;
@@ -451,18 +446,9 @@ export default function Listings(props) {
         setStats(EntrepotCollectionStats(collection.canister))
       });  
       try{
-        if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-          var txs = await api.canister(c).transactions();
-          setTransactions(txs.slice(82));
-        }
-        var listings = await api.canister(c).listings();
+        var listings = await api.token(c).listings();
         setAllListings(listings);
         setListings(applyFilters(listings, s, c));
-        
-        if (["cdvmq-aaaaa-aaaah-qcdoq-cai", "ckwhm-wiaaa-aaaah-qcdpa-cai", "cnxby-3qaaa-aaaah-qcdpq-cai", "crt3j-mqaaa-aaaah-qcdnq-cai", "dv6u3-vqaaa-aaaah-qcdlq-cai"].indexOf(c) >= 0){
-          var txs = await api.canister(c).transactions();
-          var nt = txs;
-        }
         
         
       } catch(e) {};
@@ -505,62 +491,18 @@ export default function Listings(props) {
   }, [wearableFilter]);
   
   
-  React.useEffect(() => {
-    if (blurbElement.clientHeight > 110) {
-      setCollapseBlurb(true);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blurbElement]);
+
+  
+  
+  
   return (//maxWidth:1200, margin:"0 auto",
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
       {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
       </Drawer>*/}
       <div style={{marginLeft:drawerWidth, paddingBottom:100}}>
         <div style={{maxWidth:1200, margin:"0 auto 0",}}>
-          <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
-            <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={(typeof collection.avatar != 'undefiend' && collection.avatar ? collection.avatar : "/collections/"+collection.canister+".jpg")} />
-          </div>
           <div style={{textAlign:"center"}}>
-            <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
-              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
-                {stats === false ? <strong>Loading Statistics...</strong> :
-                <>{stats === null ? "" :
-                  <Grid container direction="row"  style={{textAlign:"center"}} justifyContent="center" alignItems="center" spacing={2}>
-                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                      <span style={{color:"#00d092"}}>Volume</span><br />
-                      <strong>{stats.total} ICP</strong>
-                    </Grid>
-                    <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                      <span style={{color:"#00d092"}}>Listings</span><br />
-                      <strong>{stats.listings}</strong>
-                    </Grid>
-                    <Grid item md={4}>
-                      <span style={{color:"#00d092"}}>Avg Price</span><br />
-                      <strong>{stats.average == "-" ? "-" : stats.average+" ICP"}</strong>
-                    </Grid>
-                  </Grid>}
-                </>}
-              </Grid>
-              <Grid item md={4} xs={12}>
-              </Grid>
-              <Grid item md={4} xs={12} style={{textAlign:"center"}}>
-                <ul className={classes.socials}>
-                  {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
-                    return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
-                  })}
-                </ul>
-              </Grid>
-            </Grid>
-            <div style={{width:760, margin:"0 auto"}}>
-              <h1>{collection.name}</h1>
-              {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
-              <p ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", "-webkit-mask" : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden", marginTop:50,fontSize: "1.2em" }}>
-                {collection?.blurb}
-              </p>
-              {collapseBlurb ? (
-              <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
-              ) : ""}
-            </div>
+            <CollectionDetails classes={classes} stats={stats} collection={collection} />
             <Tabs
               value={"all"}
               indicatorColor="primary"
@@ -1058,15 +1000,19 @@ export default function Listings(props) {
                         spacing={2}
                         direction="row"
                         justifyContent="center"
-                        alignItems="center"
+                        alignItems="stretch"
                       >
                         {listings
                           .slice()
                           .sort((a, b) => {
                             switch (sort) {
                               case "price_asc":
+                                if (!a[1]) return 1;
+                                if (!b[1]) return -1;
                                 return Number(a[1].price) - Number(b[1].price);
                               case "price_desc":
+                                if (!a[1]) return 1;
+                                if (!b[1]) return -1;
                                 return Number(b[1].price) - Number(a[1].price);
                               case "gri":
                                 return (
@@ -1074,8 +1020,12 @@ export default function Listings(props) {
                                   Number(getNri(collection?.canister, a[0])) * 100
                                 );
                               case "recent":
+                                if (!a[1]) return 1;
+                                if (!b[1]) return -1;
                                 return 1;
                               case "oldest":
+                                if (!a[1]) return 1;
+                                if (!b[1]) return -1;
                                 return -1;
                               case "mint_number":
                                 return a[0] - b[0];
@@ -1128,6 +1078,7 @@ export default function Listings(props) {
                           .map((listing, i) => {
                             return (
                               <Listing
+                                loggedIn={props.loggedIn}
                                 gridSize={gridSize}
                                 gri={getNri(collection?.canister, listing[0])}
                                 loggedIn={props.loggedIn}
@@ -1135,7 +1086,6 @@ export default function Listings(props) {
                                 buy={buy}
                                 key={listing[0] + "-" + i}
                                 listing={listing}
-                                transactions={transactions}
                                 onListingDialogChange={changeListingDialogOpen}
                               />
                             );

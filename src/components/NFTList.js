@@ -266,7 +266,7 @@ export default function NFTList(props) {
         <h1>My NFTs: <span style={{color: "#00d092"}}>{collection?.name}</span></h1>
         <Button variant={"outlined"} color="primary" onClick={() => navigate("/marketplace/"+collection.route)} ><strong>Go to Marketplace</strong></Button>
       </div>
-      <div style={(gridSize === "small" ? {width:1200,margin:"0 auto", marginTop: "10px"} : {marginLeft: "20px", marginTop: "10px"})}>
+      <div style={{marginLeft: "20px", marginTop: "10px"}}>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>
           {nfts.length >0 ?
           <>

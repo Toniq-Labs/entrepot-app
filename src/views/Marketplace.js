@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import extjs from "../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useNavigate } from "react-router";
 import NFTList from "../components/NFTList";
@@ -18,6 +17,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from '@material-ui/core/TextField';
 import collections from '../ic/collections.js';
+import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -38,7 +38,6 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
-const api = extjs.connect("https://boundary.ic0.app/");
 const useStyles = makeStyles((theme) => ({ 
   breakpoints: {
     values: {
@@ -202,10 +201,10 @@ export default function Marketplace(props) {
                   break;
                   case "floor_desc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == b.canister).stats.floor) - Number(stats.find(x => x.canister == a.canister).stats.floor);
                   break;
@@ -238,7 +237,7 @@ export default function Marketplace(props) {
                           <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
                             <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
                               <span style={{color:"#00d092"}}>Volume</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.total} ICP</strong>
+                              <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
                             </Grid>
                             <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
                               <span style={{color:"#00d092"}}>Listings</span><br />
@@ -246,7 +245,7 @@ export default function Marketplace(props) {
                             </Grid>
                             <Grid item md={4}>
                               <span style={{color:"#00d092"}}>Floor Price</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.floor} ICP</strong>
+                              <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.floor} size={20} /></strong>
                             </Grid>
                           </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
                         </> 

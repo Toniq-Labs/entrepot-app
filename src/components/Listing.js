@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { styled, withStyles } from '@material-ui/styles';
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import MuiTooltip from "@material-ui/core/Tooltip";
@@ -16,6 +18,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
 import Timestamp from "react-timestamp";
 import extjs from "../ic/extjs.js";
 import { useNavigate } from "react-router-dom";
@@ -30,11 +34,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import MuiTableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
+import Favourite from './Favourite';
+import PriceICP from './PriceICP';
 import _c from '../ic/collections.js';
-import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT } from '../utils';
+import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
 var collections = _c;
-
-
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -204,6 +208,7 @@ export default function Listing(props) {
       height: "100%",
       margin: "0 auto",
       objectFit: "contain",
+      borderRadius:"50px",
     },
   };
   const _isLocked = (listing) => {
@@ -235,48 +240,34 @@ export default function Listing(props) {
   var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   const showNri = () => {
     if (props.collection == "poyn6-dyaaa-aaaah-qcfzq-cai") {
-      return (<Grid item md={6} sm={6} xs={6}>
-        <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-          {(props.listing[2].nonfungible.metadata[0][0] === 0 ? "Pack" : "#" + props.listing[2].nonfungible.metadata[0][0] + " - " + t[props.listing[2].nonfungible.metadata[0][1]])}
-        </Typography>
-      </Grid>);
+      return (props.listing[2].nonfungible.metadata[0][0] === 0 ? "Pack" : "#" + props.listing[2].nonfungible.metadata[0][0] + " - " + t[props.listing[2].nonfungible.metadata[0][1]]);
     };
     var collection = getCollection(props.collection);
     if (collection.nftv) {
       return (
-        <Grid item md={6} sm={6} xs={6}>
-          <Typography
-            style={{ fontSize: 11, textAlign: "right", fontWeight: "bold" }}
-            color={"inherit"}
-            gutterBottom
-          >
-            <MuiTooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}>
-              <a
-                style={{ color: "black", textDecoration: "none" }}
-                href={nriLink()}
-                rel="noreferrer"
-                target="_blank"
-              >
-                NRI: {(props.gri * 100).toFixed(1)}%{" "}
-                <span style={{ color: "red" }}>*</span>
-              </a>
-            </MuiTooltip>
-          </Typography>
-        </Grid>
-      );
+        <MuiTooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}>
+          <span>NRI: {(props.gri * 100).toFixed(1)}%</span>
+        </MuiTooltip>      );
     } else return "";
   };
 
   const handleClick = () => {
     const id = props.listing[0];
-    navigate(`/marketplace/token/${tokenid}`);
+    navigate(`/marketplace/asset/${tokenid}`);
   };
 
   return (
-    <Grid style={{ height: "100%", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
-      <Card>
-        <CardContent>
+    <Grid style={{ display:"flex", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
+      <Card style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
+      <CardActionArea onClick={handleClick}>
+        <div style={{ ...styles.avatarSkeletonContainer }}>
+          {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
+        </div>
+        <CardContent style={{padding:"10px 16px"}}>
           <Grid container>
+            <Grid item xs={12}>
+              <div className="nft-rarity-hook" data-token={props.listing[0]} data-canister={props.collection} style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderBottom:"1px solid #ddd"}}>{showNri()}</div>
+            </Grid>
             <Grid item md={6} sm={6} xs={6}>
               <Typography
                 style={{
@@ -288,241 +279,75 @@ export default function Listing(props) {
                 gutterBottom
               >
                 <MuiTooltip title="View in browser">
-                  {props.collection === "e3izy-jiaaa-aaaah-qacbq-cai" ? (
-                  <a href={nftLink()} style={{ color: "black", textDecoration: "none" }} rel="noreferrer" target="_blank">
-                    <span>
+                  <span>
                       {"#" + mintNumber()}
-                    </span>
-                  </a> ) : (
-                    <span
-                    style={{ color: "black", textDecoration: "none" }}
-                    >
-                    {"#" + mintNumber()}
                   </span>
-                )}
                 </MuiTooltip>
               </Typography>
             </Grid>
-            {showNri()}
-          </Grid>
-          {props.collection !== "e3izy-jiaaa-aaaah-qacbq-cai" ? 
-            <a href={nftLink()} rel="noreferrer" target="_blank">
-            <div style={{ ...styles.avatarSkeletonContainer }}>
-              {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
-            </div>
-            </a>
-             : (
-              <div style={{ ...styles.avatarSkeletonContainer }}>
-              <div>
-                <img
-                  alt={tokenid}
+            {props.listing[1] ?
+            <>
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography
                   style={{
-                    ...styles.avatarImg,
-                    display: imgLoaded ? "block" : "none",
+                  fontSize: 11,
+                  textAlign: "right",
+                  fontWeight: "bold",
                   }}
-                  src={nftImg()}
-                  onLoad={() => setImgLoaded(true)}
-                  onClick={handlePopupOpen}
-                />
-              <div>
-                <BootstrapDialog
-                  onClose={handlePopupClose}
-                  open={popupOpen} maxWidth="xl"
-                  style={{zIndex:1500}}
+                  color={"inherit"}
+                  gutterBottom
                 >
-                  <BootstrapDialogTitle onClose={handlePopupClose}>
-                    {"Cronic #" + mintNumber()}
-                  </BootstrapDialogTitle>
-                  <DialogContent dividers>
-                  <div style={{ width : "100%", height : "100%"}}>
-                    <Grid style={{fontWeight:"bold"}} container spacing={1}>
-                      <img
-                        alt={tokenid}
-                        style={{
-                          ...styles.avatarImg,
-                          display: imgLoaded ? "block" : "none",
-                          position : "relative",
-                          width: "30%"
-                        }}
-                        src={nftImg()}
-                        onLoad={() => setImgLoaded(true)}
-                      />
-                    </Grid>
-                    <div style={{ marginTop: "20px"}}>
-                      <Typography
-                        style={{
-                          fontSize: 14,
-                          textAlign: "center",
-                        }}
-                        color={"inherit"}
-                        gutterBottom
-                      >
-                        Price:
-                      </Typography>
-                      <Typography
-                        style={{
-                          fontSize: 18,
-                          textAlign: "center",
-                          fontWeight: "bold",
-                        }}
-                        color={"inherit"}
-                        gutterBottom
-                      >
-                        {_showListingPrice(props.listing[1].price)} ICP
-                      </Typography>
-                      {props.loggedIn ? (
-                        <div style={{ display: "flex", "justify-content": "center"}}>
-                          <Button
-                            onClick={buy}
-                            color="primary"
-                            style={{ backgroundColor: "#003240", color: "white" }}
-                          >
-                            Buy Now
-                          </Button>
-                        </div>) : ("")
-                      }
-                    </div>
-                    <div style={{ marginTop: "40px"}}>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Battle Stats</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid style={{textAlign:"center"}} container spacing={1}>
-                            <Grid item xs={4}><strong>Attack</strong><br />{genes.battle.attack.dominant} ({genes.battle.attack.recessive})</Grid>
-                            <Grid item xs={4}><strong>Magic</strong><br />{genes.battle.magic.dominant} ({genes.battle.magic.recessive})</Grid>
-                            <Grid item xs={4}><strong>Range</strong><br />{genes.battle.range.dominant} ({genes.battle.range.recessive})</Grid>
-                            <Grid item xs={4}><strong>Health</strong><br />{genes.battle.health.dominant} ({genes.battle.health.recessive})</Grid>
-                            <Grid item xs={4}><strong>Defense</strong><br />{genes.battle.defense.dominant} ({genes.battle.defense.recessive})</Grid>
-                            <Grid item xs={4}><strong>Resistance</strong><br />{genes.battle.resistance.dominant} ({genes.battle.resistance.recessive})</Grid>
-                            <Grid item xs={4}><strong>Base</strong><br />{genes.battle.base.dominant} ({genes.battle.base.recessive})</Grid>
-                            <Grid item xs={4}><strong>Speed</strong><br />{genes.battle.speed.dominant} ({genes.battle.speed.recessive})</Grid>
-                          </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Properties</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <div style={{display : "flex", flexDirection : "column", width: "100%"}}>
-                            <Typography><strong>Visual</strong></Typography>
-                            <br/>
-                            <Grid style={{textAlign:"center"}} container spacing={1}>
-                              <Grid item xs={6}><strong>Background</strong><br />{backgrounds_details[genes.visual.background.dominant-1]} ({backgrounds_details[genes.visual.background.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Pattern</strong><br />{patterns_details[genes.visual.pattern.dominant-1]} ({patterns_details[genes.visual.pattern.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Face</strong><br />{faces_details[genes.visual.face.dominant-1]} ({faces_details[genes.visual.face.recessive-1]})</Grid>
-                              <Grid item xs={6}><strong>Eyes</strong><br />{eyes_details[genes.visual.eyes.dominant-1]} ({eyes_details[genes.visual.eyes.recessive-1]})</Grid>
-                            </Grid>
-                            <br/>
-                            <Typography><strong>Color</strong></Typography>
-                            <br/>
-                            <Grid style={{textAlign:"center"}} container spacing={1}>
-                              <Grid item xs={6}><strong>Background</strong><br />{colors[colors_details[0][genes.color.background.dominant-1]]} ({colors[colors_details[0][genes.color.background.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Pattern</strong><br />{colors[colors_details[1][genes.color.pattern.dominant-1]]} ({colors[colors_details[1][genes.color.pattern.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Face</strong><br />{colors[colors_details[2][genes.color.face.dominant-1]]} ({colors[colors_details[2][genes.color.face.recessive-1]]})</Grid>
-                              <Grid item xs={6}><strong>Eyes</strong><br />{colors[colors_details[0][genes.color.eyes.dominant-1]]} ({colors[colors_details[0][genes.color.eyes.recessive-1]]})</Grid>
-                            </Grid>
-                          </div>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Price History</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                        <ResponsiveContainer height={300}>
-                          <LineChart
-                            data={chartData}
-                            margin={{
-                              top: 5,
-                              right: 30,
-                              left: 20,
-                              bottom: 5,
-                            }}
-                          >
-                            <XAxis dataKey="date" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line name="Price" type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
-                            <Line name="Average Price" type="monotone" dataKey="averagePrice" stroke="#00d092" />
-                          </LineChart>
-                        </ResponsiveContainer>
-                        </AccordionDetails>
-                      </Accordion>
-                      <Accordion defaultExpanded="true">
-                        <AccordionSummary>
-                          <Typography><strong>Transaction History</strong></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                        <TableContainer component={Paper}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableHeaderCell align="left">Event</TableHeaderCell>
-                                <TableHeaderCell align="left">Price</TableHeaderCell>
-                                <TableHeaderCell align="left">Buyer</TableHeaderCell>
-                                <TableHeaderCell align="left">Date</TableHeaderCell>
-                              </TableRow>
-                            </TableHead>
-                              { sales.length > 0 ? (
-                                <TableBody>
-                                  {sales.map((row) => (
-                                    <TableRow>
-                                      <TableCell component="th" scope="row">
-                                        Sale
-                                      </TableCell>
-                                      <TableCell>{_showListingPrice(row.price)} ICP</TableCell>
-                                      <TableCell>
-                                        <a href={"https://ic.rocks/account/" + row.buyer} target="_blank">
-                                          {row.buyer}
-                                        </a>
-                                      </TableCell>
-                                      <TableCell>{_showDate(row.time)}</TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              ) : ("")
-                              }
-                          </Table>
-                        </TableContainer>
-                        </AccordionDetails>
-                      </Accordion>
-                    </div>
-                  </div>
-                  </DialogContent>
-                </BootstrapDialog>
-              </div>
-            </div>
-            <Skeleton
-              style={{
-                ...styles.avatarLoader,
-                display: imgLoaded ? "none" : "block",
-              }}
-              variant="rect"
-            />
-          </div>
-          )}
-          <Typography
-            style={{
-              fontSize: 18,
-              textAlign: "center",
-              fontWeight: "bold",
-            }}
-            color={"inherit"}
-            gutterBottom
-          >
-            {_showListingPrice(props.listing[1].price)} ICP
-          </Typography>
-          {props.loggedIn ? (
-            <Typography
-              style={{ fontSize: 12, textAlign: "center" }}
-              color={"inherit"}
-              gutterBottom
-            >
+                  Price
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  style={{
+                    fontSize: 12,
+                    textAlign: "right",
+                    fontWeight: "bold",
+                  }}
+                  color={"inherit"}
+                  gutterBottom
+                >
+                  <PriceICP price={props.listing[1].price} />
+                </Typography>
+              </Grid>
+            </>:
+            <>
+              <Grid item md={6} sm={6} xs={6}>
+                <Typography
+                  style={{
+                  fontSize: 11,
+                  textAlign: "right",
+                  fontWeight: "bold",
+                  }}
+                  color={"inherit"}
+                  gutterBottom
+                >
+                  Unlisted
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  style={{
+                    fontSize: 12,
+                    textAlign: "right",
+                    fontWeight: "bold",
+                  }}
+                  color={"inherit"}
+                  gutterBottom
+                >-</Typography>
+              </Grid>
+            </>
+            }
+          </Grid>
+        </CardContent>
+        <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
+          {props.listing[1] && props.loggedIn ?
+            <>
               {_isLocked(props.listing[1]) ? (
-                <span style={{ display: "block", marginBottom: 22 }}>
+                <span style={{ display: "block" }}>
                   Unlocks{" "}
                   <Timestamp
                     relative
@@ -532,19 +357,22 @@ export default function Listing(props) {
                 </span>
               ) : (
                 <Button
-                  onClick={buy}
+                  onClick={ev => {
+                    ev.stopPropagation();
+                    buy();
+                  }}
+                  onMouseDown={ev => ev.stopPropagation()}
                   variant="contained"
+                  size="small"
                   color="primary"
-                  style={{ backgroundColor: "#003240", color: "white" }}
-                >
-                  Buy Now
-                </Button>
+                  style={{ marginRight: "auto", backgroundColor: "#003240", color: "white" }}
+                >Buy Now</Button>
               )}
-            </Typography>
-          ) : (
-            ""
-          )}
-        </CardContent>
+            </> : ""
+          }
+          <Favourite loggedIn={props.loggedIn} tokenid={tokenid} />
+        </CardActions>
+      </CardActionArea>
       </Card>
     </Grid>
   );

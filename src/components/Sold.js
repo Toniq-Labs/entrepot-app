@@ -8,9 +8,14 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Timestamp from "react-timestamp";
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import PriceICP from './PriceICP';
+import PriceUSD from './PriceUSD';
+import { Icon } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
 import extjs from '../ic/extjs.js';
 import _c from '../ic/collections.js';
-import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
+import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD} from '../utils.js';
 var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
@@ -21,6 +26,7 @@ const getCollection = c => {
 };
 export default function Sold(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
+  const navigate = useNavigate();
   const transaction = props.transaction;
   const index = extjs.decodeTokenId(transaction.token).index;
   const tokenid = transaction.token;
@@ -77,12 +83,15 @@ export default function Sold(props) {
       </Grid>);
     } else return "";
   };
+  const handleClick = () => {
+    navigate(`/marketplace/asset/${tokenid}`);
+  };
   var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   return (
     <TableRow>
-      <TableCell><strong>Sale</strong></TableCell>
+      <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
       <TableCell align="left">
-        <a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + tokenid} rel="noreferrer" target="_blank">
+        <a style={{color:"black",textDecoration: 'none', cursor : "pointer" }} onClick={handleClick} rel="noreferrer" target="_blank">
           <div style={{width:50, display:"inline-block", verticalAlign:"middle", paddingRight:10}}>
             <div style={{...styles.avatarSkeletonContainer}}>
               {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
@@ -91,7 +100,8 @@ export default function Sold(props) {
           <strong>{getCollection(props.collection).name} {"#"+(mintNumber())}</strong>
         </a>
       </TableCell>
-      <TableCell align="center"><strong>{_showListingPrice(transaction.price)} ICP</strong></TableCell>
+      <TableCell align="right"><strong><PriceICP price={transaction.price} /></strong><br />
+      {EntrepotGetICPUSD(transaction.price) ? <small><PriceUSD price={EntrepotGetICPUSD(transaction.price)} /></small> : ""}</TableCell>
       <TableCell align="center"><a href={"https://ic.rocks/principal/"+transaction.seller.toText()} target="_blank">{shorten(transaction.seller.toText())}</a></TableCell>
       <TableCell align="center"><a href={"https://ic.rocks/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
       <TableCell align="center"><Timestamp

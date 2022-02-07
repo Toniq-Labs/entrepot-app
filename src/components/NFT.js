@@ -1,6 +1,8 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,6 +11,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import PriceICP from './PriceICP';
+import { useNavigate } from "react-router-dom";
 import _c from '../ic/collections.js';
 import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
 var collections = _c;
@@ -25,6 +29,8 @@ export default function NFT(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
+
+  const navigate = useNavigate();
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -123,51 +129,116 @@ export default function NFT(props) {
     };
     var collection = getCollection(props.collection);
     if (collection.nftv) {
-      return (<Grid item md={6} sm={6} xs={6}>
-        <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-          <Tooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}><a style={{color:"black",textDecoration: 'none' }} href={nriLink()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
-        </Typography>
-      </Grid>);
+      return (<><Tooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}><a style={{color:"black",textDecoration: 'none' }} href={nriLink()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip></>);
     } return "";
   };
   
+  const handleClick = () => {
+    navigate(`/marketplace/asset/${props.nft.id}`);
+  };
   return (
-    <Grid style={{height:'100%'}} item xl={(props.gridSize === "small" ? 3 : 2)} lg={(props.gridSize === "small" ? 3 : 2)} md={4} sm={6} xs={6}>
-        <Card>
-          <CardContent>
-            <Grid container>
-              <Grid item md={6} sm={6} xs={6}>
-                {props.collection != "poyn6-dyaaa-aaaah-qcfzq-cai" || props.nft.index < 25000 ?
-                <Typography style={{fontSize: 11, textAlign:"left", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                  <Tooltip title="View in browser"><a style={{color:"black",textDecoration: 'none' }} href={"https://"+props.collection+".raw.ic0.app/?tokenid=" + props.nft.id} rel="noreferrer" target="_blank">{"#"+(mintNumber())}</a></Tooltip>
-                </Typography> : ""}
+    <Grid style={{ height: "100%", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
+        <Card style={{height: "-webkit-fill-available"}}>
+          <CardActionArea onClick={handleClick}>
+            <div style={{...styles.avatarSkeletonContainer}}>
+              {EntrepotDisplayNFT(props.collection, props.nft.id, imgLoaded, nftImg(), () => setImgLoaded(true))}
+              {showWrapped()}
+            </div>
+            <CardContent style={{padding:"10px 16px"}}>
+              <Grid container>
+                <Grid item xs={12}>
+                  <div className="nft-rarity-hook" data-token={props.nft.index} data-canister={props.collection} style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderBottom:"1px solid #ddd"}}>{showNri()}</div>
+                </Grid>
+                <Grid item md={6} sm={6} xs={6}>
+                  {props.collection != "poyn6-dyaaa-aaaah-qcfzq-cai" || props.nft.index < 25000 ?
+                    <Grid item md={6} sm={6} xs={6}>
+                    <Typography
+                      style={{
+                        fontSize: 11,
+                        textAlign: "left",
+                        fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      <Tooltip title="View in browser">
+                        <span>
+                            {"#" + mintNumber()}
+                        </span>
+                      </Tooltip>
+                    </Typography>
+                  </Grid> : ""}
+                </Grid>
+                {props.nft.listing ?
+                <>
+                  <Grid item md={6} sm={6} xs={6}>
+                    <Typography
+                      style={{
+                      fontSize: 11,
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      Price
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      style={{
+                        fontSize: 12,
+                        textAlign: "right",
+                        fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      <PriceICP price={props.nft.listing.price} />
+                    </Typography>
+                  </Grid>
+                </>:
+                <>
+                  <Grid item md={6} sm={6} xs={6}>
+                    <Typography
+                      style={{
+                      fontSize: 11,
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >
+                      Not Listed
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      style={{
+                        fontSize: 12,
+                        textAlign: "right",
+                        fontWeight: "bold",
+                      }}
+                      color={"inherit"}
+                      gutterBottom
+                    >-</Typography>
+                  </Grid>
+                </>
+                }
               </Grid>
-
-              {showNri()}
-            </Grid>
-
-            <a href={nftLink()} target="_blank" rel="noreferrer">
-              <div style={{...styles.avatarSkeletonContainer}}>
-                {EntrepotDisplayNFT(props.collection, props.nft.id, imgLoaded, nftImg(), () => setImgLoaded(true))}
-                {showWrapped()}
-              </div>
-            </a>
-            
-              {props.nft.listing ?
-              <Typography style={{fontSize: 13, textAlign:"center", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-                Listed @ {_showListingPrice(props.nft.listing.price)} ICP
-              </Typography> : 
-              <Typography style={{fontSize: 13, textAlign:"center", fontWeight:"bold"}} color={"inherit"} gutterBottom>Not Listed</Typography> }
+                
+            </CardContent>
+            <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
               {props.loggedIn ? 
                 <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 
                   {getButtons().length > 0 ?
                     <>
-                      <Grid item lg={6} md={6}><Button onClick={() => buttonPush(0)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
+                      <Grid item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(0)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
                       {getButtons().length == 2 ?
-                        <Grid item lg={6} md={6}><Button onClick={() => buttonPush(1)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
+                        <Grid item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(1)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
                       :
                       <Grid item lg={6} md={6}>
-                        <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
+                        <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); setAnchorEl(e.currentTarget)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
                         <Menu
                           anchorEl={anchorEl}
                           anchorOrigin={{
@@ -179,55 +250,16 @@ export default function NFT(props) {
                           onClose={() => setAnchorEl(null)}
                         >
                           {getButtons().slice(1).map((a, i) => {
-                            return (<MenuItem key={i} onClick={() => {setAnchorEl(null); buttonPush(a[1])}}>{a[0]}</MenuItem>);
+                            return (<MenuItem key={i} onClick={(e) => {e.stopPropagation(); setAnchorEl(null); buttonPush(a[1])}}>{a[0]}</MenuItem>);
                           })}
                         </Menu>
                       </Grid>
                       }
                     </>
                   : "" }
-                {/*!props.nft.listing ?
-                  <>
-                  
-                  {wrappedCanisters.concat(unwrappedCanisters).indexOf(props.nft.canister) < 0 ?
-                  <>
-                    <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
-                    <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
-                  </>: "" }
-                  
-                  {unwrappedCanisters.indexOf(props.nft.canister) >= 0 ?
-                  <>
-                    <Button onClick={() => props.wrapAndlistNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
-                    <Button onClick={() => props.transferNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Transfer</Button> 
-                  </>: "" }
-                  
-                  {wrappedCanisters.indexOf(props.nft.canister) >= 0 ?
-                  <>
-                    <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Sell</Button>
-                    <Button onClick={(e) => setAnchorEl(e.currentTarget)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
-                    <Menu
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={() => setAnchorEl(null)}
-                    >
-                      <MenuItem onClick={() => {setAnchorEl(null); props.transferNft(props.nft)}}>Transfer</MenuItem>
-                      <MenuItem onClick={() => {setAnchorEl(null); props.unwrapNft(props.nft)}}>Unwrap</MenuItem>
-                    </Menu>
-                  </>: ""}
-                  </>
-                : <>
-                <Button onClick={() => props.listNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white", marginRight:10}}>Update</Button>
-                <Button onClick={() => props.cancelNft(props.nft)} size={"small"} variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>Cancel</Button>
-                
-                </>*/}
-              
               </Grid>: ""}
-          </CardContent>
+            </CardActions>
+          </CardActionArea>
         </Card>
     </Grid>
   );

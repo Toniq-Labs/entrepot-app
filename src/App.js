@@ -8,7 +8,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import AlertDialog from "./components/AlertDialog";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { StoicIdentity } from "ic-stoic-identity";
-import { Route, Routes } from "react-router-dom";
+import { Ed25519KeyIdentity } from "@dfinity/identity";
+import OpenLogin from "@toruslabs/openlogin";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Detail from "./components/Detail";
 import Listings from "./components/Listings";
 import Activity from "./components/Activity";
@@ -52,6 +54,7 @@ import IVC2 from "./components/sale/IVC2";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
 import legacyPrincipalPayouts from './payments.json';
+import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
@@ -91,10 +94,37 @@ const emptyAlert = {
   title: "",
   message: "",
 };
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 var processingPayments = false;
 var collections = collections.filter(a => _isCanister(a.canister));
 export default function App() {
+  const { pathname } = useLocation();
+
+  React.useEffect(() => {
+    setRootPage(pathname.split("/")[1]);
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
   const classes = useStyles();
+  const [rootPage, setRootPage] = React.useState("");
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [loaderText, setLoaderText] = React.useState("");
   const [alertData, setAlertData] = React.useState(emptyAlert);
@@ -111,7 +141,9 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = React.useState(0);
 
   const _updates = async () => {
-    await _processPayments();
+    EntrepotUpdateUSD();
+    EntrepotUpdateStats();
+    if (identity) EntrepotUpdateLiked(identity)
   };
   const processPayments = async () => {
     loader(true, "Processing payments... (this can take a few minutes)");
@@ -130,8 +162,11 @@ export default function App() {
         await _processPaymentForCanister(canister);
       }
     };
-    for (var j = 0; j < collections.length; j++) {
-      await _processPaymentForCanister(collections[j]);
+    var canistersToProcess = ["pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
+    var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
+    for (var j = 0; j < _collections.length; j++) {
+      loader(true, "Processing payments... (this can take a few minutes)");
+      await _processPaymentForCanister(_collections[j]);
     }
     processingPayments = false;
     return true;
@@ -141,7 +176,8 @@ export default function App() {
     var payments = await _api.canister(_collection.canister).payments();
     if (payments.length === 0) return true;
     if (payments[0].length === 0) return true;
-    console.log("Payments found: " + payments[0].length);
+    if (payments[0].length === 1) loader(true, "Payment found, processing...");
+    else loader(true, "Payments found, processing...");
     var a, b, c, payment;
     for (var i = 0; i < payments[0].length; i++) {
       payment = payments[0][i];
@@ -189,6 +225,25 @@ export default function App() {
     setAccounts([]);
     setBalance(0);
   };
+  var openlogin = false;
+  const oauths = ['google', 'twitter', 'facebook', 'github'];
+  const loadOpenLogin = async () => {
+    if (!openlogin) {
+      openlogin = new OpenLogin({
+        clientId: "BHGs7-pkZO-KlT_BE6uMGsER2N1PC4-ERfU_c7BKN1szvtUaYFBwZMC2cwk53yIOLhdpaOFz4C55v_NounQBOfU",
+        network: "mainnet",
+        uxMode : 'popup',
+      });
+    }
+    await openlogin.init();
+    return openlogin;
+  }
+  const fromHexString = (hex) => {
+    if (hex.substr(0,2) === "0x") hex = hex.substr(2);
+    for (var bytes = [], c = 0; c < hex.length; c += 2)
+    bytes.push(parseInt(hex.substr(c, 2), 16));
+    return bytes;
+  }
   const login = async (t) => {
     loader(true, "Connecting your wallet...");
     try {
@@ -201,6 +256,27 @@ export default function App() {
             id.accounts().then((accs) => {
               setAccounts(JSON.parse(accs));
             });
+            setCurrentAccount(0);
+            localStorage.setItem("_loginType", t);
+          } else {
+            throw new Error("Failed to connect to your wallet");
+          }
+          break;
+        case "torus":
+          const openlogin = await loadOpenLogin();
+          if (openlogin.privKey) {
+            await openlogin.logout();
+          }
+          await openlogin.login();
+          id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
+          if (id) {
+            setIdentity(id);
+            setAccounts([
+              {
+                name: "Torus Wallet",
+                address: extjs.toAddress(id.getPrincipal().toText(), 0),
+              },
+            ]);
             setCurrentAccount(0);
             localStorage.setItem("_loginType", t);
           } else {
@@ -242,7 +318,7 @@ export default function App() {
     loader(false);
   };
 
-  //useInterval(_updates, 60 * 1000);
+  useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
       setAlertData({
@@ -300,6 +376,24 @@ export default function App() {
             }
           });
           break;
+        case "torus":
+          loadOpenLogin().then(openlogin => {
+            if (!openlogin.privKey || openlogin.privKey.length === 0) {
+
+            } else {
+              var id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
+              if (id) {
+                setIdentity(id);
+                setAccounts([
+                  {
+                    name: "Torus Wallet",
+                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                  },
+                ]);
+              };
+            }
+          });
+          break;
         case "plug":
           (async () => {
             const connected = await window.ic.plug.isConnected();
@@ -320,7 +414,7 @@ export default function App() {
               setIdentity(id);
               setAccounts([
                 {
-                  name: "PlugWallet",
+                  name: "Plug Wallet",
                   address: extjs.toAddress(id.getPrincipal().toText(), 0),
                 },
               ]);
@@ -331,6 +425,9 @@ export default function App() {
           break;
       }
     }
+    EntrepotUpdateUSD();
+    EntrepotUpdateStats();
+    if (identity) EntrepotUpdateLiked(identity);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
@@ -341,12 +438,14 @@ export default function App() {
       if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
         for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
           if (legacyPrincipalPayouts[identity.getPrincipal().toText()][canister].length) {
-            alert("You have payments owing, please use the Check Payments button");
+            //alert("You have payments owing, please use the Check Payments button");
             break;
           };
         }
       };
+      EntrepotUpdateLiked(identity)
     } else {
+      EntrepotClearLiked()
       setLoggedIn(false);
       setAddress(false);
       setAccounts(false);
@@ -362,7 +461,7 @@ export default function App() {
   
   return (
     <>
-      <Navbar view={""} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
+      <Navbar view={rootPage} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
       <main className={classes.content}>
         <div className={classes.inner}>
           <Routes>
@@ -371,7 +470,8 @@ export default function App() {
                 error={error}
                 alert={alert}
                 confirm={confirm}
-                loader={loader}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/marketplace/:route/activity" exact element={
               <Activity

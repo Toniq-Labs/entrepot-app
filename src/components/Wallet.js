@@ -24,6 +24,7 @@ import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
+import PriceICP from '../components/PriceICP';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
 import { useNavigate } from "react-router";
@@ -206,7 +207,7 @@ export default function Wallet(props) {
         </ListItem>
         <ListItem>
           <Typography style={{width:"100%",textAlign:"center",fontWeight:"bold"}}>
-          {(balance !== false ? _showListingPrice(balance)+" ICP" : "Loading...")}
+          {(balance !== false ? <PriceICP size={24} price={balance} /> : "Loading...")}
           </Typography>
         </ListItem>
         {props.accounts.length > 1 ?
@@ -254,11 +255,17 @@ export default function Wallet(props) {
               </ListItemIcon>
               <ListItemText primary="StoicWallet" />
             </MenuItem>
+            <MenuItem onClick={() => login('torus')}>
+              <ListItemIcon>
+                <img alt="T" src="/torus.svg" style={{height:26}} />
+              </ListItemIcon>
+              <ListItemText primary="Torus" />
+            </MenuItem>
             <MenuItem onClick={() => login('plug')}>
               <ListItemIcon>
-                <img alt="S" src="/plug.png" style={{height:26}} />
+                <img alt="P" src="/plug.png" style={{height:26}} />
               </ListItemIcon>
-              <ListItemText primary="Plug Wallet" />
+              <ListItemText primary="Plug" />
             </MenuItem>
           </Menu>
         </ListItem>
