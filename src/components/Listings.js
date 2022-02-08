@@ -32,7 +32,7 @@ import { getTraits, getPairing} from "./BTCFlowerStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
-import Listing from "./Listing";
+import NFT from "./NFT";
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
@@ -971,7 +971,7 @@ export default function Listings(props) {
                           )
                           .map((listing, i) => {
                             return (
-                              <Listing
+                              <NFT
                                 gridSize={gridSize}
                                 nri={getNri(collection?.canister, listing[0])}
                                 loggedIn={props.loggedIn}

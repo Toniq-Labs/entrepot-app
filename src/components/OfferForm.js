@@ -21,7 +21,7 @@ export default function OfferForm(props) {
     handleClose();
     props.loader(true, "Submitting offer...");
     const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
-    await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offer(props.tokenid, icp);
+    await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offer(props.tokenid, icp, props.address);
     await props.complete();
     props.loader(false);
     props.alert(

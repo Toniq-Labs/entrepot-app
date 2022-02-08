@@ -200,6 +200,9 @@ EntrepotClearLiked = async () => {
   _identity = false;
   _liked = [];
 },
+EntrepotGetAllLiked = () => {
+  return _liked
+},
 EntrepotUpdateLiked = async identity => {
   if (identity) _identity = identity;
   if (_identity) {
@@ -240,5 +243,5 @@ numf = (n, d) => {
 };
 export {
   clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats, EntrepotUpdateUSD, EntrepotGetICPUSD, EntrepotUpdateLiked, 
-  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked
+  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked, EntrepotGetAllLiked
 };

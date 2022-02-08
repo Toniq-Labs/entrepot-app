@@ -251,6 +251,13 @@ const Detail = (props) => {
           </Grid>
           <Grid item xs={12} sm={12} md={7}>
             <div className={classes.personal}>
+              <Typography variant="h6" style={{ color: "#648DE2" }}>
+                <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a>
+              </Typography>
+              <div style={{zIndex: 100}} className="sharethis-inline-share-buttons"></div>
+              
+            </div>
+            <div className={classes.personal}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -258,7 +265,7 @@ const Detail = (props) => {
                 onClick={() => navigate(-1)}
                 style={{fontWeight:"bold", color:"black", borderColor:"black"}}
               >
-                Back to {collection.name}
+                Back
               </Button>
               <div style={{zIndex: 100}} className="sharethis-inline-share-buttons"></div>
               
@@ -544,7 +551,7 @@ const Detail = (props) => {
           </Grid>
         </Grid>
       </Container>
-      <OfferForm balance={props.balance} complete={reloadOffers} floor={floor} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
+      <OfferForm address={props.account.address} balance={props.balance} complete={reloadOffers} floor={floor} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
     </>
   );
 };

@@ -34,7 +34,6 @@ import { getTraits, getPairing} from "./BTCFlowerStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
-import Listing from "./Listing";
 import Avatar from '@material-ui/core/Avatar';
 import Sold from "./Sold";
 import BuyForm from "./BuyForm";

@@ -15,7 +15,8 @@ import Detail from "./components/Detail";
 import Listings from "./components/Listings";
 import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
-import NFTList from "./components/NFTList";
+import Owned from "./components/Owned";
+import Watchlist from "./components/Watchlist";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
@@ -591,7 +592,16 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/wallet/:route" exact element={
-              <NFTList
+              <Owned
+                error={error}
+                view={"wallet"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/watchlist" exact element={
+              <Watchlist
                 error={error}
                 view={"wallet"}
                 alert={alert}

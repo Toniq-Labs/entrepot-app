@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import { IconButton, makeStyles } from "@material-ui/core";
 
 export default function Navbar(props) {
@@ -76,14 +75,6 @@ export default function Navbar(props) {
             onClick={handleDrawerToggle}
             color="inherit"
             className={[classes.button].join(' ')}
-          >
-          <RemoveRedEye fontSize="large" />
-          </Button>
-          <Button
-            onClick={handleDrawerToggle}
-            color="inherit"
-            className={[classes.button].join(' ')}
-            style={{marginLeft:0}}
           >
           <AccountBalanceWalletIcon fontSize="large" />
           </Button>

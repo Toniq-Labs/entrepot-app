@@ -18,7 +18,6 @@ import extjs from '../ic/extjs.js';
 import getNri from '../ic/nftv.js';
 import { useTheme } from '@material-ui/core/styles';
 import NFT from './NFT';
-import Listing from './Listing';
 import ListingForm from './ListingForm';
 import TransferForm from './TransferForm';
 import Opener from './Opener';
@@ -53,7 +52,7 @@ const canisterMap= {
   "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
 };
 var buttonLoader= false;
-export default function NFTList(props) {
+export default function Owned(props) {
   const params = useParams();
   const navigate = useNavigate();
   const [nfts, setNfts] = React.useState(false);
@@ -379,7 +378,7 @@ export default function NFTList(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<Listing 
+                      return (<NFT 
                         gridSize={gridSize} 
                         nri={getNri(collection?.canister, nft.index)} 
                         loggedIn={props.loggedIn} 

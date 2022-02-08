@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useNavigate } from "react-router";
-import NFTList from "../components/NFTList";
-import Listings from "../components/Listings";
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import Wallet from "../components/Wallet";
@@ -230,7 +228,7 @@ export default function Marketplace(props) {
                       title={collection.name}
                     /></a>
                     <CardContent style={{textAlign:"center"}}>
-                      <h2 style={{marginTop:0}}>{collection.name}</h2>
+                      <h2 style={{marginTop:0, fontSize:"1.4em"}}>{collection.name}</h2>
                       <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
                       {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
                         <>{stats.find(a => a.canister == collection.canister).stats ?
