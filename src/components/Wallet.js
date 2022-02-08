@@ -205,12 +205,6 @@ export default function Wallet(props) {
             marginLeft:100
           }}
         >
-          <MenuItem onClick={() => {props.close(); navigate("/watchlist"); handleClose();}}>
-            <ListItemIcon>
-              <VisibilityIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Watchlist" />
-          </MenuItem>
           <MenuItem onClick={refreshClick}>
             <ListItemIcon>
               <CachedIcon fontSize="small" />

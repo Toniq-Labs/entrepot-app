@@ -14,7 +14,6 @@ export default function OfferForm(props) {
   const [amount, setAmount] = React.useState(props.floor);
         
   const _submit = async () => {
-    if (Number(amount).toFixed() != amount) return props.error("Please enter a valid amount in ICP"); 
     if (Number(amount) < 0.01) return props.error("Min offer amount is 0.01 ICP"); 
     var icp = BigInt(Math.floor(amount*(10**8)));
     if (props.balance < icp + 10000n) return props.error("Your balance is insufficient to make this offer");

@@ -81,11 +81,13 @@ export default function Watchlist(props) {
   };
   useInterval(_updates, 10 *1000);
   React.useEffect(() => {
-    refresh();
+    props.loader(true);
+    refresh().then(() => props.loader(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account.address, props.identity]);
   React.useEffect(() => {
-    refresh();
+    props.loader(true);
+    refresh().then(() => props.loader(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,7 +97,7 @@ export default function Watchlist(props) {
         <h1>Watchlist</h1>
       </div>
       <div style={{overflow:"hidden", marginTop:50,fontSize: "1.2em", textAlign: "center" }}>
-        You can view all NFT that you have liked or placed an offer on below!
+        You can view all NFTs that you have liked or placed an offer on below!
       </div>
       <div style={{marginLeft: "20px", marginTop: "10px"}}>
         <div style={{marginLeft:"20px",marginTop:"10px"}}>

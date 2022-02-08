@@ -86,6 +86,23 @@ for(var i = 0; i < 100; i++){
   loadedTokens["nges7-giaaa-aaaaj-qaiya-cai"].push([i, {nonfungible: {metadata:[]}}]);
 };
 
+loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"] = [];
+for(var i = 0; i < 8001; i++){
+  loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+
 
 class ExtConnection {
   //map known canisters to preloaded IDLs

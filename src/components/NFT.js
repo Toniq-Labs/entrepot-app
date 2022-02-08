@@ -147,7 +147,6 @@ export default function NFT(props) {
     },
   };
   const _isLocked = () => {
-    console.log(listing);
     if (typeof listing == 'undefined') return false;
     if (!listing) return false;
     if (typeof listing.locked == 'undefined') return false;

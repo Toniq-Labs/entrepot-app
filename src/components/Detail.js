@@ -173,11 +173,77 @@ const Detail = (props) => {
     );
   };
   
-  
+  const displayImage = tokenid => {
+    let { index, canister} = extjs.decodeTokenId(tokenid);
+    switch(canister){
+      case "bzsui-sqaaa-aaaah-qce2a-cai":
+      case "z7mqv-liaaa-aaaah-qcnqa-cai":
+      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
+        return (
+          <img
+            src={EntrepotNFTImage(canister, index, tokenid, false)}
+            alt=""
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+            }}
+          />
+        );
+        break;
+      case "bxdf4-baaaa-aaaah-qaruq-cai":
+        return (
+          <img
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            alt=""
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+            }}
+          />
+        );
+        break;
+      default:
+        return (
+          <iframe
+            frameborder="0"
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            alt=""
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              minHeight:"600px",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+            }}
+          />
+        );
+        break;
+    }
+  };
   
   
   React.useEffect(() => {
-    _refresh();
+    props.loader(true);
+    _refresh().then(() => props.loader(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -192,23 +258,7 @@ const Detail = (props) => {
                 borderRadius: 4
               }}
             >
-              <iframe
-                frameborder="0"
-                src={EntrepotNFTImage(collection.canister, index, tokenid, true)}
-                alt=""
-                style={{
-                  border:"none",
-                  maxWidth:500,
-                  maxHeight:"100%",
-                  minHeight:"600px",
-                  cursor: "pointer",
-                  height: "100%",
-                  width: "100%",
-                  marginLeft:"auto",
-                  marginRight:"auto",
-                  display: "block",
-                }}
-              />
+              {displayImage(tokenid)}
             </div>
             
             <Accordion defaultExpanded>
@@ -267,7 +317,6 @@ const Detail = (props) => {
               >
                 Back
               </Button>
-              <div style={{zIndex: 100}} className="sharethis-inline-share-buttons"></div>
               
             </div>
             <Typography variant="h4" className={classes.typo}>
