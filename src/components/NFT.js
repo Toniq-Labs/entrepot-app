@@ -223,7 +223,8 @@ export default function NFT(props) {
   };
   var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   const showNri = () => {
-    if (!props.nri) return "";
+    if (typeof props.nri == 'undefined') return "";
+    if (props.nri === false) return "";
     if (canister == "poyn6-dyaaa-aaaah-qcfzq-cai") {
       if (!metadata) return "";
       return (metadata.nonfungible.metadata[0][0] === 0 ? "Pack" : "#" + metadata.nonfungible.metadata[0][0] + " - " + t[metadata.nonfungible.metadata[0][1]]);
