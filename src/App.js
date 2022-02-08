@@ -8,10 +8,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import AlertDialog from "./components/AlertDialog";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { StoicIdentity } from "ic-stoic-identity";
-import { Route, Routes } from "react-router-dom";
+import { Ed25519KeyIdentity } from "@dfinity/identity";
+import OpenLogin from "@toruslabs/openlogin";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Detail from "./components/Detail";
 import Listings from "./components/Listings";
-import NFTList from "./components/NFTList";
+import BuyForm from "./components/BuyForm";
+import Activity from "./components/Activity";
+import Owned from "./components/Owned";
+import Watchlist from "./components/Watchlist";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
@@ -50,6 +55,8 @@ import IVC2 from "./components/sale/IVC2";
 //import Imagination from "./components/sale/Imagination";
 import Tranquillity from "./components/sale/Tranquillity";
 import _c from './ic/collections.js';
+import legacyPrincipalPayouts from './payments.json';
+import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
@@ -89,10 +96,53 @@ const emptyAlert = {
   title: "",
   message: "",
 };
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+const _getRandomBytes = () => {
+  var bs = [];
+  for (var i = 0; i < 32; i++) {
+    bs.push(Math.floor(Math.random() * 256));
+  }
+  return bs;
+};
 var processingPayments = false;
 var collections = collections.filter(a => _isCanister(a.canister));
+const emptyListing = {
+  price: "",
+  tokenid: "",
+};
 export default function App() {
+  const { pathname } = useLocation();
   const classes = useStyles();
+
+  
+  React.useEffect(() => {
+    setRootPage(pathname.split("/")[1]);
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  
+  const [buyFormData, setBuyFormData] = React.useState(emptyListing);
+  const [showBuyForm, setShowBuyForm] = React.useState(false);
+  
+  const [rootPage, setRootPage] = React.useState("");
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [loaderText, setLoaderText] = React.useState("");
   const [alertData, setAlertData] = React.useState(emptyAlert);
@@ -109,8 +159,84 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = React.useState(0);
 
   const _updates = async () => {
-    await _processPayments();
+    EntrepotUpdateUSD();
+    EntrepotUpdateStats();
+    if (identity) EntrepotUpdateLiked(identity)
   };
+
+  const _buyForm = (tokenid, price) => {
+    return new Promise(async (resolve, reject) => {
+      let { index, canister} = extjs.decodeTokenId(tokenid);
+      setBuyFormData({
+        index: index,
+        canister: canister,
+        tokenid: tokenid,
+        price: price,
+        handler: (v) => {
+          setShowBuyForm(false);
+          resolve(v);
+          setTimeout(() => setBuyFormData(emptyListing), 100);
+        },
+      });
+      setShowBuyForm(true);
+    });
+  };
+  const buyNft = async (canisterId, index, listing, ah) => {
+    if (balance < listing.price + 10000n)
+      return alert(
+        "There was an error",
+        "Your balance is insufficient to complete this transaction"
+      );
+    var tokenid = extjs.encodeTokenId(canisterId, index);
+    try {
+      var answer = await _buyForm(tokenid, listing.price);
+      if (!answer) {
+        loader(false);
+        return false;
+      }
+      loader(true, "Locking NFT...");
+      const _api = extjs.connect("https://boundary.ic0.app/", identity);
+      var r = await _api
+        .canister(canisterId)
+        .lock(
+          tokenid,
+          listing.price,
+          accounts[currentAccount].address,
+          _getRandomBytes()
+        );
+      if (r.hasOwnProperty("err")) throw r.err;
+      var paytoaddress = r.ok;
+      loader(true, "Transferring ICP...");
+      await _api
+        .token()
+        .transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          paytoaddress,
+          listing.price,
+          10000
+        );
+      var r3;
+      loader(true, "Settling purchase...");
+      await _api.canister(canisterId).settle(tokenid);
+      loader(false);
+      alert(
+        "Transaction complete",
+        "Your purchase was made successfully - your NFT will be sent to your address shortly"
+      );
+      if (ah) await ah();
+      return true;
+    } catch (e) {
+      loader(false);
+      console.log(e);
+      alert(
+        "There was an error",
+        e.Other ?? "You may need to enable cookies or try a different browser"
+      );
+      return false;
+    }
+  };
+  
   const processPayments = async () => {
     loader(true, "Processing payments... (this can take a few minutes)");
     await _processPayments();
@@ -121,52 +247,68 @@ export default function App() {
     if (!identity) return;
     if (processingPayments) return;
     processingPayments = true;
-    const _api = extjs.connect("https://boundary.ic0.app/", identity);
-    for (var j = 0; j < collections.length; j++) {
-      var payments = await _api.canister(collections[j].canister).payments();
-      if (payments.length === 0) continue;
-      if (payments[0].length === 0) continue;
-      console.log("Payments found: " + payments[0].length);
-      var a, b, c, payment;
-      for (var i = 0; i < payments[0].length; i++) {
-        payment = payments[0][i];
-        a = extjs.toAddress(identity.getPrincipal().toText(), payment);
-        b = Number(await api.token().getBalance(a));
-        c = Math.round(b * collections[j].commission);
-        try {
-          var txs = [];
-          if (b > txmin) {
-            txs.push(
-              _api
-                .token()
-                .transfer(
-                  identity.getPrincipal().toText(),
-                  payment,
-                  address,
-                  BigInt(b - (txfee + c)),
-                  BigInt(txfee)
-                )
-            );
-            txs.push(
-              _api
-                .token()
-                .transfer(
-                  identity.getPrincipal().toText(),
-                  payment,
-                  collections[j].comaddress,
-                  BigInt(c - txfee),
-                  BigInt(txfee)
-                )
-            );
-          }
-          await Promise.all(txs);
-          console.log("Payment extracted successfully");
-        } catch (e) {
-          console.log(e);
-        }
+    
+    //Process legacy payments first
+    if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
+      for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
+        await _processPaymentForCanister(canister);
       }
+    };
+    var canistersToProcess = ["pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
+    var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
+    for (var j = 0; j < _collections.length; j++) {
+      loader(true, "Processing payments... (this can take a few minutes)");
+      await _processPaymentForCanister(_collections[j]);
     }
     processingPayments = false;
+    return true;
+  };
+  const _processPaymentForCanister = async _collection => {
+    if (!_collection.comaddress) return true;
+    const _api = extjs.connect("https://boundary.ic0.app/", identity);
+    var payments = await _api.canister(_collection.canister).payments();
+    if (payments.length === 0) return true;
+    if (payments[0].length === 0) return true;
+    if (payments[0].length === 1) loader(true, "Payment found, processing...");
+    else loader(true, "Payments found, processing...");
+    var a, b, c, payment;
+    for (var i = 0; i < payments[0].length; i++) {
+      payment = payments[0][i];
+      a = extjs.toAddress(identity.getPrincipal().toText(), payment);
+      b = Number(await api.token().getBalance(a));
+      c = Math.round(b * _collection.commission);
+      try {
+        var txs = [];
+        if (b > txmin) {
+          txs.push(
+            _api
+              .token()
+              .transfer(
+                identity.getPrincipal().toText(),
+                payment,
+                address,
+                BigInt(b - (txfee + c)),
+                BigInt(txfee)
+              )
+          );
+          txs.push(
+            _api
+              .token()
+              .transfer(
+                identity.getPrincipal().toText(),
+                payment,
+                _collection.comaddress,
+                BigInt(c - txfee),
+                BigInt(txfee)
+              )
+          );
+        }
+        await Promise.all(txs);
+        console.log("Payment extracted successfully");
+      } catch (e) {
+        console.log(e);
+      }
+    }
     return true;
   };
   const logout = async () => {
@@ -176,6 +318,25 @@ export default function App() {
     setAccounts([]);
     setBalance(0);
   };
+  var openlogin = false;
+  const oauths = ['google', 'twitter', 'facebook', 'github'];
+  const loadOpenLogin = async () => {
+    if (!openlogin) {
+      openlogin = new OpenLogin({
+        clientId: "BHGs7-pkZO-KlT_BE6uMGsER2N1PC4-ERfU_c7BKN1szvtUaYFBwZMC2cwk53yIOLhdpaOFz4C55v_NounQBOfU",
+        network: "mainnet",
+        uxMode : 'popup',
+      });
+    }
+    await openlogin.init();
+    return openlogin;
+  }
+  const fromHexString = (hex) => {
+    if (hex.substr(0,2) === "0x") hex = hex.substr(2);
+    for (var bytes = [], c = 0; c < hex.length; c += 2)
+    bytes.push(parseInt(hex.substr(c, 2), 16));
+    return bytes;
+  }
   const login = async (t) => {
     loader(true, "Connecting your wallet...");
     try {
@@ -188,6 +349,27 @@ export default function App() {
             id.accounts().then((accs) => {
               setAccounts(JSON.parse(accs));
             });
+            setCurrentAccount(0);
+            localStorage.setItem("_loginType", t);
+          } else {
+            throw new Error("Failed to connect to your wallet");
+          }
+          break;
+        case "torus":
+          const openlogin = await loadOpenLogin();
+          if (openlogin.privKey) {
+            await openlogin.logout();
+          }
+          await openlogin.login();
+          id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
+          if (id) {
+            setIdentity(id);
+            setAccounts([
+              {
+                name: "Torus Wallet",
+                address: extjs.toAddress(id.getPrincipal().toText(), 0),
+              },
+            ]);
             setCurrentAccount(0);
             localStorage.setItem("_loginType", t);
           } else {
@@ -229,7 +411,7 @@ export default function App() {
     loader(false);
   };
 
-  //useInterval(_updates, 60 * 1000);
+  useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
       setAlertData({
@@ -287,6 +469,24 @@ export default function App() {
             }
           });
           break;
+        case "torus":
+          loadOpenLogin().then(openlogin => {
+            if (!openlogin.privKey || openlogin.privKey.length === 0) {
+
+            } else {
+              var id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
+              if (id) {
+                setIdentity(id);
+                setAccounts([
+                  {
+                    name: "Torus Wallet",
+                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                  },
+                ]);
+              };
+            }
+          });
+          break;
         case "plug":
           (async () => {
             const connected = await window.ic.plug.isConnected();
@@ -307,7 +507,7 @@ export default function App() {
               setIdentity(id);
               setAccounts([
                 {
-                  name: "PlugWallet",
+                  name: "Plug Wallet",
                   address: extjs.toAddress(id.getPrincipal().toText(), 0),
                 },
               ]);
@@ -318,13 +518,27 @@ export default function App() {
           break;
       }
     }
+    EntrepotUpdateUSD();
+    EntrepotUpdateStats();
+    if (identity) EntrepotUpdateLiked(identity);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     if (identity) {
       setLoggedIn(true);
       setAddress(extjs.toAddress(identity.getPrincipal().toText(), 0));
+      //This is where we check for payments
+      if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
+        for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
+          if (legacyPrincipalPayouts[identity.getPrincipal().toText()][canister].length) {
+            //alert("You have payments owing, please use the Check Payments button");
+            break;
+          };
+        }
+      };
+      EntrepotUpdateLiked(identity)
     } else {
+      EntrepotClearLiked()
       setLoggedIn(false);
       setAddress(false);
       setAccounts(false);
@@ -340,16 +554,26 @@ export default function App() {
   
   return (
     <>
-      <Navbar view={""} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
+      <Navbar view={rootPage} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
       <main className={classes.content}>
         <div className={classes.inner}>
           <Routes>
-            <Route path="/marketplace/token/:tokenid" exact element={
+            <Route path="/marketplace/asset/:tokenid" exact element={
               <Detail
                 error={error}
                 alert={alert}
                 confirm={confirm}
-                loader={loader}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
+              />} />
+            <Route path="/marketplace/:route/activity" exact element={
+              <Activity
+                error={error}
+                view={"listings"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/marketplace/:route" exact element={
               <Listings
@@ -358,7 +582,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
               />} />
             <Route path="/marketplace" exact element={
               <Marketplace
@@ -369,7 +593,16 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/wallet/:route" exact element={
-              <NFTList
+              <Owned
+                error={error}
+                view={"wallet"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/watchlist" exact element={
+              <Watchlist
                 error={error}
                 view={"wallet"}
                 alert={alert}
@@ -583,6 +816,7 @@ export default function App() {
             <Route path="/sale" exact element={
               <Sale error={error} alert={alert} confirm={confirm} loader={loader} />} />
           </Routes>
+          <BuyForm open={showBuyForm} {...buyFormData} />
         </div>
       </main>
       {footer}

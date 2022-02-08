@@ -6,6 +6,7 @@ import { LEDGER_CANISTER_ID, GOVERNANCE_CANISTER_ID, NNS_CANISTER_ID, CYCLES_MIN
 import ledgerIDL from './candid/ledger.did.js';
 import governanceIDL from './candid/governance.did.js';
 import nnsIDL from './candid/nns.did.js';
+import cyclesIDL from './candid/cycles.did.js';
 import hzldIDL from './candid/hzld.did.js'; //hardcode to hzld...
 import extIDL from './candid/ext.did.js';
 import advancedIDL from './candid/advanced.did.js';
@@ -23,6 +24,7 @@ import pokedIDL from './candid/poked.did.js';
 import icapesIDL from './candid/icapes.did.js';
 import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
+import entrepotIDL from './candid/entrepot.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -70,6 +72,37 @@ const _preloadedIdls = {
   'sale' : ic3dIDL,
   'default' : extIDL,
 };
+var loadedTokens = {};
+loadedTokens["pk6rk-6aaaa-aaaae-qaazq-cai"] = [];
+for(var i = 0; i < 2009; i++){
+  loadedTokens["pk6rk-6aaaa-aaaae-qaazq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["jmuqr-yqaaa-aaaaj-qaicq-cai"] = [];
+for(var i = 0; i < 3507; i++){
+  loadedTokens["jmuqr-yqaaa-aaaaj-qaicq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["nges7-giaaa-aaaaj-qaiya-cai"] = [];
+for(var i = 0; i < 100; i++){
+  loadedTokens["nges7-giaaa-aaaaj-qaiya-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+
+loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"] = [];
+for(var i = 0; i < 10000; i++){
+  loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"] = [];
+for(var i = 0; i < 8001; i++){
+  loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+};
+
 
 class ExtConnection {
   //map known canisters to preloaded IDLs
@@ -78,6 +111,7 @@ class ExtConnection {
     [GOVERNANCE_CANISTER_ID] : _preloadedIdls['governance'],
     [NNS_CANISTER_ID] : _preloadedIdls['nns'],
     "qz7gu-giaaa-aaaaf-qaaka-cai" : _preloadedIdls['hzld'],
+    "rkp4c-7iaaa-aaaaa-aaaca-cai" : cyclesIDL,
     "kxh4l-cyaaa-aaaah-qadaq-cai" : advancedIDL,
     "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
     "y3b7h-siaaa-aaaah-qcnwa-cai" : wrapperIDL,
@@ -102,6 +136,7 @@ class ExtConnection {
     "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
     "fl5nr-xiaaa-aaaai-qbjmq-cai" : departureIDL,
     "33uhc-liaaa-aaaah-qcbra-cai" : mintregister,
+    "6z5wo-yqaaa-aaaah-qcsfa-cai" : entrepotIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
@@ -187,6 +222,19 @@ class ExtConnection {
             break;
           }
         });
+      },
+      size : async () => {
+        if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+          loadedTokens[tokenObj.canister] = await api.getTokens();
+        };
+        return loadedTokens[tokenObj.canister].length;
+      },
+      listings : async () => {
+        if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+          loadedTokens[tokenObj.canister] = await api.getTokens();
+        };
+        var listings = await api.listings();
+        return loadedTokens[tokenObj.canister].map(a => [a[0], (listings.find(b => b[0] == a[0]) ? listings.find(b => b[0] == a[0])[1] : false), a[1]]);
       },
       stats : () => {
         return new Promise((resolve, reject) => {

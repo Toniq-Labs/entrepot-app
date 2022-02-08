@@ -24,6 +24,10 @@ import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
+import LockIcon from '@material-ui/icons/Lock';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import PriceICP from '../components/PriceICP';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
 import { useNavigate } from "react-router";
@@ -78,7 +82,7 @@ export default function Wallet(props) {
   const [loading, setLoading] = React.useState(false);
   const [myCollections, setMyCollections] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorElLogin, setAnchorElLogin] = React.useState(null);
+  const [anchorElAccounts, setAnchorElAccounts] = React.useState(null);
   const refreshClick = async () => {
     setLoading(true);
     setBalance(false);
@@ -89,12 +93,12 @@ export default function Wallet(props) {
     setMyCollections(false);
     props.setBalance(false)
     props.changeAccount(t);
-    setAnchorElLogin(null)
+    setAnchorElAccounts(null)
     loadedAccount = t;
   };
   const login = (t) => {
    props.login(t); 
-   setAnchorElLogin(null)
+   setAnchorElAccounts(null)
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -173,7 +177,7 @@ export default function Wallet(props) {
         <ListSubheader>
           Connected Wallet
         </ListSubheader>
-        <ListItem>
+        <ListItem button onClick={(e) => setAnchorEl(e.currentTarget)}>
           <ListItemAvatar>
             <Avatar>
               <Blockie address={props.account ? props.account.address : ""} />
@@ -184,39 +188,64 @@ export default function Wallet(props) {
             secondaryTypographyProps={{noWrap:true}} 
             primary={<>
               {props.account.name}
-              <IconButton style={{marginTop:"-5px"}} size="small" onClick={refreshClick} edge="end">
-                <CachedIcon />
-              </IconButton>
             </>}
             secondary={<>
               {props.account.address.substr(0,20)+"..."}
-              <SnackbarButton
-                message="Address Copied"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                onClick={() => clipboardCopy(props.account.address)}
-              >
-                <IconButton style={{marginTop:"-5px"}} size="small" edge="end">
-                  <FileCopyIcon style={{fontSize:"1em"}} />
-                </IconButton>
-              </SnackbarButton>
             </>} />
+            <ListItemIcon>
+              <ExpandMoreIcon />
+            </ListItemIcon>
         </ListItem>
+        <Menu
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          style={{
+            marginLeft:100
+          }}
+        >
+          <MenuItem onClick={refreshClick}>
+            <ListItemIcon>
+              <CachedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Refresh" />
+          </MenuItem>
+          <SnackbarButton
+              message="Address Copied"
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              onClick={() => { clipboardCopy(props.account.address); handleClose(); }}
+            >
+            <MenuItem>
+              <ListItemIcon>
+                <FileCopyIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Copy Address" />
+            </MenuItem>
+          </SnackbarButton>
+          <MenuItem onClick={props.logout}>
+            <ListItemIcon>
+              <LockIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </MenuItem>
+        </Menu>
         <ListItem>
           <Typography style={{width:"100%",textAlign:"center",fontWeight:"bold"}}>
-          {(balance !== false ? _showListingPrice(balance)+" ICP" : "Loading...")}
+          {(balance !== false ? <PriceICP size={24} price={balance} /> : "Loading...")}
           </Typography>
         </ListItem>
         {props.accounts.length > 1 ?
         <ListItem>
-          <Button onClick={(e) => setAnchorElLogin(e.currentTarget)} fullWidth variant="outlined" color="primary" style={{fontWeight:"bold"}}>Change Accounts</Button>
+          <Button onClick={(e) => setAnchorElAccounts(e.currentTarget)} fullWidth variant="outlined" color="primary" style={{fontWeight:"bold"}}>Change Accounts</Button>
           <Menu
-            anchorEl={anchorElLogin}
+            anchorEl={anchorElAccounts}
             keepMounted
-            open={Boolean(anchorElLogin)}
-            onClose={() => setAnchorElLogin(null)}
+            open={Boolean(anchorElAccounts)}
+            onClose={() => setAnchorElAccounts(null)}
           >
             {props.accounts.map((account, i) => {
             if (account.address == props.account.address) return [];
@@ -226,9 +255,6 @@ export default function Wallet(props) {
             })}
           </Menu>
         </ListItem> : "" }
-        <ListItem>
-          <Button onClick={props.logout} fullWidth variant="contained" color="secondary" style={{fontWeight:"bold",color:"white"}}>Logout</Button>
-        </ListItem>
       </List> : ""}
       { props.account === false ? 
       <List>
@@ -241,12 +267,12 @@ export default function Wallet(props) {
             />
         </ListItem>
         <ListItem>
-          <Button onClick={(e) => setAnchorElLogin(e.currentTarget)} fullWidth variant="contained" color="primary" style={{fontWeight:"bold",color:"black"}}> Connect your Wallet</Button>
+          <Button onClick={(e) => setAnchorElAccounts(e.currentTarget)} fullWidth variant="contained" color="primary" style={{fontWeight:"bold",color:"black"}}> Connect your Wallet</Button>
           <Menu
-            anchorEl={anchorElLogin}
+            anchorEl={anchorElAccounts}
             keepMounted
-            open={Boolean(anchorElLogin)}
-            onClose={() => setAnchorElLogin(null)}
+            open={Boolean(anchorElAccounts)}
+            onClose={() => setAnchorElAccounts(null)}
           >
             <MenuItem onClick ={()=> login('stoic')}>
               <ListItemIcon>
@@ -254,11 +280,17 @@ export default function Wallet(props) {
               </ListItemIcon>
               <ListItemText primary="StoicWallet" />
             </MenuItem>
+            <MenuItem onClick={() => login('torus')}>
+              <ListItemIcon>
+                <img alt="T" src="/torus.svg" style={{height:26}} />
+              </ListItemIcon>
+              <ListItemText primary="Torus" />
+            </MenuItem>
             <MenuItem onClick={() => login('plug')}>
               <ListItemIcon>
-                <img alt="S" src="/plug.png" style={{height:26}} />
+                <img alt="P" src="/plug.png" style={{height:26}} />
               </ListItemIcon>
-              <ListItemText primary="Plug Wallet" />
+              <ListItemText primary="Plug" />
             </MenuItem>
           </Menu>
         </ListItem>
