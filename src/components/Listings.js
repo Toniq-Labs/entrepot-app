@@ -65,13 +65,7 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-const _getRandomBytes = () => {
-  var bs = [];
-  for (var i = 0; i < 32; i++) {
-    bs.push(Math.floor(Math.random() * 256));
-  }
-  return bs;
-};
+
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -126,8 +120,6 @@ export default function Listings(props) {
   const [wearableFilter, setWearableFilter] = useState("all");
   //const [collection, setCollection] = useState('nbg4r-saaaa-aaaah-qap7a-cai');
   const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
-  const [buyFormData, setBuyFormData] = useState(emptyListing);
-  const [showBuyForm, setShowBuyForm] = useState(false);
   const [listingDialogOpen, setListingDialogOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -159,37 +151,13 @@ export default function Listings(props) {
     setPage(1);
     setPairingsFilter(event.target.value);
   };
-  useEffect(() => {
-    if (props.collection) _changeCollection(props.collection);
-  }, [props.collection]);
-  React.useEffect(() => {
-    _changeCollection(collections.find(e => e.route === params?.route));
-  }, [params.route]);
-
-  const changeCollection = async (event) => {
-    const _collection = props.collections.find(e => e.canister === event.target.value);
-    navigate(`/marketplace/${_collection.route}`);
-    event.preventDefault();
-    _changeCollection(_collection);
-  };
-
-  const _changeCollection = async c => {
-    setWearableFilter("all");
-    setSort("price_asc");
-    setCollection(c);
-    setListings(false);
-    setPage(1);
-    await refresh(c.canister);
-  };
   const changeSort = (event) => {
     setPage(1);
     setSort(event.target.value);
   };
-
   const changeListingDialogOpen = (dialogOpen) => {
     setListingDialogOpen(dialogOpen);
   };
-
   const handleHealthDominantValueChange = (event, newHealthDominantValue) => {
     setHealthDominantValue(newHealthDominantValue);
   };
@@ -334,79 +302,9 @@ export default function Listings(props) {
             )
   };
 
-  const buyForm = (price, img) => {
-    return new Promise(async (resolve, reject) => {
-      setBuyFormData({
-        price: price,
-        img: img,
-        handler: (v) => {
-          console.log(v);
-          setShowBuyForm(false);
-          resolve(v);
-          setTimeout(() => setBuyFormData(emptyListing), 100);
-        },
-      });
-      setShowBuyForm(true);
-    });
-  };
+  
 
-  const buy = async (canisterId, listing) => {
-    if (props.balance < listing[1].price + 10000n)
-      return props.alert(
-        "There was an error",
-        "Your balance is insufficient to complete this transaction"
-      );
-    var tokenid = extjs.encodeTokenId(canisterId, listing[0]);
-    try {
-      var img =
-        canisterId === "bxdf4-baaaa-aaaah-qaruq-cai"
-          ? "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" +
-            listing[0]
-          : "https://" + canisterId + ".raw.ic0.app/?type=thumbnail&tokenid=" + tokenid;
-      var answer = await buyForm(listing[1].price, img);
-      if (!answer) {
-        return props.loader(false);
-      }
-      props.loader(true, "Locking NFT...");
-      const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
-      var r = await _api
-        .canister(canisterId)
-        .lock(
-          tokenid,
-          listing[1].price,
-          props.account.address,
-          _getRandomBytes()
-        );
-      if (r.hasOwnProperty("err")) throw r.err;
-      var paytoaddress = r.ok;
-      props.loader(true, "Transferring ICP...");
-      await _api
-        .token()
-        .transfer(
-          props.identity.getPrincipal(),
-          props.currentAccount,
-          paytoaddress,
-          listing[1].price,
-          10000
-        );
-      var r3;
-      props.loader(true, "Settling purchase...");
-      await _api.canister(canisterId).settle(tokenid);
-      props.loader(false);
-      props.alert(
-        "Transaction complete",
-        "Your purchase was made successfully - your NFT will be sent to your address shortly"
-      );
-      refresh();
-    } catch (e) {
-      props.loader(false);
-      console.log(e);
-      props.alert(
-        "There was an error",
-        e.Other ?? "You may need to enable cookies or try a different browser"
-      );
-    }
-  };
+  
 
   const applyFilters = (a, s, c) => {
     if (
@@ -489,10 +387,6 @@ export default function Listings(props) {
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wearableFilter]);
-  
-  
-
-  
   
   
   return (//maxWidth:1200, margin:"0 auto",
@@ -1078,15 +972,17 @@ export default function Listings(props) {
                           .map((listing, i) => {
                             return (
                               <Listing
-                                loggedIn={props.loggedIn}
                                 gridSize={gridSize}
-                                gri={getNri(collection?.canister, listing[0])}
+                                nri={getNri(collection?.canister, listing[0])}
                                 loggedIn={props.loggedIn}
-                                collection={collection?.canister}
-                                buy={buy}
-                                key={listing[0] + "-" + i}
-                                listing={listing}
-                                onListingDialogChange={changeListingDialogOpen}
+                                tokenid={extjs.encodeTokenId(collection?.canister, listing[0])}
+                                key={extjs.encodeTokenId(collection?.canister, listing[0])}
+                                
+                                buy={props.buyNft}
+                                afterBuy={refresh}
+                                
+                                listing={listing[1]}
+                                metadata={listing[2]}
                               />
                             );
                           })}
@@ -1109,7 +1005,6 @@ export default function Listings(props) {
             />
           ) : ""}
         </div> : ""}
-        <BuyForm open={showBuyForm} {...buyFormData} />
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ import extjs from '../ic/extjs.js';
 import getNri from '../ic/nftv.js';
 import { useTheme } from '@material-ui/core/styles';
 import NFT from './NFT';
+import Listing from './Listing';
 import ListingForm from './ListingForm';
 import TransferForm from './TransferForm';
 import Opener from './Opener';
@@ -378,7 +379,21 @@ export default function NFTList(props) {
                           return 0;
                       };
                     }).filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage))).map((nft, i) => {
-                      return (<NFT gridSize={gridSize} gri={getNri(collection?.canister, nft.index)} loggedIn={props.loggedIn} unpackNft={unpackNft} listNft={listNft} cancelNft={cancelNft} wrapAndlistNft={wrapAndlistNft} unwrapNft={unwrapNft} transferNft={transferNft} collection={collection?.canister} key={nft.id+"-"+i} nft={nft} />)
+                      return (<Listing 
+                        gridSize={gridSize} 
+                        nri={getNri(collection?.canister, nft.index)} 
+                        loggedIn={props.loggedIn} 
+                        nft={nft} 
+                        tokenid={nft.id} 
+                        listing={nft.listing}
+                        key={nft.id} 
+                        unpackNft={unpackNft} 
+                        listNft={listNft} 
+                        cancelNft={cancelNft} 
+                        wrapAndlistNft={wrapAndlistNft} 
+                        unwrapNft={unwrapNft} 
+                        transferNft={transferNft} 
+                        />)
                     })}
                   </Grid>
                 </div>

@@ -13,6 +13,7 @@ import OpenLogin from "@toruslabs/openlogin";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Detail from "./components/Detail";
 import Listings from "./components/Listings";
+import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
 import NFTList from "./components/NFTList";
 import Marketplace from "./views/Marketplace";
@@ -113,17 +114,33 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+const _getRandomBytes = () => {
+  var bs = [];
+  for (var i = 0; i < 32; i++) {
+    bs.push(Math.floor(Math.random() * 256));
+  }
+  return bs;
+};
 var processingPayments = false;
 var collections = collections.filter(a => _isCanister(a.canister));
+const emptyListing = {
+  price: "",
+  tokenid: "",
+};
 export default function App() {
   const { pathname } = useLocation();
+  const classes = useStyles();
 
+  
   React.useEffect(() => {
     setRootPage(pathname.split("/")[1]);
     window.scrollTo(0, 0);
   }, [pathname]);
   
-  const classes = useStyles();
+  
+  const [buyFormData, setBuyFormData] = React.useState(emptyListing);
+  const [showBuyForm, setShowBuyForm] = React.useState(false);
+  
   const [rootPage, setRootPage] = React.useState("");
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [loaderText, setLoaderText] = React.useState("");
@@ -145,6 +162,80 @@ export default function App() {
     EntrepotUpdateStats();
     if (identity) EntrepotUpdateLiked(identity)
   };
+
+  const _buyForm = (tokenid, price) => {
+    return new Promise(async (resolve, reject) => {
+      let { index, canister} = extjs.decodeTokenId(tokenid);
+      setBuyFormData({
+        index: index,
+        canister: canister,
+        tokenid: tokenid,
+        price: price,
+        handler: (v) => {
+          setShowBuyForm(false);
+          resolve(v);
+          setTimeout(() => setBuyFormData(emptyListing), 100);
+        },
+      });
+      setShowBuyForm(true);
+    });
+  };
+  const buyNft = async (canisterId, index, listing, ah) => {
+    if (balance < listing.price + 10000n)
+      return alert(
+        "There was an error",
+        "Your balance is insufficient to complete this transaction"
+      );
+    var tokenid = extjs.encodeTokenId(canisterId, index);
+    try {
+      var answer = await _buyForm(tokenid, listing.price);
+      if (!answer) {
+        loader(false);
+        return false;
+      }
+      loader(true, "Locking NFT...");
+      const _api = extjs.connect("https://boundary.ic0.app/", identity);
+      var r = await _api
+        .canister(canisterId)
+        .lock(
+          tokenid,
+          listing.price,
+          accounts[currentAccount].address,
+          _getRandomBytes()
+        );
+      if (r.hasOwnProperty("err")) throw r.err;
+      var paytoaddress = r.ok;
+      loader(true, "Transferring ICP...");
+      await _api
+        .token()
+        .transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          paytoaddress,
+          listing.price,
+          10000
+        );
+      var r3;
+      loader(true, "Settling purchase...");
+      await _api.canister(canisterId).settle(tokenid);
+      loader(false);
+      alert(
+        "Transaction complete",
+        "Your purchase was made successfully - your NFT will be sent to your address shortly"
+      );
+      if (ah) await ah();
+      return true;
+    } catch (e) {
+      loader(false);
+      console.log(e);
+      alert(
+        "There was an error",
+        e.Other ?? "You may need to enable cookies or try a different browser"
+      );
+      return false;
+    }
+  };
+  
   const processPayments = async () => {
     loader(true, "Processing payments... (this can take a few minutes)");
     await _processPayments();
@@ -471,7 +562,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
               />} />
             <Route path="/marketplace/:route/activity" exact element={
               <Activity
@@ -489,7 +580,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
-                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
               />} />
             <Route path="/marketplace" exact element={
               <Marketplace
@@ -714,6 +805,7 @@ export default function App() {
             <Route path="/sale" exact element={
               <Sale error={error} alert={alert} confirm={confirm} loader={loader} />} />
           </Routes>
+          <BuyForm open={showBuyForm} {...buyFormData} />
         </div>
       </main>
       {footer}

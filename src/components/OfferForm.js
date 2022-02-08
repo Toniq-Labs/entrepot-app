@@ -39,7 +39,7 @@ export default function OfferForm(props) {
         <DialogTitle style={{textAlign:'center'}}>Submit Offer</DialogTitle>
         <DialogContent>
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter the amount in ICP that you would like to purchase this NFT for.</DialogContentText>
-        <Alert severity="info">Beware - offers are non-binding and indicative only. If the seller lists the NFT at or below the price of your offer, it will not automatically buy it for you. Limit 1 offer per NFT per principal.</Alert>
+        <Alert severity="info">Offers are non-binding and indicative only. If the seller lists the NFT at or below the price of your offer, it will not automatically buy it for you. Limit 1 offer per NFT per principal.</Alert>
           <TextField
             style={{width:'100%'}}
             margin="dense"

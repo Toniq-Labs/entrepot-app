@@ -206,6 +206,12 @@ class ExtConnection {
           }
         });
       },
+      size : async () => {
+        if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+          loadedTokens[tokenObj.canister] = await api.getTokens();
+        };
+        return loadedTokens[tokenObj.canister].length;
+      },
       listings : async () => {
         if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
           loadedTokens[tokenObj.canister] = await api.getTokens();

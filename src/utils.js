@@ -108,14 +108,24 @@ compressAddress = (a) => {
 displayDate = (d) => {
   return new Date(d).toString();
 },
-EntrepotNFTImage = (collection, index, id) => {
+EntrepotNFTImage = (collection, index, id, fullSize) => {
   if (collection === "jeghr-iaaaa-aaaah-qco7q-cai") return "https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/" + index;
   if (collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
   if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
-  if (collection === "pk6rk-6aaaa-aaaae-qaazq-cai") return "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + id;
-  return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+  if (collection === "pk6rk-6aaaa-aaaae-qaazq-cai") {
+    if (fullSize) {      
+      return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
+    } else {
+      return "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + id;
+    };
+  }
+  if (fullSize) {
+    return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
+  } else {
+    return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+  }
 },
 EntrepotNFTLink = (collection, index, id) => {
   if (collection === "jeghr-iaaaa-aaaah-qco7q-cai") return "https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/" + index;
@@ -195,7 +205,7 @@ EntrepotUpdateLiked = async identity => {
   if (_identity) {
     const _api = extjs.connect("https://boundary.ic0.app/", _identity);
     _liked = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-  }
+  } else _liked = [];
 },
 EntrepotIsLiked = tokenid => {
   return (_liked.indexOf(tokenid) >= 0);

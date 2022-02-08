@@ -42,7 +42,6 @@ import Timestamp from "react-timestamp";
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
-import BuyForm from "./BuyForm";
 import Alert from '@material-ui/lab/Alert';
 import OfferForm from './OfferForm';
 import { useNavigate } from "react-router-dom";
@@ -98,8 +97,6 @@ const Detail = (props) => {
   const [transactions, setTransactions] = React.useState(false);
   const [owner, setOwner] = React.useState(false);
   const [offers, setOffers] = React.useState(false);
-  const [buyFormData, setBuyFormData] = useState(emptyListing);
-  const [showBuyForm, setShowBuyForm] = useState(false);
   const [openOfferForm, setOpenOfferForm] = React.useState(false);
   const collection = collections.find(e => e.canister === canister)
   const classes = useStyles();
@@ -111,6 +108,21 @@ const Detail = (props) => {
   const _refresh = async () => {
     reloadOffers();
     api.canister(canister).bearer(tokenid).then(r => {
+      setOwner(r.ok);
+    });
+    await api.token(canister).listings().then(r => {
+      var f = r.find(a => a[0] == index);
+      if (f[1]) setListing(f[1]);
+      else setListing({});
+    });
+    await api.canister(canister).transactions().then(r => {
+      var txs = r.filter(a => extjs.decodeTokenId(a.token).index === index).sort((a,b) => Number(b.time) - Number(a.time));
+      setTransactions(txs);
+    });
+  }
+  const _afterBuy = async () => {
+    await reloadOffers();
+    await api.canister(canister).bearer(tokenid).then(r => {
       setOwner(r.ok);
     });
     await api.token(canister).listings().then(r => {
@@ -148,21 +160,7 @@ const Detail = (props) => {
     console.log(nf);
     setFloor(nf);
   }, 10 * 1000);
-  const buyForm = (price, img) => {
-    return new Promise(async (resolve, reject) => {
-      setBuyFormData({
-        price: price,
-        img: img,
-        handler: (v) => {
-          console.log(v);
-          setShowBuyForm(false);
-          resolve(v);
-          setTimeout(() => setBuyFormData(emptyListing), 100);
-        },
-      });
-      setShowBuyForm(true);
-    });
-  };
+  
   const cancelOffer = async () => {
     props.loader(true, "Cancelling offer...");
     const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
@@ -174,57 +172,7 @@ const Detail = (props) => {
       "Your offer was cancelled successfully!"
     );
   };
-  const buy = async () => {
-    if (props.balance < listing.price + 10000n)
-      return props.alert(
-        "There was an error",
-        "Your balance is insufficient to complete this transaction"
-      );
-    try {
-      var answer = await buyForm(listing.price, EntrepotNFTImage(collection.canister, index, tokenid));
-      if (!answer) {
-        return props.loader(false);
-      }
-      props.loader(true, "Locking NFT...");
-      const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
-      var r = await _api
-        .canister(collection.canister)
-        .lock(
-          tokenid,
-          listing.price,
-          props.account.address,
-          _getRandomBytes()
-        );
-      if (r.hasOwnProperty("err")) throw r.err;
-      var paytoaddress = r.ok;
-      props.loader(true, "Transferring ICP...");
-      await _api
-        .token()
-        .transfer(
-          props.identity.getPrincipal(),
-          props.currentAccount,
-          paytoaddress,
-          listing.price,
-          10000
-        );
-      var r3;
-      props.loader(true, "Settling purchase...");
-      await _api.canister(collection.canister).settle(tokenid);
-      await _refresh();
-      props.loader(false);
-      props.alert(
-        "Transaction complete",
-        "Your purchase was made successfully - your NFT will be sent to your address shortly"
-      );
-    } catch (e) {
-      props.loader(false);
-      console.log(e);
-      props.alert(
-        "There was an error",
-        e.Other ?? "You may need to enable cookies or try a different browser"
-      );
-    }
-  };
+  
   
   
   
@@ -244,12 +192,15 @@ const Detail = (props) => {
                 borderRadius: 4
               }}
             >
-              <img
-                src={EntrepotNFTImage(collection.canister, index, tokenid)}
+              <iframe
+                frameborder="0"
+                src={EntrepotNFTImage(collection.canister, index, tokenid, true)}
                 alt=""
                 style={{
+                  border:"none",
                   maxWidth:500,
-                  maxHeight:500,
+                  maxHeight:"100%",
+                  minHeight:"600px",
                   cursor: "pointer",
                   height: "100%",
                   width: "100%",
@@ -300,9 +251,15 @@ const Detail = (props) => {
           </Grid>
           <Grid item xs={12} sm={12} md={7}>
             <div className={classes.personal}>
-              <Typography variant="h6" style={{ color: "#648DE2" }}>
-                <a onClick={() => navigate(`/marketplace`)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>Marketplace</a> / <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a>
-              </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => navigate(-1)}
+                style={{fontWeight:"bold", color:"black", borderColor:"black"}}
+              >
+                Back to {collection.name}
+              </Button>
               <div style={{zIndex: 100}} className="sharethis-inline-share-buttons"></div>
               
             </div>
@@ -421,7 +378,7 @@ const Detail = (props) => {
                   {listing && listing.hasOwnProperty("locked") ?
                   <Button
                     onClick={ev => {
-                      buy();
+                      props.buyNft(collection.canister, index, listing, _afterBuy);
                     }}
                     variant="contained"
                     color="primary"
@@ -473,7 +430,7 @@ const Detail = (props) => {
                         </div>
                       </>:
                       <>
-                        <Alert severity="info">Beware - offers are non-binding and indicative only.</Alert>
+                        <Alert severity="info">Offers are non-binding and indicative only.</Alert>
                         <Table sx={{ minWidth: 1500, fontWeight: "bold" }} aria-label="a dense table">
                           <TableHead>
                             <TableRow>
@@ -587,7 +544,6 @@ const Detail = (props) => {
           </Grid>
         </Grid>
       </Container>
-      <BuyForm open={showBuyForm} {...buyFormData} />
       <OfferForm balance={props.balance} complete={reloadOffers} floor={floor} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
     </>
   );
