@@ -187,8 +187,8 @@ export default function Activity(props) {
                 if (nv === "all") navigate(`/marketplace/${collection?.route}`)
               }}
             >
-              <Tab style={{fontWeight:"bold"}} value="all" label={(<span style={{marginLeft:-44}}><ArtTrackIcon /><span style={{position:"absolute", marginLeft:10}}>Items</span></span>)} />
-              <Tab style={{fontWeight:"bold"}} value="sold" label={(<span style={{marginLeft:-44}}><ShowChartIcon /><span style={{position:"absolute", marginLeft:10}}>Activity</span></span>)} />
+              <Tab style={{fontWeight:"bold"}} value="all" label={(<span style={{padding:"0 50px"}}><ArtTrackIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Items</span></span>)} />
+              <Tab style={{fontWeight:"bold"}} value="sold" label={(<span style={{padding:"0 50px"}}><ShowChartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
             </Tabs>
           </div>
         </div>

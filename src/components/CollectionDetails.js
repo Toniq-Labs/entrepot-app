@@ -64,7 +64,7 @@ export default function CollectionDetails(props) {
         </ul>
       </Grid>
     </Grid>
-    <div style={{width:760, margin:"0 auto"}}>
+    <div style={{width:"100%", maxWidth:"760px", margin:"0 auto"}}>
       <h1>{collection.name}</h1>
         {size ? <h4 style={{marginTop:-20}}>Collection of {size.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</h4> : ""}
       {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}

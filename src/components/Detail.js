@@ -183,6 +183,7 @@ const Detail = (props) => {
           <img
             src={EntrepotNFTImage(canister, index, tokenid, false)}
             alt=""
+            className={classes.nftImage}
             style={{
               border:"none",
               maxWidth:500,
@@ -202,6 +203,7 @@ const Detail = (props) => {
           <img
             src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
+            className={classes.nftImage}
             style={{
               border:"none",
               maxWidth:500,
@@ -222,11 +224,11 @@ const Detail = (props) => {
             frameborder="0"
             src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
+            className={classes.nftImage}
             style={{
               border:"none",
               maxWidth:500,
               maxHeight:"100%",
-              minHeight:"600px",
               cursor: "pointer",
               height: "100%",
               width: "100%",
@@ -438,15 +440,16 @@ const Detail = (props) => {
                     }}
                     variant="contained"
                     color="primary"
-                    style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white" }}
+                    style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
                   >Buy Now</Button> : "" }
+                  
                   <Button
                     onClick={ev => {
                       makeOffer();
                     }}
                     variant="outlined"
                     color="primary"
-                    style={{ fontWeight: "bold", marginRight: "auto" }}
+                    style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
                   >Submit Offer</Button>
                 </div> : "" }
               {owner?
@@ -655,10 +658,19 @@ const useStyles = makeStyles((theme) => ({
       padding: "110px 66px",
     },
     [theme.breakpoints.down("sm")]: {
-      padding: "90px 45px",
+      padding: "5px 5px",
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "75px 45px",
+      padding: "5px 5px",
+    },
+  },
+  nftImage: {
+    [theme.breakpoints.up("md")]: {
+      minHeight:600,
+    },
+    [theme.breakpoints.down("sm")]: {
+    },
+    [theme.breakpoints.down("xs")]: {
     },
   },
   iconsBorder: {

@@ -306,7 +306,7 @@ export default function Listings(props) {
 
   
 
-  const applyFilters = (a, s, c) => {
+  const applyFilters = (a, c) => {
     if (
       c === "tde7l-3qaaa-aaaah-qansa-cai" &&
       wearableFilter !== "all"
@@ -316,13 +316,11 @@ export default function Listings(props) {
         (_a) => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter
       );
     } else if (
-      c === "e3izy-jiaaa-aaaah-qacbq-cai" &&
-      s === "all"
+      c === "e3izy-jiaaa-aaaah-qacbq-cai"
     ) {
       a = applyAdvancedFilters(a);
     } else if (
-      c === "pk6rk-6aaaa-aaaae-qaazq-cai" &&
-      s === "all"
+      c === "pk6rk-6aaaa-aaaae-qaazq-cai" 
     ) {
       a = applyBtcFlowerFilters(a);
     }
@@ -346,7 +344,7 @@ export default function Listings(props) {
       try{
         var listings = await api.token(c).listings();
         setAllListings(listings);
-        setListings(applyFilters(listings, s, c));
+        setListings(applyFilters(listings, c));
         
         
       } catch(e) {};
@@ -406,8 +404,8 @@ export default function Listings(props) {
                 if (nv === "sold") navigate(`/marketplace/${collection?.route}/activity`)
               }}
             >
-              <Tab style={{fontWeight:"bold"}} value="all" label={(<span style={{marginLeft:-44}}><ArtTrackIcon /><span style={{position:"absolute", marginLeft:10}}>Items</span></span>)} />
-              <Tab style={{fontWeight:"bold"}} value="sold" label={(<span style={{marginLeft:-44}}><ShowChartIcon /><span style={{position:"absolute", marginLeft:10}}>Activity</span></span>)} />
+              <Tab style={{fontWeight:"bold"}} value="all" label={(<span style={{padding:"0 50px"}}><ArtTrackIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Items</span></span>)} />
+              <Tab style={{fontWeight:"bold"}} value="sold" label={(<span style={{padding:"0 50px"}}><ShowChartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
             </Tabs>
           </div>
         </div>
