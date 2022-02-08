@@ -3,7 +3,9 @@ const _showListingPrice = (n) => {
   return n.toFixed(8).replace(/0{1,6}$/, "");
 };
 const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
 }
 export default function PriceICP(props) {
   var p = (props.clean ? numberWithCommas(props.price) : numberWithCommas(_showListingPrice(props.price)));

@@ -7,7 +7,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import extjs from "../ic/extjs.js";
 const api = extjs.connect("https://boundary.ic0.app/");
-
+const numberWithCommas = (x) => {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
 export default function CollectionDetails(props) {
   const [blurbElement, setBlurbElement] = useState(false);
   const [collapseBlurb, setCollapseBlurb] = useState(false);
@@ -66,7 +70,7 @@ export default function CollectionDetails(props) {
     </Grid>
     <div style={{width:"100%", maxWidth:"760px", margin:"0 auto"}}>
       <h1>{collection.name}</h1>
-        {size ? <h4 style={{marginTop:-20}}>Collection of {size.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</h4> : ""}
+        {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
       {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
       <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden", marginTop:50,fontSize: "1.2em" }}>
         {collection?.blurb}
