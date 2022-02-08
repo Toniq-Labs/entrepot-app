@@ -81,13 +81,17 @@ export default function Watchlist(props) {
   };
   useInterval(_updates, 10 *1000);
   React.useEffect(() => {
-    props.loader(true);
-    refresh().then(() => props.loader(false));
+    if (props.loggedIn){
+      props.loader(true);
+      refresh().then(() => props.loader(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account.address, props.identity]);
   React.useEffect(() => {
-    props.loader(true);
-    refresh().then(() => props.loader(false));
+    if (props.loggedIn){
+      props.loader(true);
+      refresh().then(() => props.loader(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
