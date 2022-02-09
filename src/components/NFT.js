@@ -2,6 +2,7 @@ import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import PropTypes from 'prop-types';
 import { styled, withStyles } from '@material-ui/styles';
+import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -77,6 +78,7 @@ export default function NFT(props) {
   const { index, canister} = extjs.decodeTokenId(tokenid);
   const [metadata, setMetadata] = React.useState(props.metadata);
   const [listing, setListing] = React.useState(props.listing);
+  const [offerCount, setOfferCount] = React.useState(0);
   const [offer, setOffer] = React.useState(false);
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -94,6 +96,7 @@ export default function NFT(props) {
   };
   const getOffer = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {
+      setOfferCount(r.length);
       setOffer(r.map(a => {return {buyer : a[0], amount : a[1], time : a[2]}}).sort((a,b) => Number(b.amount)-Number(a.amount))[0]);
     });
   }
@@ -242,7 +245,6 @@ export default function NFT(props) {
     const id = index;
     navigate(`/marketplace/asset/${tokenid}`);
   };
-
   return (
     <Grid style={{ display:"flex", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
       <Card style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
@@ -250,6 +252,8 @@ export default function NFT(props) {
         <div style={{ ...styles.avatarSkeletonContainer }}>
           {EntrepotDisplayNFT(canister, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
         </div>
+        {offerCount > 0 ?
+        <Chip style={{marginTop:"-30px", position:"absolute", left:"5px", color:"white"}} size="small" color="primary" label={offerCount + " Offer" + (offerCount > 1 ? "s" : "")} /> : "" }
         <CardContent style={{padding:"10px 16px"}}>
           <Grid container>
             <Grid item xs={12}>
@@ -277,7 +281,7 @@ export default function NFT(props) {
               <Grid item md={6} sm={6} xs={6}>
                 <Typography
                   style={{
-                  fontSize: 11,
+                  fontSize: 13,
                   textAlign: "right",
                   fontWeight: "bold",
                   }}
@@ -290,7 +294,7 @@ export default function NFT(props) {
               <Grid item xs={12}>
                 <Typography
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     textAlign: "right",
                     fontWeight: "bold",
                   }}
@@ -300,6 +304,7 @@ export default function NFT(props) {
                   <PriceICP price={listing.price} />
                 </Typography>
               </Grid>
+              {offer ? <div style={{width:"100%",fontSize:".8em", textAlign:"right", color:"#"}}>Best <PriceICP size={13} price={offer.amount} /></div> : "" }
             </>:
               <>
                 {offer?
@@ -307,20 +312,20 @@ export default function NFT(props) {
                     <Grid item md={6} sm={6} xs={6}>
                       <Typography
                         style={{
-                        fontSize: 11,
+                        fontSize: 13,
                         textAlign: "right",
                         fontWeight: "bold",
                         }}
                         color={"inherit"}
                         gutterBottom
                       >
-                        Highest Offer
+                        Best Offer
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
                       <Typography
                         style={{
-                          fontSize: 12,
+                          fontSize: 13,
                           textAlign: "right",
                           fontWeight: "bold",
                         }}
@@ -333,7 +338,7 @@ export default function NFT(props) {
                     <Grid item md={6} sm={6} xs={6}>
                       <Typography
                         style={{
-                        fontSize: 11,
+                        fontSize: 13,
                         textAlign: "right",
                         fontWeight: "bold",
                         }}
@@ -346,7 +351,7 @@ export default function NFT(props) {
                     <Grid item xs={12}>
                       <Typography
                         style={{
-                          fontSize: 12,
+                          fontSize: 13,
                           textAlign: "right",
                           fontWeight: "bold",
                         }}
@@ -358,6 +363,7 @@ export default function NFT(props) {
                 }
               </>
             }
+            
           </Grid>
         </CardContent>
         {typeof props.nft !== 'undefined' ?
