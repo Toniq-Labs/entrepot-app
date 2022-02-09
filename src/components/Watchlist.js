@@ -136,7 +136,7 @@ export default function Watchlist(props) {
             </div> :
             <>{nfts.length === 0 ?
               <div style={styles.empty}>
-                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">You are now following any NFTs right now.</Typography>
+                <Typography paragraph style={{paddingTop:20,fontWeight:"bold"}} align="center">You are not following any NFTs right now.</Typography>
               </div> :
               <>
                 <div style={styles.grid}>

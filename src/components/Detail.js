@@ -382,7 +382,7 @@ const Detail = (props) => {
                 </> : 
                   <>{offers && offers.length > 0 ?
                       <>
-                        <Typography variant="h6"><strong>Highest Offer Price</strong></Typography>
+                        <Typography variant="h6"><strong>Best Offer Price</strong></Typography>
                         <div
                           style={{
                             display: "flex",
