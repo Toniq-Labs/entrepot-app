@@ -80,6 +80,7 @@ export default function NFT(props) {
   const [listing, setListing] = React.useState(props.listing);
   const [offerCount, setOfferCount] = React.useState(0);
   const [offer, setOffer] = React.useState(false);
+  const [showOfferCount, setShowOfferCount] = React.useState(false);
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
@@ -247,13 +248,13 @@ export default function NFT(props) {
   };
   return (
     <Grid style={{ display:"flex", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
-      <Card style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
+      <Card onMouseOver={() => setShowOfferCount(true)} onMouseOut={() => setShowOfferCount(false)} style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
       <CardActionArea onClick={handleClick}>
         <div style={{ ...styles.avatarSkeletonContainer }}>
           {EntrepotDisplayNFT(canister, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
         </div>
-        {offerCount > 0 ?
-        <Chip style={{marginTop:"-30px", position:"absolute", left:"5px", color:"white"}} size="small" color="primary" label={offerCount + " Offer" + (offerCount > 1 ? "s" : "")} /> : "" }
+        { offerCount > 0 ?
+        <Chip style={{cursor:"pointer",display:(showOfferCount?"block":"none"), fontSize:"13px", paddingTop:2,marginTop:"-30px", position:"absolute", left:"5px", color:"white"}} size="small" color="primary" label={offerCount + " Offer" + (offerCount > 1 ? "s" : "")} /> : "" }
         <CardContent style={{padding:"10px 16px"}}>
           <Grid container>
             <Grid item xs={12}>
