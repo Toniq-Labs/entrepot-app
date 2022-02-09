@@ -99,7 +99,7 @@ var collections = [
   {
     canister: "jmuqr-yqaaa-aaaaj-qaicq-cai",
     priority : 10,
-    name: "ICP Squad",
+    name: "ICP Squad Characters",
     brief : "The famous & enthusiat squad.",
     description : "Mint your avatar, join the squad, engage with applications, create and wear accessories to earn rewards!",
     blurb: (<><p>ICP Squad : season 0. The first engage-to-earn NFT game, exclusively possible on the Internet Computer. Create your avatar by choosing among the multiple customizations options, collect materials by engaging with other applications and engagin with different missions, create accessories from materials to improve the style of your avatar and improve your rewards!</p></>),
@@ -819,7 +819,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     canister: "oeee4-qaaaa-aaaak-qaaeq-cai",
     priority : 10000,
     brief : "10,000 Motokos dropped by DFINITY",
-    name: "Motoko Day Drop",
+    name: "Motoko Ghosts",
     unit : "Motoko",
     keywords : "",
     banner : "/banner/motoko2.jpg",
