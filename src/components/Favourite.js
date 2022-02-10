@@ -72,7 +72,7 @@ export default function Favourite(props) {
         ev.stopPropagation();
         like();
       }} checked={liked} icon={<FavoriteBorderIcon style={iconSize} />} checkedIcon={<FavoriteIcon style={iconSize}/>} />}
-      label={props.showcount ? (count ? <span style={{fontSize:fontSize, color:"#00d092 "}}>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span> : "as") : ""}
+      label={props.showcount ? (count ? <span style={{fontSize:fontSize, color:"#00d092 "}}>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span> : "") : ""}
     />
   </>);
 };

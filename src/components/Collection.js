@@ -27,6 +27,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import getNri from "../ic/nftv.js";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -111,27 +112,26 @@ export default function Collection(props) {
       await refresh();
     }
   };
-  const refresh = async (c) => {
+  const refresh = async (_sort, _collectionFilter) => {
     const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
     switch(props.view){
       case "collected":
         var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
         break;
       case "favorites":
         var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
         break;
       case "offers-made":
         var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
         break;
       case "offers-received":
         var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
-        console.log(r);
         var r2 = r.filter(result => !(result instanceof Error));
         var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
-        updateNfts(r3.filter((a,i) => r3.indexOf(a) == i)); 
+        updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
         break;
     }
   }
@@ -151,20 +151,30 @@ export default function Collection(props) {
   useInterval(_updates, 10 * 60 *1000);
   
   
-  const updateNfts = (l,s) => {
+  const updateNfts = (l,s,cf) => {
    
     if (canUpdateNfts){
       canUpdateNfts = false;
       var _nfts = l ?? nfts;
       var _sort = s ?? sort;
+      var _collectionFilter = cf ?? collectionFilter;
       if (!_nfts) return;
       if (l) setNfts(l);
       var _displayNfts = _nfts;
-      _displayNfts = _displayNfts.filter((token,i) => (collectionFilter == 'all' || extjs.decodeTokenId(token).canister == collectionFilter));
+      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || extjs.decodeTokenId(token).canister == _collectionFilter));
       _displayNfts = _displayNfts.sort((a,b) => {
         switch(sort) {
           case "mint_number":
             return extjs.decodeTokenId(a).index-extjs.decodeTokenId(b).index;
+          case "nri":
+            var aa = extjs.decodeTokenId(a);
+            var bb = extjs.decodeTokenId(b);
+            var nria = getNri(aa.canister,aa.index);
+            var nrib = getNri(bb.canister,bb.index);
+            if (nria === false && nrib === false) return 0; 
+            if (nria === false) return 1;
+            if (nrib === false) return -1;
+            return Number(nrib)-Number(nria);
           default:
             return 0;
         };
@@ -186,7 +196,7 @@ export default function Collection(props) {
     setDisplayNfts(false);
     setPage(1);
     if (props.loggedIn){
-      refresh()
+      refresh(sort, 'all')
     }
   }, [props.view, props.account.address, props.identity]);
 
@@ -285,6 +295,7 @@ export default function Collection(props) {
                     onChange={changeSort}
                   >
                     <MenuItem value={"mint_number"}>Minting #</MenuItem>
+                    <MenuItem value={"nri"}>NFT Rarity Index</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
