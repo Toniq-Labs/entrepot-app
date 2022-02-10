@@ -25,7 +25,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ListIcon from '@material-ui/icons/List';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
@@ -645,7 +645,7 @@ export default function Listings(props) {
               {toggleFilter ? <>
                 <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter("_price")}>
                   <ListItemIcon style={{minWidth:40}}>
-                    <LocalAtmIcon />
+                    <AllInclusiveIcon />
                   </ListItemIcon>
                   <ListItemText
                     primaryTypographyProps={{noWrap:true}} 
