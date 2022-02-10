@@ -13,6 +13,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
@@ -270,6 +271,12 @@ export default function Wallet(props) {
             <CollectionsIcon />
           </ListItemIcon>
           <ListItemText primary="Collected" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/offers-received");}}>
+          <ListItemIcon>
+            <CallReceivedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Offers Received" />
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/offers-made");}}>
           <ListItemIcon>

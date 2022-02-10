@@ -372,7 +372,7 @@ export default function NFT(props) {
             
           </Grid>
         </CardContent>
-        {typeof props.ownerView !== 'undefined' ?
+        {typeof props.ownerView !== 'undefined' && props.ownerView ?
         <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
           {props.loggedIn ? 
             <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 

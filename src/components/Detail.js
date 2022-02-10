@@ -105,6 +105,9 @@ const Detail = (props) => {
       setOffers(r.map(a => {return {buyer : a[0], amount : a[1], time : a[2]}}).sort((a,b) => Number(b.amount)-Number(a.amount)));
     });
   }
+  const cancelListing = () => {
+    props.list(tokenid, 0, props.loader, _afterList);
+  };
   const _refresh = async () => {
     reloadOffers();
     api.canister(canister).bearer(tokenid).then(r => {
@@ -128,6 +131,13 @@ const Detail = (props) => {
       });
     }
   }
+  const _afterList = async () => {
+    await api.token(canister).listings().then(r => {
+      var f = r.find(a => a[0] == index);
+      if (f[1]) setListing(f[1]);
+      else setListing({});
+    });
+  };
   const _afterBuy = async () => {
     await reloadOffers();
     await api.canister(canister).bearer(tokenid).then(r => {
@@ -467,11 +477,11 @@ const Detail = (props) => {
               { owner && props.account && props.account.address == owner ?
                 <>
                   <div className={classes.button}>
-                    {listing ?
+                    {listing !== false && listing && listing.hasOwnProperty("locked") ?
                     <>
                       <Button
                         onClick={ev => {
-                          props.buyNft(collection.canister, index, listing, _afterBuy);
+                          props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
                         }}
                         variant="contained"
                         color="primary"
@@ -479,7 +489,7 @@ const Detail = (props) => {
                       >Update Listing</Button> 
                       <Button
                         onClick={ev => {
-                          makeOffer();
+                          cancelListing();
                         }}
                         variant="outlined"
                         color="primary"
@@ -489,7 +499,7 @@ const Detail = (props) => {
                     : 
                     <Button
                       onClick={ev => {
-                        props.buyNft(collection.canister, index, listing, _afterBuy);
+                        props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
                       }}
                       variant="contained"
                       color="primary"

@@ -11,6 +11,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ListIcon from '@material-ui/icons/List';
@@ -27,6 +28,7 @@ import CollectionsIcon from '@material-ui/icons/Collections';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import CachedIcon from '@material-ui/icons/Cached';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -124,6 +126,13 @@ export default function Collection(props) {
         var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
         updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
         break;
+      case "offers-received":
+        var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
+        console.log(r);
+        var r2 = r.filter(result => !(result instanceof Error));
+        var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
+        updateNfts(r3.filter((a,i) => r3.indexOf(a) == i)); 
+        break;
     }
   }
   
@@ -143,6 +152,7 @@ export default function Collection(props) {
   
   
   const updateNfts = (l,s) => {
+   
     if (canUpdateNfts){
       canUpdateNfts = false;
       var _nfts = l ?? nfts;
@@ -164,13 +174,21 @@ export default function Collection(props) {
       canUpdateNfts = true;
     }
   };
-
   React.useEffect(() => {
     setDisplayNfts(false);
+    setPage(1);
     if (props.loggedIn){
       refresh()
     }
-  }, [props.view, props.account.address, props.identity, collectionFilter]);
+  }, [collectionFilter]);
+  React.useEffect(() => {
+    setCollectionFilter('all');
+    setDisplayNfts(false);
+    setPage(1);
+    if (props.loggedIn){
+      refresh()
+    }
+  }, [props.view, props.account.address, props.identity]);
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
@@ -189,6 +207,7 @@ export default function Collection(props) {
             }}
           >
             <Tab style={{fontWeight:"bold"}} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
+            <Tab style={{fontWeight:"bold"}} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
           </Tabs>
@@ -211,6 +230,10 @@ export default function Collection(props) {
                 </ListItemIcon>
             </ListItem>
             {toggleFilter && tokenCanisters.length ? <>
+              {displayNfts == false ?
+              <ListItem><ListItemText><strong>Loading...</strong></ListItemText></ListItem>
+              :
+              <>
               <ListItem selected={collectionFilter === "all"} button onClick={() => {setCollectionFilter("all")}}>
                 <ListItemText><strong>View All Collections</strong></ListItemText>
                 <ListItemSecondaryAction><Chip label={tokenCanisters.length} variant="outlined" /></ListItemSecondaryAction>
@@ -221,20 +244,29 @@ export default function Collection(props) {
                   return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
                     <ListItemAvatar>
                       <Avatar>
-                        <img alt={_collection.name} src={_collection.avatar} style={{height:64}} />
+                        <img alt={_collection.name} src={_collection.avatar ?? "/collections/"+canister+".jpg"} style={{height:64}} />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText>{_collection.name}</ListItemText>
                     <ListItemSecondaryAction><Chip label={tokenCanisters.filter(a => a === canister).length} variant="outlined" /></ListItemSecondaryAction>
                   </ListItem>)
                 })
-              }
+              }</>}
             </> : ""}
           </List>
         </div>
         <div style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
             <Grid container style={{height:66}}>
+              <Grid item>
+                <ToggleButton onChange={async () => {
+                  setDisplayNfts(false);
+                  await refresh();
+                  setTimeout(updateNfts, 300);
+                }} size="small" style={{marginTop:5, marginRight:10}}>
+                  <CachedIcon />
+                </ToggleButton>
+              </Grid>
               <Grid item>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
                   <ToggleButton value={"small"}>
@@ -297,7 +329,7 @@ export default function Collection(props) {
                     loggedIn={props.loggedIn} 
                     tokenid={tokenid} 
                     key={tokenid} 
-                    ownerView={props.view == 'collected'}
+                    ownerView={['collected','offers-received'].indexOf(props.view) >= 0}
                     unpackNft={props.unpackNft} 
                     listNft={props.listNft} 
                     cancelNft={props.cancelNft} 

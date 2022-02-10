@@ -686,6 +686,7 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
+                list={list}
                 unpackNft={unpackNft} 
                 listNft={listNft} 
                 wrapAndlistNft={wrapAndlistNft} 
@@ -732,6 +733,15 @@ export default function App() {
               <Collection
                 error={error}
                 view={"offers-made"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/offers-received" exact element={
+              <Collection
+                error={error}
+                view={"offers-received"}
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
