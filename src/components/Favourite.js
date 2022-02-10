@@ -3,6 +3,8 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotUpdateLiked } from '../utils';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -27,8 +29,8 @@ var skipRefresh = false;
 export default function Favourite(props) {
   const [liked, setLiked] = React.useState(EntrepotIsLiked(props.tokenid));
   const [count, setCount] = React.useState(false);
-  const fontSize = (props?.size == "large" ? 24 : 12);
-  const iconSize = (props?.size == "large" ? { width:30,height:30 } : { width:22,height:22});
+  const fontSize = (props?.size == "large" ? 20 : 12);
+  const iconSize = (props?.size == "large" ? { width:24,height:24 } : { width:22,height:22});
   const _refresh = async () => {
     if (skipRefresh) return;
     if (props.showcount){
@@ -36,7 +38,7 @@ export default function Favourite(props) {
     }
     setLiked(EntrepotIsLiked(props.tokenid));
   };
-  useInterval(_refresh, 10 * 1000);
+  useInterval(_refresh, 2 * 60 * 1000);
   const like = async () => {
     if (!props.loggedIn) return;
     skipRefresh = true;
@@ -49,8 +51,8 @@ export default function Favourite(props) {
       setLiked(true);
       await EntrepotLike(props.tokenid);
     };
-    await EntrepotGetLikes(props.tokenid, true).then(r => setCount(r));
-    setLiked(EntrepotIsLiked(props.tokenid));
+    var c = await EntrepotGetLikes(props.tokenid, true);
+    setCount(c);
     skipRefresh = false;
   };
   React.useEffect(() => {
@@ -58,20 +60,19 @@ export default function Favourite(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (<>
-    {props.showcount ?<Typography variant="h6" style={{ marginRight:10, fontSize:fontSize,color: (liked ? "#00d092" : "#8B9AAA") }}>
-      {count ? <>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</> : ""}
-    </Typography> : "" }
-    <IconButton 
+    <FormControlLabel
+      labelPlacement={"start"}
       onMouseDown={ev => {
         ev.stopPropagation();
       }}
       onClick={ev => {
         ev.stopPropagation();
-        like();
       }}
-      style={{padding:0}}
-      size={(props?.size == "large" ? "large" : "small")}>
-      { liked ? <FavoriteIcon style={iconSize} /> : <FavoriteBorderIcon style={{ ...iconSize, color: "#8B9AAA" }} /> }
-    </IconButton>
+      control={<Checkbox onChange={ev => {
+        ev.stopPropagation();
+        like();
+      }} checked={liked} icon={<FavoriteBorderIcon style={iconSize} />} checkedIcon={<FavoriteIcon style={iconSize}/>} />}
+      label={props.showcount ? (count ? <span style={{fontSize:fontSize, color:"#00d092 "}}>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span> : "as") : ""}
+    />
   </>);
 };

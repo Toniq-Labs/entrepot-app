@@ -72,7 +72,7 @@ export default function CollectionDetails(props) {
       <h1>{collection.name}</h1>
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
       {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
-      <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden", marginTop:50,fontSize: "1.2em" }}>
+      <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden",fontSize: "1.2em" }}>
         {collection?.blurb}
       </div>
       {collapseBlurb ? (

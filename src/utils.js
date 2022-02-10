@@ -143,7 +143,7 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     width: "100%",
     height: "100%",
     margin: "0 auto",
-    objectFit: "contain",
+    objectFit: "cover",
     borderRadius:"4px",
   }
   var avatarLoaded = {

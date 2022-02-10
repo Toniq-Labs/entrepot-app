@@ -2,6 +2,7 @@ export default ({ IDL }) => {
   const TokenIdentifier = IDL.Text;
   const Time = IDL.Int;
   const entrepot = IDL.Service({
+    'allOffers' : IDL.Func([], [IDL.Vec(TokenIdentifier)], ['query']),
     'cancelOffer' : IDL.Func([TokenIdentifier], [], []),
     'like' : IDL.Func([TokenIdentifier], [IDL.Nat], []),
     'liked' : IDL.Func([], [IDL.Vec(TokenIdentifier)], ['query']),

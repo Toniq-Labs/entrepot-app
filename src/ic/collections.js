@@ -25,6 +25,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "jntyp-yiaaa-aaaah-qcr3q-cai",
@@ -49,6 +50,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "erpx2-pyaaa-aaaah-qcqsq-cai",
@@ -72,6 +74,7 @@ var collections = [
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "bkvll-jiaaa-aaaah-qcqnq-cai",
@@ -95,6 +98,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "jmuqr-yqaaa-aaaaj-qaicq-cai",
@@ -118,6 +122,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "nges7-giaaa-aaaaj-qaiya-cai",
@@ -141,6 +146,7 @@ var collections = [
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "pk6rk-6aaaa-aaaae-qaazq-cai",
@@ -166,6 +172,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
   },
   {
     canister: "ctt6t-faaaa-aaaah-qcpbq-cai",
@@ -190,6 +197,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "jeghr-iaaaa-aaaah-qco7q-cai",
@@ -224,6 +232,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "p5jg7-6aaaa-aaaah-qcolq-cai",
@@ -248,6 +257,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "mk3kn-pyaaa-aaaah-qcoda-cai",
@@ -272,6 +282,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "3mttv-dqaaa-aaaah-qcn6q-cai",
@@ -296,6 +307,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "y3b7h-siaaa-aaaah-qcnwa-cai",
@@ -320,6 +332,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
   },
   {
     canister: "vj752-6iaaa-aaaah-qcm6a-cai",
@@ -344,6 +357,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
   },
   {
     canister: "zejmq-rqaaa-aaaah-qcnsq-cai",
@@ -365,6 +379,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "822d0a778eb558db58f12adc0be99c6352bad19dbc7c3b31919c3ac3adad8c82",
     blurb: (<><p>Elementum proudly releases its second collection: Interitus. These new pieces will definitely give you an edge in our upcoming first risky game and in 2022 they'll function as our instant cards for our Trading Card Game, spells that can change the conditions of match and let you walk away victorious. For more information, join The Agora on Discord. We can't thank you enough for all your support. Welcome aboard!</p></>),
@@ -389,6 +404,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "332b97f5d5425b72d6058b17df99714f338055299dbb7a855a7432a785f178cf",
     blurb: (<><p>ICircle NFT is a generative art created by combining mathematics, creative coding, and aesthetic soul, which results in beautiful art. ICircle is formed by mathematical functions and applied geometry.</p><p>"Circle" (as part of the name) is used not only because it is related to mathematics and geometry, but also because circle plays an important role in this artwork. It's DNA because If you zoom in very closely into our art, you'll see that millions of circles build up into a masterpiece.</p><p>The best part about ICircles Artwork is that it instills a fresh vibe into its aesthetic. ICircle has the power to uplift the vibe of a place and make it look simply beautiful. ICircle Art can also encourage us to be more creative, sparking new ideas and helping us process both real and metaverse parts of our lives by only looking, holding, and interpreting them.</p></>),
@@ -445,6 +461,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "0389f1b21ce2f0aa73502b2be4625969b928eff002e2ff39161b50a98c18fbcd",
     blurb: (<><p>TheSwordNFT is a collection of Warriors and Guardians. The first series from the Warriors collection is Ninjas. These characters are designed to be a part of balanced game in which the NFT attributes play a role in game mechanics. There are 14 weapons, 3 skins, and 4 environments to choose from. If you are able to collect all 4 environments(backgrounds), there will be benefits inside the game and outside of the game.</p><p>Guardians, which will be introduced later, serve the purpose of protecting the warriors in battle. They will also have fun perks in the metaverse. Holders of the Ninja collection will be eligible for presale & drops of future collections.</p></>),
@@ -469,6 +486,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "a4593dfd6aa5c44c0af59e26935d607dea1f9007ddb83a56180df7e499adf13a",
     blurb: (<><p>For nearly 60 million years Prime8s have roamed the earth and now they're coming to the Internet Computer! ICPrime8s is a collection of 10,500 (total) NFTs and will be released as 5 seperate releases. Following the evolutionary timeline of Prime8s, each release will depict a different Prime8 unique with its own traits and characteristics.</p></>),
@@ -493,6 +511,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "cb69faae15474a224a9d600d2b92128f2190dc62aad0059f20886727bacd4913",
     blurb: (<><p>The story of ICKitties happens nowadays, in a busy city street, where kitties live peacefully. One of the kitties - Zack - walks on the sidewalk minding his own business, when all of a sudden a book drops from a window and opens in front of him.</p><p>Zack goes through the book and he finds the answer to a question that he always had - "Why are there different colored kitties? Why aren’t we all the same?"</p><p>As soon as he finds the answer, he runs to a dark alley and gathers all his friends to tell them about the long forgotten 7 kitty Kingdoms and how each kitty comes from one of the Kingdoms, ruled by 7 kings and 7 queens, and overseen by 7 gods. What Kingdom will you choose?</p></>),
@@ -517,6 +536,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "222f75cac912282d33a8ef2a396e409464b4a57ec9e347264f4952473fa3d983",
     blurb: (<><p>ICPets are 11,111 unique beautifully designed and well-crafted pets each having its unique abilities and superpowers. They don't want to be ordinary animals anymore; they are looking forward to entering the metaverse and bringing their owners more profit! Join the Pets Gang today and get a chance to adopt your pet today (little friend!) They are waiting for you!.</p><p>ICpets NFTs is your access to Holders Rewards ?lub. NFT is not just a cute picture, our main goal is to bring value to each of ICPets Holders and to the Ecosystem itself. We are convinced that NFT collection success depends on its community strength. Mutual development and growth are possible when art collection is backed up by strong financial incentives. Therefore, we spent lots of time developing the economic aspects of the project – the unique motivation and rewards system.</p></>),
@@ -539,6 +559,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "e4d20c3d0cfb3c62be55414af7314ab9535348ea45118471e965e39d81ee6330",
     blurb: (<><p>Welcome to CYMAN. Lead artist Brad Donovan has teamed up with Dfinity's own Arthur Falls, Toniq Labs, and creative studio Vesica Aotearoa to create a universe of cybernetic humanoids called CYMAN from 550BC. This project is composed of 7,777 CYMEN that will be deconstructable and eventually fully customisable. The core utility of the NFT will be as an access token for CYMAN-exclusive online media, real-world events, and gaming collaborations.</p><p>Gen0 CYMEN will be breedable as the project grows we will introduce more characters and developments into the CYMAN story that will add value to the original CYMEN.</p></>),
@@ -562,6 +583,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress: "2b07d34e254e077e0ef01b1784fcd790016057781e67dbdccc59217ccad725fb",
     blurb: (<><p>Meme Cake is a Social NFT marketplace. This is a marketplace where you can SHILL and SELL your NFT's. The community can vote on the best projects and fund them and help them launch.</p></>),
@@ -584,6 +606,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "3610ebfa5e29be650360e20fa93622625cdddcda7b45902f160f33cfcd1ea3c1",
     blurb: (<><p>YOLO pass launch in Q1 2022 in which you are eligible for 1. future airdrops 2. Free to use tools - Build, animate, add music and much more 3. Enter pre-mint stage for future collections 4. Limited edition merchandise 5. Free entry to digital STUDIO ?In Q1 2022 : Integration of characters in our Gaming world which is based on the concept of Play to Earn with Real Time Al generated wearables and collectibles?In Q2 2022 our land sales will begin for our metaverse backed by YOLO token.</p></>),
@@ -606,6 +629,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "2975800b3ff4ad824bdf559793c3b2bedbbdfb2350fc32d29e0274e3faa6626a",
     blurb: (<><p>The Tranquility Collection is the first collection released by ICP Art. It is a set of 99 Hand-Crafted 1 of 1 Pastel Paintings, that governs the ART DAO.
@@ -630,6 +654,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "598b376d9ddc5d3df21dcac0f888a7c898437a310d477d040e9b40457e3e2d35",
     blurb: (<><p>IC Apes represent a collection of 10,000 apes. The Apes are stored on-chain in the Internet Computer. It’s the first generated Ape NFT collection for the ICP.</p><p>We make sure that every emerging product looks realistic, charismatic, strong and intelligent. We have worked for be more detailed and more realistic than alternatives in the market.</p><p>Our goal is to create a IC Ape Starter as a leading launchpad for the Internet Computer ecosystem. Also as a IC Ape Ventures, funding the innovative projects on the Internet Computer.</p></>),
@@ -652,6 +677,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "05860acf5b5478588e90557507d8c9c26dcff03289075c450d2dc39c6da39c28",
     blurb: (<><p>We're bringing the first interactive &#128013; NFTs to the Internet Computer! Our NFTs are not just art to show off to other collectors and appreciate, they offer an interactive experience where you can actually play with and enjoy your &#128013; NFT in a whole new way. Every NFT image will have a mini-game built-in and is a unique avatar in the multiplayer game which is currently under development.</p></>),
@@ -674,6 +700,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "ace16992dcde53c7c67b396b65924be0e19bed8704a2a68b9cc794d100c3cd17",
     blurb: (<><p>A photographer who brings a sense of underlying magic to the meticulous conceptual images he creates.</p><p>Bringing his attentive eye and deep relationship with nature into the built studio environment, Ted's still life images are anything but static, as every photograph is infused with a sense of action or motion.</p><p>A true polymath who works across a number of sectors, Ted is adept at bringing together teams of scientists, model-builders, engineers, doctors, mathematicians, sculptors, set designers and artists to create engaging imagery for his international clientele and personal projects.</p><p>Ted's recent work with The Royal Academy of Engineering has exhibited at The National Science and Media Museum (UK) and Edinburgh Science Festival (UK)</p><p>The Imagination Project, created 50 photographs over the course of a year, celebrating the human imagination in all its wild and vast diversity.  The Projects narrative is formed through the interpretation of 400 years of Patents. A veritable encyclopaedia of human achievement.</p></>),
@@ -696,6 +723,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress: "ace16992dcde53c7c67b396b65924be0e19bed8704a2a68b9cc794d100c3cd17",
     blurb: (<><p>500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past. This collection features 5 groups of Robots that exist in the eastern waste lands near former Delta city. The Battle bots, they are tough and are used to hard work, entertainment bots constructed from old video game and junk food toy parts found in the giant rubbish heaps of former Antarctica. Wild bots have become deranged after the giant solar flare of 2453AD. The god class has come to rule much of eastern earth, they have abilities beyond normal bots. The masters are a secret society of robots that have links to the off world colony of Europa base 7.</p></>),
@@ -718,6 +746,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "9e4c5a298aa65baf99cbf4056f443b2c499d4c6d07f4030c5474885f6803d9d0",
     blurb: (<><p>Entrepot is thrilled to welcome the best-selling Blockchain Heroes series to the Internet Computer! Originally presented on the WAX blockchain in Summer of 2020, Blockchain Heroes is a set of 50 super heroes inspired by real-world blockchain and crypto personalities. When the initial set was offered in August 2020, 12500 packs sold out in just 20 minutes! Since that time, the team has released two additional series, with the latter selling out in just 35 seconds.</p>
@@ -743,6 +772,7 @@ The ART DAO is a platform that allows the user to contribute to the creative pro
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "4dbdfc6d6bdab7851bfc7839da5c3df06d10f89ab61cf0c136b70812da27d608",
     blurb: (<>Rare are the moments when technology so drastically emprove the lives of so many.
@@ -767,6 +797,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "1139e8bf919647a9e630f41982324ea535ccd67ac4b101644bb1dba8ecf155e3",
     blurb: (<><p>P2J NFT by Canistore</p></>),
@@ -789,6 +820,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress: "ae5cf8b282013bffd28908f1c4afad389a07e474a02f9a8e48bcc07cc63b05b4",
     blurb: (<><p>8,888 Badass Bulls of the IC . Our NFT is not only just a collectible art but with utility too! We will be coming out with a P2E battle arena game with toniqlabs ! Stay tuned!</p></>),
@@ -811,6 +843,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress: "7243722b9db43a26170b2bbc065b02f5ca2d1836ddaaee5ef05fc043a01f9ed9",
     blurb: (<><p>Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!</p></>),
@@ -829,6 +862,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "09b739076e074550862930ca17f662485076a6af60cc1b0e9a1f50b058d767c9",
     blurb: (<><p>On the Motoko programming language's 2nd birthday, the DFINITY Foundation distributed 10,000 Motoko ghosts designed by Jon Ball of Pokedstudios to the community.</p></>),
@@ -845,6 +879,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.05,
     comaddress: "2455059d792289741fb4c3128be9dfcf25474e161923c78c37bd53c457b24e60",
     blurb: (<><p>The MoonWalker's marketplace will open after the completion of the <a href="/sale/moonwalkers">public sale</a>.</p></>),
@@ -864,6 +899,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress:"c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
     blurb: (<>Cronics is a Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics incorporates breeding mechanics, wearable NFTs and a p2e minigame ecosystem and more.</>),
@@ -880,6 +916,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "90d2fd9f8c4005da2ebf73579a4f571763d21ce35ed4c32e83b3158cb68c7c45",
     blurb: (<p>100% of initial sales proceeds and 3% of resales go to Chimpanzee Sanctuary Northwest. The sanctuary provides a 'forever home' for chimpanzees discarded from the entertainment and biomedical testing industries. Every Infinite Chimp in this NFT collection is a portrait of a rescued chimp that now lives peacefully at the sanctuary.</p>),
@@ -905,6 +942,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress: "35b902472e845179b3d6ad9ff7079fee6bcadb4e0ca870230ba7a79757fa88fb",
     blurb: (<><p>Haunted Hamsters are 3333 hamsters, who have been haunted on the hill of Hamsterville. They come merged from 10 spooky themed traits, and are now living on the ICP blockchain.</p></>),
@@ -921,6 +959,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.025,
     comaddress:
       "b53a735c40994ddbc7bb4f6dbfbf9b2c67052842241f1c445f2255bdf4bd8982",
@@ -945,6 +984,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.06,
     comaddress:
       "2be01f5e8f081c6e8784b087fb1a88dac92fdd29203c1e456a6e90950c6e6e21",
@@ -962,6 +1002,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress: "b29f5dc935f0457df12c9f91a58d77e192a0acb00694ca473d342063d375656c",
     blurb: (<><p>The IC3D marketplace will open after the completion of the <a href="/sale/ic3d">public sale</a>.</p></>),
@@ -977,6 +1018,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.025,
     comaddress:
       "dc84032b8eeb93da0b339e0da3b6853265ecb74b1d27f5b08dc6d98114582af3",
@@ -1001,6 +1043,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress:
       "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
@@ -1028,6 +1071,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress:
       "9f76290b181807c5fa3c7cfcfca2525d578a3770f40ae8b14a03a4a3530368e2",
@@ -1046,6 +1090,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.035,
     comaddress:
       "c47942416fa8e7151f679d57a6b2d2e01a92fecd5e6f9ac99f6db548ea4f37aa",
@@ -1078,6 +1123,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.025,
     comaddress:
       "3fd5d8d72a8c79f4c29a91087257ecd37e25b66aafdb337236c9f0dc22b6a833",
@@ -1109,6 +1155,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress:
       "9616e04724bd990eda94a848cbfe0dab273d6d663dee7e40e6e314fb34395dcd",
@@ -1130,6 +1177,7 @@ so free. This piece is dedicated to all those that helped me find myself here.</
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress:
       "9616e04724bd990eda94a848cbfe0dab273d6d663dee7e40e6e314fb34395dcd",
@@ -1151,6 +1199,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: true,
     market : true,
+    filter : false,
     commission: 0.025,
     comaddress:
       "1d978f4f38d19dca4218832e856c956678de0aa470cd492f5d8ac4377db6f2a2",
@@ -1182,6 +1231,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.035,
     comaddress:
       "8b6840cb0e67738e69dbb6d79a3963f7bd93c35f593a393be5cc39cd59ed993e",
@@ -1198,6 +1248,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
@@ -1219,6 +1270,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: false,
     market : true,
+    filter : false,
     route: "icp-news",
     commission: 0.02,
     comaddress:
@@ -1236,6 +1288,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: false,
     market : true,
+    filter : false,
     commission: 0.025,
     comaddress:
       "c7e461041c0c5800a56b64bb7cefc247abc0bbbb99bd46ff71c64e92d9f5c2f9",
@@ -1260,6 +1313,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     keywords : "ICmoji, ICmojis, Origins, Game, Card, Emoji, Emote, Reaction",
     commission: 0.02,
     comaddress:
@@ -1282,6 +1336,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: true,
     market : true,
+    filter : false,
     commission: 0.02,
     comaddress:
       "12692014390fbdbb2f0a1ecd440f02d29962601a782553b45bb1a744f167f13b",
@@ -1297,6 +1352,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : true,
     mature: false,
     market : true,
+    filter : true,
     commission: 0.025,
     comaddress:
       "9f04077bd8ef834f7bcca5177f28fb655a7e68d8f2da9c1e6441c4f567f5dce7",
@@ -1312,6 +1368,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     keywords : "",
     commission: 0.035,
     comaddress:
@@ -1331,6 +1388,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: false,
     market : true,
+    filter : false,
     commission: 0.1,
     comaddress:
       "f9deb8b1752f6230f1f86c9ca0b7c613120733acadd3a3279ea843523f22d974",
@@ -1348,6 +1406,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: false,
     market : true,
+    filter : false,
     commission: 0.1,
     comaddress:
       "6d4aba3426e332add7b55d88a005805b436e98bec092f42e89510596a3ac8ee5",
@@ -1365,6 +1424,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     keywords : "",
     mature: false,
     market : true,
+    filter : false,
     commission: 0.1,
     comaddress:
       "ccac00c36859008eb9d33597f2c51ff8778dc4d3146d992b453eb330dee3f41c",
@@ -1381,6 +1441,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     keywords : "",
     commission: 0.1,
     comaddress:
@@ -1398,6 +1459,7 @@ Specially for internet computer. Follow us on twitter: <a href="https://twitter.
     nftv : false,
     mature: false,
     market : true,
+    filter : false,
     keywords : "",
     commission: 0.1,
     comaddress:

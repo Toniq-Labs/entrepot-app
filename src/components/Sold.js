@@ -9,6 +9,7 @@ import Timestamp from "react-timestamp";
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import MuiTooltip from "@material-ui/core/Tooltip";
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import { Icon } from "@material-ui/core";
@@ -55,6 +56,7 @@ export default function Sold(props) {
       objectFit: "contain",
     },
   };
+  
   const mintNumber = () => {
     return EntrepotNFTMintNumber(props.collection, index);
   };
@@ -74,13 +76,14 @@ export default function Sold(props) {
     return "https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=" + tokenid;
   };
   const showNri = () => {
+    if (typeof props.nri == 'undefined') return "";
+    if (props.nri === false) return "";
     var collection = getCollection(props.collection);
     if (collection.nftv) {
-      return (<Grid item md={6} sm={6} xs={6}>
-        <Typography style={{fontSize: 11, textAlign:"right", fontWeight:"bold"}} color={"inherit"} gutterBottom>
-          <Tooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}><a style={{color:"black",textDecoration: 'none' }} href={nriLink()} rel="noreferrer" target="_blank">NRI: {(props.gri*100).toFixed(1)}% <span style={{color:"red"}}>*</span></a></Tooltip>
-        </Typography>
-      </Grid>);
+      return (
+        <MuiTooltip title={"NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific "+collection.unit+" relative to others. It does not include Mint #, Twin Status or Animation within the index."}>
+          <span>NRI: {(props.nri * 100).toFixed(1)}%</span>
+        </MuiTooltip>      );
     } else return "";
   };
   const handleClick = () => {
@@ -99,6 +102,9 @@ export default function Sold(props) {
           </div>
           <strong>{getCollection(props.collection).name} {"#"+(mintNumber())}</strong>
         </a>
+      </TableCell>
+      <TableCell align="center">
+        <strong>{showNri(props.nri)}</strong>
       </TableCell>
       <TableCell align="right"><strong><PriceICP price={transaction.price} /></strong><br />
       {EntrepotGetICPUSD(transaction.price) ? <small><PriceUSD price={EntrepotGetICPUSD(transaction.price)} /></small> : ""}</TableCell>

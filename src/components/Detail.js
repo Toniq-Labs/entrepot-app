@@ -26,7 +26,7 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import ShopIcon from "@material-ui/icons/Shop";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
-import CategoryIcon from '@material-ui/icons/Category';
+import ListIcon from '@material-ui/icons/List';
 import AcUnitIcon from "@material-ui/icons/AcUnit";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
@@ -112,13 +112,21 @@ const Detail = (props) => {
     });
     await api.token(canister).listings().then(r => {
       var f = r.find(a => a[0] == index);
-      if (f[1]) setListing(f[1]);
+      if (f && f[1]) setListing(f[1]);
       else setListing({});
     });
-    await api.canister(canister).transactions().then(r => {
-      var txs = r.filter(a => extjs.decodeTokenId(a.token).index === index).sort((a,b) => Number(b.time) - Number(a.time));
-      setTransactions(txs);
-    });
+    if (canister === "nges7-giaaa-aaaaj-qaiya-cai") {
+      setTransactions([]);
+    } else {
+      await api.canister(canister).transactions().then(r => {
+        var nt = r;
+        if (canister === "e3izy-jiaaa-aaaah-qacbq-cai") {
+          nt = nt.slice(82);
+        }
+        var txs = nt.filter(a => a.token === tokenid).sort((a,b) => Number(b.time) - Number(a.time));
+        setTransactions(txs);
+      });
+    }
   }
   const _afterBuy = async () => {
     await reloadOffers();
@@ -157,7 +165,6 @@ const Detail = (props) => {
   useInterval(_refresh, 10 * 60 * 1000);
   useInterval(() => {
     var nf = (EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : "");
-    console.log(nf);
     setFloor(nf);
   }, 10 * 1000);
   
@@ -178,8 +185,19 @@ const Detail = (props) => {
     switch(canister){
       case "bzsui-sqaaa-aaaah-qce2a-cai":
       case "z7mqv-liaaa-aaaah-qcnqa-cai":
-      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
       case "px5ub-qqaaa-aaaah-qcjxa-cai":
+      case "txr2a-fqaaa-aaaah-qcmkq-cai":
+      case "erpx2-pyaaa-aaaah-qcqsq-cai":
+      case "zvycl-fyaaa-aaaah-qckmq-cai":
+      case "ahl3d-xqaaa-aaaaj-qacca-cai":
+      case "xphpx-xyaaa-aaaah-qcmta-cai":
+      case "cdvmq-aaaaa-aaaah-qcdoq-cai":
+      case "5h2fc-zaaaa-aaaah-qcnjq-cai":
+      case "xzxhy-oiaaa-aaaah-qclnq-cai":
+      case "p5jg7-6aaaa-aaaah-qcolq-cai":
+      case "jmuqr-yqaaa-aaaaj-qaicq-cai":
+      case "cnxby-3qaaa-aaaah-qcdpq-cai":
+      case "zejmq-rqaaa-aaaah-qcnsq-cai":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, false)}
@@ -195,31 +213,21 @@ const Detail = (props) => {
               marginLeft:"auto",
               marginRight:"auto",
               display: "block",
+              objectFit: "contain",
             }}
           />
         );
         break;
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-        return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-            }}
-          />
-        );
-        break;
-      default:
+      case "dv6u3-vqaaa-aaaah-qcdlq-cai":
+      case "eb7r3-myaaa-aaaah-qcdya-cai":
+      case "pk6rk-6aaaa-aaaae-qaazq-cai":
+      case "mk3kn-pyaaa-aaaah-qcoda-cai":
+      case "jeghr-iaaaa-aaaah-qco7q-cai":
+      case "er7d4-6iaaa-aaaaj-qac2q-cai":
+      case "poyn6-dyaaa-aaaah-qcfzq-cai":
+      case "crt3j-mqaaa-aaaah-qcdnq-cai":
+      case "nges7-giaaa-aaaaj-qaiya-cai":
+      case "ag2h7-riaaa-aaaah-qce6q-cai":
         return (
           <iframe
             frameborder="0"
@@ -236,6 +244,30 @@ const Detail = (props) => {
               marginLeft:"auto",
               marginRight:"auto",
               display: "block",
+            }}
+          />
+        );
+        break;
+      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
+      case "bxdf4-baaaa-aaaah-qaruq-cai":
+      case "dylar-wyaaa-aaaah-qcexq-cai":
+      default:
+        return (
+          <img
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            alt=""
+            className={classes.nftImage}
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+              objectFit: "contain",
             }}
           />
         );
@@ -282,7 +314,7 @@ const Detail = (props) => {
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
               >
-                <CategoryIcon style={{marginTop:3}} />
+                <ListIcon style={{marginTop:3}} />
                 <Typography className={classes.heading}>Properties</Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -339,8 +371,8 @@ const Detail = (props) => {
                   </Button>
               </Grid>
               <Grid item>
-                <div className={classes.icon}>
-                  <Favourite loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
+                <div style={{marginTop:-5}} className={classes.icon}>
+                  <Favourite  loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
                 </div>
               </Grid>
             </Grid>
@@ -432,28 +464,67 @@ const Detail = (props) => {
                   }
                 </>
               }
-              { listing !== false && props.loggedIn ?
-                <div className={classes.button}>
-                  {listing && listing.hasOwnProperty("locked") ?
-                  <Button
-                    onClick={ev => {
-                      props.buyNft(collection.canister, index, listing, _afterBuy);
-                    }}
-                    variant="contained"
-                    color="primary"
-                    style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                  >Buy Now</Button> : "" }
-                  
-                  <Button
-                    onClick={ev => {
-                      makeOffer();
-                    }}
-                    variant="outlined"
-                    color="primary"
-                    style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
-                  >Submit Offer</Button>
-                </div> : "" }
-              {owner?
+              { owner && props.account && props.account.address == owner ?
+                <>
+                  <div className={classes.button}>
+                    {listing ?
+                    <>
+                      <Button
+                        onClick={ev => {
+                          props.buyNft(collection.canister, index, listing, _afterBuy);
+                        }}
+                        variant="contained"
+                        color="primary"
+                        style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
+                      >Update Listing</Button> 
+                      <Button
+                        onClick={ev => {
+                          makeOffer();
+                        }}
+                        variant="outlined"
+                        color="primary"
+                        style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
+                      >Cancel Listing</Button>
+                    </>
+                    : 
+                    <Button
+                      onClick={ev => {
+                        props.buyNft(collection.canister, index, listing, _afterBuy);
+                      }}
+                      variant="contained"
+                      color="primary"
+                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
+                    >List Item</Button> }
+                    
+                  </div>
+                </>:
+                <>
+                { listing !== false && props.loggedIn ?
+                  <div className={classes.button}>
+                    {listing && listing.hasOwnProperty("locked") ?
+                    <Button
+                      onClick={ev => {
+                        props.buyNft(collection.canister, index, listing, _afterBuy);
+                      }}
+                      variant="contained"
+                      color="primary"
+                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
+                    >Buy Now</Button> : "" }
+                    
+                    <Button
+                      onClick={ev => {
+                        makeOffer();
+                      }}
+                      variant="outlined"
+                      color="primary"
+                      style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
+                    >Submit Offer</Button>
+                  </div> : "" }
+                </>
+              }
+              {owner && props.account.address == owner?
+              <div style={{marginTop:20}}><strong>Owned by you</strong></div> : "" }
+              {owner && props.account.address != owner?
               <div style={{marginTop:20}}><strong>Owner:</strong> <a href={"https://ic.rocks/account/"+owner} target="_blank">{shorten(owner)}</a></div> : "" }
             </div>
             <Accordion defaultExpanded>
@@ -604,7 +675,7 @@ const Detail = (props) => {
           </Grid>
         </Grid>
       </Container>
-      <OfferForm address={props.account.address} balance={props.balance} complete={reloadOffers} floor={floor} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
+      <OfferForm floor={floor} address={props.account.address} balance={props.balance} complete={reloadOffers} floor={floor} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
     </>
   );
 };
