@@ -143,11 +143,7 @@ export default function Listings(props) {
   });
   const [legacyFilterState, setLegacyFilterState] = React.useState(cftState);
   const cronicSetFilterTrait = (name, v) => {
-    console.log(name);
-    console.log(v);
     var t = {...legacyFilterState};
-    console.log(legacyFilterState);
-    console.log(t);
     t[name] = v;
     setLegacyFilterState(t);
   };
@@ -189,15 +185,17 @@ export default function Listings(props) {
   };
 
   
-  const loadFilterData = () => {
+  const loadFilterData = async () => {
     if (collection?.filter){
-      fetch('/filter/'+collection?.canister+'.json')
-      .then((response) => response.json())
-      .then(r => setFilterData(r))
-      .catch((error) => {
-       console.error(error);
-      });
+      try{
+        var fd = await fetch('/filter/'+collection?.canister+'.json')
+        .then((response) => response.json());
+        return fd;
+      } catch(error){
+        console.error(error);
+      }
     }
+    return false;
   };
   const isOpenFilter = traitId => {
     return openFilters.indexOf(traitId) >= 0;
@@ -233,6 +231,7 @@ export default function Listings(props) {
   const filterListings = (_listings, sf) => {
     var _selectedFilters = sf ?? selectedFilters;
     if(!_selectedFilters.length) return applyAdvancedFilters(applyFilters(_listings));
+    if(!filterData) return applyAdvancedFilters(applyFilters(_listings));
     var alteredFilters = {};
     _selectedFilters.forEach(a => {
       if(!alteredFilters.hasOwnProperty(a[0])) alteredFilters[a[0]] = [];
@@ -247,7 +246,15 @@ export default function Listings(props) {
         };
       };
       return true;
-    }).map(a => a[0]);
+    }).map(a => {
+      switch(collection.canister){
+        case "y3b7h-siaaa-aaaah-qcnwa-cai":
+        case "bxdf4-baaaa-aaaah-qaruq-cai":
+          return a[0]+1;
+        default:
+          return a[0];
+      };
+    });
     
     return applyAdvancedFilters(applyFilters(_listings)).filter(a => ft.indexOf(a[0]) >= 0);
   };
@@ -263,14 +270,11 @@ export default function Listings(props) {
     }
     return a;
   };
-  const _updates = async () => {
-    await refresh();
-  };
   const _isCanister = c => {
     return c.length == 27 && c.split("-").length == 5;
   };
   
-  const refresh = async (s, c) => {
+  const _updates = async (s, c) => {
     c = c ?? collection?.canister;
     if (!_isCanister(c)) return updateListings([]);
     if (!collection.market) return updateListings([]);
@@ -290,7 +294,10 @@ export default function Listings(props) {
       var _showing = s ?? showing;
       var _sort = s ?? sort;
       var _selectedFilters = sf ?? selectedFilters;
-      if (!_listings) return;
+      if (!_listings) {
+        canUpdateListings = true;
+        return;
+      }
       if (l) setListings(l);
       var _displayListings = _listings;
       if (minPrice){
@@ -426,8 +433,7 @@ export default function Listings(props) {
       maxPrice : maxPrice,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, selectedFilters, showing, page, minPrice, maxPrice]);
-  
+  }, [sort, selectedFilters, showing, page, minPrice, maxPrice]);  
   useDidMountEffect(() => {
     setDisplayListings(false);
     setTimeout(updateListings, 300);
@@ -439,13 +445,23 @@ export default function Listings(props) {
     setTimeout(updateListings, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, showing, minPrice, maxPrice, legacyFilterState, wearableFilter]);
-  useInterval(_updates, 10 * 1000);
+  
+  //useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
-    _updates();
-    loadFilterData();
+    loadFilterData().then(r => {
+      if (r) {        
+        setFilterData(r);
+      } else {
+        _updates();
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useDidMountEffect(() => {
+    _updates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
   
 
   return (//maxWidth:1200, margin:"0 auto",
@@ -509,8 +525,8 @@ export default function Listings(props) {
                   </div>
                 </ListItem> : "" }
               {filterData && filterData[0].map(a => {
-                return (<>
-                  <ListItem style={{paddingRight:0}} key={a[0]} button onClick={() => handleToggleFilter(a[0])}>
+                return (<div key={a[0]}>
+                  <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter(a[0])}>
                     <ListItemIcon style={{minWidth:40}}>
                       <ListIcon />
                     </ListItemIcon>
@@ -539,7 +555,7 @@ export default function Listings(props) {
                       })}
                     </div>
                   </ListItem> : "" }
-                </>)
+                </div>)
               })}</> : ""}
             
               {toggleFilter ?
@@ -620,7 +636,7 @@ export default function Listings(props) {
                   <Grid item>
                     <ToggleButton onChange={async () => {
                       setDisplayListings(false);
-                      await refresh();
+                      await _updates();
                       setTimeout(updateListings, 300);
                     }} size="small" style={{marginTop:5, marginRight:10}}>
                       <CachedIcon />
@@ -760,7 +776,7 @@ export default function Listings(props) {
                           key={extjs.encodeTokenId(collection?.canister, listing[0])}
                           floor={stats.floor}
                           buy={props.buyNft}
-                          afterBuy={refresh}
+                          afterBuy={_updates}
                           
                           listing={listing[1]}
                           metadata={listing[2]}
