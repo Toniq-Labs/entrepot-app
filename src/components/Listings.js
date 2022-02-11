@@ -488,7 +488,7 @@ export default function Listings(props) {
         </div>
         {_isCanister(collection.canister) && collection.market ?
         <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
-          <div className={classes.filtersView} style={{position:"sticky",top:72, width:(toggleFilter ? 330 : 60),height:"calc(100vh - 72px)", borderRight:"1px solid #aaa",overflowY:(toggleFilter ? "scroll" : "hidden"),overflowX:"hidden",paddingBottom:50}}>
+          <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
             <List>
               <ListItem style={{paddingRight:0}} button onClick={() => setToggleFilter(!toggleFilter)}>
                 <ListItemIcon style={{minWidth:40}}>
@@ -633,6 +633,11 @@ export default function Listings(props) {
             <div style={{}}>
               <div className={classes.filters} style={{}}>
                 <Grid container style={{minHeight:66}}>
+                  <Grid item className={classes.hideDesktop}>
+                    <ToggleButton onChange={() => setToggleFilter(!toggleFilter)} size="small" style={{marginTop:5, marginRight:10}}>
+                      <FilterListIcon />
+                    </ToggleButton>
+                  </Grid>
                   <Grid item>
                     <ToggleButton onChange={async () => {
                       setDisplayListings(false);
@@ -812,7 +817,42 @@ const useStyles = makeStyles((theme) => ({
       }
     },
   },
-  filtersView:{
+  hideDesktop:{
+    display:"none",
+    [theme.breakpoints.down('xs')]: {
+      display:"block",
+    },
+  },
+  filtersViewOpen:{
+    position:"sticky",
+    top:72, 
+    width:330,
+    height:"calc(100vh - 72px)", 
+    borderRight:"1px solid #aaa",
+    overflowY:"scroll",
+    overflowX:"hidden",
+    paddingBottom:50,
+    [theme.breakpoints.down('xs')]: {
+      //display:"none",
+      position:"absolute",
+      backgroundColor:"white",
+      zIndex:100,
+      top:0,
+      left:0,
+      right:0,
+      bottom:0,
+      width:"80%",
+    },
+  },
+  filtersViewClosed:{
+    position:"sticky",
+    top:72, 
+    width:60,
+    height:"calc(100vh - 72px)", 
+    borderRight:"1px solid #aaa",
+    overflowY:"hidden",
+    overflowX:"hidden",
+    paddingBottom:50,
     [theme.breakpoints.down('xs')]: {
       display:"none",
     },
