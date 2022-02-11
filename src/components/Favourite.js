@@ -33,24 +33,23 @@ export default function Favourite(props) {
   const iconSize = (props?.size == "large" ? { width:24,height:24 } : { width:22,height:22});
   const _refresh = async () => {
     if (skipRefresh) return;
-    if (props.showcount){
-      EntrepotGetLikes(props.tokenid).then(r => setCount(r));
-    }
+    if (props.showcount) EntrepotGetLikes(props.tokenid).then(r => setCount(r));
     setLiked(EntrepotIsLiked(props.tokenid));
   };
-  useInterval(_refresh, 2 * 60 * 1000);
+  useInterval(_refresh, 10 * 1000);
   const like = async () => {
     if (!props.loggedIn) return;
     skipRefresh = true;
     if (liked) {
       setCount(count - 1);
       setLiked(false);
-      await EntrepotUnike(props.tokenid);
+      EntrepotUnike(props.tokenid, props.identity);
     } else {
-      setCount(count + 1);
+      setCount((count ? count + 1 : 1));
       setLiked(true);
-      await EntrepotLike(props.tokenid);
+      EntrepotLike(props.tokenid, props.identity);
     };
+    if (props.refresher) props.refresher();
     var c = await EntrepotGetLikes(props.tokenid, true);
     setCount(c);
     skipRefresh = false;

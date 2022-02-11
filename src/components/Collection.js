@@ -87,6 +87,18 @@ const loadAllTokens = async (address, principal) => {
   // };
   return tokens;
 };
+const loadAllListings = async (address, principal) => {
+  var response = await Promise.all(collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
+  var tokens = response.filter(result => !(result instanceof Error)).flat();
+  // var wrappedMap = {
+    // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
+    // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
+    // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
+    // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
+    // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
+  // };
+  return tokens;
+};
 var canUpdateNfts = true;
 export default function Collection(props) {
   const params = useParams();
@@ -97,7 +109,9 @@ export default function Collection(props) {
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
+  const [listingPrices, setListingPrices] = React.useState([]);
   const [toggleFilter, setToggleFilter] = React.useState(true);
+  const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSizeNFT") ?? "small");
   const changeGrid = (e, a) => {
     localStorage.setItem("_gridSizeNFT", a);
@@ -112,12 +126,30 @@ export default function Collection(props) {
       await refresh();
     }
   };
+  const updateFavorites = () => {
+    var r = EntrepotGetAllLiked();
+    updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+  };
+  const getPriceOfListing = tokenid => {
+    var fnd = listingPrices.find(a => a[0] == tokenid);
+    if (fnd) {
+      return Number(fnd[1][0].price)
+    } else {
+      return false;
+    };
+  };
   const refresh = async (_sort, _collectionFilter) => {
     const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
     switch(props.view){
       case "collected":
         var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
         updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        break;
+      case "selling":
+        var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
+        var r2 = r.map(a => a[0]);
+        setListingPrices(r);
+        updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
         break;
       case "favorites":
         var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
@@ -164,6 +196,20 @@ export default function Collection(props) {
       _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || extjs.decodeTokenId(token).canister == _collectionFilter));
       _displayNfts = _displayNfts.sort((a,b) => {
         switch(sort) {
+          case "price_asc":
+            var ap = getPriceOfListing(a);
+            var bp = getPriceOfListing(b);
+            if (ap === false && bp === false) return 0; 
+            if (ap === false) return -1;
+            if (bp === false) return 1;
+            return ap-bp;
+          case "price_desc":
+            var ap = getPriceOfListing(a);
+            var bp = getPriceOfListing(b);
+            if (ap === false && bp === false) return 0; 
+            if (ap === false) return 1;
+            if (bp === false) return -1;
+            return bp-ap;
           case "mint_number":
             return extjs.decodeTokenId(a).index-extjs.decodeTokenId(b).index;
           case "nri":
@@ -180,6 +226,7 @@ export default function Collection(props) {
         };
       })
       setDisplayNfts(_displayNfts);
+      setHideCollectionFilter(false);
       setTokenCanisters(_nfts.map(tokenid => extjs.decodeTokenId(tokenid).canister));
       canUpdateNfts = true;
     }
@@ -192,11 +239,21 @@ export default function Collection(props) {
     }
   }, [collectionFilter]);
   React.useEffect(() => {
-    setCollectionFilter('all');
     setDisplayNfts(false);
     setPage(1);
     if (props.loggedIn){
+      refresh()
+    }
+  }, [sort]);
+  React.useEffect(() => {
+    setCollectionFilter('all');
+    setHideCollectionFilter(true)
+    setDisplayNfts(false);
+    setPage(1);
+    //setSort('mint_number');
+    if (props.loggedIn){
       refresh(sort, 'all')
+      //refresh('mint_number', 'all')
     }
   }, [props.view, props.account.address, props.identity]);
 
@@ -217,6 +274,7 @@ export default function Collection(props) {
             }}
           >
             <Tab style={{fontWeight:"bold"}} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
+            <Tab style={{fontWeight:"bold"}} value="selling" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
@@ -239,8 +297,8 @@ export default function Collection(props) {
                 {toggleFilter ? <ChevronLeftIcon fontSize={"large"} /> :  <ChevronRightIcon fontSize={"large"} /> }
                 </ListItemIcon>
             </ListItem>
-            {toggleFilter && tokenCanisters.length ? <>
-              {displayNfts == false ?
+            {toggleFilter && (tokenCanisters.length > 0 || hideCollectionFilter) ? <>
+              {hideCollectionFilter ?
               <ListItem><ListItemText><strong>Loading...</strong></ListItemText></ListItem>
               :
               <>
@@ -337,10 +395,12 @@ export default function Collection(props) {
                 .map((tokenid, i) => {
                   return (<NFT 
                     gridSize={gridSize} 
+                    faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
                     loggedIn={props.loggedIn} 
+                    identity={props.identity} 
                     tokenid={tokenid} 
                     key={tokenid} 
-                    ownerView={['collected','offers-received'].indexOf(props.view) >= 0}
+                    ownerView={['collected','selling','offers-received'].indexOf(props.view) >= 0}
                     unpackNft={props.unpackNft} 
                     listNft={props.listNft} 
                     cancelNft={props.cancelNft} 

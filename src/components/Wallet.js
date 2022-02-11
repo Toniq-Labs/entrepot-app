@@ -272,6 +272,12 @@ export default function Wallet(props) {
           </ListItemIcon>
           <ListItemText primary="Collected" />
         </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/selling");}}>
+          <ListItemIcon>
+            <CollectionsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Selling" />
+        </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/offers-received");}}>
           <ListItemIcon>
             <CallReceivedIcon />
@@ -288,7 +294,7 @@ export default function Wallet(props) {
           <ListItemIcon>
             <FavoriteIcon />
           </ListItemIcon>
-          <ListItemText primary="Favourites" />
+          <ListItemText primary="Favorites" />
         </ListItem>
       </List> 
     </>: ""}

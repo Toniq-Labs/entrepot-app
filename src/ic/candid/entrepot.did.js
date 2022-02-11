@@ -14,6 +14,7 @@ export default ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat64, Time, IDL.Text))],
         ['query'],
       ),
+    'saveLiked' : IDL.Func([IDL.Vec(TokenIdentifier)], [], []),
     'unlike' : IDL.Func([TokenIdentifier], [IDL.Nat], []),
   });
   return entrepot;

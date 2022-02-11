@@ -176,7 +176,6 @@ export default function App() {
   const _updates = async () => {
     EntrepotUpdateUSD();
     EntrepotUpdateStats();
-    if (identity) EntrepotUpdateLiked(identity)
   };
 
   const _buyForm = (tokenid, price) => {
@@ -426,6 +425,7 @@ export default function App() {
     loader(false);
   };
 
+  useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
   useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
@@ -724,6 +724,15 @@ export default function App() {
               <Collection
                 error={error}
                 view={"favorites"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/selling" exact element={
+              <Collection
+                error={error}
+                view={"selling"}
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 

@@ -432,7 +432,7 @@ export default function NFT(props) {
               )}
             </> : ""
           }
-          <Favourite loggedIn={props.loggedIn} tokenid={tokenid} />
+          <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
         </CardActions>}
       </CardActionArea>
       </Card>

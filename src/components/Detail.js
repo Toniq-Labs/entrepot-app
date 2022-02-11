@@ -382,7 +382,7 @@ const Detail = (props) => {
               </Grid>
               <Grid item>
                 <div style={{marginTop:-5}} className={classes.icon}>
-                  <Favourite  loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
+                  <Favourite  identity={props.identity} loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
                 </div>
               </Grid>
             </Grid>
