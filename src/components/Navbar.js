@@ -72,13 +72,6 @@ export default function Navbar(props) {
             Support
           </Button>
           <Button
-            onClick={() => goTo("/watchlist")}
-            className={(props.view === "watchlist" ? "selected " : "")+[classes.button, classes.watchlist].join(' ')}
-            color="inherit"
-          >
-            Watchlist
-          </Button>
-          <Button
             onClick={handleDrawerToggle}
             color="inherit"
             className={[classes.button].join(' ')}
@@ -174,27 +167,6 @@ export default function Navbar(props) {
                 color="inherit"
               >
                 Support
-              </Button>
-              <Button
-                startIcon={
-                  <img
-                    alt="watchlist"
-                    style={{ width: 20 }}
-                    src="/icon/watchlist.png"
-                  />
-                }
-                onClick={() => goTo("/watchlist")}
-                className={classes.button1}
-                style={{
-                  color: props.view === "watchlist" ? "#00d092" : "#000",
-                  borderBottom:
-                    props.view === "contact"
-                      ? "3px solid #00d092"
-                      : "3px solid transparent",
-                }}
-                color="inherit"
-              >
-                Watchlist
               </Button>
               <Button
                 startIcon={

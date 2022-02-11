@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "ICPics",
-      link : "/sale/icpics",
-      image : "/collections/icpics/collection.png",
-      content : (<>This collection contains ethnic art AI renderings. With more than 94 countries from seven continents, there is one that everybody can relate to! More to come in next ventures!</>),
+      title : "ICSpliffsters",
+      link : "/sale/icspliffsters",
+      image : "/collections/icspliffsters/collection.jpg",
+      content : (<>Say hello to the veritable chainsmokers of the InternetComputer. Our ICSpliffsters are coming from a great distance to live among us on blockchain and will catch life in our ICSpliffsters NFT comic-book.</>),
     },
     {
       title : "SwordNFT",

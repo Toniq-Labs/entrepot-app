@@ -15,8 +15,7 @@ import Detail from "./components/Detail";
 import Listings from "./components/Listings";
 import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
-import Owned from "./components/Owned";
-import Watchlist from "./components/Watchlist";
+import Collection from "./components/Collection";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
@@ -39,6 +38,9 @@ import ICApes from "./components/sale/ICApes";
 import ICPets from "./components/sale/ICPets";
 import ICKitties from "./components/sale/ICKitties";
 import SpaceApes from "./components/sale/SpaceApes";
+import Opener from './components/Opener';
+import ListingForm from './components/ListingForm';
+import TransferForm from './components/TransferForm';
 import Frog from "./components/sale/Frog";
 import DfinityDeck from "./components/sale/DfinityDeck";
 import Prime from "./components/sale/Prime";
@@ -46,6 +48,7 @@ import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
 import Sword from "./components/sale/Sword";
+import ICSpliffsters from "./components/sale/ICSpliffsters";
 import Floki from "./components/sale/Floki";
 import ICPics from "./components/sale/ICPics";
 import Circle from "./components/sale/Circle";
@@ -128,6 +131,15 @@ const emptyListing = {
   price: "",
   tokenid: "",
 };
+var buttonLoader= false;
+var refresher= false;
+const canisterMap= {
+  "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai",
+  "4nvhy-3qaaa-aaaah-qcnoq-cai" : "y3b7h-siaaa-aaaah-qcnwa-cai",
+  "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
+  "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
+  "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
+};
 export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
@@ -141,6 +153,10 @@ export default function App() {
   
   const [buyFormData, setBuyFormData] = React.useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = React.useState(false);
+  const [openListingForm, setOpenListingForm] = React.useState(false);
+  const [openTransferForm, setOpenTransferForm] = React.useState(false);
+  const [playOpener, setPlayOpener] = React.useState(false);
+  const [tokenNFT, setTokenNFT] = React.useState('');
   
   const [rootPage, setRootPage] = React.useState("");
   const [loaderOpen, setLoaderOpen] = React.useState(false);
@@ -161,7 +177,6 @@ export default function App() {
   const _updates = async () => {
     EntrepotUpdateUSD();
     EntrepotUpdateStats();
-    if (identity) EntrepotUpdateLiked(identity)
   };
 
   const _buyForm = (tokenid, price) => {
@@ -411,6 +426,7 @@ export default function App() {
     loader(false);
   };
 
+  useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
   useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
@@ -454,6 +470,113 @@ export default function App() {
     }
   };
 
+  const unpackNft = (token) => {
+    setTokenNFT(token);
+    setPlayOpener(true);
+  };
+  const closeUnpackNft = (token) => {
+    setPlayOpener(false)
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const listNft = (token, loader, refresh) => {
+    setTokenNFT(token);
+    buttonLoader = loader;
+    refresher = refresh;
+    setOpenListingForm(true);
+  }
+  const transferNft = async (token, loader, refresh) => {
+    setTokenNFT(token);
+    buttonLoader = loader;
+    refresher = refresh;
+    setOpenTransferForm(true);
+  };
+  const closeListingForm = () => {
+    setOpenListingForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const closeTransferForm = () => {
+    setOpenTransferForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  
+  const unwrapNft = async (token, loader, refresh) => {
+    loader(true, "Unwrapping NFT...");
+    var canister = extjs.decodeTokenId(token.id).canister;
+    //hot api, will sign as identity - BE CAREFUL
+    var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(canister).unwrap(token.id, [extjs.toSubaccount(currentAccount ?? 0)]);
+    if (!r) {
+      loader(false);
+      return error("Couldn't unwrap!");
+    }
+    loader(true, "Loading NFTs...");
+    if (refresh) await refresh();
+    loader(false);
+    return alert("Success!", "Your NFT has been unwrapped!");
+  }
+  const wrapAndlistNft = async (token, loader, refresh) => {
+    var v = await confirm("We need to wrap this", "You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
+    if (v) {
+      var canister = canisterMap[extjs.decodeTokenId(token.id).canister];
+      if (loader) loader(true, "Creating wrapper...this may take a few minutes");
+      try{
+        var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(canister).wrap(token.id);
+        if (!r) return error("There was an error wrapping this NFT!");
+        if (loader) loader(true, "Sending NFT to wrapper...");
+        var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(token.id).transfer(identity.getPrincipal().toText(), currentAccount, canister, BigInt(1), BigInt(0), "00", false);
+        if (!r2) return error("There was an error wrapping this NFT!");
+        if (loader) loader(true, "Wrapping NFT...");
+        await extjs.connect("https://boundary.ic0.app/", identity).canister(canister).mint(token.id);
+        if (!r) return error("There was an error wrapping this NFT!");
+        if (loader) loader(true, "Loading NFTs...");
+        if (refresh) await refresh();
+        if (loader) loader(false);
+        //New token id
+        token.id = extjs.encodeTokenId(canister, token.index);
+        token.canister = canister;
+        token.wrapped = true;
+        listNft(token);
+      } catch(e) {
+        if (loader) loader(false);
+        console.log(e);
+        return error("Unknown error!");
+      };
+    }
+  }
+  
+  //Form powered
+  const transfer = async (id, address, loader, refresh) => {
+    if (loader) loader(true, "Transferring NFT...");
+    try {
+      var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(id).transfer(identity.getPrincipal().toText(), currentAccount, address, BigInt(1), BigInt(0), "00", false);
+      if (!r2) return error("There was an error transferring this NFT!");
+      if (loader) loader(true, "Loading NFTs...");
+      if (refresh) await refresh();
+      if (loader) loader(false);
+      return alert("Transaction complete", "Your listing has been updated");
+    } catch (e) {
+      if (loader) loader(false);
+      return error(e);
+    };
+  };
+  const list = async (id, price, loader, refresh) => {
+    if (loader) loader(true);
+    try {
+      var r = await extjs.connect("https://boundary.ic0.app/", identity).token(id).list(currentAccount, price)
+      if (r) {
+        if (refresh) await refresh();
+        if (loader) loader(false);
+        return;
+      } else {        
+        if (loader) loader(false);
+        return;
+      }
+    } catch (e) {
+      if (loader) loader(false);
+      return error(e);
+    };
+  };
+  
+  
   React.useEffect(() => {
     var t = localStorage.getItem("_loginType");
     if (t) {
@@ -564,6 +687,12 @@ export default function App() {
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
+                list={list}
+                unpackNft={unpackNft} 
+                listNft={listNft} 
+                wrapAndlistNft={wrapAndlistNft} 
+                unwrapNft={unwrapNft} 
+                transferNft={transferNft} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
               />} />
             <Route path="/marketplace/:route/activity" exact element={
@@ -592,22 +721,54 @@ export default function App() {
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
-            <Route path="/wallet/:route" exact element={
-              <Owned
+            <Route path="/favorites" exact element={
+              <Collection
                 error={error}
-                view={"wallet"}
+                view={"favorites"}
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
-            <Route path="/watchlist" exact element={
-              <Watchlist
+            <Route path="/selling" exact element={
+              <Collection
                 error={error}
-                view={"wallet"}
+                view={"selling"}
                 alert={alert}
                 confirm={confirm}
                 loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/offers-made" exact element={
+              <Collection
+                error={error}
+                view={"offers-made"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/offers-received" exact element={
+              <Collection
+                error={error}
+                view={"offers-received"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/collected" exact element={
+              <Collection
+                error={error}
+                view={"collected"}
+                alert={alert}
+                confirm={confirm}
+                loggedIn={loggedIn} 
+                unpackNft={unpackNft} 
+                listNft={listNft} 
+                wrapAndlistNft={wrapAndlistNft} 
+                unwrapNft={unwrapNft} 
+                transferNft={transferNft} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/sale/btcflower" exact element={
@@ -642,6 +803,15 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icpics"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/sale/icspliffsters" exact element={
+              <ICSpliffsters
+                error={error}
+                view={"sale"}
+                sale={"icspliffsters"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -807,6 +977,7 @@ export default function App() {
             <Route path="/contact" exact element={
               <Contact
                 error={error}
+                error={error}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -817,6 +988,9 @@ export default function App() {
               <Sale error={error} alert={alert} confirm={confirm} loader={loader} />} />
           </Routes>
           <BuyForm open={showBuyForm} {...buyFormData} />
+          <TransferForm refresher={refresher} buttonLoader={buttonLoader} transfer={transfer} alert={alert} open={openTransferForm} close={closeTransferForm} loader={loader} error={error} nft={tokenNFT} />
+          <ListingForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} list={list} alert={alert} open={openListingForm} close={closeListingForm} loader={loader} error={error} nft={tokenNFT} />
+          <Opener alert={alert} nft={tokenNFT} identity={identity} currentAccount={currentAccount} open={playOpener} onEnd={closeUnpackNft} />
         </div>
       </main>
       {footer}

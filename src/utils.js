@@ -28,7 +28,7 @@ function fallbackCopyTextToClipboard(text) {
 
   document.body.removeChild(textArea);
 }
-var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {};
+var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {}, lastUpdate = false;
 const _getStats = async () => {
     var pxs = [];
     var _ts = [];
@@ -143,7 +143,7 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     width: "100%",
     height: "100%",
     margin: "0 auto",
-    objectFit: "contain",
+    objectFit: "cover",
     borderRadius:"4px",
   }
   var avatarLoaded = {
@@ -187,9 +187,12 @@ EntrepotUpdateStats = async () => {
   return _stats;
 },
 EntrepotUpdateUSD = async () => {
-  var b = await api.canister("rkp4c-7iaaa-aaaaa-aaaca-cai").get_icp_xdr_conversion_rate();
-  var b2 = await fetch("https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7").then(r => r.json());
-  _rate = Number(b.data.xdr_permyriad_per_icp/10000n)*(b2.hasOwnProperty("XDR_USD") ? b2.XDR_USD : 1.399013);
+  if (!lastUpdate || ((Date.now()-lastUpdate) > (10*60*1000))) {
+    lastUpdate = Date.now();
+    var b = await api.canister("rkp4c-7iaaa-aaaaa-aaaca-cai").get_icp_xdr_conversion_rate();
+    var b2 = await fetch("https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7").then(r => r.json());
+    _rate = Number(b.data.xdr_permyriad_per_icp/10000n)*(b2.hasOwnProperty("XDR_USD") ? b2.XDR_USD : 1.399013);
+  }
   return _rate;
 },
 EntrepotGetICPUSD = n => {
@@ -197,42 +200,44 @@ EntrepotGetICPUSD = n => {
   else return false;
 },
 EntrepotClearLiked = async () => {
-  _identity = false;
   _liked = [];
 },
 EntrepotGetAllLiked = () => {
   return _liked
 },
 EntrepotUpdateLiked = async identity => {
-  if (identity) _identity = identity;
-  if (_identity) {
-    const _api = extjs.connect("https://boundary.ic0.app/", _identity);
+  if (identity) {
+    const _api = extjs.connect("https://boundary.ic0.app/", identity);
     _liked = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
   } else _liked = [];
+},
+EntrepotSaveLiked = async identity => {
+  if (identity) {
+    const _api = extjs.connect("https://boundary.ic0.app/", identity);
+    await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").saveLiked(_liked)
+  };
 },
 EntrepotIsLiked = tokenid => {
   return (_liked.indexOf(tokenid) >= 0);
 },
-EntrepotLike = async tokenid => {
-  if (!_identity) return;
-  const _api = extjs.connect("https://boundary.ic0.app/", _identity);
-  var a = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").like(tokenid);
+EntrepotLike = async (tokenid, id) => {
+  if (!id) return;
   _liked.push(tokenid);
+  if (!tokenLikes.hasOwnProperty(tokenid)) tokenLikes[tokenid] = 0;
+  tokenLikes[tokenid]++;
+  await EntrepotSaveLiked(id);
 },
-EntrepotUnike = async tokenid => {
-  if (!_identity) return;
-  const _api = extjs.connect("https://boundary.ic0.app/", _identity);
-  await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").unlike(tokenid);
+EntrepotUnike = async (tokenid, id) => {
+  if (!id) return;
   _liked = _liked.filter(a => a != tokenid);
+  if (!tokenLikes.hasOwnProperty(tokenid)) tokenLikes[tokenid] = 0;
+  tokenLikes[tokenid]--;
+  await EntrepotSaveLiked(id);
 },
 EntrepotGetLikes = async (tokenid, skipCache) => {
-  if (tokenLikes.hasOwnProperty(tokenid) && !skipCache) {
-    api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").likes(tokenid).then(likes => {      
-      tokenLikes[tokenid] = Number(likes);
-    });
-  } else {
+  if (!tokenLikes.hasOwnProperty(tokenid) || !skipCache) {
     var likes = await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").likes(tokenid);
-    tokenLikes[tokenid] = Number(likes);
+    tokenLikes[tokenid] = Number(likes);    
   };
   return (tokenLikes[tokenid] < 0 ? 0 : tokenLikes[tokenid]);
 },
