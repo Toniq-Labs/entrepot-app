@@ -589,7 +589,10 @@ export default function App() {
               identity.accounts().then((accs) => {
                 setAccounts(JSON.parse(accs));
               });
+            } else {              
+              console.log("Error from stoic connect");
             }
+          }).catch(e => {
           });
           break;
         case "torus":

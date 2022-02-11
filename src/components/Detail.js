@@ -240,7 +240,7 @@ const Detail = (props) => {
       case "ag2h7-riaaa-aaaah-qce6q-cai":
         return (
           <iframe
-            frameborder="0"
+            frameBorder="0"
             src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
             className={classes.nftImage}
