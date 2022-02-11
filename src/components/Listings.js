@@ -424,14 +424,15 @@ export default function Listings(props) {
   
   useDidMountEffect(() => {
     console.log("saving");
-    localStorage.setItem("_searchSettings"+collection.canister, JSON.stringify({
+    _ss = {
       sort : sort,
       selectedFilters : selectedFilters,
       showing : showing,
       page : page,
       minPrice : minPrice,
       maxPrice : maxPrice,
-    }));
+    };
+    localStorage.setItem("_searchSettings"+collection.canister, JSON.stringify(_ss));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, selectedFilters, showing, page, minPrice, maxPrice]);  
   useDidMountEffect(() => {
@@ -446,7 +447,7 @@ export default function Listings(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, showing, minPrice, maxPrice, legacyFilterState, wearableFilter]);
   
-  //useInterval(_updates, 10 * 1000);
+  useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     loadFilterData().then(r => {
@@ -543,7 +544,7 @@ export default function Listings(props) {
                   <ListItem>
                     <div style={{width:"100%"}}>
                       {a[2].filter(b => filterGetCount(a[0], b[0]) > 0).map(b => {
-                        return (<>
+                        return (
                           <div key={a[0]+"_"+b[0]} style={{width:"100%"}}>
                             <FormControlLabel style={{maxWidth:"80%"}}
                               control={<Checkbox checked={(selectedFilters.find(c => c[0] == a[0] && c[1] == b[0]) ? true : false)} onChange={() => {handleToggleFilterTrait(a[0], b[0])}}  />}
@@ -551,7 +552,7 @@ export default function Listings(props) {
                             />
                             <Chip style={{float:"right"}} label={filterGetCount(a[0], b[0])} variant="outlined" />
                           </div>
-                        </>)
+                        )
                       })}
                     </div>
                   </ListItem> : "" }
@@ -634,12 +635,12 @@ export default function Listings(props) {
               <div className={classes.filters} style={{}}>
                 <Grid container style={{minHeight:66}}>
                   <Grid item className={classes.hideDesktop}>
-                    <ToggleButton onChange={() => setToggleFilter(!toggleFilter)} size="small" style={{marginTop:5, marginRight:10}}>
+                    <ToggleButton value={""} onChange={() => setToggleFilter(!toggleFilter)} size="small" style={{marginTop:5, marginRight:10}}>
                       <FilterListIcon />
                     </ToggleButton>
                   </Grid>
                   <Grid item>
-                    <ToggleButton onChange={async () => {
+                    <ToggleButton value={""} onChange={async () => {
                       setDisplayListings(false);
                       await _updates();
                       setTimeout(updateListings, 300);
