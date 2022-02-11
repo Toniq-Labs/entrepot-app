@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
 import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
@@ -34,6 +35,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
+import { makeStyles } from "@material-ui/core";
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -100,8 +102,28 @@ const loadAllListings = async (address, principal) => {
   return tokens;
 };
 var canUpdateNfts = true;
+const useStyles = makeStyles((theme) => ({
+  tabsView: {
+    [theme.breakpoints.down('xs')]: {
+      display:"none",
+    },
+  },
+  listingsView: {
+    [theme.breakpoints.down('xs')]: {
+      "& .MuiGrid-container.MuiGrid-spacing-xs-2" : {
+        gridTemplateColumns: "repeat(auto-fill, 100%)!important"
+      }
+    },
+  },
+  filtersView:{
+    [theme.breakpoints.down('xs')]: {
+      display:"none",
+    },
+  },
+}));
 export default function Collection(props) {
   const params = useParams();
+  const classes = useStyles();
   const navigate = useNavigate();
   const [nfts, setNfts] = React.useState([]);
   const [tokenCanisters, setTokenCanisters] = React.useState([]);
@@ -265,6 +287,7 @@ export default function Collection(props) {
             <h1>My Collection</h1>
           </div>
           <Tabs
+            className={classes.tabsView}
             value={props.view}
             indicatorColor="primary"
             textColor="primary"
@@ -274,7 +297,7 @@ export default function Collection(props) {
             }}
           >
             <Tab style={{fontWeight:"bold"}} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab style={{fontWeight:"bold"}} value="selling" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
+            <Tab style={{fontWeight:"bold"}} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
             <Tab style={{fontWeight:"bold"}} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
@@ -282,7 +305,7 @@ export default function Collection(props) {
         </div>
       </div>
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
-        <div style={{position:"sticky",top:72, width:(toggleFilter ? 330 : 60),height:"calc(100vh - 72px)", borderRight:"1px solid #aaa",overflowY:(toggleFilter ? "scroll" : "hidden"),overflowX:"hidden",paddingBottom:50}}>
+        <div className={classes.filtersView} style={{position:"sticky",top:72, width:(toggleFilter ? 330 : 60),height:"calc(100vh - 72px)", borderRight:"1px solid #aaa",overflowY:(toggleFilter ? "scroll" : "hidden"),overflowX:"hidden",paddingBottom:50}}>
           <List>
             <ListItem style={{paddingRight:0}} button onClick={() => setToggleFilter(!toggleFilter)}>
               <ListItemIcon style={{minWidth:40}}>
@@ -323,9 +346,9 @@ export default function Collection(props) {
             </> : ""}
           </List>
         </div>
-        <div style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
+        <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
-            <Grid container style={{height:66}}>
+            <Grid container>
               <Grid item>
                 <ToggleButton onChange={async () => {
                   setDisplayNfts(false);

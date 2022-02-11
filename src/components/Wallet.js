@@ -29,6 +29,7 @@ import LockIcon from '@material-ui/icons/Lock';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PriceICP from '../components/PriceICP';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import CollectionsIcon from '@material-ui/icons/Collections';
@@ -274,7 +275,7 @@ export default function Wallet(props) {
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/selling");}}>
           <ListItemIcon>
-            <CollectionsIcon />
+            <AddShoppingCartIcon />
           </ListItemIcon>
           <ListItemText primary="Selling" />
         </ListItem>

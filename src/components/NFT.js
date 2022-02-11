@@ -42,6 +42,7 @@ import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import _c from '../ic/collections.js';
 import getNri from "../ic/nftv.js";
+import { makeStyles } from "@material-ui/core";
 import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
 var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -75,7 +76,22 @@ const getCollection = c => {
   return collections.find(e => e.canister === c);
 };
 var doRefresh = false;
+const useStyles = makeStyles((theme) => ({
+  smallGrid : {
+    width: "300px", 
+    [theme.breakpoints.down("sm")]: {
+      width:"100%"
+    },
+  },
+  bigGrid : {
+    width: "200px", 
+    [theme.breakpoints.down("sm")]: {
+      width:"100%"
+    },
+  },
+}));
 export default function NFT(props) {
+  const classes = useStyles();
   const tokenid = props.tokenid;
   const { index, canister} = extjs.decodeTokenId(tokenid);
   const nri = getNri(canister, index);
@@ -252,7 +268,7 @@ export default function NFT(props) {
     navigate(`/marketplace/asset/${tokenid}`);
   };
   return (
-    <Grid style={{ display:"flex", width: (props.gridSize === "small" ? "300px" : "200px") }} item>
+    <Grid className={(props.gridSize === "small" ? classes.smallGrid : classes.bigGrid)} style={{ display:"flex"}} item>
       <Card onMouseOver={() => setShowOfferCount(true)} onMouseOut={() => setShowOfferCount(false)} style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
       <CardActionArea onClick={handleClick}>
         <div style={{ ...styles.avatarSkeletonContainer }}>

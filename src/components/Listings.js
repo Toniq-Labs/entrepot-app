@@ -488,7 +488,7 @@ export default function Listings(props) {
         </div>
         {_isCanister(collection.canister) && collection.market ?
         <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
-          <div style={{position:"sticky",top:72, width:(toggleFilter ? 330 : 60),height:"calc(100vh - 72px)", borderRight:"1px solid #aaa",overflowY:(toggleFilter ? "scroll" : "hidden"),overflowX:"hidden",paddingBottom:50}}>
+          <div className={classes.filtersView} style={{position:"sticky",top:72, width:(toggleFilter ? 330 : 60),height:"calc(100vh - 72px)", borderRight:"1px solid #aaa",overflowY:(toggleFilter ? "scroll" : "hidden"),overflowX:"hidden",paddingBottom:50}}>
             <List>
               <ListItem style={{paddingRight:0}} button onClick={() => setToggleFilter(!toggleFilter)}>
                 <ListItemIcon style={{minWidth:40}}>
@@ -542,10 +542,10 @@ export default function Listings(props) {
                   {isOpenFilter(a[0]) ? 
                   <ListItem>
                     <div style={{width:"100%"}}>
-                      {a[2].map(b => {
+                      {a[2].filter(b => filterGetCount(a[0], b[0]) > 0).map(b => {
                         return (<>
                           <div key={a[0]+"_"+b[0]} style={{width:"100%"}}>
-                            <FormControlLabel
+                            <FormControlLabel style={{maxWidth:"80%"}}
                               control={<Checkbox checked={(selectedFilters.find(c => c[0] == a[0] && c[1] == b[0]) ? true : false)} onChange={() => {handleToggleFilterTrait(a[0], b[0])}}  />}
                               label={b[1]}
                             />
@@ -629,10 +629,10 @@ export default function Listings(props) {
                : "" }
             </List>
           </div>
-          <div style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
+          <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
             <div style={{}}>
               <div className={classes.filters} style={{}}>
-                <Grid container style={{height:66}}>
+                <Grid container>
                   <Grid item>
                     <ToggleButton onChange={async () => {
                       setDisplayListings(false);
@@ -805,6 +805,18 @@ export default function Listings(props) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  listingsView: {
+    [theme.breakpoints.down('xs')]: {
+      "& .MuiGrid-container.MuiGrid-spacing-xs-2" : {
+        gridTemplateColumns: "repeat(auto-fill, 100%)!important"
+      }
+    },
+  },
+  filtersView:{
+    [theme.breakpoints.down('xs')]: {
+      display:"none",
+    },
+  },
   socials: {
     padding:0,
     listStyle: "none",
