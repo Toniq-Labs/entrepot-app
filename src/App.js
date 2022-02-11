@@ -735,6 +735,12 @@ export default function App() {
                 error={error}
                 view={"selling"}
                 alert={alert}
+                list={list}
+                unpackNft={unpackNft} 
+                listNft={listNft} 
+                wrapAndlistNft={wrapAndlistNft} 
+                unwrapNft={unwrapNft} 
+                transferNft={transferNft} 
                 confirm={confirm}
                 loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -753,6 +759,12 @@ export default function App() {
                 error={error}
                 view={"offers-received"}
                 alert={alert}
+                list={list}
+                unpackNft={unpackNft} 
+                listNft={listNft} 
+                wrapAndlistNft={wrapAndlistNft} 
+                unwrapNft={unwrapNft} 
+                transferNft={transferNft} 
                 confirm={confirm}
                 loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
