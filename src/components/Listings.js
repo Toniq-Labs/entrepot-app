@@ -632,7 +632,7 @@ export default function Listings(props) {
           <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
             <div style={{}}>
               <div className={classes.filters} style={{}}>
-                <Grid container>
+                <Grid container style={{minHeight:66}}>
                   <Grid item>
                     <ToggleButton onChange={async () => {
                       setDisplayListings(false);
