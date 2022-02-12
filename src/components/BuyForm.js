@@ -9,9 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
-// import extjs from "../ic/extjs.js";
 import {EntrepotNFTImage, EntrepotGetICPUSD} from '../utils.js';
-// import EntrepotDisplayNFT from '../utils.js'
 
 export default function BuyForm(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
@@ -40,7 +38,7 @@ export default function BuyForm(props) {
               <strong><span style={{fontSize:"1.5em",color:"red"}}>{props.price ? <PriceICP size={35} price={props.price} /> : "" }</span></strong><br />{props.price ? <>~<PriceUSD price={EntrepotGetICPUSD(props.price)} /></> : ""}
             </Grid>
           </Grid>
-          <small>This process may take a minute to process. Transactions can not be reversed. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank" rel="noreferrer">Terms of Service</a></small>
+          <small>This process may take a minute to process. Transactions can not be reversed. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank" rel="noopener noreferrer">Terms of Service</a></small>
         </DialogContentText>
       </DialogContent>
       <DialogActions>

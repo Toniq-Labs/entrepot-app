@@ -231,7 +231,6 @@ export default function App() {
           listing.price,
           10000
         );
-      // var r3; // Unused var
       loader(true, "Settling purchase...");
       await _api.canister(canisterId).settle(tokenid);
       loader(false);
@@ -334,8 +333,8 @@ export default function App() {
     setBalance(0);
   };
   var openlogin = false;
-  // const oauths = ['google', 'twitter', 'facebook', 'github'];  // Unused var
   const loadOpenLogin = async () => {
+    // const oauths = ['google', 'twitter', 'facebook', 'github'];  // Unused var
     if (!openlogin) {
       openlogin = new OpenLogin({
         clientId: "BHGs7-pkZO-KlT_BE6uMGsER2N1PC4-ERfU_c7BKN1szvtUaYFBwZMC2cwk53yIOLhdpaOFz4C55v_NounQBOfU",
@@ -674,7 +673,7 @@ export default function App() {
   const footer = (
   <div className={classes.footer}>
     <Typography variant="body1">
-      Developed by ToniqLabs &copy; All rights reserved 2021<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank" rel="noreferrer">Terms of Service</a>
+      Developed by ToniqLabs &copy; All rights reserved 2021<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank" rel="noopener noreferrer">Terms of Service</a>
     </Typography>
   </div>);
   
