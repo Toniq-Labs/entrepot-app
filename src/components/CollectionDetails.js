@@ -63,7 +63,7 @@ export default function CollectionDetails(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (<>
-    <div className={classes.banner} style={{background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"') no-repeat center center" : "#aaa")}}>
+    <div className={classes.banner} style={{background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"')" : "#aaa")}}>
       <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={(typeof collection.avatar != 'undefiend' && collection.avatar ? collection.avatar : "/collections/"+collection.canister+".jpg")} />
     </div>
     <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
