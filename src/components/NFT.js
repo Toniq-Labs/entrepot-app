@@ -394,11 +394,11 @@ export default function NFT(props) {
             <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 
               {getButtons().length > 0 ?
                 <>
-                  <Grid item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(0)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
+                  <Grid style={{width:"100%"}} item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(0)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[0][0]}</Button></Grid>
                   {getButtons().length == 2 ?
-                    <Grid item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(1)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
+                    <Grid style={{width:"100%"}}  item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(1)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
                   :
-                  <Grid item lg={6} md={6}>
+                  <Grid style={{width:"100%"}} item lg={6} md={6}>
                     <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); setAnchorEl(e.currentTarget)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
                     <Menu
                       anchorEl={anchorEl}

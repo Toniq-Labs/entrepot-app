@@ -80,7 +80,10 @@ export default function Navbar(props) {
           </Button>
 
           <IconButton className={classes.hidden}>
-            <MenuIcon onClick={() => {setOpen(true); setWalletOpen(false)}} />
+            <AccountBalanceWalletIcon onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}} />
+          </IconButton>
+          <IconButton className={classes.hidden}>
+            <MenuIcon onClick={() => {setOpen(!open); setWalletOpen(false)}} />
           </IconButton>
           {open && (
             <div className={classes.smNav} onClick={() => setOpen(false)}>
@@ -168,20 +171,6 @@ export default function Navbar(props) {
               >
                 Support
               </Button>
-              <Button
-                startIcon={
-                  <AccountBalanceWalletIcon />
-                }
-                onClick={handleDrawerToggle}
-                className={classes.button1}
-                style={{
-                  color: "#000",
-                  borderBottom:"3px solid transparent",
-                }}
-                color="inherit"
-              >
-              Wallet
-              </Button>
             </div>
           )}
         </Toolbar>
@@ -218,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   },
   smNav: {
     position: "absolute",
-    top: 20,
+    top: 72,
     width: "250px",
     display: "flex",
     right: 0,

@@ -39,8 +39,7 @@ import { makeStyles } from "@material-ui/core";
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 var collections = _c;
@@ -105,20 +104,31 @@ var canUpdateNfts = true;
 const useStyles = makeStyles((theme) => ({
   tabsView: {
     [theme.breakpoints.down('xs')]: {
-      display:"none",
+      //display:"none",
     },
   },
   listingsView: {
     [theme.breakpoints.down('xs')]: {
       "& .MuiGrid-container.MuiGrid-spacing-xs-2" : {
-        gridTemplateColumns: "repeat(auto-fill, 100%)!important"
+        gridTemplateColumns: "repeat(auto-fill, 50%)!important"
       }
     },
   },
   hideDesktop:{
     display:"none",
     [theme.breakpoints.down('xs')]: {
-      display:"block",
+      display:"inline-flex",
+    },
+  },
+  tabsViewTab : {
+    fontWeight:"bold",
+    [theme.breakpoints.down('xs')]: {
+      "&>span>span>svg" : {
+        display:"none"
+      },
+      "&>span>span" : {
+        padding:"0 5px!important"
+      },
     },
   },
   filtersViewOpen:{
@@ -132,10 +142,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom:50,
     [theme.breakpoints.down('xs')]: {
       //display:"none",
-      position:"absolute",
+      position:"fixed",
       backgroundColor:"white",
       zIndex:100,
-      top:0,
       left:0,
       right:0,
       bottom:0,
@@ -155,6 +164,15 @@ const useStyles = makeStyles((theme) => ({
       display:"none",
     },
   },
+  pagi: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "20px",
+    marginBottom: "20px",
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "center",
+    },
+  },
 }));
 export default function Collection(props) {
   const params = useParams();
@@ -167,12 +185,16 @@ export default function Collection(props) {
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
   const [listingPrices, setListingPrices] = React.useState([]);
-  const [toggleFilter, setToggleFilter] = React.useState(true);
+  const [toggleFilter, setToggleFilter] = React.useState(JSON.parse(localStorage.getItem("_toggleFilter")) ?? true);
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
-  const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSizeNFT") ?? "small");
+  const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const changeGrid = (e, a) => {
-    localStorage.setItem("_gridSizeNFT", a);
+    localStorage.setItem("_gridSize", a);
     setGridSize(a)
+  }
+  const changeToggleFilter = () => {
+    localStorage.setItem("_toggleFilter", !toggleFilter);
+    setToggleFilter(!toggleFilter)
   }
   const changeSort = (event) => {
     setPage(1);
@@ -326,23 +348,25 @@ export default function Collection(props) {
             value={props.view}
             indicatorColor="primary"
             textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
             centered
             onChange={(e, nv) => {
               navigate(`/`+nv)
             }}
           >
-            <Tab style={{fontWeight:"bold"}} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab style={{fontWeight:"bold"}} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
-            <Tab style={{fontWeight:"bold"}} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
-            <Tab style={{fontWeight:"bold"}} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
-            <Tab style={{fontWeight:"bold"}} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
           </Tabs>
         </div>
       </div>
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
           <List>
-            <ListItem style={{paddingRight:0}} button onClick={() => setToggleFilter(!toggleFilter)}>
+            <ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
               <ListItemIcon style={{minWidth:40}}>
                 <FilterListIcon />
               </ListItemIcon>
@@ -352,7 +376,7 @@ export default function Collection(props) {
                 primary={(<strong>Collections</strong>)}
               />
                 <ListItemIcon>
-                {toggleFilter ? <ChevronLeftIcon fontSize={"large"} /> :  <ChevronRightIcon fontSize={"large"} /> }
+                {toggleFilter ? <CloseIcon fontSize={"large"} /> :  "" }
                 </ListItemIcon>
             </ListItem>
             {toggleFilter && (tokenCanisters.length > 0 || hideCollectionFilter) ? <>
@@ -384,21 +408,21 @@ export default function Collection(props) {
         <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
             <Grid container style={{minHeight:66}}>
-              <Grid item className={classes.hideDesktop}>
-                <ToggleButton onChange={() => setToggleFilter(!toggleFilter)} size="small" style={{marginTop:5, marginRight:10}}>
-                  <FilterListIcon />
-                </ToggleButton>
-              </Grid>
-              <Grid item>
-                <ToggleButton onChange={async () => {
-                  setDisplayNfts(false);
-                  await refresh();
-                  setTimeout(updateNfts, 300);
-                }} size="small" style={{marginTop:5, marginRight:10}}>
-                  <CachedIcon />
-                </ToggleButton>
-              </Grid>
-              <Grid item>
+              <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+                <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
+                  <ToggleButton onClick={changeToggleFilter}>
+                    <FilterListIcon />
+                  </ToggleButton>
+                </ToggleButtonGroup>
+                <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
+                  <ToggleButton onClick={async () => {
+                    setDisplayNfts(false);
+                    await refresh();
+                    setTimeout(updateNfts, 300);
+                  }}>
+                    <CachedIcon />
+                  </ToggleButton>
+                </ToggleButtonGroup>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
                   <ToggleButton value={"small"}>
                     <ViewModuleIcon />
@@ -408,7 +432,7 @@ export default function Collection(props) {
                   </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-              <Grid item>
+                  <Grid item xs={12} sm={"auto"} >
                 <FormControl style={{marginRight:20}}>
                   <InputLabel>Sort by</InputLabel>
                   <Select
@@ -421,7 +445,7 @@ export default function Collection(props) {
                 </FormControl>
               </Grid>
               {displayNfts && displayNfts.length > perPage ?
-              (<Grid item style={{marginLeft:"auto"}}><Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
+              (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
           <div style={{minHeight:500}}>
@@ -475,7 +499,7 @@ export default function Collection(props) {
               </Grid>
             </div> : "" }
             {(displayNfts && displayNfts.length > perPage ?
-              (<Pagination style={{float:"right",marginTop:"5px",marginBottom:"20px"}} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
+              (<Pagination className={classes.pagi} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
           </div>
         </div>
       </div>

@@ -24,9 +24,8 @@ import Alert from '@material-ui/lab/Alert';
 import TableContainer from '@material-ui/core/TableContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ListIcon from '@material-ui/icons/List';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CloseIcon from '@material-ui/icons/Close';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -126,7 +125,7 @@ export default function Listings(props) {
   const [sort, setSort] = useState(_ss.sort);
   const [showing, setShowing] = useState(_ss.showing);
   const [selectedFilters, setSelectedFilters] = useState(_ss.selectedFilters);
-  const [toggleFilter, setToggleFilter] = useState(true);
+  const [toggleFilter, setToggleFilter] = useState(JSON.parse(localStorage.getItem("_toggleFilter")) ?? true);
   const [openFilters, setOpenFilters] = useState([]);
   const [filterData, setFilterData] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -415,6 +414,10 @@ export default function Listings(props) {
     localStorage.setItem("_gridSize", a);
     setGridSize(a)
   }
+  const changeToggleFilter = () => {
+    localStorage.setItem("_toggleFilter", !toggleFilter);
+    setToggleFilter(!toggleFilter)
+  }
   const minPriceChange = ev => {
     setMinPrice(Number(ev.target.value));
   };
@@ -491,7 +494,7 @@ export default function Listings(props) {
         <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
           <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
             <List>
-              <ListItem style={{paddingRight:0}} button onClick={() => setToggleFilter(!toggleFilter)}>
+              <ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
                 <ListItemIcon style={{minWidth:40}}>
                   <FilterListIcon />
                 </ListItemIcon>
@@ -501,7 +504,7 @@ export default function Listings(props) {
                   primary={(<strong>Filter</strong>)}
                 />
                   <ListItemIcon>
-                  {toggleFilter ? <ChevronLeftIcon fontSize={"large"} /> :  <ChevronRightIcon fontSize={"large"} /> }
+                  {toggleFilter ? <CloseIcon fontSize={"large"} /> : "" }
                   </ListItemIcon>
               </ListItem>
               {toggleFilter ? <>
@@ -634,22 +637,22 @@ export default function Listings(props) {
             <div style={{}}>
               <div className={classes.filters} style={{}}>
                 <Grid container style={{minHeight:66}}>
-                  <Grid item className={classes.hideDesktop}>
-                    <ToggleButton value={""} onChange={() => setToggleFilter(!toggleFilter)} size="small" style={{marginTop:5, marginRight:10}}>
-                      <FilterListIcon />
-                    </ToggleButton>
-                  </Grid>
-                  <Grid item>
-                    <ToggleButton value={""} onChange={async () => {
+                  <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+                    <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
+                      <ToggleButton value={""} onClick={changeToggleFilter}>
+                        <FilterListIcon />
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                    <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
+                    <ToggleButton value={""} onClick={async () => {
                       setDisplayListings(false);
                       await _updates();
                       setTimeout(updateListings, 300);
-                    }} size="small" style={{marginTop:5, marginRight:10}}>
+                    }}>
                       <CachedIcon />
                     </ToggleButton>
-                  </Grid>
-                  <Grid item>
-                    <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
+                    </ToggleButtonGroup>
+                    <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small" value={gridSize} exclusive onChange={changeGrid}>
                       <ToggleButton value={"small"}>
                         <ViewModuleIcon />
                       </ToggleButton>
@@ -658,7 +661,7 @@ export default function Listings(props) {
                       </ToggleButton>
                     </ToggleButtonGroup>
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={12} sm={"auto"} >
                     <FormControl style={{ marginRight: 20 }}>
                       <InputLabel>Showing</InputLabel>
                       <Select value={showing} onChange={changeShowing}>
@@ -667,7 +670,7 @@ export default function Listings(props) {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={12} sm={"auto"} >
                     <FormControl style={{ marginRight: 20 }}>
                       <InputLabel>Sort by</InputLabel>
                       <Select value={sort} onChange={changeSort}>
@@ -683,7 +686,7 @@ export default function Listings(props) {
                     </FormControl>
                   </Grid>
                   {displayListings && displayListings.length > perPage ? (
-                    <Grid item style={{marginLeft:"auto"}}>
+                    <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
                       <Pagination
                         className={classes.pagi}
                         size="small"
@@ -814,14 +817,14 @@ const useStyles = makeStyles((theme) => ({
   listingsView: {
     [theme.breakpoints.down('xs')]: {
       "& .MuiGrid-container.MuiGrid-spacing-xs-2" : {
-        gridTemplateColumns: "repeat(auto-fill, 100%)!important"
+        gridTemplateColumns: "repeat(auto-fill, 50%)!important"
       }
     },
   },
   hideDesktop:{
     display:"none",
     [theme.breakpoints.down('xs')]: {
-      display:"block",
+      display:"inline-flex",
     },
   },
   filtersViewOpen:{
@@ -835,10 +838,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom:50,
     [theme.breakpoints.down('xs')]: {
       //display:"none",
-      position:"absolute",
+      position:"fixed",
       backgroundColor:"white",
       zIndex:100,
-      top:0,
       left:0,
       right:0,
       bottom:0,
@@ -893,7 +895,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "20px",
-    float: "right",
     marginBottom: "20px",
     [theme.breakpoints.down("xs")]: {
       justifyContent: "center",

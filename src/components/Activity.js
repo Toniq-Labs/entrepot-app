@@ -200,26 +200,32 @@ export default function Activity(props) {
         <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div style={{flexGrow:1, marginLeft: "20px", marginTop: "10px",minHeight:500}}>
           <div className={classes.filters} style={{marginLeft: "20px", marginTop: "10px"}}>
-            <FormControl style={{ marginRight: 20 }}>
-              <InputLabel>Sort by</InputLabel>
-              <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"recent"}>Recently Sold</MenuItem>
-                <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
-                <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
-                <MenuItem value={"mint_number"}>Minting #</MenuItem>
-                <MenuItem value={"oldest"}>Oldest</MenuItem>
-                <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
-              </Select>
-            </FormControl>
+            <Grid container style={{minHeight:66}}>
+              <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+                <FormControl style={{ marginRight: 20 }}>
+                  <InputLabel>Sort by</InputLabel>
+                  <Select value={sort} onChange={changeSort}>
+                    <MenuItem value={"recent"}>Recently Sold</MenuItem>
+                    <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
+                    <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
+                    <MenuItem value={"mint_number"}>Minting #</MenuItem>
+                    <MenuItem value={"oldest"}>Oldest</MenuItem>
+                    <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
             {transactions.length > perPage ? (
-              <Pagination
-                className={classes.pagi}
-                size="small"
-                count={Math.ceil(transactions.length / perPage)}
-                page={page}
-                onChange={(e, v) => setPage(v)}
-              />
+              <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
+                <Pagination
+                  className={classes.pagi}
+                  size="small"
+                  count={Math.ceil(transactions.length / perPage)}
+                  page={page}
+                  onChange={(e, v) => setPage(v)}
+                />
+              </Grid>
             ) : ""}
+            </Grid>
           </div>
           <>
             {transactions === false ? (
@@ -250,7 +256,7 @@ export default function Activity(props) {
                   <>
                     <div style={styles.grid}>
                       <TableContainer>
-                        <Table style={{width:"100%"}}>
+                        <Table style={{width:"100%", overflow:"hidden"}}>
                           <TableHead>
                             <TableRow>
                               <TableCell></TableCell>
@@ -381,7 +387,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "20px",
-    float: "right",
     marginBottom: "20px",
     [theme.breakpoints.down("xs")]: {
       justifyContent: "center",
