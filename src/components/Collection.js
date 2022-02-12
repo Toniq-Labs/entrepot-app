@@ -1,7 +1,7 @@
-/* global BigInt */
+// /* global BigInt */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
-import ListIcon from '@material-ui/icons/List';
+// import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
@@ -45,9 +45,9 @@ const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 var collections = _c;
 const _isCanister = c => {
-  return c.length == 27 && c.split("-").length == 5;
+  return c.length === 27 && c.split("-").length === 5;
 };
-var collections = collections.filter(a => _isCanister(a.canister));
+collections = collections.filter(a => _isCanister(a.canister));
 const getCollection = c => {
   return collections.find(e => e.canister === c);
 };
@@ -157,7 +157,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Collection(props) {
-  const params = useParams();
+  // const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
   const [nfts, setNfts] = React.useState([]);
@@ -185,10 +185,10 @@ export default function Collection(props) {
   };
   const updateFavorites = () => {
     var r = EntrepotGetAllLiked();
-    updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+    updateNfts(r.filter((a,i) => r.indexOf(a) === i)); 
   };
   const getPriceOfListing = tokenid => {
-    var fnd = listingPrices.find(a => a[0] == tokenid);
+    var fnd = listingPrices.find(a => a[0] === tokenid);
     if (fnd) {
       return Number(fnd[1][0].price)
     } else {
@@ -197,31 +197,36 @@ export default function Collection(props) {
   };
   const refresh = async (_sort, _collectionFilter) => {
     const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
+    var r
+    var r2
+    var r3
     switch(props.view){
       case "collected":
-        var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
+        updateNfts(r.filter((a,i) => r.indexOf(a) === i),_sort, _collectionFilter); 
         break;
       case "selling":
-        var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
-        var r2 = r.map(a => a[0]);
+        r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
+        r2 = r.map(a => a[0]);
         setListingPrices(r);
-        updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
+        updateNfts(r2.filter((a,i) => r2.indexOf(a) === i),_sort, _collectionFilter); 
         break;
       case "favorites":
-        var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
+        updateNfts(r.filter((a,i) => r.indexOf(a) === i),_sort, _collectionFilter); 
         break;
       case "offers-made":
-        var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
+        updateNfts(r.filter((a,i) => r.indexOf(a) === i),_sort, _collectionFilter); 
         break;
       case "offers-received":
-        var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
-        var r2 = r.filter(result => !(result instanceof Error));
-        var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
-        updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
+        r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
+        r2 = r.filter(result => !(result instanceof Error));
+        r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
+        updateNfts(r3.filter((a,i) => r3.indexOf(a) === i),_sort, _collectionFilter); 
         break;
+      default:
+        console.log('No Option Provided')
     }
   }
   
@@ -245,24 +250,26 @@ export default function Collection(props) {
     if (canUpdateNfts){
       canUpdateNfts = false;
       var _nfts = l ?? nfts;
-      var _sort = s ?? sort;
+      // var _sort = s ?? sort;
       var _collectionFilter = cf ?? collectionFilter;
       if (!_nfts) return;
       if (l) setNfts(l);
       var _displayNfts = _nfts;
-      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || extjs.decodeTokenId(token).canister == _collectionFilter));
+      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter === 'all' || extjs.decodeTokenId(token).canister === _collectionFilter));
       _displayNfts = _displayNfts.sort((a,b) => {
+        var bp
+        var ap
         switch(sort) {
           case "price_asc":
-            var ap = getPriceOfListing(a);
-            var bp = getPriceOfListing(b);
+            ap = getPriceOfListing(a);
+            bp = getPriceOfListing(b);
             if (ap === false && bp === false) return 0; 
             if (ap === false) return -1;
             if (bp === false) return 1;
             return ap-bp;
           case "price_desc":
-            var ap = getPriceOfListing(a);
-            var bp = getPriceOfListing(b);
+            ap = getPriceOfListing(a);
+            bp = getPriceOfListing(b);
             if (ap === false && bp === false) return 0; 
             if (ap === false) return 1;
             if (bp === false) return -1;
@@ -364,7 +371,7 @@ export default function Collection(props) {
                 <ListItemText><strong>View All Collections</strong></ListItemText>
                 <ListItemSecondaryAction><Chip label={tokenCanisters.length} variant="outlined" /></ListItemSecondaryAction>
               </ListItem>
-              { tokenCanisters.filter((a,i) => tokenCanisters.indexOf(a) == i) //filter unique
+              { tokenCanisters.filter((a,i) => tokenCanisters.indexOf(a) === i) //filter unique
                 .map(canister => {
                   var _collection = getCollection(canister);
                   return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
@@ -458,7 +465,7 @@ export default function Collection(props) {
                 .map((tokenid, i) => {
                   return (<NFT 
                     gridSize={gridSize} 
-                    faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
+                    faveRefresher={(props.view === 'favorites' ? updateFavorites : false)} 
                     loggedIn={props.loggedIn} 
                     identity={props.identity} 
                     tokenid={tokenid} 
