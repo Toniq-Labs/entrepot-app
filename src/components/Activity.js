@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import Chip from "@material-ui/core/Chip";
+// import Chip from "@material-ui/core/Chip";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Box from "@material-ui/core/Box";
+// import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Drawer from '@material-ui/core/Drawer';
-import Collapse from "@material-ui/core/Collapse";
-import Slider from "@material-ui/core/Slider";
-import Button from "@material-ui/core/Button";
-import Alert from '@material-ui/lab/Alert';
+// import ToggleButton from '@material-ui/lab/ToggleButton';
+// import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+// import Drawer from '@material-ui/core/Drawer';
+// import Collapse from "@material-ui/core/Collapse";
+// import Slider from "@material-ui/core/Slider";
+// import Button from "@material-ui/core/Button";
+// import Alert from '@material-ui/lab/Alert';
 import TableContainer from '@material-ui/core/TableContainer';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
@@ -23,25 +23,25 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import InputLabel from "@material-ui/core/InputLabel";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
-import { Grid, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import getGenes from "./CronicStats.js";
+// import getGenes from "./CronicStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import Sold from "./Sold";
-import BuyForm from "./BuyForm";
+// import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import collections from '../ic/collections.js';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import PriceICP from './PriceICP';
+// import ViewModuleIcon from '@material-ui/icons/ViewModule';
+// import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+// import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
 
@@ -69,22 +69,22 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-const _getRandomBytes = () => {
-  var bs = [];
-  for (var i = 0; i < 32; i++) {
-    bs.push(Math.floor(Math.random() * 256));
-  }
-  return bs;
-};
-const _showListingPrice = (n) => {
-  n = Number(n) / 100000000;
-  return n.toFixed(8).replace(/0{1,6}$/, "");
-};
+// const _getRandomBytes = () => {
+//   var bs = [];
+//   for (var i = 0; i < 32; i++) {
+//     bs.push(Math.floor(Math.random() * 256));
+//   }
+//   return bs;
+// };
+// const _showListingPrice = (n) => {
+//   n = Number(n) / 100000000;
+//   return n.toFixed(8).replace(/0{1,6}$/, "");
+// };
 
-const emptyListing = {
-  pricing: "",
-  img: "",
-};
+// const emptyListing = {
+//   pricing: "",
+//   img: "",
+// };
 
 export default function Activity(props) {
   const params = useParams();
@@ -94,9 +94,9 @@ export default function Activity(props) {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("recent");
   const [collapseBlurb, setCollapseBlurb] = useState(false);
-  const [isBlurbOpen, setIsBlurbOpen] = useState(false);
+  // const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [blurbElement, setBlurbElement] = useState(false);
-  const [collapseOpen, setCollapseOpen] = useState(false);
+  // const [collapseOpen, setCollapseOpen] = useState(false);
   const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
   
   const navigate = useNavigate();
