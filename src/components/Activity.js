@@ -123,7 +123,7 @@ export default function Activity(props) {
     await refresh();
   };
   const _isCanister = c => {
-    return c.length == 27 && c.split("-").length == 5;
+    return c.length === 27 && c.split("-").length === 5;
   };
   const refresh = async (c) => {
     c = c ?? collection?.canister;
