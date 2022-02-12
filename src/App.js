@@ -20,9 +20,9 @@ import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
 import Home from "./views/Home";
-import CardTest from "./views/CardTest";
+// import CardTest from "./views/CardTest";
 import Typography from "@material-ui/core/Typography";
-import Iconic from "./views/Iconic";
+// import Iconic from "./views/Iconic";
 import Sale from "./views/Sale";
 import Contact from "./views/Contact";
 //import Moonwalkers from "./components/sale/Moonwalkers";
@@ -65,7 +65,7 @@ const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
 const txmin = 100000;
 const _isCanister = c => {
-  return c.length == 27 && c.split("-").length == 5;
+  return c.length === 27 && c.split("-").length === 5;
 };
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -126,7 +126,7 @@ const _getRandomBytes = () => {
   return bs;
 };
 var processingPayments = false;
-var collections = collections.filter(a => _isCanister(a.canister));
+collections = collections.filter(a => _isCanister(a.canister));
 const emptyListing = {
   price: "",
   tokenid: "",
@@ -231,7 +231,7 @@ export default function App() {
           listing.price,
           10000
         );
-      var r3;
+      // var r3; // Unused var
       loader(true, "Settling purchase...");
       await _api.canister(canisterId).settle(tokenid);
       loader(false);
@@ -334,7 +334,7 @@ export default function App() {
     setBalance(0);
   };
   var openlogin = false;
-  const oauths = ['google', 'twitter', 'facebook', 'github'];
+  // const oauths = ['google', 'twitter', 'facebook', 'github'];  // Unused var
   const loadOpenLogin = async () => {
     if (!openlogin) {
       openlogin = new OpenLogin({
@@ -674,7 +674,7 @@ export default function App() {
   const footer = (
   <div className={classes.footer}>
     <Typography variant="body1">
-      Developed by ToniqLabs &copy; All rights reserved 2021<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a>
+      Developed by ToniqLabs &copy; All rights reserved 2021<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank" rel="noreferrer">Terms of Service</a>
     </Typography>
   </div>);
   
@@ -991,7 +991,6 @@ export default function App() {
               />} />
             <Route path="/contact" exact element={
               <Contact
-                error={error}
                 error={error}
                 alert={alert}
                 confirm={confirm}
