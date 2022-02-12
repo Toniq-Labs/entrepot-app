@@ -197,7 +197,7 @@ export default function Activity(props) {
         </div>
         
         {_isCanister(collection.canister) && collection.market ?
-        <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
+        <div id="mainListings" style={{width: "calc(100% + 48px)",position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div style={{flexGrow:1, marginLeft: "20px", marginTop: "10px",minHeight:500}}>
           <div className={classes.filters} style={{marginLeft: "20px", marginTop: "10px"}}>
             <Grid container style={{minHeight:66}}>

@@ -516,7 +516,8 @@ export default function App() {
   const wrapAndlistNft = async (token, loader, refresh) => {
     var v = await confirm("We need to wrap this", "You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?")
     if (v) {
-      var canister = canisterMap[extjs.decodeTokenId(token.id).canister];
+      var decoded = extjs.decodeTokenId(token.id);
+      var canister = canisterMap[decoded.canister];
       if (loader) loader(true, "Creating wrapper...this may take a few minutes");
       try{
         var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(canister).wrap(token.id);
@@ -531,10 +532,10 @@ export default function App() {
         if (refresh) await refresh();
         if (loader) loader(false);
         //New token id
-        token.id = extjs.encodeTokenId(canister, token.index);
+        token.id = extjs.encodeTokenId(canister, decoded.index);
         token.canister = canister;
         token.wrapped = true;
-        listNft(token);
+        listNft(token, loader, refresh);
       } catch(e) {
         if (loader) loader(false);
         console.log(e);

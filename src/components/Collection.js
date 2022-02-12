@@ -69,6 +69,24 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+var fromWrappedMap = {
+  "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
+  "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
+  "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
+  "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
+  "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
+};
+var toWrappedMap = {
+  "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
+  "4nvhy-3qaaa-aaaah-qcnoq-cai" : "y3b7h-siaaa-aaaah-qcnwa-cai",
+  "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
+  "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
+  "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai"
+};
+const getEXTCanister = c => {
+  if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
+  else return c;
+};
 const loadAllTokens = async (address, principal) => {
   var response = await Promise.all(collections.map(a => api.canister(a.canister).tokens(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => extjs.encodeTokenId(a.canister, b)))).map(p => p.catch(e => e)).concat([
     "4nvhy-3qaaa-aaaah-qcnoq-cai",
@@ -76,16 +94,9 @@ const loadAllTokens = async (address, principal) => {
     //"jzg5e-giaaa-aaaah-qaqda-cai",
     "d3ttm-qaaaa-aaaai-qam4a-cai",
     "xkbqi-2qaaa-aaaah-qbpqq-cai",
-  ].map(a => api.canister(a).user_tokens(principal).then(r => r.map(b => extjs.encodeTokenId(a, Number(b))))).map(p => p.catch(e => e))));
+    "fl5nr-xiaaa-aaaai-qbjmq-cai",
+  ].map(a => api.token(a).getTokens(address,principal).then(r => r.map(b => b.id))).map(p => p.catch(e => e))));
   var tokens = response.filter(result => !(result instanceof Error)).flat();
-  
-  // var wrappedMap = {
-    // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
-    // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
-    // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
-    // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
-    // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
-  // };
   return tokens;
 };
 const loadAllListings = async (address, principal) => {
@@ -102,9 +113,14 @@ const loadAllListings = async (address, principal) => {
 };
 var canUpdateNfts = true;
 const useStyles = makeStyles((theme) => ({
-  tabsView: {
-    [theme.breakpoints.down('xs')]: {
-      //display:"none",
+  tabsViewBig: {
+    [theme.breakpoints.down('sm')]: {
+      display:"none",
+    },
+  },
+  tabsViewSmall: {
+    [theme.breakpoints.up('md')]: {
+      display:"none",
     },
   },
   listingsView: {
@@ -185,7 +201,7 @@ export default function Collection(props) {
   const [page, setPage] = React.useState(1);
   const [sort, setSort] = React.useState('mint_number');
   const [listingPrices, setListingPrices] = React.useState([]);
-  const [toggleFilter, setToggleFilter] = React.useState(JSON.parse(localStorage.getItem("_toggleFilter")) ?? true);
+  const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const changeGrid = (e, a) => {
@@ -205,6 +221,10 @@ export default function Collection(props) {
       await refresh();
     }
   };
+  const fullRefresh = async () => {
+    setDisplayNfts(false);
+    await refresh();
+  }
   const updateFavorites = () => {
     var r = EntrepotGetAllLiked();
     updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
@@ -272,7 +292,7 @@ export default function Collection(props) {
       if (!_nfts) return;
       if (l) setNfts(l);
       var _displayNfts = _nfts;
-      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || extjs.decodeTokenId(token).canister == _collectionFilter));
+      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || getEXTCanister(extjs.decodeTokenId(token).canister) == _collectionFilter));
       _displayNfts = _displayNfts.sort((a,b) => {
         switch(sort) {
           case "price_asc":
@@ -306,7 +326,7 @@ export default function Collection(props) {
       })
       setDisplayNfts(_displayNfts);
       setHideCollectionFilter(false);
-      setTokenCanisters(_nfts.map(tokenid => extjs.decodeTokenId(tokenid).canister));
+      setTokenCanisters(_nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister)));
       canUpdateNfts = true;
     }
   };
@@ -344,13 +364,28 @@ export default function Collection(props) {
             <h1>My Collection</h1>
           </div>
           <Tabs
-            className={classes.tabsView}
+            className={classes.tabsViewBig}
+            value={props.view}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+            onChange={(e, nv) => {
+              navigate(`/`+nv)
+            }}
+          >
+            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
+            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
+          </Tabs>
+          <Tabs
+            className={classes.tabsViewSmall}
             value={props.view}
             indicatorColor="primary"
             textColor="primary"
             variant="scrollable"
-            scrollButtons="auto"
-            centered
+            scrollButtons={"on"}
             onChange={(e, nv) => {
               navigate(`/`+nv)
             }}
@@ -415,11 +450,7 @@ export default function Collection(props) {
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
-                  <ToggleButton onClick={async () => {
-                    setDisplayNfts(false);
-                    await refresh();
-                    setTimeout(updateNfts, 300);
-                  }}>
+                  <ToggleButton onClick={fullRefresh}>
                     <CachedIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -493,7 +524,9 @@ export default function Collection(props) {
                     cancelNft={props.cancelNft} 
                     wrapAndlistNft={props.wrapAndlistNft} 
                     unwrapNft={props.unwrapNft} 
-                    transferNft={props.transferNft} 
+                    transferNft={props.transferNft}
+                    loader={props.loader}                    
+                    refresh={fullRefresh}                    
                     />)
                 })}
               </Grid>
