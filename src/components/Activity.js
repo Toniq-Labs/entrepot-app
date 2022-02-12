@@ -215,7 +215,7 @@ export default function Activity(props) {
                 </FormControl>
               </Grid>
             {transactions.length > perPage ? (
-              <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+              <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
                 <Pagination
                   className={classes.pagi}
                   size="small"
@@ -387,7 +387,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "20px",
-    float: "right",
     marginBottom: "20px",
     [theme.breakpoints.down("xs")]: {
       justifyContent: "center",

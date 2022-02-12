@@ -24,9 +24,8 @@ import Alert from '@material-ui/lab/Alert';
 import TableContainer from '@material-ui/core/TableContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ListIcon from '@material-ui/icons/List';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CloseIcon from '@material-ui/icons/Close';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -505,7 +504,7 @@ export default function Listings(props) {
                   primary={(<strong>Filter</strong>)}
                 />
                   <ListItemIcon>
-                  {toggleFilter ? <ChevronLeftIcon fontSize={"large"} /> :  <ChevronRightIcon fontSize={"large"} /> }
+                  {toggleFilter ? <CloseIcon fontSize={"large"} /> : "" }
                   </ListItemIcon>
               </ListItem>
               {toggleFilter ? <>
@@ -839,10 +838,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom:50,
     [theme.breakpoints.down('xs')]: {
       //display:"none",
-      position:"absolute",
+      position:"fixed",
       backgroundColor:"white",
       zIndex:100,
-      top:0,
       left:0,
       right:0,
       bottom:0,
