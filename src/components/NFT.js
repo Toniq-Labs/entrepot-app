@@ -227,18 +227,18 @@ export default function NFT(props) {
     var buttons = [];
     if(listing) {      
       buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-      buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+      buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
     } else {
       if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
         buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-        buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+        buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
       } else {
         if (unwrappedCanisters.indexOf(canister) >= 0) {
           buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.wrapAndlistNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
-          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+          buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
         } else {
           buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
           buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
         };
       }

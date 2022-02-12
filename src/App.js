@@ -553,7 +553,7 @@ export default function App() {
       if (loader) loader(true, "Loading NFTs...");
       if (refresh) await refresh();
       if (loader) loader(false);
-      return alert("Transaction complete", "Your listing has been updated");
+      return alert("Transaction complete", "Your transfer was successful!");
     } catch (e) {
       if (loader) loader(false);
       return error(e);
