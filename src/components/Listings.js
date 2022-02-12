@@ -125,7 +125,7 @@ export default function Listings(props) {
   const [sort, setSort] = useState(_ss.sort);
   const [showing, setShowing] = useState(_ss.showing);
   const [selectedFilters, setSelectedFilters] = useState(_ss.selectedFilters);
-  const [toggleFilter, setToggleFilter] = useState(JSON.parse(localStorage.getItem("_toggleFilter")) ?? true);
+  const [toggleFilter, setToggleFilter] = useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [openFilters, setOpenFilters] = useState([]);
   const [filterData, setFilterData] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -860,14 +860,6 @@ const useStyles = makeStyles((theme) => ({
       display:"none",
     },
   },
-  socials: {
-    padding:0,
-    listStyle: "none",
-    "& li" : {
-      display:"inline-block",
-      margin:"0 10px",
-    },
-  },
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
@@ -882,13 +874,6 @@ const useStyles = makeStyles((theme) => ({
   filters: {
     [theme.breakpoints.down("sm")]: {
       textAlign:"center",
-    },
-  },
-  stats: {
-    marginTop:-70,
-    minHeight:81,
-    [theme.breakpoints.down("xs")]: {
-      marginTop:0,
     },
   },
   pagi: {
