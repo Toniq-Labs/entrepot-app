@@ -305,7 +305,7 @@ Definity Donkey NFTs are created as a tribute to Donkeys embracing their support
   {
     canister: "nges7-giaaa-aaaaj-qaiya-cai",
     priority : 10,
-    name: "Saga Legends",
+    name: "Saga Legends #0: The Fool",
     brief : "Collectible Major Arcana for Fans of Art and Tarot",
     description : "Saga",
     blurb: (<><p>
@@ -317,7 +317,7 @@ Definity Donkey NFTs are created as a tribute to Donkeys embracing their support
     banner : "/collections/saga/banner.jpg",
     avatar : "/collections/saga/avatar.jpg",
     collection : "/collections/saga/collection.jpg",
-    route: "saga",
+    route: "saga-the-fool",
     commission: 0.035,
     comaddress: "ec50942af51bf00f60d28770e058cfed9ea2d31279aceb71e0fffd728f1d4274",
     unit : "Legend",
@@ -325,6 +325,29 @@ Definity Donkey NFTs are created as a tribute to Donkeys embracing their support
     mature: false,
     market : true,
     filter : false,
+  },
+  {
+    canister: "cwu5z-wyaaa-aaaaj-qaoaq-cai",
+    priority : 10,
+    name: "Saga Legends #1: The Magician",
+    brief : "Collectible Major Arcana for Fans of Art and Tarot",
+    description : "Saga",
+    blurb: (<><p>
+      Saga is bringing Tarot into the Metaverse. These collectible Major Arcana NFTs celebrate and support our first official deck.
+    </p></>),
+    keywords : "saga cards tarot nft collectible arcana",
+    twitter : "https://twitter.com/sagacards",
+    web : "https://legends.saga.cards",
+    banner : "/collections/saga/banner.jpg",
+    avatar : "/collections/saga/avatar.jpg",
+    collection : "/collections/saga/collection-magician.jpg",
+    route: "saga-the-magician",
+    commission: 0.035,
+    comaddress: "769b645e881a0f5cf8891c1714b8235130984d07dd0c6ccc2aa13076682fd4bb",
+    unit : "Legend",
+    nftv : false,
+    mature: false,
+    market : true,
   },
   {
     canister: "pk6rk-6aaaa-aaaae-qaazq-cai",
