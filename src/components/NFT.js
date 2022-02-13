@@ -199,7 +199,6 @@ export default function NFT(props) {
   };
 
   const refresh = async () => {
-    console.log('test');
     if (doRefresh) {
       await getListing();
     };

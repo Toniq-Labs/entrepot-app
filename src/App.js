@@ -400,6 +400,7 @@ export default function App() {
               "qcg3w-tyaaa-aaaah-qakea-cai",
               "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "qgsqp-byaaa-aaaah-qbi4q-cai",
+	      "6z5wo-yqaaa-aaaah-qcsfa-cai",
             ]),
           });
           if (result) {
@@ -627,6 +628,7 @@ export default function App() {
                     "4nvhy-3qaaa-aaaah-qcnoq-cai",
                     "ryjl3-tyaaa-aaaaa-aaaba-cai",
                     "qgsqp-byaaa-aaaah-qbi4q-cai",
+                    "6z5wo-yqaaa-aaaah-qcsfa-cai",
                   ]),
                 });
               }
