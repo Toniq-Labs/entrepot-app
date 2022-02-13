@@ -131,16 +131,12 @@ export default function Activity(props) {
     EntrepotUpdateStats().then(() => {
       setStats(EntrepotCollectionStats(collection.canister))
     });  
-    if (c === "nges7-giaaa-aaaaj-qaiya-cai") {
-      setTransactions([]);
-    } else {
-      var txs = await api.canister(c).transactions();
-      var nt = txs;
-      if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-        nt = txs.slice(82);
-      }
-      setTransactions(nt);
+    var txs = await api.canister(c).transactions();
+    var nt = txs;
+    if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
+      nt = txs.slice(82);
     }
+    setTransactions(nt);
   };
   const theme = useTheme();
   const styles = {
