@@ -341,7 +341,7 @@ BTC Flower is the digital version of the R.I.P Banking System art piece. It exis
     name: "Dfinity Space Apes",
     brief : "10,000 Space Apes want to go their planet",
     description : "10,000 Space Apes came together to explore new things in the universe. Their spacecraft broke down in the Earth. Help them to send back to their planets.",
-    blurb: (<><p>10,000 Dfinity Space Apes came together to explore new things in the universe and started traveling from planet to planet. Their purpose is to take the newly discovered mines in the universe to their own planets. The last stop of this journey was earth. But there is a problem. Their spacecraft broke down and they are collecting parts for the repair of spacecraft by spreading all over the world. Our holders will gather all the Space Apes in the Footprint tab and then they will be ready to return to their planet. At the same time, in the process of returning to their planets, they will want to mine precious metals from the planets they will travel on this journey. In this process, our holders will also be rewarded by playing our P2E game from the Apesteroid Mining tab, helping them to mine.</p></>),
+    blurb: (<><p>10,000 Space Apes came together to explore new things in the universe. Their spacecraft broke down on Earth. Help them return to their planets.</p></>),
     keywords : "P2E Footprint Game Apes Space Dfinity",
     web : "https://hzuo4-qiaaa-aaaag-qaarq-cai.ic0.app",
     //telegram : "https://t.me/TheICPArt",
