@@ -14,7 +14,7 @@ export default function TransferForm(props) {
   const _submit = () => {
     //Validate address
     handleClose();
-    props.transfer(props.nft.id, address);
+    props.transfer(props.nft.id, address, props.buttonLoader, props.refresher);
   };
   const handleClose = () => {
     setAddress("");

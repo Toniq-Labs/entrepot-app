@@ -14,6 +14,8 @@ export default function OfferForm(props) {
   const [amount, setAmount] = React.useState(props.floor);
         
   const _submit = async () => {
+    
+    if (props.floor && Number(amount) < (Number(props.floor)*.8)) return props.error("Offer must be above 80% of the current floor price (~" + (Number(props.floor)*.8).toFixed(2) + " ICP)"); 
     if (Number(amount) < 0.01) return props.error("Min offer amount is 0.01 ICP"); 
     var icp = BigInt(Math.floor(amount*(10**8)));
     if (props.balance < icp + 10000n) return props.error("Your balance is insufficient to make this offer");
@@ -38,7 +40,7 @@ export default function OfferForm(props) {
         <DialogTitle style={{textAlign:'center'}}>Submit Offer</DialogTitle>
         <DialogContent>
         <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter the amount in ICP that you would like to purchase this NFT for.</DialogContentText>
-        <Alert severity="info">Offers are non-binding and indicative only. If the seller lists the NFT at or below the price of your offer, it will not automatically buy it for you. Limit 1 offer per NFT per principal.</Alert>
+        <Alert severity="info">Offers are non-binding and indicative only. If the seller lists the NFT at or below the price of your offer, it will not automatically buy it for you. Limit 1 offer per NFT per principal.</Alert>        
           <TextField
             style={{width:'100%'}}
             margin="dense"

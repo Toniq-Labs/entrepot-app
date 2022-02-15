@@ -55,6 +55,14 @@ export default function Home(props) {
   const navigate = useNavigate();
   var items = [
     {
+        link: "/sale/donkey",
+        img: "/banner/donkey.jpg"
+    },
+    {
+        link: "/sale/icspliffsters",
+        img: "/banner/icspliffsters.jpg"
+    },
+    {
         link: "/sale/icpics",
         img: "/banner/icpics.jpg"
     },

@@ -30,7 +30,6 @@ import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import { Grid, makeStyles } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import getGenes from "./CronicStats.js";
-import { getTraits, getPairing} from "./BTCFlowerStats.js";
 import extjs from "../ic/extjs.js";
 import getNri from "../ic/nftv.js";
 import { useTheme } from "@material-ui/core/styles";
@@ -77,6 +76,17 @@ const _getRandomBytes = () => {
   }
   return bs;
 };
+
+const getCollectionFromRoute = r => {
+  if (_isCanister(r)) {
+    return collections.find(e => e.canister === r)
+  } else {
+    return collections.find(e => e.route === r)
+  };
+};
+const _isCanister = c => {
+  return c.length == 27 && c.split("-").length == 5;
+};
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -98,16 +108,9 @@ export default function Activity(props) {
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [blurbElement, setBlurbElement] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
-  const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
+  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
   
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (props.collection) _changeCollection(props.collection);
-  }, [props.collection]);
-  React.useEffect(() => {
-    _changeCollection(collections.find(e => e.route === params?.route));
-  }, [params.route]);
 
   const _changeCollection = async c => {
     setCollection(c);
@@ -123,20 +126,21 @@ export default function Activity(props) {
   const _updates = async () => {
     await refresh();
   };
-  const _isCanister = c => {
-    return c.length == 27 && c.split("-").length == 5;
-  };
   const refresh = async (c) => {
     c = c ?? collection?.canister;
     EntrepotUpdateStats().then(() => {
       setStats(EntrepotCollectionStats(collection.canister))
     });  
-    var txs = await api.canister(c).transactions();
-    var nt = txs;
-    if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-      nt = txs.slice(82);
+    if (c === "nges7-giaaa-aaaaj-qaiya-cai") {
+      setTransactions([]);
+    } else {
+      var txs = await api.canister(c).transactions();
+      var nt = txs;
+      if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
+        nt = txs.slice(82);
+      }
+      setTransactions(nt);
     }
-    setTransactions(nt);
   };
   const theme = useTheme();
   const styles = {
@@ -194,27 +198,35 @@ export default function Activity(props) {
         </div>
         
         {_isCanister(collection.canister) && collection.market ?
-        <div style={{marginLeft: "20px", marginTop: "10px"}}>
+        <div id="mainListings" style={{width: "calc(100% + 48px)",position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
+        <div style={{flexGrow:1, marginLeft: "20px", marginTop: "10px",minHeight:500}}>
           <div className={classes.filters} style={{marginLeft: "20px", marginTop: "10px"}}>
-            <FormControl style={{ marginRight: 20 }}>
-              <InputLabel>Sort by</InputLabel>
-              <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"recent"}>Recently Sold</MenuItem>
-                <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
-                <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
-                <MenuItem value={"mint_number"}>Minting #</MenuItem>
-                <MenuItem value={"oldest"}>Oldest</MenuItem>
-              </Select>
-            </FormControl>
+            <Grid container style={{minHeight:66}}>
+              <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+                <FormControl style={{ marginRight: 20 }}>
+                  <InputLabel>Sort by</InputLabel>
+                  <Select value={sort} onChange={changeSort}>
+                    <MenuItem value={"recent"}>Recently Sold</MenuItem>
+                    <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
+                    <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
+                    <MenuItem value={"mint_number"}>Minting #</MenuItem>
+                    <MenuItem value={"oldest"}>Oldest</MenuItem>
+                    <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
             {transactions.length > perPage ? (
-              <Pagination
-                className={classes.pagi}
-                size="small"
-                count={Math.ceil(transactions.length / perPage)}
-                page={page}
-                onChange={(e, v) => setPage(v)}
-              />
+              <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
+                <Pagination
+                  className={classes.pagi}
+                  size="small"
+                  count={Math.ceil(transactions.length / perPage)}
+                  page={page}
+                  onChange={(e, v) => setPage(v)}
+                />
+              </Grid>
             ) : ""}
+            </Grid>
           </div>
           <>
             {transactions === false ? (
@@ -245,11 +257,12 @@ export default function Activity(props) {
                   <>
                     <div style={styles.grid}>
                       <TableContainer>
-                        <Table style={{width:"100%"}}>
+                        <Table style={{width:"100%", overflow:"hidden"}}>
                           <TableHead>
                             <TableRow>
                               <TableCell></TableCell>
                               <TableCell align="left"><strong>Item</strong></TableCell>
+                              <TableCell align="center"><strong>NRI</strong></TableCell>
                               <TableCell align="center"><strong>Price</strong></TableCell>
                               <TableCell align="center"><strong>From</strong></TableCell>
                               <TableCell align="center"><strong>To</strong></TableCell>
@@ -302,7 +315,7 @@ export default function Activity(props) {
                               .map((transaction, i) => {
                                 return (
                                   <Sold
-                                    gri={getNri(
+                                    nri={getNri(
                                       collection?.canister,
                                       extjs.decodeTokenId(transaction.token).index
                                     )}
@@ -332,6 +345,7 @@ export default function Activity(props) {
                 onChange={(e, v) => setPage(v)}
               />
             ) : ""}
+        </div>
         </div> : ""}
       </div>
     </div>
@@ -374,7 +388,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "20px",
-    float: "right",
     marginBottom: "20px",
     [theme.breakpoints.down("xs")]: {
       justifyContent: "center",

@@ -6,20 +6,49 @@ import Button from "@material-ui/core/Button";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import extjs from "../ic/extjs.js";
+import { makeStyles } from "@material-ui/core";
 const api = extjs.connect("https://boundary.ic0.app/");
 const numberWithCommas = (x) => {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
 }
+
+const useStyles = makeStyles((theme) => ({
+  banner: {
+    borderRadius:5,
+    marginBottom:70,
+    backgroundSize:"cover", 
+    height:200,
+    [theme.breakpoints.down("xs")]: {
+      background:"none!important",
+      marginTop:-170,
+    },
+  },
+  stats: {
+    marginTop:-70,
+    minHeight:81,
+    [theme.breakpoints.down("xs")]: {
+      marginTop:0,
+    },
+  },
+  socials: {
+    padding:0,
+    listStyle: "none",
+    "& li" : {
+      display:"inline-block",
+      margin:"0 10px",
+    },
+  },
+}));
 export default function CollectionDetails(props) {
+  const classes = useStyles();
   const [blurbElement, setBlurbElement] = useState(false);
   const [collapseBlurb, setCollapseBlurb] = useState(false);
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [size, setSize] = useState(false);
   
   var stats = props.stats;
-  var classes = props.classes;
   var collection = props.collection;
   React.useEffect(() => {
     if (blurbElement.clientHeight > 110) {
@@ -34,7 +63,7 @@ export default function CollectionDetails(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (<>
-    <div style={{borderRadius:5,marginBottom:70,background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"') no-repeat center center" : "#aaa"), backgroundSize:"cover", height:200}}>
+    <div className={classes.banner} style={{background:(typeof collection.banner != 'undefined' && collection.banner ? "url('"+collection.banner+"')" : "#aaa")}}>
       <Avatar style={{top:150,margin:"0 auto",border:"10px solid white",height:120, width:120}} src={(typeof collection.avatar != 'undefiend' && collection.avatar ? collection.avatar : "/collections/"+collection.canister+".jpg")} />
     </div>
     <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
@@ -72,7 +101,7 @@ export default function CollectionDetails(props) {
       <h1>{collection.name}</h1>
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
       {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
-      <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden", marginTop:50,fontSize: "1.2em" }}>
+      <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden",fontSize: "1.2em" }}>
         {collection?.blurb}
       </div>
       {collapseBlurb ? (

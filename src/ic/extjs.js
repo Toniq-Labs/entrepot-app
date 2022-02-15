@@ -72,35 +72,26 @@ const _preloadedIdls = {
   'sale' : ic3dIDL,
   'default' : extIDL,
 };
-var loadedTokens = {};
-loadedTokens["pk6rk-6aaaa-aaaae-qaazq-cai"] = [];
-for(var i = 0; i < 2009; i++){
-  loadedTokens["pk6rk-6aaaa-aaaae-qaazq-cai"].push([i, {nonfungible: {metadata:[]}}]);
-};
-loadedTokens["jmuqr-yqaaa-aaaaj-qaicq-cai"] = [];
-for(var i = 0; i < 3507; i++){
-  loadedTokens["jmuqr-yqaaa-aaaaj-qaicq-cai"].push([i, {nonfungible: {metadata:[]}}]);
-};
-loadedTokens["nges7-giaaa-aaaaj-qaiya-cai"] = [];
-for(var i = 0; i < 100; i++){
-  loadedTokens["nges7-giaaa-aaaaj-qaiya-cai"].push([i, {nonfungible: {metadata:[]}}]);
-};
 
-loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"] = [];
-for(var i = 0; i < 10000; i++){
-  loadedTokens["jeghr-iaaaa-aaaah-qco7q-cai"].push([i, {nonfungible: {metadata:[]}}]);
+var tokensToLoad = {
+  "pk6rk-6aaaa-aaaae-qaazq-cai" : [0,2009],
+  "jmuqr-yqaaa-aaaaj-qaicq-cai" : [0,3507],
+  "nges7-giaaa-aaaaj-qaiya-cai" : [0,100],
+  "jeghr-iaaaa-aaaah-qco7q-cai" : [0,10000],
+  "y3b7h-siaaa-aaaah-qcnwa-cai" : [0,10000],
+  "bxdf4-baaaa-aaaah-qaruq-cai" : [1,10000],
+  "3db6u-aiaaa-aaaah-qbjbq-cai" : [0,8001],
+  "poyn6-dyaaa-aaaah-qcfzq-cai" : [0,25000],
+  "nfvlz-jaaaa-aaaah-qcciq-cai" : [0,60000],
 };
-loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"] = [];
-for(var i = 0; i < 10000; i++){
-  loadedTokens["y3b7h-siaaa-aaaah-qcnwa-cai"].push([i, {nonfungible: {metadata:[]}}]);
-};
-loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"] = [];
-for(var i = 0; i < 10000; i++){
-  loadedTokens["bxdf4-baaaa-aaaah-qaruq-cai"].push([i, {nonfungible: {metadata:[]}}]);
-};
-loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"] = [];
-for(var i = 0; i < 8001; i++){
-  loadedTokens["3db6u-aiaaa-aaaah-qbjbq-cai"].push([i, {nonfungible: {metadata:[]}}]);
+var loadedTokens = {};
+for(const a in tokensToLoad) {
+  if (tokensToLoad.hasOwnProperty(a)){
+    loadedTokens[a] = [];
+    for(var i = tokensToLoad[a][0]; i < (tokensToLoad[a][1]+tokensToLoad[a][0]); i++){
+      loadedTokens[a].push([i, {nonfungible: {metadata:[]}}]);
+    };
+  };
 };
 
 
@@ -306,7 +297,7 @@ class ExtConnection {
                 try {
                   api.tokens_ext(aid).then(r => {
                     if (typeof r.ok != 'undefined') {
-                      resolve(r.ok.map(d => {
+                      var ret = r.ok.map(d => {
                         return {
                           index : d[0],
                           id : tokenIdentifier(tokenObj.canister, d[0]),
@@ -314,7 +305,23 @@ class ExtConnection {
                           listing : d[1].length ? d[1][0] : false,
                           metadata : d[2].length ? d[2][0] : false,
                         }
-                      }));
+                      });
+                      resolve(ret);
+                      // var wrappedMap = {
+                        // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
+                        // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
+                        // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
+                        // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
+                        // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
+                      // };
+                      // if (wrappedMap.hasOwnProperty(tokenObj.canister)){
+                        // this.token(wrappedMap(tokenObj.canister)).getTokens(aid, principal).then(r => {
+                          // var ts = ret.map(a => {a.wrapped = true; return a});
+                          // resolve(ts.concat(r));
+                        // });
+                      // } else {
+                        // resolve(ret);
+                      // };
                     }else if (typeof r.err != 'undefined') {
                       if (r.err.hasOwnProperty("Other") && r.err.Other === "No tokens") {
                         resolve([]);
