@@ -15,7 +15,8 @@ import Detail from "./components/Detail";
 import Listings from "./components/Listings";
 import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
-import Collection from "./components/Collection";
+import UserCollection from "./components/UserCollection";
+import UserActivity from "./components/UserActivity";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
 import Create from "./views/Create";
@@ -48,6 +49,7 @@ import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
 import Sword from "./components/sale/Sword";
+import Donkey from "./components/sale/Donkey";
 import ICSpliffsters from "./components/sale/ICSpliffsters";
 import Floki from "./components/sale/Floki";
 import ICPics from "./components/sale/ICPics";
@@ -731,7 +733,7 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/favorites" exact element={
-              <Collection
+              <UserCollection
                 error={error}
                 view={"favorites"}
                 alert={alert}
@@ -740,7 +742,7 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/selling" exact element={
-              <Collection
+              <UserCollection
                 error={error}
                 view={"selling"}
                 alert={alert}
@@ -755,7 +757,7 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/offers-made" exact element={
-              <Collection
+              <UserCollection
                 error={error}
                 view={"offers-made"}
                 alert={alert}
@@ -764,7 +766,7 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/offers-received" exact element={
-              <Collection
+              <UserCollection
                 error={error}
                 view={"offers-received"}
                 alert={alert}
@@ -779,7 +781,7 @@ export default function App() {
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/collected" exact element={
-              <Collection
+              <UserCollection
                 error={error}
                 view={"collected"}
                 alert={alert}
@@ -790,6 +792,21 @@ export default function App() {
                 wrapAndlistNft={wrapAndlistNft} 
                 unwrapNft={unwrapNft} 
                 transferNft={transferNft} 
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/activity" exact element={
+              <UserActivity
+                error={error}
+                view={"activity"}
+                alert={alert}
+                list={list}
+                unpackNft={unpackNft} 
+                listNft={listNft} 
+                wrapAndlistNft={wrapAndlistNft} 
+                unwrapNft={unwrapNft} 
+                transferNft={transferNft} 
+                confirm={confirm}
+                loggedIn={loggedIn} 
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
               />} />
             <Route path="/sale/btcflower" exact element={
@@ -833,6 +850,15 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icspliffsters"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/sale/donkey" exact element={
+              <Donkey
+                error={error}
+                view={"sale"}
+                sale={"donkey"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}

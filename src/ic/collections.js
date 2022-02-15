@@ -3,6 +3,32 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "qjwjm-eaaaa-aaaah-qctga-cai",
+    priority : 10,
+    name: "Dfinity Donkey",
+    brief : "10000 unique Dfinity donkey NFTs on IC",
+    description : "Dfinity donkey is an NFT collection that will be the membership token of DONGE foundation, a decentralised foundation backed by DONGE tokens. DONGE is created to promote and build a fantastic community for IC. Earn Donkey NFT and earn 1 Million DONGE tokens per NFT as airdrop in March.",
+    blurb: (<><p>Donkeys are the most underrated animals by sapiens; they have made a significant contribution in human history and dominance not because they are cute but because they get the shit done with low maintenance and reliability. They have greater intelligence, a firm sense of self-preservation, and independence than horses and dogs. They have been favorite animals for masses who didn't have the time nor the will to go out and comb their donkeys. They needed an animal that could get up in the morning and work. Plus, they can work up to old age and live longer than horses.
+Definity Donkey NFTs are created as a tribute to Donkeys embracing their support to human evolution and starting a community that can be a catalyst for blockchain adoption and experiments.</p></>),
+    keywords : "Dfinity Donkey, DONGE",
+    twitter : "https://twitter.com/DfinityDonkeys",
+    web : "https://Dongetoken.com",
+    discord : "https://discord.gg/YcEaDPJgJ4",
+    medium : "https://medium.com/@DONGE",
+    //telegram : "https://t.me/+odsWbiTXIfQyYmE0",
+    banner : "/collections/donkey/banner.jpg",
+    avatar : "/collections/donkey/avatar.jpg",
+    collection : "/collections/donkey/collection.jpg",
+    route: "donkey",
+    commission: 0.035,
+    comaddress: false,
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    filter : true,
+  },
+  {
     canister: "2iiif-4qaaa-aaaah-qcs5a-cai",
     priority : 10,
     name: "ICSpliffsters",

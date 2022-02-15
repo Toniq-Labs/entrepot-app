@@ -81,6 +81,12 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
+      title : "Dfinity Donkey",
+      link : "/sale/donkey",
+      image : "/collections/donkey/collection.jpg",
+      content : (<>Dfinity donkey is an NFT collection that will be the membership token of DONGE foundation, a decentralised foundation backed by DONGE tokens. DONGE is created to promote and build a fantastic community for IC. Earn Donkey NFT and earn 1 Million DONGE tokens per NFT as airdrop in March.</>),
+    },
+    {
       title : "ICSpliffsters",
       link : "/sale/icspliffsters",
       image : "/collections/icspliffsters/collection.jpg",
