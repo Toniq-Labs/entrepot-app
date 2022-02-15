@@ -76,6 +76,17 @@ const _getRandomBytes = () => {
   }
   return bs;
 };
+
+const getCollectionFromRoute = r => {
+  if (_isCanister(r)) {
+    return collections.find(e => e.canister === r)
+  } else {
+    return collections.find(e => e.route === r)
+  };
+};
+const _isCanister = c => {
+  return c.length == 27 && c.split("-").length == 5;
+};
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -97,16 +108,9 @@ export default function Activity(props) {
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [blurbElement, setBlurbElement] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
-  const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
+  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
   
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (props.collection) _changeCollection(props.collection);
-  }, [props.collection]);
-  React.useEffect(() => {
-    _changeCollection(collections.find(e => e.route === params?.route));
-  }, [params.route]);
 
   const _changeCollection = async c => {
     setCollection(c);
@@ -121,9 +125,6 @@ export default function Activity(props) {
 
   const _updates = async () => {
     await refresh();
-  };
-  const _isCanister = c => {
-    return c.length == 27 && c.split("-").length == 5;
   };
   const refresh = async (c) => {
     c = c ?? collection?.canister;

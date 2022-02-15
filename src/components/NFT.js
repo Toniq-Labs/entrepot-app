@@ -118,7 +118,7 @@ export default function NFT(props) {
   const { index, canister} = extjs.decodeTokenId(tokenid);
   const nri = getNri(canister, index);
   const [metadata, setMetadata] = React.useState(props.metadata);
-  const [isUnwrapped, setIsUnwrapped] = React.useState(toWrappedMap.hasOwnProperty(canister));
+  const [isNotEXT, setIsNotEXT] = React.useState(toWrappedMap.hasOwnProperty(canister));
   const [listing, setListing] = React.useState(props.listing);
   const [offerCount, setOfferCount] = React.useState(0);
   const [offer, setOffer] = React.useState(false);
@@ -130,7 +130,7 @@ export default function NFT(props) {
   
   const navigate = useNavigate();
   const getListing = () => {
-    if (isUnwrapped) return setListing(false);
+    if (isNotEXT) return setListing(false);
     api.token(canister).listings().then(r => {
       var f = r.find(a => a[0] == index);
       if (f[1]) setListing(f[1]);
@@ -267,7 +267,7 @@ export default function NFT(props) {
   const wrappedCanisters = ["jeghr-iaaaa-aaaah-qco7q-cai","y3b7h-siaaa-aaaah-qcnwa-cai","q6hjz-kyaaa-aaaah-qcama-cai", "3db6u-aiaaa-aaaah-qbjbq-cai", "bxdf4-baaaa-aaaah-qaruq-cai"];
   const unwrappedCanisters = ["fl5nr-xiaaa-aaaai-qbjmq-cai","4nvhy-3qaaa-aaaah-qcnoq-cai","xkbqi-2qaaa-aaaah-qbpqq-cai", "qcg3w-tyaaa-aaaah-qakea-cai", "d3ttm-qaaaa-aaaai-qam4a-cai"];
   const showWrapped = () => {
-    if (isUnwrapped) return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>UNWRAPPED</span>);
+    if (isNotEXT) return (<span style={{fontSize:".9em",position:"absolute",top: 0,left: 0,fontWeight: "bold",color: "black",backgroundColor: "#00b894",padding: "2px"}}>UNWRAPPED</span>);
     else return "";
   };
   var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];

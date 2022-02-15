@@ -264,11 +264,16 @@ export default function App() {
     processingPayments = true;
     
     //Process legacy payments first
-    if (legacyPrincipalPayouts.hasOwnProperty(identity.getPrincipal().toText())) {
-      for (const canister in legacyPrincipalPayouts[identity.getPrincipal().toText()]) {
-        await _processPaymentForCanister(canister);
+    var p = identity.getPrincipal().toText();
+    console.log("Scanning for principal...", p);
+    if (legacyPrincipalPayouts.hasOwnProperty(p)) {
+      for (const canister in legacyPrincipalPayouts[p]) {
+        loader(true, "Payments found, processing...");
+        await _processPaymentForCanister(collections.find(a => a.canister == canister));
       }
     };
+    loader(true, "Processing payments... (this can take a few minutes)");
+    
     var canistersToProcess = ["pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
     var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
     for (var j = 0; j < _collections.length; j++) {

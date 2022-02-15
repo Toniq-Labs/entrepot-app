@@ -88,11 +88,20 @@ const useDidMountEffect = (func, deps) => {
     }, deps);
 }
 
+const getCollectionFromRoute = r => {
+  if (_isCanister(r)) {
+    return collections.find(e => e.canister === r)
+  } else {
+    return collections.find(e => e.route === r)
+  };
+};
+const _isCanister = c => {
+  return c.length == 27 && c.split("-").length == 5;
+};
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
 };
-
 const emptyListing = {
   pricing: "",
   img: "",
@@ -105,7 +114,7 @@ export default function Listings(props) {
   const [listings, setListings] = useState(false);
   const [displayListings, setDisplayListings] = useState(false);
   if (!_ss){
-    _ss = localStorage.getItem("_searchSettings"+collections.find(e => e.route === params?.route).canister);
+    _ss = localStorage.getItem("_searchSettings"+getCollectionFromRoute(params?.route).canister);
     if (_ss) {
       _ss = JSON.parse(_ss);
     } else {
@@ -131,7 +140,7 @@ export default function Listings(props) {
   const [collapseOpen, setCollapseOpen] = useState(false);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const [wearableFilter, setWearableFilter] = useState("all");
-  const [collection, setCollection] = useState(collections.find(e => e.route === params?.route));
+  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
   const navigate = useNavigate();
   
   const cronicFilterTraits = ["health","base","speed","attack","range","magic","defense","resistance","basic","special"];
@@ -268,9 +277,6 @@ export default function Listings(props) {
       );
     }
     return a;
-  };
-  const _isCanister = c => {
-    return c.length == 27 && c.split("-").length == 5;
   };
   
   const _updates = async (s, c) => {
@@ -564,7 +570,7 @@ export default function Listings(props) {
             
               {toggleFilter ?
               <>
-                {params?.route == "cronics" ? (
+                {collection?.route == "cronics" ? (
                   <>
                   {cronicFilterTraits.map(filterName => {
                     return (
