@@ -72,7 +72,7 @@ var collections = [
     commission: 0.035,
     comaddress: false,
     unit : "NFT",
-    nftv : false,
+    nftv : true,
     mature: false,
     market : true,
     filter : false,
