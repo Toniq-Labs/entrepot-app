@@ -92,12 +92,6 @@ export default function Iconic(props) {
       image : "/collections/icspliffsters/collection.jpg",
       content : (<>Say hello to the veritable chainsmokers of the InternetComputer. Our ICSpliffsters are coming from a great distance to live among us on blockchain and will catch life in our ICSpliffsters NFT comic-book.</>),
     },
-    {
-      title : "SwordNFT",
-      link : "/sale/sword",
-      image : "/collections/sword/collection.jpg",
-      content : (<>This collection was designed with the intent of game/metaverse intergration in the future.</>),
-    },
     // {
       // title : "FlokiCyberPunk",
       // link : "/sale/floki",

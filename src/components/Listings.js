@@ -514,7 +514,7 @@ export default function Listings(props) {
                   </ListItemIcon>
               </ListItem>
               {toggleFilter ? <>
-                <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter("_price")}>
+                <ListItem style={{paddingRight:0}}>
                   <ListItemIcon style={{minWidth:40}}>
                     <AllInclusiveIcon />
                   </ListItemIcon>
@@ -523,17 +523,13 @@ export default function Listings(props) {
                     secondaryTypographyProps={{noWrap:true}} 
                     primary={(<strong>Price</strong>)}
                   />
-                    <ListItemIcon>
-                      {isOpenFilter("_price") ?  <ExpandLessIcon fontSize={"large"} /> : <ExpandMoreIcon fontSize={"large"} /> }
-                    </ListItemIcon>
                 </ListItem>
-                {isOpenFilter("_price") ? 
                 <ListItem>
                   <div style={{width:"100%"}}>
                     <TextField value={minPrice} onChange={minPriceChange} style={{width:"100%", marginBottom:20}} label="Min. Price" />
                     <TextField value={maxPrice} onChange={maxPriceChange} style={{width:"100%", marginBottom:20}} label="Max. Price" />
                   </div>
-                </ListItem> : "" }
+                </ListItem>
               {filterData && filterData[0].map(a => {
                 return (<div key={a[0]}>
                   <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter(a[0])}>

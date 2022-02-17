@@ -3,6 +3,83 @@ import Button from "@material-ui/core/Button";
 
 var collections = [
   {
+    canister: "3db6u-aiaaa-aaaah-qbjbq-cai",
+    priority : 10,
+    name: "IC Drip",
+    brief : "8001 IC Drips",
+    description : "Text-based Drip gear NFTs dropped by DSCVR for the community to imagine and iterate upon.",
+    blurb: (<><p>IC Drip are randomly generated meta-commerce shopping carts for outfits and personas stored on-chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use IC Drip in any way you want.<br /><br />Join the Dripland project to learn more and contribute. Build the world you want together.</p></>),
+    keywords : "Gamefi",
+    twitter : "https://twitter.com/ICdripland",
+    web : "https://dripland.io",
+    discord : "https://discord.gg/U8YppXuU2x",
+    medium : "https://medium.com/@dripland",
+    telegram : "https://t.me/icdrip",
+    banner : "/collections/icdrip/banner.png",
+    avatar : "/collections/icdrip/avatar.jpg",
+    collection : "/collections/icdrip/collection.jpg",
+    route: "icdrip",
+    commission: 0.04,
+    comaddress: false,
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    filter : false,
+  },
+  {
+    canister: "r75rh-rqaaa-aaaah-qctda-cai",
+    priority : 10,
+    name: "Eleos",
+    brief : "The Greek Goddess of Mercy",
+    description : "Hand-painted acrylic of Eleos the Greek goddess of mercy, by Soup. 55 copies minted and airdropped to holders of ICP Art collections.",
+    blurb: (<><p>Hand-painted acrylic of Eleos the Greek goddess of mercy. Painted for holders of the ICP Art collection 55 copies minted and airdropped. The first time the artist Soup has turned her artwork into an NFT.</p></>),
+    keywords : "Acrylic Painting Mythology",
+    // twitter : "https://twitter.com/DfinityDonkeys",
+    // web : "https://Dongetoken.com",
+    // discord : "https://discord.gg/YcEaDPJgJ4",
+    // medium : "https://medium.com/@DONGE",
+    //telegram : "https://t.me/+odsWbiTXIfQyYmE0",
+    banner : "/collections/eleos/banner.jpg",
+    avatar : "/collections/eleos/avatar.jpg",
+    collection : "/collections/eleos/collection.jpg",
+    route: "eleos",
+    commission: 0.04,
+    comaddress: false,
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    filter : false,
+  },
+  {
+    canister: "rw623-hyaaa-aaaah-qctcq-cai",
+    priority : 10,
+    name: "OG MEDALS",
+    brief : "Celebrating ICP-BTC Integration with memes!",
+    description : "The OG Medals are a reward for early adopters of the WEB 3.0, 1000 lucky DSCVR users received a medal during the Bitcoin Integration with the Internet Computer.",
+    blurb: (<><p>The 1000 NFTs OG Medals were airdropped to active early believers inside the most popular WEB 3.0 discussion website: DSCVR. The OG Medals have more than 40+ Rare ICP Memes and Legendary versions, also ICP, BTC & ETH coins, each made with materials such as Steel, Bronze, Silver, Gold and Rare, with a mix of shapes, ornaments and variations.</p><p>I hope that the lucky ones who received a medal enjoy your precious collectible hosted inside the Internet Computer, serving as a testimony that you were here when the Bitcoin Integration happened, and also, it's my way to say thank you! because I am thankful to be part of this amazing community, we are all here building the future of Blockchain and Crypto, so... I'll keep bringing more content and memes! Don't forget to follow me and you will know what's next! @DKLORD89</p></>),
+    keywords : "OG MEDALS ICP MEMES",
+    twitter : "https://twitter.com/DKLORD89",
+   // web : "https://Dongetoken.com",
+    //discord : "https://discord.gg/YcEaDPJgJ4",
+   // medium : "https://medium.com/@DONGE",
+    //telegram : "https://t.me/+odsWbiTXIfQyYmE0",
+    banner : "/collections/ogmedals/banner.jpg",
+    avatar : "/collections/ogmedals/avatar.jpg",
+    collection : "/collections/ogmedals/collection.jpg",
+    route: "ogmedals",
+    commission: 0.035,
+    comaddress: false,
+    unit : "NFT",
+    nftv : false,
+    mature: false,
+    market : true,
+    filter : false,
+  },
+
+
+  {
     canister: "qjwjm-eaaaa-aaaah-qctga-cai",
     priority : 10,
     name: "Dfinity Donkey",
@@ -26,7 +103,7 @@ Definity Donkey NFTs are created as a tribute to Donkeys embracing their support
     nftv : false,
     mature: false,
     market : true,
-    filter : true,
+    filter : false,
   },
   {
     canister: "2iiif-4qaaa-aaaah-qcs5a-cai",
@@ -1159,37 +1236,6 @@ so free. This piece is dedicated to all those that helped me find myself here.</
           rel="noreferrer"
         >
           here
-        </a>
-      </>
-    ),
-  },
-  {
-    canister: "3db6u-aiaaa-aaaah-qbjbq-cai",
-    priority : 10,
-    name: "IC Drip",
-    unit : "IC Drip",
-    brief : "Drip on the IC",
-    route: "icdrip",
-    keywords : "",
-    nftv : true,
-    mature: false,
-    market : true,
-    filter : true,
-    commission: 0.025,
-    comaddress:
-      "3fd5d8d72a8c79f4c29a91087257ecd37e25b66aafdb337236c9f0dc22b6a833",
-    blurb: (
-      <>
-        IC Drip are randomly generated meta-commerce shopping carts for outfits
-        and personas stored on chain. Stats, images, and other functionality are
-        intentionally omitted for others to interpret. Feel free to use IC Drip
-        in any way you want.{" "}
-        <a
-          href="https://dvr6e-lqaaa-aaaai-qam5a-cai.raw.ic0.app/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          IC Drip Website
         </a>
       </>
     ),

@@ -11,23 +11,19 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
 import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
 import _c from '../ic/collections.js';
-import NFT from './NFT';
+import Event from './Event';
+import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import getNri from "../ic/nftv.js";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
@@ -37,9 +33,15 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from "@material-ui/core";
 import Chip from '@material-ui/core/Chip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import CloseIcon from '@material-ui/icons/Close';
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+
+
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 var collections = _c;
@@ -69,7 +71,6 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
-var canUpdateNfts = true;
 const useStyles = makeStyles((theme) => ({
   tabsViewBig: {
     [theme.breakpoints.down('sm')]: {
@@ -80,6 +81,15 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       display:"none",
     },
+  },
+  topUi : {
+    "& .MuiFormControl-root" : {
+      [theme.breakpoints.down('xs')]: {
+        width:"100%",
+      },
+      minWidth:"150px",
+    },
+    
   },
   listingsView: {
     [theme.breakpoints.down('xs')]: {
@@ -150,37 +160,60 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UserActivity(props) {
+  const theme = useTheme();
   const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
-  const [transactions, setTransactions] = React.useState(false);
+  const [results, setResults] = React.useState([]);
+  const [displayedResults, setDisplayedResults] = React.useState(false);
   const [tokenCanisters, setTokenCanisters] = React.useState([]);
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
+  var myPage = (params?.address ? false : true);
+  const [address, setAddress] = React.useState(params?.address ?? (props.account.address ?? false));
   const [sort, setSort] = React.useState('mint_number');
+  const [showing, setShowing] = React.useState('all');
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
+  
   const changeToggleFilter = () => {
     localStorage.setItem("_toggleFilter", !toggleFilter);
     setToggleFilter(!toggleFilter)
   }
+  const changeShowing = (event) => {
+    setShowing(event.target.value);
+  };
   const changeSort = (event) => {
     setSort(event.target.value);
   };
+  
+  const filterBefore = r => {
+    var rf = r;
+    if (showing == 'sales') rf = rf.filter(a => a.type == "Sale");
+    if (showing == 'purchases') rf = rf.filter(a => a.type == "Purchase");
+    return rf;
+  };
+  const filterAfter = r => {
+    var rf = r;
+    if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
+    return rf;
+  };
+  
+  const tabLink = p => {
+    return (myPage ? p : "/"+address+p);
+  };
   const refresh = async (clearcache) => {
-    if (!props.loggedIn) return;
-    if (clearcache)  setTransactions(false);
-    else {
-      if (collectionFilter == 'all') {
-        var r = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/app/user/"+props.account.address+"/transactions").then(r => r.json);      
-      } else {
-        var r = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/app/user/"+collectionFilter+"/"+props.account.address+"/transactions").then(r => r.json);
-      };
-      console.log(r);
-      setTransactions(r);
-    }
+    if (!address) return;
+    console.log("refreshing");
+    var data = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/transactions").then(r => r.json());
+    data = data.filter((a,i) => data.findIndex(b => b.id == a.id) == i);
+    data = data.filter(e => e.token != "");
+    data = data.map(a => ({...a, type:(a.buyer == address ? "Purchase" : "Sale" )}));
+    
+    data = filterBefore(data);
+    setTokenCanisters(data.map(event => extjs.decodeTokenId(event.token).canister));
+    setResults(data);
   }
-  const theme = useTheme();
   const styles = {
     empty: {
       maxWidth: 1200,
@@ -192,73 +225,57 @@ export default function UserActivity(props) {
       padding: theme.spacing(2)
     },
   };
-  useInterval(refresh, 10 * 60 *1000);
   
+  useInterval(refresh, 10 * 60 *1000);
   React.useEffect(() => {
     setPage(1);
-    setTransactions(false);
+    if (displayedResults) setDisplayedResults(false);
+    else refresh();
   }, [sort]);
   React.useEffect(() => {
+    console.log("Hook: collectionFilter");
     setPage(1);
-    setTransactions(false);
+    if (displayedResults) setDisplayedResults(false);
+    else refresh();
   }, [collectionFilter]);
   React.useEffect(() => {
-    if (transactions === false){
-      refresh()
-    } else {
-      setHideCollectionFilter(false)
-    };
-  }, [transactions]);
-  React.useEffect(() => {
-    setCollectionFilter('all');
-    setHideCollectionFilter(true)
+    console.log("Hook: showing");
     setPage(1);
-  }, [props.view, props.account.address, props.identity]);
+    setHideCollectionFilter(true)
+    if (displayedResults) setDisplayedResults(false);
+    else refresh();
+  }, [showing]);
+  React.useEffect(() => {
+    console.log("Hook: displayedResults");
+    if (displayedResults === false) refresh();
+  }, [displayedResults]);
+  React.useEffect(() => {
+    console.log("Hook: results");
+    setHideCollectionFilter(false)
+    if (results.length) setDisplayedResults(filterAfter(results));
+  }, [results]);
+  React.useEffect(() => {
+    console.log("Hook: start");
+    setDisplayedResults(false)
+  }, []);
+
+  React.useEffect(() => {
+    console.log("Hook: account");
+    if (address){
+      if (collectionFilter != 'all') setCollectionFilter('all');
+      else {
+        if (displayedResults) setDisplayedResults(false);
+        else refresh();
+      }
+    }
+  }, [address]);
+  React.useEffect(() => {
+    if (myPage) setAddress(props.account.address);
+  }, [props.account.address]);
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      <div>
-        <div style={{maxWidth:1200, margin:"0 auto 0",}}>
-          <div style={styles.empty}>
-            <h1>My Collection</h1>
-          </div>
-          <Tabs
-            className={classes.tabsViewBig}
-            value={props.view}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-            onChange={(e, nv) => {
-              navigate(`/`+nv)
-            }}
-          >
-            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
-          </Tabs>
-          <Tabs
-            className={classes.tabsViewSmall}
-            value={props.view}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons={"on"}
-            onChange={(e, nv) => {
-              navigate(`/`+nv)
-            }}
-          >
-            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
-          </Tabs>
-        </div>
-      </div>
+      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />    
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
           <List>
@@ -303,7 +320,7 @@ export default function UserActivity(props) {
         </div>
         <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
-            <Grid container style={{minHeight:66}}>
+            <Grid className={classes.topUi} container style={{minHeight:66}}>
               <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
                 <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
                   <ToggleButton onClick={changeToggleFilter}>
@@ -311,12 +328,25 @@ export default function UserActivity(props) {
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
-                  <ToggleButton onClick={() => refresh(true)}>
+                  <ToggleButton onClick={() => setDisplayedResults(false)}>
                     <CachedIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-                  <Grid item xs={12} sm={"auto"} >
+              <Grid item xs={12} sm={"auto"} >
+                <FormControl style={{marginRight:20}}>
+                  <InputLabel>Showing</InputLabel>
+                  <Select
+                    value={showing}
+                    onChange={changeShowing}
+                  >
+                    <MenuItem value={"all"}>All Events</MenuItem>
+                    <MenuItem value={"purchases"}>Purchases</MenuItem>
+                    <MenuItem value={"sales"}>Sales</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={"auto"} >
                 <FormControl style={{marginRight:20}}>
                   <InputLabel>Sort by</InputLabel>
                   <Select
@@ -328,60 +358,56 @@ export default function UserActivity(props) {
                   </Select>
                 </FormControl>
               </Grid>
-              {transactions && transactions.length > perPage ?
-              (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(transactions.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
+              {displayedResults && displayedResults.length > perPage ?
+              (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
           <div style={{minHeight:500}}>
             <div style={{}}>
-              {transactions === false ?
+              {displayedResults === false ?
                 <>
                   <Typography paragraph style={{fontWeight:"bold"}} align="left">Loading...</Typography>
                 </> 
               :
                 <>
-                  {transactions.length === 0 ?
+                  {displayedResults.length === 0 ?
                     <Typography paragraph style={{fontWeight:"bold"}} align="left">We found no results</Typography> 
                   :
-                    <Typography paragraph style={{fontWeight:"bold"}} align="left">{transactions.length} items</Typography> 
+                    <Typography paragraph style={{fontWeight:"bold"}} align="left">{displayedResults.length} items</Typography> 
                   }
                 </>
               }
             </div>
-            {transactions ?
+            {displayedResults && displayedResults.length ?
             <div>
-              <Grid
-                container
-                spacing={2}
-                direction="row"
-                alignItems="stretch"
-                style={{
-                  display: "grid",
-                  justifyContent: "space-between",
-                }}
-              >
-                {transactions
-                .filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
-                .map((tokenid, i) => {
-                  return (<NFT 
-                    loggedIn={props.loggedIn} 
-                    identity={props.identity} 
-                    tokenid={tokenid} 
-                    key={tokenid} 
-                    ownerView={['collected','selling','offers-received'].indexOf(props.view) >= 0}
-                    unpackNft={props.unpackNft} 
-                    listNft={props.listNft} 
-                    cancelNft={props.cancelNft} 
-                    wrapAndlistNft={props.wrapAndlistNft} 
-                    unwrapNft={props.unwrapNft} 
-                    transferNft={props.transferNft}
-                    loader={props.loader}                    
-                    />)
-                })}
-              </Grid>
+              <TableContainer>
+                <Table style={{width:"100%", overflow:"hidden"}}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell align="left"><strong>Item</strong></TableCell>
+                      <TableCell align="center"><strong>Price</strong></TableCell>
+                      <TableCell align="center"><strong>From</strong></TableCell>
+                      <TableCell align="center"><strong>To</strong></TableCell>
+                      <TableCell align="center"><strong>Time</strong></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {displayedResults
+                    .filter((event,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
+                    .map(event => {
+                      return (<Event 
+                          key={event.id}
+                          collection={event.canister}
+                          event={event}                
+                        />)
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div> : "" }
-            {(transactions && transactions.length > perPage ?
-              (<Pagination className={classes.pagi} size="small" count={Math.ceil(transactions.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
+            {(displayedResults && displayedResults.length > perPage ?
+              (<Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
           </div>
         </div>
       </div>

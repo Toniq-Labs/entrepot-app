@@ -20,6 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import CachedIcon from '@material-ui/icons/Cached';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -296,6 +297,12 @@ export default function Wallet(props) {
             <FavoriteIcon />
           </ListItemIcon>
           <ListItemText primary="Favorites" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/activity");}}>
+          <ListItemIcon>
+            <ImportExportIcon />
+          </ListItemIcon>
+          <ListItemText primary="Activity" />
         </ListItem>
       </List> 
     </>: ""}

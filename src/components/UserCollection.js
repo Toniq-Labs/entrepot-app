@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import axios from "axios";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -22,6 +23,7 @@ import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
 import _c from '../ic/collections.js';
 import NFT from './NFT';
+import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -33,6 +35,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from "@material-ui/core";
@@ -88,15 +91,15 @@ const getEXTCanister = c => {
   else return c;
 };
 const loadAllTokens = async (address, principal) => {
-  var response = await Promise.all(collections.map(a => api.canister(a.canister).tokens(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => extjs.encodeTokenId(a.canister, b)))).map(p => p.catch(e => e)).concat([
+  var response = (await Promise.all([axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all").then(r => r.data.map(a => ({...a, token : a.id})))].concat([
     "4nvhy-3qaaa-aaaah-qcnoq-cai",
     "qcg3w-tyaaa-aaaah-qakea-cai",
     //"jzg5e-giaaa-aaaah-qaqda-cai",
     "d3ttm-qaaaa-aaaai-qam4a-cai",
     "xkbqi-2qaaa-aaaah-qbpqq-cai",
     "fl5nr-xiaaa-aaaai-qbjmq-cai",
-  ].map(a => api.token(a).getTokens(address,principal).then(r => r.map(b => b.id))).map(p => p.catch(e => e))));
-  var tokens = response.filter(result => !(result instanceof Error)).flat();
+  ].map(a => api.token(a).getTokens(address,principal).then(r => r.map(b => ({canister: toWrappedMap[a], id : b.id, token : b.id, price : 0, time : 0, owner : address}))))).map(p => p.catch(e => e))));
+  var tokens = response.filter(result => !(result instanceof Error)).flat()
   return tokens;
 };
 const loadAllListings = async (address, principal) => {
@@ -135,6 +138,15 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       display:"inline-flex",
     },
+  },
+  topUi : {
+    "& .MuiFormControl-root" : {
+      [theme.breakpoints.down('xs')]: {
+        width:"100%",
+      },
+      minWidth:"150px",
+    },
+    
   },
   tabsViewTab : {
     fontWeight:"bold",
@@ -194,16 +206,22 @@ export default function UserCollection(props) {
   const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
+  const [displayedResults, setDisplayedResults] = React.useState([]);
+  const [results, setResults] = React.useState(false);
+  
   const [nfts, setNfts] = React.useState([]);
   const [tokenCanisters, setTokenCanisters] = React.useState([]);
   const [displayNfts, setDisplayNfts] = React.useState(false);
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
+  var myPage = (params?.address ? false : true);
+  const [address, setAddress] = React.useState(params?.address ?? (props.account.address ?? ""));
   const [sort, setSort] = React.useState('mint_number');
   const [listingPrices, setListingPrices] = React.useState([]);
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
+  
   const changeGrid = (e, a) => {
     localStorage.setItem("_gridSize", a);
     setGridSize(a)
@@ -216,55 +234,86 @@ export default function UserCollection(props) {
     setPage(1);
     setSort(event.target.value);
   };
- const _updates = async () => {
-    if (props.account.address){
-      await refresh();
-    }
+  
+  const filterBefore = r => {
+    var rf = r;
+    return rf;
   };
-  const fullRefresh = async () => {
-    setDisplayNfts(false);
-    await refresh();
-  }
-  const updateFavorites = () => {
-    var r = EntrepotGetAllLiked();
-    updateNfts(r.filter((a,i) => r.indexOf(a) == i)); 
+  const filterAfter = r => {
+    var rf = r;
+    if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
+    return rf;
   };
-  const getPriceOfListing = tokenid => {
-    var fnd = listingPrices.find(a => a[0] == tokenid);
-    if (fnd) {
-      return Number(fnd[1][0].price)
-    } else {
-      return false;
-    };
+  const tabLink = p => {
+    return (myPage ? p : "/"+address+p);
   };
-  const refresh = async (_sort, _collectionFilter) => {
-    const _api = extjs.connect("https://boundary.ic0.app/", props.identity);
+  
+  const refresh = async () => {
+    if (!address) return;
+    console.log("refreshing");
+    // switch(props.view){
+      // case "collected":
+        // var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
+        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        // break;
+      // case "selling":
+        // var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
+        // var r2 = r.map(a => a[0]);
+        // setListingPrices(r);
+        // updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
+        // break;
+      // case "favorites":
+        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
+        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        // break;
+      // case "offers-made":
+        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
+        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        // break;
+      // case "offers-received":
+        // var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
+        // var r2 = r.filter(result => !(result instanceof Error));
+        // var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
+        // updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
+        // break;
+    // }
+    var data; 
     switch(props.view){
       case "collected":
-        var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        console.log("start");
+        // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
+        // data = response.data;
+        // data = data.map(a => ({...a, token : a.id}));
+        //Add wrapped
+        data = await loadAllTokens(address, props.identity.getPrincipal().toText());
         break;
       case "selling":
-        var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
-        var r2 = r.map(a => a[0]);
-        setListingPrices(r);
-        updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
+        var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/listed");
+        data = response.data.filter(a => a.price > 0);
+        data = data.map(a => ({...a, token : a.id}));
         break;
       case "favorites":
-        var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
+        data = r.filter((a,i) => r.indexOf(a) == i);
+        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister}));
         break;
       case "offers-made":
-        var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
+        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
+        data = r.filter((a,i) => r.indexOf(a) == i);
+        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister}));
         break;
       case "offers-received":
-        var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
+        var r = await Promise.all([axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all"), extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
         var r2 = r.filter(result => !(result instanceof Error));
-        var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
-        updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
+        var r3 = r2[0].data.map(a => ({...a, token : a.id})).filter(a => r2[1].indexOf(a.token) >= 0);
+        data = r3;
         break;
     }
+    console.log(data[0].canister);
+    console.log("fetched");
+    data = filterBefore(data);
+    setTokenCanisters(data.map(d => d.canister));
+    setResults(data);
   }
   
   const theme = useTheme();
@@ -279,7 +328,7 @@ export default function UserCollection(props) {
       padding: theme.spacing(2)
     },
   };
-  useInterval(_updates, 10 * 60 *1000);
+  useInterval(refresh, 10 * 60 *1000);
   
   
   const updateNfts = (l,s,cf) => {
@@ -296,15 +345,15 @@ export default function UserCollection(props) {
       _displayNfts = _displayNfts.sort((a,b) => {
         switch(sort) {
           case "price_asc":
-            var ap = getPriceOfListing(a);
-            var bp = getPriceOfListing(b);
+            var ap = (a.price === 0 ? false : a.price);
+            var bp = (b.price === 0 ? false : b.price);
             if (ap === false && bp === false) return 0; 
             if (ap === false) return -1;
             if (bp === false) return 1;
             return ap-bp;
           case "price_desc":
-            var ap = getPriceOfListing(a);
-            var bp = getPriceOfListing(b);
+            var ap = (a.price === 0 ? false : a.price);
+            var bp = (b.price === 0 ? false : b.price);
             if (ap === false && bp === false) return 0; 
             if (ap === false) return 1;
             if (bp === false) return -1;
@@ -330,74 +379,54 @@ export default function UserCollection(props) {
       canUpdateNfts = true;
     }
   };
+  
+  
+  useInterval(refresh, 10 * 60 *1000);
   React.useEffect(() => {
-    setDisplayNfts(false);
     setPage(1);
-    if (props.loggedIn){
-      refresh()
-    }
-  }, [collectionFilter]);
-  React.useEffect(() => {
-    setDisplayNfts(false);
-    setPage(1);
-    if (props.loggedIn){
-      refresh()
-    }
+    //if (displayedResults) setDisplayedResults(false);
+    //else refresh();
   }, [sort]);
   React.useEffect(() => {
-    setCollectionFilter('all');
-    setHideCollectionFilter(true)
-    setDisplayNfts(false);
+    console.log("Hook: collectionFilter");
     setPage(1);
-    //setSort('mint_number');
-    if (props.loggedIn){
-      refresh(sort, 'all')
-      //refresh('mint_number', 'all')
+    if (displayedResults) setDisplayedResults(false);
+    else refresh();
+  }, [collectionFilter]);
+  React.useEffect(() => {
+    console.log("Hook: displayedResults");
+    if (displayedResults === false) refresh();
+  }, [displayedResults]);
+  React.useEffect(() => {
+    console.log("Hook: results");
+    setHideCollectionFilter(false)
+    if (results.length) setDisplayedResults(filterAfter(results));
+  }, [results]);
+  React.useEffect(() => {
+    console.log("Hook: start");
+    setDisplayedResults(false)
+  }, []);
+
+  React.useEffect(() => {
+    console.log("Hook: account");
+    if (address){
+      setHideCollectionFilter(true);
+      if (collectionFilter != "all") setCollectionFilter("all");
+      else {
+        if (displayedResults) setDisplayedResults(false);
+        else refresh();
+      }
     }
-  }, [props.view, props.account.address, props.identity]);
+  }, [address, props.view]);
+  React.useEffect(() => {
+    if (myPage) setAddress(props.account.address);
+  }, [props.account.address]);
+
+  
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      <div>
-        <div style={{maxWidth:1200, margin:"0 auto 0",}}>
-          <div style={styles.empty}>
-            <h1>My Collection</h1>
-          </div>
-          <Tabs
-            className={classes.tabsViewBig}
-            value={props.view}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-            onChange={(e, nv) => {
-              navigate(`/`+nv)
-            }}
-          >
-            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
-          </Tabs>
-          <Tabs
-            className={classes.tabsViewSmall}
-            value={props.view}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons={"on"}
-            onChange={(e, nv) => {
-              navigate(`/`+nv)
-            }}
-          >
-            <Tab className={classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-received" label={(<span style={{padding:"0 50px"}}><CallReceivedIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Received</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="offers-made" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers Made</span></span>)} />
-            <Tab className={classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
-          </Tabs>
-        </div>
-      </div>
+      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />    
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
           <List>
@@ -442,7 +471,7 @@ export default function UserCollection(props) {
         </div>
         <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
-            <Grid container style={{minHeight:66}}>
+            <Grid className={classes.topUi} container style={{minHeight:66}}>
               <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
                 <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
                   <ToggleButton onClick={changeToggleFilter}>
@@ -450,7 +479,7 @@ export default function UserCollection(props) {
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
-                  <ToggleButton onClick={fullRefresh}>
+                  <ToggleButton onClick={() => setDisplayedResults(false)}>
                     <CachedIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -463,7 +492,7 @@ export default function UserCollection(props) {
                   </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
-                  <Grid item xs={12} sm={"auto"} >
+              <Grid item xs={12} sm={"auto"} >
                 <FormControl style={{marginRight:20}}>
                   <InputLabel>Sort by</InputLabel>
                   <Select
@@ -475,27 +504,27 @@ export default function UserCollection(props) {
                   </Select>
                 </FormControl>
               </Grid>
-              {displayNfts && displayNfts.length > perPage ?
-              (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
+              {displayedResults && displayedResults.length > perPage ?
+              (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
           <div style={{minHeight:500}}>
             <div style={{}}>
-              {displayNfts === false ?
+              {displayedResults === false ?
                 <>
                   <Typography paragraph style={{fontWeight:"bold"}} align="left">Loading...</Typography>
                 </> 
               :
                 <>
-                  {displayNfts.length === 0 ?
+                  {displayedResults.length === 0 ?
                     <Typography paragraph style={{fontWeight:"bold"}} align="left">We found no results</Typography> 
                   :
-                    <Typography paragraph style={{fontWeight:"bold"}} align="left">{displayNfts.length} items</Typography> 
+                    <Typography paragraph style={{fontWeight:"bold"}} align="left">{displayedResults.length} items</Typography> 
                   }
                 </>
               }
             </div>
-            {displayNfts ?
+            {displayedResults && displayedResults.length ?
             <div>
               <Grid
                 container
@@ -508,16 +537,47 @@ export default function UserCollection(props) {
                   justifyContent: "space-between",
                 }}
               >
-                {displayNfts
+                {displayedResults
                 .filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
-                .map((tokenid, i) => {
+                .sort((a,b) => {
+                  switch(sort) {
+                    case "price_asc":
+                      var ap = (a.price === 0 ? false : a.price);
+                      var bp = (b.price === 0 ? false : b.price);
+                      if (ap === false && bp === false) return 0; 
+                      if (ap === false) return -1;
+                      if (bp === false) return 1;
+                      return ap-bp;
+                    case "price_desc":
+                      var ap = (a.price === 0 ? false : a.price);
+                      var bp = (b.price === 0 ? false : b.price);
+                      if (ap === false && bp === false) return 0; 
+                      if (ap === false) return 1;
+                      if (bp === false) return -1;
+                      return bp-ap;
+                    case "mint_number":
+                      return extjs.decodeTokenId(a.token).index-extjs.decodeTokenId(b.token).index;
+                    case "nri":
+                      var aa = extjs.decodeTokenId(a.token);
+                      var bb = extjs.decodeTokenId(b.token);
+                      var nria = getNri(aa.canister,aa.index);
+                      var nrib = getNri(bb.canister,bb.index);
+                      if (nria === false && nrib === false) return 0; 
+                      if (nria === false) return 1;
+                      if (nrib === false) return -1;
+                      return Number(nrib)-Number(nria);
+                    default:
+                      return 0;
+                  };
+                })
+                .map((token, i) => {
                   return (<NFT 
                     gridSize={gridSize} 
-                    faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
+                    //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
                     loggedIn={props.loggedIn} 
                     identity={props.identity} 
-                    tokenid={tokenid} 
-                    key={tokenid} 
+                    tokenid={token.token} 
+                    key={token.token} 
                     ownerView={['collected','selling','offers-received'].indexOf(props.view) >= 0}
                     unpackNft={props.unpackNft} 
                     listNft={props.listNft} 
@@ -526,13 +586,13 @@ export default function UserCollection(props) {
                     unwrapNft={props.unwrapNft} 
                     transferNft={props.transferNft}
                     loader={props.loader}                    
-                    refresh={fullRefresh}                    
+                    refresh={() => setDisplayedResults(false)}                    
                     />)
                 })}
               </Grid>
             </div> : "" }
-            {(displayNfts && displayNfts.length > perPage ?
-              (<Pagination className={classes.pagi} size="small" count={Math.ceil(displayNfts.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
+            {(displayedResults && displayedResults.length > perPage ?
+              (<Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}
           </div>
         </div>
       </div>
