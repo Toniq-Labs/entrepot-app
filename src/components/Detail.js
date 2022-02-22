@@ -228,6 +228,7 @@ const Detail = (props) => {
           />
         );
         break;
+      case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
       case "pk6rk-6aaaa-aaaae-qaazq-cai":

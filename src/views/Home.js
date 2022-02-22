@@ -55,52 +55,52 @@ export default function Home(props) {
   const navigate = useNavigate();
   var items = [
     {
-        link: "/sale/donkey",
-        img: "/banner/donkey.jpg"
+        link: "/sale/frog3d",
+        img: "/banner/frog3d.png"
     },
-    {
-        link: "/sale/icspliffsters",
-        img: "/banner/icspliffsters.jpg"
-    },
-    {
-        link: "/sale/icpics",
-        img: "/banner/icpics.jpg"
-    },
+    // {
+        // link: "/sale/icspliffsters",
+        // img: "/banner/icspliffsters.jpg"
+    // },
+    // {
+        // link: "/sale/icpics",
+        // img: "/banner/icpics.jpg"
+    // },
     {
         link: "/marketplace/btcflower",
         img: "/banner/btcflower.jpg"
     },
-    {
-        link: "/sale/yolo-octopus",
-        img: "/banner/yolo.jpg"
-    },
-    {
-        link: "/sale/sword",
-        img: "/banner/sword.png"
-    },
-    {
-        link: "/marketplace/p2j",
-        img: "/banner/canistore.jpg"
-    },
+    // {
+        // link: "/sale/yolo-octopus",
+        // img: "/banner/yolo.jpg"
+    // },
+    // {
+        // link: "/sale/sword",
+        // img: "/banner/sword.png"
+    // },
+    // {
+        // link: "/marketplace/p2j",
+        // img: "/banner/canistore.jpg"
+    // },
   ];
   var cards = [
+    {
+      title : "BTC Flower",
+      link : "/marketplace/btcflower",
+      image : "/collections/btcflower/collection.jpg",
+      content : (<>The BTC Flower: Created back in 2017 by famous contemporary artist Ludo in the physical world – now moving to digital form on the Internet Computer</>),
+    },
     {
       title : "Cronic Wearables",
       link : "/marketplace/wearables",
       image : "/collections/cronic-wearables.jpg",
-      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
-    },
-    {
-      title : "ICmojis",
-      link : "/marketplace/icmojis",
-      image : "/collections/icmojis.jpg",
-      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic!</>),
     },
     {
       title : "Rise of the Magni",
       link : "/",
       image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!</>),
     },
   
   ];

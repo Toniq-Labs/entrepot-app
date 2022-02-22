@@ -48,6 +48,7 @@ import Prime from "./components/sale/Prime";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
 import Cyman from "./components/sale/Cyman";
+import Frog3D from "./components/sale/Frog3D";
 import Sword from "./components/sale/Sword";
 import Donkey from "./components/sale/Donkey";
 import ICSpliffsters from "./components/sale/ICSpliffsters";
@@ -928,6 +929,15 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icspliffsters"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/sale/frog3d" exact element={
+              <Frog3D
+                error={error}
+                view={"sale"}
+                sale={"frog3d"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
