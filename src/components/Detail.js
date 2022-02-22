@@ -1,3 +1,4 @@
+/* global BigInt */
 import React, { useState } from "react";
 import {
   makeStyles,
@@ -110,48 +111,21 @@ const Detail = (props) => {
   };
   const _refresh = async () => {
     reloadOffers();
-    api.canister(canister).bearer(tokenid).then(r => {
-      setOwner(r.ok);
-    });
-    await api.token(canister).listings().then(r => {
-      var f = r.find(a => a[0] == index);
-      if (f && f[1]) setListing(f[1]);
-      else setListing({});
-    });
-    if (canister === "nges7-giaaa-aaaaj-qaiya-cai") {
-      setTransactions([]);
-    } else {
-      await api.canister(canister).transactions().then(r => {
-        var nt = r;
-        if (canister === "e3izy-jiaaa-aaaah-qacbq-cai") {
-          nt = nt.slice(82);
-        }
-        var txs = nt.filter(a => a.token === tokenid).sort((a,b) => Number(b.time) - Number(a.time));
-        setTransactions(txs);
+    await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/token/"+tokenid).then(r => r.json()).then(r => {
+      setListing({
+        price : BigInt(r.price),
+        time : r.time,
       });
-    }
+      setOwner(r.owner);
+      setTransactions(r.transactions);
+    });
   }
   const _afterList = async () => {
-    await api.token(canister).listings().then(r => {
-      var f = r.find(a => a[0] == index);
-      if (f[1]) setListing(f[1]);
-      else setListing({});
-    });
+    await _refresh();
   };
   const _afterBuy = async () => {
     await reloadOffers();
-    await api.canister(canister).bearer(tokenid).then(r => {
-      setOwner(r.ok);
-    });
-    await api.token(canister).listings().then(r => {
-      var f = r.find(a => a[0] == index);
-      if (f[1]) setListing(f[1]);
-      else setListing({});
-    });
-    await api.canister(canister).transactions().then(r => {
-      var txs = r.filter(a => extjs.decodeTokenId(a.token).index === index).sort((a,b) => Number(b.time) - Number(a.time));
-      setTransactions(txs);
-    });
+    await _refresh();
   }
   const closeOfferForm = () => {
     reloadOffers();
@@ -172,7 +146,7 @@ const Detail = (props) => {
   };
   
   
-  useInterval(_refresh, 10 * 60 * 1000);
+  useInterval(_refresh, 2  * 1000);
   useInterval(() => {
     var nf = (EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : "");
     setFloor(nf);
@@ -347,13 +321,6 @@ const Detail = (props) => {
           </Grid>
           <Grid item xs={12} sm={12} md={7}>
             <div className={classes.personal}>
-              <Typography variant="h6" style={{ color: "#648DE2" }}>
-                <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a>
-              </Typography>
-              <div style={{zIndex: 100}} className="sharethis-inline-share-buttons"></div>
-              
-            </div>
-            <div className={classes.personal}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -366,7 +333,7 @@ const Detail = (props) => {
               
             </div>
             <Typography variant="h4" className={classes.typo}>
-              {collection.name} #{EntrepotNFTMintNumber(collection.canister, index)}
+              <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a> #{EntrepotNFTMintNumber(collection.canister, index)}
             </Typography>
             <Grid container>
               <Grid item style={{marginRight:20}}>
@@ -405,7 +372,7 @@ const Detail = (props) => {
                   Loading...
                 </Typography>
               </div> : 
-                <>{ listing.hasOwnProperty("locked") ?
+                <>{ listing.price > 0n ?
                 <>
                   <Typography variant="h6"><strong>Price</strong></Typography>
                   <div
@@ -478,7 +445,7 @@ const Detail = (props) => {
               { owner && props.account && props.account.address == owner ?
                 <>
                   <div className={classes.button}>
-                    {listing !== false && listing && listing.hasOwnProperty("locked") ?
+                    {listing !== false && listing && listing.price > 0n?
                     <>
                       <Button
                         onClick={ev => {
@@ -512,7 +479,7 @@ const Detail = (props) => {
                 <>
                 { listing !== false && props.loggedIn ?
                   <div className={classes.button}>
-                    {listing && listing.hasOwnProperty("locked") ?
+                    {listing && listing.price > 0n ?
                     <Button
                       onClick={ev => {
                         props.buyNft(collection.canister, index, listing, _afterBuy);
@@ -662,14 +629,14 @@ const Detail = (props) => {
                             return (
                               <TableRow key={i}>
                                 <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
-                                <TableCell align="right"><strong><PriceICP price={transaction.price} /></strong><br />
-                                {EntrepotGetICPUSD(transaction.price) ? <small><PriceUSD price={EntrepotGetICPUSD(transaction.price)} /></small> : ""}</TableCell>
-                                <TableCell align="center"><a href={"https://ic.rocks/principal/"+transaction.seller.toText()} target="_blank">{shorten(transaction.seller.toText())}</a></TableCell>
+                                <TableCell align="right"><strong><PriceICP price={BigInt(transaction.price)} /></strong><br />
+                                {EntrepotGetICPUSD(BigInt(transaction.price)) ? <small><PriceUSD price={EntrepotGetICPUSD(BigInt(transaction.price))} /></small> : ""}</TableCell>
+                                <TableCell align="center"><a href={"https://ic.rocks/principal/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
                                 <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
                                 <TableCell align="center"><Timestamp
                                   relative
                                   autoUpdate
-                                  date={Number(transaction.time / 1000000000n)}
+                                  date={Number(BigInt(transaction.time) / 1000000000n)}
                                 /></TableCell>
                               </TableRow>
                             );
