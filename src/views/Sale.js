@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "3D Assassins!!!",
-      link : "/sale/frog3d",
-      image : "/collections/frog3d/collection.jpg",
-      content : (<>This collection has 3 unique sets. 1000 2D Cool Pepe assassins, 420 3D Voxel Killers and 69 3D High quality Ninjas all created by Liquid ICP DAO for its valuable community.</>),
+      title : "Frontliners",
+      link : "/sale/frontliners",
+      image : "/collections/frontliners/collection.jpg",
+      content : (<>This project is inspired by the courage and dedication of frontline health workers. The artwork is a tribute to the scientists and medical teams working collaboratively across the world.</>),
     },
   
   ];

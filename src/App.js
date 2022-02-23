@@ -44,6 +44,7 @@ import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
 import Frog from "./components/sale/Frog";
 import DfinityDeck from "./components/sale/DfinityDeck";
+import Frontliners from "./components/sale/Frontliners";
 import Prime from "./components/sale/Prime";
 import Yolo from "./components/sale/Yolo";
 import Memecake from "./components/sale/Memecake";
@@ -929,6 +930,15 @@ export default function App() {
                 error={error}
                 view={"sale"}
                 sale={"icspliffsters"}
+                alert={alert}
+                confirm={confirm}
+                loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+              />} />
+            <Route path="/sale/frontliners" exact element={
+              <Frontliners
+                error={error}
+                view={"sale"}
+                sale={"frontliners"}
                 alert={alert}
                 confirm={confirm}
                 loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
