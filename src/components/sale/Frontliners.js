@@ -49,7 +49,7 @@ export default function Frontliners(props) {
   const [remaining, setRemaining] = React.useState(false);
   const [startTime, setStartTime] = React.useState(1645624800000);
   const [whitelist, setWhitelist] = React.useState(false);
-  var whitelistend = 1645628400000;
+  var whitelistend = 1645632000000;
   var presaleprice = 100000000n;
   var totalToSell = 120;
   var saleOver = false;  
