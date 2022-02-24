@@ -13,12 +13,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import CachedIcon from '@material-ui/icons/Cached';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -28,6 +30,11 @@ import LockIcon from '@material-ui/icons/Lock';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PriceICP from '../components/PriceICP';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import CollectionsIcon from '@material-ui/icons/Collections';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
 import { useNavigate } from "react-router";
@@ -51,7 +58,7 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 const api = extjs.connect("https://boundary.ic0.app/");
-const drawerWidth = 350;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -80,7 +87,6 @@ export default function Wallet(props) {
   const container = window !== undefined ? () => window().document.body : undefined;
   const [balance, setBalance] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [myCollections, setMyCollections] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElAccounts, setAnchorElAccounts] = React.useState(null);
   const refreshClick = async () => {
@@ -90,7 +96,6 @@ export default function Wallet(props) {
   };
   const selectAccount = (t) => {
     setBalance(false);
-    setMyCollections(false);
     props.setBalance(false)
     props.changeAccount(t);
     setAnchorElAccounts(null)
@@ -100,6 +105,11 @@ export default function Wallet(props) {
    props.login(t); 
    setAnchorElAccounts(null)
   };
+  const processPayments = async () => {
+    handleClose(); 
+    await props.processPayments();
+    await refresh();
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -108,48 +118,6 @@ export default function Wallet(props) {
       var b = await api.token().getBalance(props.account.address);
       var thisacc = loadedAccount;
       setBalance(b);
-      var collection, mcs = [];
-      var firstrun = false;
-      if (myCollections === false || myCollections.length === 0) firstrun = true;
-      for(var i = 0; i < props.collections.length; i++) {
-        collection = props.collections[i];
-        try{
-          var tokens = await api.token(collection.canister).getTokens(props.account.address);
-          if (collection.canister === "bxdf4-baaaa-aaaah-qaruq-cai") {
-            tokens = tokens.map(a => {a.wrapped = true; return a});
-            tokens = tokens.concat(await api.token("qcg3w-tyaaa-aaaah-qakea-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-          } else 
-          if (collection.canister === "y3b7h-siaaa-aaaah-qcnwa-cai") {
-            tokens = tokens.map(a => {a.wrapped = true; return a});
-            tokens = tokens.concat(await api.token("4nvhy-3qaaa-aaaah-qcnoq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-          } else 
-          if (collection.canister === "3db6u-aiaaa-aaaah-qbjbq-cai") {
-            tokens = tokens.map(a => {a.wrapped = true; return a});
-            tokens = tokens.concat(await api.token("d3ttm-qaaaa-aaaai-qam4a-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-          } else 
-          if (collection.canister === "q6hjz-kyaaa-aaaah-qcama-cai") {
-            tokens = tokens.map(a => {a.wrapped = true; return a});
-            tokens = tokens.concat(await api.token("xkbqi-2qaaa-aaaah-qbpqq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-          } else 
-          if (collection.canister === "jeghr-iaaaa-aaaah-qco7q-cai") {
-            tokens = tokens.map(a => {a.wrapped = true; return a});
-            tokens = tokens.concat(await api.token("fl5nr-xiaaa-aaaai-qbjmq-cai").getTokens(props.account.address, props.identity.getPrincipal().toText()));
-          }
-        } catch(e) {continue};
-        if (tokens.length) {
-          mcs.push({
-            ...collection,
-            count : tokens.length
-          });
-          if (firstrun) {
-            if (thisacc == loadedAccount) setMyCollections(mcs);
-            else setMyCollections(false);
-          }
-        }
-        
-      };
-      if (thisacc == loadedAccount) setMyCollections(mcs);
-      else setMyCollections(false);
       setLoading(false);
     }
   };
@@ -160,7 +128,6 @@ export default function Wallet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
-    setMyCollections(false);
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
@@ -202,31 +169,30 @@ export default function Wallet(props) {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
           style={{
-            marginLeft:100
+            marginLeft:50
           }}
         >
-          <MenuItem onClick={refreshClick}>
+          <MenuItem onClick={() => {refreshClick(); handleClose();}}>
             <ListItemIcon>
               <CachedIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Refresh" />
           </MenuItem>
-          <SnackbarButton
-              message="Address Copied"
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              onClick={() => { clipboardCopy(props.account.address); handleClose(); }}
-            >
-            <MenuItem>
-              <ListItemIcon>
-                <FileCopyIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Copy Address" />
-            </MenuItem>
-          </SnackbarButton>
-          <MenuItem onClick={props.logout}>
+          <MenuItem onClick={() => { clipboardCopy(props.account.address); handleClose(); }}>
+            <ListItemIcon>
+              <FileCopyIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Copy Address" />
+          </MenuItem>
+          <MenuItem onClick={() => {processPayments(); handleClose();}}>
+            <ListItemIcon>
+              <LocalAtmIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Check Payments" />
+          </MenuItem>
+          
+          <Divider light />
+          <MenuItem onClick={() => {props.logout(); handleClose();}}>
             <ListItemIcon>
               <LockIcon fontSize="small" />
             </ListItemIcon>
@@ -300,40 +266,46 @@ export default function Wallet(props) {
       <Divider />
       <List>
         <ListSubheader>
-          My Collections
-          <ListItemSecondaryAction>
-            <ListItemIcon>
-              <Button color={"primary"} variant={"contained"} onClick={() => {props.close(); props.processPayments()}} style={{marginTop:"3px", marginLeft:"30px", fontWeight:"bold"}} size="small" edge="end">
-                Check Payments
-              </Button>
-            </ListItemIcon>
-          </ListItemSecondaryAction>
+          My Collection
         </ListSubheader>
-        {myCollections === false ?
-          <ListItem><CircularProgress style={{fontSize:10}} color="inherit" />&nbsp;&nbsp;&nbsp;&nbsp;Loading collections...</ListItem>
-        :
-          <>
-          {myCollections.length === 0 ?
-            <ListItem>No collections owned</ListItem>
-          :
-            <>
-              {myCollections.map(_collection => {
-                return (<ListItem key={_collection.canister + "-" + _collection.count} selected={props.view === "wallet" && _collection.route == props.collection?.route} button onClick={() => {props.close(); navigate("/wallet/"+_collection.route)}}>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <img alt={_collection.name} src={"/collections/"+_collection.canister+".jpg"} style={{height:64}} />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText>{_collection.name}</ListItemText>
-                  <ListItemSecondaryAction><Chip label={_collection.count} variant="outlined" /></ListItemSecondaryAction>
-                </ListItem>)
-              })}
-              {loading ? <ListItem><CircularProgress style={{fontSize:10}} color="inherit" />&nbsp;&nbsp;&nbsp;&nbsp;Loading collections...</ListItem> : ""}
-            </>
-          }
-          </>
-        }
-      </List> </>: ""}
+        <ListItem button onClick={() => {props.close(); navigate("/collected");}}>
+          <ListItemIcon>
+            <CollectionsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Collected" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/selling");}}>
+          <ListItemIcon>
+            <AddShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Selling" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/offers-received");}}>
+          <ListItemIcon>
+            <CallReceivedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Offers Received" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/offers-made");}}>
+          <ListItemIcon>
+            <LocalOfferIcon />
+          </ListItemIcon>
+          <ListItemText primary="Offers Made" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/favorites");}}>
+          <ListItemIcon>
+            <FavoriteIcon />
+          </ListItemIcon>
+          <ListItemText primary="Favorites" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/activity");}}>
+          <ListItemIcon>
+            <ImportExportIcon />
+          </ListItemIcon>
+          <ListItemText primary="Activity" />
+        </ListItem>
+      </List> 
+    </>: ""}
       
     </div>
   );

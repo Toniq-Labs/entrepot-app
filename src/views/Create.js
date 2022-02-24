@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -92,16 +93,16 @@ export default function Create(props) {
             <Grid item xs={12} sm={12} md={12}>
               <p style={{ textAlign: "center", fontSize: "1.3em" }}>
                 If you would like to release your own collection of NFTs on the
-                Entrepot.app marketplace then please complete{" "}
-                <a
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSfijChkKNI8SESLIavMspahNeE5Mio84TjDwspmlV7EEd4iCA/viewform"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  this form
-                </a>{" "}
-                and we will be in touch! Our self-minting portal will be available for public use this year so stay tuned for updates!
+                Entrepot.app marketplace then please complete the following Application form. Entrepot utilizes a community driven approach to project selection on the launchpad. Applications for launch are automatically shared publicly in our discord for community review and feedback.
               </p>
+              <Grid container spacing={2} style={{paddingBottom:20}}>
+                <Grid item xs={12} sm={6} style={{textAlign:"right"}}>
+                  <Button size="large" variant="outlined" target="_blank" href="https://entrepot-launchpad.paperform.co/">Application Form</Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button size="large" variant="outlined" target="_blank" href="https://discord.gg/toniqlabs">Join our Discord</Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
           <Features />

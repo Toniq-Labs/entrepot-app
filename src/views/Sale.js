@@ -81,65 +81,11 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "ICPics",
-      link : "/sale/icpics",
-      image : "/collections/icpics/collection.png",
-      content : (<>This collection contains ethnic art AI renderings. With more than 94 countries from seven continents, there is one that everybody can relate to! More to come in next ventures!</>),
+      title : "Frontliners",
+      link : "/sale/frontliners",
+      image : "/collections/frontliners/collection.jpg",
+      content : (<>This project is inspired by the courage and dedication of frontline health workers. The artwork is a tribute to the scientists and medical teams working collaboratively across the world.</>),
     },
-    {
-      title : "SwordNFT",
-      link : "/sale/sword",
-      image : "/collections/sword/collection.jpg",
-      content : (<>This collection was designed with the intent of game/metaverse intergration in the future.</>),
-    },
-    // {
-      // title : "FlokiCyberPunk",
-      // link : "/sale/floki",
-      // image : "/collections/floki/collection.png",
-      // content : (<>NFT owners will be able to earn x2, x5, x10 times more tokens in Internet Computer (ICP) game than everyone else!</>),
-    // },
-    {
-      title : "Yolo Octopus",
-      link : "/sale/yolo-octopus",
-      image : "/collections/yolo/collection.jpg",
-      content : (<>'You Only Live Once' - No NFTs will sit idle. Amazing tools where u can create animation, add music & enter DIGITAL STUDIO. 3D collection will also be launched soon.</>),
-    },
-    // {
-      // title : "Poked Bots",
-      // link : "/sale/poked",
-      // image : "/banner/poked.jpg",
-      // content : (<>500 years from now humans have left earth and only the Robots remain. Robots have managed to create new identities based on relics they have found from earths past</>),
-    // },
-    // {
-      // title : "Dfinity Bulls",
-      // link : "/sale/dfinitybulls",
-      // image : "/banner/bulls.jpg",
-      // content : (<>Get one of 8888 minted Dfinity Bulls by the owners of the Dfinity Bulls Telegram Community!</>),
-    // },
-    // {
-      // title : "Infernal Vampire Colony",
-      // link : "/sale/ivc",
-      // image : "/banner/vamp1.jpg",
-      // content : (<>Infernal Vampire Colony is an initial collection of 666 Vampires, with another 6000 to be released in future!</>),
-    // },
-    // {
-      // title : "Haunted Hamsters",
-      // link : "/sale/hauntedhamsters",
-      // image : "/banner/hauntedhamsters.jpg",
-      // content : (<>Haunted Hamsters are 6666 hamsters, who have been haunted on the hill of Hamsterville. They come with various traits, and are now living on the blockchain ready to spook!</>),
-    // },
-    // {
-      // title : "IC3D",
-      // link : "/sale/ic3d",
-      // image : "/banner/ic3d.jpg",
-      // content : (<>IC3D NFT is in the business of creating and selling 3D NFTs to collectors, gamers, and traders in the Internet Computer ecosystem.</>),
-    // },
-    // {
-      // title : "3D MoonWalkers",
-      // link : "/sale/moonwalkers",
-      // image : "/banner/icgallery2.jpg",
-      // content : (<>These Animal Astronauts unlock massive influence in the growing ecosystem of the IC Gallery. The Moonwalker collection combines 3 essential forces of the Metaverse into 1 NFT.</>),
-    // },
   
   ];
   return (
