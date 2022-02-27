@@ -18,7 +18,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import extjs from '../ic/extjs.js';
 import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
-import _c from '../ic/collections.js';
 import Event from './Event';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
@@ -44,13 +43,8 @@ import TableBody from '@material-ui/core/TableBody';
 
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
-var collections = _c;
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
-};
-var collections = collections.filter(a => _isCanister(a.canister));
-const getCollection = c => {
-  return collections.find(e => e.canister === c);
 };
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -176,6 +170,9 @@ export default function UserActivity(props) {
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   
+  const getCollection = c => {
+    return props.collections.find(e => e.canister === c);
+  };
   const changeToggleFilter = () => {
     localStorage.setItem("_toggleFilter", !toggleFilter);
     setToggleFilter(!toggleFilter)
@@ -397,6 +394,7 @@ export default function UserActivity(props) {
                     .filter((event,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
                     .map(event => {
                       return (<Event 
+                          collections={props.collections} 
                           key={event.id}
                           collection={event.canister}
                           event={event}                

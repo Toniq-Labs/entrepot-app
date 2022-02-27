@@ -27,6 +27,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import Timestamp from "react-timestamp";
 import extjs from "../ic/extjs.js";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -40,11 +41,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper'
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
-import _c from '../ic/collections.js';
 import getNri from "../ic/nftv.js";
 import { makeStyles } from "@material-ui/core";
 import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
-var collections = _c;
 const api = extjs.connect("https://boundary.ic0.app/");
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
@@ -71,9 +70,6 @@ function useInterval(callback, delay) {
 }
 const _showDate = (t) => {
   return new Date(Number(t/1000000n)).toLocaleDateString();
-};
-const getCollection = c => {
-  return collections.find(e => e.canister === c);
 };
 var doRefresh = false;
 const useStyles = makeStyles((theme) => ({
@@ -128,6 +124,9 @@ export default function NFT(props) {
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
   
+  const getCollection = c => {
+    return props.collections.find(e => e.canister === c);
+  };
   const navigate = useNavigate();
   const getListing = () => {
     if (isNotEXT) return setListing(false);
@@ -199,7 +198,6 @@ export default function NFT(props) {
   };
 
   const refresh = async () => {
-    console.log('test');
     if (doRefresh) {
       await getListing();
     };
@@ -287,14 +285,10 @@ export default function NFT(props) {
     } else return "";
   };
 
-  const handleClick = () => {
-    const id = index;
-    navigate(`/marketplace/asset/`+getEXTID(tokenid));
-  };
   return (
     <Grid className={(props.gridSize === "small" ? classes.smallGrid : classes.bigGrid)} style={{ display:"flex"}} item>
       <Card onMouseOver={() => setShowOfferCount(true)} onMouseOut={() => setShowOfferCount(false)} style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
-      <CardActionArea onClick={handleClick}>
+        <Link style={{textDecoration:"none", color:"inherit"}} to={`/marketplace/asset/`+getEXTID(tokenid)}>
         <div style={{ ...styles.avatarSkeletonContainer }}>
           {EntrepotDisplayNFT(getEXTCanister(canister), tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
         </div>
@@ -413,6 +407,7 @@ export default function NFT(props) {
             
           </Grid>
         </CardContent>
+        </Link>
         {typeof props.ownerView !== 'undefined' && props.ownerView ?
         <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
           {props.loggedIn ? 
@@ -476,8 +471,8 @@ export default function NFT(props) {
           }
           <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
         </CardActions>}
-      </CardActionArea>
       </Card>
+      
     </Grid>
   );
 }

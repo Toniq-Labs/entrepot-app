@@ -13,17 +13,12 @@ import MuiTooltip from "@material-ui/core/Tooltip";
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import { Icon } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import extjs from '../ic/extjs.js';
-import _c from '../ic/collections.js';
 import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD} from '../utils.js';
-var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, '');
-};
-const getCollection = c => {
-  return collections.find(e => e.canister === c);
 };
 export default function Sold(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
@@ -31,6 +26,9 @@ export default function Sold(props) {
   const transaction = props.transaction;
   const index = extjs.decodeTokenId(transaction.token).index;
   const tokenid = transaction.token;
+  const getCollection = c => {
+    return props.collections.find(e => e.canister === c);
+  };
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -86,22 +84,19 @@ export default function Sold(props) {
         </MuiTooltip>      );
     } else return "";
   };
-  const handleClick = () => {
-    navigate(`/marketplace/asset/${tokenid}`);
-  };
   var t = ["Common","Uncommon","Rare","Epic","Legendary","Mythic"];
   return (
     <TableRow>
       <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
       <TableCell align="left">
-        <a style={{color:"black",textDecoration: 'none', cursor : "pointer" }} onClick={handleClick} rel="noreferrer" target="_blank">
+        <Link style={{color:"black",textDecoration: 'none' }} to={`/marketplace/asset/${tokenid}`}>
           <div style={{width:50, display:"inline-block", verticalAlign:"middle", paddingRight:10}}>
             <div style={{...styles.avatarSkeletonContainer}}>
               {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
             </div>
           </div>
           <strong>{getCollection(props.collection).name} {"#"+(mintNumber())}</strong>
-        </a>
+        </Link>
       </TableCell>
       <TableCell align="center">
         <strong>{showNri(props.nri)}</strong>

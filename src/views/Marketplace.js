@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import Wallet from "../components/Wallet";
@@ -14,7 +15,6 @@ import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from '@material-ui/core/TextField';
-import collections from '../ic/collections.js';
 import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 function useInterval(callback, delay) {
@@ -127,7 +127,6 @@ export default function Marketplace(props) {
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Sort by</InputLabel>
               <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"recent"}>Recently Listed</MenuItem>
                 <MenuItem value={"listings_asc"}>Listings: Low to High</MenuItem>
                 <MenuItem value={"listings_desc"}>Listings: High to Low</MenuItem>
                 <MenuItem value={"total_asc"}>Total Volume: Low to High</MenuItem>
@@ -147,7 +146,7 @@ export default function Marketplace(props) {
             spacing={2}
           >
             {
-              collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
+              props.collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
                 switch (sort) {
                   case "featured":
                     return b.priority - a.priority;              
@@ -221,35 +220,37 @@ export default function Marketplace(props) {
                 }
               }).map((collection, i) => {
                 return (<Grid key={i} item className={classes.collectionContainer}>
-                  <Card style={{height:375,}} className={classes.root}>
-                    <a onClick={() => handleClick("/marketplace/"+collection.route)}><CardMedia
-                      className={classes.media}
-                      image={collection.hasOwnProperty('collection') ? collection.collection : "/collections/"+collection.canister+".jpg"}
-                      title={collection.name}
-                    /></a>
-                    <CardContent style={{textAlign:"center"}}>
-                      <h2 style={{marginTop:0, fontSize:"1.4em"}}>{collection.name}</h2>
-                      <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
-                      {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
-                        <>{stats.find(a => a.canister == collection.canister).stats ?
-                          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                            <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                              <span style={{color:"#00d092"}}>Volume</span><br />
-                              <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
-                            </Grid>
-                            <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                              <span style={{color:"#00d092"}}>Listings</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
-                            </Grid>
-                            <Grid item md={4}>
-                              <span style={{color:"#00d092"}}>Floor Price</span><br />
-                              <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.floor} size={20} /></strong>
-                            </Grid>
-                          </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
-                        </> 
-                      : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
-                    </CardContent>
-                  </Card>
+                  <Link style={{textDecoration:"none"}} to={"/marketplace/"+collection.route}>
+                    <Card style={{height:375,}} className={classes.root}>
+                      <CardMedia
+                        className={classes.media}
+                        image={collection.hasOwnProperty('collection') ? collection.collection : "/collections/"+collection.canister+".jpg"}
+                        title={collection.name}
+                      />
+                      <CardContent style={{textAlign:"center"}}>
+                        <h2 style={{marginTop:0, fontSize:"1.4em"}}>{collection.name}</h2>
+                        <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
+                        {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
+                          <>{stats.find(a => a.canister == collection.canister).stats ?
+                            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                                <span style={{color:"#00d092"}}>Volume</span><br />
+                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
+                              </Grid>
+                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                                <span style={{color:"#00d092"}}>Listings</span><br />
+                                <strong>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
+                              </Grid>
+                              <Grid item md={4}>
+                                <span style={{color:"#00d092"}}>Floor Price</span><br />
+                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.floor} size={20} /></strong>
+                              </Grid>
+                            </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
+                          </> 
+                        : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </Grid>);
               })
             }

@@ -51,7 +51,6 @@ import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDispl
 import {
   useParams
 } from "react-router-dom";
-import _c from '../ic/collections.js';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -76,7 +75,6 @@ const api = extjs.connect("https://boundary.ic0.app/");
 const shorten = a => {
   return a.substring(0, 12) + "...";
 };
-var collections = _c;
 const emptyListing = {
   pricing: "",
   img: "",
@@ -99,7 +97,7 @@ const Detail = (props) => {
   const [owner, setOwner] = React.useState(false);
   const [offers, setOffers] = React.useState(false);
   const [openOfferForm, setOpenOfferForm] = React.useState(false);
-  const collection = collections.find(e => e.canister === canister)
+  const collection = props.collections.find(e => e.canister === canister)
   const classes = useStyles();
   const reloadOffers = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {
@@ -631,7 +629,7 @@ const Detail = (props) => {
                                 <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
                                 <TableCell align="right"><strong><PriceICP price={BigInt(transaction.price)} /></strong><br />
                                 {EntrepotGetICPUSD(BigInt(transaction.price)) ? <small><PriceUSD price={EntrepotGetICPUSD(BigInt(transaction.price))} /></small> : ""}</TableCell>
-                                <TableCell align="center"><a href={"https://ic.rocks/principal/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
+                                <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
                                 <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
                                 <TableCell align="center"><Timestamp
                                   relative

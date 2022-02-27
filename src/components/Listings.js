@@ -50,7 +50,6 @@ import NFT from "./NFT";
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
-import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import PriceICP from './PriceICP';
@@ -88,13 +87,6 @@ const useDidMountEffect = (func, deps) => {
     }, deps);
 }
 
-const getCollectionFromRoute = r => {
-  if (_isCanister(r)) {
-    return collections.find(e => e.canister === r)
-  } else {
-    return collections.find(e => e.route === r)
-  };
-};
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
@@ -110,6 +102,13 @@ var _ss, canUpdateListings = true;
 export default function Listings(props) {
   const params = useParams();
   const classes = useStyles();
+  const getCollectionFromRoute = r => {
+    if (_isCanister(r)) {
+      return props.collections.find(e => e.canister === r)
+    } else {
+      return props.collections.find(e => e.route === r)
+    };
+  };
   const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
   const [displayListings, setDisplayListings] = useState(false);
@@ -432,7 +431,6 @@ export default function Listings(props) {
   };
   
   useDidMountEffect(() => {
-    console.log("saving");
     _ss = {
       sort : sort,
       selectedFilters : selectedFilters,
@@ -780,6 +778,7 @@ export default function Listings(props) {
                     .map((listing, i) => {
                       return (
                         <NFT
+                          collections={props.collections} 
                           gridSize={gridSize}
                           loggedIn={props.loggedIn}
                           identity={props.identity}

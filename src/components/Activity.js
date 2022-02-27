@@ -38,7 +38,6 @@ import Sold from "./Sold";
 import BuyForm from "./BuyForm";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
-import collections from '../ic/collections.js';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import PriceICP from './PriceICP';
@@ -77,13 +76,6 @@ const _getRandomBytes = () => {
   return bs;
 };
 
-const getCollectionFromRoute = r => {
-  if (_isCanister(r)) {
-    return collections.find(e => e.canister === r)
-  } else {
-    return collections.find(e => e.route === r)
-  };
-};
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
@@ -98,6 +90,13 @@ const emptyListing = {
 };
 
 export default function Activity(props) {
+  const getCollectionFromRoute = r => {
+    if (_isCanister(r)) {
+      return props.collections.find(e => e.canister === r)
+    } else {
+      return props.collections.find(e => e.route === r)
+    };
+  };
   const params = useParams();
   const classes = useStyles();
   const [stats, setStats] = React.useState(false);
@@ -108,7 +107,7 @@ export default function Activity(props) {
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [blurbElement, setBlurbElement] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState(false);
-  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
+  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route, props.collections));
   
   const navigate = useNavigate();
 
@@ -315,6 +314,7 @@ export default function Activity(props) {
                               .map((transaction, i) => {
                                 return (
                                   <Sold
+                                    collections={props.collections} 
                                     nri={getNri(
                                       collection?.canister,
                                       extjs.decodeTokenId(transaction.token).index

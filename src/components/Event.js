@@ -13,19 +13,17 @@ import MuiTooltip from "@material-ui/core/Tooltip";
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import { Icon } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import extjs from '../ic/extjs.js';
-import _c from '../ic/collections.js';
 import {EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD} from '../utils.js';
-var collections = _c;
 const _showListingPrice = n => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, '');
 };
-const getCollection = c => {
-  return collections.find(e => e.canister === c);
-};
 export default function Event(props) {
+  const getCollection = c => {
+    return props.collections.find(e => e.canister === c);
+  };
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const navigate = useNavigate();
   const event = props.event;
@@ -94,14 +92,14 @@ export default function Event(props) {
     <TableRow>
       <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>{event.type}</strong></TableCell>
       <TableCell align="left">
-        <a style={{color:"black",textDecoration: 'none', cursor : "pointer" }} onClick={handleClick} rel="noreferrer" target="_blank">
+        <Link to={`/marketplace/asset/${tokenid}`} style={{color:"black",textDecoration: 'none'}}>
           <div style={{width:50, display:"inline-block", verticalAlign:"middle", paddingRight:10}}>
             <div style={{...styles.avatarSkeletonContainer}}>
               {EntrepotDisplayNFT(props.collection, tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}
             </div>
           </div>
           <strong>{getCollection(props.collection).name} {"#"+(mintNumber())}</strong>
-        </a>
+        </Link>
       </TableCell>
       <TableCell align="right"><strong><PriceICP price={event.price} /></strong><br />
       {EntrepotGetICPUSD(event.price) ? <small><PriceUSD price={EntrepotGetICPUSD(event.price)} /></small> : ""}</TableCell>

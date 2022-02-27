@@ -21,7 +21,6 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
 import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
-import _c from '../ic/collections.js';
 import NFT from './NFT';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
@@ -45,13 +44,8 @@ import Tab from '@material-ui/core/Tab';
 import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
-var collections = _c;
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
-};
-var collections = collections.filter(a => _isCanister(a.canister));
-const getCollection = c => {
-  return collections.find(e => e.canister === c);
 };
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -102,18 +96,18 @@ const loadAllTokens = async (address, principal) => {
   var tokens = response.filter(result => !(result instanceof Error)).flat()
   return tokens;
 };
-const loadAllListings = async (address, principal) => {
-  var response = await Promise.all(collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
-  var tokens = response.filter(result => !(result instanceof Error)).flat();
-  // var wrappedMap = {
-    // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
-    // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
-    // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
-    // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
-    // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
-  // };
-  return tokens;
-};
+// const loadAllListings = async (address, principal) => {
+  // var response = await Promise.all(props.collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
+  // var tokens = response.filter(result => !(result instanceof Error)).flat();
+  // // var wrappedMap = {
+    // // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
+    // // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
+    // // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
+    // // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
+    // // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
+  // // };
+  // return tokens;
+// };
 var canUpdateNfts = true;
 const useStyles = makeStyles((theme) => ({
   tabsViewBig: {
@@ -208,6 +202,9 @@ export default function UserCollection(props) {
   const navigate = useNavigate();
   const [displayedResults, setDisplayedResults] = React.useState([]);
   const [results, setResults] = React.useState(false);
+  const getCollection = c => {
+    return props.collections.find(e => e.canister === c);
+  };
   
   const [nfts, setNfts] = React.useState([]);
   const [tokenCanisters, setTokenCanisters] = React.useState([]);
@@ -250,7 +247,6 @@ export default function UserCollection(props) {
   
   const refresh = async () => {
     if (!address) return;
-    console.log("refreshing");
     // switch(props.view){
       // case "collected":
         // var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
@@ -280,7 +276,6 @@ export default function UserCollection(props) {
     var data; 
     switch(props.view){
       case "collected":
-        console.log("start");
         // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
         // data = response.data;
         // data = data.map(a => ({...a, token : a.id}));
@@ -309,7 +304,6 @@ export default function UserCollection(props) {
         data = r3;
         break;
     }
-    console.log(data[0].canister);
     console.log("fetched");
     data = filterBefore(data);
     setTokenCanisters(data.map(d => d.canister));
@@ -452,7 +446,8 @@ export default function UserCollection(props) {
                 <ListItemText><strong>View All Collections</strong></ListItemText>
                 <ListItemSecondaryAction><Chip label={tokenCanisters.length} variant="outlined" /></ListItemSecondaryAction>
               </ListItem>
-              { tokenCanisters.filter((a,i) => tokenCanisters.indexOf(a) == i) //filter unique
+              { tokenCanisters
+                .filter((a,i) => tokenCanisters.indexOf(a) == i && typeof getCollection(a) != 'undefined') //filter unique
                 .map(canister => {
                   var _collection = getCollection(canister);
                   return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
@@ -538,7 +533,6 @@ export default function UserCollection(props) {
                 }}
               >
                 {displayedResults
-                .filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
                 .sort((a,b) => {
                   switch(sort) {
                     case "price_asc":
@@ -570,8 +564,10 @@ export default function UserCollection(props) {
                       return 0;
                   };
                 })
+                .filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
                 .map((token, i) => {
                   return (<NFT 
+                    collections={props.collections} 
                     gridSize={gridSize} 
                     //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
                     loggedIn={props.loggedIn} 

@@ -1,9 +1,10 @@
 import React from "react";
 import Skeleton from "@material-ui/lab/Skeleton";
-import collections from './ic/collections.js';
 import extjs from "./ic/extjs.js";
 const api = extjs.connect("https://boundary.ic0.app/");
-
+const _isCanister = c => {
+  return c.length == 27 && c.split("-").length == 5;
+};
 function fallbackCopyTextToClipboard(text) {
   
   var textArea = document.createElement("textarea");
@@ -30,6 +31,7 @@ function fallbackCopyTextToClipboard(text) {
 }
 var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {}, lastUpdate = false;
 const _getStats = async () => {
+    var collections = (await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json())).map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
     var pxs = [];
     var _ts = [];
     for(var i = 0; i < collections.length; i++){
@@ -118,13 +120,14 @@ EntrepotNFTImage = (collection, index, id, fullSize) => {
     if (fullSize) {      
       return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
     } else {
-      return "https://7budn-wqaaa-aaaah-qcsba-cai.raw.ic0.app/?tokenid=" + id;
+      return "https://arkxautmrq.cloudimg.io/7budn-wqaaa-aaaah-qcsba-cai/" + id;
     };
   }
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
-    return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+    return "https://arkxautmrq.cloudimg.io/"+collection+"/" + id;
+    //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
   }
 },
 EntrepotNFTLink = (collection, index, id) => {
