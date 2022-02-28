@@ -277,7 +277,7 @@ export default function App() {
     };
     loader(true, "Processing payments... (this can take a few minutes)");
     
-    var canistersToProcess = ["pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
+    var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
     var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
     for (var j = 0; j < _collections.length; j++) {
       loader(true, "Processing payments... (this can take a few minutes)");
