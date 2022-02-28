@@ -287,7 +287,7 @@ export default function NFT(props) {
 
   return (
     <Grid className={(props.gridSize === "small" ? classes.smallGrid : classes.bigGrid)} style={{ display:"flex"}} item>
-      <Card onMouseOver={() => setShowOfferCount(true)} onMouseOut={() => setShowOfferCount(false)} style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column'}}>
+      <Card onMouseOver={() => setShowOfferCount(true)} onMouseOut={() => setShowOfferCount(false)} style={{display: 'flex', width: "100%", justifyContent: 'space-between', flexDirection: 'column', position:"relative"}}>
         <Link style={{textDecoration:"none", color:"inherit"}} to={`/marketplace/asset/`+getEXTID(tokenid)}>
         <div style={{ ...styles.avatarSkeletonContainer }}>
           {EntrepotDisplayNFT(getEXTCanister(canister), tokenid, imgLoaded, nftImg(), () => setImgLoaded(true))}

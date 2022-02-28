@@ -120,13 +120,13 @@ EntrepotNFTImage = (collection, index, id, fullSize) => {
     if (fullSize) {      
       return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
     } else {
-      return "https://arkxautmrq.cloudimg.io/7budn-wqaaa-aaaah-qcsba-cai/" + id;
+      return "https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/" + id;
     };
   }
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
-    return "https://arkxautmrq.cloudimg.io/"+collection+"/" + id;
+    return "https://images.entrepot.app/t/"+collection+"/" + id;
     //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
   }
 },
