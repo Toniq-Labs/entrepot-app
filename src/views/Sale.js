@@ -81,10 +81,10 @@ export default function Iconic(props) {
   const navigate = useNavigate();
   var cards = [
     {
-      title : "Frontliners",
-      link : "/sale/frontliners",
-      image : "/collections/frontliners/collection.jpg",
-      content : (<>This project is inspired by the courage and dedication of frontline health workers. The artwork is a tribute to the scientists and medical teams working collaboratively across the world.</>),
+      title : "Vibesters",
+      link : "/sale/vibesters",
+      image : "/collections/vibesters/collection.png",
+      content : (<>Vibesters is a collection of 5000 2D Avatars, living on the Internet Computer.</>),
     },
   
   ];

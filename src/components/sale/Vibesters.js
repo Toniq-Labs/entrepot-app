@@ -184,11 +184,10 @@ export default function Vibesters(props) {
                   <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! The private sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
                 </> : ""
               }
-              {whitelist && Date.now() >= startTime && Date.now() < whitelistend ? 
+              {whitelist && Date.now() >= startTime ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint 1 NFT at 1ICP for the first 1 hour only!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint 1 NFT at 1.5ICP and you have priority for the first 1 hour!</span></strong></p>
                   
-                  {totalToSell-remaining < 1000 ?
                   <>
                     <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                       <Button
@@ -202,32 +201,31 @@ export default function Vibesters(props) {
                     </Grid>
                     <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
                   </> 
-                  : <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, there are currently no pre-sale NFTs available.</span></strong></p>}
                   
-                </> : ""
-              }
-              {Date.now() >= whitelistend ? 
-                <>
-                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-                    {buyOptions.map(o => {
-                      return (<Grid className={classes.stat} item sm={3}>
-                        <Button
-                          variant={"contained"}
-                          color={"primary"}
-                          onClick={() => buyFromSale(o[0], (o.length > 1 ? o[1] : price*BigInt(o[0])))}
-                          style={{ fontWeight: "bold", margin: "0 auto" }}
-                        >
-                          Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*BigInt(o[0])))} ICP
-                        </Button>
-                      </Grid>);
-                    })}
-                  </Grid>
-                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
-                  
-                </> :
-                <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistend/1000} />!</span></strong></p>
-                </>
+                </> : 
+                <>{Date.now() >= whitelistend ? 
+                  <>
+                    <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+                      {buyOptions.map(o => {
+                        return (<Grid className={classes.stat} item sm={3}>
+                          <Button
+                            variant={"contained"}
+                            color={"primary"}
+                            onClick={() => buyFromSale(o[0], (o.length > 1 ? o[1] : price*BigInt(o[0])))}
+                            style={{ fontWeight: "bold", margin: "0 auto" }}
+                          >
+                            Buy {o[0]} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*BigInt(o[0])))} ICP
+                          </Button>
+                        </Grid>);
+                      })}
+                    </Grid>
+                    <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                    
+                  </> :
+                  <>
+                    <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistend/1000} />!</span></strong></p>
+                  </>
+                }</>
               }
             </>
           : 

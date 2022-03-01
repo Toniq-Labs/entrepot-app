@@ -913,7 +913,7 @@ export default function App() {
                   confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-                {/*<Route path="/sale/vibesters" exact element={
+              <Route path="/sale/vibesters" exact element={
                 <Vibesters
                   error={error}
                   view={"sale"}
@@ -921,7 +921,7 @@ export default function App() {
                   alert={alert}
                   confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />*/}
+                />} />
               <Route path="/sale/sword" exact element={
                 <Sword
                   error={error}

@@ -55,8 +55,8 @@ export default function Home(props) {
   const navigate = useNavigate();
   var items = [
     {
-        link: "/sale/frontliners",
-        img: "/banner/frontliners.png"
+        link: "/sale/vibesters",
+        img: "/banner/vibesters.png"
     },
     // {
         // link: "/sale/icspliffsters",
