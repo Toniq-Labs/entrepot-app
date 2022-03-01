@@ -43,6 +43,7 @@ import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
 import Frog from "./components/sale/Frog";
+import Vibesters from "./components/sale/Vibesters";
 import DfinityDeck from "./components/sale/DfinityDeck";
 import Frontliners from "./components/sale/Frontliners";
 import Prime from "./components/sale/Prime";
@@ -912,6 +913,15 @@ export default function App() {
                   confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
+                {/*<Route path="/sale/vibesters" exact element={
+                <Vibesters
+                  error={error}
+                  view={"sale"}
+                  sale={"vibesters"}
+                  alert={alert}
+                  confirm={confirm}
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />*/}
               <Route path="/sale/sword" exact element={
                 <Sword
                   error={error}
