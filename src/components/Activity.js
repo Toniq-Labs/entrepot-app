@@ -133,12 +133,11 @@ export default function Activity(props) {
     if (c === "nges7-giaaa-aaaaj-qaiya-cai") {
       setTransactions([]);
     } else {
-      var txs = await api.canister(c).transactions();
-      var nt = txs;
-      if (c === "e3izy-jiaaa-aaaah-qacbq-cai") {
-        nt = txs.slice(82);
-      }
-      setTransactions(nt);
+      var txs = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/canister/"+c+"/transactions").then(r => r.json());
+      txs = txs.filter((a,i) => txs.findIndex(b => b.id == a.id) == i);
+      txs = txs.filter(e => e.token != "");
+      console.log(txs[0]);
+      setTransactions(txs);
     }
   };
   const theme = useTheme();
@@ -319,7 +318,7 @@ export default function Activity(props) {
                                       collection?.canister,
                                       extjs.decodeTokenId(transaction.token).index
                                     )}
-                                    key={transaction.token + i}
+                                    key={transaction.id}
                                     collection={collection?.canister}
                                     transaction={transaction}
                                   />

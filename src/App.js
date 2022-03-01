@@ -141,6 +141,15 @@ const canisterMap= {
   "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
   "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
 };
+var otherPrincipalsForPlug = [
+  "xkbqi-2qaaa-aaaah-qbpqq-cai",
+  "d3ttm-qaaaa-aaaai-qam4a-cai",
+  "qcg3w-tyaaa-aaaah-qakea-cai",
+  "4nvhy-3qaaa-aaaah-qcnoq-cai",
+  "ryjl3-tyaaa-aaaaa-aaaba-cai",
+  "qgsqp-byaaa-aaaah-qbi4q-cai",
+  "6z5wo-yqaaa-aaaah-qcsfa-cai",
+];
 export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
@@ -401,14 +410,7 @@ export default function App() {
           break;
         case "plug":
           const result = await window.ic.plug.requestConnect({
-            whitelist: collections.map(a => a.canister).concat([
-              "xkbqi-2qaaa-aaaah-qbpqq-cai",
-              "d3ttm-qaaaa-aaaai-qam4a-cai",
-              "4nvhy-3qaaa-aaaah-qcnoq-cai",
-              "qcg3w-tyaaa-aaaah-qakea-cai",
-              "ryjl3-tyaaa-aaaaa-aaaba-cai",
-              "qgsqp-byaaa-aaaah-qbi4q-cai",
-            ]),
+            whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
           });
           if (result) {
             id = await window.ic.plug.agent._identity;
@@ -592,79 +594,75 @@ export default function App() {
       setCollections(r2);
       setAppLoaded(true);
     });
-    var t = localStorage.getItem("_loginType");
-    if (t) {
-      switch (t) {
-        case "stoic":
-          StoicIdentity.load().then(async (identity) => {
-            if (identity !== false) {
-              //ID is a already connected wallet!
-              setIdentity(identity);
-              identity.accounts().then((accs) => {
-                setAccounts(JSON.parse(accs));
-              });
-            } else {              
-              console.log("Error from stoic connect");
-            }
-          }).catch(e => {
-          });
-          break;
-        case "torus":
-          loadOpenLogin().then(openlogin => {
-            if (!openlogin.privKey || openlogin.privKey.length === 0) {
-
-            } else {
-              var id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
-              if (id) {
-                setIdentity(id);
-                setAccounts([
-                  {
-                    name: "Torus Wallet",
-                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
-                  },
-                ]);
-              };
-            }
-          });
-          break;
-        case "plug":
-          (async () => {
-            const connected = await window.ic.plug.isConnected();
-            if (connected) {
-              if (!window.ic.plug.agent) {
-                await window.ic.plug.createAgent({
-                  whitelist: collections.map(a => a.canister).concat([
-                    "xkbqi-2qaaa-aaaah-qbpqq-cai",
-                    "d3ttm-qaaaa-aaaai-qam4a-cai",
-                    "qcg3w-tyaaa-aaaah-qakea-cai",
-                    "4nvhy-3qaaa-aaaah-qcnoq-cai",
-                    "ryjl3-tyaaa-aaaaa-aaaba-cai",
-                    "qgsqp-byaaa-aaaah-qbi4q-cai",
-                  ]),
-                });
-              }
-              var id = await window.ic.plug.agent._identity;
-              setIdentity(id);
-              setAccounts([
-                {
-                  name: "Plug Wallet",
-                  address: extjs.toAddress(id.getPrincipal().toText(), 0),
-                },
-              ]);
-            }
-          })();
-          break;
-        default:
-          break;
-      }
-    }
     EntrepotUpdateUSD();
     EntrepotUpdateStats();
     if (identity) EntrepotUpdateLiked(identity);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
-  }, [collections]);
+    if (appLoaded){
+      var t = localStorage.getItem("_loginType");
+      if (t) {
+        switch (t) {
+          case "stoic":
+            StoicIdentity.load().then(async (identity) => {
+              if (identity !== false) {
+                //ID is a already connected wallet!
+                setIdentity(identity);
+                identity.accounts().then((accs) => {
+                  setAccounts(JSON.parse(accs));
+                });
+              } else {              
+                console.log("Error from stoic connect");
+              }
+            }).catch(e => {
+            });
+            break;
+          case "torus":
+            loadOpenLogin().then(openlogin => {
+              if (!openlogin.privKey || openlogin.privKey.length === 0) {
+
+              } else {
+                var id = Ed25519KeyIdentity.generate(new Uint8Array(fromHexString(openlogin.privKey)));
+                if (id) {
+                  setIdentity(id);
+                  setAccounts([
+                    {
+                      name: "Torus Wallet",
+                      address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                    },
+                  ]);
+                };
+              }
+            });
+            break;
+          case "plug":
+            (async () => {
+              const connected = await window.ic.plug.isConnected();
+              if (connected) {
+                if (!window.ic.plug.agent) {
+                  await window.ic.plug.createAgent({
+                    whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
+                  });
+                }
+                var id = await window.ic.plug.agent._identity;
+                setIdentity(id);
+                setAccounts([
+                  {
+                    name: "Plug Wallet",
+                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                  },
+                ]);
+              }
+            })();
+            break;
+          default:
+            break;
+        }
+      }
+      if (identity) EntrepotUpdateLiked(identity);
+    };
+  }, [appLoaded]);
   React.useEffect(() => {
     if (identity) {
       setLoggedIn(true);
