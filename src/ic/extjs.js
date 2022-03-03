@@ -19,6 +19,7 @@ import ictuts from './candid/ictuts.js';
 import mintregister from './candid/mintregister.did.js';
 import nftIDL from './candid/nft.did.js';
 import moonwalkerIDL from './candid/moonwalker.did.js';
+import saleIDL from './candid/sale.did.js';
 import ic3dIDL from './candid/ic3d.did.js';
 import pokedIDL from './candid/poked.did.js';
 import icapesIDL from './candid/icapes.did.js';
@@ -69,7 +70,7 @@ const _preloadedIdls = {
   'nns' : nnsIDL,
   'ext' : extIDL,
   'nft' : nftIDL,
-  'sale' : ic3dIDL,
+  'sale' : saleIDL,
   'default' : extIDL,
 };
 

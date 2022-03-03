@@ -7,6 +7,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
 import Carousel from 'react-material-ui-carousel'
@@ -58,36 +59,10 @@ const useStyles = makeStyles((theme) => ({
     left: "calc(50% - 20px)",
   },
 }));
-function shuffle(array) {
-  var m = array.length, t, i;
-
-  // While there remain elements to shuffle…
-  while (m) {
-
-    // Pick a remaining element…
-    i = Math.floor(Math.random() * m--);
-
-    // And swap it with the current element.
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-
-  return array;
-}
-export default function Iconic(props) {
+export default function Sale(props) {
   const classes = useStyles();
 
   const navigate = useNavigate();
-  var cards = [
-    {
-      title : "Vibesters",
-      link : "/sale/vibesters",
-      image : "/collections/vibesters/collection.png",
-      content : (<>Vibesters is a collection of 5000 2D Avatars, living on the Internet Computer.</>),
-    },
-  
-  ];
   return (
     <>
       <div style={{ width: "100%", display: "block", position: "relative" }}>
@@ -106,28 +81,22 @@ export default function Iconic(props) {
             alignItems="center"
           >
             {
-              cards.map((card, i) => {
+              props.collections.filter(a => typeof a.sale != 'undefined' && a.sale == true).map((collection, i) => {
                 return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
-                  <Card className={classes.root}>
-                    {card.link ?
-                    <a href={card.link}><CardMedia
-                      className={classes.media}
-                      image={card.image}
-                      title={card.title}
-                    /></a> :
-                    <CardMedia
-                      className={classes.media}
-                      image={card.image}
-                      title={card.title}
-                    />
-                    }
-                    <CardContent>
-                      <h3>{card.title}</h3>
-                      <Typography style={{display:"block", height:"125px", overflow:"hidden", textOverflow: "ellipsis"}} variant="body1" color="textSecondary" component="p"
-                      >{card.content}</Typography>
-                      <strong>{card.link ? <a href={card.link} style={{color:"black"}}>View Sale</a> : "Sale coming soon" }</strong>
-                    </CardContent>
-                  </Card>
+                  <Link style={{textDecoration:"none"}} to={"/sale/"+collection.route}>
+                    <Card className={classes.root}>
+                      <CardMedia
+                        className={classes.media}
+                        image={collection.collection}
+                        title={collection.name}
+                      />
+                      <CardContent>
+                        <h3>{collection.name}</h3>
+                        <Typography style={{display:"block", height:"125px", overflow:"hidden", textOverflow: "ellipsis"}} variant="body1" color="textSecondary" component="p"
+                        >{collection.blurb}</Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </Grid>);
               })
             }
