@@ -55,7 +55,7 @@ export default function Home(props) {
   const navigate = useNavigate();
   const [items, setItems] = React.useState([]);
   React.useEffect(() => {
-    fetch("http://us-central1-entrepot-api.cloudfunctions.net/api/banners").then(r => r.json()).then(r => {
+    fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/banners").then(r => r.json()).then(r => {
       setItems(r);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
