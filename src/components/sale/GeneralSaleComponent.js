@@ -194,7 +194,7 @@ export default function GeneralSaleComponent(props) {
               }
               {whitelist && Date.now() >= startTime && Date.now() < whitelistTime ? 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! You can mint as many NFTs at {_showListingPrice(price)}ICP for the first 30 minutes only (limited to first 500 sold)!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist!</span></strong></p>
                   
                   {totalToSell-remaining < 500 ?
                   <>
