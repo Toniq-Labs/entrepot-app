@@ -196,7 +196,6 @@ export default function GeneralSaleComponent(props) {
                 <>
                   <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist!</span></strong></p>
                   
-                  {totalToSell-remaining < 500 ?
                   <>
                     <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                       <Button
@@ -210,7 +209,6 @@ export default function GeneralSaleComponent(props) {
                     </Grid>
                     <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
                   </> 
-                  : <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, there are currently no pre-sale NFTs available.</span></strong></p>}
                   
                 </> : ""
               }
