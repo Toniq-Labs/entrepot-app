@@ -137,6 +137,7 @@ const
     if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
     if (collection === "sr4qi-vaaaa-aaaah-qcaaq-cai") return "https://" + collection + ".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
     if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
+    if (collection === "nfvlz-jaaaa-aaaah-qcciq-cai") return "https://images.entrepot.app/t/nfvlz-jaaaa-aaaah-qcciq-cai/" + id;
     if (collection === "pk6rk-6aaaa-aaaae-qaazq-cai")
     {
       if (fullSize)
