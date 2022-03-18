@@ -75,14 +75,15 @@ const _preloadedIdls = {
 };
 
 var tokensToLoad = {
-  "pk6rk-6aaaa-aaaae-qaazq-cai" : [0,2009],
-  "jmuqr-yqaaa-aaaaj-qaicq-cai" : [0,3507],
-  "jeghr-iaaaa-aaaah-qco7q-cai" : [0,10000],
-  "y3b7h-siaaa-aaaah-qcnwa-cai" : [0,10000],
-  "bxdf4-baaaa-aaaah-qaruq-cai" : [1,10000],
-  "3db6u-aiaaa-aaaah-qbjbq-cai" : [0,8001],
-  "poyn6-dyaaa-aaaah-qcfzq-cai" : [0,25000],
-  "nfvlz-jaaaa-aaaah-qcciq-cai" : [0,60000],
+  "pk6rk-6aaaa-aaaae-qaazq-cai": [0, 2009],
+  "jmuqr-yqaaa-aaaaj-qaicq-cai": [0, 3874],
+  "nges7-giaaa-aaaaj-qaiya-cai": [0, 100],
+  "jeghr-iaaaa-aaaah-qco7q-cai": [0, 10000],
+  "y3b7h-siaaa-aaaah-qcnwa-cai": [0, 10000],
+  "bxdf4-baaaa-aaaah-qaruq-cai": [1, 10000],
+  "3db6u-aiaaa-aaaah-qbjbq-cai": [0, 8001],
+  "poyn6-dyaaa-aaaah-qcfzq-cai": [0, 25000],
+  "nfvlz-jaaaa-aaaah-qcciq-cai": [0, 60000],
 };
 var loadedTokens = {};
 for(const a in tokensToLoad) {
