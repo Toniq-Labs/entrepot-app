@@ -181,6 +181,7 @@ const Detail = (props) => {
       case "cnxby-3qaaa-aaaah-qcdpq-cai":
       case "zejmq-rqaaa-aaaah-qcnsq-cai":
       case "rln4s-bqaaa-aaaah-qcyrq-cai":
+      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, false)}
