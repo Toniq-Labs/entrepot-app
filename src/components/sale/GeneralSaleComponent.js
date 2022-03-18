@@ -12,6 +12,7 @@ import { StoicIdentity } from "ic-stoic-identity";
 import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Navbar from "../../containers/Navbar.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -58,6 +59,8 @@ export default function GeneralSaleComponent(props) {
   const [price, setPrice] = React.useState(false);
   const [salePrice, setSalePrice] = React.useState(false);
   const [remaining, setRemaining] = React.useState(false);
+  const [sold, setSold] = React.useState(false);
+  const [pending, setPending] = React.useState(false);
   const [startTime, setStartTime] = React.useState(false);
   const [whitelistTime, setWhitelistTime] = React.useState(false);
   const [whitelist, setWhitelist] = React.useState(false);
@@ -74,6 +77,8 @@ export default function GeneralSaleComponent(props) {
     setTotalToSell(Number(salesSettings.totalToSell));
     setBulkPricing(salesSettings.bulkPricing);
     setRemaining(Number(salesSettings.remaining));
+    setSold(Number(salesSettings.sold));
+    setPending(Number(salesSettings.totalToSell - salesSettings.remaining - salesSettings.sold));
     setPrice(salesSettings.price);
   };
   const theme = useTheme();
@@ -160,23 +165,31 @@ export default function GeneralSaleComponent(props) {
         <h1>Welcome to the official {collection.name} sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+          {whitelist ? 
+            <Grid className={classes.stat} item md={3} xs={6}>
+            <strong>WHITELIST PRICE</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
+          </Grid>:
+          <Grid className={classes.stat} item md={3} xs={6}>
+            <strong>SALE PRICE</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{salePrice !== false ? _showListingPrice(salePrice) + " ICP" : "Loading..."}</span>
+          </Grid>
+          
+          }
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>SALE PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{salePrice !== false ? _showListingPrice(salePrice) + " ICP" : "Loading..."}</span>
+            <strong>PENDING</strong><br />
+            <span style={{fontWeight:"bold",color:"rgb(225 142 19)",fontSize:"2em"}}>{pending !== false ? pending : "Loading..."}</span>
           </Grid>
-          {whitelist ? 
-            <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>WHITELIST PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
-          </Grid>:""
-          }
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? totalToSell-remaining : "Loading..."}</span>
+            <span style={{fontWeight:"bold",color:"rgb(189 1 1)",fontSize:"2em"}}>{sold !== false ? sold : "Loading..."}</span>
+          </Grid>
+          <Grid className={classes.stat} item xs={10}>
+            <LinearProgress variant="buffer" value={Math.round(remaining/totalToSell*100)} valueBuffer={Math.round((remaining+pending)/totalToSell*100)} />
           </Grid>
         </Grid>
         <br /><br />
@@ -185,54 +198,62 @@ export default function GeneralSaleComponent(props) {
             <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
           </>
         : 
-          <>{(remaining > 0) ?
+          <>{sold < totalToSell ?
             <>
-              {whitelist && Date.now() < startTime && startTime < whitelistTime  ? 
-                <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! The private sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
-                </> : ""
-              }
-              {whitelist && Date.now() >= startTime && Date.now() < whitelistTime ? 
-                <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist!</span></strong></p>
-                  
+              {remaining > 0 ?
+              <>
+                {whitelist && Date.now() < startTime && startTime < whitelistTime  ? 
                   <>
-                    <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-                      <Button
-                        variant={"contained"}
-                        color={"primary"}
-                        onClick={() => buyFromSale(1, price)}
-                        style={{ fontWeight: "bold", margin: "0 auto" }}
-                      >
-                        Buy 1 NFT<br />for {_showListingPrice(price)} ICP
-                      </Button>
-                    </Grid>
-                    <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
-                  </> 
-                  
-                </> : ""
-              }
-              {Date.now() >= whitelistTime ? 
-                <>
-                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-                    {bulkPricing.map(o => {
-                      return (<Grid className={classes.stat} item sm={3}>
+                    <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist! The private sale starts <Timestamp relative autoUpdate date={startTime/1000} />!</span></strong></p>
+                  </> : ""
+                }
+                {whitelist && Date.now() >= startTime && Date.now() < whitelistTime ? 
+                  <>
+                    <p><strong><span style={{fontSize:"20px",color:"black"}}>You are on the whitelist!</span></strong></p>
+                    
+                    <>
+                      <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
                         <Button
                           variant={"contained"}
                           color={"primary"}
-                          onClick={() => buyFromSale(Number(o[0]), (o.length > 1 ? o[1] : price*o[0]))}
+                          onClick={() => buyFromSale(1, price)}
                           style={{ fontWeight: "bold", margin: "0 auto" }}
                         >
-                          Buy {Number(o[0])} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*o[0]))} ICP
+                          Buy 1 NFT<br />for {_showListingPrice(price)} ICP
                         </Button>
-                      </Grid>);
-                    })}
-                  </Grid>
-                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
-                  
-                </> :
+                      </Grid>
+                      <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                    </> 
+                    
+                  </> : ""
+                }
+                {Date.now() >= whitelistTime ? 
+                  <>
+                    <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+                      {bulkPricing.map(o => {
+                        return (<Grid className={classes.stat} item sm={3}>
+                          <Button
+                            variant={"contained"}
+                            color={"primary"}
+                            onClick={() => buyFromSale(Number(o[0]), (o.length > 1 ? o[1] : price*o[0]))}
+                            style={{ fontWeight: "bold", margin: "0 auto" }}
+                          >
+                            Buy {Number(o[0])} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice((o.length > 1 ? o[1] : price*o[0]))} ICP
+                          </Button>
+                        </Grid>);
+                      })}
+                    </Grid>
+                    <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                    
+                  </> :
+                  <>
+                    <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistTime/1000} />!</span></strong></p>
+                  </>
+                }
+              </>
+              : 
                 <>
-                  <p><strong><span style={{fontSize:"20px",color:"black"}}>The public sale starts <Timestamp relative autoUpdate date={whitelistTime/1000} />!</span></strong></p>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>There are currently no more NFTs available, but not all sales have settled yet. If these transactions do not settle in time, the NFTs will become available to purchase again.</span></strong></p>
                 </>
               }
             </>
