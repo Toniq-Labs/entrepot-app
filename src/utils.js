@@ -115,6 +115,8 @@ EntrepotNFTImage = (collection, index, id, fullSize) => {
   if (collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
   if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
+  if (collection === "sr4qi-vaaaa-aaaah-qcaaq-cai") return "https://" + collection + ".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+  if (collection === "nfvlz-jaaaa-aaaah-qcciq-cai") return "https://images.entrepot.app/t/nfvlz-jaaaa-aaaah-qcciq-cai/" + id;
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
   if (collection === "pk6rk-6aaaa-aaaae-qaazq-cai") {
     if (fullSize) {      
@@ -135,6 +137,8 @@ EntrepotNFTLink = (collection, index, id) => {
   if (collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
   if (collection === "3db6u-aiaaa-aaaah-qbjbq-cai") return "https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=" + index;
+  if (collection === "sr4qi-vaaaa-aaaah-qcaaq-cai") return "https://" + collection + ".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+  if (collection === "nfvlz-jaaaa-aaaah-qcciq-cai") return "https://images.entrepot.app/t/nfvlz-jaaaa-aaaah-qcciq-cai/" + id;
   if (collection === "q6hjz-kyaaa-aaaah-qcama-cai") return icpbunnyimg(index);
   return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
 },
