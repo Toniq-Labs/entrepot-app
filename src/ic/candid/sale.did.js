@@ -120,6 +120,7 @@ export default ({ IDL }) => {
     'whitelistTime' : Time,
     'salePrice' : IDL.Nat64,
     'remaining' : IDL.Nat,
+    'sold' : IDL.Nat,
     'price' : IDL.Nat64,
   });
   const Sale = IDL.Record({
