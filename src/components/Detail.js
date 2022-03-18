@@ -183,6 +183,12 @@ const Detail = (props) => {
       case "rln4s-bqaaa-aaaah-qcyrq-cai":
       case "sr4qi-vaaaa-aaaah-qcaaq-cai":
       case "q6hjz-kyaaa-aaaah-qcama-cai":
+      case "tgwaz-xyaaa-aaaah-qcura-cai":
+      case "kss7i-hqaaa-aaaah-qbvmq-cai":
+      case "btggw-4aaaa-aaaah-qcdgq-cai":
+      case "pnpu4-3aaaa-aaaah-qcceq-cai":
+      case "4kubm-wiaaa-aaaah-qcnoa-cai":
+      case "6tjeq-waaaa-aaaah-qcvzq-cai":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, false)}
