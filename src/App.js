@@ -406,6 +406,7 @@ export default function App() {
   };
 
   useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
+  useInterval(() => updateCollections(), 5 * 1000);
   useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
@@ -538,6 +539,25 @@ export default function App() {
       return error(e);
     };
   };
+  const updateCollections = () => {
+     fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json()).then(r => {
+      var r2 = r.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
+      if (collections.length == 0) {
+        setCollections(r2);
+      } else {
+        for(var i = 0; i < r2.length; i++){
+          var n = r2[i];
+          var o = collections.find(a => a.canister == n.id);
+          if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
+            setCollections(r2);
+            console.log("UPDATED");
+            break;
+          }
+        };
+      };
+      if (!appLoaded) setAppLoaded(true);
+    });
+  };
   const list = async (id, price, loader, refresh) => {
     if (loader) loader(true);
     try {
@@ -558,11 +578,7 @@ export default function App() {
   
   
   React.useEffect(() => {
-    fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json()).then(r => {
-      var r2 = r.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
-      setCollections(r2);
-      setAppLoaded(true);
-    });
+    updateCollections();
     EntrepotUpdateUSD();
     EntrepotUpdateStats();
     if (identity) EntrepotUpdateLiked(identity);
