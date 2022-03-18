@@ -6,6 +6,7 @@ import { LEDGER_CANISTER_ID, GOVERNANCE_CANISTER_ID, NNS_CANISTER_ID, CYCLES_MIN
 import ledgerIDL from './candid/ledger.did.js';
 import governanceIDL from './candid/governance.did.js';
 import nnsIDL from './candid/nns.did.js';
+import cyclesIDL from './candid/cycles.did.js';
 import hzldIDL from './candid/hzld.did.js'; //hardcode to hzld...
 import extIDL from './candid/ext.did.js';
 import advancedIDL from './candid/advanced.did.js';
@@ -18,11 +19,13 @@ import ictuts from './candid/ictuts.js';
 import mintregister from './candid/mintregister.did.js';
 import nftIDL from './candid/nft.did.js';
 import moonwalkerIDL from './candid/moonwalker.did.js';
+import saleIDL from './candid/sale.did.js';
 import ic3dIDL from './candid/ic3d.did.js';
 import pokedIDL from './candid/poked.did.js';
 import icapesIDL from './candid/icapes.did.js';
 import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
+import entrepotIDL from './candid/entrepot.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -67,9 +70,31 @@ const _preloadedIdls = {
   'nns' : nnsIDL,
   'ext' : extIDL,
   'nft' : nftIDL,
-  'sale' : ic3dIDL,
+  'sale' : saleIDL,
   'default' : extIDL,
 };
+
+var tokensToLoad = {
+  "pk6rk-6aaaa-aaaae-qaazq-cai" : [0,2009],
+  "jmuqr-yqaaa-aaaaj-qaicq-cai" : [0,3507],
+  "nges7-giaaa-aaaaj-qaiya-cai" : [0,100],
+  "jeghr-iaaaa-aaaah-qco7q-cai" : [0,10000],
+  "y3b7h-siaaa-aaaah-qcnwa-cai" : [0,10000],
+  "bxdf4-baaaa-aaaah-qaruq-cai" : [1,10000],
+  "3db6u-aiaaa-aaaah-qbjbq-cai" : [0,8001],
+  "poyn6-dyaaa-aaaah-qcfzq-cai" : [0,25000],
+  "nfvlz-jaaaa-aaaah-qcciq-cai" : [0,60000],
+};
+var loadedTokens = {};
+for(const a in tokensToLoad) {
+  if (tokensToLoad.hasOwnProperty(a)){
+    loadedTokens[a] = [];
+    for(var i = tokensToLoad[a][0]; i < (tokensToLoad[a][1]+tokensToLoad[a][0]); i++){
+      loadedTokens[a].push([i, {nonfungible: {metadata:[]}}]);
+    };
+  };
+};
+
 
 class ExtConnection {
   //map known canisters to preloaded IDLs
@@ -78,6 +103,7 @@ class ExtConnection {
     [GOVERNANCE_CANISTER_ID] : _preloadedIdls['governance'],
     [NNS_CANISTER_ID] : _preloadedIdls['nns'],
     "qz7gu-giaaa-aaaaf-qaaka-cai" : _preloadedIdls['hzld'],
+    "rkp4c-7iaaa-aaaaa-aaaca-cai" : cyclesIDL,
     "kxh4l-cyaaa-aaaah-qadaq-cai" : advancedIDL,
     "bxdf4-baaaa-aaaah-qaruq-cai" : wrapperIDL,
     "y3b7h-siaaa-aaaah-qcnwa-cai" : wrapperIDL,
@@ -102,6 +128,7 @@ class ExtConnection {
     "q6hjz-kyaaa-aaaah-qcama-cai" : wrapperIDL,
     "fl5nr-xiaaa-aaaai-qbjmq-cai" : departureIDL,
     "33uhc-liaaa-aaaah-qcbra-cai" : mintregister,
+    "6z5wo-yqaaa-aaaah-qcsfa-cai" : entrepotIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
@@ -188,6 +215,19 @@ class ExtConnection {
           }
         });
       },
+      size : async () => {
+        if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+          loadedTokens[tokenObj.canister] = await api.getTokens();
+        };
+        return loadedTokens[tokenObj.canister].length;
+      },
+      listings : async () => {
+        if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+          loadedTokens[tokenObj.canister] = await api.getTokens();
+        };
+        var listings = await api.listings();
+        return loadedTokens[tokenObj.canister].map(a => [a[0], (listings.find(b => b[0] == a[0]) ? listings.find(b => b[0] == a[0])[1] : false), a[1]]);
+      },
       stats : () => {
         return new Promise((resolve, reject) => {
           try {
@@ -258,7 +298,7 @@ class ExtConnection {
                 try {
                   api.tokens_ext(aid).then(r => {
                     if (typeof r.ok != 'undefined') {
-                      resolve(r.ok.map(d => {
+                      var ret = r.ok.map(d => {
                         return {
                           index : d[0],
                           id : tokenIdentifier(tokenObj.canister, d[0]),
@@ -266,7 +306,23 @@ class ExtConnection {
                           listing : d[1].length ? d[1][0] : false,
                           metadata : d[2].length ? d[2][0] : false,
                         }
-                      }));
+                      });
+                      resolve(ret);
+                      // var wrappedMap = {
+                        // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
+                        // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
+                        // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
+                        // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
+                        // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
+                      // };
+                      // if (wrappedMap.hasOwnProperty(tokenObj.canister)){
+                        // this.token(wrappedMap(tokenObj.canister)).getTokens(aid, principal).then(r => {
+                          // var ts = ret.map(a => {a.wrapped = true; return a});
+                          // resolve(ts.concat(r));
+                        // });
+                      // } else {
+                        // resolve(ret);
+                      // };
                     }else if (typeof r.err != 'undefined') {
                       if (r.err.hasOwnProperty("Other") && r.err.Other === "No tokens") {
                         resolve([]);

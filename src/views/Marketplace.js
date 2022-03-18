@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import extjs from "../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useNavigate } from "react-router";
-import NFTList from "../components/NFTList";
-import Listings from "../components/Listings";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import Wallet from "../components/Wallet";
@@ -17,9 +15,52 @@ import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from '@material-ui/core/TextField';
-import collections from '../ic/collections.js';
-const api = extjs.connect("https://boundary.ic0.app/");
-const useStyles = makeStyles((theme) => ({
+import PriceICP from '../components/PriceICP';
+import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+const useStyles = makeStyles((theme) => ({ 
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+  collectionContainer: {
+    marginBottom: 20,
+    [theme.breakpoints.up('xs')]: {
+      width : "100%",
+    },
+    [theme.breakpoints.up('sm')]: {
+      width : 300,
+    },
+    [theme.breakpoints.up('md')]: {
+      width : 330,
+    },
+    [theme.breakpoints.up('lg')]: {
+      width : 360,
+    },
+  },
   root: {
     maxWidth: 345,
   },
@@ -40,6 +81,7 @@ export default function Marketplace(props) {
   const [sort, setSort] = React.useState("total_desc");
   const [query, setQuery] = React.useState("");
   const [stats, setStats] = React.useState([]);
+
   const styles = {
     root: {
       flexGrow: 1,
@@ -50,48 +92,21 @@ export default function Marketplace(props) {
       marginLeft: 0,
     },
   };
-  const _getStats = async () => {
-    for(var i = 0; i < collections.length; i++){
-      var res, total = 0;
-      if (_stats.findIndex(a => collections[i].canister == a.canister) >= 0) continue;
-      if (!collections[i].market) {
-        res = {
-          canister : collections[i].canister,
-          stats : false
-        };
-        _stats.push(res);
-        setStats(a => [..._stats, res]);
-      } else {
-        (c => {
-          api.token(c).stats().then(r => {
-            res = {
-              canister : c,
-              stats : r
-            };
-            total += Number(r.total);
-            console.log(total);
-            _stats.push(res);
-            setStats(a => [...a, res]);
-          }).catch(e => {
-            res = {
-              canister : c,
-              stats : false
-            };
-            _stats.push(res);
-            setStats(a => [...a, res]);
-          });
-        })(collections[i].canister);
-      }
-    };
+  const _updates = () => {
+    EntrepotUpdateStats().then(setStats);    
   };
   const changeSort = (event) => {
     setSort(event.target.value);
   };
   React.useEffect(() => {
-    _stats = [];
-    _getStats();
+    if (EntrepotAllStats().length == 0) {
+      _updates();
+    } else {
+      setStats(EntrepotAllStats());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useInterval(_updates, 60 * 1000);
   const handleClick = (a) => {
     navigate(a);
   };
@@ -100,7 +115,6 @@ export default function Marketplace(props) {
       <div style={{ width: "100%", display: "block", position: "relative" }}>
         <div
           style={{
-            maxWidth: 1200,
             margin: "0px auto", 
             minHeight:"calc(100vh - 221px)"
           }}
@@ -113,7 +127,6 @@ export default function Marketplace(props) {
             <FormControl style={{ marginRight: 20 }}>
               <InputLabel>Sort by</InputLabel>
               <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"recent"}>Recently Listed</MenuItem>
                 <MenuItem value={"listings_asc"}>Listings: Low to High</MenuItem>
                 <MenuItem value={"listings_desc"}>Listings: High to Low</MenuItem>
                 <MenuItem value={"total_asc"}>Total Volume: Low to High</MenuItem>
@@ -128,12 +141,12 @@ export default function Marketplace(props) {
           <Grid
             container
             direction="row"
-            justifyContent="left"
+            justifyContent="center"
             alignItems="center"
             spacing={2}
           >
             {
-              collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
+              props.collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
                 switch (sort) {
                   case "featured":
                     return b.priority - a.priority;              
@@ -185,10 +198,10 @@ export default function Marketplace(props) {
                   break;
                   case "floor_desc":
                     if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
                     if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
                     if (stats.find(x => x.canister == b.canister).stats === false) return -1;
                     return Number(stats.find(x => x.canister == b.canister).stats.floor) - Number(stats.find(x => x.canister == a.canister).stats.floor);
                   break;
@@ -206,36 +219,38 @@ export default function Marketplace(props) {
                     return 0;
                 }
               }).map((collection, i) => {
-                return (<Grid key={i} item md={4} sm={6} style={{ width:"100%", marginBottom: 20 }}>
-                  <Card style={{height:375,}} className={classes.root}>
-                    <a onClick={() => handleClick("/marketplace/"+collection.route)}><CardMedia
-                      className={classes.media}
-                      image={collection.hasOwnProperty('collection') ? collection.collection : "/collections/"+collection.canister+".jpg"}
-                      title={collection.name}
-                    /></a>
-                    <CardContent style={{textAlign:"center"}}>
-                      <h2 style={{marginTop:0}}>{collection.name}</h2>
-                      <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
-                      {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
-                        <>{stats.find(a => a.canister == collection.canister).stats ?
-                          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                            <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                              <span style={{color:"#00d092"}}>Volume</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.total} ICP</strong>
-                            </Grid>
-                            <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                              <span style={{color:"#00d092"}}>Listings</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
-                            </Grid>
-                            <Grid item md={4}>
-                              <span style={{color:"#00d092"}}>Floor Price</span><br />
-                              <strong>{stats.find(a => a.canister == collection.canister).stats.floor} ICP</strong>
-                            </Grid>
-                          </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
-                        </> 
-                      : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
-                    </CardContent>
-                  </Card>
+                return (<Grid key={i} item className={classes.collectionContainer}>
+                  <Link style={{textDecoration:"none"}} to={"/marketplace/"+collection.route}>
+                    <Card style={{height:375,}} className={classes.root}>
+                      <CardMedia
+                        className={classes.media}
+                        image={collection.hasOwnProperty('collection') ? collection.collection : "/collections/"+collection.canister+".jpg"}
+                        title={collection.name}
+                      />
+                      <CardContent style={{textAlign:"center"}}>
+                        <h2 style={{marginTop:0, fontSize:"1.4em"}}>{collection.name}</h2>
+                        <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
+                        {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
+                          <>{stats.find(a => a.canister == collection.canister).stats ?
+                            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                                <span style={{color:"#00d092"}}>Volume</span><br />
+                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
+                              </Grid>
+                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
+                                <span style={{color:"#00d092"}}>Listings</span><br />
+                                <strong>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
+                              </Grid>
+                              <Grid item md={4}>
+                                <span style={{color:"#00d092"}}>Floor Price</span><br />
+                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.floor} size={20} /></strong>
+                              </Grid>
+                            </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
+                          </> 
+                        : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </Grid>);
               })
             }

@@ -53,46 +53,31 @@ export default function Home(props) {
   const classes = useStyles();
 
   const navigate = useNavigate();
-  var items = [
-    {
-        link: "/sale/icpics",
-        img: "/banner/icpics.jpg"
-    },
-    {
-        link: "/marketplace/btcflower",
-        img: "/banner/btcflower.jpg"
-    },
-    {
-        link: "/sale/yolo-octopus",
-        img: "/banner/yolo.jpg"
-    },
-    {
-        link: "/sale/sword",
-        img: "/banner/sword.png"
-    },
-    {
-        link: "/marketplace/p2j",
-        img: "/banner/canistore.jpg"
-    },
-  ];
+  const [items, setItems] = React.useState([]);
+  React.useEffect(() => {
+    fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/banners").then(r => r.json()).then(r => {
+      setItems(r);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   var cards = [
+    {
+      title : "BTC Flower",
+      link : "/marketplace/btcflower",
+      image : "/collections/btcflower/collection.jpg",
+      content : (<>The BTC Flower: Created back in 2017 by famous contemporary artist Ludo in the physical world – now moving to digital form on the Internet Computer</>),
+    },
     {
       title : "Cronic Wearables",
       link : "/marketplace/wearables",
       image : "/collections/cronic-wearables.jpg",
-      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
-    },
-    {
-      title : "ICmojis",
-      link : "/marketplace/icmojis",
-      image : "/collections/icmojis.jpg",
-      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+      content : (<>We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic!</>),
     },
     {
       title : "Rise of the Magni",
       link : "/",
       image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming November 2021!</>),
+      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!</>),
     },
   
   ];
@@ -105,6 +90,7 @@ export default function Home(props) {
             margin: "0px auto",
           }}
         >
+          {items.length > 0 ? 
           <div className={classes.banner}>
             <Carousel style={{height:485}} autoPlay={false} interval={5000} animation={"slide"} reverseEdgeAnimationDirection={false} indicators={false} navButtonsAlwaysVisible={true}>
               {
@@ -112,14 +98,14 @@ export default function Home(props) {
                   if (item.video) {
                     return (<a key={i} href={item.link}><ReactPlayer style={{borderRadius:30}} width={1200} height={484}   playing={true} url='/bch-entrepot.mp4' /></a>)
                   } else if (item.link) {
-                    return (<a key={i} href={item.link}><div style={{borderRadius:30, height:485, background: "url('"+item.img+"') center center / cover no-repeat"}}></div></a>)
+                    return (<a key={i} href={item.link}><div style={{borderRadius:30, height:485, background: "url('"+item.image+"') center center / cover no-repeat"}}></div></a>)
                   } else {
-                    return (<div key={i} style={{borderRadius:30, height:485, background: "url('"+item.img+"') center center / cover no-repeat"}}></div>)
+                    return (<div key={i} style={{borderRadius:30, height:485, background: "url('"+item.image+"') center center / cover no-repeat"}}></div>)
                   };
                 })
               }
             </Carousel>
-          </div>
+          </div> : "" }
           <h1 className={classes.heading}>Welcome to Entrepot</h1>
           <p
             style={{

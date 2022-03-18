@@ -13,14 +13,11 @@ import { IconButton, makeStyles } from "@material-ui/core";
 export default function Navbar(props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [route, setRoute] = useState("");
   const [walletOpen, setWalletOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleClick = () => {
     setWalletOpen(false)
-    const temp = navigate.location?.pathname.split("/")[1];
-    setRoute(temp);
   };
   const goTo = page => {
     navigate(page)
@@ -29,13 +26,6 @@ export default function Navbar(props) {
   const handleDrawerToggle = () => {
     setWalletOpen(!walletOpen);
   };
-  React.useEffect(() => {
-    const temp = navigate.location?.pathname.split("/")[1];
-    if (temp) {
-    setRoute(temp);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <>
     <div className={classes.root}>
@@ -52,7 +42,7 @@ export default function Navbar(props) {
           <div className={classes.grow} />
           <Button
             onClick={() => goTo("/sale")}
-            className={(route === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
+            className={(props.view === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
             color="inherit"
           >
             Launchpad
@@ -62,21 +52,21 @@ export default function Navbar(props) {
               navigate("/marketplace");
               handleClick();
             }}
-            className={(route === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
+            className={(props.view === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
             color="inherit"
           >
             Marketplace
           </Button>
           <Button
             onClick={() => goTo("/create")}
-            className={(route === "create" ? "selected " : "")+[classes.button, classes.create].join(' ')}
+            className={(props.view === "create" ? "selected " : "")+[classes.button, classes.create].join(' ')}
             color="inherit"
           >
             Create
           </Button>
           <Button
             onClick={() => goTo("/contact")}
-            className={(route === "contact" ? "selected " : "")+[classes.button, classes.contact].join(' ')}
+            className={(props.view === "contact" ? "selected " : "")+[classes.button, classes.contact].join(' ')}
             color="inherit"
           >
             Support
@@ -90,7 +80,10 @@ export default function Navbar(props) {
           </Button>
 
           <IconButton className={classes.hidden}>
-            <MenuIcon onClick={() => {setOpen(true); setWalletOpen(false)}} />
+            <AccountBalanceWalletIcon onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}} />
+          </IconButton>
+          <IconButton className={classes.hidden}>
+            <MenuIcon onClick={() => {setOpen(!open); setWalletOpen(false)}} />
           </IconButton>
           {open && (
             <div className={classes.smNav} onClick={() => setOpen(false)}>
@@ -105,9 +98,9 @@ export default function Navbar(props) {
                 onClick={() => goTo("/sale")}
                 className={classes.button1}
                 style={{
-                  color: route === "sale" ? "#00d092" : "#000",
+                  color: props.view === "sale" ? "#00d092" : "#000",
                   borderBottom:
-                    route === "sale"
+                    props.view === "sale"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}
@@ -126,9 +119,9 @@ export default function Navbar(props) {
                 onClick={() => goTo("/marketplace")}
                 className={classes.button1}
                 style={{
-                  color: route === "marketplace" ? "#00d092" : "#000",
+                  color: props.view === "marketplace" ? "#00d092" : "#000",
                   borderBottom:
-                    route === "marketplace"
+                    props.view === "marketplace"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}
@@ -147,9 +140,9 @@ export default function Navbar(props) {
                 onClick={() => goTo("/create")}
                 className={classes.button1}
                 style={{
-                  color: route === "create" ? "#00d092" : "#000",
+                  color: props.view === "create" ? "#00d092" : "#000",
                   borderBottom:
-                    route === "create"
+                    props.view === "create"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}
@@ -168,29 +161,15 @@ export default function Navbar(props) {
                 onClick={() => goTo("/contact")}
                 className={classes.button1}
                 style={{
-                  color: route === "contact" ? "#00d092" : "#000",
+                  color: props.view === "contact" ? "#00d092" : "#000",
                   borderBottom:
-                    route === "contact"
+                    props.view === "contact"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}
                 color="inherit"
               >
                 Support
-              </Button>
-              <Button
-                startIcon={
-                  <AccountBalanceWalletIcon />
-                }
-                onClick={handleDrawerToggle}
-                className={classes.button1}
-                style={{
-                  color: "#000",
-                  borderBottom:"3px solid transparent",
-                }}
-                color="inherit"
-              >
-              Wallet
               </Button>
             </div>
           )}
@@ -228,7 +207,7 @@ const useStyles = makeStyles((theme) => ({
   },
   smNav: {
     position: "absolute",
-    top: 20,
+    top: 72,
     width: "250px",
     display: "flex",
     right: 0,
@@ -297,6 +276,16 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft : 30,
     "&:hover, &.selected": {
       backgroundImage : "url('/icon/support-g.png')",      
+    },
+  },
+  watchlist: {
+    backgroundImage : "url('/icon/watchlist.png')",
+    backgroundRepeat : "no-repeat",
+    backgroundSize : "20px",
+    backgroundPosition: "0 49%",
+    paddingLeft : 30,
+    "&:hover, &.selected": {
+      backgroundImage : "url('/icon/watchlist-g.png')",      
     },
   },
   button: {
