@@ -159,7 +159,7 @@ export default function DfinityDeckSaleComponent(props) {
     }, []);
     return (
         <>
-            <div style={{background:"black", color:"white"}}>
+            <div style={{}}>
             <div style={styles.main}>
                 <div className={classes.banner}>
                     <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('"+collection.banner+"')"}}></div>
