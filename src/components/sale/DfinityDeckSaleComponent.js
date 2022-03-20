@@ -45,13 +45,13 @@ const _getRandomBytes = () => {
     }
     return bs;
 };
-export default function GeneralSaleComponent(props) {
+export default function DfinityDeckSaleComponent(props) {
     const getCollectionFromRoute = r => {
         return props.collections.find(e => e.route === r)
     };
     const params = useParams();
     const navigate = useNavigate();
-    var collection = getCollectionFromRoute(params?.route);
+    var collection = getCollectionFromRoute("DfinityDeckElements");
     if (typeof collection == 'undefined' || typeof collection.sale == 'undefined' || collection.sale == false) {
         navigate(`/marketplace/${collection?.route}`)
     };
@@ -88,7 +88,7 @@ export default function GeneralSaleComponent(props) {
             maxWidth: 1200,
             margin: "0 auto",
             textAlign: "center",
-            minHeight:"calc(100vh - 221px)"
+            minHeight:"calc(100vh - 221px)",
         },
     };
     const buyFromSale = async (qty, price) => {
@@ -159,6 +159,7 @@ export default function GeneralSaleComponent(props) {
     }, []);
     return (
         <>
+            <div style={{background:"black", color:"white"}}>
             <div style={styles.main}>
                 <div className={classes.banner}>
                     <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('"+collection.banner+"')"}}></div>
@@ -274,19 +275,10 @@ export default function GeneralSaleComponent(props) {
                     }</>
                 }
             </div>
+            </div>
         </>
     );
 }
-
-window.addEventListener('load', (event) => {
-    // we want to have black BG so we override it with Javascript due to no access to CSS
-    const body = document.getElementsByTagName("body")[0];
-    if(body) {
-        body.style.background = "#0b0b0b";
-        body.style.color = "white";
-    }
-});
-
 const useStyles = makeStyles((theme) => ({
     walletBtn: {
         [theme.breakpoints.up("sm")]: {
@@ -297,6 +289,9 @@ const useStyles = makeStyles((theme) => ({
         span : {
             fontSize: "2em"
         }
+    },
+    "& #root" : {
+      display:"none",
     },
     content: {
         flexGrow: 1,

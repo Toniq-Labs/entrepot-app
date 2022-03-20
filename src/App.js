@@ -30,6 +30,7 @@ import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
 import GeneralSaleComponent from "./components/sale/GeneralSaleComponent";
+import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent";
 import legacyPrincipalPayouts from './payments.json';
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -880,6 +881,14 @@ export default function App() {
                   transferNft={transferNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/sale/DfinityDeckElements" exact element={
+                <DfinityDeckSaleComponent
+                  error={error}
+                  view={"sale"}
+                  alert={alert}
+                  confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/sale/:route" exact element={
