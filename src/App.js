@@ -450,12 +450,15 @@ export default function App() {
     }
   };
 
-  const unpackNft = (token) => {
+  const unpackNft = (token, loader, refresh) => {
     setTokenNFT(token);
+    buttonLoader = loader;
+    refresher = refresh;
     setPlayOpener(true);
   };
   const closeUnpackNft = (token) => {
     setPlayOpener(false)
+    refresher();
     setTimeout(() => setTokenNFT(''), 300);
   };
   const listNft = (token, loader, refresh) => {
@@ -482,7 +485,6 @@ export default function App() {
   const unwrapNft = async (token, loader, refresh) => {
     loader(true, "Unwrapping NFT...");
     var canister = extjs.decodeTokenId(token.id).canister;
-    //hot api, will sign as identity - BE CAREFUL
     var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(canister).unwrap(token.id, [extjs.toSubaccount(currentAccount ?? 0)]);
     if (!r) {
       loader(false);
@@ -562,6 +564,7 @@ export default function App() {
     if (loader) loader(true);
     try {
       var r = await extjs.connect("https://boundary.ic0.app/", identity).token(id).list(currentAccount, price)
+      console.log(r);
       if (r) {
         if (refresh) await refresh();
         if (loader) loader(false);

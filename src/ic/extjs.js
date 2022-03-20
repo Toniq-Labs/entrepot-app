@@ -81,7 +81,7 @@ var tokensToLoad = {
   "y3b7h-siaaa-aaaah-qcnwa-cai" : [0,10000],
   "bxdf4-baaaa-aaaah-qaruq-cai" : [1,10000],
   "3db6u-aiaaa-aaaah-qbjbq-cai" : [0,8001],
-  "poyn6-dyaaa-aaaah-qcfzq-cai" : [0,25000],
+  "poyn6-dyaaa-aaaah-qcfzq-cai" : [0,30133],
   "nfvlz-jaaaa-aaaah-qcciq-cai" : [0,60000],
 };
 var loadedTokens = {};

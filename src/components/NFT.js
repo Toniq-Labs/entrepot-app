@@ -113,7 +113,8 @@ export default function NFT(props) {
   const tokenid = props.tokenid;
   const { index, canister} = extjs.decodeTokenId(tokenid);
   const nri = getNri(canister, index);
-  const [metadata, setMetadata] = React.useState(props.metadata);
+  const [metadata, setMetadata] = React.useState(false);
+  const [ref, setRef] = React.useState(0);
   const [isNotEXT, setIsNotEXT] = React.useState(toWrappedMap.hasOwnProperty(canister));
   const [listing, setListing] = React.useState(props.listing);
   const [offerCount, setOfferCount] = React.useState(0);
@@ -123,7 +124,6 @@ export default function NFT(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
-  
   const getCollection = c => {
     return props.collections.find(e => e.canister === c);
   };
@@ -135,6 +135,12 @@ export default function NFT(props) {
       if (f[1]) setListing(f[1]);
       else setListing(false);
     });
+  };
+  const getMetadata = async () => {
+    var md = await api.token(tokenid).getMetadata();
+    if (typeof md != 'undefined' && md.type == "nonfungible"){
+      setMetadata(md.metadata[0]);
+    };
   };
   const getOffer = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(getEXTID(tokenid)).then(r => {
@@ -152,16 +158,14 @@ export default function NFT(props) {
       doRefresh = true;
     };
     getOffer();
+    getMetadata();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
     if (props.listing) setListing(props.listing);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.listing]);
-  React.useEffect(() => {
-    if (props.metadata) setMetadata(props.metadata);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.metadata]);
   const styles = {
     avatarSkeletonContainer: {
       height: 0,
@@ -202,6 +206,12 @@ export default function NFT(props) {
       await getListing();
     };
     await getOffer();
+    await getMetadata();
+    if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai') {
+      console.log('updated');
+      setRef(ref+1);
+    };
+    
   };
   const buy = async () => {
     return props.buy(canister, index, listing, props.afterBuy);
@@ -223,7 +233,7 @@ export default function NFT(props) {
   var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
   const getButtons = () => {
     var buttons = [];
-    if(listing) {      
+    if(listing) {
       buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
       buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
     } else {
@@ -240,8 +250,11 @@ export default function NFT(props) {
           buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
         };
       }
-      if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000) {
-        buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
+      if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000 && index < 30000) {
+        buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
+      };
+      if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
+        buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
       };
     }
     return buttons;
@@ -250,7 +263,7 @@ export default function NFT(props) {
     return EntrepotNFTMintNumber(canister, index);
   };
   const nftImg = () => {
-    return EntrepotNFTImage(getEXTCanister(canister), index, tokenid);
+    return EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, ref);
   };
   const nftLink = () => {
     return EntrepotNFTLink(getEXTCanister(canister), index, tokenid);

@@ -110,7 +110,9 @@ compressAddress = (a) => {
 displayDate = (d) => {
   return new Date(d).toString();
 },
-EntrepotNFTImage = (collection, index, id, fullSize) => {
+EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
+  if (typeof ref == 'undefined') ref = "";
+  else ref = "?"+ref;
   if (collection === "jeghr-iaaaa-aaaah-qco7q-cai") return "https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/" + index;
   if (collection === "bxdf4-baaaa-aaaah-qaruq-cai") return "https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/" + index;
   if (collection === "y3b7h-siaaa-aaaah-qcnwa-cai") return "https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/" + index;
@@ -123,6 +125,7 @@ EntrepotNFTImage = (collection, index, id, fullSize) => {
       return "https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/" + id;
     };
   }
+  if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
