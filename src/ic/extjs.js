@@ -75,7 +75,7 @@ const _preloadedIdls = {
 };
 
 var tokensToLoad = {
-  "dhiaa-ryaaa-aaaae-qabva-cai" : [0,2012],
+  "dhiaa-ryaaa-aaaae-qabva-cai" : [0,2015],
   "pk6rk-6aaaa-aaaae-qaazq-cai" : [0,2009],
   "jmuqr-yqaaa-aaaaj-qaicq-cai" : [0,3507],
   "jeghr-iaaaa-aaaah-qco7q-cai" : [0,10000],
