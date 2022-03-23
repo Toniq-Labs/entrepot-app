@@ -125,6 +125,14 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
       return "https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/" + id;
     };
   }
+  if (collection === "dhiaa-ryaaa-aaaae-qabva-cai") {
+    if (fullSize) {      
+      return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
+    } else {
+      return "/ethflower_thumb.gif";
+      //return "https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/" + id;
+    };
+  }
   if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;

@@ -215,6 +215,7 @@ const Detail = (props) => {
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
       case "pk6rk-6aaaa-aaaae-qaazq-cai":
+      case "dhiaa-ryaaa-aaaae-qabva-cai":
       case "mk3kn-pyaaa-aaaah-qcoda-cai":
       case "jeghr-iaaaa-aaaah-qco7q-cai":
       case "er7d4-6iaaa-aaaaj-qac2q-cai":
