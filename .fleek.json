@@ -1,7 +1,7 @@
 {
     "build": {
         "baseDir": "./",
-        "command": "bpm install && npm run build",
+        "command": "npm install && npm run build",
         "publicDir": "build"
     }
 }
