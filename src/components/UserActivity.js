@@ -301,7 +301,6 @@ export default function UserActivity(props) {
               { tokenCanisters.filter((a,i) => tokenCanisters.indexOf(a) == i) //filter unique
                 .map(canister => {
                   var _collection = getCollection(canister);
-                  console.log(canister,_collection);
                   return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
                     <ListItemAvatar>
                       <Avatar>
