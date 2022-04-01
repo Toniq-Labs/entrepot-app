@@ -274,6 +274,7 @@ export default function UserCollection(props) {
         // break;
     // }
     var data; 
+    console.log("Refreshing", props.view);
     switch(props.view){
       case "collected":
         // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");

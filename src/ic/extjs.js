@@ -356,7 +356,7 @@ class ExtConnection {
                       });
                     } else {
                       var md = r.ok.nonfungible.metadata[0];
-                      if (md.length > 256) md = md.slice(0, 256);
+                      if (typeof md != 'undefined' && md.length > 256) md = md.slice(0, 256);
                       resolve({
                         metadata : [md],
                         type : 'nonfungible'
