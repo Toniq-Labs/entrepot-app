@@ -120,6 +120,12 @@ var otherPrincipalsForPlug = [
   "qgsqp-byaaa-aaaah-qbi4q-cai",
   "6z5wo-yqaaa-aaaah-qcsfa-cai",
 ];
+const isDevEnv = () => {
+  if (window.location.hostname == "localhost") return true;
+  if(window.location.host.indexOf("deploy-preview") == 0) return true;
+  return false;
+};
+
 export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
@@ -544,7 +550,12 @@ export default function App() {
   };
   const updateCollections = () => {
      fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json()).then(r => {
-      var r2 = r.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
+      var r2 = r;
+      //Remove dev marked canisters
+      if (isDevEnv() == false) {
+        r2 = r2.filter(a => !a.dev);
+      };
+      r2 = r2.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
       if (collections.length == 0) {
         setCollections(r2);
       } else {
