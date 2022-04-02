@@ -21,7 +21,7 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
 import { EntrepotGetAllLiked } from '../utils';
 import { useTheme } from '@material-ui/core/styles';
-import NFT from './NFT';
+import Pawn from './Pawn';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -41,6 +41,13 @@ import { makeStyles } from "@material-ui/core";
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+
 import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
@@ -196,7 +203,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-export default function UserCollection(props) {
+var pawnapi = extjs.connect("https://boundary.ic0.app/").canister("yigae-jqaaa-aaaah-qczbq-cai");
+export default function UserLoan(props) {
   const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
@@ -207,7 +215,6 @@ export default function UserCollection(props) {
   };
   
   const [nfts, setNfts] = React.useState([]);
-  const [tokenCanisters, setTokenCanisters] = React.useState([]);
   const [displayNfts, setDisplayNfts] = React.useState(false);
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
@@ -248,71 +255,26 @@ export default function UserCollection(props) {
   const hideNft = async token => {
     hiddenNfts.push(token);
   };
+  
   const refresh = async () => {
     if (!address) return;
-    // switch(props.view){
-      // case "collected":
-        // var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "selling":
-        // var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
-        // var r2 = r.map(a => a[0]);
-        // setListingPrices(r);
-        // updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "favorites":
-        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "offers-made":
-        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "offers-received":
-        // var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
-        // var r2 = r.filter(result => !(result instanceof Error));
-        // var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
-        // updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-    // }
     var data; 
     console.log("Refreshing", props.view);
     switch(props.view){
-      case "collected":
+      case "loan-requests":
         // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
         // data = response.data;
         // data = data.map(a => ({...a, token : a.id}));
         //Add wrapped
-        data = await loadAllTokens(address, props.identity.getPrincipal().toText());
+        data = (await pawnapi.tp_requestsByAddress(address)).map(a => a[1]);
         break;
-      case "selling":
-        var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/listed");
-        data = response.data.filter(a => a.price > 0);
-        data = data.map(a => ({...a, token : a.id}));
-        break;
-      case "favorites":
-        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        data = r.filter((a,i) => r.indexOf(a) == i);
-        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister}));
-        break;
-      case "offers-made":
-        var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        data = r.filter((a,i) => r.indexOf(a) == i);
-        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister}));
-        break;
-      case "offers-received":
-        var r = await Promise.all([axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all"), extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
-        var r2 = r.filter(result => !(result instanceof Error));
-        var r3 = r2[0].data.map(a => ({...a, token : a.id})).filter(a => r2[1].indexOf(a.token) >= 0);
-        data = r3;
+      case "active-loans":
+        console.log("fetched");
+        hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
+        data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
+        data = filterBefore(data);
         break;
     }
-    console.log("fetched");
-    hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
-    data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
-    data = filterBefore(data);
-    setTokenCanisters(data.map(d => d.canister));
     setResults(data);
   }
   
@@ -375,13 +337,11 @@ export default function UserCollection(props) {
       })
       setDisplayNfts(_displayNfts);
       setHideCollectionFilter(false);
-      setTokenCanisters(_nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister)));
       canUpdateNfts = true;
     }
   };
   
   
-  useInterval(refresh, 10 * 60 *1000);
   React.useEffect(() => {
     setPage(1);
     //if (displayedResults) setDisplayedResults(false);
@@ -428,48 +388,6 @@ export default function UserCollection(props) {
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
       <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />    
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
-        <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
-          <List>
-            <ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
-              <ListItemIcon style={{minWidth:40}}>
-                <FilterListIcon />
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{noWrap:true}} 
-                secondaryTypographyProps={{noWrap:true}} 
-                primary={(<strong>Collections</strong>)}
-              />
-                <ListItemIcon>
-                {toggleFilter ? <CloseIcon fontSize={"large"} /> :  "" }
-                </ListItemIcon>
-            </ListItem>
-            {toggleFilter && (tokenCanisters.length > 0 || hideCollectionFilter) ? <>
-              {hideCollectionFilter ?
-              <ListItem><ListItemText><strong>Loading...</strong></ListItemText></ListItem>
-              :
-              <>
-              <ListItem selected={collectionFilter === "all"} button onClick={() => {setCollectionFilter("all")}}>
-                <ListItemText><strong>View All Collections</strong></ListItemText>
-                <ListItemSecondaryAction><Chip label={tokenCanisters.length} variant="outlined" /></ListItemSecondaryAction>
-              </ListItem>
-              { tokenCanisters
-                .filter((a,i) => tokenCanisters.indexOf(a) == i && typeof getCollection(a) != 'undefined') //filter unique
-                .map(canister => {
-                  var _collection = getCollection(canister);
-                  return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <img alt={_collection.name} src={_collection.avatar ?? "/collections/"+canister+".jpg"} style={{height:64}} />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText>{_collection.name}</ListItemText>
-                    <ListItemSecondaryAction><Chip label={tokenCanisters.filter(a => a === canister).length} variant="outlined" /></ListItemSecondaryAction>
-                  </ListItem>)
-                })
-              }</>}
-            </> : ""}
-          </List>
-        </div>
         <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
             <Grid className={classes.topUi} container style={{minHeight:66}}>
@@ -482,14 +400,6 @@ export default function UserCollection(props) {
                 <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
                   <ToggleButton onClick={() => setDisplayedResults(false)}>
                     <CachedIcon />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                <ToggleButtonGroup style={{marginTop:5, marginRight:20}} size="small" value={gridSize} exclusive onChange={changeGrid}>
-                  <ToggleButton value={"small"}>
-                    <ViewModuleIcon />
-                  </ToggleButton>
-                  <ToggleButton value={"large"}>
-                    <ViewComfyIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
               </Grid>
@@ -509,7 +419,7 @@ export default function UserCollection(props) {
               (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
-          <div style={{minHeight:500}}>
+                    <div style={{minHeight:500}}>
             <div style={{}}>
               {displayedResults === false ?
                 <>
@@ -527,73 +437,32 @@ export default function UserCollection(props) {
             </div>
             {displayedResults && displayedResults.length ?
             <div>
-              <Grid
-                container
-                spacing={2}
-                direction="row"
-                alignItems="stretch"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: (gridSize === "small" ? "repeat(auto-fill, 300px)" : "repeat(auto-fill, 200px)"),
-                  justifyContent: "space-between",
-                }}
-              >
-                {displayedResults
-                .sort((a,b) => {
-                  switch(sort) {
-                    case "price_asc":
-                      var ap = (a.price === 0 ? false : a.price);
-                      var bp = (b.price === 0 ? false : b.price);
-                      if (ap === false && bp === false) return 0; 
-                      if (ap === false) return -1;
-                      if (bp === false) return 1;
-                      return ap-bp;
-                    case "price_desc":
-                      var ap = (a.price === 0 ? false : a.price);
-                      var bp = (b.price === 0 ? false : b.price);
-                      if (ap === false && bp === false) return 0; 
-                      if (ap === false) return 1;
-                      if (bp === false) return -1;
-                      return bp-ap;
-                    case "mint_number":
-                      return extjs.decodeTokenId(a.token).index-extjs.decodeTokenId(b.token).index;
-                    case "nri":
-                      var aa = extjs.decodeTokenId(a.token);
-                      var bb = extjs.decodeTokenId(b.token);
-                      var nria = getNri(aa.canister,aa.index);
-                      var nrib = getNri(bb.canister,bb.index);
-                      if (nria === false && nrib === false) return 0; 
-                      if (nria === false) return 1;
-                      if (nrib === false) return -1;
-                      return Number(nrib)-Number(nria);
-                    default:
-                      return 0;
-                  };
-                })
-                .filter((token,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
-                .map((token, i) => {
-                  return (<NFT 
-                    collections={props.collections} 
-                    gridSize={gridSize} 
-                    //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
-                    loggedIn={props.loggedIn} 
-                    identity={props.identity} 
-                    tokenid={token.token} 
-                    hideNft={hideNft} 
-                    key={token.token} 
-                    ownerView={['collected','selling','offers-received'].indexOf(props.view) >= 0}
-                    unpackNft={props.unpackNft} 
-                    listNft={props.listNft} 
-                    cancelNft={props.cancelNft} 
-                    wrapAndlistNft={props.wrapAndlistNft} 
-                    unwrapNft={props.unwrapNft} 
-                    transferNft={props.transferNft}
-                    pawnNft={props.pawnNft}
-                    loader={props.loader}                    
-                    refresh={refresh}                    
-                    />)
-                })}
-              </Grid>
+              <TableContainer>
+                <Table style={{width:"100%", overflow:"hidden"}}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left"><strong>Item</strong></TableCell>
+                      <TableCell align="right"><strong>Amount</strong></TableCell>
+                      <TableCell align="right"><strong>Rewards</strong></TableCell>
+                      <TableCell align="center"><strong>Length (Days)</strong></TableCell>
+                      <TableCell align="center"><strong>APR</strong></TableCell>
+                      <TableCell align="center"><strong>Expires</strong></TableCell>
+                      <TableCell align="center"></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {displayedResults
+                    .filter((event,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
+                    .map(event => {
+                      return (<Pawn 
+                          collections={props.collections} 
+                          event={event}                
+                          key={event.tokenid}                
+                        />)
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div> : "" }
             {(displayedResults && displayedResults.length > perPage ?
               (<Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} />) : "" )}

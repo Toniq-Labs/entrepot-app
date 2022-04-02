@@ -16,6 +16,7 @@ import Listings from "./components/Listings";
 import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
 import UserCollection from "./components/UserCollection";
+import UserLoan from "./components/UserLoan";
 import UserActivity from "./components/UserActivity";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
@@ -29,6 +30,7 @@ import Contact from "./views/Contact";
 import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
+import PawnForm from './components/PawnForm';
 import GeneralSaleComponent from "./components/sale/GeneralSaleComponent";
 import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent";
 import legacyPrincipalPayouts from './payments.json';
@@ -137,6 +139,7 @@ export default function App() {
   const [showBuyForm, setShowBuyForm] = React.useState(false);
   const [openListingForm, setOpenListingForm] = React.useState(false);
   const [openTransferForm, setOpenTransferForm] = React.useState(false);
+  const [openPawnForm, setOpenPawnForm] = React.useState(false);
   const [playOpener, setPlayOpener] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
   
@@ -468,6 +471,12 @@ export default function App() {
     refresher = refresh;
     setOpenListingForm(true);
   }
+  const pawnNft = (token, loader, refresh) => {
+    setTokenNFT(token);
+    buttonLoader = loader;
+    refresher = refresh;
+    setOpenPawnForm(true);
+  }
   const transferNft = async (token, loader, refresh) => {
     setTokenNFT(token);
     buttonLoader = loader;
@@ -480,6 +489,10 @@ export default function App() {
   };
   const closeTransferForm = () => {
     setOpenTransferForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const closePawnForm = () => {
+    setOpenPawnForm(false);
     setTimeout(() => setTokenNFT(''), 300);
   };
   
@@ -528,12 +541,31 @@ export default function App() {
   }
   
   //Form powered
+  const pawn = async (id, amount, reward, length, loader, refresh) => {
+    if (loader) loader(true, "Creating NFT Pawn Request...");
+    try {
+      var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)));
+      if (r.hasOwnProperty("err")) throw r.err;
+      if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+      if (loader) loader(true, "Sending NFT to canister...");
+      var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(id).transfer(identity.getPrincipal().toText(), currentAccount, "yigae-jqaaa-aaaah-qczbq-cai", BigInt(1), BigInt(0), "00", true);
+      console.log(r2);
+      if (loader) loader(true, "Loading NFTs...");
+      if (refresh) await refresh();
+      if (loader) loader(false);
+      return alert("Request Received", "Your pawn request was created successful!");
+    } catch (e) {
+      if (loader) loader(false);
+      return error(e);
+    };
+  };
   const transfer = async (id, address, loader, refresh) => {
     if (loader) loader(true, "Transferring NFT...");
     try {
       var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(id).transfer(identity.getPrincipal().toText(), currentAccount, address, BigInt(1), BigInt(0), "00", false);
       if (!r2) return error("There was an error transferring this NFT!");
       if (loader) loader(true, "Loading NFTs...");
+      console.log(refresh);
       if (refresh) await refresh();
       if (loader) loader(false);
       return alert("Transaction complete", "Your transfer was successful!");
@@ -700,6 +732,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
                 />} />
               <Route path="/marketplace/:route/activity" exact element={
@@ -748,6 +781,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -772,6 +806,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -788,6 +823,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/activity" exact element={
@@ -801,6 +837,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -826,6 +863,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -850,6 +888,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -866,6 +905,52 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/loan-requests" exact element={
+                <UserLoan
+                  error={error}
+                  view={"loan-requests"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/active-loans" exact element={
+                <UserLoan
+                  error={error}
+                  view={"active-loans"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/nft-loans" exact element={
+                <UserCollection
+                  error={error}
+                  view={"nft-loans"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/activity" exact element={
@@ -879,6 +964,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -935,6 +1021,7 @@ export default function App() {
             <BuyForm open={showBuyForm} {...buyFormData} />
             <TransferForm refresher={refresher} buttonLoader={buttonLoader} transfer={transfer} alert={alert} open={openTransferForm} close={closeTransferForm} loader={loader} error={error} nft={tokenNFT} />
             <ListingForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} list={list} alert={alert} open={openListingForm} close={closeListingForm} loader={loader} error={error} nft={tokenNFT} />
+            <PawnForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} pawn={pawn} alert={alert} open={openPawnForm} close={closePawnForm} loader={loader} error={error} nft={tokenNFT} />
             <Opener alert={alert} nft={tokenNFT} identity={identity} currentAccount={currentAccount} open={playOpener} onEnd={closeUnpackNft} />
           </div>
         </main>

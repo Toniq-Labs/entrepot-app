@@ -230,31 +230,43 @@ export default function NFT(props) {
     clickev();
     //setCurrentBtn(null)
   };
+  const transferRefresh = async () => {
+    props.hideNft(tokenid);
+    await props.refresh();
+  };
   var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
   const getButtons = () => {
     var buttons = [];
     if(listing) {
+      //Contains a listing, must be EXT
       buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-      buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+      buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
     } else {
       if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
+        //EXT only no wrapper
         buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-        buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+        buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       } else {
         if (unwrappedCanisters.indexOf(canister) >= 0) {
+          //Non EXT
           buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.wrapAndlistNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
-          buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, buttonLoader, props.refresh)]);
+          buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
         } else {
+          //EXT Wrapper
           buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
-          buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
+          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+          buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
         };
       }
+      //Custom
       if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000 && index < 30000) {
-        buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
+        buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, transferRefresh)]);
       };
       if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
-        buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
+        buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
+      };
+      if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
+        buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
       };
     }
     return buttons;

@@ -26,6 +26,7 @@ import icapesIDL from './candid/icapes.did.js';
 import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
 import entrepotIDL from './candid/entrepot.did.js';
+import treasureIDL from './candid/treasure.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = (u) => {
@@ -71,6 +72,7 @@ const _preloadedIdls = {
   'ext' : extIDL,
   'nft' : nftIDL,
   'sale' : saleIDL,
+  'treasure' : treasureIDL,
   'default' : extIDL,
 };
 
@@ -129,6 +131,7 @@ class ExtConnection {
     "fl5nr-xiaaa-aaaai-qbjmq-cai" : departureIDL,
     "33uhc-liaaa-aaaah-qcbra-cai" : mintregister,
     "6z5wo-yqaaa-aaaah-qcsfa-cai" : entrepotIDL,
+    "yigae-jqaaa-aaaah-qczbq-cai" : treasureIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID] : {
