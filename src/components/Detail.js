@@ -249,6 +249,7 @@ const Detail = (props) => {
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
       case "bxdf4-baaaa-aaaah-qaruq-cai":
       case "dylar-wyaaa-aaaah-qcexq-cai":
+      case "2s2iy-xaaaa-aaaah-qczoq-cai":
       default:
         return (
           <img
