@@ -226,6 +226,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
+      case "2s2iy-xaaaa-aaaah-qczoq-cai":
         return (
           <iframe
             frameBorder="0"
@@ -249,7 +250,6 @@ const Detail = (props) => {
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
       case "bxdf4-baaaa-aaaah-qaruq-cai":
       case "dylar-wyaaa-aaaah-qcexq-cai":
-      case "2s2iy-xaaaa-aaaah-qczoq-cai":
       default:
         return (
           <img
