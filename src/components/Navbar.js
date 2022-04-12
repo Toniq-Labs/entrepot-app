@@ -42,7 +42,7 @@ export default function Navbar(props) {
           <div className={classes.grow} />
           <Button
             onClick={() => goTo("/sale")}
-            className={(props.view === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
+            className={(props.view === "sale" ? "selected " : "")+[classes.button].join(' ')}
             color="inherit"
           >
             Launchpad
@@ -52,21 +52,31 @@ export default function Navbar(props) {
               navigate("/marketplace");
               handleClick();
             }}
-            className={(props.view === "marketplace" ? "selected " : "")+[classes.button, classes.marketplace].join(' ')}
+            className={(props.view === "marketplace" ? "selected " : "")+[classes.button].join(' ')}
             color="inherit"
           >
             Marketplace
           </Button>
           <Button
+            onClick={() => {
+              navigate("/pawnshop");
+              handleClick();
+            }}
+            className={(props.view === "pawnshop" ? "selected " : "")+[classes.button].join(' ')}
+            color="inherit"
+          >
+            Pawnshop
+          </Button>
+          <Button
             onClick={() => goTo("/create")}
-            className={(props.view === "create" ? "selected " : "")+[classes.button, classes.create].join(' ')}
+            className={(props.view === "create" ? "selected " : "")+[classes.button].join(' ')}
             color="inherit"
           >
             Create
           </Button>
           <Button
             onClick={() => goTo("/contact")}
-            className={(props.view === "contact" ? "selected " : "")+[classes.button, classes.contact].join(' ')}
+            className={(props.view === "contact" ? "selected " : "")+[classes.button].join(' ')}
             color="inherit"
           >
             Support
@@ -88,13 +98,6 @@ export default function Navbar(props) {
           {open && (
             <div className={classes.smNav} onClick={() => setOpen(false)}>
               <Button
-                startIcon={
-                  <img
-                    alt="marketplace"
-                    style={{ width: 20 }}
-                    src="/icon/anchor.png"
-                  />
-                }
                 onClick={() => goTo("/sale")}
                 className={classes.button1}
                 style={{
@@ -109,13 +112,6 @@ export default function Navbar(props) {
                 Launchpad
               </Button>
               <Button
-                startIcon={
-                  <img
-                    alt="marketplace"
-                    style={{ width: 20 }}
-                    src="/icon/marketplace.png"
-                  />
-                }
                 onClick={() => goTo("/marketplace")}
                 className={classes.button1}
                 style={{
@@ -130,13 +126,20 @@ export default function Navbar(props) {
                 Marketplace
               </Button>
               <Button
-                startIcon={
-                  <img
-                    alt="create"
-                    style={{ width: 20 }}
-                    src="/icon/create.png"
-                  />
-                }
+                onClick={() => goTo("/pawnshop")}
+                className={classes.button1}
+                style={{
+                  color: props.view === "pawnshop" ? "#00d092" : "#000",
+                  borderBottom:
+                    props.view === "pawnshop"
+                      ? "3px solid #00d092"
+                      : "3px solid transparent",
+                }}
+                color="inherit"
+              >
+                Pawnshop
+              </Button>
+              <Button
                 onClick={() => goTo("/create")}
                 className={classes.button1}
                 style={{
@@ -151,13 +154,6 @@ export default function Navbar(props) {
                 Create
               </Button>
               <Button
-                startIcon={
-                  <img
-                    alt="contact"
-                    style={{ width: 20 }}
-                    src="/icon/support.png"
-                  />
-                }
                 onClick={() => goTo("/contact")}
                 className={classes.button1}
                 style={{
@@ -290,7 +286,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginLeft: 30,
-    fontSize: "1.2em",
+    fontSize: "1.1em",
     fontWeight: "bold",
     borderBottom: "3px solid transparent",
     borderRadius: 0,
@@ -306,7 +302,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button1: {
-    fontSize: "1.2em",
+    fontSize: "1.1em",
     fontWeight: "bold",
     borderBottom: "3px solid transparent",
     borderRadius: 0,

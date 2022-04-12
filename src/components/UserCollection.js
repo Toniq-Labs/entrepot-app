@@ -205,8 +205,8 @@ export default function UserCollection(props) {
   const getCollection = c => {
     return props.collections.find(e => e.canister === c);
   };
-  
   const [nfts, setNfts] = React.useState([]);
+  const [whitelistedPawnCanisters, setWhitelistedPawnCanisters] = React.useState(false);
   const [tokenCanisters, setTokenCanisters] = React.useState([]);
   const [displayNfts, setDisplayNfts] = React.useState(false);
   const [collectionFilter, setCollectionFilter] = React.useState('all');
@@ -248,43 +248,34 @@ export default function UserCollection(props) {
   const hideNft = async token => {
     hiddenNfts.push(token);
   };
-  const refresh = async () => {
+  const refresh = async (v) => {
+    if (v) {
+      navigate(v);
+      return;
+    };
     if (!address) return;
-    // switch(props.view){
-      // case "collected":
-        // var r = await loadAllTokens(props.account.address, props.identity.getPrincipal().toText());
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "selling":
-        // var r = await loadAllListings(props.account.address, props.identity.getPrincipal().toText());
-        // var r2 = r.map(a => a[0]);
-        // setListingPrices(r);
-        // updateNfts(r2.filter((a,i) => r2.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "favorites":
-        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "offers-made":
-        // var r = await _api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
-        // updateNfts(r.filter((a,i) => r.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-      // case "offers-received":
-        // var r = await Promise.all([loadAllTokens(props.account.address, props.identity.getPrincipal().toText()),_api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").allOffers()].map(p => p.catch(e => e)));
-        // var r2 = r.filter(result => !(result instanceof Error));
-        // var r3 = r2[0].filter(a => r2[1].indexOf(a) >= 0);
-        // updateNfts(r3.filter((a,i) => r3.indexOf(a) == i),_sort, _collectionFilter); 
-        // break;
-    // }
     var data; 
     console.log("Refreshing", props.view);
     switch(props.view){
       case "collected":
+        //TODO
         // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
         // data = response.data;
         // data = data.map(a => ({...a, token : a.id}));
         //Add wrapped
         data = await loadAllTokens(address, props.identity.getPrincipal().toText());
+        break;
+      case "new-request":
+        if (whitelistedPawnCanisters === false) return;
+        var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
+        data = response.data;
+        data = data.filter(a => !a.price && whitelistedPawnCanisters.indexOf(a.canister) >= 0);
+        data = data.map(a => ({...a, token : a.id}));
+        break;
+      case "pawn-nfts":
+        var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/yigae-jqaaa-aaaah-qczbq-cai/all");
+        data = response.data;
+        data = data.map(a => ({...a, token : a.id}));
         break;
       case "selling":
         var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/listed");
@@ -294,7 +285,7 @@ export default function UserCollection(props) {
       case "favorites":
         var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").liked();
         data = r.filter((a,i) => r.indexOf(a) == i);
-        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister}));
+        data = data.map(a => ({id : a, token : a, price : 0, time : 0, owner : false, canister : extjs.decodeTokenId(a).canister, listing : null}));
         break;
       case "offers-made":
         var r = await extjs.connect("https://boundary.ic0.app/", props.identity).canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offered();
@@ -309,11 +300,15 @@ export default function UserCollection(props) {
         break;
     }
     console.log("fetched");
+    data = data.map(a => (a.hasOwnProperty("price") && a.hasOwnProperty("time") && !a.hasOwnProperty("listing") && a.price > 0 ? {...a, listing : {price : BigInt(a.price), locked : (a.time > 0 ? [BigInt(a.time)] : [])}} : a));
     hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
     data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
+    console.log("mapped");
     data = filterBefore(data);
+    console.log("filtered");
     setTokenCanisters(data.map(d => d.canister));
     setResults(data);
+    console.log("set");
   }
   
   const theme = useTheme();
@@ -401,10 +396,14 @@ export default function UserCollection(props) {
     console.log("Hook: results");
     setHideCollectionFilter(false)
     if (results.length) setDisplayedResults(filterAfter(results));
+    else setDisplayedResults([]);
   }, [results]);
   React.useEffect(() => {
     console.log("Hook: start");
     setDisplayedResults(false)
+    extjs.connect("https://boundary.ic0.app/").canister("yigae-jqaaa-aaaah-qczbq-cai").tp_whitelisted().then(r => { 
+      setWhitelistedPawnCanisters(r);
+    });
   }, []);
 
   React.useEffect(() => {
@@ -417,7 +416,7 @@ export default function UserCollection(props) {
         else refresh();
       }
     }
-  }, [address, props.view]);
+  }, [address, props.view, whitelistedPawnCanisters]);
   React.useEffect(() => {
     if (myPage) setAddress(props.account.address);
   }, [props.account.address]);
@@ -426,7 +425,7 @@ export default function UserCollection(props) {
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />    
+      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : "")} />    
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
         <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
           <List>
@@ -575,13 +574,14 @@ export default function UserCollection(props) {
                   return (<NFT 
                     collections={props.collections} 
                     gridSize={gridSize} 
+                    view={props.view} 
                     //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)} 
                     loggedIn={props.loggedIn} 
                     identity={props.identity} 
                     tokenid={token.token} 
                     hideNft={hideNft} 
                     key={token.token} 
-                    ownerView={['collected','selling','offers-received'].indexOf(props.view) >= 0}
+                    listing={token?.listing} 
                     unpackNft={props.unpackNft} 
                     listNft={props.listNft} 
                     cancelNft={props.cancelNft} 

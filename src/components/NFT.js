@@ -155,7 +155,6 @@ export default function NFT(props) {
   React.useEffect(() => {
     if (typeof props.listing == 'undefined') {
       getListing();
-      doRefresh = true;
     };
     getOffer();
     getMetadata();
@@ -163,7 +162,6 @@ export default function NFT(props) {
   }, []);
   React.useEffect(() => {
     if (props.listing) setListing(props.listing);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.listing]);
   const styles = {
@@ -202,9 +200,6 @@ export default function NFT(props) {
   };
 
   const refresh = async () => {
-    if (doRefresh) {
-      await getListing();
-    };
     await getOffer();
     await getMetadata();
     if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai') {
@@ -232,42 +227,49 @@ export default function NFT(props) {
   };
   const transferRefresh = async () => {
     props.hideNft(tokenid);
-    await props.refresh();
+    await props.refresh("/pawn-requests");
   };
   var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
   const getButtons = () => {
     var buttons = [];
-    if(listing) {
-      //Contains a listing, must be EXT
-      buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-      buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+    if (props.view == "new-request") {
+      if (!listing && ["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
+        buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+        buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+      }
     } else {
-      if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
-        //EXT only no wrapper
-        buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
+      if(listing) {
+        //Contains a listing, must be EXT
+        buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Update"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
         buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       } else {
-        if (unwrappedCanisters.indexOf(canister) >= 0) {
-          //Non EXT
-          buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.wrapAndlistNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
+        if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
+          //EXT only no wrapper
+          buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
           buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
         } else {
-          //EXT Wrapper
-          buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
-          buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
-          buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+          if (unwrappedCanisters.indexOf(canister) >= 0) {
+            //Non EXT
+            buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.wrapAndlistNft({id : tokenid, listing:listing}, props.loader, props.refresh)]);
+            buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+          } else {
+            //EXT Wrapper
+            buttons.push([(currentBtn == 0 && currentBtnText ? buttonLoadingText : "Sell"), () => props.listNft({id : tokenid, listing:listing}, buttonLoader, refresh)]);
+            buttons.push(["Transfer", () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+            buttons.push(["Unwrap", () => props.unwrapNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
+          };
+        }
+        //Custom
+        if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000 && index < 30000) {
+          buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, transferRefresh)]);
+        };
+        if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
+          buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
+        };
+        if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
+          buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         };
       }
-      //Custom
-      if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000 && index < 30000) {
-        buttons.push(["Open", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, transferRefresh)]);
-      };
-      if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
-        buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
-      };
-      if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
-        buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
-      };
     }
     return buttons;
   };
@@ -433,7 +435,8 @@ export default function NFT(props) {
           </Grid>
         </CardContent>
         </Link>
-        {typeof props.ownerView !== 'undefined' && props.ownerView ?
+        {typeof props.view !== 'undefined' && 
+                    ['collected','selling','offers-received','new-request','pawn-nfts'].indexOf(props.view) >= 0 ?
         <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
           {props.loggedIn ? 
             <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 
@@ -443,24 +446,28 @@ export default function NFT(props) {
                   {getButtons().length == 2 ?
                     <Grid style={{width:"100%"}}  item lg={6} md={6}><Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); buttonPush(1)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>{getButtons()[1][0]}</Button></Grid>
                   :
-                  <Grid style={{width:"100%"}} item lg={6} md={6}>
-                    <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); setAnchorEl(e.currentTarget)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
-                    <Menu
-                      anchorEl={anchorEl}
-                      getContentAnchorEl={null}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={() => setAnchorEl(null)}
-                    >
-                      {getButtons().slice(1).map((a, i) => {
-                        return (<MenuItem key={i} onClick={(e) => {e.stopPropagation(); setAnchorEl(null); buttonPush(a[1])}}>{a[0]}</MenuItem>);
-                      })}
-                    </Menu>
-                  </Grid>
+                  <>
+                    {getButtons().length > 2 ?
+                      <Grid style={{width:"100%"}} item lg={6} md={6}>
+                        <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {e.stopPropagation(); setAnchorEl(e.currentTarget)}} size={"small"} fullWidth variant="contained" color="primary" style={{backgroundColor:"#003240", color:"white"}}>More</Button>
+                        <Menu
+                          anchorEl={anchorEl}
+                          getContentAnchorEl={null}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={() => setAnchorEl(null)}
+                        >
+                          {getButtons().slice(1).map((a, i) => {
+                            return (<MenuItem key={i} onClick={(e) => {e.stopPropagation(); setAnchorEl(null); buttonPush(a[1])}}>{a[0]}</MenuItem>);
+                          })}
+                        </Menu>
+                      </Grid>
+                    : ""}
+                  </>
                   }
                 </>
               : "" }

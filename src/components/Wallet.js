@@ -14,6 +14,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import GavelIcon from '@material-ui/icons/Gavel';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
@@ -288,9 +291,27 @@ export default function Wallet(props) {
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/offers-made");}}>
           <ListItemIcon>
-            <LocalOfferIcon />
+            <CallMadeIcon />
           </ListItemIcon>
           <ListItemText primary="Offers Made" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/pawn-requests");}}>
+          <ListItemIcon>
+            <PostAddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Pawn Requests" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/pawn-contracts");}}>
+          <ListItemIcon>
+            <GavelIcon />
+          </ListItemIcon>
+          <ListItemText primary="Pawn Contracts" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/pawn-nfts");}}>
+          <ListItemIcon>
+            <LocalAtmIcon />
+          </ListItemIcon>
+          <ListItemText primary="Pawn NFTs" />
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/favorites");}}>
           <ListItemIcon>

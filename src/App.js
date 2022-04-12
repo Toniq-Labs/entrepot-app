@@ -127,7 +127,7 @@ const isDevEnv = () => {
   if(window.location.host.indexOf("deploy-preview") == 0) return true;
   return false;
 };
-
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
@@ -186,6 +186,89 @@ export default function App() {
       });
       setShowBuyForm(true);
     });
+  };
+  const repayContract = async (token, repaymentaddress, amount, reward, refresh) => {
+    loader(true, "Making repayment...");
+    try{
+      var rbalance = BigInt(await api.token().getBalance(repaymentaddress));
+      var owed = (amount+reward) - rbalance;
+      if (owed > 0n){
+        if (balance < (owed + 10000n)){
+          return alert(
+          "There was an error",
+          "Your balance is insufficient to complete this transaction"
+          );
+        }
+        loader(true, "Transferring ICP...");
+        await extjs.connect("https://boundary.ic0.app/", identity).token().transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          repaymentaddress,
+          owed,
+          10000
+        );
+      };
+      loader(true, "Closing contract...");
+      var r2 = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_close(token);
+      if (r2.hasOwnProperty("err")) throw r2.err;
+      if (!r2.hasOwnProperty("ok")) throw "Unknown Error";
+      loader(true, "Reloading contracts...");
+      await refresh();
+      loader(false);
+      return alert("Contract Accepted", "You have accepted a contract, and you will receive a Pawn NFT shortly.");
+    } catch (e) {
+      loader(false);
+      return error(e);
+    };
+  };
+  const cancelRequest = async (tokenid, refresh) => {
+    loader(false);
+    var v = await confirm("Please confirm", "Are you sure you want to cancel this request?");
+    if (v){
+      try {
+        loader(true, "Cancelling request...");
+        var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_cancel(tokenid);
+        if (r.hasOwnProperty("err")) throw r.err;
+        if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+        loader(true, "Reloading requests...");
+        await refresh();
+        loader(false);
+        return alert("Request Cancelled", "Your pawn request was cancelled successful!");
+      } catch (e) {
+        loader(false);
+        return error(e);
+      };
+    };
+  };
+  const fillRequest = async (tokenid, amount, refresh) => {
+    loader(false);
+    var v = await confirm("Please confirm", "Are you sure you want to accept this request and transfer "+(Number(tokenid)/100000000).toFixed(2)+"ICP?");
+    if (v){
+      try {
+        loader(true, "Accepting request...");
+        var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_fill(tokenid, accounts[currentAccount].address, amount);
+        if (r.hasOwnProperty("err")) throw r.err;
+        if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+        var paytoaddress = r.ok;
+        loader(true, "Transferring ICP...");
+        await extjs.connect("https://boundary.ic0.app/", identity).token().transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          paytoaddress,
+          amount,
+          10000
+        );
+        loader(true, "Finalizing contract...");
+        var r2 = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_settle(paytoaddress);
+        loader(true, "Reloading requests...");
+        await refresh();
+        loader(false);
+        return alert("Contract Closed", "You have repaid this contract, and you will receive your NFT back shortly.");
+      } catch (e) {
+        loader(false);
+        return error(e);
+      };
+    };
   };
   const buyNft = async (canisterId, index, listing, ah) => {
     if (balance < listing.price + 10000n)
@@ -265,7 +348,7 @@ export default function App() {
     };
     loader(true, "Processing payments... (this can take a few minutes)");
     
-    var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
+    var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai"];
     var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
     for (var j = 0; j < _collections.length; j++) {
       loader(true, "Processing payments... (this can take a few minutes)");
@@ -919,10 +1002,10 @@ export default function App() {
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/loan-requests" exact element={
+              <Route path="/pawnshop" exact element={
                 <UserLoan
                   error={error}
-                  view={"loan-requests"}
+                  view={"pawnshop"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -932,12 +1015,15 @@ export default function App() {
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
                   pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/active-loans" exact element={
+              <Route path="/pawn-requests" exact element={
                 <UserLoan
                   error={error}
-                  view={"active-loans"}
+                  view={"pawn-requests"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -947,12 +1033,48 @@ export default function App() {
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
                   pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/nft-loans" exact element={
+              <Route path="/pawn-contracts" exact element={
+                <UserLoan
+                  error={error}
+                  view={"pawn-contracts"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/new-request" exact element={
                 <UserCollection
                   error={error}
-                  view={"nft-loans"}
+                  view={"new-request"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />} />
+              <Route path="/pawn-nfts" exact element={
+                <UserCollection
+                  error={error}
+                  view={"pawn-nfts"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 

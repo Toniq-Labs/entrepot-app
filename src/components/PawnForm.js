@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -37,16 +38,17 @@ export default function PawnForm(props) {
   return (
     <>
       <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth >
-        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Pawn NFT</DialogTitle>
+        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Pawn my NFT</DialogTitle>
         <DialogContent>
         <img alt="NFT" src={(props.nft.id ? EntrepotNFTImage(extjs.decodeTokenId(props.nft.id).canister, extjs.decodeTokenId(props.nft.id).index, props.nft.id) : "")} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
-        <Alert severity="info">Please enter the amount of ICP, the rewards, and the length of the loan below.</Alert>
+        <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+        <Alert severity="info">Please enter the amount of ICP, the rewards, and the length of the contract below. Once you submit, your NFT will be sent to escrow. If the request has not been accepted <strong>after 24 hours</strong> it will be automatically cancelled.</Alert>
           <Grid container>
             <Grid item xs={6}>
               <TextField
                 style={{width:'100%'}}
                 margin="dense"
-                label={"Loan amount in ICP"}
+                label={"Amount in ICP you want"}
                 value={amount}
                 onChange={(e) => {
                   var a = e.target.value;
@@ -101,13 +103,14 @@ export default function PawnForm(props) {
               : ""}
             </Grid>
           </Grid>
+          <div style={{textAlign:"center"}}><small>This process may take a minute to process. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></small></div>
         </DialogContent>
         
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Back
           </Button>
-          <Button onClick={_submit} color="primary">Request Loan</Button>
+          <Button onClick={_submit} color="primary">Submit Request</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -5,11 +5,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
@@ -28,10 +30,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import TextField from "@material-ui/core/TextField";
+import Alert from '@material-ui/lab/Alert';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import getNri from "../ic/nftv.js";
 import FilterListIcon from '@material-ui/icons/FilterList';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 import CachedIcon from '@material-ui/icons/Cached';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import GavelIcon from '@material-ui/icons/Gavel';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
@@ -115,7 +123,6 @@ const loadAllTokens = async (address, principal) => {
   // // };
   // return tokens;
 // };
-var canUpdateNfts = true;
 const useStyles = makeStyles((theme) => ({
   tabsViewBig: {
     [theme.breakpoints.down('sm')]: {
@@ -202,25 +209,39 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
     },
   },
+  banner: {
+    borderRadius:5,
+    marginBottom:70,
+    backgroundSize:"cover", 
+    height:200,
+    [theme.breakpoints.down("xs")]: {
+      background:"none!important",
+      marginTop:-170,
+    },
+  },
 }));
 var pawnapi = extjs.connect("https://boundary.ic0.app/").canister("yigae-jqaaa-aaaah-qczbq-cai");
+const getDays = a => Number(a.length / (24n * 60n * 60n * 1000000000n));
+const getApr = a => ((Number(a.reward)/100000000)/getDays(a)*365)/(Number(a.amount)/100000000);
 export default function UserLoan(props) {
   const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
   const [displayedResults, setDisplayedResults] = React.useState([]);
   const [results, setResults] = React.useState(false);
+  const [displayView, setDisplayView] = React.useState("requests");
   const getCollection = c => {
     return props.collections.find(e => e.canister === c);
   };
   
+  const [selectedFilters, setSelectedFilters] = React.useState([]);
   const [nfts, setNfts] = React.useState([]);
   const [displayNfts, setDisplayNfts] = React.useState(false);
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
   var myPage = (params?.address ? false : true);
   const [address, setAddress] = React.useState(params?.address ?? (props.account.address ?? ""));
-  const [sort, setSort] = React.useState('mint_number');
+  const [sort, setSort] = React.useState('apr');
   const [listingPrices, setListingPrices] = React.useState([]);
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
@@ -244,9 +265,7 @@ export default function UserLoan(props) {
     return rf;
   };
   const filterAfter = r => {
-    var rf = r;
-    if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
-    return rf;
+    return filterResults(r);
   };
   const tabLink = p => {
     return (myPage ? p : "/"+address+p);
@@ -256,25 +275,68 @@ export default function UserLoan(props) {
     hiddenNfts.push(token);
   };
   
+  //Filter stuff
+  
+  const [minAmount, setMinAmount] = React.useState("");
+  const [maxAmount, setMaxAmount] = React.useState("");
+  const [minReward, setMinReward] = React.useState("");
+  const [maxReward, setMaxReward] = React.useState("");
+  const [minApr, setMinApr] = React.useState("");
+  const [maxApr, setMaxApr] = React.useState("");
+  const [minLength, setMinLength] = React.useState("");
+  const [maxLength, setMaxLength] = React.useState("");
+  const setToNumer = b => {
+    var b = Number(b);
+    if (isNaN(b)) return "";
+    return b;
+  };
+  const minAmountChange = ev => {
+    setMinAmount(setToNumer(ev.target.value));
+  };
+  const maxAmountChange = ev => {
+    setMaxAmount(setToNumer(ev.target.value));
+  };
+  const minRewardChange = ev => {
+    setMinReward(setToNumer(ev.target.value));
+  };
+  const maxRewardChange = ev => {
+    setMaxReward(setToNumer(ev.target.value));
+  };
+  const minAprChange = ev => {
+    setMinApr(setToNumer(ev.target.value));
+  };
+  const maxAprChange = ev => {
+    setMaxApr(setToNumer(ev.target.value));
+  };
+  const minLengthChange = ev => {
+    setMinLength(setToNumer(ev.target.value));
+  };
+  const maxLengthChange = ev => {
+    setMaxLength(setToNumer(ev.target.value));
+  };
+  const isFilterValueSelected = (traitId, traitValueId) => {
+    return (selectedFilters.find(a => a[0] == traitId && a[1] == traitValueId) ? true : false);
+  };
   const refresh = async () => {
-    if (!address) return;
+    if (!address && props.view != "pawnshop") return;
     var data; 
     console.log("Refreshing", props.view);
     switch(props.view){
-      case "loan-requests":
-        // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
-        // data = response.data;
-        // data = data.map(a => ({...a, token : a.id}));
-        //Add wrapped
-        data = (await pawnapi.tp_requestsByAddress(address)).map(a => a[1]);
+      case "pawnshop":
+        if (displayView == "requests") {          
+          data = (await pawnapi.tp_requests()).map(a => ({...a[1], type : "request"}));
+        } else {
+          data = (await pawnapi.tp_loansActive()).map(a => ({...a[1], index : a[0], type : "contract"}));
+        };
         break;
-      case "active-loans":
-        console.log("fetched");
-        hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
-        data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
-        data = filterBefore(data);
+      case "pawn-requests":
+        data = (await pawnapi.tp_requestsByAddress(address)).map(a => ({...a[1], type : "request"}));
+        break;
+      case "pawn-contracts":
+        data = (await pawnapi.tp_loansByAddress(address)).map(a => ({...a[1], index : a[0], type : "contract"}));
         break;
     }
+    data = data.map(a => ({...a, days : getDays(a), apr : getApr(a)}));
     setResults(data);
   }
   
@@ -293,55 +355,57 @@ export default function UserLoan(props) {
   useInterval(refresh, 10 * 60 *1000);
   
   
-  const updateNfts = (l,s,cf) => {
-   
-    if (canUpdateNfts){
-      canUpdateNfts = false;
-      var _nfts = l ?? nfts;
-      var _sort = s ?? sort;
-      var _collectionFilter = cf ?? collectionFilter;
-      if (!_nfts) return;
-      if (l) setNfts(l);
-      var _displayNfts = _nfts;
-      _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || getEXTCanister(extjs.decodeTokenId(token).canister) == _collectionFilter));
-      _displayNfts = _displayNfts.sort((a,b) => {
-        switch(sort) {
-          case "price_asc":
-            var ap = (a.price === 0 ? false : a.price);
-            var bp = (b.price === 0 ? false : b.price);
-            if (ap === false && bp === false) return 0; 
-            if (ap === false) return -1;
-            if (bp === false) return 1;
-            return ap-bp;
-          case "price_desc":
-            var ap = (a.price === 0 ? false : a.price);
-            var bp = (b.price === 0 ? false : b.price);
-            if (ap === false && bp === false) return 0; 
-            if (ap === false) return 1;
-            if (bp === false) return -1;
-            return bp-ap;
-          case "mint_number":
-            return extjs.decodeTokenId(a).index-extjs.decodeTokenId(b).index;
-          case "nri":
-            var aa = extjs.decodeTokenId(a);
-            var bb = extjs.decodeTokenId(b);
-            var nria = getNri(aa.canister,aa.index);
-            var nrib = getNri(bb.canister,bb.index);
-            if (nria === false && nrib === false) return 0; 
-            if (nria === false) return 1;
-            if (nrib === false) return -1;
-            return Number(nrib)-Number(nria);
-          default:
-            return 0;
-        };
-      })
-      setDisplayNfts(_displayNfts);
-      setHideCollectionFilter(false);
-      canUpdateNfts = true;
-    }
+  const filterResults = r => {
+    if (!minAmount && !maxAmount && !minApr && !maxApr) return r;
+    console.log(minAmount, maxAmount, minApr, maxApr);
+    return r.filter(a => {
+      console.log(a);
+      if (minAmount && (a.amount <= (BigInt(minAmount)*100000000n))) return false;
+      if (maxAmount && (a.amount >= (BigInt(maxAmount)*100000000n))) return false;
+      if (minApr && (a.apr <= (minApr/100))) return false;
+      if (maxApr && (a.apr >= (maxApr/100))) return false;
+      return true;
+    });
   };
-  
-  
+  const sortResults = r => {
+    return r.sort((a,b) => {
+      switch(sort) {
+        case "apr":
+          return b.apr-a.apr;
+        case "reward":
+          var r = Number(b.reward)-Number(a.reward);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "date_desc":
+          var r = Number(b.date)-Number(a.date);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "date_asc":
+          var r = Number(a.date)-Number(b.date);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "amount_desc":
+          var r = Number(b.amount)-Number(a.amount);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "amount_asc":
+          var r = Number(a.amount)-Number(b.amount);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "days_desc":
+          var r = Number(b.days)-Number(a.days);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        case "days_asc":
+          var r = Number(a.days)-Number(b.days);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
+        default:
+          return 0;
+      };
+    })
+  }
+
   React.useEffect(() => {
     setPage(1);
     //if (displayedResults) setDisplayedResults(false);
@@ -361,15 +425,19 @@ export default function UserLoan(props) {
     console.log("Hook: results");
     setHideCollectionFilter(false)
     if (results.length) setDisplayedResults(filterAfter(results));
+    else setDisplayedResults([]);
   }, [results]);
   React.useEffect(() => {
     console.log("Hook: start");
     setDisplayedResults(false)
   }, []);
+  React.useEffect(() => {
+    setDisplayedResults(filterAfter(results))
+  }, [minAmount, maxAmount, minApr, maxApr]);
 
   React.useEffect(() => {
     console.log("Hook: account");
-    if (address){
+    if (address || props.view == "pawnshop"){
       setHideCollectionFilter(true);
       if (collectionFilter != "all") setCollectionFilter("all");
       else {
@@ -381,13 +449,142 @@ export default function UserLoan(props) {
   React.useEffect(() => {
     if (myPage) setAddress(props.account.address);
   }, [props.account.address]);
+  React.useEffect(() => {
+    setDisplayedResults(false);
+  }, [displayView]);
 
   
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />    
+      {props.view == "pawnshop" ?
+      <>
+        <div>
+          <div style={{maxWidth:1200, margin:"0 auto 0",}}>
+            <div style={{textAlign:"center"}}>
+              <div style={styles.empty}>
+                <div className={classes.banner} style={{background:"url('/pawnshop.jpg')"}}>
+                  
+                </div>
+                <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 50px"}}>
+                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>The Pirate Pawnshop is a <strong>non-custodial peer-to-peer pawnbroker service</strong> running on the Internet Computer. Users can pawn valuable NFTs for short-term liquidity, whilst providing other users the ability to generate ICP rewards or acquire NFTs at discounted prices.
+                  <br />
+                  <br />
+                  Our unique approach is to tokenize the pawn contract into a tradeable Pawn NFT where the bearer receives the rewards/collateral when the contract is repaid or defaults. <strong>This creates a secondary market for Pawn NFTs.</strong> 
+                  </div>
+                  {props.identity ?
+                  <>
+                    <Button variant="contained" color={"primary"} style={{fontWeight:"bold"}} onClick={() => navigate("/new-request")}>
+                      <PostAddIcon /> Create New Request
+                    </Button>
+                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => navigate("/marketplace/piratepawnshop")}>
+                      <StorefrontIcon /> View on Marketplace
+                    </Button>
+                  </>: ""}
+                </div>
+              </div>
+              
+              <Tabs
+                value={displayView}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+                onChange={(e, nv) => {
+                  setDisplayView(nv)
+                }}
+              >
+                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Pawn Requests</span></span>)} />
+                <Tab style={{fontWeight:"bold"}} value="contracts" label={(<span style={{padding:"0 50px"}}><GavelIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contracts</span></span>)} />
+              </Tabs>
+            </div>
+          </div>
+        </div>
+      </>:
+      <UserDetail view={props.view} navigate={v => navigate(tabLink(v))} classes={classes} address={address} title={(myPage ? "My Collection" : address.substr(0,12)+"...")} />}
       <div id="mainNfts" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
+        <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
+          <List>
+            <ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
+              <ListItemIcon style={{minWidth:40}}>
+                <FilterListIcon />
+              </ListItemIcon>
+              <ListItemText
+                primaryTypographyProps={{noWrap:true}} 
+                secondaryTypographyProps={{noWrap:true}} 
+                primary={(<strong>Filter</strong>)}
+              />
+                <ListItemIcon>
+                {toggleFilter ? <CloseIcon fontSize={"large"} /> :  "" }
+                </ListItemIcon>
+            </ListItem>
+            {toggleFilter  ? <>
+              <ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <AllInclusiveIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>Contract Amount</strong>)}
+                />
+              </ListItem>
+              <ListItem>
+                <div style={{width:"100%"}}>
+                  <TextField value={minAmount} onChange={minAmountChange} style={{width:"100%", marginBottom:20}} label="Min. Amount" />
+                  <TextField value={maxAmount} onChange={maxAmountChange} style={{width:"100%", marginBottom:20}} label="Max. Amount" />
+                </div>
+              </ListItem>
+              {/*<ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <AllInclusiveIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>Reward</strong>)}
+                />
+              </ListItem>
+              <ListItem>
+                <div style={{width:"100%"}}>
+                  <TextField value={minReward} onChange={minRewardChange} style={{width:"100%", marginBottom:20}} label="Min. Reward" />
+                  <TextField value={maxReward} onChange={maxRewardChange} style={{width:"100%", marginBottom:20}} label="Max. Reward" />
+                </div>
+              </ListItem>*/}
+              <ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <LocalAtmIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>APR</strong>)}
+                />
+              </ListItem>
+              <ListItem>
+                <div style={{width:"100%"}}>
+                  <TextField value={minApr} onChange={minAprChange} style={{width:"100%", marginBottom:20}} label="Min. APR%" />
+                  <TextField value={maxApr} onChange={maxAprChange} style={{width:"100%", marginBottom:20}} label="Max. APR%" />
+                </div>
+              </ListItem>
+              {/*<ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <AllInclusiveIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>Length</strong>)}
+                />
+              </ListItem>
+              <ListItem>
+                <div style={{width:"100%"}}>
+                  <TextField value={minLength} onChange={minLengthChange} style={{width:"100%", marginBottom:20}} label="Min. Length" />
+                  <TextField value={maxLength} onChange={maxLengthChange} style={{width:"100%", marginBottom:20}} label="Max. Length" />
+                </div>
+              </ListItem>*/}
+            </> : ""}
+          </List>
+        </div>
         <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
           <div style={{}}>
             <Grid className={classes.topUi} container style={{minHeight:66}}>
@@ -410,16 +607,40 @@ export default function UserLoan(props) {
                     value={sort}
                     onChange={changeSort}
                   >
-                    <MenuItem value={"mint_number"}>Minting #</MenuItem>
-                    <MenuItem value={"nri"}>NFT Rarity Index</MenuItem>
+                    <MenuItem value={"apr"}>Highest APR</MenuItem>
+                    <MenuItem value={"reward"}>Highest Reward</MenuItem>
+                    <MenuItem value={"date_desc"}>Latest</MenuItem>
+                    <MenuItem value={"date_asc"}>Oldest</MenuItem>
+                    <MenuItem value={"amount_asc"}>Amount: Low to High</MenuItem>
+                    <MenuItem value={"amount_desc"}>Amount: High to Low</MenuItem>
+                    <MenuItem value={"days_asc"}>Days: Low to High</MenuItem>
+                    <MenuItem value={"days_desc"}>Days: High to Low</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
+              {props.view == "pawn-requests" ?
+              <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+                <Button variant="contained" color={"primary"} style={{fontWeight:"bold", marginTop:7}} onClick={() => navigate("/new-request")}>
+                  <PostAddIcon /> Create New Request
+                </Button>
+              </Grid> : ""}
               {displayedResults && displayedResults.length > perPage ?
               (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
-                    <div style={{minHeight:500}}>
+          {props.view == "pawn-contracts" ?
+            <>
+              <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>These are your open Pawn Contracts. You will need to repay the contract in full (amount and reward) before the end date otherwise you will lose your NFT</Alert>
+            </>
+          : ""}
+          {props.view == "pawn-requests" ?
+            <>
+              <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>
+                You can view your current Pawn Requests here. Once someone accepts your request, it will be moved to the Pawn Contracts screen. Pawn Requests automatically expire after 24 hours.
+              </Alert>
+            </>
+          : ""}
+          <div style={{minHeight:500}}>
             <div style={{}}>
               {displayedResults === false ?
                 <>
@@ -435,6 +656,25 @@ export default function UserLoan(props) {
                 </>
               }
             </div>
+            {minAmount || maxAmount || minApr || maxApr ?
+              <div>
+                <Typography
+                  paragraph
+                  style={{  fontWeight: "bold" }}
+                  align="left"
+                >
+                  {minAmount ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. Amount: "+minAmount+"ICP"} onDelete={() => setMinAmount("")} color="primary" /> :""}
+                  {maxAmount ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. Amount: "+maxAmount+"ICP"} onDelete={() => setMaxAmount("")} color="primary" /> :""}
+                  {minApr ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. APR: "+minApr+"%"} onDelete={() => setMinApr("")} color="primary" /> :""}
+                  {maxApr ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. APR: "+maxApr+"%"} onDelete={() => setMaxApr("")} color="primary" /> :""}
+                  <Chip style={{marginRight:10,marginBottom:10}} label={"Reset"} onClick={() => {
+                    setMinAmount("");
+                    setMaxAmount("");
+                    setMinApr("");
+                    setMaxApr("");
+                  }} color="default" />
+                </Typography>
+              </div>:""}
             {displayedResults && displayedResults.length ?
             <div>
               <TableContainer>
@@ -443,20 +683,32 @@ export default function UserLoan(props) {
                     <TableRow>
                       <TableCell align="left"><strong>Item</strong></TableCell>
                       <TableCell align="right"><strong>Amount</strong></TableCell>
-                      <TableCell align="right"><strong>Rewards</strong></TableCell>
-                      <TableCell align="center"><strong>Length (Days)</strong></TableCell>
+                      <TableCell align="right"><strong>Reward</strong></TableCell>
+                      <TableCell align="center"><strong>Contract Length</strong></TableCell>
+                      <TableCell align="center"><strong>Floor Rate</strong></TableCell>
                       <TableCell align="center"><strong>APR</strong></TableCell>
-                      <TableCell align="center"><strong>Expires</strong></TableCell>
+                      <TableCell align="center"><strong>Status</strong></TableCell>
                       <TableCell align="center"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {displayedResults
+                    {sortResults(displayedResults)
                     .filter((event,i) => (i >= ((page-1)*perPage) && i < ((page)*perPage)))
                     .map(event => {
                       return (<Pawn 
+                          identity={props.identity}
+                          repayContract={props.repayContract}
+                          fillRequest={props.fillRequest}
+                          cancelRequest={props.cancelRequest}
+                          navigate={navigate}
+                          currentAccount={props.currentAccount}
                           collections={props.collections} 
                           event={event}                
+                          refresh={refresh}                
+                          confirm={props.confirm}                
+                          loader={props.loader}                
+                          error={props.error}                
+                          alert={props.alert}                
                           key={event.tokenid}                
                         />)
                     })}
