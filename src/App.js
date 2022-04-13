@@ -39,6 +39,7 @@ const txmin = 100000;
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
+console.log('hello');
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: 1600,
