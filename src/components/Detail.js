@@ -215,6 +215,29 @@ const Detail = (props) => {
           />
         );
         break;
+      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
+      case "bxdf4-baaaa-aaaah-qaruq-cai":
+      case "dylar-wyaaa-aaaah-qcexq-cai":
+        return (
+          <img
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            alt=""
+            className={classes.nftImage}
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+              objectFit: "contain",
+            }}
+          />
+        );
+        break;
       case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
@@ -248,13 +271,10 @@ const Detail = (props) => {
           />
         );
         break;
-      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-      case "dylar-wyaaa-aaaah-qcexq-cai":
       default:
         return (
           <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            src={EntrepotNFTImage(canister, index, tokenid, false)}
             alt=""
             className={classes.nftImage}
             style={{
