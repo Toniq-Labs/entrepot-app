@@ -215,43 +215,9 @@ const Detail = (props) => {
           />
         );
         break;
-      case "xcep7-sqaaa-aaaah-qcukq-cai":
-      case "dv6u3-vqaaa-aaaah-qcdlq-cai":
-      case "eb7r3-myaaa-aaaah-qcdya-cai":
-      case "pk6rk-6aaaa-aaaae-qaazq-cai":
-      case "dhiaa-ryaaa-aaaae-qabva-cai":
-      case "mk3kn-pyaaa-aaaah-qcoda-cai":
-      case "jeghr-iaaaa-aaaah-qco7q-cai":
-      case "er7d4-6iaaa-aaaaj-qac2q-cai":
-      case "poyn6-dyaaa-aaaah-qcfzq-cai":
-      case "crt3j-mqaaa-aaaah-qcdnq-cai":
-      case "nges7-giaaa-aaaaj-qaiya-cai":
-      case "ag2h7-riaaa-aaaah-qce6q-cai":
-      case "ri5pt-5iaaa-aaaan-qactq-cai":
-        return (
-          <iframe
-            frameBorder="0"
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-            }}
-          />
-        );
-        break;
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
       case "bxdf4-baaaa-aaaah-qaruq-cai":
       case "dylar-wyaaa-aaaah-qcexq-cai":
-      default:
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, true)}
@@ -268,6 +234,40 @@ const Detail = (props) => {
               marginRight:"auto",
               display: "block",
               objectFit: "contain",
+            }}
+          />
+        );
+        break;
+      case "xcep7-sqaaa-aaaah-qcukq-cai":
+      case "dv6u3-vqaaa-aaaah-qcdlq-cai":
+      case "eb7r3-myaaa-aaaah-qcdya-cai":
+      case "pk6rk-6aaaa-aaaae-qaazq-cai":
+      case "dhiaa-ryaaa-aaaae-qabva-cai":
+      case "mk3kn-pyaaa-aaaah-qcoda-cai":
+      case "jeghr-iaaaa-aaaah-qco7q-cai":
+      case "er7d4-6iaaa-aaaaj-qac2q-cai":
+      case "poyn6-dyaaa-aaaah-qcfzq-cai":
+      case "crt3j-mqaaa-aaaah-qcdnq-cai":
+      case "nges7-giaaa-aaaaj-qaiya-cai":
+      case "ag2h7-riaaa-aaaah-qce6q-cai":
+      case "ri5pt-5iaaa-aaaan-qactq-cai":
+      default:
+        return (
+          <iframe
+            frameBorder="0"
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            alt=""
+            className={classes.nftImage}
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
             }}
           />
         );
