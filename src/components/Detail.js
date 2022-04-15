@@ -251,7 +251,6 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
-      default:
         return (
           <iframe
             frameBorder="0"
@@ -268,6 +267,27 @@ const Detail = (props) => {
               marginLeft:"auto",
               marginRight:"auto",
               display: "block",
+            }}
+          />
+        );
+        break;
+      default:
+        return (
+          <img
+            src={EntrepotNFTImage(canister, index, tokenid, false)}
+            alt=""
+            className={classes.nftImage}
+            style={{
+              border:"none",
+              maxWidth:500,
+              maxHeight:"100%",
+              cursor: "pointer",
+              height: "100%",
+              width: "100%",
+              marginLeft:"auto",
+              marginRight:"auto",
+              display: "block",
+              objectFit: "contain",
             }}
           />
         );
