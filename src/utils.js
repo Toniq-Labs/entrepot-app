@@ -132,11 +132,11 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
       return "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/" + id;
     };
   }
-  if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
-  if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
+    if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
     return "https://images.entrepot.app/t/"+collection+"/" + id;
     //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
   }
