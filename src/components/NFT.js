@@ -256,6 +256,9 @@ export default function NFT(props) {
       if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
         buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
       };
+      if (canister == '6wih6-siaaa-aaaah-qczva-cai' && !metadata && Date.now() >= 1650034800000) {
+        buttons.push(["Cash Out", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
+      };
     }
     return buttons;
   };

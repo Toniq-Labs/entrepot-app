@@ -133,6 +133,7 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     };
   }
   if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+  if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
