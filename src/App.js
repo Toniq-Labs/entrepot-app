@@ -32,6 +32,7 @@ import TransferForm from './components/TransferForm';
 import GeneralSaleComponent from "./components/sale/GeneralSaleComponent";
 import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent";
 import legacyPrincipalPayouts from './payments.json';
+import getNri from "./ic/nftv.js";
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
@@ -558,12 +559,14 @@ export default function App() {
       r2 = r2.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
       if (collections.length == 0) {
         setCollections(r2);
+        r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
       } else {
         for(var i = 0; i < r2.length; i++){
           var n = r2[i];
           var o = collections.find(a => a.canister == n.id);
           if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
             setCollections(r2);
+            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
             console.log("UPDATED");
             break;
           }
