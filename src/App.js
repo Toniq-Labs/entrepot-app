@@ -414,7 +414,7 @@ export default function App() {
   };
 
   useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
-  useInterval(() => updateCollections(), 5 * 1000);
+  useInterval(() => updateCollections(), 5 * 60 * 1000);
   useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
