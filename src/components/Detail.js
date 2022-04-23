@@ -162,6 +162,7 @@ const Detail = (props) => {
     );
   };
   
+
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
