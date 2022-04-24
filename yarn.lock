@@ -2021,6 +2021,17 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
+"@toniq-labs/fleek-iterative-deploy@1.2.11":
+  "integrity" "sha512-6QMkNs5nc/VcQKSYjEl8AIBRefrcVznU3ZXd0f0qcvfpzThc/uuzApEkQKtMgQUIcgMFGaFnc2mjHE06D0qrGg=="
+  "resolved" "https://registry.npmjs.org/@toniq-labs/fleek-iterative-deploy/-/fleek-iterative-deploy-1.2.11.tgz"
+  "version" "1.2.11"
+  dependencies:
+    "@fleekhq/fleek-cli" "0.1.8"
+    "augment-vir" "1.12.2"
+    "fs-extra" "10.1.0"
+    "graphql" "16.3.0"
+    "graphql-request" "4.2.0"
+
 "@tootallnate/once@1":
   "integrity" "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
   "resolved" "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz"
@@ -3194,12 +3205,12 @@
   "resolved" "https://registry.npmjs.org/atomically/-/atomically-1.7.0.tgz"
   "version" "1.7.0"
 
-"augment-vir@1.12.1":
-  "integrity" "sha512-w7NWMQ1G0b+H8tQA5wgL5cycoZ32pK8BlgKeLIZzvA34s4+WYFxQrxiCgSeFDbNxVdhR7mVQXcpNR1YCLxxvmA=="
-  "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-1.12.1.tgz"
-  "version" "1.12.1"
+"augment-vir@1.12.2":
+  "integrity" "sha512-W7fkv/JqViIi70CJTPW3/cpJyJ5fFgHKgfBmdWHToFykdJhxztXxBXoZZ2UDePCEh7ffTWn0KIQ7AEMFGZtesw=="
+  "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-1.12.2.tgz"
+  "version" "1.12.2"
   dependencies:
-    "fs-extra" "10.0.1"
+    "fs-extra" "10.1.0"
 
 "auto-bind@^2.1.1":
   "integrity" "sha512-NUwV1i9D3vxxY1KnfZgSZ716d6ovY7o8LfOwLhGIPFBowIb6Ln6DBW64+jCqPzUznel2hRSkQnYQqvh7/ldw8A=="
@@ -6185,17 +6196,6 @@
   "resolved" "https://registry.npmjs.org/flatted/-/flatted-3.2.5.tgz"
   "version" "3.2.5"
 
-"fleek-iterative-deploy@1.2.2":
-  "integrity" "sha512-ClMGLtOLLMlAH0QQKoX9VFsTgky9BmhP1SygkvNXvgpFz9Q8a8HUUPNvzHNaPpUsWeKOONDeqoArMALl77DOgw=="
-  "resolved" "https://registry.npmjs.org/fleek-iterative-deploy/-/fleek-iterative-deploy-1.2.2.tgz"
-  "version" "1.2.2"
-  dependencies:
-    "@fleekhq/fleek-cli" "0.1.8"
-    "augment-vir" "1.12.1"
-    "fs-extra" "10.0.1"
-    "graphql" "16.3.0"
-    "graphql-request" "4.2.0"
-
 "follow-redirects@^1.0.0", "follow-redirects@^1.14.0", "follow-redirects@^1.14.7":
   "integrity" "sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ=="
   "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.7.tgz"
@@ -6272,10 +6272,10 @@
   "resolved" "https://registry.npmjs.org/fresh/-/fresh-0.5.2.tgz"
   "version" "0.5.2"
 
-"fs-extra@^10.0.0":
-  "integrity" "sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ=="
-  "resolved" "https://registry.npmjs.org/fs-extra/-/fs-extra-10.0.0.tgz"
-  "version" "10.0.0"
+"fs-extra@^10.0.0", "fs-extra@10.1.0":
+  "integrity" "sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ=="
+  "resolved" "https://registry.npmjs.org/fs-extra/-/fs-extra-10.1.0.tgz"
+  "version" "10.1.0"
   dependencies:
     "graceful-fs" "^4.2.0"
     "jsonfile" "^6.0.1"
@@ -6315,15 +6315,6 @@
   "version" "9.1.0"
   dependencies:
     "at-least-node" "^1.0.0"
-    "graceful-fs" "^4.2.0"
-    "jsonfile" "^6.0.1"
-    "universalify" "^2.0.0"
-
-"fs-extra@10.0.1":
-  "integrity" "sha512-NbdoVMZso2Lsrn/QwLXOy6rm0ufY2zEOKCDzJR/0kBsb0E6qed0P3iYK+Ath3BfvXEeu4JhEtXLgILx5psUfag=="
-  "resolved" "https://registry.npmjs.org/fs-extra/-/fs-extra-10.0.1.tgz"
-  "version" "10.0.1"
-  dependencies:
     "graceful-fs" "^4.2.0"
     "jsonfile" "^6.0.1"
     "universalify" "^2.0.0"

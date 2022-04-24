@@ -77,7 +77,7 @@
     ]
   },
   "devDependencies": {
-    "fleek-iterative-deploy": "1.2.2",
+    "@toniq-labs/fleek-iterative-deploy": "1.2.11",
     "react-app-rewired": "^2.1.11",
     "redux": "^4.1.2",
     "serve": "^13.0.2",
