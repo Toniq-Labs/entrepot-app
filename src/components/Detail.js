@@ -195,6 +195,7 @@ const Detail = (props) => {
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
+      
       // for generative collections where assets are all stored on the same canister
       // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
@@ -212,6 +213,7 @@ const Detail = (props) => {
       case "qbc6i-daaaa-aaaah-qcywq-cai":
       case "qjwjm-eaaaa-aaaah-qctga-cai":
       case "j3dqa-byaaa-aaaah-qcwfa-cai":
+      case "2l7rh-eiaaa-aaaah-qcvaa-cai":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, true)}
@@ -268,7 +270,8 @@ const Detail = (props) => {
           />
         );
         break;
-      // for pre-generated images on asset canisters
+      
+      // for pre-generated images residing on asset canisters
       // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
       case "6wih6-siaaa-aaaah-qczva-cai":
       case "6km5p-fiaaa-aaaah-qczxa-cai":
@@ -276,7 +279,11 @@ const Detail = (props) => {
       case "bzsui-sqaaa-aaaah-qce2a-cai":
       case "txr2a-fqaaa-aaaah-qcmkq-cai":
       case "ah2fs-fqaaa-aaaak-aalya-cai":
+      case "z7mqv-liaaa-aaaah-qcnqa-cai":
+      case "erpx2-pyaaa-aaaah-qcqsq-cai":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
+      
+      // default case is to just use the thumbnail on the detail page
       default:
         return (
           <img
