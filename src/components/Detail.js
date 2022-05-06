@@ -195,7 +195,7 @@ const Detail = (props) => {
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
-      case "z7mqv-liaaa-aaaah-qcnqa-cai":
+      /*case "z7mqv-liaaa-aaaah-qcnqa-cai":
       case "px5ub-qqaaa-aaaah-qcjxa-cai":
       case "txr2a-fqaaa-aaaah-qcmkq-cai":
       case "erpx2-pyaaa-aaaah-qcqsq-cai":
@@ -242,7 +242,7 @@ const Detail = (props) => {
             }}
           />
         );
-        break;
+        break;*/
       
       // for generative collections where assets are all stored on the same canister
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
@@ -269,6 +269,8 @@ const Detail = (props) => {
           />
         );
         break;
+      
+      // for interactive NFTs or videos
       case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
@@ -302,6 +304,7 @@ const Detail = (props) => {
           />
         );
         break;
+      // for pre-generated images on asset canisters
       case "6wih6-siaaa-aaaah-qczva-cai":
       case "6km5p-fiaaa-aaaah-qczxa-cai":
       case "s36wu-5qaaa-aaaah-qcyzq-cai":
