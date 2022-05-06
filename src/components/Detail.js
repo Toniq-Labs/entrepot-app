@@ -195,60 +195,22 @@ const Detail = (props) => {
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
-      /*case "z7mqv-liaaa-aaaah-qcnqa-cai":
-      case "px5ub-qqaaa-aaaah-qcjxa-cai":
-      case "txr2a-fqaaa-aaaah-qcmkq-cai":
-      case "erpx2-pyaaa-aaaah-qcqsq-cai":
-      case "zvycl-fyaaa-aaaah-qckmq-cai":
-      case "ahl3d-xqaaa-aaaaj-qacca-cai":
-      case "xphpx-xyaaa-aaaah-qcmta-cai":
-      case "cdvmq-aaaaa-aaaah-qcdoq-cai":
-      case "5h2fc-zaaaa-aaaah-qcnjq-cai":
-      case "xzxhy-oiaaa-aaaah-qclnq-cai":
-      case "p5jg7-6aaaa-aaaah-qcolq-cai":
-      case "jmuqr-yqaaa-aaaaj-qaicq-cai":
-      case "cnxby-3qaaa-aaaah-qcdpq-cai":
-      case "zejmq-rqaaa-aaaah-qcnsq-cai":
-      case "rln4s-bqaaa-aaaah-qcyrq-cai":
-      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
-      case "q6hjz-kyaaa-aaaah-qcama-cai":
-      case "tgwaz-xyaaa-aaaah-qcura-cai":
-      case "kss7i-hqaaa-aaaah-qbvmq-cai":
-      case "btggw-4aaaa-aaaah-qcdgq-cai":
-      case "pnpu4-3aaaa-aaaah-qcceq-cai":
-      case "4kubm-wiaaa-aaaah-qcnoa-cai":
-      case "6tjeq-waaaa-aaaah-qcvzq-cai":
-      case "nfvlz-jaaaa-aaaah-qcciq-cai":
-      case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "sjybn-raaaa-aaaah-qcy2q-cai":
-      case "2s2iy-xaaaa-aaaah-qczoq-cai":
-      case "ah2fs-fqaaa-aaaak-aalya-cai":
-        return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
-        );
-        break;*/
-      
       // for generative collections where assets are all stored on the same canister
       case "7gvfz-3iaaa-aaaah-qcsbq-cai":
       case "bxdf4-baaaa-aaaah-qaruq-cai":
       case "dylar-wyaaa-aaaah-qcexq-cai":
       case "jxpyk-6iaaa-aaaam-qafma-cai":
+      case "e3izy-jiaaa-aaaah-qacbq-cai":
+      case "3mttv-dqaaa-aaaah-qcn6q-cai":
+      case "yrdz3-2yaaa-aaaah-qcvpa-cai":
+      case "3bqt5-gyaaa-aaaah-qcvha-cai":
+      case "zvycl-fyaaa-aaaah-qckmq-cai":
+      case "unssi-hiaaa-aaaah-qcmya-cai":
+      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
+      case "nbg4r-saaaa-aaaah-qap7a-cai":
+      case "gtb2b-tiaaa-aaaah-qcxca-cai":
+      case "qbc6i-daaaa-aaaah-qcywq-cai":
+      case "qjwjm-eaaaa-aaaah-qctga-cai":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, true)}
@@ -284,6 +246,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
+      case "rqiax-3iaaa-aaaah-qcyta-cai":
         return (
           <iframe
             frameBorder="0"
@@ -308,6 +271,10 @@ const Detail = (props) => {
       case "6wih6-siaaa-aaaah-qczva-cai":
       case "6km5p-fiaaa-aaaah-qczxa-cai":
       case "s36wu-5qaaa-aaaah-qcyzq-cai":
+      case "rw623-hyaaa-aaaah-qctcq-cai":
+      case "bzsui-sqaaa-aaaah-qce2a-cai":
+      case "txr2a-fqaaa-aaaah-qcmkq-cai":
+      case "ah2fs-fqaaa-aaaak-aalya-cai":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       default:
         return (
