@@ -93,6 +93,7 @@ const Detail = (props) => {
   const navigate = useNavigate();
   const [floor, setFloor] = React.useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
   const [listing, setListing] = React.useState(false);
+  const [detailsUrl, setDetailsUrl] = React.useState(false);
   const [transactions, setTransactions] = React.useState(false);
   const [owner, setOwner] = React.useState(false);
   const [offers, setOffers] = React.useState(false);
@@ -161,6 +162,34 @@ const Detail = (props) => {
       "Your offer was cancelled successfully!"
     );
   };
+
+
+  const extractEmbeddedImage = (svgUrl, classes) => {
+    fetch(svgUrl).then(response => response.blob()).then(blob => blob.text()).then(text => {
+        const [_wholeString, extractedJpegUrl] = text.replace('\n', ' ').replace(/\s{2,}/, ' ').match(/image href="([^"]+)"/);
+        setDetailsUrl(extractedJpegUrl);
+    });
+
+    return (
+        <img
+        src={detailsUrl}
+        alt=""
+        className={classes.nftImage}
+        style={{
+            border:"none",
+            maxWidth:500,
+            maxHeight:"100%",
+            cursor: "pointer",
+            height: "100%",
+            width: "100%",
+            marginLeft:"auto",
+            marginRight:"auto",
+            display: "block",
+            objectFit: "contain",
+        }}
+        />
+    );
+}
   
 
   const displayImage = tokenid => {
@@ -192,11 +221,8 @@ const Detail = (props) => {
       case "6tjeq-waaaa-aaaah-qcvzq-cai":
       case "nfvlz-jaaaa-aaaah-qcciq-cai":
       case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "s36wu-5qaaa-aaaah-qcyzq-cai":
       case "sjybn-raaaa-aaaah-qcy2q-cai":
       case "2s2iy-xaaaa-aaaah-qczoq-cai":
-      case "6wih6-siaaa-aaaah-qczva-cai":
-      case "6km5p-fiaaa-aaaah-qczxa-cai":
       case "ah2fs-fqaaa-aaaak-aalya-cai":
         return (
           <img
@@ -275,6 +301,10 @@ const Detail = (props) => {
           />
         );
         break;
+      case "6wih6-siaaa-aaaah-qczva-cai":
+      case "6km5p-fiaaa-aaaah-qczxa-cai":
+      case "s36wu-5qaaa-aaaah-qcyzq-cai":
+        return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       default:
         return (
           <img
