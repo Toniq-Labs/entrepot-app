@@ -191,83 +191,9 @@ const Detail = (props) => {
     );
 }
   
-
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
-      case "bzsui-sqaaa-aaaah-qce2a-cai":
-      case "z7mqv-liaaa-aaaah-qcnqa-cai":
-      case "px5ub-qqaaa-aaaah-qcjxa-cai":
-      case "txr2a-fqaaa-aaaah-qcmkq-cai":
-      case "erpx2-pyaaa-aaaah-qcqsq-cai":
-      case "zvycl-fyaaa-aaaah-qckmq-cai":
-      case "ahl3d-xqaaa-aaaaj-qacca-cai":
-      case "xphpx-xyaaa-aaaah-qcmta-cai":
-      case "cdvmq-aaaaa-aaaah-qcdoq-cai":
-      case "5h2fc-zaaaa-aaaah-qcnjq-cai":
-      case "xzxhy-oiaaa-aaaah-qclnq-cai":
-      case "p5jg7-6aaaa-aaaah-qcolq-cai":
-      case "jmuqr-yqaaa-aaaaj-qaicq-cai":
-      case "cnxby-3qaaa-aaaah-qcdpq-cai":
-      case "zejmq-rqaaa-aaaah-qcnsq-cai":
-      case "rln4s-bqaaa-aaaah-qcyrq-cai":
-      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
-      case "q6hjz-kyaaa-aaaah-qcama-cai":
-      case "tgwaz-xyaaa-aaaah-qcura-cai":
-      case "kss7i-hqaaa-aaaah-qbvmq-cai":
-      case "btggw-4aaaa-aaaah-qcdgq-cai":
-      case "pnpu4-3aaaa-aaaah-qcceq-cai":
-      case "4kubm-wiaaa-aaaah-qcnoa-cai":
-      case "6tjeq-waaaa-aaaah-qcvzq-cai":
-      case "nfvlz-jaaaa-aaaah-qcciq-cai":
-      case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "sjybn-raaaa-aaaah-qcy2q-cai":
-      case "2s2iy-xaaaa-aaaah-qczoq-cai":
-      case "ah2fs-fqaaa-aaaak-aalya-cai":
-        return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
-        );
-        break;
-      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-      case "dylar-wyaaa-aaaah-qcexq-cai":
-      case "jxpyk-6iaaa-aaaam-qafma-cai":
-        return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
-        );
-        break;
       case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
@@ -281,6 +207,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
+      case "rqiax-3iaaa-aaaah-qcyta-cai":
         return (
           <iframe
             frameBorder="0"
@@ -301,30 +228,8 @@ const Detail = (props) => {
           />
         );
         break;
-      case "6wih6-siaaa-aaaah-qczva-cai":
-      case "6km5p-fiaaa-aaaah-qczxa-cai":
-      case "s36wu-5qaaa-aaaah-qcyzq-cai":
-        return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       default:
-        return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
-        );
+        return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
         break;
     }
   };
