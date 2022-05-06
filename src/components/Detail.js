@@ -93,6 +93,7 @@ const Detail = (props) => {
   const navigate = useNavigate();
   const [floor, setFloor] = React.useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
   const [listing, setListing] = React.useState(false);
+  const [detailsUrl, setDetailsUrl] = React.useState(false);
   const [transactions, setTransactions] = React.useState(false);
   const [owner, setOwner] = React.useState(false);
   const [offers, setOffers] = React.useState(false);
@@ -162,6 +163,33 @@ const Detail = (props) => {
     );
   };
   
+  
+    const extractEmbeddedImage = (svgUrl, classes) => {
+        fetch(svgUrl).then(response => response.blob()).then(blob => blob.text()).then(text => {
+            const [_wholeString, extractedJpegUrl] = text.replace('\n', ' ').replace(/\s{2,}/, ' ').match(/image href="([^"]+)"/);
+            setDetailsUrl(extractedJpegUrl);
+        });
+        
+        return (
+            <img
+            src={detailsUrl}
+            alt=""
+            className={classes.nftImage}
+            style={{
+                border:"none",
+                maxWidth:500,
+                maxHeight:"100%",
+                cursor: "pointer",
+                height: "100%",
+                width: "100%",
+                marginLeft:"auto",
+                marginRight:"auto",
+                display: "block",
+                objectFit: "contain",
+            }}
+            />
+        );
+    }
 
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
@@ -255,25 +283,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
-        return (
-          <iframe
-            frameBorder="0"
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-            }}
-          />
-        );
+        return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
         break;
       default:
         return (
