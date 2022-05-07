@@ -197,12 +197,13 @@ const Detail = (props) => {
   
     const extractEmbeddedVideo = (iframeUrl, classes) => {
       getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      
-      return (
-        <video width="100%" controls>
-          <source src={detailsUrl} type="video/mp4" />
-        </video>
-      );
+      if(detailsUrl){
+        return (
+          <video width="100%" controls autoPlay muted loop>
+            <source src={detailsUrl} type="video/mp4" />
+          </video>
+        );
+      }
     }
   
 
@@ -250,7 +251,8 @@ const Detail = (props) => {
         break;
       
       // for interactive NFTs or videos
-      case "xcep7-sqaaa-aaaah-qcukq-cai":
+      //case "xcep7-sqaaa-aaaah-qcukq-cai":
+      //case "rqiax-3iaaa-aaaah-qcyta-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
       case "pk6rk-6aaaa-aaaae-qaazq-cai":
@@ -263,7 +265,6 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
-      //case "rqiax-3iaaa-aaaah-qcyta-cai":
         return (
           <iframe
             frameBorder="0"
@@ -287,6 +288,7 @@ const Detail = (props) => {
       
       // for videos that don't fit in the iframe and need a video tag
       case "rqiax-3iaaa-aaaah-qcyta-cai":
+      case "xcep7-sqaaa-aaaah-qcukq-cai":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // for pre-generated images residing on asset canisters
