@@ -163,33 +163,47 @@ const Detail = (props) => {
     );
   };
 
+  const getDetailsUrl = async (url, regExp) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const text = await blob.text();
+    const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
+    setDetailsUrl(simplifiedText.match(regExp)[1]);
+  }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
-    fetch(svgUrl).then(response => response.blob()).then(blob => blob.text()).then(text => {
-        const [_wholeString, extractedJpegUrl] = text.replace('\n', ' ').replace(/\s{2,}/, ' ').match(/image href="([^"]+)"/);
-        setDetailsUrl(extractedJpegUrl);
-    });
+    getDetailsUrl(svgUrl, /image href="([^"]+)"/);
 
     return (
-        <img
+      <img
         src={detailsUrl}
         alt=""
         className={classes.nftImage}
         style={{
-            border:"none",
-            maxWidth:500,
-            maxHeight:"100%",
-            cursor: "pointer",
-            height: "100%",
-            width: "100%",
-            marginLeft:"auto",
-            marginRight:"auto",
-            display: "block",
-            objectFit: "contain",
+          border:"none",
+          maxWidth:500,
+          maxHeight:"100%",
+          cursor: "pointer",
+          height: "100%",
+          width: "100%",
+          marginLeft:"auto",
+          marginRight:"auto",
+          display: "block",
+          objectFit: "contain",
         }}
-        />
+      />
     );
-}
+  }
+  
+    const extractEmbeddedVideo = (iframeUrl, classes) => {
+      getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+      
+      return (
+        <video autoplay>
+          <source src={detailsUrl} type="video/mp4" />
+        </video>
+      );
+    }
   
 
   const displayImage = tokenid => {
