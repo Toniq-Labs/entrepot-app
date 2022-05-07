@@ -198,11 +198,13 @@ const Detail = (props) => {
     const extractEmbeddedVideo = (iframeUrl, classes) => {
       getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
       console.log(detailsUrl)
-      return (
-        <video width="100%" controls autoPlay muted loop>
-          <source src={detailsUrl} type="video/mp4" />
-        </video>
-      );
+      if(detailsUrl){
+        return (
+          <video width="100%" controls autoPlay muted loop>
+            <source src={detailsUrl} type="video/mp4" />
+          </video>
+        );
+      }
     }
   
 
