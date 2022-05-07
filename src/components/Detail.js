@@ -199,7 +199,7 @@ const Detail = (props) => {
       getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
       
       return (
-        <video width="100%" controls="">
+        <video width="100%" controls>
           <source src={detailsUrl} type="video/mp4" />
         </video>
       );
