@@ -172,7 +172,11 @@ const Detail = (props) => {
   }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
-    getDetailsUrl(svgUrl, /image href="([^"]+)"/);
+    try{
+      getDetailsUrl(svgUrl, /image href="([^"]+)"/);
+    } catch {
+      getDetailsUrl(svgUrl, /image src="([^"]+)"/);
+    }
 
     return (
       <img
