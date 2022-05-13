@@ -124,7 +124,9 @@ export default function NFT(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
+
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const navigate = useNavigate();

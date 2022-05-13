@@ -22,6 +22,7 @@ const _showListingPrice = n => {
 };
 export default function Event(props) {
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const [imgLoaded, setImgLoaded] = React.useState(false);

@@ -26,7 +26,9 @@ export default function Sold(props) {
   const transaction = props.transaction;
   const index = extjs.decodeTokenId(transaction.token).index;
   const tokenid = transaction.token;
+
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const styles = {

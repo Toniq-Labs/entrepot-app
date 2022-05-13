@@ -202,7 +202,9 @@ export default function UserCollection(props) {
   const navigate = useNavigate();
   const [displayedResults, setDisplayedResults] = React.useState([]);
   const [results, setResults] = React.useState(false);
+
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   
