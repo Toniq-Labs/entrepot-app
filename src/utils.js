@@ -135,7 +135,13 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
+    //add collections with wearables or other dynamic traits here
+    //these images will not be cached
     if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "rw7qm-eiaaa-aaaak-aaiqq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "5movr-diaaa-aaaak-aaftq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    //end of section
+
     if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
     return "https://images.entrepot.app/t/"+collection+"/" + id;
     //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
