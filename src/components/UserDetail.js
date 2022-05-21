@@ -11,8 +11,13 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
+import { EntrepotAllStats } from '../utils';
 export default function UserDetail(props) {
-
+  const getTokens = async () => {
+    var stats = EntrepotAllStats();
+    var tokens = (await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+props.address+"/all").then(r => r.json())).map(a => Number(stats.find(b => b.canister == a.canister).stats.floor)).reduce((a,c) => a+c, 0);
+    console.log(tokens);
+  };
   const styles = {
     empty: {
       maxWidth: 1200,
@@ -28,6 +33,9 @@ export default function UserDetail(props) {
       },
     },
   };
+  React.useEffect(() => {
+    getTokens();
+  }, [props.address]);
   return (
   <div>
     <div style={{maxWidth:1200, margin:"0 auto 0",}}>
