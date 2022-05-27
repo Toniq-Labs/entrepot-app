@@ -638,7 +638,7 @@ const Detail = (props) => {
                                       date={Number(offer.time / 1000000000n)}
                                     /></TableCell>
                                     <TableCell align="center">
-                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://ic.rocks/principal/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
+                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://icscan.io/account/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
                                     </TableCell>
                                   </TableRow>
                                 );

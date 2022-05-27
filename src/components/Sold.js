@@ -105,8 +105,8 @@ export default function Sold(props) {
       </TableCell>
       <TableCell align="right"><strong><PriceICP price={transaction.price} /></strong><br />
       {EntrepotGetICPUSD(transaction.price) ? <small><PriceUSD price={EntrepotGetICPUSD(transaction.price)} /></small> : ""}</TableCell>
-      <TableCell align="center"><a href={"https://ic.rocks/principal/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
-      <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
+      <TableCell align="center"><a href={"https://icscan.io/account/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
+      <TableCell align="center"><a href={"https://icscan.io/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
       <TableCell align="center"><Timestamp
         relative
         autoUpdate

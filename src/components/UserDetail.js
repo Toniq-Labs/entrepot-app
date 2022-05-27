@@ -50,7 +50,7 @@ export default function UserDetail(props) {
           </Grid>
           <Grid item md={4} xs={12} style={{textAlign:"right"}}>
             <ul style={styles.socials}>
-              <li><a href={"https://ic.rocks/account/"+props.address} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icrocks.png"} /></a></li>
+              <li><a href={"https://icscan.io/account/"+props.address} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a></li>
             </ul>
           </Grid>
         </Grid>

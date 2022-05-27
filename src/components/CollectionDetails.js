@@ -90,7 +90,7 @@ export default function CollectionDetails(props) {
       </Grid>
       <Grid item md={4} xs={12} style={{textAlign:"center"}}>
         <ul className={classes.socials}>
-          <li><a href={"https://ic.rocks/principal/"+collection.canister} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icrocks.png"} /></a></li>
+          <li><a href={"https://icscan.io/canister/"+collection.canister} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a></li>
           {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
             return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
           })}
