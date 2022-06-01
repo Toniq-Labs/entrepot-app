@@ -292,6 +292,7 @@ const Detail = (props) => {
       case "rqiax-3iaaa-aaaah-qcyta-cai":
       case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "x4oqm-bqaaa-aaaam-qahaq-cai":
+      case "tco7x-piaaa-aaaam-qamiq-cai":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // for pre-generated images residing on asset canisters
