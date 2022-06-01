@@ -266,6 +266,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
+      case "sbcwr-3qaaa-aaaam-qamoa-cai":
         return (
           <iframe
             frameBorder="0"
