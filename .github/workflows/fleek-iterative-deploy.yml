@@ -23,7 +23,7 @@ jobs:
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: '16.15.0'
             - name: run deploy test
               env:
                   FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
