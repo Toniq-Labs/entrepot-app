@@ -273,7 +273,7 @@ export default function App() {
     return true;
   };
   const _processPaymentForCanister = async _collection => {
-    if (!_collection.legacy) return true;
+    if (!_collection.hasOwnProperty('legacy') || !_collection.legacy) return true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
     var payments = await _api.canister(_collection.canister).payments();
     if (payments.length === 0) return true;
