@@ -145,8 +145,8 @@ export default function Pawn(props) {
       <TableCell align="right"><strong><PriceICP price={props.event.reward} /></strong><br />
       {EntrepotGetICPUSD(props.event.reward) ? <small><PriceUSD price={EntrepotGetICPUSD(props.event.reward)} /></small> : ""}</TableCell>
       <TableCell align="center">{props.event.days} Day{props.event.days !== 1 ? "s" : ""}</TableCell>
-      <TableCell align="center">{floorRate ? <div>style={{background:frCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}<span style={{fontWeight:"bold"}}>{floorRate}%</span></div>:""}</TableCell>
-      <TableCell align="center"><div>style={{background:aprCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}<span style={{fontWeight:"bold"}}>{toRate(props.event.apr)}%</span></div></TableCell>
+      <TableCell align="center">{floorRate ? <div style={{backgroundColor:frCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}><span style={{fontWeight:"bold"}}>{floorRate}%</span></div>:""}</TableCell>
+      <TableCell align="center"><div style={{backgroundColor:aprCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}><span style={{fontWeight:"bold"}}>{toRate(props.event.apr)}%</span></div></TableCell>
       {props.event.type == "request"?
       <TableCell align="center">Expires<br /><Timestamp
         relative
