@@ -631,7 +631,7 @@ export default function App() {
   
   //Form powered
   const pawn = async (id, amount, reward, length, loader, refresh) => {
-    if (loader) loader(true, "Creating Protocol Contract Request...");
+    if (loader) loader(true, "Creating Earn Request...");
     try {
       var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)));
       if (r.hasOwnProperty("err")) throw r.err;

@@ -106,11 +106,11 @@ export default function Pawn(props) {
     props.cancelRequest(props.event.tokenid, props.refresh);
   };
   const aprCol = () => {
-    return "black";
+    return "white";
     if (props.event.apr < .1) return "#FFCAC8";
     if (props.event.apr < .2) return "#FFE1B5";
     if (props.event.apr < .3) return "#FFF8BC";
-    return "green";
+    return "#CEFFDC";
     
   };
   const frCol = () => {
@@ -118,7 +118,7 @@ export default function Pawn(props) {
     if (fr < 1.2) return "#FFCAC8";
     if (fr < 2) return "#FFE1B5";
     if (fr < 3) return "#FFF8BC";
-    return "green";
+    return "#CEFFDC";
   };
   useInterval(refresh, 60 * 1000);
   React.useEffect(() => {
