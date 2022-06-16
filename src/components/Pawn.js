@@ -107,17 +107,17 @@ export default function Pawn(props) {
   };
   const aprCol = () => {
     return "black";
-    if (props.event.apr < .1) return "red";
-    if (props.event.apr < .2) return "orange";
-    if (props.event.apr < .3) return "yellow";
+    if (props.event.apr < .1) return "#FFCAC8";
+    if (props.event.apr < .2) return "#FFE1B5";
+    if (props.event.apr < .3) return "#FFF8BC";
     return "green";
     
   };
   const frCol = () => {
     var fr = (Number(floor)/Number(props.event.amount));
-    if (fr < 1.2) return "red";
-    if (fr < 2) return "orange";
-    if (fr < 3) return "yellow";
+    if (fr < 1.2) return "#FFCAC8";
+    if (fr < 2) return "#FFE1B5";
+    if (fr < 3) return "#FFF8BC";
     return "green";
   };
   useInterval(refresh, 60 * 1000);
@@ -145,8 +145,8 @@ export default function Pawn(props) {
       <TableCell align="right"><strong><PriceICP price={props.event.reward} /></strong><br />
       {EntrepotGetICPUSD(props.event.reward) ? <small><PriceUSD price={EntrepotGetICPUSD(props.event.reward)} /></small> : ""}</TableCell>
       <TableCell align="center">{props.event.days} Day{props.event.days !== 1 ? "s" : ""}</TableCell>
-      <TableCell align="center">{floorRate ? <span style={{fontWeight:"bold",color:frCol()}}>{floorRate}%</span>:""}</TableCell>
-      <TableCell align="center"><span style={{fontWeight:"bold",color:aprCol()}}>{toRate(props.event.apr)}%</span></TableCell>      
+      <TableCell align="center">{floorRate ? <div>style={{background:frCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}<span style={{fontWeight:"bold"}}>{floorRate}%</span></div>:""}</TableCell>
+      <TableCell align="center"><div>style={{background:aprCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}<span style={{fontWeight:"bold"}}>{toRate(props.event.apr)}%</span></div></TableCell>
       {props.event.type == "request"?
       <TableCell align="center">Expires<br /><Timestamp
         relative

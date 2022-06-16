@@ -493,8 +493,8 @@ export default function UserLoan(props) {
                   setDisplayView(nv)
                 }}
               >
-                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 43px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Earn Requests</span></span>)} />
-                <Tab style={{fontWeight:"bold"}} value="contracts" label={(<span style={{padding:"0 50px"}}><GavelIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contracts</span></span>)} />
+                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Earn Requests</span></span>)} />
+                <Tab style={{fontWeight:"bold"}} value="contracts" label={(<span style={{padding:"0 50px"}}><GavelIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Earn Contracts</span></span>)} />
               </Tabs>
             </div>
           </div>
