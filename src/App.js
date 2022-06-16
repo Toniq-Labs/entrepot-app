@@ -215,7 +215,7 @@ export default function App() {
       loader(true, "Reloading contracts...");
       await refresh();
       loader(false);
-      return alert("Contract Accepted", "You have accepted an Earn Contract, and you will receive an NFT representing that contract shortly.");
+      return alert("Contract Closed", "You have repaid this contract, and you will receive your NFT back shortly.");
     } catch (e) {
       loader(false);
       return error(e);
@@ -263,7 +263,7 @@ export default function App() {
         loader(true, "Reloading requests...");
         await refresh();
         loader(false);
-        return alert("Contract Closed", "You have repaid this contract, and you will receive your NFT back shortly.");
+        return alert("Contract Accepted", "You have accepted an Earn Contract, and you will receive an NFT representing that contract shortly.");
       } catch (e) {
         loader(false);
         return error(e);
