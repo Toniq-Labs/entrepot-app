@@ -118,7 +118,7 @@ export default function Pawn(props) {
     if (props.event.apr < 5) return "#1AD59D";
     return "#00D092";
   };
-  
+
   const frCol = () => {
     var fr = (Number(props.event.amount)/Number(floor));
     if (fr > 0.83) return "#FFCAC8";
@@ -160,10 +160,10 @@ export default function Pawn(props) {
         date={Number(props.event.date / 1000000000n)+(24 * 60 * 60 * 1)}
       /></TableCell> : ""}
       {props.event.type == "request" ?
-      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={cancelRequest}>Cancel</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color="#F0F3F6" onClick={fillRequest}>Accept</Button>) : ""}</TableCell> : ""}
+      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color="#F0F3F6" onClick={cancelRequest}>Cancel</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={fillRequest}>Accept</Button>) : ""}</TableCell> : ""}
       
-      {props.event.type == "contract" && props.event.defaulted?<TableCell align="center"><span style={{fontWeight:"bold",color:"red"}}>DEFAULTED</span></TableCell> : ""}
-      {props.event.type == "contract" && props.event.repaid?<TableCell align="center"><span style={{fontWeight:"bold",color:"green"}}>REPAID</span></TableCell> : ""}
+      {props.event.type == "contract" && props.event.defaulted?<TableCell align="center"><span style={{fontWeight:"bold",color:"red"}}>NOT PAID</span></TableCell> : ""}
+      {props.event.type == "contract" && props.event.repaid?<TableCell align="center"><span style={{fontWeight:"bold",color:"green"}}>PAID</span></TableCell> : ""}
       {props.event.type == "contract" && !props.event.defaulted && !props.event.repaid ?
       <TableCell align="center">Ends<br /><Timestamp
         relative
