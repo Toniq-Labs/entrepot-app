@@ -233,7 +233,7 @@ export default function App() {
         loader(true, "Reloading requests...");
         await refresh();
         loader(false);
-        return alert("Request Cancelled", "Your contract request was cancelled successful!");
+        return alert("Request Cancelled", "Your Earn Request was cancelled successfully!");
       } catch (e) {
         loader(false);
         return error(e);
