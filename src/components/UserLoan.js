@@ -466,8 +466,8 @@ export default function UserLoan(props) {
                 <div className={classes.banner} style={{background:"url('/interesting_nft.jpg')"}}>
                   
                 </div>
-                <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 50px"}}>
-                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Learn more <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">here</a>. Users can (1) create an Earn Contract by locking up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) deposit ICP into the protocol via an Earn Contract to earn interest or receive discounted NFTs.
+                <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 40px"}}>
+                  <div style={{textAlign: left, overflow: hidden, fontSize: "1.2em", marginBottom: "30px", padding:"20px", border:"1px solid black", borderRadius:"10px"}}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Learn more <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">here</a>. Users can (1) create an Earn Contract by locking up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) deposit ICP into the protocol via an Earn Contract to earn interest or receive discounted NFTs.
                   <br />
                   <br />
                   Our unique approach is to tokenize the Earn Contract into a tradeable NFT where the contract NFT owner receives the interest or NFTs when the contract is repaid or not. <strong>This creates a secondary market for Earn Contracts.</strong> 
