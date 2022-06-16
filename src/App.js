@@ -642,7 +642,7 @@ export default function App() {
       if (loader) loader(true, "Loading NFTs...");
       if (refresh) await refresh();
       if (loader) loader(false);
-      return alert("Request Received", "Your Earn Request was created successful!");
+      return alert("Request Received", "Your Earn Request was created successfully!");
     } catch (e) {
       if (loader) loader(false);
       return error(e);
@@ -1134,7 +1134,6 @@ export default function App() {
                 />} />
               <Route path="/contact" exact element={
                 <Contact
-                  error={error}
                   error={error}
                   alert={alert}
                   confirm={confirm}
