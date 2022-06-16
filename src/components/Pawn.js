@@ -84,7 +84,7 @@ export default function Pawn(props) {
     var s = EntrepotCollectionStats(canister);
     if (isNaN(Number(s.floor))) return;
     var f = BigInt(Number(s.floor)*100000000);
-    var fr = toRate(Number(f)/Number(props.event.amount));
+    var fr = toRate(Number(props.event.amount)/Number(f));
     //var avr = BigInt(Number(s.floor)*100000000);
     setStats(s);
     setFloor(f);
@@ -114,10 +114,10 @@ export default function Pawn(props) {
     
   };
   const frCol = () => {
-    var fr = (Number(floor)/Number(props.event.amount));
-    if (fr < 1.2) return "#FFCAC8";
-    if (fr < 2) return "#FFE1B5";
-    if (fr < 3) return "#FFF8BC";
+    var fr = (Number(props.event.amount)/Number(floor));
+    if (fr > 0.83) return "#FFCAC8";
+    if (fr > 0.5) return "#FFE1B5";
+    if (fr > 0.33) return "#FFF8BC";
     return "#CEFFDC";
   };
   useInterval(refresh, 60 * 1000);
