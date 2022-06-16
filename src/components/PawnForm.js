@@ -38,7 +38,7 @@ export default function PawnForm(props) {
   return (
     <>
       <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth >
-        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Lock my NFT in the protocol</DialogTitle>
+        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Lock NFT in protocol</DialogTitle>
         <DialogContent>
         <img alt="NFT" src={(props.nft.id ? EntrepotNFTImage(extjs.decodeTokenId(props.nft.id).canister, extjs.decodeTokenId(props.nft.id).index, props.nft.id) : "")} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
         <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />

@@ -467,10 +467,10 @@ export default function UserLoan(props) {
                   
                 </div>
                 <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 50px"}}>
-                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Users can (1) lock up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) can deposit ICP into the protocol to earn interest or receive discounted NFTs.
+                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Learn more <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">here</a>. Users can (1) create an Earn Contract by locking up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) deposit ICP into the protocol via an Earn Contract to earn interest or receive discounted NFTs.
                   <br />
                   <br />
-                  Our unique approach is to tokenize the protocol contract into a tradeable NFT where the NFT owner receives the interest or NFTs when the contract is repaid or not. <strong>This creates a secondary market for Interesting NFT protocol contracts.</strong> 
+                  Our unique approach is to tokenize the Earn Contract into a tradeable NFT where the contract NFT owner receives the interest or NFTs when the contract is repaid or not. <strong>This creates a secondary market for Earn Contracts.</strong> 
                   </div>
                   {props.identity ?
                   <>
@@ -493,7 +493,7 @@ export default function UserLoan(props) {
                   setDisplayView(nv)
                 }}
               >
-                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contract Requests</span></span>)} />
+                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 43px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Earn Requests</span></span>)} />
                 <Tab style={{fontWeight:"bold"}} value="contracts" label={(<span style={{padding:"0 50px"}}><GavelIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contracts</span></span>)} />
               </Tabs>
             </div>
@@ -636,7 +636,7 @@ export default function UserLoan(props) {
           {props.view == "earn-requests" ?
             <>
               <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>
-                You can view your current Interesting NFT protocol Contracts here. Once someone accepts your request, it will be moved to the Earn Contracts screen. Contract Requests automatically expire after 24 hours.
+                You can view your current Earn Contracts here. Once someone accepts your request, it will be moved to the Earn Contracts screen. Earn Requests automatically expire after 24 hours.
               </Alert>
             </>
           : ""}

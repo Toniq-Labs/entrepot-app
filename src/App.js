@@ -215,7 +215,7 @@ export default function App() {
       loader(true, "Reloading contracts...");
       await refresh();
       loader(false);
-      return alert("Contract Accepted", "You have accepted a contract, and you will receive an NFT representing that protocol contract shortly.");
+      return alert("Contract Accepted", "You have accepted an Earn Contract, and you will receive an NFT representing that contract shortly.");
     } catch (e) {
       loader(false);
       return error(e);
@@ -642,7 +642,7 @@ export default function App() {
       if (loader) loader(true, "Loading NFTs...");
       if (refresh) await refresh();
       if (loader) loader(false);
-      return alert("Request Received", "Your protocol contract request was created successful!");
+      return alert("Request Received", "Your Earn Request was created successful!");
     } catch (e) {
       if (loader) loader(false);
       return error(e);

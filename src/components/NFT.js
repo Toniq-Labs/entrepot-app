@@ -234,7 +234,7 @@ export default function NFT(props) {
     var buttons = [];
     if (props.view == "new-request") {
       if (!listing && ["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
-        buttons.push(["Lock", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+        buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       }
     } else {
@@ -267,7 +267,7 @@ export default function NFT(props) {
           buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
         };
         if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
-          buttons.push(["Lock", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+          buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         };
       }
     }

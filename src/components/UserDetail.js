@@ -140,7 +140,7 @@ export default function UserDetail(props) {
             <ListItemIcon style={{minWidth:30}}>
               <PostAddIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Contract Requests</span></ListItemText>
+            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Earn Requests</span></ListItemText>
           </MenuItem>
           <MenuItem onClick={() => goTo("earn-contracts")}>
             <ListItemIcon style={{minWidth:30}}>
