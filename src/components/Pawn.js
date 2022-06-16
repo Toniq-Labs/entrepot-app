@@ -106,12 +106,11 @@ export default function Pawn(props) {
     props.cancelRequest(props.event.tokenid, props.refresh);
   };
   const aprCol = () => {
-    return "white";
-    if (props.event.apr < .1) return "#FFCAC8";
-    if (props.event.apr < .2) return "#FFE1B5";
-    if (props.event.apr < .3) return "#FFF8BC";
-    return "#CEFFDC";
-    
+    if (props.event.apr < .2) return "#B2F1DE";
+    if (props.event.apr < .4) return "#80E8C8";
+    if (props.event.apr < .6) return "#4CDEB3";
+    return "#00D092";
+  
   };
   const frCol = () => {
     var fr = (Number(props.event.amount)/Number(floor));
