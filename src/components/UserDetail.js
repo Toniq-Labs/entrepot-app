@@ -28,7 +28,7 @@ export default function UserDetail(props) {
   const [menuType, setMenuType] = React.useState("");
   const getView = v => {
     if (["offers-received", "offers-made"].indexOf(v) >= 0) return "offers";
-    if (["new-request","pawn-requests","pawn-contracts","pawn-nfts"].indexOf(v) >= 0) return "pawning";
+    if (["new-request","earn-requests","earn-contracts","earn-nfts"].indexOf(v) >= 0) return "earning";
     return v;
   };
   const pageTitle = {
@@ -88,7 +88,7 @@ export default function UserDetail(props) {
           if (nv == "offers"){
             setMenuType(nv);
             setAnchorEl(e.currentTarget);
-          } else if (nv == "pawning"){
+          } else if (nv == "earning"){
             setMenuType(nv);
             setAnchorEl(e.currentTarget);
           } else {
@@ -99,7 +99,7 @@ export default function UserDetail(props) {
         <Tab className={props.classes.tabsViewTab} value="collected" label={(<span style={{padding:"0 50px"}}><CollectionsIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Collected</span></span>)} />
         <Tab className={props.classes.tabsViewTab} value="selling" label={(<span style={{padding:"0 50px"}}><AddShoppingCartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Selling</span></span>)} />
         <Tab className={props.classes.tabsViewTab} value="offers" label={(<span style={{padding:"0 50px"}}><LocalOfferIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Offers</span><ExpandMoreIcon style={{position:"absolute",marginLeft:"30px"}} /></span>)} />
-        <Tab className={props.classes.tabsViewTab} value="pawning" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Pawning</span><ExpandMoreIcon style={{position:"absolute",marginLeft:"30px"}} /></span>)} />
+        <Tab className={props.classes.tabsViewTab} value="earning" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Earning</span><ExpandMoreIcon style={{position:"absolute",marginLeft:"30px"}} /></span>)} />
         <Tab className={props.classes.tabsViewTab} value="favorites" label={(<span style={{padding:"0 50px"}}><FavoriteIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Favorites</span></span>)} />
         <Tab className={props.classes.tabsViewTab} value="activity" label={(<span style={{padding:"0 50px"}}><ImportExportIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
       </Tabs>
@@ -134,26 +134,26 @@ export default function UserDetail(props) {
             <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Offers Made</span></ListItemText>
           </MenuItem>
         </> : ""}
-        {menuType == "pawning" ?
+        {menuType == "earning" ?
         <>
-          <MenuItem onClick={() => goTo("pawn-requests")}>
+          <MenuItem onClick={() => goTo("earn-requests")}>
             <ListItemIcon style={{minWidth:30}}>
               <PostAddIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Pawn Requests</span></ListItemText>
+            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Contract Requests</span></ListItemText>
           </MenuItem>
-          <MenuItem onClick={() => goTo("pawn-contracts")}>
+          <MenuItem onClick={() => goTo("earn-contracts")}>
             <ListItemIcon style={{minWidth:30}}>
               <GavelIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Pawn Contracts</span></ListItemText>
+            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Earn Contracts</span></ListItemText>
           </MenuItem>
           <Divider />
-          <MenuItem onClick={() => goTo("pawn-nfts")}>
+          <MenuItem onClick={() => goTo("earn-nfts")}>
             <ListItemIcon style={{minWidth:30}}>
               <LocalAtmIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Pawn NFTs</span></ListItemText>
+            <ListItemText><span style={{fontSize:"0.9rem",fontWeight:"bold",textTransform:"uppercase"}}>Earn NFTs</span></ListItemText>
           </MenuItem>
         </> : ""}
       </Menu>

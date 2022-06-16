@@ -227,14 +227,14 @@ export default function NFT(props) {
   };
   const transferRefresh = async () => {
     props.hideNft(tokenid);
-    await props.refresh("/pawn-requests");
+    await props.refresh("/earn-requests");
   };
   var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
   const getButtons = () => {
     var buttons = [];
     if (props.view == "new-request") {
       if (!listing && ["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
-        buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+        buttons.push(["Lock", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       }
     } else {
@@ -267,7 +267,7 @@ export default function NFT(props) {
           buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
         };
         if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
-          buttons.push(["Pawn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+          buttons.push(["Lock", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         };
       }
     }
@@ -436,7 +436,7 @@ export default function NFT(props) {
         </CardContent>
         </Link>
         {typeof props.view !== 'undefined' && 
-                    ['collected','selling','offers-received','new-request','pawn-nfts'].indexOf(props.view) >= 0 ?
+                    ['collected','selling','offers-received','new-request','earn-nfts'].indexOf(props.view) >= 0 ?
         <CardActions style={{display: "flex",justifyContent: "flex-end"}}>
           {props.loggedIn ? 
             <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={1}> 

@@ -318,21 +318,21 @@ export default function UserLoan(props) {
     return (selectedFilters.find(a => a[0] == traitId && a[1] == traitValueId) ? true : false);
   };
   const refresh = async () => {
-    if (!address && props.view != "pawnshop") return;
+    if (!address && props.view != "earn") return;
     var data; 
     console.log("Refreshing", props.view);
     switch(props.view){
-      case "pawnshop":
+      case "earn":
         if (displayView == "requests") {          
           data = (await pawnapi.tp_requests()).map(a => ({...a[1], type : "request"}));
         } else {
           data = (await pawnapi.tp_loansActive()).map(a => ({...a[1], index : a[0], type : "contract"}));
         };
         break;
-      case "pawn-requests":
+      case "earn-requests":
         data = (await pawnapi.tp_requestsByAddress(address)).map(a => ({...a[1], type : "request"}));
         break;
-      case "pawn-contracts":
+      case "earn-contracts":
         data = (await pawnapi.tp_loansByAddress(address)).map(a => ({...a[1], index : a[0], type : "contract"}));
         break;
     }
@@ -437,7 +437,7 @@ export default function UserLoan(props) {
 
   React.useEffect(() => {
     console.log("Hook: account");
-    if (address || props.view == "pawnshop"){
+    if (address || props.view == "earn"){
       setHideCollectionFilter(true);
       if (collectionFilter != "all") setCollectionFilter("all");
       else {
@@ -457,7 +457,7 @@ export default function UserLoan(props) {
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      {props.view == "pawnshop" ?
+      {props.view == "earn" ?
       <>
         <div>
           <div style={{maxWidth:1200, margin:"0 auto 0",}}>
@@ -467,10 +467,10 @@ export default function UserLoan(props) {
                   
                 </div>
                 <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 50px"}}>
-                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>The Pirate Pawnshop is a <strong>non-custodial peer-to-peer pawnbroker service</strong> running on the Internet Computer. Users can pawn valuable NFTs for short-term liquidity, whilst providing other users the ability to generate ICP rewards or acquire NFTs at discounted prices.
+                  <div style={{overflow:"hidden",fontSize: "1.2em", marginBottom:30 }}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Users can (1) lock up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) can deposit ICP into the protocol to earn interest or receive discounted NFTs.
                   <br />
                   <br />
-                  Our unique approach is to tokenize the pawn contract into a tradeable Pawn NFT where the bearer receives the rewards/collateral when the contract is repaid or defaults. <strong>This creates a secondary market for Pawn NFTs.</strong> 
+                  Our unique approach is to tokenize the protocol contract into a tradeable NFT where the NFT owner receives the interest or NFTs when the contract is repaid or not. <strong>This creates a secondary market for Interesting NFT protocol contracts.</strong> 
                   </div>
                   {props.identity ?
                   <>
@@ -493,7 +493,7 @@ export default function UserLoan(props) {
                   setDisplayView(nv)
                 }}
               >
-                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Pawn Requests</span></span>)} />
+                <Tab style={{fontWeight:"bold"}} value="requests" label={(<span style={{padding:"0 50px"}}><AccountBalanceIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contract Requests</span></span>)} />
                 <Tab style={{fontWeight:"bold"}} value="contracts" label={(<span style={{padding:"0 50px"}}><GavelIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Contracts</span></span>)} />
               </Tabs>
             </div>
@@ -618,7 +618,7 @@ export default function UserLoan(props) {
                   </Select>
                 </FormControl>
               </Grid>
-              {props.view == "pawn-requests" ?
+              {props.view == "earn-requests" ?
               <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
                 <Button variant="contained" color={"primary"} style={{fontWeight:"bold", marginTop:7}} onClick={() => navigate("/new-request")}>
                   <PostAddIcon /> Create New Request
@@ -628,15 +628,15 @@ export default function UserLoan(props) {
               (<Grid item style={{marginLeft:"auto"}}><Pagination className={classes.pagi} size="small" count={Math.ceil(displayedResults.length/perPage)} page={page} onChange={(e, v) => setPage(v)} /></Grid>) : "" }
             </Grid>
           </div>
-          {props.view == "pawn-contracts" ?
+          {props.view == "earn-contracts" ?
             <>
-              <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>These are your open Pawn Contracts. You will need to repay the contract in full (amount and reward) before the end date otherwise you will lose your NFT</Alert>
+              <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>These are your open Earn Contracts. You will need to repay the contract in full (amount and reward) before the end date otherwise you will lose your NFT</Alert>
             </>
           : ""}
-          {props.view == "pawn-requests" ?
+          {props.view == "earn-requests" ?
             <>
               <Alert severity="info" style={{marginBottom:20, textAlign:"center"}}>
-                You can view your current Pawn Requests here. Once someone accepts your request, it will be moved to the Pawn Contracts screen. Pawn Requests automatically expire after 24 hours.
+                You can view your current Interesting NFT protocol Contracts here. Once someone accepts your request, it will be moved to the Earn Contracts screen. Contract Requests automatically expire after 24 hours.
               </Alert>
             </>
           : ""}

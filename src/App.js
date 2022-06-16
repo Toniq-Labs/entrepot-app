@@ -215,7 +215,7 @@ export default function App() {
       loader(true, "Reloading contracts...");
       await refresh();
       loader(false);
-      return alert("Contract Accepted", "You have accepted a contract, and you will receive a Pawn NFT shortly.");
+      return alert("Contract Accepted", "You have accepted a contract, and you will receive an NFT representing that protocol contract shortly.");
     } catch (e) {
       loader(false);
       return error(e);
@@ -233,7 +233,7 @@ export default function App() {
         loader(true, "Reloading requests...");
         await refresh();
         loader(false);
-        return alert("Request Cancelled", "Your pawn request was cancelled successful!");
+        return alert("Request Cancelled", "Your contract request was cancelled successful!");
       } catch (e) {
         loader(false);
         return error(e);
@@ -631,7 +631,7 @@ export default function App() {
   
   //Form powered
   const pawn = async (id, amount, reward, length, loader, refresh) => {
-    if (loader) loader(true, "Creating NFT Pawn Request...");
+    if (loader) loader(true, "Creating Protocol Contract Request...");
     try {
       var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)));
       if (r.hasOwnProperty("err")) throw r.err;
@@ -642,7 +642,7 @@ export default function App() {
       if (loader) loader(true, "Loading NFTs...");
       if (refresh) await refresh();
       if (loader) loader(false);
-      return alert("Request Received", "Your pawn request was created successful!");
+      return alert("Request Received", "Your protocol contract request was created successful!");
     } catch (e) {
       if (loader) loader(false);
       return error(e);
@@ -1002,10 +1002,10 @@ export default function App() {
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/pawnshop" exact element={
+              <Route path="/earn" exact element={
                 <UserLoan
                   error={error}
-                  view={"pawnshop"}
+                  view={"earn"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -1020,10 +1020,10 @@ export default function App() {
                   cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/pawn-requests" exact element={
+              <Route path="/earn-requests" exact element={
                 <UserLoan
                   error={error}
-                  view={"pawn-requests"}
+                  view={"earn-requests"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -1038,10 +1038,10 @@ export default function App() {
                   cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/pawn-contracts" exact element={
+              <Route path="/earn-contracts" exact element={
                 <UserLoan
                   error={error}
-                  view={"pawn-contracts"}
+                  view={"earn-contracts"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -1071,10 +1071,10 @@ export default function App() {
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/pawn-nfts" exact element={
+              <Route path="/earn-nfts" exact element={
                 <UserCollection
                   error={error}
-                  view={"pawn-nfts"}
+                  view={"earn-nfts"}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 

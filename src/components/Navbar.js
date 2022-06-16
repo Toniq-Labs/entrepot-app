@@ -59,13 +59,13 @@ export default function Navbar(props) {
           </Button>
           <Button
             onClick={() => {
-              navigate("/pawnshop");
+              navigate("/earn");
               handleClick();
             }}
-            className={(props.view === "pawnshop" ? "selected " : "")+[classes.button].join(' ')}
+            className={(props.view === "earn" ? "selected " : "")+[classes.button].join(' ')}
             color="inherit"
           >
-            Pawnshop
+            Earn
           </Button>
           <Button
             onClick={() => goTo("/create")}
@@ -126,18 +126,18 @@ export default function Navbar(props) {
                 Marketplace
               </Button>
               <Button
-                onClick={() => goTo("/pawnshop")}
+                onClick={() => goTo("/earn")}
                 className={classes.button1}
                 style={{
-                  color: props.view === "pawnshop" ? "#00d092" : "#000",
+                  color: props.view === "earn" ? "#00d092" : "#000",
                   borderBottom:
-                    props.view === "pawnshop"
+                    props.view === "earn"
                       ? "3px solid #00d092"
                       : "3px solid transparent",
                 }}
                 color="inherit"
               >
-                Pawnshop
+                Earn
               </Button>
               <Button
                 onClick={() => goTo("/create")}

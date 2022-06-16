@@ -272,7 +272,7 @@ export default function UserCollection(props) {
         data = data.filter(a => !a.price && whitelistedPawnCanisters.indexOf(a.canister) >= 0);
         data = data.map(a => ({...a, token : a.id}));
         break;
-      case "pawn-nfts":
+      case "earn-nfts":
         var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/yigae-jqaaa-aaaah-qczbq-cai/all");
         data = response.data;
         data = data.map(a => ({...a, token : a.id}));

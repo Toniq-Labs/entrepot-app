@@ -295,23 +295,23 @@ export default function Wallet(props) {
           </ListItemIcon>
           <ListItemText primary="Offers Made" />
         </ListItem>
-        <ListItem button onClick={() => {props.close(); navigate("/pawn-requests");}}>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-requests");}}>
           <ListItemIcon>
             <PostAddIcon />
           </ListItemIcon>
-          <ListItemText primary="Pawn Requests" />
+          <ListItemText primary="Earn Requests" />
         </ListItem>
-        <ListItem button onClick={() => {props.close(); navigate("/pawn-contracts");}}>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-contracts");}}>
           <ListItemIcon>
             <GavelIcon />
           </ListItemIcon>
-          <ListItemText primary="Pawn Contracts" />
+          <ListItemText primary="Earn Contracts" />
         </ListItem>
-        <ListItem button onClick={() => {props.close(); navigate("/pawn-nfts");}}>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-nfts");}}>
           <ListItemIcon>
             <LocalAtmIcon />
           </ListItemIcon>
-          <ListItemText primary="Pawn NFTs" />
+          <ListItemText primary="Earn NFTs" />
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/favorites");}}>
           <ListItemIcon>
