@@ -463,7 +463,7 @@ export default function UserLoan(props) {
           <div style={{maxWidth:1200, margin:"0 auto 0",}}>
             <div style={{textAlign:"center"}}>
               <div style={styles.empty}>
-                <div className={classes.banner} style={{background:"url('/pawnshop.jpg')"}}>
+                <div className={classes.banner} style={{background:"url('/interesting_nft.jpg')"}}>
                   
                 </div>
                 <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 50px"}}>
@@ -477,7 +477,7 @@ export default function UserLoan(props) {
                     <Button variant="contained" color={"primary"} style={{fontWeight:"bold"}} onClick={() => navigate("/new-request")}>
                       <PostAddIcon /> Create New Request
                     </Button>
-                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => navigate("/marketplace/piratepawnshop")}>
+                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => navigate("/marketplace/toniq-earn")}>
                       <StorefrontIcon /> View on Marketplace
                     </Button>
                   </>: ""}
