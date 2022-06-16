@@ -153,7 +153,7 @@ export default function Pawn(props) {
         date={Number(props.event.date / 1000000000n)+(24 * 60 * 60 * 1)}
       /></TableCell> : ""}
       {props.event.type == "request" ?
-      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={cancelRequest}>Cancel</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={fillRequest}>Accept</Button>) : ""}</TableCell> : ""}
+      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={cancelRequest}>Cancel</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color="#F0F3F6" onClick={fillRequest}>Accept</Button>) : ""}</TableCell> : ""}
       
       {props.event.type == "contract" && props.event.defaulted?<TableCell align="center"><span style={{fontWeight:"bold",color:"red"}}>DEFAULTED</span></TableCell> : ""}
       {props.event.type == "contract" && props.event.repaid?<TableCell align="center"><span style={{fontWeight:"bold",color:"green"}}>REPAID</span></TableCell> : ""}
