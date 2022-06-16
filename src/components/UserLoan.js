@@ -464,9 +464,8 @@ export default function UserLoan(props) {
             <div style={{textAlign:"center"}}>
               <div style={styles.empty}>
                 <div className={classes.banner} style={{background:"url('/interesting_nft.jpg')"}}>
-                  
                 </div>
-                <div style={{width:"100%", maxWidth:"760px", margin:"0 auto 40px"}}>
+                <div style={{width:"100%", maxWidth:"760px", margin:"-30px auto 40px"}}>
                   <div style={{textAlign: "left", overflow: "hidden", fontSize: "1.2em", marginBottom: "30px", padding:"20px", border:"1px solid silver", borderRadius:"10px", boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}>Toniq Earn is powered by Interesting NFT Protocol, <strong>a 100% non-custodial and decentralized interest rate protocol</strong> running on the Internet Computer. Learn more <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">here</a>. Users can (1) create an Earn Contract by locking up valuable NFTs to withdraw short-term liquidity from the protocol, or (2) deposit ICP into the protocol via an Earn Contract to earn interest or receive discounted NFTs.
                   <br />
                   <br />
