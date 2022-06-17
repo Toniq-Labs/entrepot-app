@@ -269,7 +269,7 @@ export default function Wallet(props) {
       <Divider />
       <List>
         <ListSubheader>
-          My Collection
+          NFTs
         </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/collected");}}>
           <ListItemIcon>
