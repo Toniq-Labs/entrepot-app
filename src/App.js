@@ -242,7 +242,7 @@ export default function App() {
   };
   const fillRequest = async (tokenid, amount, refresh) => {
     loader(false);
-    var v = await confirm("Please confirm", "Are you sure you want to accept this request and transfer "+(Number(tokenid)/100000000).toFixed(2)+"ICP?");
+    var v = await confirm("Please confirm", "Are you sure you want to accept this request and transfer "+(Number(amount)/100000000).toFixed(2)+"ICP?");
     if (v){
       try {
         loader(true, "Accepting request...");

@@ -477,7 +477,7 @@ export default function UserLoan(props) {
                     <Button variant="contained" color={"primary"} style={{fontWeight:"bold"}} onClick={() => navigate("/new-request")}>
                       <PostAddIcon /> Create New Request
                     </Button>
-                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => window.open("/marketplace/toniq-earn")}>
+                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => window.open("/marketplace/earn-contracts")}>
                       <StorefrontIcon /> View on Marketplace
                     </Button>
                   </>: ""}
