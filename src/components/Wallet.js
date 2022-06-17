@@ -269,7 +269,7 @@ export default function Wallet(props) {
       <Divider />
       <List>
         <ListSubheader>
-          NFTs
+          My Collection
         </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/collected");}}>
           <ListItemIcon>
@@ -295,13 +295,13 @@ export default function Wallet(props) {
           </ListItemIcon>
           <ListItemText primary="Offers Made" />
         </ListItem>
+        <ListSubheader>
+          Earn
+        </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/earn-requests");}}>
           <ListItemIcon>
             <PostAddIcon />
           </ListItemIcon>
-          <ListSubheader>
-          Earn
-        </ListSubheader>
           <ListItemText primary="Earn Requests" />
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/earn-contracts");}}>
@@ -316,13 +316,13 @@ export default function Wallet(props) {
           </ListItemIcon>
           <ListItemText primary="Earn NFTs" />
         </ListItem>
+        <ListSubheader>
+          Profile
+        </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/favorites");}}>
           <ListItemIcon>
             <FavoriteIcon />
           </ListItemIcon>
-          <ListSubheader>
-          Profile
-        </ListSubheader>
           <ListItemText primary="Favorites" />
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/activity");}}>
