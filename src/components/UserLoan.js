@@ -685,8 +685,7 @@ export default function UserLoan(props) {
                       <TableCell align="right"><strong>Amount</strong></TableCell>
                       <TableCell align="right"><strong>Reward</strong></TableCell>
                       <TableCell align="center"><strong>Contract Length</strong></TableCell>
-                      <TableCell align="center"><strong>Floor Rate</strong></TableCell>
-                      <Tooltip title="The floor rate is the % of floor that is being requested in the Earn Request."><strong>Floor Rate</strong></Tooltip>
+                      <TableCell align="center"><Tooltip title="The percentage of the collection floor for the NFT that is being requested in the Earn Request."><strong>Floor Rate</strong></Tooltip></TableCell>
                       <TableCell align="center"><strong>APR</strong></TableCell>
                       <TableCell align="center"><strong>Status</strong></TableCell>
                       <TableCell align="center"></TableCell>
