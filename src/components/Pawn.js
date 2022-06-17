@@ -171,7 +171,7 @@ export default function Pawn(props) {
         date={Number((props.event.filled[0]+props.event.length) / 1000000000n)+(24 * 60 * 60 * 1)}
       /></TableCell> : ""}
       {props.event.type == "contract" ?
-      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() && !props.event.defaulted && !props.event.repaid ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={repayContract}>Repay Now</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={viewNft}>View NFT</Button>) : ""}</TableCell> : ""}
+      <TableCell align="center">{props.identity ? (props.identity.getPrincipal().toText() == props.event.user.toText() && !props.event.defaulted && !props.event.repaid ? <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} onClick={repayContract}>Repay Now</Button> : <Button style={{fontWeight:"bold"}} size={"small"} variant="contained" color={"primary"} target="_blank" onClick={viewNft}>View NFT</Button>) : ""}</TableCell> : ""}
     </TableRow>
   );
 }

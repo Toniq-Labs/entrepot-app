@@ -476,7 +476,7 @@ export default function UserLoan(props) {
                     <Button variant="contained" color={"primary"} style={{fontWeight:"bold"}} onClick={() => navigate("/new-request")}>
                       <PostAddIcon /> Create New Request
                     </Button>
-                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => navigate("/marketplace/toniq-earn")}>
+                    <Button variant="contained" color={"primary"} style={{marginLeft:20,fontWeight:"bold"}} onClick={() => window.open("/marketplace/toniq-earn")}>
                       <StorefrontIcon /> View on Marketplace
                     </Button>
                   </>: ""}
@@ -685,6 +685,7 @@ export default function UserLoan(props) {
                       <TableCell align="right"><strong>Reward</strong></TableCell>
                       <TableCell align="center"><strong>Contract Length</strong></TableCell>
                       <TableCell align="center"><strong>Floor Rate</strong></TableCell>
+                      <Tooltip title="The floor rate is the % of floor that is being requested in the Earn Request."><strong>Floor Rate</strong></Tooltip>
                       <TableCell align="center"><strong>APR</strong></TableCell>
                       <TableCell align="center"><strong>Status</strong></TableCell>
                       <TableCell align="center"></TableCell>
