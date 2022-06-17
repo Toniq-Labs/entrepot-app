@@ -9,12 +9,18 @@ import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
+import { ToniqToggleButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { Rocket24Icon } from '@toniq-labs/design-system';
+
+console.log(ToniqToggleButton.tagName);
 
 export default function Navbar(props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [walletOpen, setWalletOpen] = React.useState(false);
   const classes = useStyles();
+  
+  console.log(classes);
 
   const handleClick = () => {
     setWalletOpen(false)
@@ -28,6 +34,15 @@ export default function Navbar(props) {
   };
   return (
     <>
+    {/* temporary! Remove this once the design system styles have been fully embraced */}
+    <style dangerouslySetInnerHTML={{__html: `
+      .${classes.root} ${ToniqToggleButton.tagName} {
+        font: inherit;
+        font-weight: bold;
+        font-size: 1.2em;
+        text-transform: uppercase;
+      }
+    `}} />
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" style={{zIndex: 1400, background: "white" }}>
@@ -40,13 +55,13 @@ export default function Navbar(props) {
             /></a>
           </Typography>
           <div className={classes.grow} />
-          <Button
+          <ToniqToggleButton
+            className="toniq-toggle-button-text-only"
+            active={props.view === "sale"}
             onClick={() => goTo("/sale")}
-            className={(props.view === "sale" ? "selected " : "")+[classes.button, classes.sale].join(' ')}
-            color="inherit"
-          >
-            Launchpad
-          </Button>
+            text="LaunchPad"
+            icon={Rocket24Icon}
+          />
           <Button
             onClick={() => {
               navigate("/marketplace");
@@ -237,16 +252,6 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-  },
-  sale: {
-    backgroundImage : "url('/icon/anchor.png')",
-    backgroundRepeat : "no-repeat",
-    backgroundSize : "20px",
-    backgroundPosition: "0 49%",
-    paddingLeft : 30,
-    "&:hover, &.selected": {
-      backgroundImage : "url('/icon/anchor-g.png')",      
-    },
   },
   marketplace: {
     backgroundImage : "url('/icon/marketplace.png')",
