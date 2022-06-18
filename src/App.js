@@ -635,7 +635,7 @@ export default function App() {
   const pawn = async (id, amount, reward, length, loader, refresh) => {
     if (loader) loader(true, "Creating Earn Request...");
     try {
-      var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)), 1000, 1000);
+      var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)), 2500, 2500);
       if (r.hasOwnProperty("err")) throw r.err;
       if (!r.hasOwnProperty("ok")) throw "Unknown Error";
       if (loader) loader(true, "Sending NFT to canister...");
