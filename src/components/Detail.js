@@ -51,6 +51,7 @@ import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDispl
 import {
   useParams
 } from "react-router-dom";
+import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -99,6 +100,9 @@ const Detail = (props) => {
   const [offers, setOffers] = React.useState(false);
   const [openOfferForm, setOpenOfferForm] = React.useState(false);
   const collection = props.collections.find(e => e.canister === canister)
+  
+  redirectIfBlockedFromEarnFeatures(navigate, collection, props);
+  
   const classes = useStyles();
   const reloadOffers = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {

@@ -836,6 +836,7 @@ export default function App() {
             <Routes>
               <Route path="/marketplace/asset/:tokenid" exact element={
                 <Detail
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   alert={alert}
                   confirm={confirm}
@@ -853,6 +854,7 @@ export default function App() {
                 <Activity
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -862,6 +864,7 @@ export default function App() {
                 <Listings
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -869,6 +872,7 @@ export default function App() {
                 />} />
               <Route path="/marketplace" exact element={
                 <Marketplace
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   view={"collections"}
                   alert={alert}
