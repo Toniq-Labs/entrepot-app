@@ -241,7 +241,7 @@ export default ({ IDL }) => {
     'tp_clear' : IDL.Func([], [], []),
     'tp_close' : IDL.Func([TokenIndex], [Result_2], []),
     'tp_create' : IDL.Func(
-        [TokenIdentifier__1, SubAccount__1, IDL.Nat64, Time, IDL.Nat64],
+        [TokenIdentifier__1, SubAccount__1, IDL.Nat64, Time, IDL.Nat64, IDL.Nat64, IDL.Nat64],
         [Result_1],
         [],
       ),
