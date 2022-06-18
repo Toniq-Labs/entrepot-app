@@ -93,6 +93,7 @@ const Detail = (props) => {
   const navigate = useNavigate();
   const [floor, setFloor] = React.useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
   const [listing, setListing] = React.useState(false);
+  const [detailsUrl, setDetailsUrl] = React.useState(false);
   const [transactions, setTransactions] = React.useState(false);
   const [owner, setOwner] = React.useState(false);
   const [offers, setOffers] = React.useState(false);
@@ -161,42 +162,78 @@ const Detail = (props) => {
       "Your offer was cancelled successfully!"
     );
   };
+
+  const getDetailsUrl = async (url, regExp) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const text = await blob.text();
+    const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
+    setDetailsUrl(simplifiedText.match(regExp)[1]);
+  }
+
+  const extractEmbeddedImage = (svgUrl, classes) => {
+    getDetailsUrl(svgUrl, /image href="([^"]+)"/);
+
+    return (
+      <img
+        src={detailsUrl}
+        alt=""
+        className={classes.nftImage}
+        style={{
+          border:"none",
+          maxWidth:500,
+          maxHeight:"100%",
+          cursor: "pointer",
+          height: "100%",
+          width: "100%",
+          marginLeft:"auto",
+          marginRight:"auto",
+          display: "block",
+          objectFit: "contain",
+        }}
+      />
+    );
+  }
   
+    const extractEmbeddedVideo = (iframeUrl, classes) => {
+      getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+      if(detailsUrl){
+        return (
+          <video width="100%" controls autoPlay muted loop>
+            <source src={detailsUrl} type="video/mp4" />
+          </video>
+        );
+      }
+    }
+  
+
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
-      case "bzsui-sqaaa-aaaah-qce2a-cai":
-      case "z7mqv-liaaa-aaaah-qcnqa-cai":
-      case "px5ub-qqaaa-aaaah-qcjxa-cai":
-      case "txr2a-fqaaa-aaaah-qcmkq-cai":
-      case "erpx2-pyaaa-aaaah-qcqsq-cai":
-      case "zvycl-fyaaa-aaaah-qckmq-cai":
-      case "ahl3d-xqaaa-aaaaj-qacca-cai":
-      case "xphpx-xyaaa-aaaah-qcmta-cai":
-      case "cdvmq-aaaaa-aaaah-qcdoq-cai":
-      case "5h2fc-zaaaa-aaaah-qcnjq-cai":
-      case "xzxhy-oiaaa-aaaah-qclnq-cai":
-      case "p5jg7-6aaaa-aaaah-qcolq-cai":
-      case "jmuqr-yqaaa-aaaaj-qaicq-cai":
-      case "cnxby-3qaaa-aaaah-qcdpq-cai":
-      case "zejmq-rqaaa-aaaah-qcnsq-cai":
-      case "rln4s-bqaaa-aaaah-qcyrq-cai":
+      
+      // for generative collections where assets are all stored on the same canister
+      // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
+      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
+      case "bxdf4-baaaa-aaaah-qaruq-cai":
+      case "dylar-wyaaa-aaaah-qcexq-cai":
+      case "jxpyk-6iaaa-aaaam-qafma-cai":
+      case "e3izy-jiaaa-aaaah-qacbq-cai":
+      case "3mttv-dqaaa-aaaah-qcn6q-cai":
+      case "yrdz3-2yaaa-aaaah-qcvpa-cai":
+      case "3bqt5-gyaaa-aaaah-qcvha-cai":
+      case "unssi-hiaaa-aaaah-qcmya-cai":
       case "sr4qi-vaaaa-aaaah-qcaaq-cai":
-      case "q6hjz-kyaaa-aaaah-qcama-cai":
-      case "tgwaz-xyaaa-aaaah-qcura-cai":
-      case "kss7i-hqaaa-aaaah-qbvmq-cai":
-      case "btggw-4aaaa-aaaah-qcdgq-cai":
-      case "pnpu4-3aaaa-aaaah-qcceq-cai":
-      case "4kubm-wiaaa-aaaah-qcnoa-cai":
-      case "6tjeq-waaaa-aaaah-qcvzq-cai":
-      case "nfvlz-jaaaa-aaaah-qcciq-cai":
-      case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "s36wu-5qaaa-aaaah-qcyzq-cai":
-      case "sjybn-raaaa-aaaah-qcy2q-cai":
-      case "2s2iy-xaaaa-aaaah-qczoq-cai":
+      case "nbg4r-saaaa-aaaah-qap7a-cai":
+      case "gtb2b-tiaaa-aaaah-qcxca-cai":
+      case "qbc6i-daaaa-aaaah-qcywq-cai":
+      case "qjwjm-eaaaa-aaaah-qctga-cai":
+      case "j3dqa-byaaa-aaaah-qcwfa-cai":
+      case "2l7rh-eiaaa-aaaah-qcvaa-cai":
+      case "73xld-saaaa-aaaah-qbjya-cai":
+      case "t2mog-myaaa-aaaal-aas7q-cai":
         return (
           <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
+            src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
             className={classes.nftImage}
             style={{
@@ -214,7 +251,10 @@ const Detail = (props) => {
           />
         );
         break;
-      case "xcep7-sqaaa-aaaah-qcukq-cai":
+      
+      // for interactive NFTs or videos
+      //case "xcep7-sqaaa-aaaah-qcukq-cai":
+      //case "rqiax-3iaaa-aaaah-qcyta-cai":
       case "dv6u3-vqaaa-aaaah-qcdlq-cai":
       case "eb7r3-myaaa-aaaah-qcdya-cai":
       case "pk6rk-6aaaa-aaaae-qaazq-cai":
@@ -227,6 +267,7 @@ const Detail = (props) => {
       case "nges7-giaaa-aaaaj-qaiya-cai":
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
+      case "sbcwr-3qaaa-aaaam-qamoa-cai":
         return (
           <iframe
             frameBorder="0"
@@ -247,13 +288,36 @@ const Detail = (props) => {
           />
         );
         break;
-      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-      case "dylar-wyaaa-aaaah-qcexq-cai":
+      
+      // for videos that don't fit in the iframe and need a video tag
+      case "rqiax-3iaaa-aaaah-qcyta-cai":
+      case "xcep7-sqaaa-aaaah-qcukq-cai":
+      case "x4oqm-bqaaa-aaaam-qahaq-cai":
+      case "tco7x-piaaa-aaaam-qamiq-cai":
+        return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
+      
+      // for pre-generated images residing on asset canisters
+      // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
+      case "6wih6-siaaa-aaaah-qczva-cai":
+      case "6km5p-fiaaa-aaaah-qczxa-cai":
+      case "s36wu-5qaaa-aaaah-qcyzq-cai":
+      case "bzsui-sqaaa-aaaah-qce2a-cai":
+      case "txr2a-fqaaa-aaaah-qcmkq-cai":
+      case "ah2fs-fqaaa-aaaak-aalya-cai":
+      case "z7mqv-liaaa-aaaah-qcnqa-cai":
+      case "erpx2-pyaaa-aaaah-qcqsq-cai":
+      case "gikg4-eaaaa-aaaam-qaieq-cai":
+      case "bapzn-kiaaa-aaaam-qaiva-cai":
+      case "4wiph-kyaaa-aaaam-qannq-cai":
+      case "3cjkh-tqaaa-aaaam-qan6a-cai":
+      case "lcgbg-kaaaa-aaaam-qaota-cai":
+        return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
+      
+      // default case is to just use the thumbnail on the detail page
       default:
         return (
           <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
+            src={EntrepotNFTImage(canister, index, tokenid, false)}
             alt=""
             className={classes.nftImage}
             style={{
@@ -580,7 +644,7 @@ const Detail = (props) => {
                                       date={Number(offer.time / 1000000000n)}
                                     /></TableCell>
                                     <TableCell align="center">
-                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://ic.rocks/principal/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
+                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://icscan.io/account/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
                                     </TableCell>
                                   </TableRow>
                                 );

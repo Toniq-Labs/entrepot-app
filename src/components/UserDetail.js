@@ -22,6 +22,7 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import GavelIcon from '@material-ui/icons/Gavel';
+import { EntrepotAllStats } from '../utils';
 export default function UserDetail(props) {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,6 +43,11 @@ export default function UserDetail(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const getTokens = async () => {
+    var stats = EntrepotAllStats();
+    var tokens = (await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+props.address+"/all").then(r => r.json())).map(a => Number(stats.find(b => b.canister == a.canister).stats.floor)).reduce((a,c) => a+c, 0);
+  };
   const styles = {
     empty: {
       maxWidth: 1200,
@@ -57,6 +63,9 @@ export default function UserDetail(props) {
       },
     },
   };
+  React.useEffect(() => {
+    getTokens();
+  }, [props.address]);
   return (
   <div>
     <div style={{maxWidth:1200, margin:"0 auto 0",}}>
@@ -71,7 +80,7 @@ export default function UserDetail(props) {
           </Grid>
           <Grid item md={4} xs={12} style={{textAlign:"right"}}>
             <ul style={styles.socials}>
-              <li><a href={"https://ic.rocks/account/"+props.address} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icrocks.png"} /></a></li>
+              <li><a href={"https://icscan.io/account/"+props.address} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a></li>
             </ul>
           </Grid>
         </Grid>

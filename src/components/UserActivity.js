@@ -170,7 +170,9 @@ export default function UserActivity(props) {
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   
+
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const changeToggleFilter = () => {

@@ -135,15 +135,17 @@ export default function GeneralSaleComponent(props) {
         try {
           props.loader(true, "Completing purchase...");
           r3 = await api.canister(collection.canister, "sale").retreive(paytoaddress);
-          if (r3.hasOwnProperty("ok")) break;
-        } catch (e) {}
+        } catch (e) {
+          continue;
+        }
+        if (r3.hasOwnProperty("ok")) break;
+        if (r3.hasOwnProperty("err")) throw "Your purchase failed! If ICP was sent and the sale ran out, you will be refunded shortly!";
       }
       props.loader(false);
       props.alert(
         "Transaction complete",
         "Your purchase was made successfully - your NFT will be sent to your address shortly"
       );
-      _updates();
     } catch (e) {
       props.loader(false);
       props.alert(
@@ -151,6 +153,7 @@ export default function GeneralSaleComponent(props) {
         e.Other ?? (typeof e == "string" ? e : "You may need to enable cookies or try a different browser")
       );
     }
+    _updates();
   };
   useInterval(_updates, 5 * 1000);
   React.useEffect(() => {
@@ -165,24 +168,18 @@ export default function GeneralSaleComponent(props) {
         <h1>Welcome to the official {collection.name} sale</h1>
         </div>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
-          {whitelist ? 
-            <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>WHITELIST PRICE</strong><br />
-            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
-          </Grid>:
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SALE PRICE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{salePrice !== false ? _showListingPrice(salePrice) + " ICP" : "Loading..."}</span>
           </Grid>
-          
-          }
+          {whitelist ? 
+            <Grid className={classes.stat} item md={3} xs={6}>
+            <strong>WHITELIST PRICE</strong><br />
+            <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{_showListingPrice(price)} ICP</span>
+          </Grid>:""}
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>AVAILABLE</strong><br />
             <span style={{fontWeight:"bold",color:"#00b894",fontSize:"2em"}}>{remaining !== false ? remaining : "Loading..."}</span>
-          </Grid>
-          <Grid className={classes.stat} item md={3} xs={6}>
-            <strong>PENDING</strong><br />
-            <span style={{fontWeight:"bold",color:"rgb(225 142 19)",fontSize:"2em"}}>{pending !== false ? pending : "Loading..."}</span>
           </Grid>
           <Grid className={classes.stat} item md={3} xs={6}>
             <strong>SOLD</strong><br />

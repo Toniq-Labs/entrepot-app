@@ -132,10 +132,18 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
       return "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/" + id;
     };
   }
-  if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
   } else {
+    //add collections with wearables or other dynamic traits here
+    //these images will not be cached
+    if (collection === "sbcwr-3qaaa-aaaam-qamoa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "rw7qm-eiaaa-aaaak-aaiqq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "5movr-diaaa-aaaak-aaftq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    //end of section
+
+    if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
     return "https://images.entrepot.app/t/"+collection+"/" + id;
     //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
   }
@@ -205,7 +213,7 @@ EntrepotUpdateUSD = async () => {
     lastUpdate = Date.now();
     var b = await api.canister("rkp4c-7iaaa-aaaaa-aaaca-cai").get_icp_xdr_conversion_rate();
     var b2 = await fetch("https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7").then(r => r.json());
-    _rate = Number(b.data.xdr_permyriad_per_icp/10000n)*(b2.hasOwnProperty("XDR_USD") ? b2.XDR_USD : 1.4023);
+    _rate = Number(b.data.xdr_permyriad_per_icp/10000n)*(b2.hasOwnProperty("XDR_USD") ? b2.XDR_USD : 1.331578);
   }
   return _rate;
 },

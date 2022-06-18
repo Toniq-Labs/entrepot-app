@@ -124,7 +124,9 @@ export default function NFT(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
+
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const navigate = useNavigate();
@@ -268,6 +270,9 @@ export default function NFT(props) {
         };
         if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
           buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+        };
+        if (canister == '6wih6-siaaa-aaaah-qczva-cai' && !metadata && Date.now() >= 1650034800000) {
+          buttons.push(["Cash Out", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
         };
       }
     }

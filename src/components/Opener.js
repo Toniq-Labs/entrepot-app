@@ -9,6 +9,11 @@ import Flip from "./Flip";
 import extjs from '../ic/extjs.js';
 import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
 var settings = {
+  "6wih6-siaaa-aaaah-qczva-cai" : {
+    video : false,
+    congrats:"You've just burned a wallet!",
+    loading:"Burning wallet...",
+  },
   "poyn6-dyaaa-aaaah-qcfzq-cai" : {
     video : "/opening.mp4",
     congrats:"You've just opened a pack!",
@@ -33,7 +38,7 @@ export default function Opener(props) {
     if (props.open) openPack();
   }, [props.open]);
   React.useEffect(() => {
-    if (playOpen){      
+    if (playOpen && settings[props.nft.canister]?.video){      
       const videoElement = hoverVideoRef.current;
       videoElement.onended = showPack;
     };
@@ -71,7 +76,7 @@ export default function Opener(props) {
     setPlayOpen(false);
   };
   return (<>
-    {playOpen ? 
+    {playOpen && settings[props.nft.canister]?.video ? 
     <>
       <HoverVideoPlayer videoRef={hoverVideoRef} muted={false} volume={0.3} style={{backgroundColor:"black",position:"fixed",left:0,right:0,top:0,bottom:0,zIndex:1700}} focused={playOpen} loop={false} videoSrc={settings[props.nft.canister]?.video} /> <Button variant={"outlined"} onClick={showPack} color={"primary"} style={{position:"fixed", right:50,bottom:100,color:"white",borderColor:"white",zIndex:1800,fontWeight: "bold", margin: "20px auto" }}>Skip</Button>
     </>

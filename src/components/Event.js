@@ -22,6 +22,7 @@ const _showListingPrice = n => {
 };
 export default function Event(props) {
   const getCollection = c => {
+    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
     return props.collections.find(e => e.canister === c);
   };
   const [imgLoaded, setImgLoaded] = React.useState(false);
@@ -103,8 +104,8 @@ export default function Event(props) {
       </TableCell>
       <TableCell align="right"><strong><PriceICP price={event.price} /></strong><br />
       {EntrepotGetICPUSD(event.price) ? <small><PriceUSD price={EntrepotGetICPUSD(event.price)} /></small> : ""}</TableCell>
-      <TableCell align="center"><a href={"https://ic.rocks/principal/"+event.seller} target="_blank">{shorten(event.seller)}</a></TableCell>
-      <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+event.buyer} target="_blank">{shorten(event.buyer)}</a></TableCell>
+      <TableCell align="center"><a href={"https://icscan.io/account/"+event.seller} target="_blank">{shorten(event.seller)}</a></TableCell>
+      <TableCell align="center"><a href={"https://icscan.io/account/"+event.buyer} target="_blank">{shorten(event.buyer)}</a></TableCell>
       <TableCell align="center"><Timestamp
         relative
         autoUpdate

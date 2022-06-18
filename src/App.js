@@ -34,6 +34,7 @@ import PawnForm from './components/PawnForm';
 import GeneralSaleComponent from "./components/sale/GeneralSaleComponent";
 import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent";
 import legacyPrincipalPayouts from './payments.json';
+import getNri from "./ic/nftv.js";
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
@@ -358,7 +359,7 @@ export default function App() {
     return true;
   };
   const _processPaymentForCanister = async _collection => {
-    if (!_collection.legacy) return true;
+    if (!_collection.hasOwnProperty('legacy') || !_collection.legacy) return true;
     const _api = extjs.connect("https://boundary.ic0.app/", identity);
     var payments = await _api.canister(_collection.canister).payments();
     if (payments.length === 0) return true;
@@ -499,7 +500,7 @@ export default function App() {
   };
 
   useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
-  useInterval(() => updateCollections(), 5 * 1000);
+  useInterval(() => updateCollections(), 5 * 60 * 1000);
   useInterval(_updates, 10 * 60 * 1000);
   const alert = (title, message, buttonLabel) => {
     return new Promise(async (resolve, reject) => {
@@ -673,12 +674,14 @@ export default function App() {
       r2 = r2.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
       if (collections.length == 0) {
         setCollections(r2);
+        r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
       } else {
         for(var i = 0; i < r2.length; i++){
           var n = r2[i];
           var o = collections.find(a => a.canister == n.id);
           if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
             setCollections(r2);
+            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
             console.log("UPDATED");
             break;
           }

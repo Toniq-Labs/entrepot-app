@@ -130,15 +130,12 @@ export default function Activity(props) {
     EntrepotUpdateStats().then(() => {
       setStats(EntrepotCollectionStats(collection.canister))
     });  
-    if (c === "nges7-giaaa-aaaaj-qaiya-cai") {
-      setTransactions([]);
-    } else {
-      var txs = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/canister/"+c+"/transactions").then(r => r.json());
-      txs = txs.filter((a,i) => txs.findIndex(b => b.id == a.id) == i);
-      txs = txs.filter(e => e.token != "");
-      console.log(txs[0]);
-      setTransactions(txs);
-    }
+    var txs = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/canister/"+c+"/transactions").then(r => r.json());
+    txs = txs.filter((a,i) => txs.findIndex(b => b.id == a.id) == i);
+    txs = txs.filter(e => e.token != "");
+    console.log(txs[0]);
+    setTransactions(txs);
+   
   };
   const theme = useTheme();
   const styles = {
