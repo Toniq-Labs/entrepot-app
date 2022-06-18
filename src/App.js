@@ -36,6 +36,7 @@ import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent
 import legacyPrincipalPayouts from './payments.json';
 import getNri from "./ic/nftv.js";
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
+import { MissingPage404 } from './views/MissingPage404';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
 const txmin = 100000;
@@ -1152,6 +1153,7 @@ export default function App() {
                   confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
+                <Route path="*" element={<MissingPage404 />} />
             </Routes>
             <BuyForm open={showBuyForm} {...buyFormData} />
             <TransferForm refresher={refresher} buttonLoader={buttonLoader} transfer={transfer} alert={alert} open={openTransferForm} close={closeTransferForm} loader={loader} error={error} nft={tokenNFT} />
