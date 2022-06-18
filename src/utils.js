@@ -220,6 +220,7 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     };
     return (<>
       <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={image} onLoad={onload} />
+        {earnData.hasOwnProperty(tokenid) ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/loaded.png"} /> : "" }
         {earnData.hasOwnProperty(tokenid) && earnData[tokenid].repaid ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/repaid.png"} /> : "" }
         {earnData.hasOwnProperty(tokenid) && earnData[tokenid].defaulted ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/defaulted.png"} /> : "" }
       <Skeleton
