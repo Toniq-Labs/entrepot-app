@@ -1,7 +1,10 @@
 import React from "react";
 import Skeleton from "@material-ui/lab/Skeleton";
+import PriceICP from './components/PriceICP';
+import Timestamp from "react-timestamp";
 import extjs from "./ic/extjs.js";
 const api = extjs.connect("https://boundary.ic0.app/");
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
@@ -18,7 +21,7 @@ function fallbackCopyTextToClipboard(text) {
   document.body.appendChild(textArea);
   textArea.focus();
   textArea.select();
-
+  
   try {
     var successful = document.execCommand('copy');
     var msg = successful ? 'successful' : 'unsuccessful';
@@ -29,7 +32,7 @@ function fallbackCopyTextToClipboard(text) {
 
   document.body.removeChild(textArea);
 }
-var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {}, lastUpdate = false;
+var _stats = [], _rate = false, _liked = [], _identity= false, tokenLikes = {}, lastUpdate = false, earnData = {};
 const _getStats = async () => {
     var collections = (await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json())).map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
     var pxs = [];
@@ -110,6 +113,21 @@ compressAddress = (a) => {
 displayDate = (d) => {
   return new Date(d).toString();
 },
+EntrepotEarnDetails = (id) => {
+  console.log(id);
+  if (!earnData.hasOwnProperty(id)) {
+    api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
+      if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
+    });
+  };
+  if (earnData.hasOwnProperty(id)) {
+    if (earnData[id].repaid || earnData[id].defaulted) return "";
+    return (<div style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderTop:"1px solid #ddd"}}>
+      EARN <PriceICP price={earnData[id].reward+earnData[id].amount} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
+    </div>);
+  };
+  return "";
+},
 EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
   if (typeof ref == 'undefined') ref = "";
   else ref = "?"+ref;
@@ -131,6 +149,23 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     } else {
       return "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/" + id;
     };
+  }
+  if (collection === TREASURECANISTER) {
+    if (!fullSize) {
+      if (!earnData.hasOwnProperty(id)) {
+        api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
+          if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
+        });
+      };
+      if (earnData.hasOwnProperty(id)) {
+        // if (earnData[id].repaid) return "/earn/repaid.png";
+        // if (earnData[id].defaulted) return "/earn/defaulted.png";
+        let { index, canister} = extjs.decodeTokenId(earnData[id].tokenid);
+        return EntrepotNFTImage(canister, index, earnData[id].tokenid, false, ref);
+      } else {
+        return "/earn/loading.png";
+      };  
+    }
   }
   if (fullSize) {
     return "https://"+collection+".raw.ic0.app/?cc=0&tokenid=" + id;
@@ -177,6 +212,25 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
   }
   if (collection == "zhibq-piaaa-aaaah-qcvka-cai") avatarImgStyle.objectFit = "fill";
   if (collection == "jeghr-iaaaa-aaaah-qco7q-cai") return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image}/>);
+  if (collection === TREASURECANISTER) {
+    if (!earnData.hasOwnProperty(tokenid)) {
+      api.canister(TREASURECANISTER).tp_loanDetails(tokenid).then(r => {
+        if (!earnData.hasOwnProperty(tokenid)) earnData[tokenid] = r[0];
+      });
+    };
+    return (<>
+      <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={image} onLoad={onload} />
+        {earnData.hasOwnProperty(tokenid) && earnData[tokenid].repaid ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/repaid.png"} /> : "" }
+        {earnData.hasOwnProperty(tokenid) && earnData[tokenid].defaulted ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/defaulted.png"} /> : "" }
+      <Skeleton
+        style={{
+          ...avatarLoaded,
+          display: imgLoaded ? "none" : "block",
+        }}
+        variant="rect"
+      />
+    </>);
+  }
   return (<>
     <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={image} onLoad={onload} />
     <Skeleton
@@ -270,5 +324,5 @@ numf = (n, d) => {
 };
 export {
   clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats, EntrepotUpdateUSD, EntrepotGetICPUSD, EntrepotUpdateLiked, 
-  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked, EntrepotGetAllLiked
+  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked, EntrepotGetAllLiked, EntrepotEarnDetails
 };

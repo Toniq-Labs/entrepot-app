@@ -787,7 +787,7 @@ export default function Listings(props) {
                           floor={stats.floor}
                           buy={props.buyNft}
                           afterBuy={_updates}
-                          
+                          view="marketplace"
                           listing={listing[1]}
                           metadata={listing[2]}
                         />

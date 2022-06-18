@@ -43,8 +43,9 @@ import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from "../ic/nftv.js";
 import { makeStyles } from "@material-ui/core";
-import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
+import { EntrepotEarnDetails, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
 const api = extjs.connect("https://boundary.ic0.app/");
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
@@ -436,7 +437,11 @@ export default function NFT(props) {
                 }
               </>
             }
-            
+            {typeof props.view !== 'undefined' && props.view == "marketplace" &&  canister === TREASURECANISTER ?
+              <Grid item xs={12}>
+                {EntrepotEarnDetails(tokenid)}
+              </Grid>
+            :""}
           </Grid>
         </CardContent>
         </Link>
