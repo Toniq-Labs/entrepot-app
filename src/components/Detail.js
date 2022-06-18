@@ -72,6 +72,7 @@ function useInterval(callback, delay) {
 }
 const api = extjs.connect("https://boundary.ic0.app/");
 
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const shorten = a => {
   return a.substring(0, 12) + "...";
 };
@@ -268,6 +269,8 @@ const Detail = (props) => {
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
       case "sbcwr-3qaaa-aaaam-qamoa-cai":
+      case "sbcwr-3qaaa-aaaam-qamoa-cai":
+      case TREASURECANISTER:
         return (
           <iframe
             frameBorder="0"
