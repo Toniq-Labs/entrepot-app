@@ -37,6 +37,8 @@ import legacyPrincipalPayouts from './payments.json';
 import getNri from "./ic/nftv.js";
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
 import { MissingPage404 } from './views/MissingPage404';
+import {checkIfToniqEarnAllowed} from './location/geo-ip';
+import {EarnFeaturesBlocked} from './views/EarnBlocked';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
 const txmin = 100000;
@@ -142,6 +144,8 @@ export default function App() {
   
   const [collections, setCollections] = React.useState([]);
   const [appLoaded, setAppLoaded] = React.useState(false);
+  
+  const [isToniqEarnAllowed, setToniqEarnAllowed] = React.useState(undefined);
   
   const [buyFormData, setBuyFormData] = React.useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = React.useState(false);
@@ -631,6 +635,14 @@ export default function App() {
     }
   }
   
+  const restrictedEarnAccess = (allowedAccessElement) => {
+    if (isToniqEarnAllowed) {
+      return allowedAccessElement;
+    } else {
+      return <EarnFeaturesBlocked />;
+    }
+  }
+  
   //Form powered
   const pawn = async (id, amount, reward, length, loader, refresh) => {
     if (loader) loader(true, "Creating Earn Request...");
@@ -665,9 +677,9 @@ export default function App() {
       return error(e);
     };
   };
-  const updateCollections = () => {
-     fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json()).then(r => {
-      var r2 = r;
+  const updateCollections = async () => {
+     const response = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections")
+     var r2 = await response.json();
       //Remove dev marked canisters
       if (isDevEnv() == false) {
         r2 = r2.filter(a => !a.dev);
@@ -688,8 +700,12 @@ export default function App() {
           }
         };
       };
-      if (!appLoaded) setAppLoaded(true);
-    });
+      if (isToniqEarnAllowed === undefined) {
+        setToniqEarnAllowed(await checkIfToniqEarnAllowed());
+      }
+      if (!appLoaded) {
+        setAppLoaded(true);
+      }
   };
   const list = async (id, price, loader, refresh) => {
     if (loader) loader(true);
@@ -820,6 +836,7 @@ export default function App() {
             <Routes>
               <Route path="/marketplace/asset/:tokenid" exact element={
                 <Detail
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   alert={alert}
                   confirm={confirm}
@@ -837,6 +854,7 @@ export default function App() {
                 <Activity
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -846,6 +864,7 @@ export default function App() {
                 <Listings
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -853,6 +872,7 @@ export default function App() {
                 />} />
               <Route path="/marketplace" exact element={
                 <Marketplace
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   view={"collections"}
                   alert={alert}
@@ -1006,7 +1026,7 @@ export default function App() {
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-              <Route path="/earn" exact element={
+              <Route path="/earn" exact element={restrictedEarnAccess(
                 <UserLoan
                   error={error}
                   view={"earn"}
@@ -1023,8 +1043,8 @@ export default function App() {
                   fillRequest={fillRequest} 
                   cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />
-              <Route path="/earn-requests" exact element={
+                />)} />
+              <Route path="/earn-requests" exact element={restrictedEarnAccess(
                 <UserLoan
                   error={error}
                   view={"earn-requests"}
@@ -1041,8 +1061,8 @@ export default function App() {
                   fillRequest={fillRequest} 
                   cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />
-              <Route path="/earn-contracts" exact element={
+                />)} />
+              <Route path="/earn-contracts" exact element={restrictedEarnAccess(
                 <UserLoan
                   error={error}
                   view={"earn-contracts"}
@@ -1059,8 +1079,8 @@ export default function App() {
                   fillRequest={fillRequest} 
                   cancelRequest={cancelRequest} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />
-              <Route path="/new-request" exact element={
+                />)} />
+              <Route path="/new-request" exact element={restrictedEarnAccess(
                 <UserCollection
                   error={error}
                   view={"new-request"}
@@ -1074,8 +1094,8 @@ export default function App() {
                   transferNft={transferNft} 
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />
-              <Route path="/earn-nfts" exact element={
+                />)} />
+              <Route path="/earn-nfts" exact element={restrictedEarnAccess(
                 <UserCollection
                   error={error}
                   view={"earn-nfts"}
@@ -1089,7 +1109,7 @@ export default function App() {
                   transferNft={transferNft} 
                   pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
-                />} />
+                />)} />
               <Route path="/activity" exact element={
                 <UserActivity
                   error={error}
