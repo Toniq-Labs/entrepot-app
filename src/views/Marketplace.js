@@ -10,7 +10,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Card from "@material-ui/core/Card";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Navbar from "../containers/Navbar.js";
 import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";

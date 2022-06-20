@@ -7,7 +7,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
 import Carousel from 'react-material-ui-carousel'
 const useStyles = makeStyles((theme) => ({
