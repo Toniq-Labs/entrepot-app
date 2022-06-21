@@ -220,6 +220,7 @@ export default function UserCollection(props) {
   const [toggleFilter, setToggleFilter] = React.useState((window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem("_toggleFilter")) ?? true));
   const [hideCollectionFilter, setHideCollectionFilter] = React.useState(true);
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
+  const [earnCollections, setEarnCollections] = React.useState(props.collections.filter(a => a.earn == true).map(a => a.id));
   var hiddenNfts = [];
   const changeGrid = (e, a) => {
     localStorage.setItem("_gridSize", a);
@@ -268,10 +269,10 @@ export default function UserCollection(props) {
         data = await loadAllTokens(address, props.identity.getPrincipal().toText());
         break;
       case "new-request":
-        if (whitelistedPawnCanisters === false) return;
+        //if (whitelistedPawnCanisters === false) return;
         var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
         data = response.data;
-        data = data.filter(a => !a.price && whitelistedPawnCanisters.indexOf(a.canister) >= 0);
+        data = data.filter(a => !a.price && earnCollections.indexOf(a.canister) >= 0);
         data = data.map(a => ({...a, token : a.id}));
         break;
       case "earn-nfts":

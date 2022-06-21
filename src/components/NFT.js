@@ -125,6 +125,7 @@ export default function NFT(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [currentBtn, setCurrentBtn] = React.useState(null);
   const [currentBtnText, setCurrentBtnText] = React.useState(false);
+  const [earnCollections, setEarnCollections] = React.useState(props.collections.filter(a => a.earn == true).map(a => a.id));
 
   const getCollection = c => {
     if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
@@ -236,7 +237,7 @@ export default function NFT(props) {
   const getButtons = () => {
     var buttons = [];
     if (props.view == "new-request") {
-      if (!listing && ["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
+      if (!listing && earnCollections.indexOf(canister) >= 0) {
         buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         //buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       }
@@ -269,7 +270,7 @@ export default function NFT(props) {
         if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai' && metadata && metadata.length == 4 && Date.now() >= 1647788400000) {
           buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
         };
-        if (["pk6rk-6aaaa-aaaae-qaazq-cai", "qjwjm-eaaaa-aaaah-qctga-cai"].indexOf(canister) >= 0) {
+        if (earnCollections.indexOf(canister) >= 0) {
           buttons.push(["Toniq Earn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
         };
         if (canister == '6wih6-siaaa-aaaah-qczva-cai' && !metadata && Date.now() >= 1650034800000) {
