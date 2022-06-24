@@ -141,6 +141,7 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     if (collection === "yrdz3-2yaaa-aaaah-qcvpa-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
     if (collection === "rw7qm-eiaaa-aaaak-aaiqq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
     if (collection === "5movr-diaaa-aaaak-aaftq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
+    if (collection === "dhyds-jaaaa-aaaao-aaiia-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
     //end of section
 
     if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
