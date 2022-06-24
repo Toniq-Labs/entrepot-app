@@ -6,7 +6,6 @@ import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles, Container } from "@material-ui/core";
-import Navbar from "../containers/Navbar";
 import Features from "../components/Features";
 const useStyles = makeStyles((theme) => ({
   root: {
