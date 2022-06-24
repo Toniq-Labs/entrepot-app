@@ -930,7 +930,6 @@ export default function App() {
               <Route path="/contact" exact element={
                 <Contact
                   error={error}
-                  error={error}
                   alert={alert}
                   confirm={confirm}
                   loader={loader} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
