@@ -24,9 +24,10 @@ export default function PawnForm(props) {
   const [length, setLength] = React.useState(30);
   var index, canister;
   const _submit = () => {
+    if (reward > amount) return props.error("The reward can not be more than the amount requested");
     //Validate address
     handleClose();
-    props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
+    //props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
   };
   const handleClose = () => {
     setAmount(0);

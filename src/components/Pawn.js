@@ -49,9 +49,6 @@ export default function Pawn(props) {
   };
   const [imgLoaded, setImgLoaded] = React.useState(false);
   let { canister, index} = extjs.decodeTokenId(props.event.tokenid);
-  const [stats, setStats] = React.useState(EntrepotCollectionStats(canister));
-  const [floor, setFloor] = React.useState(0);
-  const [floorRate, setFloorRate] = React.useState(0);
   const nftImg = () => {
     return EntrepotNFTImage(canister, index, props.event.tokenid);
   };
@@ -81,16 +78,8 @@ export default function Pawn(props) {
     },
   };
   const refresh = () => {
-    var s = EntrepotCollectionStats(canister);
-    if (isNaN(Number(s.floor))) return;
-    var f = BigInt(Number(s.floor)*100000000);
-    var fr = toRate(Number(props.event.amount)/Number(f));
-    //var avr = BigInt(Number(s.floor)*100000000);
-    setStats(s);
-    setFloor(f);
-    setFloorRate(fr);
+
   };
-  const toRate = r => (r*100).toFixed(2);
   const viewNft = () => {
     var tokenid = extjs.encodeTokenId(TREASURECANISTER, props.event.index);
     window.open("/marketplace/asset/"+tokenid);
@@ -119,8 +108,9 @@ export default function Pawn(props) {
     return "#00D092";
   };
 
+  const toRate = r => (r*100).toFixed(2);
   const frCol = () => {
-    var fr = (Number(props.event.amount)/Number(floor));
+    var fr = (Number(props.event.amount)/Number(props.event.floor));
     if (fr > 0.83) return "#FFCAC8";
     if (fr > 0.5) return "#FFE1B5";
     if (fr > 0.33) return "#FFF8BC";
@@ -142,7 +132,7 @@ export default function Pawn(props) {
           </div>
           <div style={{display:"inline-block", verticalAlign:"middle"}}>
           <strong>{getCollection(canister).name} {"#"+(EntrepotNFTMintNumber(canister, index))}</strong>
-            {floor ? <><br /><small>Floor: <PriceICP price={floor} /></small></> : ""}
+            {props.event.floor ? <><br /><small>Floor: <PriceICP price={props.event.floor} /></small></> : ""}
           </div>
         </Link>
       </TableCell>
@@ -151,7 +141,7 @@ export default function Pawn(props) {
       <TableCell align="right"><strong><PriceICP price={props.event.reward} /></strong><br />
       {EntrepotGetICPUSD(props.event.reward) ? <small><PriceUSD price={EntrepotGetICPUSD(props.event.reward)} /></small> : ""}</TableCell>
       <TableCell align="center">{props.event.days} Day{props.event.days !== 1 ? "s" : ""}</TableCell>
-      <TableCell align="center">{floorRate ? <div style={{backgroundColor:frCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}><span style={{fontWeight:"bold"}}>{floorRate}%</span></div>:""}</TableCell>
+      <TableCell align="center">{props.event.floorRate ? <div style={{backgroundColor:frCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}><span style={{fontWeight:"bold"}}>{toRate(props.event.floorRate)}%</span></div>:""}</TableCell>
       <TableCell align="center"><div style={{backgroundColor:aprCol(), padding:"3px", border:"1px solid black", borderRadius:"4px"}}><span style={{fontWeight:"bold"}}>{toRate(props.event.apr)}%</span></div></TableCell>
       {props.event.type == "request"?
       <TableCell align="center">Expires<br /><Timestamp

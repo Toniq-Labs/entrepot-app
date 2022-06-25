@@ -56,6 +56,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Tooltip from '@material-ui/core/Tooltip';
+import { EntrepotUpdateStats, EntrepotCollectionStats } from '../utils';
 
 import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -241,6 +242,7 @@ export default function UserLoan(props) {
   const [collectionFilter, setCollectionFilter] = React.useState('all');
   const [page, setPage] = React.useState(1);
   var myPage = (params?.address ? false : true);
+  const [tokenCanisters, setTokenCanisters] = React.useState([]);
   const [address, setAddress] = React.useState(params?.address ?? (props.account.address ?? ""));
   const [sort, setSort] = React.useState('apr');
   const [listingPrices, setListingPrices] = React.useState([]);
@@ -282,38 +284,50 @@ export default function UserLoan(props) {
   const [maxAmount, setMaxAmount] = React.useState("");
   const [minReward, setMinReward] = React.useState("");
   const [maxReward, setMaxReward] = React.useState("");
+  const [minFloor, setMinFloor] = React.useState("");
+  const [maxFloor, setMaxFloor] = React.useState("");
   const [minApr, setMinApr] = React.useState("");
   const [maxApr, setMaxApr] = React.useState("");
   const [minLength, setMinLength] = React.useState("");
   const [maxLength, setMaxLength] = React.useState("");
-  const setToNumer = b => {
+  const setToNumber = b => {
     var b = Number(b);
     if (isNaN(b)) return "";
     return b;
   };
   const minAmountChange = ev => {
-    setMinAmount(setToNumer(ev.target.value));
+    setMinAmount(setToNumber(ev.target.value));
   };
   const maxAmountChange = ev => {
-    setMaxAmount(setToNumer(ev.target.value));
+    setMaxAmount(setToNumber(ev.target.value));
   };
   const minRewardChange = ev => {
-    setMinReward(setToNumer(ev.target.value));
+    setMinReward(setToNumber(ev.target.value));
   };
   const maxRewardChange = ev => {
-    setMaxReward(setToNumer(ev.target.value));
+    setMaxReward(setToNumber(ev.target.value));
   };
   const minAprChange = ev => {
-    setMinApr(setToNumer(ev.target.value));
+    var v = setToNumber(ev.target.value);
+    setMinApr(v === 0 ? "" : v);
   };
   const maxAprChange = ev => {
-    setMaxApr(setToNumer(ev.target.value));
+    var v = setToNumber(ev.target.value);
+    setMaxApr(v === 0 ? "" : v);
+  };
+  const minFloorChange = ev => {
+    var v = setToNumber(ev.target.value);
+    setMinFloor(v === 0 ? "" : v);
+  };
+  const maxFloorChange = ev => {
+    var v = setToNumber(ev.target.value);
+    setMaxFloor(v === 0 ? "" : v);
   };
   const minLengthChange = ev => {
-    setMinLength(setToNumer(ev.target.value));
+    setMinLength(setToNumber(ev.target.value));
   };
   const maxLengthChange = ev => {
-    setMaxLength(setToNumer(ev.target.value));
+    setMaxLength(setToNumber(ev.target.value));
   };
   const isFilterValueSelected = (traitId, traitValueId) => {
     return (selectedFilters.find(a => a[0] == traitId && a[1] == traitValueId) ? true : false);
@@ -337,7 +351,16 @@ export default function UserLoan(props) {
         data = (await pawnapi.tp_loansByAddress(address)).map(a => ({...a[1], index : a[0], type : "contract"}));
         break;
     }
-    data = data.map(a => ({...a, days : getDays(a), apr : getApr(a)}));
+    data = data.map(a => {
+      let { canister, index} = extjs.decodeTokenId(a.tokenid);
+      var s = EntrepotCollectionStats(canister);
+      var data = {...a, days : getDays(a), apr : getApr(a) };
+      if (!isNaN(Number(s.floor))) {
+        data.floor = BigInt(Number(s.floor)*100000000);
+        data.floorRate = Number(a.amount)/Number(data.floor);
+      }
+      return data;
+    });
     setResults(data);
   }
   
@@ -357,14 +380,14 @@ export default function UserLoan(props) {
   
   
   const filterResults = r => {
-    if (!minAmount && !maxAmount && !minApr && !maxApr) return r;
-    console.log(minAmount, maxAmount, minApr, maxApr);
+    if (!minAmount && !maxAmount && !minApr && !maxApr && !minFloor && !maxFloor) return r;
     return r.filter(a => {
-      console.log(a);
       if (minAmount && (a.amount <= (BigInt(minAmount)*100000000n))) return false;
       if (maxAmount && (a.amount >= (BigInt(maxAmount)*100000000n))) return false;
       if (minApr && (a.apr <= (minApr/100))) return false;
       if (maxApr && (a.apr >= (maxApr/100))) return false;
+      if (minFloor && (a.floorRate <= (minFloor/100))) return false;
+      if (maxFloor && (a.floorRate >= (maxFloor/100))) return false;
       return true;
     });
   };
@@ -408,6 +431,13 @@ export default function UserLoan(props) {
   }
 
   React.useEffect(() => {
+    console.log("Hook: start");
+    EntrepotUpdateStats().then(r => {
+      setMaxFloor(setToNumber("100"));
+      setDisplayedResults(false)
+    });
+  }, []);
+  React.useEffect(() => {
     setPage(1);
     //if (displayedResults) setDisplayedResults(false);
     //else refresh();
@@ -429,12 +459,8 @@ export default function UserLoan(props) {
     else setDisplayedResults([]);
   }, [results]);
   React.useEffect(() => {
-    console.log("Hook: start");
-    setDisplayedResults(false)
-  }, []);
-  React.useEffect(() => {
     setDisplayedResults(filterAfter(results))
-  }, [minAmount, maxAmount, minApr, maxApr]);
+  }, [minAmount, maxAmount, minApr, maxApr, minFloor, maxFloor]);
 
   React.useEffect(() => {
     console.log("Hook: account");
@@ -518,6 +544,53 @@ export default function UserLoan(props) {
                 </ListItemIcon>
             </ListItem>
             {toggleFilter  ? <>
+            
+            {/*<ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <AllInclusiveIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>Collections</strong>)}
+                />
+              </ListItem>
+              <ListItem selected={collectionFilter === "all"} button onClick={() => {setCollectionFilter("all")}}>
+                <ListItemText><strong>View All Collections</strong></ListItemText>
+                <ListItemSecondaryAction><Chip label={tokenCanisters.length} variant="outlined" /></ListItemSecondaryAction>
+              </ListItem>
+              { tokenCanisters
+                .filter((a,i) => tokenCanisters.indexOf(a) == i && typeof getCollection(a) != 'undefined') //filter unique
+                .map(canister => {
+                  var _collection = getCollection(canister);
+                  return (<ListItem key={canister} selected={collectionFilter === canister} button onClick={() => {setCollectionFilter(canister)}}>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <img alt={_collection.name} src={_collection.avatar ?? "/collections/"+canister+".jpg"} style={{height:64}} />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText>{_collection.name}</ListItemText>
+                    <ListItemSecondaryAction><Chip label={tokenCanisters.filter(a => a === canister).length} variant="outlined" /></ListItemSecondaryAction>
+                  </ListItem>)
+                })
+              }
+            */}
+              <ListItem style={{paddingRight:0}}>
+                <ListItemIcon style={{minWidth:40}}>
+                  <LocalAtmIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{noWrap:true}} 
+                  secondaryTypographyProps={{noWrap:true}} 
+                  primary={(<strong>Floor Rate</strong>)}
+                />
+              </ListItem>
+              <ListItem>
+                <div style={{width:"100%"}}>
+                  <TextField value={minFloor} onChange={minFloorChange} style={{width:"100%", marginBottom:20}} label="Min. Floor Rate%" />
+                  <TextField value={maxFloor} onChange={maxFloorChange} style={{width:"100%", marginBottom:20}} label="Max. Floor Rate%" />
+                </div>
+              </ListItem>
               <ListItem style={{paddingRight:0}}>
                 <ListItemIcon style={{minWidth:40}}>
                   <AllInclusiveIcon />
@@ -656,7 +729,7 @@ export default function UserLoan(props) {
                 </>
               }
             </div>
-            {minAmount || maxAmount || minApr || maxApr ?
+            {minAmount || maxAmount || minApr || maxApr || minFloor || maxFloor ?
               <div>
                 <Typography
                   paragraph
@@ -667,11 +740,15 @@ export default function UserLoan(props) {
                   {maxAmount ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. Amount: "+maxAmount+"ICP"} onDelete={() => setMaxAmount("")} color="primary" /> :""}
                   {minApr ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. APR: "+minApr+"%"} onDelete={() => setMinApr("")} color="primary" /> :""}
                   {maxApr ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. APR: "+maxApr+"%"} onDelete={() => setMaxApr("")} color="primary" /> :""}
+                  {minFloor ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. Floor: "+minFloor+"%"} onDelete={() => setMinFloor("")} color="primary" /> :""}
+                  {maxFloor ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. Floor: "+maxFloor+"%"} onDelete={() => setMaxFloor("")} color="primary" /> :""}
                   <Chip style={{marginRight:10,marginBottom:10}} label={"Reset"} onClick={() => {
                     setMinAmount("");
                     setMaxAmount("");
                     setMinApr("");
                     setMaxApr("");
+                    setMinFloor("");
+                    setMaxFloor("");
                   }} color="default" />
                 </Typography>
               </div>:""}
