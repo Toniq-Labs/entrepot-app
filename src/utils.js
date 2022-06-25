@@ -152,19 +152,7 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
   }
   if (collection === TREASURECANISTER) {
     if (!fullSize) {
-      if (!earnData.hasOwnProperty(id)) {
-        api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
-          if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
-        });
-      };
-      if (earnData.hasOwnProperty(id)) {
-        // if (earnData[id].repaid) return "/earn/repaid.png";
-        // if (earnData[id].defaulted) return "/earn/defaulted.png";
-        let { index, canister} = extjs.decodeTokenId(earnData[id].tokenid);
-        return EntrepotNFTImage(canister, index, earnData[id].tokenid, false, ref);
-      } else {
-        return "/earn/loading.png";
-      };  
+      return "/earn/loading.png";
     }
   }
   if (fullSize) {
@@ -214,14 +202,18 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
   if (collection == "zhibq-piaaa-aaaah-qcvka-cai") avatarImgStyle.objectFit = "fill";
   if (collection == "jeghr-iaaaa-aaaah-qco7q-cai") return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image}/>);
   if (collection === TREASURECANISTER) {
+    var nftimg = false;
     if (!earnData.hasOwnProperty(tokenid)) {
       api.canister(TREASURECANISTER).tp_loanDetails(tokenid).then(r => {
         if (!earnData.hasOwnProperty(tokenid)) earnData[tokenid] = r[0];
       });
+    } else {
+        let { index, canister} = extjs.decodeTokenId(earnData[tokenid].tokenid);
+        nftimg = EntrepotNFTImage(canister, index, earnData[tokenid].tokenid, false);
     };
     return (<>
       <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={image} onLoad={onload} />
-        {earnData.hasOwnProperty(tokenid) ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/loaded.png"} /> : "" }
+        {earnData.hasOwnProperty(tokenid) ? <img alt={tokenid} style={{ width:"25%", height: "25%", borderRadius: "100%", position:"absolute", right:"5%", bottom:"5%", display: imgLoaded ? "block" : "none" }} src={nftimg} /> : "" }
         {earnData.hasOwnProperty(tokenid) && earnData[tokenid].repaid ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/repaid.png"} /> : "" }
         {earnData.hasOwnProperty(tokenid) && earnData[tokenid].defaulted ? <img alt={tokenid} style={{ ...avatarImgStyle, display: imgLoaded ? "block" : "none" }} src={"/earn/defaulted.png"} /> : "" }
       <Skeleton
