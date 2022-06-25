@@ -10,7 +10,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
 import { ToniqToggleButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon } from '@toniq-labs/design-system';
+import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, Infinity24Icon } from '@toniq-labs/design-system';
 
 export default function Navbar(props) {
   const navigate = useNavigate();
@@ -43,6 +43,13 @@ export default function Navbar(props) {
       onClick={() => goTo("/marketplace")}
       text="Marketplace"
       icon={BuildingStore24Icon}
+    />
+    <ToniqToggleButton
+      className="toniq-toggle-button-text-only"
+      active={props.view === "earn"}
+      onClick={() => goTo("/earn")}
+      text="Earn"
+      icon={Infinity24Icon}
     />
     <ToniqToggleButton
       className="toniq-toggle-button-text-only"

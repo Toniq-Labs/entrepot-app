@@ -55,6 +55,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
+import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 const drawerWidth = 0;//300;
@@ -140,7 +141,10 @@ export default function Listings(props) {
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const [wearableFilter, setWearableFilter] = useState("all");
   const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
+  
   const navigate = useNavigate();
+  
+  redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
   const cronicFilterTraits = ["health","base","speed","attack","range","magic","defense","resistance","basic","special"];
   var cftState = {};
@@ -787,7 +791,7 @@ export default function Listings(props) {
                           floor={stats.floor}
                           buy={props.buyNft}
                           afterBuy={_updates}
-                          
+                          view="marketplace"
                           listing={listing[1]}
                           metadata={listing[2]}
                         />

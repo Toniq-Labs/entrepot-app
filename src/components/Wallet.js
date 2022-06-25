@@ -14,6 +14,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import GavelIcon from '@material-ui/icons/Gavel';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
@@ -266,7 +269,7 @@ export default function Wallet(props) {
       <Divider />
       <List>
         <ListSubheader>
-          My Collection
+          NFTs
         </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/collected");}}>
           <ListItemIcon>
@@ -288,10 +291,34 @@ export default function Wallet(props) {
         </ListItem>
         <ListItem button onClick={() => {props.close(); navigate("/offers-made");}}>
           <ListItemIcon>
-            <LocalOfferIcon />
+            <CallMadeIcon />
           </ListItemIcon>
           <ListItemText primary="Offers Made" />
         </ListItem>
+        <ListSubheader>
+          Earn
+        </ListSubheader>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-requests");}}>
+          <ListItemIcon>
+            <PostAddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Earn Requests" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-contracts");}}>
+          <ListItemIcon>
+            <GavelIcon />
+          </ListItemIcon>
+          <ListItemText primary="Earn Contracts" />
+        </ListItem>
+        <ListItem button onClick={() => {props.close(); navigate("/earn-nfts");}}>
+          <ListItemIcon>
+            <LocalAtmIcon />
+          </ListItemIcon>
+          <ListItemText primary="Earn NFTs" />
+        </ListItem>
+        <ListSubheader>
+          Profile
+        </ListSubheader>
         <ListItem button onClick={() => {props.close(); navigate("/favorites");}}>
           <ListItemIcon>
             <FavoriteIcon />

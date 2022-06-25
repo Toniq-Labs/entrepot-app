@@ -16,6 +16,7 @@ import CardContent from "@material-ui/core/CardContent";
 import TextField from '@material-ui/core/TextField';
 import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
+import {isToniqEarnCollection} from '../location/toniq-earn-collections';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -145,7 +146,12 @@ export default function Marketplace(props) {
             spacing={2}
           >
             {
-              props.collections.filter(a => (query == "" || [a.name, a.brief, a.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0)).sort((a,b) => {
+              props.collections.filter(collection => {
+                // prevent Toniq Earn related collections from showing up in countries where its blocked
+                const allowed = isToniqEarnCollection(collection) ? props.isToniqEarnAllowed : true;
+                const inQuery = [collection.name, collection.brief, collection.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0;
+                return allowed && (query == "" || inQuery);
+              }).sort((a,b) => {
                 switch (sort) {
                   case "featured":
                     return b.priority - a.priority;              

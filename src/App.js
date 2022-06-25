@@ -16,6 +16,7 @@ import Listings from "./components/Listings";
 import BuyForm from "./components/BuyForm";
 import Activity from "./components/Activity";
 import UserCollection from "./components/UserCollection";
+import UserLoan from "./components/UserLoan";
 import UserActivity from "./components/UserActivity";
 import Marketplace from "./views/Marketplace";
 import Mint from "./views/Mint";
@@ -29,11 +30,15 @@ import Contact from "./views/Contact";
 import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
+import PawnForm from './components/PawnForm';
 import GeneralSaleComponent from "./components/sale/GeneralSaleComponent";
 import DfinityDeckSaleComponent from "./components/sale/DfinityDeckSaleComponent";
 import legacyPrincipalPayouts from './payments.json';
 import getNri from "./ic/nftv.js";
 import { EntrepotUpdateUSD, EntrepotUpdateLiked, EntrepotClearLiked, EntrepotUpdateStats } from './utils';
+import { MissingPage404 } from './views/MissingPage404';
+import {checkIfToniqEarnAllowed} from './location/geo-ip';
+import {EarnFeaturesBlocked} from './views/EarnBlocked';
 const api = extjs.connect("https://boundary.ic0.app/");
 const txfee = 10000;
 const txmin = 100000;
@@ -126,7 +131,7 @@ const isDevEnv = () => {
   if(window.location.host.indexOf("deploy-preview") == 0) return true;
   return false;
 };
-
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
@@ -140,10 +145,13 @@ export default function App() {
   const [collections, setCollections] = React.useState([]);
   const [appLoaded, setAppLoaded] = React.useState(false);
   
+  const [isToniqEarnAllowed, setToniqEarnAllowed] = React.useState(undefined);
+  
   const [buyFormData, setBuyFormData] = React.useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = React.useState(false);
   const [openListingForm, setOpenListingForm] = React.useState(false);
   const [openTransferForm, setOpenTransferForm] = React.useState(false);
+  const [openPawnForm, setOpenPawnForm] = React.useState(false);
   const [playOpener, setPlayOpener] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
   
@@ -184,6 +192,89 @@ export default function App() {
       });
       setShowBuyForm(true);
     });
+  };
+  const repayContract = async (token, repaymentaddress, amount, reward, refresh) => {
+    loader(true, "Making repayment...");
+    try{
+      var rbalance = BigInt(await api.token().getBalance(repaymentaddress));
+      var owed = (amount+reward) - rbalance;
+      if (owed > 0n){
+        if (balance < (owed + 10000n)){
+          return alert(
+          "There was an error",
+          "Your balance is insufficient to complete this transaction"
+          );
+        }
+        loader(true, "Transferring ICP...");
+        await extjs.connect("https://boundary.ic0.app/", identity).token().transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          repaymentaddress,
+          owed,
+          10000
+        );
+      };
+      loader(true, "Closing contract...");
+      var r2 = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_close(token);
+      if (r2.hasOwnProperty("err")) throw r2.err;
+      if (!r2.hasOwnProperty("ok")) throw "Unknown Error";
+      loader(true, "Reloading contracts...");
+      await refresh();
+      loader(false);
+      return alert("Contract Closed", "You have repaid this contract, and you will receive your NFT back shortly.");
+    } catch (e) {
+      loader(false);
+      return error(e);
+    };
+  };
+  const cancelRequest = async (tokenid, refresh) => {
+    loader(false);
+    var v = await confirm("Please confirm", "Are you sure you want to cancel this request?");
+    if (v){
+      try {
+        loader(true, "Cancelling request...");
+        var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_cancel(tokenid);
+        if (r.hasOwnProperty("err")) throw r.err;
+        if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+        loader(true, "Reloading requests...");
+        await refresh();
+        loader(false);
+        return alert("Request Cancelled", "Your Earn Request was cancelled successfully!");
+      } catch (e) {
+        loader(false);
+        return error(e);
+      };
+    };
+  };
+  const fillRequest = async (tokenid, amount, refresh) => {
+    loader(false);
+    var v = await confirm("Please confirm", "Are you sure you want to accept this request and transfer "+(Number(amount)/100000000).toFixed(2)+"ICP?");
+    if (v){
+      try {
+        loader(true, "Accepting request...");
+        var r = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_fill(tokenid, accounts[currentAccount].address, amount);
+        if (r.hasOwnProperty("err")) throw r.err;
+        if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+        var paytoaddress = r.ok;
+        loader(true, "Transferring ICP...");
+        await extjs.connect("https://boundary.ic0.app/", identity).token().transfer(
+          identity.getPrincipal(),
+          currentAccount,
+          paytoaddress,
+          amount,
+          10000
+        );
+        loader(true, "Finalizing contract...");
+        var r2 = await extjs.connect("https://boundary.ic0.app/", identity).canister(TREASURECANISTER).tp_settle(paytoaddress);
+        loader(true, "Reloading requests...");
+        await refresh();
+        loader(false);
+        return alert("Contract Accepted", "You have accepted an Earn Contract, and you will receive an NFT representing that contract shortly.");
+      } catch (e) {
+        loader(false);
+        return error(e);
+      };
+    };
   };
   const buyNft = async (canisterId, index, listing, ah) => {
     if (balance < listing.price + 10000n)
@@ -263,7 +354,7 @@ export default function App() {
     };
     loader(true, "Processing payments... (this can take a few minutes)");
     
-    var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai","jmuqr-yqaaa-aaaaj-qaicq-cai"];
+    var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai"];
     var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
     for (var j = 0; j < _collections.length; j++) {
       loader(true, "Processing payments... (this can take a few minutes)");
@@ -475,6 +566,12 @@ export default function App() {
     refresher = refresh;
     setOpenListingForm(true);
   }
+  const pawnNft = (token, loader, refresh) => {
+    setTokenNFT(token);
+    buttonLoader = loader;
+    refresher = refresh;
+    setOpenPawnForm(true);
+  }
   const transferNft = async (token, loader, refresh) => {
     setTokenNFT(token);
     buttonLoader = loader;
@@ -487,6 +584,10 @@ export default function App() {
   };
   const closeTransferForm = () => {
     setOpenTransferForm(false);
+    setTimeout(() => setTokenNFT(''), 300);
+  };
+  const closePawnForm = () => {
+    setOpenPawnForm(false);
     setTimeout(() => setTokenNFT(''), 300);
   };
   
@@ -534,13 +635,40 @@ export default function App() {
     }
   }
   
+  const restrictedEarnAccess = (allowedAccessElement) => {
+    if (isToniqEarnAllowed) {
+      return allowedAccessElement;
+    } else {
+      return <EarnFeaturesBlocked />;
+    }
+  }
+  
   //Form powered
+  const pawn = async (id, amount, reward, length, loader, refresh) => {
+    if (loader) loader(true, "Creating Earn Request...");
+    try {
+      var r = await extjs.connect("https://boundary.ic0.app/", identity).canister("yigae-jqaaa-aaaah-qczbq-cai").tp_create(id, extjs.toSubaccount(currentAccount ?? 0), BigInt(Math.floor(amount*100000000)), BigInt(length)*24n*60n*60n*1000000000n, BigInt(Math.floor(reward*100000000)), 2500, 2500);
+      if (r.hasOwnProperty("err")) throw r.err;
+      if (!r.hasOwnProperty("ok")) throw "Unknown Error";
+      if (loader) loader(true, "Sending NFT to canister...");
+      var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(id).transfer(identity.getPrincipal().toText(), currentAccount, "yigae-jqaaa-aaaah-qczbq-cai", BigInt(1), BigInt(0), "00", true);
+      console.log(r2);
+      if (loader) loader(true, "Loading NFTs...");
+      if (refresh) await refresh();
+      if (loader) loader(false);
+      return alert("Request Received", "Your Earn Request was created successfully!");
+    } catch (e) {
+      if (loader) loader(false);
+      return error(e);
+    };
+  };
   const transfer = async (id, address, loader, refresh) => {
     if (loader) loader(true, "Transferring NFT...");
     try {
       var r2 = await extjs.connect("https://boundary.ic0.app/", identity).token(id).transfer(identity.getPrincipal().toText(), currentAccount, address, BigInt(1), BigInt(0), "00", false);
       if (!r2) return error("There was an error transferring this NFT!");
       if (loader) loader(true, "Loading NFTs...");
+      console.log(refresh);
       if (refresh) await refresh();
       if (loader) loader(false);
       return alert("Transaction complete", "Your transfer was successful!");
@@ -549,9 +677,9 @@ export default function App() {
       return error(e);
     };
   };
-  const updateCollections = () => {
-     fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections").then(r => r.json()).then(r => {
-      var r2 = r;
+  const updateCollections = async () => {
+     const response = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections")
+     var r2 = await response.json();
       //Remove dev marked canisters
       if (isDevEnv() == false) {
         r2 = r2.filter(a => !a.dev);
@@ -572,8 +700,12 @@ export default function App() {
           }
         };
       };
-      if (!appLoaded) setAppLoaded(true);
-    });
+      if (isToniqEarnAllowed === undefined) {
+        setToniqEarnAllowed(await checkIfToniqEarnAllowed());
+      }
+      if (!appLoaded) {
+        setAppLoaded(true);
+      }
   };
   const list = async (id, price, loader, refresh) => {
     if (loader) loader(true);
@@ -704,6 +836,7 @@ export default function App() {
             <Routes>
               <Route path="/marketplace/asset/:tokenid" exact element={
                 <Detail
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   alert={alert}
                   confirm={confirm}
@@ -714,12 +847,14 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
                 />} />
               <Route path="/marketplace/:route/activity" exact element={
                 <Activity
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -729,6 +864,7 @@ export default function App() {
                 <Listings
                   error={error}
                   view={"listings"}
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
                   loggedIn={loggedIn} 
@@ -736,6 +872,7 @@ export default function App() {
                 />} />
               <Route path="/marketplace" exact element={
                 <Marketplace
+                  isToniqEarnAllowed={isToniqEarnAllowed}
                   error={error}
                   view={"collections"}
                   alert={alert}
@@ -762,6 +899,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -786,6 +924,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -802,6 +941,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/activity" exact element={
@@ -815,6 +955,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -840,6 +981,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -864,6 +1006,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -880,8 +1023,93 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
+              <Route path="/earn" exact element={restrictedEarnAccess(
+                <UserLoan
+                  error={error}
+                  view={"earn"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />)} />
+              <Route path="/earn-requests" exact element={restrictedEarnAccess(
+                <UserLoan
+                  error={error}
+                  view={"earn-requests"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />)} />
+              <Route path="/earn-contracts" exact element={restrictedEarnAccess(
+                <UserLoan
+                  error={error}
+                  view={"earn-contracts"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  repayContract={repayContract} 
+                  fillRequest={fillRequest} 
+                  cancelRequest={cancelRequest} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />)} />
+              <Route path="/new-request" exact element={restrictedEarnAccess(
+                <UserCollection
+                  error={error}
+                  view={"new-request"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />)} />
+              <Route path="/earn-nfts" exact element={restrictedEarnAccess(
+                <UserCollection
+                  error={error}
+                  view={"earn-nfts"}
+                  alert={alert}
+                  confirm={confirm}
+                  loggedIn={loggedIn} 
+                  unpackNft={unpackNft} 
+                  listNft={listNft} 
+                  wrapAndlistNft={wrapAndlistNft} 
+                  unwrapNft={unwrapNft} 
+                  transferNft={transferNft} 
+                  pawnNft={pawnNft} 
+                  loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
+                />)} />
               <Route path="/activity" exact element={
                 <UserActivity
                   error={error}
@@ -893,6 +1121,7 @@ export default function App() {
                   wrapAndlistNft={wrapAndlistNft} 
                   unwrapNft={unwrapNft} 
                   transferNft={transferNft} 
+                  pawnNft={pawnNft} 
                   confirm={confirm}
                   loggedIn={loggedIn} 
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
@@ -944,10 +1173,12 @@ export default function App() {
                   confirm={confirm}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
+                <Route path="*" element={<MissingPage404 />} />
             </Routes>
             <BuyForm open={showBuyForm} {...buyFormData} />
             <TransferForm refresher={refresher} buttonLoader={buttonLoader} transfer={transfer} alert={alert} open={openTransferForm} close={closeTransferForm} loader={loader} error={error} nft={tokenNFT} />
             <ListingForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} list={list} alert={alert} open={openListingForm} close={closeListingForm} loader={loader} error={error} nft={tokenNFT} />
+            <PawnForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} pawn={pawn} alert={alert} open={openPawnForm} close={closePawnForm} loader={loader} error={error} nft={tokenNFT} />
             <Opener alert={alert} nft={tokenNFT} identity={identity} currentAccount={currentAccount} open={playOpener} onEnd={closeUnpackNft} />
           </div>
         </main>

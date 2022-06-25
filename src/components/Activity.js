@@ -43,6 +43,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
+import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 
 
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -110,6 +111,8 @@ export default function Activity(props) {
   const [collection, setCollection] = useState(getCollectionFromRoute(params?.route, props.collections));
   
   const navigate = useNavigate();
+  
+  redirectIfBlockedFromEarnFeatures(navigate, collection, props);
 
   const _changeCollection = async c => {
     setCollection(c);

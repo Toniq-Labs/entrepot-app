@@ -51,6 +51,7 @@ import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDispl
 import {
   useParams
 } from "react-router-dom";
+import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -72,6 +73,7 @@ function useInterval(callback, delay) {
 }
 const api = extjs.connect("https://boundary.ic0.app/");
 
+const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const shorten = a => {
   return a.substring(0, 12) + "...";
 };
@@ -99,6 +101,9 @@ const Detail = (props) => {
   const [offers, setOffers] = React.useState(false);
   const [openOfferForm, setOpenOfferForm] = React.useState(false);
   const collection = props.collections.find(e => e.canister === canister)
+  
+  redirectIfBlockedFromEarnFeatures(navigate, collection, props);
+  
   const classes = useStyles();
   const reloadOffers = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {
@@ -268,6 +273,8 @@ const Detail = (props) => {
       case "ag2h7-riaaa-aaaah-qce6q-cai":
       case "ri5pt-5iaaa-aaaan-qactq-cai":
       case "sbcwr-3qaaa-aaaam-qamoa-cai":
+      case "sbcwr-3qaaa-aaaam-qamoa-cai":
+      case TREASURECANISTER:
         return (
           <iframe
             frameBorder="0"
