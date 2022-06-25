@@ -4,10 +4,10 @@ export function EarnFeaturesBlocked() {
   return (
     <>
       <h1 style={{textAlign: 'center'}}>
-        Toniq Earn features are blocked for your country due to securities regulations.
+        Toniq Earn features are not available in your region.
       </h1>
       <p style={{textAlign: 'center'}}>
-        Or, possibly, we could not detect your country due to adblockers. Please disable your adblocker for Entrepot, we don't have ads!
+        Unfortunately, we are not providing service for certain regions, and we detected that your IP is from an unsupported region. Thank you for your understanding.
       </p>
     </>
   );

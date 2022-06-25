@@ -22,13 +22,13 @@ export async function checkIfToniqEarnAllowed() {
                 resolve(allowed);
             }, (error) => {
                 console.error(error);
-                // if any error occurs, resort to simply blocking the user from accessing Toniq Earn features
-                resolve(false);
+                // if any error occurs, resort to simply allowing the user to access Toniq Earn features
+                resolve(true);
             });
         } catch (error) {
             console.error(error);
-            // if any error occurs, resort to simply blocking the user from accessing Toniq Earn features
-            resolve(false);
+            // if any error occurs, resort to simply allowing the user to access Toniq Earn features
+            resolve(true);
         }
     });
 }
