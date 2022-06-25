@@ -13,7 +13,6 @@ import Sidebar from "../Sidebar";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Navbar from "../../containers/Navbar.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
