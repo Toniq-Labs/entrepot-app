@@ -356,7 +356,7 @@ export default function UserLoan(props) {
       var s = EntrepotCollectionStats(canister);
       var data = {...a, days : getDays(a), apr : getApr(a) };
       if (!isNaN(Number(s.floor))) {
-        data.floor = BigInt(Number(s.floor)*100000000);
+        data.floor = BigInt(Math.round(Number(s.floor)*100000000));
         data.floorRate = Number(a.amount)/Number(data.floor);
       }
       return data;
@@ -382,8 +382,8 @@ export default function UserLoan(props) {
   const filterResults = r => {
     if (!minAmount && !maxAmount && !minApr && !maxApr && !minFloor && !maxFloor) return r;
     return r.filter(a => {
-      if (minAmount && (a.amount <= (BigInt(minAmount)*100000000n))) return false;
-      if (maxAmount && (a.amount >= (BigInt(maxAmount)*100000000n))) return false;
+      if (minAmount && (a.amount <= (BigInt(minAmount*100000000)))) return false;
+      if (maxAmount && (a.amount >= (BigInt(maxAmount*100000000)))) return false;
       if (minApr && (a.apr <= (minApr/100))) return false;
       if (maxApr && (a.apr >= (maxApr/100))) return false;
       if (minFloor && (a.floorRate <= (minFloor/100))) return false;
