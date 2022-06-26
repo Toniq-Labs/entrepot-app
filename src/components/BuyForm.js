@@ -20,40 +20,78 @@ export default function BuyForm(props) {
     setImgLoaded(false);
     if (typeof props.handler != 'undefined') props.handler(t);
   };
-  return (
-    <Dialog
-      fullWidth={true}
-      maxWidth={"xs"}
-      open={props.open}
-      style={{textAlign:"center"}}
-    >
-      <DialogTitle id="alert-dialog-title"><strong>You are about to make a purchase!</strong></DialogTitle>
-      <DialogContent>
-        <img alt="NFT" src={EntrepotNFTImage(props.canister, props.index, props.tokenid)} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
-        <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />
-        <Alert severity="warning"><strong>This is a Toniq Earn contract; do not confuse for actual NFTs</strong></Alert>
-        <DialogContentText>
-          You are about to purchase this NFT from your connected wallet.
-          
-          <Grid container style={{padding:20}}>
-            <Grid item xs={6} style={{paddingTop:10,textAlign:"left"}}>
-              <strong>Total</strong>
+  if (props.canister == TREASURECANISTER) {
+    return (
+      <Dialog
+        fullWidth={true}
+        maxWidth={"xs"}
+        open={props.open}
+        style={{textAlign:"center"}}
+      >
+        <DialogTitle id="alert-dialog-title"><strong>You are about to make a purchase!</strong></DialogTitle>
+        <DialogContent>
+          <img alt="NFT" src={EntrepotNFTImage(props.canister, props.index, props.tokenid)} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
+          <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+          <Alert severity="warning"><strong>This is a Toniq Earn contract; do not confuse for actual NFTs</strong></Alert>
+          <DialogContentText>
+            You are about to purchase this NFT from your connected wallet.
+            
+            <Grid container style={{padding:20}}>
+              <Grid item xs={6} style={{paddingTop:10,textAlign:"left"}}>
+                <strong>Total</strong>
+              </Grid>
+              <Grid item xs={6} style={{textAlign:"right"}}>
+                <strong><span style={{fontSize:"1.5em",color:"red"}}>{props.price ? <PriceICP size={35} price={props.price} /> : "" }</span></strong><br />{props.price ? <>~<PriceUSD price={EntrepotGetICPUSD(props.price)} /></> : ""}
+              </Grid>
             </Grid>
-            <Grid item xs={6} style={{textAlign:"right"}}>
-              <strong><span style={{fontSize:"1.5em",color:"red"}}>{props.price ? <PriceICP size={35} price={props.price} /> : "" }</span></strong><br />{props.price ? <>~<PriceUSD price={EntrepotGetICPUSD(props.price)} /></> : ""}
+            <small>This process may take a minute to process. Transactions can not be reversed. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></small>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={() => handleClick(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={() => handleClick(true)} color="primary">
+          Confirm
+        </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }else{
+    return (
+      <Dialog
+        fullWidth={true}
+        maxWidth={"xs"}
+        open={props.open}
+        style={{textAlign:"center"}}
+      >
+        <DialogTitle id="alert-dialog-title"><strong>You are about to make a purchase!</strong></DialogTitle>
+        <DialogContent>
+          <img alt="NFT" src={EntrepotNFTImage(props.canister, props.index, props.tokenid)} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
+          <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />
+          <DialogContentText>
+            You are about to purchase this NFT from your connected wallet.
+            
+            <Grid container style={{padding:20}}>
+              <Grid item xs={6} style={{paddingTop:10,textAlign:"left"}}>
+                <strong>Total</strong>
+              </Grid>
+              <Grid item xs={6} style={{textAlign:"right"}}>
+                <strong><span style={{fontSize:"1.5em",color:"red"}}>{props.price ? <PriceICP size={35} price={props.price} /> : "" }</span></strong><br />{props.price ? <>~<PriceUSD price={EntrepotGetICPUSD(props.price)} /></> : ""}
+              </Grid>
             </Grid>
-          </Grid>
-          <small>This process may take a minute to process. Transactions can not be reversed. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></small>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-      <Button onClick={() => handleClick(false)} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={() => handleClick(true)} color="primary">
-        Confirm
-      </Button>
-      </DialogActions>
-    </Dialog>
-  );
+            <small>This process may take a minute to process. Transactions can not be reversed. By clicking confirm you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></small>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={() => handleClick(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={() => handleClick(true)} color="primary">
+          Confirm
+        </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 }
