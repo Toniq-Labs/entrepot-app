@@ -424,6 +424,10 @@ export default function UserLoan(props) {
           var r = Number(a.days)-Number(b.days);
           if (r == 0) r = b.apr-a.apr;
           return r;
+        case "floor_rate":
+          var r = Number(a.floorRate)-Number(b.floorRate);
+          if (r == 0) r = b.apr-a.apr;
+          return r;
         default:
           return 0;
       };
@@ -680,14 +684,12 @@ export default function UserLoan(props) {
                     value={sort}
                     onChange={changeSort}
                   >
-                    <MenuItem value={"apr"}>Highest APR</MenuItem>
-                    <MenuItem value={"reward"}>Highest Reward</MenuItem>
+                    <MenuItem value={"floor_rate"}>Floor Rate</MenuItem>
+                    <MenuItem value={"apr"}>APR</MenuItem>
+                    <MenuItem value={"reward"}>Reward</MenuItem>
                     <MenuItem value={"date_desc"}>Latest</MenuItem>
-                    <MenuItem value={"date_asc"}>Oldest</MenuItem>
-                    <MenuItem value={"amount_asc"}>Amount: Low to High</MenuItem>
                     <MenuItem value={"amount_desc"}>Amount: High to Low</MenuItem>
-                    <MenuItem value={"days_asc"}>Days: Low to High</MenuItem>
-                    <MenuItem value={"days_desc"}>Days: High to Low</MenuItem>
+                    <MenuItem value={"amount_asc"}>Amount: Low to High</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
