@@ -23,11 +23,22 @@ export default function PawnForm(props) {
   const [apr, setApr] = React.useState(0);
   const [length, setLength] = React.useState(30);
   var index, canister;
+
   const _submit = () => {
-    if (reward > amount) return props.error("The reward can not be more than the amount requested");
+    
+    let { canister, index} = extjs.decodeTokenId(props.nft.id);
+    var s = EntrepotCollectionStats(canister);
+    if (!isNaN(Number(s.floor))) {
+      var collectionFloor = BigInt(Math.round(Number(s.floor)*100000000));
+    }else{
+      var collectionFloor = 1E8;
+    }
+    
+    if (reward > amount) return props.error("The reward cannot be more than the amount requested");
+    if (amount > collectionFloor) return props.error("The amount cannot be more than the collection floor");
     //Validate address
-    handleClose();
-    //props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
+    //handleClose();
+    props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
   };
   const handleClose = () => {
     setAmount(0);
