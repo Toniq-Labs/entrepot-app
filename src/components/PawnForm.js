@@ -15,6 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from "../ic/extjs.js";
 import {EntrepotNFTImage} from '../utils.js';
+import { EntrepotCollectionStats } from '../utils';
 
 export default function PawnForm(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
