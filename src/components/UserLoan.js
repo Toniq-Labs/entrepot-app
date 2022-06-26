@@ -437,7 +437,6 @@ export default function UserLoan(props) {
   React.useEffect(() => {
     console.log("Hook: start");
     EntrepotUpdateStats().then(r => {
-      setMaxFloor(setToNumber("100"));
       setDisplayedResults(false)
     });
   }, []);

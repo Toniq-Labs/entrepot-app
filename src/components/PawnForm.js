@@ -15,6 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from "../ic/extjs.js";
 import {EntrepotNFTImage} from '../utils.js';
+import { EntrepotUpdateStats, EntrepotCollectionStats } from '../utils';
 
 export default function PawnForm(props) {
   const [imgLoaded, setImgLoaded] = React.useState(false);
@@ -22,12 +23,37 @@ export default function PawnForm(props) {
   const [reward, setReward] = React.useState(0);
   const [apr, setApr] = React.useState(0);
   const [length, setLength] = React.useState(30);
-  var index, canister;
+  const [floor, setFloor] = React.useState(false);
+  const [canister, setCanister] = React.useState("");
+  const [index, setIndex] = React.useState("");
+  
+  
+  React.useEffect(() => {
+    if (props.nft.id){
+      let { canister, index } = extjs.decodeTokenId(props.nft.id);
+      setIndex(index);
+      setCanister(canister)
+      var s = EntrepotCollectionStats(canister);
+      if (!isNaN(Number(s.floor))) {
+        setFloor(Number(s.floor));
+      } else {
+        EntrepotUpdateStats().then(r => {
+          var s = EntrepotCollectionStats(canister);
+          if (!isNaN(Number(s.floor))) {
+            setFloor(Number(s.floor));
+          };
+        });
+      };
+    };
+  }, [props.nft.id]);
+    
   const _submit = () => {
-    if (reward > amount) return props.error("The reward can not be more than the amount requested");
+    if (!floor) return props.error("Trying to retreive floor, please try again shortly.");
+    if (amount > floor)  return props.error("The amount requested can not be more than the current floor for this collection ("+floor+" ICP)");
+    if (reward > (amount/2)) return props.error("The reward can not be more than 50% of the amount requested");
     //Validate address
     handleClose();
-    //props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
+    props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
   };
   const handleClose = () => {
     setAmount(0);
@@ -41,7 +67,7 @@ export default function PawnForm(props) {
       <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth >
         <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Lock NFT in protocol</DialogTitle>
         <DialogContent>
-        <img alt="NFT" src={(props.nft.id ? EntrepotNFTImage(extjs.decodeTokenId(props.nft.id).canister, extjs.decodeTokenId(props.nft.id).index, props.nft.id) : "")} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
+        <img alt="NFT" src={(props.nft.id ? EntrepotNFTImage(canister, index, props.nft.id) : "")} style={{maxHeight:"200px", margin:"0px auto 20px", display:(imgLoaded ? "block" : "none")}} onLoad={() => setImgLoaded(true)}/>
         <Skeleton style={{width: "200px", height:"200px", margin:"0px auto 20px", display:(imgLoaded ? "none" : "block")}} variant="rect"  />
         <Alert severity="info">Please enter the amount of ICP, the rewards, and the length of the contract below. Once you submit, your NFT will be sent to escrow. If the request has not been accepted <strong>after 24 hours</strong> it will be automatically cancelled.</Alert>
           <Grid container>
@@ -99,8 +125,11 @@ export default function PawnForm(props) {
               />
             </Grid>
             <Grid item xs={6}>
+              {floor ?
+              <div style={{paddingTop:10,paddingLeft:20}}><strong>Floor {floor} ICP</strong></div>
+              : ""}
               {apr > 0 ?
-              <div style={{paddingTop:20,paddingLeft:20}}><strong>APR {(Math.round(apr*1000)/10).toFixed(1)}%</strong></div>
+              <div style={{paddingTop:0,paddingLeft:20}}><strong>APR {(Math.round(apr*1000)/10).toFixed(1)}%</strong></div>
               : ""}
             </Grid>
           </Grid>
