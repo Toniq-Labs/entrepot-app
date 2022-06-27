@@ -113,8 +113,18 @@ compressAddress = (a) => {
 displayDate = (d) => {
   return new Date(d).toString();
 },
+EntrepotEarnDetailsData = (id) => {
+  if (!earnData.hasOwnProperty(id)) {
+    api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
+      if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
+    });
+  };
+  if (earnData.hasOwnProperty(id)) {
+    return earnData[id].reward+earnData[id].amount;
+  };
+  return 0n;
+},
 EntrepotEarnDetails = (id) => {
-  console.log(id);
   if (!earnData.hasOwnProperty(id)) {
     api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
       if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -318,5 +328,5 @@ numf = (n, d) => {
 };
 export {
   clipboardCopy, compressAddress, displayDate, numf, EntrepotUpdateStats, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotAllStats, EntrepotCollectionStats, EntrepotUpdateUSD, EntrepotGetICPUSD, EntrepotUpdateLiked, 
-  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked, EntrepotGetAllLiked, EntrepotEarnDetails
+  EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotClearLiked, EntrepotGetAllLiked, EntrepotEarnDetails, EntrepotEarnDetailsData
 };
