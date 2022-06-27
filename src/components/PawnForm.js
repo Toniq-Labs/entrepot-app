@@ -51,6 +51,7 @@ export default function PawnForm(props) {
     if (!floor) return props.error("Trying to retreive floor, please try again shortly.");
     if (amount > floor)  return props.error("The amount requested can not be more than the current floor for this collection ("+floor+" ICP)");
     if (reward > (amount/2)) return props.error("The reward can not be more than 50% of the amount requested");
+    if (reward < 0.01) return props.error("The reward must be at least 0.01ICP");
     //Validate address
     handleClose();
     props.pawn(props.nft.id, amount, reward, length, props.buttonLoader, props.refresher);
