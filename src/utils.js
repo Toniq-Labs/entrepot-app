@@ -133,7 +133,7 @@ EntrepotEarnDetails = (id) => {
   if (earnData.hasOwnProperty(id)) {
     if (earnData[id].repaid || earnData[id].defaulted) return "";
     return (<div style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderTop:"1px solid #ddd"}}>
-      EARN <PriceICP price={earnData[id].reward+earnData[id].amount} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
+      Receive NFT or EARN <PriceICP price={earnData[id].reward+earnData[id].amount} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
     </div>);
   };
   return "";
