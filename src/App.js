@@ -477,7 +477,7 @@ export default function App() {
           }
           break;
         case "plug":
-          const result = await window.ic.plug.requestConnect({
+          var result = await window.ic.plug.requestConnect({
             whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
           });
           if (result) {
@@ -486,6 +486,25 @@ export default function App() {
             setAccounts([
               {
                 name: "PlugWallet",
+                address: extjs.toAddress(id.getPrincipal().toText(), 0),
+              },
+            ]);
+            setCurrentAccount(0);
+            localStorage.setItem("_loginType", t);
+          } else {
+            throw new Error("Failed to connect to your wallet");
+          }
+          break;
+        case "infinitywallet":
+          var result = await window.ic.infinityWallet.requestConnect({
+            whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
+          });
+          if (result) {
+            id = await window.ic.infinityWallet.agent._identity;
+            setIdentity(id);
+            setAccounts([
+              {
+                name: "InfinityWallet",
                 address: extjs.toAddress(id.getPrincipal().toText(), 0),
               },
             ]);
@@ -785,6 +804,26 @@ export default function App() {
                 setAccounts([
                   {
                     name: "Plug Wallet",
+                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                  },
+                ]);
+              }
+            })();
+            break;
+          case "infinitywallet":
+            (async () => {
+              const connected = await window.ic.infinityWallet.isConnected();
+              if (connected) {
+                if (!window.ic.infinityWallet.agent) {
+                  await window.ic.infinityWallet.createAgent({
+                    whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
+                  });
+                }
+                var id = await window.ic.infinityWallet.agent._identity;
+                setIdentity(id);
+                setAccounts([
+                  {
+                    name: "InfinityWallet",
                     address: extjs.toAddress(id.getPrincipal().toText(), 0),
                   },
                 ]);

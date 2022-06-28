@@ -261,6 +261,12 @@ export default function Wallet(props) {
               </ListItemIcon>
               <ListItemText primary="Plug" />
             </MenuItem>
+            <MenuItem onClick={() => login('infinitywallet')}>
+              <ListItemIcon>
+                <img alt="I" src="/infinitywallet.png" style={{height:26}} />
+              </ListItemIcon>
+              <ListItemText primary="InfinityWallet" />
+            </MenuItem>
           </Menu>
         </ListItem>
       </List> : ""}
