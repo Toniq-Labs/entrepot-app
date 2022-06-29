@@ -440,7 +440,7 @@ export default function NFT(props) {
             }
             {typeof props.view !== 'undefined' && props.view == "marketplace" &&  canister === TREASURECANISTER ?
               <Grid item xs={12}>
-                {EntrepotEarnDetails(tokenid)}
+                {EntrepotEarnDetails(tokenid,props.price)}
               </Grid>
             :""}
           </Grid>
