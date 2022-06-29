@@ -133,7 +133,7 @@ EntrepotEarnDetails = (id,nft_price) => {
   if (earnData.hasOwnProperty(id)) {
     if (earnData[id].repaid || earnData[id].defaulted) return "";
     return (<div style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderTop:"1px solid #ddd"}}>
-      Receive NFT or EARN <PriceICP price={EntrepotEarnDetailsData(id) - nft_price} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
+      Receive NFT or Profit <PriceICP style={(EntrepotEarnDetailsData(id) > nft_price ? {color:"green"} : {color:"red"})} price={EntrepotEarnDetailsData(id) - nft_price} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
     </div>);
   };
   return "";
