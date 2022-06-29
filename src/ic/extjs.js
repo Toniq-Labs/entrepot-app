@@ -98,6 +98,28 @@ for(const a in tokensToLoad) {
 };
 
 
+class VirtualActor {
+  _canister = false;
+  _idl = false;
+  _actor = false;
+  constructor(canister, idl) {
+    if (canister) this._canister = canister;
+    if (idl) this._idl = idl;
+    return new Proxy(this, {
+      get : (target, name) => {
+        return async function() {
+          if (!target._actor) {
+            target._actor = await window.ic.infinityWallet.createActor({
+              canisterId: target._canister,
+              interfaceFactory: target._idl,
+            }); 
+          };
+          return await target._actor[name](...arguments);
+        }
+      }
+    });
+  }
+};
 class ExtConnection {
   //map known canisters to preloaded IDLs
   _mapIdls = {
@@ -188,7 +210,11 @@ class ExtConnection {
       }
     }
     if (!this._canisters.hasOwnProperty(cid)){
-      this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});        
+      if (this._agent == "infinitywallet") {
+        this._canisters[cid] = new VirtualActor(cid, idl);
+      } else {
+        this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});        
+      }
     }
     return this._canisters[cid];
   }
@@ -606,7 +632,9 @@ class ExtConnection {
   }
  
   _makeAgent() {
-    if (window?.ic?.plug?.agent) {
+    if (this._identity.hasOwnProperty("type") && this._identity.type == "infinitywallet") {
+      this._agent = this._identity.type;
+    } else if (window?.ic?.plug?.agent) {
       this._agent = window.ic.plug.agent;
     } else {
       var args = {};

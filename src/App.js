@@ -500,7 +500,11 @@ export default function App() {
             whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
           });
           if (result) {
-            id = await window.ic.infinityWallet.agent._identity;
+            var p = await window.ic.infinityWallet.getPrincipal();
+            var id = {
+              type : "infinitywallet",
+              getPrincipal : () => p
+            };
             setIdentity(id);
             setAccounts([
               {
@@ -815,11 +819,15 @@ export default function App() {
               const connected = await window.ic.infinityWallet.isConnected();
               if (connected) {
                 if (!window.ic.infinityWallet.agent) {
-                  await window.ic.infinityWallet.createAgent({
-                    whitelist: collections.map(a => a.canister).concat(otherPrincipalsForPlug),
+                  await window.ic.infinityWallet.requestConnect({
+                    whitelist : collections.map(a => a.canister).concat(otherPrincipalsForPlug)
                   });
-                }
-                var id = await window.ic.infinityWallet.agent._identity;
+                };
+                var p = await window.ic.infinityWallet.getPrincipal();
+                var id = {
+                  type : "infinitywallet",
+                  getPrincipal : () => p
+                };
                 setIdentity(id);
                 setAccounts([
                   {
