@@ -124,7 +124,7 @@ EntrepotEarnDetailsData = (id) => {
   };
   return 0n;
 },
-EntrepotEarnDetails = (id) => {
+EntrepotEarnDetails = (id,nft_price) => {
   if (!earnData.hasOwnProperty(id)) {
     api.canister(TREASURECANISTER).tp_loanDetails(id).then(r => {
       if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -133,7 +133,7 @@ EntrepotEarnDetails = (id) => {
   if (earnData.hasOwnProperty(id)) {
     if (earnData[id].repaid || earnData[id].defaulted) return "";
     return (<div style={{padding:"5px 0",fontSize:11, fontWeight:"bold", textAlign:"left", borderTop:"1px solid #ddd"}}>
-      Receive NFT or EARN <PriceICP price={earnData[id].reward+earnData[id].amount} /><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
+      Receive NFT or Profit <span style={(EntrepotEarnDetailsData(id) > nft_price ? {color:"green"} : {color:"red"})}><PriceICP price={EntrepotEarnDetailsData(id) - nft_price} /></span><br /><Timestamp relative autoUpdate date={Number((earnData[id].filled[0]+earnData[id].length) / 1000000000n)}/>
     </div>);
   };
   return "";
