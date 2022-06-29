@@ -102,14 +102,16 @@ class VirtualActor {
   _canister = false;
   _idl = false;
   _actor = false;
-  constructor(canister, idl) {
+  _type = "";
+  constructor(canister, idl, type) {
     if (canister) this._canister = canister;
     if (idl) this._idl = idl;
+    if (type) this._type = type;
     return new Proxy(this, {
       get : (target, name) => {
         return async function() {
           if (!target._actor) {
-            target._actor = await window.ic.infinityWallet.createActor({
+            target._actor = await window.ic[target._type].createActor({
               canisterId: target._canister,
               interfaceFactory: target._idl,
             }); 
@@ -210,8 +212,8 @@ class ExtConnection {
       }
     }
     if (!this._canisters.hasOwnProperty(cid)){
-      if (this._agent == "infinitywallet") {
-        this._canisters[cid] = new VirtualActor(cid, idl);
+      if (this._agent == "infinitywallet" || this._agent == "plug") {
+        this._canisters[cid] = new VirtualActor(cid, idl, this._agent);
       } else {
         this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});        
       }
@@ -634,8 +636,6 @@ class ExtConnection {
   _makeAgent() {
     if (this._identity.hasOwnProperty("type") && this._identity.type == "infinitywallet") {
       this._agent = this._identity.type;
-    } else if (window?.ic?.plug?.agent) {
-      this._agent = window.ic.plug.agent;
     } else {
       var args = {};
       if (this._identity) args['identity'] = this._identity;
