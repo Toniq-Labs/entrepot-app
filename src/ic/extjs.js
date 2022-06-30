@@ -634,7 +634,7 @@ class ExtConnection {
   }
  
   _makeAgent() {
-    if (this._identity.hasOwnProperty("type") && this._identity.type == "infinitywallet") {
+    if (this._identity.hasOwnProperty("type")) {
       this._agent = this._identity.type;
     } else {
       var args = {};
