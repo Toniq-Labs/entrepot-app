@@ -212,7 +212,7 @@ class ExtConnection {
       }
     }
     if (!this._canisters.hasOwnProperty(cid)){
-      if (this._agent == "infinitywallet" || this._agent == "plug") {
+      if (this._agent == "infinityWallet" || this._agent == "plug") {
         this._canisters[cid] = new VirtualActor(cid, idl, this._agent);
       } else {
         this._canisters[cid] = Actor.createActor(idl, {agent : this._agent, canisterId : cid});        
