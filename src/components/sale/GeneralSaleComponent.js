@@ -68,7 +68,6 @@ export default function GeneralSaleComponent(props) {
     
   const _updates = async () => {
     var salesSettings = await api.canister(collection.canister, "sale").salesSettings((props.account ? props.account.address : ""));
-    console.log(salesSettings);
     setSalePrice(salesSettings.salePrice);
     setStartTime(Number(salesSettings.startTime/1000000n));
     setWhitelistTime(Number(salesSettings.whitelistTime/1000000n));

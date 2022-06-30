@@ -38,6 +38,7 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import SearchIcon from '@material-ui/icons/Search';
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
 import { useNavigate } from "react-router";
@@ -84,10 +85,9 @@ var intv = false;
 var loadedAccount = false;
 export default function Wallet(props) {
   const navigate = useNavigate();
-  const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container = window !== undefined ? () => window.document.body : undefined;
   const [balance, setBalance] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -186,6 +186,12 @@ export default function Wallet(props) {
               <FileCopyIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="Copy Address" />
+          </MenuItem>
+          <MenuItem onClick={() => { window.open("https://icscan.io/account/"+props.account.address, '_blank', 'noopener,noreferrer'); handleClose();}}>
+            <ListItemIcon>
+              <SearchIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="View in Explorer" />
           </MenuItem>
           <MenuItem onClick={() => {processPayments(); handleClose();}}>
             <ListItemIcon>
