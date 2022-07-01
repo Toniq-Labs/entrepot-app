@@ -9,8 +9,8 @@ import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
-import { ToniqToggleButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, Infinity24Icon } from '@toniq-labs/design-system';
+import { ToniqToggleButton, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { Rocket24Icon, BuildingStore24Icon, Infinity24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, toniqFontStyles } from '@toniq-labs/design-system';
 
 export default function Navbar(props) {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function Navbar(props) {
       className="toniq-toggle-button-text-only"
       active={props.view === "sale"}
       onClick={() => goTo("/sale")}
-      text="LaunchPad"
+      text="Launchpad"
       icon={Rocket24Icon}
     />
     <ToniqToggleButton
@@ -67,16 +67,14 @@ export default function Navbar(props) {
     />
   </>)
   
+  const entrepotTitleStyles = {
+    ...cssToReactStyleObject(toniqFontStyles.h2Font),
+    ...cssToReactStyleObject(toniqFontStyles.extraBoldFont)
+  };
+  
   return (
     <>
     <style dangerouslySetInnerHTML={{__html: `
-      /* temporary! Remove this once the design system styles have been fully embraced */
-      .${classes.root} ${ToniqToggleButton.tagName} {
-        font: inherit;
-        font-weight: bold;
-        font-size: 1.2em;
-        text-transform: uppercase;
-      }
       .${classes.smallScreenNav} ${ToniqToggleButton.tagName} {
         margin: 8px 16px;
       }
@@ -86,11 +84,10 @@ export default function Navbar(props) {
       <AppBar position="fixed" style={{zIndex: 1400, background: "white" }}>
         <Toolbar style={{gap: '4px', alignItems: 'stretch'}}>
           <Typography variant="h6" noWrap>
-            <a onClick={() => goTo("/")}><img
-              alt="Entrepot"
-              src="/logo.jpg"
-              style={{ height: 64, cursor: "pointer" }}
-            /></a>
+            <a style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => goTo("/")}>
+              <ToniqIcon className="toniq-icon-fit-icon" style={{height: '54px', width: '54px', margin: '8px', color: toniqColors.brandPrimary.foregroundColor}} icon={EntrepotLogo144Icon}/>
+              <span style={entrepotTitleStyles}>Entrepot</span>
+            </a>
           </Typography>
           <div className={classes.grow} />
           <div className={classes.bigScreenNavButtons}>
