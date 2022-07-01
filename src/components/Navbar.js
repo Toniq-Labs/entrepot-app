@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,14 +9,36 @@ import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
-import { ToniqToggleButton, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Infinity24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, toniqFontStyles } from '@toniq-labs/design-system';
+import { ToniqToggleButton, ToniqIcon, ToniqButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Icp24Icon, Infinity24Icon, LoaderAnimated24Icon } from '@toniq-labs/design-system';
+import extjs from '../ic/extjs.js';
+import {icpToString} from './PriceICP';
+
+const api = extjs.connect("https://boundary.ic0.app/");
 
 export default function Navbar(props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [walletOpen, setWalletOpen] = React.useState(false);
+  const [balance, setBalance] = React.useState(undefined);
   const classes = useStyles();
+  console.log({account: props.account});
+  console.log(props);
+  
+  
+  const refresh = async () => {
+    console.log('refreshing');
+    if (props.account){
+      var b = await api.token().getBalance(props.account.address);
+      setBalance(b);
+    } else {
+      setBalance(undefined);
+    }
+  };
+  
+  useEffect(() => {
+    refresh();
+  }, [props.account]);
 
   const handleClick = () => {
     setWalletOpen(false)
@@ -92,13 +114,13 @@ export default function Navbar(props) {
           <div className={classes.grow} />
           <div className={classes.bigScreenNavButtons}>
             {navBarButtons}
-            <Button
+            <ToniqButton
+              style={{marginLeft: '8px'}}
               onClick={handleDrawerToggle}
-              color="inherit"
-              className={[classes.button].join(' ')}
-              >
-              <AccountBalanceWalletIcon fontSize="large" />
-            </Button>
+              className="toniq-button-outline"
+              icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
+              text={balance === undefined ? '' : icpToString(balance)}
+            ></ToniqButton>
           </div>
 
           <IconButton className={classes.smallScreenButton}>
