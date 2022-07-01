@@ -1196,7 +1196,7 @@ export default function App() {
             </Routes>
             <BuyForm open={showBuyForm} {...buyFormData} />
             <TransferForm refresher={refresher} buttonLoader={buttonLoader} transfer={transfer} alert={alert} open={openTransferForm} close={closeTransferForm} loader={loader} error={error} nft={tokenNFT} />
-            <ListingForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} list={list} alert={alert} open={openListingForm} close={closeListingForm} loader={loader} error={error} nft={tokenNFT} />
+            <ListingForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} list={list} alert={alert} open={openListingForm} close={closeListingForm} loader={loader} confirm={confirm} error={error} nft={tokenNFT} />
             <PawnForm refresher={refresher} buttonLoader={buttonLoader} collections={collections} pawn={pawn} alert={alert} open={openPawnForm} close={closePawnForm} loader={loader} error={error} nft={tokenNFT} />
             <Opener alert={alert} nft={tokenNFT} identity={identity} currentAccount={currentAccount} open={playOpener} onEnd={closeUnpackNft} />
           </div>

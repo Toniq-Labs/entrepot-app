@@ -27,9 +27,10 @@ export default function ListingForm(props) {
     if (price < 0.01) return error("Min sale amount is 0.01 ICP"); 
     _submit(BigInt(Math.floor(price*(10**8))));
   };
-  const _submit = p => {
+  const _submit = async p => {
     //Submit to blockchain here
     handleClose();
+    if (p > 0 && !await props.confirm("Please confirm!", "The price for this listing is " + price + " ICP.")) return;
     props.list(props.nft.id, p, props.buttonLoader, props.refresher);
   };
   const handleClose = () => {
