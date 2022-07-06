@@ -91,7 +91,7 @@ const loadAllTokens = async (address, principal) => {
     //"jzg5e-giaaa-aaaah-qaqda-cai",
     "d3ttm-qaaaa-aaaai-qam4a-cai",
     "xkbqi-2qaaa-aaaah-qbpqq-cai",
-    "fl5nr-xiaaa-aaaai-qbjmq-cai",
+    //"fl5nr-xiaaa-aaaai-qbjmq-cai",
   ].map(a => api.token(a).getTokens(address,principal).then(r => r.map(b => ({canister: toWrappedMap[a], id : b.id, token : b.id, price : 0, time : 0, owner : address}))))).map(p => p.catch(e => e))));
   var tokens = response.filter(result => !(result instanceof Error)).flat()
   return tokens;
