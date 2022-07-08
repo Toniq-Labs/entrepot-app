@@ -144,17 +144,17 @@ export default function App() {
   const { pathname } = useLocation();
   const classes = useStyles();
 
-  
+
   React.useEffect(() => {
     setRootPage(pathname.split("/")[1]);
     window.scrollTo(0, 0);
   }, [pathname]);
-  
+
   const [collections, setCollections] = React.useState([]);
   const [appLoaded, setAppLoaded] = React.useState(false);
-  
+
   const [isToniqEarnAllowed, setToniqEarnAllowed] = React.useState(undefined);
-  
+
   const [buyFormData, setBuyFormData] = React.useState(emptyListing);
   const [showBuyForm, setShowBuyForm] = React.useState(false);
   const [openListingForm, setOpenListingForm] = React.useState(false);
@@ -162,7 +162,7 @@ export default function App() {
   const [openPawnForm, setOpenPawnForm] = React.useState(false);
   const [playOpener, setPlayOpener] = React.useState(false);
   const [tokenNFT, setTokenNFT] = React.useState('');
-  
+
   const [rootPage, setRootPage] = React.useState("");
   const [loaderOpen, setLoaderOpen] = React.useState(false);
   const [loaderText, setLoaderText] = React.useState("");
@@ -171,7 +171,7 @@ export default function App() {
   const [showAlert, setShowAlert] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   //Account
-  
+
   const [identity, setIdentity] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [address, setAddress] = React.useState(false);
@@ -183,7 +183,7 @@ export default function App() {
     EntrepotUpdateUSD();
     EntrepotUpdateStats();
   };
-  
+
   const _buyForm = (tokenid, price) => {
     return new Promise(async (resolve, reject) => {
       let { index, canister} = extjs.decodeTokenId(tokenid);
@@ -339,19 +339,19 @@ export default function App() {
       return false;
     }
   };
-  
+
   const whitelistedCanisters = () => collections.map(a => a.canister).concat(otherPrincipalsForPlug);
   const processPayments = async () => {
     loader(true, "Processing payments... (this can take a few minutes)");
     await _processPayments();
     loader(false);
   };
-  
+
   const _processPayments = async () => {
     if (!identity) return;
     if (processingPayments) return;
     processingPayments = true;
-    
+
     //Process legacy payments first
     var p = identity.getPrincipal().toText();
     console.log("Scanning for principal...", p);
@@ -362,7 +362,7 @@ export default function App() {
       }
     };
     loader(true, "Processing payments... (this can take a few minutes)");
-    
+
     var canistersToProcess = ["po6n2-uiaaa-aaaaj-qaiua-cai","pk6rk-6aaaa-aaaae-qaazq-cai","nges7-giaaa-aaaaj-qaiya-cai"];
     var _collections = collections.filter(a => canistersToProcess.indexOf(a.canister) >= 0);
     for (var j = 0; j < _collections.length; j++) {
@@ -604,7 +604,7 @@ export default function App() {
     setOpenPawnForm(false);
     setTimeout(() => setTokenNFT(''), 300);
   };
-  
+
   const unwrapNft = async (token, loader, refresh) => {
     loader(true, "Unwrapping NFT...");
     var canister = extjs.decodeTokenId(token.id).canister;
@@ -648,7 +648,7 @@ export default function App() {
       };
     }
   }
-  
+
   const restrictedEarnAccess = (allowedAccessElement) => {
     if (isToniqEarnAllowed) {
       return allowedAccessElement;
@@ -656,7 +656,7 @@ export default function App() {
       return <EarnFeaturesBlocked />;
     }
   }
-  
+
   //Form powered
   const pawn = async (id, amount, reward, length, loader, refresh) => {
     if (loader) loader(true, "Creating Earn Request...");
@@ -730,7 +730,7 @@ export default function App() {
         if (refresh) await refresh();
         if (loader) loader(false);
         return;
-      } else {        
+      } else {
         if (loader) loader(false);
         return;
       }
@@ -739,8 +739,8 @@ export default function App() {
       return error(e);
     };
   };
-  
-  
+
+
   React.useEffect(() => {
     updateCollections();
     EntrepotUpdateUSD();
@@ -761,7 +761,7 @@ export default function App() {
                 identity.accounts().then((accs) => {
                   setAccounts(JSON.parse(accs));
                 });
-              } else {              
+              } else {
                 console.log("Error from stoic connect");
               }
             }).catch(e => {
@@ -789,25 +789,28 @@ export default function App() {
           case "infinityWallet":
             (async () => {
               const connected = await window.ic[t].isConnected();
-              if (connected) {
-                if (!window.ic[t].agent) {
-                  await window.ic[t].requestConnect({
-                    whitelist : whitelistedCanisters()
-                  });
-                };
-                var p = await window.ic[t].getPrincipal();
-                var id = {
-                  type : t,
-                  getPrincipal : () => p
-                };
-                setIdentity(id);
-                setAccounts([
-                  {
-                    name: capitalize(t),
-                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
-                  },
-                ]);
+              if (!connected) {
+                var result = await window.ic[t].requestConnect({
+                  whitelist: whitelistedCanisters(),
+                });
+
+                if (!result) {
+                  throw new Error("Failed to connect to your wallet");
+                }
               }
+
+              var p = await window.ic[t].getPrincipal();
+              var id = {
+                type : t,
+                getPrincipal : () => p
+              };
+              setIdentity(id);
+              setAccounts([
+                {
+                  name: capitalize(t),
+                  address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                },
+              ]);
             })();
             break;
           default:
@@ -845,7 +848,7 @@ export default function App() {
       Developed by ToniqLabs &copy; All rights reserved 2021<br /><a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a>
     </Typography>
   </div>);
-  
+
   return (
     <>
       {appLoaded ? <>
@@ -859,14 +862,14 @@ export default function App() {
                   error={error}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
                 />} />
               <Route path="/marketplace/:route/activity" exact element={
@@ -876,7 +879,7 @@ export default function App() {
                   isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/marketplace/:route" exact element={
@@ -886,7 +889,7 @@ export default function App() {
                   isToniqEarnAllowed={isToniqEarnAllowed}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} buyNft={buyNft}
                 />} />
               <Route path="/marketplace" exact element={
@@ -904,7 +907,7 @@ export default function App() {
                   view={"favorites"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/selling" exact element={
@@ -913,14 +916,14 @@ export default function App() {
                   view={"selling"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/offers-made" exact element={
@@ -929,7 +932,7 @@ export default function App() {
                   view={"offers-made"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/offers-received" exact element={
@@ -938,14 +941,14 @@ export default function App() {
                   view={"offers-received"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/collected" exact element={
@@ -954,13 +957,13 @@ export default function App() {
                   view={"collected"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/:address/activity" exact element={
@@ -969,24 +972,24 @@ export default function App() {
                   view={"activity"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
-                
+
               <Route path="/favorites" exact element={
                 <UserCollection
                   error={error}
                   view={"favorites"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/selling" exact element={
@@ -995,14 +998,14 @@ export default function App() {
                   view={"selling"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/offers-made" exact element={
@@ -1011,7 +1014,7 @@ export default function App() {
                   view={"offers-made"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/offers-received" exact element={
@@ -1020,14 +1023,14 @@ export default function App() {
                   view={"offers-received"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/collected" exact element={
@@ -1036,13 +1039,13 @@ export default function App() {
                   view={"collected"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/earn" exact element={restrictedEarnAccess(
@@ -1051,16 +1054,16 @@ export default function App() {
                   view={"earn"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
-                  repayContract={repayContract} 
-                  fillRequest={fillRequest} 
-                  cancelRequest={cancelRequest} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
+                  repayContract={repayContract}
+                  fillRequest={fillRequest}
+                  cancelRequest={cancelRequest}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />)} />
               <Route path="/earn-requests" exact element={restrictedEarnAccess(
@@ -1069,16 +1072,16 @@ export default function App() {
                   view={"earn-requests"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
-                  repayContract={repayContract} 
-                  fillRequest={fillRequest} 
-                  cancelRequest={cancelRequest} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
+                  repayContract={repayContract}
+                  fillRequest={fillRequest}
+                  cancelRequest={cancelRequest}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />)} />
               <Route path="/earn-contracts" exact element={restrictedEarnAccess(
@@ -1087,16 +1090,16 @@ export default function App() {
                   view={"earn-contracts"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
-                  repayContract={repayContract} 
-                  fillRequest={fillRequest} 
-                  cancelRequest={cancelRequest} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
+                  repayContract={repayContract}
+                  fillRequest={fillRequest}
+                  cancelRequest={cancelRequest}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />)} />
               <Route path="/new-request" exact element={restrictedEarnAccess(
@@ -1105,13 +1108,13 @@ export default function App() {
                   view={"new-request"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />)} />
               <Route path="/earn-nfts" exact element={restrictedEarnAccess(
@@ -1120,13 +1123,13 @@ export default function App() {
                   view={"earn-nfts"}
                   alert={alert}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  loggedIn={loggedIn}
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />)} />
               <Route path="/activity" exact element={
@@ -1135,14 +1138,14 @@ export default function App() {
                   view={"activity"}
                   alert={alert}
                   list={list}
-                  unpackNft={unpackNft} 
-                  listNft={listNft} 
-                  wrapAndlistNft={wrapAndlistNft} 
-                  unwrapNft={unwrapNft} 
-                  transferNft={transferNft} 
-                  pawnNft={pawnNft} 
+                  unpackNft={unpackNft}
+                  listNft={listNft}
+                  wrapAndlistNft={wrapAndlistNft}
+                  unwrapNft={unwrapNft}
+                  transferNft={transferNft}
+                  pawnNft={pawnNft}
                   confirm={confirm}
-                  loggedIn={loggedIn} 
+                  loggedIn={loggedIn}
                   loader={loader} balance={balance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts}
                 />} />
               <Route path="/sale/DfinityDeckElements" exact element={
@@ -1185,7 +1188,7 @@ export default function App() {
               <Route path="/" exact element={
                 <Home collections={collections} error={error} alert={alert} confirm={confirm} loader={loader} />} />
               <Route path="/sale" exact element={
-                <Sale 
+                <Sale
                   error={error}
                   view={"sale"}
                   alert={alert}
@@ -1202,7 +1205,7 @@ export default function App() {
           </div>
         </main>
         {footer}
-        
+
         <Backdrop className={classes.backdrop} open={loaderOpen}>
           <CircularProgress color="inherit" />
           <h2 style={{ position: "absolute", marginTop: "120px" }}>
