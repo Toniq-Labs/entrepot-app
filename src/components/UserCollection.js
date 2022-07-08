@@ -326,8 +326,6 @@ export default function UserCollection(props) {
       padding: theme.spacing(2)
     },
   };
-  useInterval(refresh, 10 * 60 *1000);
-  
   
   const updateNfts = (l,s,cf) => {
    
