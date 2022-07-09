@@ -231,6 +231,10 @@ export default function NFT(props) {
   };
   const transferRefresh = async () => {
     props.hideNft(tokenid);
+    await props.refresh("/collected");
+  };
+  const transferRefreshEarn = async () => {
+    props.hideNft(tokenid);
     await props.refresh("/earn-requests");
   };
   var buttonLoadingText = (<CircularProgress size={20.77} style={{color:"white",margin:1}} />);
@@ -238,7 +242,7 @@ export default function NFT(props) {
     var buttons = [];
     if (props.view == "new-request") {
       if (!listing && earnCollections.indexOf(canister) >= 0) {
-        buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+        buttons.push(["Select", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefreshEarn)]);
         //buttons.push([(currentBtn == 1 && currentBtnText ? buttonLoadingText : "Transfer"), () => props.transferNft({id : tokenid, listing:listing}, props.loader, transferRefresh)]);
       }
     } else {
@@ -271,7 +275,7 @@ export default function NFT(props) {
           buttons.push(["Hatch", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, props.loader, refresh)]);
         };
         if (earnCollections.indexOf(canister) >= 0) {
-          buttons.push(["Toniq Earn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefresh)]);
+          buttons.push(["Toniq Earn", () => props.pawnNft({id : tokenid, canister : canister, listing:listing}, props.loader, transferRefreshEarn)]);
         };
         if (canister == '6wih6-siaaa-aaaah-qczva-cai' && !metadata && Date.now() >= 1650034800000) {
           buttons.push(["Cash Out", () => props.unpackNft({id : tokenid, listing:listing, canister : canister}, buttonLoader, refresh)]);
