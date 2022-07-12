@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
+import { createSearchParams } from 'react-router-dom';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,10 +10,11 @@ import Wallet from "../components/Wallet";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
-import { ToniqToggleButton, ToniqIcon, ToniqButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Icp24Icon, Infinity24Icon, LoaderAnimated24Icon } from '@toniq-labs/design-system';
+import { ToniqToggleButton, ToniqIcon, ToniqButton, ToniqInput } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Icp24Icon, LoaderAnimated24Icon, Infinity24Icon, Search24Icon } from '@toniq-labs/design-system';
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
+import {useSearchParams} from 'react-router-dom';
 
 const api = extjs.connect("https://boundary.ic0.app/");
 
@@ -22,8 +24,9 @@ export default function Navbar(props) {
   const [walletOpen, setWalletOpen] = React.useState(false);
   const [balance, setBalance] = React.useState(undefined);
   const classes = useStyles();
-  console.log({account: props.account});
-  console.log(props);
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const query = searchParams.get('search') || '';
   
   
   const refresh = async () => {
@@ -111,6 +114,14 @@ export default function Navbar(props) {
               <span style={entrepotTitleStyles}>Entrepot</span>
             </a>
           </Typography>
+          <ToniqInput style={{alignSelf: 'center', marginLeft: '16px'}} icon={Search24Icon} placeholder="Search for NFTs..." value={query} onValueChange={(event) => {
+            const newParam = event.detail;
+            
+            navigate({
+              pathname: "marketplace",
+              search: `?${createSearchParams(newParam ? {search: newParam} : {})}`
+          })
+          }}/>
           <div className={classes.grow} />
           <div className={classes.bigScreenNavButtons}>
             {navBarButtons}
