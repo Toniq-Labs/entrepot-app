@@ -11,7 +11,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { IconButton, makeStyles } from "@material-ui/core";
 import { ToniqToggleButton, ToniqIcon, ToniqButton, ToniqInput } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Icp24Icon, LoaderAnimated24Icon, Infinity24Icon, Search24Icon } from '@toniq-labs/design-system';
+import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Menu24Icon, Icp24Icon, LoaderAnimated24Icon, Infinity24Icon, Search24Icon } from '@toniq-labs/design-system';
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
@@ -24,7 +24,7 @@ export default function Navbar(props) {
   const [walletOpen, setWalletOpen] = React.useState(false);
   const [balance, setBalance] = React.useState(undefined);
   const classes = useStyles();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   
   const query = searchParams.get('search') || '';
   
@@ -114,7 +114,7 @@ export default function Navbar(props) {
               <span style={entrepotTitleStyles}>Entrepot</span>
             </a>
           </Typography>
-          <ToniqInput style={{alignSelf: 'center', marginLeft: '16px'}} icon={Search24Icon} placeholder="Search for NFTs..." value={query} onValueChange={(event) => {
+          <ToniqInput className={classes.bigScreenInput} style={{alignSelf: 'center', marginLeft: '16px'}} icon={Search24Icon} placeholder="Search for NFTs..." value={query} onValueChange={(event) => {
             const newParam = event.detail;
             
             navigate({
@@ -134,15 +134,25 @@ export default function Navbar(props) {
             ></ToniqButton>
           </div>
 
-          <IconButton className={classes.smallScreenButton}>
-            <AccountBalanceWalletIcon onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}} />
-          </IconButton>
-          <IconButton className={classes.smallScreenButton}>
-            <MenuIcon onClick={() => {setOpen(!open); setWalletOpen(false)}} />
-          </IconButton>
+          <ToniqToggleButton
+            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+            active={open || walletOpen}
+            onClick={() => {
+              setWalletOpen(false);
+              setOpen(walletOpen ? false : !open);
+            }}
+            icon={Menu24Icon}
+          />
           {open && (
             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
               {navBarButtons}
+              <ToniqToggleButton
+                className="toniq-toggle-button-text-only"
+                active={walletOpen}
+                onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}}
+                text="Wallet"
+                icon={Wallet24Icon}
+              />
             </div>
           )}
         </Toolbar>
@@ -177,11 +187,12 @@ const useStyles = makeStyles((theme) => {
   // ideally this value would get calculated at run time based on how wide the nav
   // bar buttons are
   const hamburgerBreakPixel = '900px';
+  const searchHiddenBreakPixel = '1200px';
   const minHamburgerMenuBreakpoint = `@media (min-width:${hamburgerBreakPixel})`;
   const maxHamburgerMenuBreakpoint = `@media (max-width:${hamburgerBreakPixel})`;
   
   return ({
-    smallScreenButton: {
+    smallScreenMenuButton: {
       alignSelf: 'center',
       [minHamburgerMenuBreakpoint]: {
         display: "none",
@@ -198,6 +209,11 @@ const useStyles = makeStyles((theme) => {
       justifyContent: "flex-start",
       flexDirection: "column",
       [minHamburgerMenuBreakpoint]: {
+        display: "none",
+      },
+    },
+    bigScreenInput: {
+      [`@media (max-width:${searchHiddenBreakPixel})`]: {
         display: "none",
       },
     },
