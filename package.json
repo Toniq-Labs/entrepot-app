@@ -53,7 +53,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "start:clean": "rm -rf node_modules/.cache && react-app-rewired start",
-    "build": "echo \"*\" > .eslintignore; react-app-rewired build",
+    "build": "node scripts/build.js pre; react-app-rewired build; node scripts/build.js post",
     "test": "react-app-rewired test",
     "serve": "react-app-rewired build && serve -s build",
     "eject": "react-app-rewired eject"
