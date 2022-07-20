@@ -88,7 +88,7 @@ export default function CollectionDetails(props) {
       </Grid>
       <Grid item md={4} xs={12}>
       </Grid>
-      <Grid item md={4} xs={12} style={{textAlign:"center"}}>
+      <Grid item md={6} xs={12} style={{textAlign:"center"}}>
         <ul className={classes.socials}>
           <li><a href={"https://icscan.io/nft/collection/"+collection.canister} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a></li>
           {['telegram', 'twitter', 'medium', 'discord','dscvr','distrikt'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
