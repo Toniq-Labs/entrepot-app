@@ -106,11 +106,11 @@ export default function Navbar(props) {
     `}} />
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" style={{zIndex: 1400, background: "white" }}>
-        <Toolbar style={{gap: '4px', alignItems: 'stretch'}}>
-          <Typography variant="h6" noWrap>
+      <AppBar position="fixed" style={{zIndex: 1400, background: "white"}}>
+        <Toolbar style={{gap: '4px', alignItems: 'stretch', minHeight: '70px'}}>
+          <Typography style={{display: 'flex', alignItems: 'center'}} variant="h6" noWrap>
             <a style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => goTo("/")}>
-              <ToniqIcon className="toniq-icon-fit-icon" style={{height: '54px', width: '54px', margin: '8px', color: toniqColors.brandPrimary.foregroundColor}} icon={EntrepotLogo144Icon}/>
+              <ToniqIcon className={`toniq-icon-fit-icon ${classes.icpButton}`} style={{height: '54px', width: '54px', flexShrink: '0', margin: '8px', color: toniqColors.brandPrimary.foregroundColor}} icon={EntrepotLogo144Icon}/>
               <span style={entrepotTitleStyles}>Entrepot</span>
             </a>
           </Typography>
@@ -125,34 +125,36 @@ export default function Navbar(props) {
           <div className={classes.grow} />
           <div className={classes.bigScreenNavButtons}>
             {navBarButtons}
-            <ToniqButton
-              style={{marginLeft: '8px'}}
-              onClick={handleDrawerToggle}
-              className="toniq-button-outline"
-              icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
-              text={balance === undefined ? '' : icpToString(balance)}
-            ></ToniqButton>
           </div>
 
           <ToniqToggleButton
             className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-            active={open || walletOpen}
+            active={open}
             onClick={() => {
               setWalletOpen(false);
-              setOpen(walletOpen ? false : !open);
+              setOpen(!open);
             }}
             icon={Menu24Icon}
           />
+          <ToniqToggleButton
+            className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
+            active={walletOpen}
+            onClick={() => {
+              setWalletOpen(!walletOpen);
+              setOpen(false);
+            }}
+            icon={Wallet24Icon}
+          />
+          <ToniqButton
+            className={`toniq-button-outline ${classes.icpButton}`}
+            style={{marginLeft: '8px', alignSelf: 'center'}}
+            onClick={handleDrawerToggle}
+            icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
+            text={balance === undefined ? '' : icpToString(balance)}
+          ></ToniqButton>
           {open && (
             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
               {navBarButtons}
-              <ToniqToggleButton
-                className="toniq-toggle-button-text-only"
-                active={walletOpen}
-                onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}}
-                text="Wallet"
-                icon={Wallet24Icon}
-              />
             </div>
           )}
         </Toolbar>
@@ -186,15 +188,30 @@ const useStyles = makeStyles((theme) => {
   
   // ideally this value would get calculated at run time based on how wide the nav
   // bar buttons are
-  const hamburgerBreakPixel = '900px';
-  const searchHiddenBreakPixel = '1200px';
+  const hamburgerBreakPixel = '1250px';
+  const displayIcpBreakPixel = '420px';
+  const searchHiddenBreakPixel = '720px';
   const minHamburgerMenuBreakpoint = `@media (min-width:${hamburgerBreakPixel})`;
+  const hideIcpBreakpoint = `@media (min-width:${displayIcpBreakPixel})`;
+  const displayIcpBreakpoint = `@media (max-width:${displayIcpBreakPixel})`;
   const maxHamburgerMenuBreakpoint = `@media (max-width:${hamburgerBreakPixel})`;
   
   return ({
     smallScreenMenuButton: {
       alignSelf: 'center',
       [minHamburgerMenuBreakpoint]: {
+        display: "none",
+      },
+    },
+    superSmallScreenWalletButton: {
+      alignSelf: 'center',
+      [hideIcpBreakpoint]: {
+        display: "none",
+      },
+    },
+    icpButton: {
+      alignSelf: 'center',
+      [displayIcpBreakpoint]: {
         display: "none",
       },
     },
