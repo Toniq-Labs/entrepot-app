@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
@@ -79,7 +80,9 @@ export default function Marketplace(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [sort, setSort] = React.useState("total_desc");
-  const [query, setQuery] = React.useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const query = searchParams.get('search') || '';
   const [stats, setStats] = React.useState([]);
 
   const styles = {
@@ -121,7 +124,7 @@ export default function Marketplace(props) {
         >
           <h1 className={classes.heading}>All Collections</h1>
           <div style={{margin:"0 auto", textAlign:"center",maxWidth:500}}>
-            <TextField placeholder="Search" style={{width:"100%", marginBottom:50}} value={query} onChange={e => setQuery(e.target.value)} variant="outlined" />
+            <TextField placeholder="Search" style={{width:"100%", marginBottom:50}} value={query} onChange={e => setSearchParams(e.target.value ? {search: e.target.value} : {})} variant="outlined" />
           </div>
           <div style={{textAlign:"right", marginBottom:"30px", marginRight:25}}>
             <FormControl style={{ marginRight: 20 }}>
