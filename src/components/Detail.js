@@ -276,6 +276,7 @@ const Detail = (props) => {
       case "sbcwr-3qaaa-aaaam-qamoa-cai":
       case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
       case "5stux-vyaaa-aaaam-qasoa-cai":
+      case "e4ca6-oiaaa-aaaai-acm2a-cai":
       case TREASURECANISTER:
         return (
           <iframe
