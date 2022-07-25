@@ -92,7 +92,13 @@ const loadAllTokens = async (address, principal) => {
     "d3ttm-qaaaa-aaaai-qam4a-cai",
     "xkbqi-2qaaa-aaaah-qbpqq-cai",
     //"fl5nr-xiaaa-aaaai-qbjmq-cai",
-  ].map(a => api.token(a).getTokens(address,principal).then(r => r.map(b => ({canister: toWrappedMap[a], id : b.id, token : b.id, price : 0, time : 0, owner : address}))))).map(p => p.catch(e => e))));
+  ].map(a => {
+    try {
+      return api.token(a).getTokens(address,principal).then(r => r.map(b => ({canister: toWrappedMap[a], id : b.id, token : b.id, price : 0, time : 0, owner : address})));
+    } catch(e) {
+      return false;
+    }
+  }).filter(b => b !== false)).map(p => p.catch(e => e))));
   var tokens = response.filter(result => !(result instanceof Error)).flat()
   return tokens;
 };
@@ -257,7 +263,7 @@ export default function UserCollection(props) {
       return;
     };
     if (!address) return;
-    var data; 
+    var data = [];; 
     console.log("Refreshing", props.view);
     switch(props.view){
       case "collected":
@@ -266,7 +272,11 @@ export default function UserCollection(props) {
         // data = response.data;
         // data = data.map(a => ({...a, token : a.id}));
         //Add wrapped
-        data = await loadAllTokens(address, props.identity.getPrincipal().toText());
+        try{
+          data = await loadAllTokens(address, props.identity.getPrincipal().toText());
+        } catch(e){
+          data = [];
+        };
         break;
       case "new-request":
         //if (whitelistedPawnCanisters === false) return;
