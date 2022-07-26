@@ -3,13 +3,10 @@ import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import { createSearchParams } from 'react-router-dom';
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Wallet from "../components/Wallet";
-import MenuIcon from "@material-ui/icons/Menu";
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { IconButton, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { ToniqToggleButton, ToniqIcon, ToniqButton, ToniqInput } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Menu24Icon, Icp24Icon, LoaderAnimated24Icon, Infinity24Icon, Search24Icon } from '@toniq-labs/design-system';
 import extjs from '../ic/extjs.js';
@@ -147,10 +144,10 @@ export default function Navbar(props) {
           />
           <ToniqButton
             className={`toniq-button-outline ${classes.icpButton}`}
-            style={{marginLeft: '8px', alignSelf: 'center'}}
+            style={{width: '120px', marginLeft: '8px', alignSelf: 'center', ...cssToReactStyleObject(toniqFontStyles.boldMonospaceFont), fontSize: '19px'}}
             onClick={handleDrawerToggle}
             icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
-            text={balance === undefined ? '' : icpToString(balance)}
+            text={balance === undefined ? '' : icpToString(balance, true, true)}
           ></ToniqButton>
           {open && (
             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
@@ -188,9 +185,9 @@ const useStyles = makeStyles((theme) => {
   
   // ideally this value would get calculated at run time based on how wide the nav
   // bar buttons are
-  const hamburgerBreakPixel = '1250px';
-  const displayIcpBreakPixel = '420px';
-  const searchHiddenBreakPixel = '720px';
+  const hamburgerBreakPixel = '1300px';
+  const displayIcpBreakPixel = '450px';
+  const searchHiddenBreakPixel = '750px';
   const minHamburgerMenuBreakpoint = `@media (min-width:${hamburgerBreakPixel})`;
   const hideIcpBreakpoint = `@media (min-width:${displayIcpBreakPixel})`;
   const displayIcpBreakpoint = `@media (max-width:${displayIcpBreakPixel})`;

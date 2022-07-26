@@ -18,6 +18,7 @@ import TextField from '@material-ui/core/TextField';
 import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
+import {cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -246,8 +247,8 @@ export default function Marketplace(props) {
                                 <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
                               </Grid>
                               <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                                <span style={{color:"#00d092"}}>Listings</span><br />
-                                <strong>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
+                                <span style={{color:"#00d092",}}>Listings</span><br />
+                                <strong style={cssToReactStyleObject(toniqFontStyles.boldMonospaceFont)}>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
                               </Grid>
                               <Grid item md={4}>
                                 <span style={{color:"#00d092"}}>Floor Price</span><br />
