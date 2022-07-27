@@ -214,28 +214,17 @@ const Detail = (props) => {
 
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
-    switch(canister){
+    if(collection.hasOwnProperty('detailpage'){
+        detailPage = collection["detailpage"];
+    }else{
+        detailPage = 'Missing';
+    };
+    
+    switch(detailPage){
       
       // for generative collections where assets are all stored on the same canister
       // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
-      case "7gvfz-3iaaa-aaaah-qcsbq-cai":
-      case "bxdf4-baaaa-aaaah-qaruq-cai":
-      case "dylar-wyaaa-aaaah-qcexq-cai":
-      case "jxpyk-6iaaa-aaaam-qafma-cai":
-      case "e3izy-jiaaa-aaaah-qacbq-cai":
-      case "3mttv-dqaaa-aaaah-qcn6q-cai":
-      case "yrdz3-2yaaa-aaaah-qcvpa-cai":
-      case "3bqt5-gyaaa-aaaah-qcvha-cai":
-      case "unssi-hiaaa-aaaah-qcmya-cai":
-      case "sr4qi-vaaaa-aaaah-qcaaq-cai":
-      case "nbg4r-saaaa-aaaah-qap7a-cai":
-      case "gtb2b-tiaaa-aaaah-qcxca-cai":
-      case "qbc6i-daaaa-aaaah-qcywq-cai":
-      case "qjwjm-eaaaa-aaaah-qctga-cai":
-      case "j3dqa-byaaa-aaaah-qcwfa-cai":
-      case "2l7rh-eiaaa-aaaah-qcvaa-cai":
-      case "73xld-saaaa-aaaah-qbjya-cai":
-      case "t2mog-myaaa-aaaal-aas7q-cai":
+      case "generative_assets_on_nft_canister":
         return (
           <img
             src={EntrepotNFTImage(canister, index, tokenid, true)}
@@ -260,23 +249,7 @@ const Detail = (props) => {
       // for interactive NFTs or videos
       //case "xcep7-sqaaa-aaaah-qcukq-cai":
       //case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "dv6u3-vqaaa-aaaah-qcdlq-cai":
-      case "eb7r3-myaaa-aaaah-qcdya-cai":
-      case "pk6rk-6aaaa-aaaae-qaazq-cai":
-      case "dhiaa-ryaaa-aaaae-qabva-cai":
-      case "mk3kn-pyaaa-aaaah-qcoda-cai":
-      case "jeghr-iaaaa-aaaah-qco7q-cai":
-      case "er7d4-6iaaa-aaaaj-qac2q-cai":
-      case "poyn6-dyaaa-aaaah-qcfzq-cai":
-      case "crt3j-mqaaa-aaaah-qcdnq-cai":
-      case "nges7-giaaa-aaaaj-qaiya-cai":
-      case "ag2h7-riaaa-aaaah-qce6q-cai":
-      case "ri5pt-5iaaa-aaaan-qactq-cai":
-      case "sbcwr-3qaaa-aaaam-qamoa-cai":
-      case "sbcwr-3qaaa-aaaam-qamoa-cai":
-      case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
-      case "5stux-vyaaa-aaaam-qasoa-cai":
-      case "e4ca6-oiaaa-aaaai-acm2a-cai":
+      case "interactive_nfts_or_videos":
       case TREASURECANISTER:
         return (
           <iframe
@@ -300,32 +273,12 @@ const Detail = (props) => {
         break;
       
       // for videos that don't fit in the iframe and need a video tag
-      case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "xcep7-sqaaa-aaaah-qcukq-cai":
-      case "x4oqm-bqaaa-aaaam-qahaq-cai":
-      case "tco7x-piaaa-aaaam-qamiq-cai":
+      case "videos_that_dont_fit_in_frame":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // for pre-generated images residing on asset canisters
       // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
-      case "6wih6-siaaa-aaaah-qczva-cai":
-      case "6km5p-fiaaa-aaaah-qczxa-cai":
-      case "s36wu-5qaaa-aaaah-qcyzq-cai":
-      case "bzsui-sqaaa-aaaah-qce2a-cai":
-      case "txr2a-fqaaa-aaaah-qcmkq-cai":
-      case "ah2fs-fqaaa-aaaak-aalya-cai":
-      case "z7mqv-liaaa-aaaah-qcnqa-cai":
-      case "erpx2-pyaaa-aaaah-qcqsq-cai":
-      case "gikg4-eaaaa-aaaam-qaieq-cai":
-      case "bapzn-kiaaa-aaaam-qaiva-cai":
-      case "4wiph-kyaaa-aaaam-qannq-cai":
-      case "3cjkh-tqaaa-aaaam-qan6a-cai":
-      case "lcgbg-kaaaa-aaaam-qaota-cai":
-      case "j7n3m-7iaaa-aaaam-qarza-cai":
-      case "zydwz-laaaa-aaaam-qasuq-cai":
-      case "xgket-maaaa-aaaam-qatwq-cai":
-      case "wlea5-diaaa-aaaam-qatra-cai":
-      case "vvvht-eyaaa-aaaam-qatya-cai":
+      case "asset_canisters":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // default case is to just use the thumbnail on the detail page
