@@ -214,7 +214,7 @@ const Detail = (props) => {
 
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
-    if(collection.hasOwnProperty('detailpage')){
+    if(collection.hasOwnProperty("detailpage")){
         let detailPage = collection["detailpage"];
     }else{
         let detailPage = "Missing";
