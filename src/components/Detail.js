@@ -215,9 +215,9 @@ const Detail = (props) => {
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     if(collection.hasOwnProperty('detailpage')){
-        var detailPage = collection["detailpage"];
+        let detailPage = collection["detailpage"];
     }else{
-        var detailPage = 'Missing';
+        let detailPage = "Missing";
     };
     
     switch(detailPage){
@@ -250,7 +250,7 @@ const Detail = (props) => {
       //case "xcep7-sqaaa-aaaah-qcukq-cai":
       //case "rqiax-3iaaa-aaaah-qcyta-cai":
       case "interactive_nfts_or_videos":
-      case TREASURECANISTER:
+      //case TREASURECANISTER:
         return (
           <iframe
             frameBorder="0"
