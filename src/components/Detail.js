@@ -325,6 +325,7 @@ const Detail = (props) => {
       case "zydwz-laaaa-aaaam-qasuq-cai":
       case "xgket-maaaa-aaaam-qatwq-cai":
       case "wlea5-diaaa-aaaam-qatra-cai":
+      case "vvvht-eyaaa-aaaam-qatya-cai":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // default case is to just use the thumbnail on the detail page
