@@ -18,6 +18,7 @@ export function DropShadowCard(props) {
                 ...cssToReactStyleObject(styles),
                 ...props.style,
             }}
+            className={props.className}
         >
             {props.children}
         </div>

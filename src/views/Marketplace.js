@@ -1,24 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
-import Wallet from "../components/Wallet";
 import Grid from "@material-ui/core/Grid";
 import InputLabel from "@material-ui/core/InputLabel";
-import Card from "@material-ui/core/Card";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
 import TextField from '@material-ui/core/TextField';
 import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
-import {cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
+import { cssToReactStyleObject, toniqFontStyles, toniqColors, LoaderAnimated24Icon, Icp16Icon } from '@toniq-labs/design-system';
+import {NftCard} from '../components/shared/NftCard';
+import { ToniqIcon, ToniqChip } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {icpToString} from '../components/PriceICP';
+import {truncateNumber} from '../truncation';
+
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -50,18 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   collectionContainer: {
     marginBottom: 20,
-    [theme.breakpoints.up('xs')]: {
-      width : "100%",
-    },
-    [theme.breakpoints.up('sm')]: {
-      width : 300,
-    },
-    [theme.breakpoints.up('md')]: {
-      width : 330,
-    },
-    [theme.breakpoints.up('lg')]: {
-      width : 360,
-    },
+    maxWidth: "100%",
   },
   root: {
     maxWidth: 345,
@@ -74,28 +62,82 @@ const useStyles = makeStyles((theme) => ({
     height: 0,
     paddingTop: "56.25%", // 16:9
   },
+  collectionCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight:456,
+    '@media (max-width: 400px)': {
+      height: 'unset',
+    },
+  },
+  collectionCardBottomHalf: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    alignItems: 'stretch',
+  },
+  collectionCardCollectionName: {
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    alignSelf: 'stretch',
+    ...cssToReactStyleObject(toniqFontStyles.h3Font),
+    marginBottom: 0,
+    marginTop: '16px',
+  },
+  collectionCardBrief: {
+    margin: 0,
+    display: '-webkit-box',
+    '-webkit-line-clamp': 3,
+    '-webkit-box-orient': 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'clip',
+    padding: '4px 0',
+    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+    color: String(toniqColors.pageSecondary.foregroundColor),
+  },
+  collectionCardBriefWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexBasis: 0,
+    flexGrow: 1,
+    minHeight: '54px',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignSelf: 'stretch',
+  },
+  collectionDetailsWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexShrink: 1,
+    justifyContent: 'center',
+    gap: '16px',
+  },
+  collectionDetailsCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    alignItems: 'stretch',
+    textAlign: 'center',
+    flexBasis: '0',
+    minWidth: '80px',
+    flexGrow: 1,
+  },
+  collectionDetailsChip: {
+      ...cssToReactStyleObject(toniqFontStyles.boldFont),
+      ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
+      fontSize: '15px',
+  },
 }));
-var _stats = [];
+
 export default function Marketplace(props) {
   const navigate = useNavigate();
   const classes = useStyles();
-  const theme = useTheme();
   const [sort, setSort] = React.useState("total_desc");
   const [searchParams, setSearchParams] = useSearchParams();
   
   const query = searchParams.get('search') || '';
   const [stats, setStats] = React.useState([]);
 
-  const styles = {
-    root: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-    content: {
-      flexGrow: 1,
-      marginLeft: 0,
-    },
-  };
   const _updates = () => {
     EntrepotUpdateStats().then(setStats);    
   };
@@ -146,7 +188,7 @@ export default function Marketplace(props) {
             container
             direction="row"
             justifyContent="center"
-            alignItems="center"
+            alignItems="start"
             spacing={2}
           >
             {
@@ -229,36 +271,83 @@ export default function Marketplace(props) {
                 }
               }).map((collection, i) => {
                 return (<Grid key={i} item className={classes.collectionContainer}>
-                  <Link style={{textDecoration:"none"}} to={"/marketplace/"+collection.route}>
-                    <Card style={{height:375,}} className={classes.root}>
-                      <CardMedia
-                        className={classes.media}
-                        image={collection.hasOwnProperty('collection') && collection.collection ? collection.collection : "/collections/"+collection.canister+".jpg"}
-                        title={collection.name}
-                      />
-                      <CardContent style={{textAlign:"center"}}>
-                        <h2 style={{marginTop:0, fontSize:"1.4em"}}>{collection.name}</h2>
-                        <Typography style={{minHeight:48}} variant="body1" color="textSecondary" component="p">{collection.brief ? collection.brief : ""}</Typography>
-                        {stats.findIndex(a => a.canister == collection.canister) >= 0 ?
-                          <>{stats.find(a => a.canister == collection.canister).stats ?
-                            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                                <span style={{color:"#00d092"}}>Volume</span><br />
-                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.total} size={20} /></strong>
-                              </Grid>
-                              <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
-                                <span style={{color:"#00d092",}}>Listings</span><br />
-                                <strong style={cssToReactStyleObject(toniqFontStyles.boldMonospaceFont)}>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
-                              </Grid>
-                              <Grid item md={4}>
-                                <span style={{color:"#00d092"}}>Floor Price</span><br />
-                                <strong><PriceICP volume={true} clean={true} price={stats.find(a => a.canister == collection.canister).stats.floor} size={20} /></strong>
-                              </Grid>
-                            </Grid> : "" /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/ }
-                          </> 
-                        : <span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Loading...</span>}
-                      </CardContent>
-                    </Card>
+                  <Link
+                      className={classes.collectionCard}
+                    style={{textDecoration:"none"}} to={"/marketplace/"+collection.route}>
+                    <NftCard
+                      style={{flexGrow: 1}}
+                      title={collection.name}
+                      imageUrl={collection.hasOwnProperty('collection') && collection.collection ? collection.collection : "/collections/"+collection.canister+".jpg"}
+                    >
+                      <div className={classes.collectionCardBottomHalf}>
+                        <h2
+                          className={classes.collectionCardCollectionName}
+                        >
+                          {collection.name}
+                        </h2>
+                        {
+                          collection.brief ? (
+                            <div
+                              className={classes.collectionCardBriefWrapper}
+                            >
+                              <p className={classes.collectionCardBrief}>
+                                {collection.brief}
+                              </p>
+                            </div>
+                          ) : ""
+                        }
+                        {(() => {
+                          const collectionStatsWrapper = stats.find(stat => stat.canister === collection.canister);
+                          
+                          if (collectionStatsWrapper) {
+                            if (collectionStatsWrapper.stats) {
+                              const collectionStatDetails = [
+                                {
+                                  label: 'Volume',
+                                  icon: Icp16Icon,
+                                  value: icpToString(collectionStatsWrapper.stats.total, false, true)
+                                },
+                                {
+                                  label: 'Listings',
+                                  icon: undefined,
+                                  value: truncateNumber(collectionStatsWrapper.stats.listings)
+                                },
+                                {
+                                  label: 'Floor Price',
+                                  icon: Icp16Icon,
+                                  value: icpToString(collectionStatsWrapper.stats.floor, false, true)
+                                },
+                              ];
+                              
+                              return <div className={classes.collectionDetailsWrapper}>
+                                {collectionStatDetails.map((cellDetails, _index, fullArray) => (<div
+                                key={cellDetails.label}
+                                style={{
+                                  maxWidth: `${100/fullArray.length}%`,
+                                }}
+                                className={classes.collectionDetailsCell}>
+                                  <span style={{
+                                    textTransform: 'uppercase',
+                                    ...cssToReactStyleObject(toniqFontStyles.labelFont)
+                                  }}>{cellDetails.label}</span>
+                                  <ToniqChip className={`toniq-chip-secondary ${classes.collectionDetailsChip}`} icon={cellDetails.icon} text={cellDetails.value}></ToniqChip>
+                                </div>))}
+                              </div>
+                            } else {
+                              return '';
+                            }
+                          } else {
+                            return <ToniqIcon
+                            style={{
+                              color: String(toniqColors.pagePrimary.foregroundColor),
+                            }}
+                            icon={LoaderAnimated24Icon}
+                          />
+                          }
+                        })()
+                        }
+                      </div>
+                    </NftCard>
                   </Link>
                 </Grid>);
               })
