@@ -18,6 +18,8 @@ export function DropShadowCard(props) {
                 ...cssToReactStyleObject(styles),
                 ...props.style,
             }}
+            onMouseEnter={props.onMouseEnter}
+            onMouseLeave={props.onMouseLeave}
             className={props.className}
         >
             {props.children}
