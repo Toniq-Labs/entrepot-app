@@ -339,11 +339,12 @@ export default function Marketplace(props) {
                             }
                           } else {
                             return <ToniqIcon
-                            style={{
-                              color: String(toniqColors.pagePrimary.foregroundColor),
-                            }}
-                            icon={LoaderAnimated24Icon}
-                          />
+                              style={{
+                                color: String(toniqColors.pagePrimary.foregroundColor),
+                                alignSelf: 'center',
+                              }}
+                              icon={LoaderAnimated24Icon}
+                            />
                           }
                         })()
                         }
