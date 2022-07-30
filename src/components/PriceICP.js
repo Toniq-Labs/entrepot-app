@@ -1,5 +1,5 @@
 import {truncateNumber} from '../truncation';
-import {cssToReactStyleObject, toniqFontStyles, Icp16Icon, toniqColors} from '@toniq-labs/design-system';
+import {cssToReactStyleObject, toniqFontStyles, Icp16Icon, Icp24Icon} from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 function getIcpPrice(n) {
@@ -26,10 +26,13 @@ export function icpToString(priceE8s /* BigInt */, convertToIcp, truncate) {
 
 export default function PriceICP(props) {
     return (
-        <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
+        <span style={{display: 'inline-flex', alignItems: 'center', gap: '8px'}}>
         
-            <ToniqIcon icon={Icp16Icon}/>
-            <span style={cssToReactStyleObject(toniqFontStyles.boldMonospaceFont)}>
+            <ToniqIcon icon={props.large ? Icp24Icon : Icp16Icon}/>
+            <span style={{
+                ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                ...cssToReactStyleObject(toniqFontStyles.h3Font)
+              }}>
                 {icpToString(props.price, !props.clean, props.volume)}
             </span>
         </span>

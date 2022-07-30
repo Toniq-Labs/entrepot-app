@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   makeStyles,
   Container,
+  Box,
   Grid,
   Typography,
   Button,
@@ -13,6 +14,9 @@ import {
   TableRow,
   TableHead,
   IconButton,
+  Card,
+  CardContent,
+  CardMedia,
 } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons//Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
@@ -35,7 +39,6 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import DetailsIcon from "@material-ui/icons/Details";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -52,6 +55,13 @@ import {
   useParams
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
+import { ToniqIcon, ToniqChip, ToniqButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { ArrowLeft24Icon, ChevronDown24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
+import {css} from 'element-vir';
+import {unsafeCSS} from 'lit';
+import { DropShadowCard } from "../shared/DropShadowCard";
+import { Accordion } from "./Accordion";
+
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -75,7 +85,7 @@ const api = extjs.connect("https://boundary.ic0.app/");
 
 const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const shorten = a => {
-  return a.substring(0, 12) + "...";
+  return a.substring(0, 18) + "...";
 };
 const emptyListing = {
   pricing: "",
@@ -176,40 +186,36 @@ const Detail = (props) => {
     setDetailsUrl(simplifiedText.match(regExp)[1]);
   }
 
+  const imageStyles = cssToReactStyleObject(css`
+    background-image: url('${unsafeCSS(detailsUrl)}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 16px;
+    padding-top: 100%;
+    width: 100%;
+  `); 
+
   const extractEmbeddedImage = (svgUrl, classes) => {
     getDetailsUrl(svgUrl, /image href="([^"]+)"/);
 
     return (
-      <img
-        src={detailsUrl}
-        alt=""
-        className={classes.nftImage}
-        style={{
-          border:"none",
-          maxWidth:500,
-          maxHeight:"100%",
-          cursor: "pointer",
-          height: "100%",
-          width: "100%",
-          marginLeft:"auto",
-          marginRight:"auto",
-          display: "block",
-          objectFit: "contain",
-        }}
-      />
+      <div className={classes.nftImage}>
+        <div style={imageStyles} />
+      </div>
     );
   }
   
-    const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      if(detailsUrl){
-        return (
-          <video width="100%" controls autoPlay muted loop>
-            <source src={detailsUrl} type="video/mp4" />
-          </video>
-        );
-      }
+  const extractEmbeddedVideo = (iframeUrl, classes) => {
+    getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+    if(detailsUrl){
+      return (
+        <video width="100%" controls autoPlay muted loop>
+          <source src={detailsUrl} type="video/mp4" />
+        </video>
+      );
     }
+  }
   
 
   const displayImage = tokenid => {
@@ -237,23 +243,9 @@ const Detail = (props) => {
       case "73xld-saaaa-aaaah-qbjya-cai":
       case "t2mog-myaaa-aaaal-aas7q-cai":
         return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
+          <div className={classes.nftImage}>
+            <div style={imageStyles} />
+          </div>
         );
         break;
       
@@ -284,17 +276,6 @@ const Detail = (props) => {
             src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
             className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-            }}
           />
         );
         break;
@@ -331,28 +312,66 @@ const Detail = (props) => {
       // default case is to just use the thumbnail on the detail page
       default:
         return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
+          <div className={classes.nftImage}>
+            <div style={imageStyles} />
+          </div>
         );
         break;
     }
   };
-  
+
+  const attributes = [
+    {
+      groupName: 'Group #1',
+      data: [
+        {
+          label: 'Background',
+          value: '#5452',
+          desc: '5% Have This'
+        },
+        {
+          label: 'Background',
+          value: '#5462',
+          desc: '17% Have This'
+        },
+        {
+          label: 'Background',
+          value: '#6312',
+          desc: '3% Have This'
+        },
+        {
+          label: 'Background',
+          value: '#1123',
+          desc: '76% Have This'
+        }
+      ]
+    },
+    {
+      groupName: 'Group #2',
+      data: [
+        {
+          label: 'Body Color',
+          value: '#5631',
+          desc: '4% Have This'
+        },
+        {
+          label: 'Body Color',
+          value: '#2123',
+          desc: '98% Have This'
+        },
+        {
+          label: 'Body Color',
+          value: '#6631',
+          desc: '7% Have This'
+        },
+        {
+          label: 'Body Color',
+          value: '#5643',
+          desc: '21% Have This'
+        }
+      ]
+    }
+  ]
   
   React.useEffect(() => {
     props.loader(true);
@@ -362,389 +381,115 @@ const Detail = (props) => {
   return (
     <>
       <Container maxWidth="xl" className={classes.container}>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={12} md={5}>
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-                marginBottom: "20px",
-                borderRadius: 4
-              }}
-            >
-              {displayImage(tokenid)}
-            </div>
-            
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <FormatAlignLeftIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Description</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div className={classes.div}>
-                  <p>{collection.description ? collection.description : collection.blurb}</p>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-            
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <ListIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Properties</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  <div style={{textAlign:"center"}}>
-                    <Typography
-                      paragraph
-                      style={{ paddingTop: 20, fontWeight: "bold" }}
-                      align="center"
-                    >
-                      Coming Soon!{/*Loading...*/}
-                    </Typography>
-                  </div>
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-            
-            
-          </Grid>
-          <Grid item xs={12} sm={12} md={7}>
-            <div className={classes.personal}>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={() => navigate(-1)}
-                style={{fontWeight:"bold", color:"black", borderColor:"black"}}
-              >
-                Back
-              </Button>
-              
-            </div>
-            <Typography variant="h4" className={classes.typo}>
-              <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a> #{EntrepotNFTMintNumber(collection.canister, index)}
-            </Typography>
-            <Grid container>
-              <Grid item style={{marginRight:20}}>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{fontWeight:"bold"}}
-                    component="a"
-                    target="_blank"
-                    href={EntrepotNFTLink(collection.canister, index, tokenid)}
-                  >
-                    View NFT onchain
-                  </Button>
-              </Grid>
-              <Grid item>
-                <div style={{marginTop:-5}} className={classes.icon}>
-                  <Favourite  identity={props.identity} loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
-                </div>
-              </Grid>
+        <button
+          variant="text"
+          onClick={() => navigate(-1)}
+          className={classes.removeNativeButtonStyles}
+        >
+          <Grid container spacing={1}>
+            <Grid item>
+              <ToniqIcon icon={ArrowLeft24Icon}>Return to Collection</ToniqIcon>
             </Grid>
-
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-                padding: "20px 15px",
-                margin: "20px 0px",
-              }}
-            >
-              { listing === false ?
-              <div style={{textAlign:"center"}}>
-                <Typography
-                  paragraph
-                  style={{ paddingTop: 20, fontWeight: "bold" }}
-                  align="center"
-                >
-                  Loading...
-                </Typography>
-              </div> : 
-                <>{ listing.price > 0n ?
-                <>
-                  <Typography variant="h6"><strong>Price</strong></Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px 0px",
-                    }}
-                  >
-                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                      <PriceICP size={30} price={listing.price} />
-                    </Typography>
-                    <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                      (<PriceUSD price={EntrepotGetICPUSD(listing.price)} />)
-                    </Typography>
-                  </div>
-                </> : 
-                  <>{offers && offers.length > 0 ?
-                      <>
-                        <Typography variant="h6"><strong>Best Offer Price</strong></Typography>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                            <PriceICP size={30} price={offers[0].amount} />
-                          </Typography>
-                          <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                            (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
-                          </Typography>
-                        </div>
-                      </> : 
-                      <>{ transactions && transactions.length > 0 ?
-                        <>
-                          <Typography variant="h6"><strong>Last Price</strong></Typography>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                              <PriceICP size={30} price={transactions[0].price} />
-                            </Typography>
-                            <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                              (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
-                            </Typography>
-                          </div>
-                        </> : 
-                        <>
-                          <Typography variant="h6"><strong>Unlisted</strong></Typography>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px 0px",
-                            }}
-                          >
-                          </div>
-                        </>
-                      }</>
-                    }</>
-                  }
-                </>
-              }
-              { owner && props.account && props.account.address == owner ?
-                <>
-                  <div className={classes.button}>
-                    {listing !== false && listing && listing.price > 0n?
-                    <>
-                      <Button
-                        onClick={ev => {
-                          props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
-                        }}
-                        variant="contained"
-                        color="primary"
-                        style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                      >Update Listing</Button> 
-                      <Button
-                        onClick={ev => {
-                          cancelListing();
-                        }}
-                        variant="outlined"
-                        color="primary"
-                        style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
-                      >Cancel Listing</Button>
-                    </>
-                    : 
-                    <Button
-                      onClick={ev => {
-                        props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
-                      }}
-                      variant="contained"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                    >List Item</Button> }
-                    
-                  </div>
-                </>:
-                <>
-                { listing !== false && props.loggedIn ?
-                  <div className={classes.button}>
-                    {listing && listing.price > 0n ?
-                    <Button
-                      onClick={ev => {
-                        props.buyNft(collection.canister, index, listing, _afterBuy);
-                      }}
-                      variant="contained"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                    >Buy Now</Button> : "" }
-                    
-                    <Button
-                      onClick={ev => {
-                        makeOffer();
-                      }}
-                      variant="outlined"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
-                    >Submit Offer</Button>
-                  </div> : "" }
-                </>
-              }
-              {owner && props.account.address == owner?
-              <div style={{marginTop:20}}><strong>Owned by you</strong></div> : "" }
-              {owner && props.account.address != owner?
-              <div style={{marginTop:20}}><strong>Owner:</strong> <a href={"https://dashboard.internetcomputer.org/account/"+owner} target="_blank">{shorten(owner)}</a></div> : "" }
-            </div>
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <LocalOfferIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Offers</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  { offers === false ?
-                    <div style={{textAlign:"center"}}>
-                      <Typography
-                        paragraph
-                        style={{ paddingTop: 20, fontWeight: "bold" }}
-                        align="center"
-                      >
-                        Loading...
-                      </Typography>
-                    </div>
-                  :
-                    <>
-                      { offers.length === 0 ?
-                      <>
-                        <div style={{textAlign:"center"}}>
-                          <Typography
-                            paragraph
-                            style={{ paddingTop: 20, fontWeight: "bold" }}
-                            align="center"
-                          >
-                            There are currently no offers!
-                          </Typography>
-                        </div>
-                      </>:
-                      <>
-                        <Alert severity="info">Offers are non-binding and indicative only.</Alert>
-                        <Table sx={{ minWidth: 1500, fontWeight: "bold" }} aria-label="a dense table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="left"></TableCell>
-                              <TableCell align="right"><strong>Price</strong></TableCell>
-                              <TableCell align="center"><strong>Floor Delta</strong></TableCell>
-                              <TableCell align="center"><strong>Time</strong></TableCell>
-                              <TableCell align="center"><strong>Buyer</strong></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {offers
-                              .slice()
-                              .map((offer, i) => {
-                                return (
-                                  <TableRow key={i}>
-                                    <TableCell><LocalOfferIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Offer</strong></TableCell>
-                                    <TableCell align="right"><strong><PriceICP price={offer.amount} /></strong><br />
-                                    {EntrepotGetICPUSD(offer.amount) ? <small><PriceUSD price={EntrepotGetICPUSD(offer.amount)} /></small> : ""}</TableCell>
-                                    <TableCell align="center">{floor ? getFloorDelta(offer.amount) : "-"}</TableCell>
-                                    <TableCell align="center"><Timestamp
-                                      relative
-                                      autoUpdate
-                                      date={Number(offer.time / 1000000000n)}
-                                    /></TableCell>
-                                    <TableCell align="center">
-                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://icscan.io/account/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              })
-                            }
-                          </TableBody>
-                        </Table>
-                      </>}
-                    </>
-                  }
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <ShowChartIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Activity</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  { transactions === false ?
-                    <div style={{textAlign:"center"}}>
-                      <Typography
-                        paragraph
-                        style={{ paddingTop: 20, fontWeight: "bold" }}
-                        align="center"
-                      >
-                        Loading...
-                      </Typography>
-                    </div>
-                  :
-                    <>
-                    {transactions.length == 0 ?                    
-                      <div style={{textAlign:"center"}}>
-                        <Typography
-                          paragraph
-                          style={{ paddingTop: 20, fontWeight: "bold" }}
-                          align="center"
-                        >
-                          No activity
-                        </Typography>
-                      </div>
-                    :<>
-                    <Table sx={{ minWidth: 1500, fontWeight: "bold" }} aria-label="a dense table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="left"></TableCell>
-                          <TableCell align="right"><strong>Price</strong></TableCell>
-                          <TableCell align="center"><strong>From</strong></TableCell>
-                          <TableCell align="center"><strong>To</strong></TableCell>
-                          <TableCell align="center"><strong>Time</strong></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {transactions
-                          .slice()
-                          .map((transaction, i) => {
-                            return (
-                              <TableRow key={i}>
-                                <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
-                                <TableCell align="right"><strong><PriceICP price={BigInt(transaction.price)} /></strong><br />
-                                {EntrepotGetICPUSD(BigInt(transaction.price)) ? <small><PriceUSD price={EntrepotGetICPUSD(BigInt(transaction.price))} /></small> : ""}</TableCell>
-                                <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
-                                <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
-                                <TableCell align="center"><Timestamp
-                                  relative
-                                  autoUpdate
-                                  date={Number(BigInt(transaction.time) / 1000000000n)}
-                                /></TableCell>
-                              </TableRow>
-                            );
-                          })
-                        }
-                      </TableBody>
-                    </Table>
-                    </>}
-                    </>
-                  }
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
+            <Grid item>
+              <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>Return to Collection</span>
+            </Grid>
           </Grid>
-        </Grid>
+        </button>
+        <DropShadowCard>
+          <Container className={classes.nftDescWrapper} style={{maxWidth: 1312}}>
+            <Box className={classes.nftDescHeader}>
+              <Grid container spacing={4}>
+                <Grid item xs={12} sm={6} className={classes.imageWrapper}>
+                  {displayImage(tokenid)}
+                </Grid>
+                <Grid item xs={12} sm={6} className={classes.nftDesc}>
+                  <div className={classes.nftDescContainer1}>
+                    <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), display: "block"}}>{collection.name} #{EntrepotNFTMintNumber(collection.canister, index)}</span>
+                    <Box style={{cursor: "pointer"}}>
+                      <ToniqChip text="View NFT OnChain" onClick={() => {
+                        window.open(EntrepotNFTLink(collection.canister, index, tokenid), '_blank')
+                      }}/>
+                    </Box>
+                    <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>COLLECTION</span>
+                  </div>
+                  <div className={classes.nftDescContainer2}>
+                    <div style={{ display: "flex", alignItems: "center"}}>
+                      <button
+                        className={classes.removeNativeButtonStyles}
+                        style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginRight: "11px"}}
+                        onClick={() => {
+                          navigate("/marketplace/"+collection.route)
+                        }}
+                      >
+                        {collection.name}
+                      </button>
+                      <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center"}}>
+                      <div className={classes.nftDescContainer3}>
+                        {listing.price ? 
+                        <>
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <PriceICP large={true} volume={true} clean={false} size={20} price={listing.price} />
+                            <span style={{ ...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginLeft: "8px" }}>(<PriceUSD price={EntrepotGetICPUSD(listing.price)} />)</span>
+                          </div>
+                        </> : <></>
+                        }
+                        <div style={{ display: "flex", gap: "16px" }}>
+                          <ToniqButton text="Buy Now" onClick={() => {
+                            props.buyNft(collection.canister, index, listing, _afterBuy);
+                          }}/>
+                          <ToniqButton text="Make Offer" className="toniq-button-secondary" onClick={() => {
+                            makeOffer();
+                          }}/>
+                          <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" />
+                        </div>
+                      </div>
+                    </div>
+                    {owner ?
+                    <span className={classes.ownerWrapper}>
+                      {`Owned by `}
+                      <span className={classes.ownerName}>ChavezOG</span>
+                      : &nbsp;
+                      <span className={classes.ownerAddress} onClick={() => {
+                        window.open(`https://dashboard.internetcomputer.org/account/"${owner}`, '_blank')
+                      }}>{shorten(owner)}</span>
+                    </span> : <></>
+                    }
+                  </div>
+                </Grid>
+              </Grid>
+            </Box>
+            <Accordion title="Offers" open={true}>
+              <span className={classes.offerDesc}>There are currently no offers!</span>
+            </Accordion>
+            <Accordion title="Attributes" open={true}>
+              <Grid container className={classes.attributeWrapper}>
+                {attributes.map((attribute) => (
+                  <Grid item key={attribute.groupName} xs={12}>
+                    <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
+                    <Grid container className={classes.attributeWrapper} spacing={2}>
+                      {attribute.data.map((data) => (
+                        <Grid item key={data.value} xs={12} md={3}>
+                          <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
+                            <span className={classes.attributeHeader}>
+                              <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
+                            </span>
+                            <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont), margin: "16px 0"}}>{data.value}</span>
+                            <ToniqChip className="toniq-chip-secondary" style={{margin: "16px 0"}} text={data.desc}></ToniqChip>
+                          </DropShadowCard>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
+            </Accordion>
+            <Accordion title="History" open={true}>
+              History
+            </Accordion>
+          </Container>
+        </DropShadowCard>
       </Container>
       <OfferForm floor={floor} address={props.account.address} balance={props.balance} complete={reloadOffers} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
     </>
@@ -808,13 +553,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   nftImage: {
-    [theme.breakpoints.up("md")]: {
-      minHeight:600,
-    },
-    [theme.breakpoints.down("sm")]: {
-    },
-    [theme.breakpoints.down("xs")]: {
-    },
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    flexShrink: "0",
+    maxWidth: "100%",
+    marginTop: "auto",
+    marginBottom: "auto",
   },
   iconsBorder: {
     border: "1px solid #E9ECEE",
@@ -832,6 +577,130 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.pxToRem(20),
     fontWeight: "bold",
     marginLeft : 20
+  },
+  removeNativeButtonStyles: {
+    background: "none",
+    padding: 0,
+    margin: 0,
+    border: "none",
+    font: "inherit",
+    color: "inherit",
+    cursor: "pointer",
+    textTransform: "inherit",
+    textDecoration: "inherit",
+    "-webkit-tap-highlight-color": "transparent",
+  },
+  nftDescWrapper: {
+    [theme.breakpoints.up("sm")]: {
+      padding: "32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "16px",
+    },
+  },
+  nftDescHeader: {
+    [theme.breakpoints.up("md")]: {
+      margin: "16px 0"
+    },
+  },
+  nftDesc: {
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.up("lg")]: {
+      justifyContent: "center",
+    },
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "left",
+    },
+  },
+  nftDescContainer1: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "8px",
+    [theme.breakpoints.up("sm")]: {
+      gap: "32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      gap: "16px",
+    },
+  },
+  nftDescContainer2: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "8px",
+    [theme.breakpoints.up("sm")]: {
+      gap: "40px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      gap: "16px",
+    },
+  },
+  nftDescContainer3: {
+    gap: "16px",
+    [theme.breakpoints.up("lg")]: {
+      display: "flex",
+      alignItems: "center",
+    },
+    [theme.breakpoints.down("lg")]: {
+      display: "grid",
+    },
+  },
+  ownerWrapper: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+  },
+  ownerName: {
+    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    color: toniqColors.pageInteraction.foregroundColor,
+  },
+  ownerAddress: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    cursor: "pointer",
+    "&:hover": {
+      color: toniqColors.pageInteraction.foregroundColor,      
+    },
+  },
+  hoverText: {
+    "&:hover": {
+      color: toniqColors.pageInteraction.foregroundColor,      
+    },
+  },
+  imageWrapper: {
+    [theme.breakpoints.up("md")]: {
+      display: "grid",
+    },
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      justifyContent: "center",
+    },
+  },
+  offerDesc: {
+    display: "flex",
+    justifyContent: "center",
+    [theme.breakpoints.up("md")]: {
+      margin: "32px 0"
+    },
+    [theme.breakpoints.down("md")]: {
+      margin: "16px 0"
+    },
+  },
+  attributeWrapper: {
+    [theme.breakpoints.up("md")]: {
+      marginTop: "16px",
+      marginBottom: "16px"
+    },
+    [theme.breakpoints.down("md")]: {
+      marginTop: "8px",
+      marginBottom: "8px"
+    },
+  },
+  attributeHeader: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "#F1F3F6",
+    width: "100%",
+    padding: "4px 0",
+    borderTopLeftRadius: "16px",
+    borderTopRightRadius: "16px",
   },
 }));
 
