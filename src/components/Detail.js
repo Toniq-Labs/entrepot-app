@@ -5,48 +5,9 @@ import {
   Container,
   Box,
   Grid,
-  Typography,
-  Button,
-  TableContainer,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TableHead,
-  IconButton,
-  Card,
-  CardContent,
-  CardMedia,
 } from "@material-ui/core";
-import DashboardIcon from "@material-ui/icons//Dashboard";
-import PeopleIcon from "@material-ui/icons/People";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ShareIcon from "@material-ui/icons/Share";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import ShopIcon from "@material-ui/icons/Shop";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
-import ListIcon from '@material-ui/icons/List';
-import AcUnitIcon from "@material-ui/icons/AcUnit";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import DetailsIcon from "@material-ui/icons/Details";
-import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Timestamp from "react-timestamp";
-import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
-import Alert from '@material-ui/lab/Alert';
 import OfferForm from './OfferForm';
 import { useNavigate } from "react-router-dom";
 import extjs from "../ic/extjs.js";
@@ -56,7 +17,7 @@ import {
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { ToniqIcon, ToniqChip, ToniqButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { ArrowLeft24Icon, ChevronDown24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
+import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import { DropShadowCard } from "../shared/DropShadowCard";
@@ -92,24 +53,17 @@ const emptyListing = {
   img: "",
 };
 
-const _getRandomBytes = () => {
-  var bs = [];
-  for (var i = 0; i < 32; i++) {
-    bs.push(Math.floor(Math.random() * 256));
-  }
-  return bs;
-};
 const Detail = (props) => {
   let { tokenid } = useParams();
   let { index, canister} = extjs.decodeTokenId(tokenid);
   const navigate = useNavigate();
-  const [floor, setFloor] = React.useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
-  const [listing, setListing] = React.useState(false);
-  const [detailsUrl, setDetailsUrl] = React.useState(false);
-  const [transactions, setTransactions] = React.useState(false);
-  const [owner, setOwner] = React.useState(false);
-  const [offers, setOffers] = React.useState(false);
-  const [openOfferForm, setOpenOfferForm] = React.useState(false);
+  const [floor, setFloor] = useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
+  const [listing, setListing] = useState(false);
+  const [detailsUrl, setDetailsUrl] = useState(false);
+  const [transactions, setTransactions] = useState(false);
+  const [owner, setOwner] = useState(false);
+  const [offers, setOffers] = useState(false);
+  const [openOfferForm, setOpenOfferForm] = useState(false);
   const collection = props.collections.find(e => e.canister === canister)
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
@@ -637,11 +591,11 @@ const useStyles = makeStyles((theme) => ({
   },
   nftDescContainer3: {
     gap: "16px",
-    [theme.breakpoints.up("lg")]: {
+    [theme.breakpoints.up("md")]: {
       display: "flex",
       alignItems: "center",
     },
-    [theme.breakpoints.down("lg")]: {
+    [theme.breakpoints.down("md")]: {
       display: "grid",
     },
   },
