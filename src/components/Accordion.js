@@ -32,13 +32,10 @@ export function Accordion(props) {
 				color: "#000000",
 				transition: "all .4s",
 			},
-			open: {
-				maxHeight: "100vh"
-			},
 			checkbox: {
 				display: "none",
 				"&:checked~.detail": {
-					maxHeight: "100%",
+					maxHeight: "3000px",
 					overflow: "visible",
 				},
 				"&:checked~.header .icon": {
