@@ -14,7 +14,7 @@ import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
 import { cssToReactStyleObject, toniqFontStyles, toniqColors, LoaderAnimated24Icon, Icp16Icon } from '@toniq-labs/design-system';
 import {NftCard} from '../components/shared/NftCard';
-import { ToniqIcon, ToniqChip } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {ToniqIcon, ToniqChip, ToniqToggleButton} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
 
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   collectionCard: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight:456,
+    minHeight: 480,
     '@media (max-width: 400px)': {
       height: 'unset',
     },
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'clip',
     padding: '4px 0',
-    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     color: String(toniqColors.pageSecondary.foregroundColor),
   },
   collectionCardBriefWrapper: {
@@ -189,7 +189,7 @@ export default function Marketplace(props) {
             direction="row"
             justifyContent="center"
             alignItems="start"
-            spacing={2}
+            spacing={4}
           >
             {
               props.collections.filter(collection => {
@@ -273,7 +273,8 @@ export default function Marketplace(props) {
                 return (<Grid key={i} item className={classes.collectionContainer}>
                   <Link
                       className={classes.collectionCard}
-                    style={{textDecoration:"none"}} to={"/marketplace/"+collection.route}>
+                      style={{textDecoration:"none"}}
+                      to={"/marketplace/"+collection.route}>
                     <NftCard
                       style={{flexGrow: 1}}
                       title={collection.name}
