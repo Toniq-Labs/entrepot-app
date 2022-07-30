@@ -25,6 +25,7 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
+import {WithFilterPanel} from '../components/shared/WithFilterPanel';
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -392,184 +393,193 @@ export default function Marketplace(props) {
           }}
         >
           <h1 className={classes.heading}>All Collections</h1>
-          <div className={classes.marketplaceControls}>
-            <ToniqInput
-              style={{
-                '--toniq-accent-tertiary-background-color': 'transparent',
-                marginBottom: '16px',
-              }}
-              placeholder="Search for collections..."
-              icon={Search24Icon}
-              onValueChange={event => {
-                const search = event.detail;
-                if (search) {
-                  setSearchParams({search});
-                } else {
-                  setSearchParams({});
-                }
-              }}
-            />
-            <div className={classes.filterSortRow}>
-              <div className={classes.filterAndCollectionCount}>
-                <div
-                  className={classes.filterAndIcon}
-                  style={{
-                    display: showFilters ? 'none' : 'flex',
-                  }}
-                  onClick={() => {
-                    setShowFilters(true);
-                  }}
-                >
-                  <ToniqIcon icon={Filter24Icon} />
-                  <span>Filters</span>
-                </div>
-                <span
-                  style={{
-                    display: showFilters ? 'none' : 'flex',
-                  }}
-                >
-                  •
-                </span>
-                <span
-                  style={{
-                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                    color: toniqColors.pageSecondary.foregroundColor,
-                  }}
-                >
-                  {filteredAndSortedCollections.length} Collections
-                </span>
-              </div>
-              <ToniqDropdown
-                style={{
-                  '--toniq-accent-secondary-background-color': 'transparent',
-                  width: '360px',
-                }}
-                icon={ArrowsSort24Icon}
-                selectedLabelPrefix="Sort By:"
-                selected={sort}
-                onSelectChange={event => {
-                  console.log(event.detail);
-                  setSort(event.detail);
-                }}
-                options={sortOptions}
-              />
-            </div>
-          </div>
-          <Grid
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="flex-start"
-            spacing={4}
+          <ToniqInput
+            style={{
+              '--toniq-accent-tertiary-background-color': 'transparent',
+              marginBottom: '16px',
+            }}
+            placeholder="Search for collections..."
+            icon={Search24Icon}
+            onValueChange={event => {
+              const search = event.detail;
+              if (search) {
+                setSearchParams({search});
+              } else {
+                setSearchParams({});
+              }
+            }}
+          />
+          <WithFilterPanel
+            showFilterPanel={showFilters}
+            onFilterClose={() => {
+              setShowFilters(false);
+            }}
           >
-            {filteredAndSortedCollections.map((collection, i) => {
-              return (
-                <Grid key={i} item className={classes.collectionContainer}>
-                  <Link
-                    className={classes.collectionCard}
-                    style={{textDecoration: 'none'}}
-                    to={'/marketplace/' + collection.route}
+            <div className={classes.marketplaceControls}>
+              <div className={classes.filterSortRow}>
+                <div className={classes.filterAndCollectionCount}>
+                  <div
+                    className={classes.filterAndIcon}
+                    style={{
+                      display: showFilters ? 'none' : 'flex',
+                    }}
+                    onClick={() => {
+                      setShowFilters(true);
+                    }}
                   >
-                    <NftCard
-                      style={{flexGrow: 1}}
-                      title={collection.name}
-                      imageUrl={
-                        collection.hasOwnProperty('collection') && collection.collection
-                          ? collection.collection
-                          : '/collections/' + collection.canister + '.jpg'
-                      }
+                    <ToniqIcon icon={Filter24Icon} />
+                    <span>Filters</span>
+                  </div>
+                  <span
+                    style={{
+                      display: showFilters ? 'none' : 'flex',
+                    }}
+                  >
+                    •
+                  </span>
+                  <span
+                    style={{
+                      ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                      color: toniqColors.pageSecondary.foregroundColor,
+                    }}
+                  >
+                    {filteredAndSortedCollections.length} Collections
+                  </span>
+                </div>
+                <ToniqDropdown
+                  style={{
+                    '--toniq-accent-secondary-background-color': 'transparent',
+                    width: '360px',
+                  }}
+                  icon={ArrowsSort24Icon}
+                  selectedLabelPrefix="Sort By:"
+                  selected={sort}
+                  onSelectChange={event => {
+                    console.log(event.detail);
+                    setSort(event.detail);
+                  }}
+                  options={sortOptions}
+                />
+              </div>
+            </div>
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="flex-start"
+              spacing={4}
+            >
+              {filteredAndSortedCollections.map((collection, i) => {
+                return (
+                  <Grid key={i} item className={classes.collectionContainer}>
+                    <Link
+                      className={classes.collectionCard}
+                      style={{textDecoration: 'none'}}
+                      to={'/marketplace/' + collection.route}
                     >
-                      <div className={classes.collectionCardBottomHalf}>
-                        <h2 className={classes.collectionCardCollectionName}>{collection.name}</h2>
-                        {collection.brief ? (
-                          <div className={classes.collectionCardBriefWrapper}>
-                            <p className={classes.collectionCardBrief}>{collection.brief}</p>
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                        {(() => {
-                          const collectionStatsWrapper = stats.find(
-                            stat => stat.canister === collection.canister,
-                          );
-
-                          if (collectionStatsWrapper) {
-                            if (collectionStatsWrapper.stats) {
-                              const collectionStatDetails = [
-                                {
-                                  label: 'Volume',
-                                  icon: Icp16Icon,
-                                  value: icpToString(
-                                    collectionStatsWrapper.stats.total,
-                                    false,
-                                    true,
-                                  ),
-                                },
-                                {
-                                  label: 'Listings',
-                                  icon: undefined,
-                                  value: truncateNumber(collectionStatsWrapper.stats.listings),
-                                },
-                                {
-                                  label: 'Floor Price',
-                                  icon: Icp16Icon,
-                                  value: icpToString(
-                                    collectionStatsWrapper.stats.floor,
-                                    false,
-                                    true,
-                                  ),
-                                },
-                              ];
-
-                              return (
-                                <div className={classes.collectionDetailsWrapper}>
-                                  {collectionStatDetails.map((cellDetails, _index, fullArray) => (
-                                    <div
-                                      key={cellDetails.label}
-                                      style={{
-                                        maxWidth: `${100 / fullArray.length}%`,
-                                      }}
-                                      className={classes.collectionDetailsCell}
-                                    >
-                                      <span
-                                        style={{
-                                          textTransform: 'uppercase',
-                                          ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                        }}
-                                      >
-                                        {cellDetails.label}
-                                      </span>
-                                      <ToniqChip
-                                        className={`toniq-chip-secondary ${classes.collectionDetailsChip}`}
-                                        icon={cellDetails.icon}
-                                        text={cellDetails.value}
-                                      ></ToniqChip>
-                                    </div>
-                                  ))}
-                                </div>
-                              );
-                            } else {
-                              return '';
-                            }
-                          } else {
-                            return (
-                              <ToniqIcon
-                                style={{
-                                  color: String(toniqColors.pagePrimary.foregroundColor),
-                                  alignSelf: 'center',
-                                }}
-                                icon={LoaderAnimated24Icon}
-                              />
+                      <NftCard
+                        style={{flexGrow: 1}}
+                        title={collection.name}
+                        imageUrl={
+                          collection.hasOwnProperty('collection') && collection.collection
+                            ? collection.collection
+                            : '/collections/' + collection.canister + '.jpg'
+                        }
+                      >
+                        <div className={classes.collectionCardBottomHalf}>
+                          <h2 className={classes.collectionCardCollectionName}>
+                            {collection.name}
+                          </h2>
+                          {collection.brief ? (
+                            <div className={classes.collectionCardBriefWrapper}>
+                              <p className={classes.collectionCardBrief}>{collection.brief}</p>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                          {(() => {
+                            const collectionStatsWrapper = stats.find(
+                              stat => stat.canister === collection.canister,
                             );
-                          }
-                        })()}
-                      </div>
-                    </NftCard>
-                  </Link>
-                </Grid>
-              );
-            })}
-          </Grid>
+
+                            if (collectionStatsWrapper) {
+                              if (collectionStatsWrapper.stats) {
+                                const collectionStatDetails = [
+                                  {
+                                    label: 'Volume',
+                                    icon: Icp16Icon,
+                                    value: icpToString(
+                                      collectionStatsWrapper.stats.total,
+                                      false,
+                                      true,
+                                    ),
+                                  },
+                                  {
+                                    label: 'Listings',
+                                    icon: undefined,
+                                    value: truncateNumber(collectionStatsWrapper.stats.listings),
+                                  },
+                                  {
+                                    label: 'Floor Price',
+                                    icon: Icp16Icon,
+                                    value: icpToString(
+                                      collectionStatsWrapper.stats.floor,
+                                      false,
+                                      true,
+                                    ),
+                                  },
+                                ];
+
+                                return (
+                                  <div className={classes.collectionDetailsWrapper}>
+                                    {collectionStatDetails.map((cellDetails, _index, fullArray) => (
+                                      <div
+                                        key={cellDetails.label}
+                                        style={{
+                                          maxWidth: `${100 / fullArray.length}%`,
+                                        }}
+                                        className={classes.collectionDetailsCell}
+                                      >
+                                        <span
+                                          style={{
+                                            textTransform: 'uppercase',
+                                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                                          }}
+                                        >
+                                          {cellDetails.label}
+                                        </span>
+                                        <ToniqChip
+                                          className={`toniq-chip-secondary ${classes.collectionDetailsChip}`}
+                                          icon={cellDetails.icon}
+                                          text={cellDetails.value}
+                                        ></ToniqChip>
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              } else {
+                                return '';
+                              }
+                            } else {
+                              return (
+                                <ToniqIcon
+                                  style={{
+                                    color: String(toniqColors.pagePrimary.foregroundColor),
+                                    alignSelf: 'center',
+                                  }}
+                                  icon={LoaderAnimated24Icon}
+                                />
+                              );
+                            }
+                          })()}
+                        </div>
+                      </NftCard>
+                    </Link>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </WithFilterPanel>
         </div>
       </div>
     </>
