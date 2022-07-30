@@ -12,9 +12,9 @@ import TextField from '@material-ui/core/TextField';
 import PriceICP from '../components/PriceICP';
 import { EntrepotUpdateStats, EntrepotAllStats } from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
-import { cssToReactStyleObject, toniqFontStyles, toniqColors, LoaderAnimated24Icon, Icp16Icon } from '@toniq-labs/design-system';
+import { cssToReactStyleObject, toniqFontStyles, toniqColors, LoaderAnimated24Icon, Icp16Icon, Search24Icon, Filter24Icon, ArrowsSort24Icon } from '@toniq-labs/design-system';
 import {NftCard} from '../components/shared/NftCard';
-import {ToniqIcon, ToniqChip, ToniqToggleButton} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {ToniqIcon, ToniqChip, ToniqInput, ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
 
@@ -55,7 +55,29 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 345,
   },
   heading: {
-    textAlign: "center",
+    ...cssToReactStyleObject(toniqFontStyles.h1Font),
+    ...cssToReactStyleObject(toniqFontStyles.extraBoldFont),
+    // 8px here plus 24px padding on wrapper makes 32px total between this and the nav bar
+    marginTop: '8px',
+    marginBottom: '24px',
+  },
+  filterSortRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+  },
+  filterAndCollectionCount: {
+    display: 'flex',
+    gap: '16px',
+  },
+  marketplaceControls: {
+    marginBottom: '32px',
+  },
+  filterAndIcon: {
+    cursor: 'pointer',
+    marginLeft: '16px',
+    gap: '8px',
+    flexShrink: 0,
   },
   media: {
     cursor: "pointer",
@@ -129,20 +151,55 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const defaultSortOption = {
+  value: 'total_desc',
+  label: 'Total Volume: High to Low',
+};
+const sortOptions = [
+  {
+    value: 'listings_asc',
+    label: 'Listings: Low to High',
+  },
+  {
+    value: 'listings_desc',
+    label: 'Listings: High to Low',
+  },
+  defaultSortOption,
+  {
+    value: 'total_asc',
+    label: 'Total Volume: Low to High',
+  },
+  {
+    value: 'floor_asc',
+    label: 'Floor Price: Low to High',
+  },
+  {
+    value: 'floor_desc',
+    label: 'Floor Price: High to Low',
+  },
+  {
+    value: 'alpha_asc',
+    label: 'Alphabetically: A-Z',
+  },
+  {
+    value: 'alpha_desc',
+    label: 'Alphabetically: Z-A',
+  },
+];
+
 export default function Marketplace(props) {
   const navigate = useNavigate();
   const classes = useStyles();
-  const [sort, setSort] = React.useState("total_desc");
+  const [sort, setSort] = React.useState(defaultSortOption);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showFilters, setShowFilters] = React.useState(false);
+  const [currentFilters, setCurrentFilters] = React.useState(undefined);
   
   const query = searchParams.get('search') || '';
   const [stats, setStats] = React.useState([]);
 
   const _updates = () => {
     EntrepotUpdateStats().then(setStats);    
-  };
-  const changeSort = (event) => {
-    setSort(event.target.value);
   };
   React.useEffect(() => {
     if (EntrepotAllStats().length == 0) {
@@ -153,9 +210,86 @@ export default function Marketplace(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useInterval(_updates, 60 * 1000);
-  const handleClick = (a) => {
-    navigate(a);
-  };
+  
+  const filteredAndSortedCollections = props.collections.filter(collection => {
+    // prevent Toniq Earn related collections from showing up in countries where its blocked
+    const allowed = isToniqEarnCollection(collection) ? props.isToniqEarnAllowed : true;
+    const inQuery = [collection.name, collection.brief, collection.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0;
+    return allowed && (query == "" || inQuery);
+  }).sort((a,b) => {
+    switch (sort.value) {
+      case "featured":
+        return b.priority - a.priority;              
+      break;
+      case "listings_asc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == a.canister).stats.listings) - Number(stats.find(x => x.canister == b.canister).stats.listings);
+      break;
+      case "listings_desc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == b.canister).stats.listings) - Number(stats.find(x => x.canister == a.canister).stats.listings);
+      break;
+      case "total_asc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == a.canister).stats.total) - Number(stats.find(x => x.canister == b.canister).stats.total);
+      break;
+      case "total_desc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == b.canister).stats.total) - Number(stats.find(x => x.canister == a.canister).stats.total);
+      break;
+      case "floor_asc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == a.canister).stats.floor) - Number(stats.find(x => x.canister == b.canister).stats.floor);
+      break;
+      case "floor_desc":
+        if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
+        if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
+        if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+        if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
+        if (stats.find(x => x.canister == a.canister).stats === false) return 1;
+        if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+        return Number(stats.find(x => x.canister == b.canister).stats.floor) - Number(stats.find(x => x.canister == a.canister).stats.floor);
+      break;
+      case "alpha_asc":
+        if(a.name < b.name) { return -1; }
+        if(a.name > b.name) { return 1; }
+        return 0;
+      break;
+      case "alpha_desc":
+        if(a.name < b.name) { return 1; }
+        if(a.name > b.name) { return -1; }
+        return 0;
+      break;
+      default:
+        return 0;
+    }
+  });
+  
   return (
     <>
       <div style={{ width: "100%", display: "block", position: "relative" }}>
@@ -166,23 +300,67 @@ export default function Marketplace(props) {
           }}
         >
           <h1 className={classes.heading}>All Collections</h1>
-          <div style={{margin:"0 auto", textAlign:"center",maxWidth:500}}>
-            <TextField placeholder="Search" style={{width:"100%", marginBottom:50}} value={query} onChange={e => setSearchParams(e.target.value ? {search: e.target.value} : {})} variant="outlined" />
-          </div>
-          <div style={{textAlign:"right", marginBottom:"30px", marginRight:25}}>
-            <FormControl style={{ marginRight: 20 }}>
-              <InputLabel>Sort by</InputLabel>
-              <Select value={sort} onChange={changeSort}>
-                <MenuItem value={"listings_asc"}>Listings: Low to High</MenuItem>
-                <MenuItem value={"listings_desc"}>Listings: High to Low</MenuItem>
-                <MenuItem value={"total_asc"}>Total Volume: Low to High</MenuItem>
-                <MenuItem value={"total_desc"}>Total Volume: High to Low</MenuItem>
-                <MenuItem value={"floor_asc"}>Floor Price: Low to High</MenuItem>
-                <MenuItem value={"floor_desc"}>Floor Price: High to Low</MenuItem>
-                <MenuItem value={"alpha_asc"}>Alphabetically: A-Z</MenuItem>
-                <MenuItem value={"alpha_desc"}>Alphabetically: Z-A</MenuItem>
-              </Select>
-            </FormControl>
+          <div className={classes.marketplaceControls}>
+            <ToniqInput
+              style={{
+                '--toniq-accent-tertiary-background-color': 'transparent',
+                marginBottom: '16px',
+              }}
+              placeholder="Search for collections..."
+              icon={Search24Icon}
+              onValueChange={(event) => {
+                const search = event.detail;
+                if (search) {
+                  setSearchParams({search});
+                } else {
+                  setSearchParams({});
+                }
+              }}/>
+              <div className={classes.filterSortRow}>
+                <div className={classes.filterAndCollectionCount}>
+                  <div
+                    className={classes.filterAndIcon}
+                    style={{
+                      display: showFilters ? 'none' : 'flex',
+                    }}
+                    onClick={() => {
+                      setShowFilters(true);
+                    }}
+                  >
+                    <ToniqIcon
+                      icon={Filter24Icon}
+                    />
+                    <span>Filters</span>
+                  </div>
+                  <span
+                    style={{
+                      display: showFilters ? 'none' : 'flex',
+                    }}
+                  >
+                    •
+                  </span>
+                  <span style={{
+                      ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                      color: toniqColors.pageSecondary.foregroundColor,
+                    }}>
+                    {filteredAndSortedCollections.length} Collections
+                  </span>
+                </div>
+                <ToniqDropdown
+                  style={{
+                    '--toniq-accent-secondary-background-color': 'transparent',
+                    width: '360px',
+                  }}
+                  icon={ArrowsSort24Icon}
+                  selectedLabelPrefix="Sort By:"
+                  selected={sort}
+                  onSelectChange={(event) => {
+                    console.log(event.detail);
+                    setSort(event.detail);
+                  }}
+                  options={sortOptions}
+                />
+              </div>
           </div>
           <Grid
             container
@@ -192,84 +370,7 @@ export default function Marketplace(props) {
             spacing={4}
           >
             {
-              props.collections.filter(collection => {
-                // prevent Toniq Earn related collections from showing up in countries where its blocked
-                const allowed = isToniqEarnCollection(collection) ? props.isToniqEarnAllowed : true;
-                const inQuery = [collection.name, collection.brief, collection.keywords].join(" ").toLowerCase().indexOf(query.toLowerCase()) >= 0;
-                return allowed && (query == "" || inQuery);
-              }).sort((a,b) => {
-                switch (sort) {
-                  case "featured":
-                    return b.priority - a.priority;              
-                  break;
-                  case "listings_asc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == a.canister).stats.listings) - Number(stats.find(x => x.canister == b.canister).stats.listings);
-                  break;
-                  case "listings_desc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == b.canister).stats.listings) - Number(stats.find(x => x.canister == a.canister).stats.listings);
-                  break;
-                  case "total_asc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == a.canister).stats.total) - Number(stats.find(x => x.canister == b.canister).stats.total);
-                  break;
-                  case "total_desc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == b.canister).stats.total) - Number(stats.find(x => x.canister == a.canister).stats.total);
-                  break;
-                  case "floor_asc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == a.canister).stats.floor) - Number(stats.find(x => x.canister == b.canister).stats.floor);
-                  break;
-                  case "floor_desc":
-                    if (stats.findIndex(x => x.canister == a.canister) < 0 && stats.findIndex(x => x.canister == b.canister) < 0) return 0;
-                    if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-                    if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
-                    if (stats.find(x => x.canister == a.canister).stats === false && stats.find(x => x.canister == b.canister).stats === false) return 0;
-                    if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-                    if (stats.find(x => x.canister == b.canister).stats === false) return -1;
-                    return Number(stats.find(x => x.canister == b.canister).stats.floor) - Number(stats.find(x => x.canister == a.canister).stats.floor);
-                  break;
-                  case "alpha_asc":
-                    if(a.name < b.name) { return -1; }
-                    if(a.name > b.name) { return 1; }
-                    return 0;
-                  break;
-                  case "alpha_desc":
-                    if(a.name < b.name) { return 1; }
-                    if(a.name > b.name) { return -1; }
-                    return 0;
-                  break;
-                  default:
-                    return 0;
-                }
-              }).map((collection, i) => {
+              filteredAndSortedCollections.map((collection, i) => {
                 return (<Grid key={i} item className={classes.collectionContainer}>
                   <Link
                       className={classes.collectionCard}
