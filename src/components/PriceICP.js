@@ -29,7 +29,10 @@ export default function PriceICP(props) {
         <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
         
             <ToniqIcon icon={Icp16Icon}/>
-            <span style={cssToReactStyleObject(toniqFontStyles.boldMonospaceFont)}>
+            <span style={{
+                ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                ...cssToReactStyleObject(toniqFontStyles.monospaceFont)
+              }}>
                 {icpToString(props.price, !props.clean, props.volume)}
             </span>
         </span>
