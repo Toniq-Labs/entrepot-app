@@ -3,6 +3,7 @@ import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import {toniqColors, cssToReactStyleObject, toniqShadows} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
+import {useState} from 'react';
 
 const imageSize = css`272px`;
 
@@ -28,12 +29,15 @@ const contentStyles = cssToReactStyleObject(css`
     flex-direction: column;
 `);
 
-export function NftCard(props) {    
+export function NftCard(props) {
+    const [hovered, setHovered] = useState(false);
+    
+    
     const styles = cssToReactStyleObject(css`
         border-radius: 16px;
         background-color: ${toniqColors.pagePrimary.backgroundColor};
         border: 1px solid
-            ${props.selected ? toniqColors.pageInteraction.foregroundColor : css`transparent`};
+            ${hovered ? toniqColors.pageInteraction.foregroundColor : css`transparent`};
         padding: 16px;
         display: flex;
         flex-direction: column;
@@ -50,7 +54,12 @@ export function NftCard(props) {
     `);
 
     return (
-        <DropShadowCard style={{...styles, ...props.style}}>
+        <DropShadowCard 
+            className={props.className}
+            style={{...styles, ...props.style}}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
             <div style={imageWrapperStyles}>
                 <div style={imageStyles} />
                 <div style={imageOverlayStyles}>{props.imageOverlay}</div>
