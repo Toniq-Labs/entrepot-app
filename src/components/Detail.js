@@ -429,8 +429,14 @@ const Detail = (props) => {
                             <span className={classes.attributeHeader}>
                               <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
                             </span>
-                            <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont), margin: "16px 0"}}>{data.value}</span>
-                            <ToniqChip className="toniq-chip-secondary" style={{margin: "16px 0"}} text={data.desc}></ToniqChip>
+                            <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
+                              <Grid item>
+                                <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
+                              </Grid>
+                              <Grid item>
+                                <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
+                              </Grid>
+                            </Grid>
                           </DropShadowCard>
                         </Grid>
                       ))}
