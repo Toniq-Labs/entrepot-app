@@ -204,7 +204,7 @@ const Detail = (props) => {
       getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
       if(detailsUrl){
         return (
-          <video width="100%" controls autoPlay muted loop>
+          <video width="100%" autoPlay muted loop>
             <source src={detailsUrl} type="video/mp4" />
           </video>
         );
@@ -277,7 +277,6 @@ const Detail = (props) => {
       case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
       case "5stux-vyaaa-aaaam-qasoa-cai":
       case "e4ca6-oiaaa-aaaai-acm2a-cai":
-      case "skjpp-haaaa-aaaae-qac7q-cai":
       case TREASURECANISTER:
         return (
           <iframe
@@ -305,6 +304,7 @@ const Detail = (props) => {
       case "xcep7-sqaaa-aaaah-qcukq-cai":
       case "x4oqm-bqaaa-aaaam-qahaq-cai":
       case "tco7x-piaaa-aaaam-qamiq-cai":
+      case "skjpp-haaaa-aaaae-qac7q-cai":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // for pre-generated images residing on asset canisters
