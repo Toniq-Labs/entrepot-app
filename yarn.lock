@@ -1433,9 +1433,9 @@
   "version" "1.0.4"
 
 "@lit/reactive-element@^1.3.0":
-  "integrity" "sha512-A2e18XzPMrIh35nhIdE4uoqRzoIpEU5vZYuQN4S3Ee1zkGdYC27DP12pewbw/RLgPHzaE4kx/YqxMzebOpm0dA=="
-  "resolved" "https://registry.npmjs.org/@lit/reactive-element/-/reactive-element-1.3.2.tgz"
-  "version" "1.3.2"
+  "integrity" "sha512-I1wz4uxOA52zSBhKmv4KQWLJpCyvfpnDg+eQR6mjpRgV+Ldi14HLPpSUpJklZRldz0fFmGCC/kVmuc/3cPFqCg=="
+  "resolved" "https://registry.npmjs.org/@lit/reactive-element/-/reactive-element-1.3.4.tgz"
+  "version" "1.3.4"
 
 "@material-ui/core@^4.0.0", "@material-ui/core@^4.11.3", "@material-ui/core@^4.11.4", "@material-ui/core@^4.12.1":
   "integrity" "sha512-Q1npB8V73IC+eV2X6as+g71MpEGQwqKHUI2iujY62npk35V8nMx/bUXAHjv5kKG1BZ8s8XUWoG6s/VkjYPjjQA=="
@@ -2026,10 +2026,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@toniq-labs/design-system@^0.0.4":
-  "integrity" "sha512-U0IUC+p2N0Sp4AjgYVCocnizP71rxl3nVc1JO+SG1hLZxWeynikRtEvA0yChZVM3ZScU+wWS0jX0EizhB2W+og=="
-  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.4.tgz"
-  "version" "0.0.4"
+"@toniq-labs/design-system@0.0.15":
+  "integrity" "sha512-NI2yXXQcgjo2WP6MH0RRBs1ieyBR6k31mcDBVGvU1t4ajLU+/IOr2P5exJ5qwNYcKkkEWTa5KpG49KCNXYczsg=="
+  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.15.tgz"
+  "version" "0.0.15"
   dependencies:
     "augment-vir" "2.2.1"
     "element-vir" "5.5.1"
@@ -6365,6 +6365,11 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
+"fsevents@^2.3.2", "fsevents@~2.3.2":
+  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
+
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -8431,17 +8436,17 @@
   "version" "1.1.6"
 
 "lit-element@^3.2.0":
-  "integrity" "sha512-HbE7yt2SnUtg5DCrWt028oaU4D5F4k/1cntAFHTkzY8ZIa8N0Wmu92PxSxucsQSOXlODFrICkQ5x/tEshKi13g=="
-  "resolved" "https://registry.npmjs.org/lit-element/-/lit-element-3.2.0.tgz"
-  "version" "3.2.0"
+  "integrity" "sha512-6ZgxBR9KNroqKb6+htkyBwD90XGRiqKDHVrW/Eh0EZ+l+iC+u+v+w3/BA5NGi4nizAVHGYvQBHUDuSmLjPp7NQ=="
+  "resolved" "https://registry.npmjs.org/lit-element/-/lit-element-3.2.2.tgz"
+  "version" "3.2.2"
   dependencies:
     "@lit/reactive-element" "^1.3.0"
     "lit-html" "^2.2.0"
 
 "lit-html@^2.2.0":
-  "integrity" "sha512-xOKsPmq/RAKJ6dUeOxhmOYFjcjf0Q7aSdfBJgdJkOfCUnkmmJPxNrlZpRBeVe1Gg50oYWMlgm6ccAE/SpJgSdw=="
-  "resolved" "https://registry.npmjs.org/lit-html/-/lit-html-2.2.6.tgz"
-  "version" "2.2.6"
+  "integrity" "sha512-JhqiAwO1l03kRe68uBZ0i2x4ef2S5szY9vvP411nlrFZIpKK4/hwnhA/15bqbvxe1lV3ipBdhaOzHmyOk7QIRg=="
+  "resolved" "https://registry.npmjs.org/lit-html/-/lit-html-2.2.7.tgz"
+  "version" "2.2.7"
   dependencies:
     "@types/trusted-types" "^2.0.2"
 

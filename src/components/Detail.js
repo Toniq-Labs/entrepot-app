@@ -275,6 +275,9 @@ const Detail = (props) => {
       case "sbcwr-3qaaa-aaaam-qamoa-cai":
       case "sbcwr-3qaaa-aaaam-qamoa-cai":
       case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
+      case "5stux-vyaaa-aaaam-qasoa-cai":
+      case "e4ca6-oiaaa-aaaai-acm2a-cai":
+      case "skjpp-haaaa-aaaae-qac7q-cai":
       case TREASURECANISTER:
         return (
           <iframe
@@ -319,6 +322,11 @@ const Detail = (props) => {
       case "4wiph-kyaaa-aaaam-qannq-cai":
       case "3cjkh-tqaaa-aaaam-qan6a-cai":
       case "lcgbg-kaaaa-aaaam-qaota-cai":
+      case "j7n3m-7iaaa-aaaam-qarza-cai":
+      case "zydwz-laaaa-aaaam-qasuq-cai":
+      case "xgket-maaaa-aaaam-qatwq-cai":
+      case "wlea5-diaaa-aaaam-qatra-cai":
+      case "vvvht-eyaaa-aaaam-qatya-cai":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // default case is to just use the thumbnail on the detail page

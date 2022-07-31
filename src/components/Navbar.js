@@ -1,22 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
+import { createSearchParams } from 'react-router-dom';
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Wallet from "../components/Wallet";
-import MenuIcon from "@material-ui/icons/Menu";
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { IconButton, makeStyles } from "@material-ui/core";
-import { ToniqToggleButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, Infinity24Icon } from '@toniq-labs/design-system';
+import { makeStyles } from "@material-ui/core";
+import { ToniqToggleButton, ToniqIcon, ToniqButton, ToniqInput } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, EntrepotLogo144Icon, toniqColors, cssToReactStyleObject, Wallet24Icon, toniqFontStyles, Menu24Icon, Icp24Icon, LoaderAnimated24Icon, Infinity24Icon, Search24Icon } from '@toniq-labs/design-system';
+import extjs from '../ic/extjs.js';
+import {icpToString} from './PriceICP';
+import {useSearchParams} from 'react-router-dom';
+
+const api = extjs.connect("https://boundary.ic0.app/");
 
 export default function Navbar(props) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [walletOpen, setWalletOpen] = React.useState(false);
+  const [balance, setBalance] = React.useState(undefined);
   const classes = useStyles();
+  const [searchParams] = useSearchParams();
+  
+  const query = searchParams.get('search') || '';
+  
+  
+  const refresh = async () => {
+    console.log('refreshing');
+    if (props.account){
+      var b = await api.token().getBalance(props.account.address);
+      setBalance(b);
+    } else {
+      setBalance(undefined);
+    }
+  };
+  
+  useEffect(() => {
+    refresh();
+  }, [props.account]);
 
   const handleClick = () => {
     setWalletOpen(false)
@@ -34,7 +56,7 @@ export default function Navbar(props) {
       className="toniq-toggle-button-text-only"
       active={props.view === "sale"}
       onClick={() => goTo("/sale")}
-      text="LaunchPad"
+      text="Launchpad"
       icon={Rocket24Icon}
     />
     <ToniqToggleButton
@@ -67,49 +89,66 @@ export default function Navbar(props) {
     />
   </>)
   
+  const entrepotTitleStyles = {
+    ...cssToReactStyleObject(toniqFontStyles.h2Font),
+    ...cssToReactStyleObject(toniqFontStyles.extraBoldFont)
+  };
+  
   return (
     <>
     <style dangerouslySetInnerHTML={{__html: `
-      /* temporary! Remove this once the design system styles have been fully embraced */
-      .${classes.root} ${ToniqToggleButton.tagName} {
-        font: inherit;
-        font-weight: bold;
-        font-size: 1.2em;
-        text-transform: uppercase;
-      }
       .${classes.smallScreenNav} ${ToniqToggleButton.tagName} {
         margin: 8px 16px;
       }
     `}} />
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" style={{zIndex: 1400, background: "white" }}>
-        <Toolbar style={{gap: '4px', alignItems: 'stretch'}}>
-          <Typography variant="h6" noWrap>
-            <a onClick={() => goTo("/")}><img
-              alt="Entrepot"
-              src="/logo.jpg"
-              style={{ height: 64, cursor: "pointer" }}
-            /></a>
+      <AppBar position="fixed" style={{zIndex: 1400, background: "white"}}>
+        <Toolbar style={{gap: '4px', alignItems: 'stretch', minHeight: '70px'}}>
+          <Typography style={{display: 'flex', alignItems: 'center'}} variant="h6" noWrap>
+            <a style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => goTo("/")}>
+              <ToniqIcon className={`toniq-icon-fit-icon ${classes.icpButton}`} style={{height: '54px', width: '54px', flexShrink: '0', margin: '8px', color: toniqColors.brandPrimary.foregroundColor}} icon={EntrepotLogo144Icon}/>
+              <span style={entrepotTitleStyles}>Entrepot</span>
+            </a>
           </Typography>
+          <ToniqInput className={classes.bigScreenInput} style={{alignSelf: 'center', marginLeft: '16px'}} icon={Search24Icon} placeholder="Search for NFTs..." value={query} onValueChange={(event) => {
+            const newParam = event.detail;
+            
+            navigate({
+              pathname: "marketplace",
+              search: `?${createSearchParams(newParam ? {search: newParam} : {})}`
+          })
+          }}/>
           <div className={classes.grow} />
           <div className={classes.bigScreenNavButtons}>
             {navBarButtons}
-            <Button
-              onClick={handleDrawerToggle}
-              color="inherit"
-              className={[classes.button].join(' ')}
-              >
-              <AccountBalanceWalletIcon fontSize="large" />
-            </Button>
           </div>
 
-          <IconButton className={classes.smallScreenButton}>
-            <AccountBalanceWalletIcon onClick={() => {setOpen(false); setWalletOpen(!walletOpen)}} />
-          </IconButton>
-          <IconButton className={classes.smallScreenButton}>
-            <MenuIcon onClick={() => {setOpen(!open); setWalletOpen(false)}} />
-          </IconButton>
+          <ToniqToggleButton
+            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+            active={open}
+            onClick={() => {
+              setWalletOpen(false);
+              setOpen(!open);
+            }}
+            icon={Menu24Icon}
+          />
+          <ToniqToggleButton
+            className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
+            active={walletOpen}
+            onClick={() => {
+              setWalletOpen(!walletOpen);
+              setOpen(false);
+            }}
+            icon={Wallet24Icon}
+          />
+          <ToniqButton
+            className={`toniq-button-outline ${classes.icpButton}`}
+            style={{width: '120px', marginLeft: '8px', alignSelf: 'center', ...cssToReactStyleObject(toniqFontStyles.boldMonospaceFont), fontSize: '19px'}}
+            onClick={handleDrawerToggle}
+            icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
+            text={balance === undefined ? '' : icpToString(balance, true, true)}
+          ></ToniqButton>
           {open && (
             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
               {navBarButtons}
@@ -146,14 +185,30 @@ const useStyles = makeStyles((theme) => {
   
   // ideally this value would get calculated at run time based on how wide the nav
   // bar buttons are
-  const hamburgerBreakPixel = '900px';
+  const hamburgerBreakPixel = '1300px';
+  const displayIcpBreakPixel = '450px';
+  const searchHiddenBreakPixel = '750px';
   const minHamburgerMenuBreakpoint = `@media (min-width:${hamburgerBreakPixel})`;
+  const hideIcpBreakpoint = `@media (min-width:${displayIcpBreakPixel})`;
+  const displayIcpBreakpoint = `@media (max-width:${displayIcpBreakPixel})`;
   const maxHamburgerMenuBreakpoint = `@media (max-width:${hamburgerBreakPixel})`;
   
   return ({
-    smallScreenButton: {
+    smallScreenMenuButton: {
       alignSelf: 'center',
       [minHamburgerMenuBreakpoint]: {
+        display: "none",
+      },
+    },
+    superSmallScreenWalletButton: {
+      alignSelf: 'center',
+      [hideIcpBreakpoint]: {
+        display: "none",
+      },
+    },
+    icpButton: {
+      alignSelf: 'center',
+      [displayIcpBreakpoint]: {
         display: "none",
       },
     },
@@ -168,6 +223,11 @@ const useStyles = makeStyles((theme) => {
       justifyContent: "flex-start",
       flexDirection: "column",
       [minHamburgerMenuBreakpoint]: {
+        display: "none",
+      },
+    },
+    bigScreenInput: {
+      [`@media (max-width:${searchHiddenBreakPixel})`]: {
         display: "none",
       },
     },
