@@ -1,0 +1,107 @@
+/*
+** Fonts
+*/
+
+/* Fallback for Browsers that doesn't support variable fonts */
+@font-face {
+    font-family: 'Rubik';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/rubik-regular.eot');
+    src: url('./fonts/rubik-regular.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-regular.ttf') format('truetype'),
+        url('./fonts/rubik-regular.woff') format('woff'),
+        url('./fonts/rubik-regular.woff2') format('woff2'),
+        url('./fonts/rubik-regular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/rubik-medium.eot');
+    src: url('./fonts/rubik-medium.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-medium.ttf') format('truetype'),
+        url('./fonts/rubik-medium.woff') format('woff'),
+        url('./fonts/rubik-medium.woff2') format('woff2'),
+        url('./fonts/rubik-medium.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/rubik-semi-bold.eot');
+    src: url('./fonts/rubik-semi-bold.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-semi-bold.ttf') format('truetype'),
+        url('./fonts/rubik-semi-bold.woff') format('woff'),
+        url('./fonts/rubik-semi-bold.woff2') format('woff2'),
+        url('./fonts/rubik-semi-bold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/rubik-bold.eot');
+    src: url('./fonts/rubik-bold.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-bold.ttf') format('truetype'),
+        url('./fonts/rubik-bold.woff') format('woff'),
+        url('./fonts/rubik-bold.woff2') format('woff2'),
+        url('./fonts/rubik-bold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/rubik-black.eot');
+    src: url('./fonts/rubik-black.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-black.ttf') format('truetype'),
+        url('./fonts/rubik-black.woff') format('woff'),
+        url('./fonts/rubik-black.woff2') format('woff2'),
+        url('./fonts/rubik-black.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    font-style: italic;
+    font-display: swap;
+    src: url('./fonts/rubik-italic.eot');
+    src: url('./fonts/rubik-italic.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/rubik-italic.ttf') format('truetype'),
+        url('./fonts/rubik-italic.woff') format('woff'),
+        url('./fonts/rubik-italic.woff2') format('woff2'),
+        url('./fonts/rubik-italic.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/inconsolata-black.eot');
+    src: url('./fonts/inconsolata-black.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/inconsolata-black.ttf') format('truetype'),
+        url('./fonts/inconsolata-black.woff') format('woff'),
+        url('./fonts/inconsolata-black.woff2') format('woff2'),
+        url('./fonts/inconsolata-black.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('./fonts/inconsolata-medium.eot');
+    src: url('./fonts/inconsolata-medium.eot?#iefix') format('embedded-opentype'),
+        url('./fonts/inconsolata-medium.ttf') format('truetype'),
+        url('./fonts/inconsolata-medium.woff') format('woff'),
+        url('./fonts/inconsolata-medium.woff2') format('woff2'),
+        url('./fonts/inconsolata-medium.otf') format('opentype');
+}
