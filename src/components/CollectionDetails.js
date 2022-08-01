@@ -50,6 +50,7 @@ export default function CollectionDetails(props) {
   
   var stats = props.stats;
   var collection = props.collection;
+  console.log(collection)
   React.useEffect(() => {
     if (blurbElement.clientHeight > 110) {
       setCollapseBlurb(true);
@@ -91,7 +92,7 @@ export default function CollectionDetails(props) {
       <Grid item md={4} xs={12} style={{textAlign:"center"}}>
         <ul className={classes.socials}>
           <li><a href={"https://icscan.io/nft/collection/"+collection.canister} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a></li>
-          {['telegram', 'twitter', 'medium', 'discord'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+          {['telegram', 'twitter', 'medium', 'discord', 'dscvr', 'distrikt'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
             return (<li key={a}><a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a></li>);
           })}
         </ul>
