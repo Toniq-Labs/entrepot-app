@@ -161,18 +161,16 @@ const Detail = (props) => {
   }
   
   const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      if(detailsUrl){
-        return (
-          <video width="100%" autoPlay muted loop>
-            <source src={detailsUrl} type="video/mp4" />
-          </video>
-        );
-      }
+    getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+    if(detailsUrl){
+      return (
+        <video width="100%" autoPlay muted loop>
+          <source src={detailsUrl} type="video/mp4" />
+        </video>
+      );
     }
   }
   
-
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     switch(canister){
