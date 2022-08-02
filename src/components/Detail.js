@@ -141,7 +141,7 @@ const Detail = (props) => {
   }
 
   const imageStyles = cssToReactStyleObject(css`
-    background-image: url('${unsafeCSS(detailsUrl)}');
+    background-image: url('${unsafeCSS(detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true))}');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -164,7 +164,7 @@ const Detail = (props) => {
     getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
     if(detailsUrl){
       return (
-        <video width="100%" autoPlay muted loop>
+        <video className={classes.nftVideo} width="100%" autoPlay muted loop>
           <source src={detailsUrl} type="video/mp4" />
         </video>
       );
@@ -241,7 +241,7 @@ const Detail = (props) => {
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       case "skjpp-haaaa-aaaae-qac7q-cai":
-        return <video width="100%" autoPlay muted loop>
+        return <video className={classes.nftVideo} width="100%" autoPlay muted loop>
             <source src="https://skjpp-haaaa-aaaae-qac7q-cai.raw.ic0.app/?cc=0&tokenid=uthmp-rikor-uwiaa-aaaaa-beaax-4aqca-aaaaa-a" type="video/mp4" />
           </video>;
       
@@ -529,6 +529,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "auto",
     marginBottom: "auto",
   },
+	nftVideo: {
+		borderRadius: "16px",
+	},
   iconsBorder: {
     border: "1px solid #E9ECEE",
     borderRadius: "5px",
