@@ -353,7 +353,7 @@ const Detail = (props) => {
             </Grid>
           </Grid>
         </button>
-        <DropShadowCard>
+        <DropShadowCard className={classes.nftCard}>
           <Container className={classes.nftDescWrapper} style={{maxWidth: 1312}}>
             <Box className={classes.nftDescHeader}>
               <Grid container spacing={4}>
@@ -419,10 +419,12 @@ const Detail = (props) => {
               </Grid>
             </Box>
             <Accordion title="Offers" open={true}>
-              <span className={classes.offerDesc}>There are currently no offers!</span>
+              <Grid className={classes.accordionWrapper}>
+								<span className={classes.offerDesc}>There are currently no offers!</span>
+              </Grid>
             </Accordion>
             <Accordion title="Attributes" open={true}>
-              <Grid container className={classes.attributeWrapper}>
+							<Grid container className={classes.accordionWrapper}>
                 {attributes.map((attribute) => (
                   <Grid item key={attribute.groupName} xs={12}>
                     <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
@@ -450,7 +452,9 @@ const Detail = (props) => {
               </Grid>
             </Accordion>
             <Accordion title="History" open={true}>
-              History
+              <Grid className={classes.accordionWrapper}>
+								<span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results (9)</span>
+							</Grid>
             </Accordion>
           </Container>
         </DropShadowCard>
@@ -556,10 +560,10 @@ const useStyles = makeStyles((theme) => ({
   },
   nftDescWrapper: {
     [theme.breakpoints.up("sm")]: {
-      padding: "32px",
+      padding: "0px 16px",
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "16px",
+      padding: "0",
     },
   },
   nftDescHeader: {
@@ -611,6 +615,7 @@ const useStyles = makeStyles((theme) => ({
   },
   ownerWrapper: {
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    wordBreak: "break-all",
   },
   ownerName: {
     ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
@@ -640,12 +645,7 @@ const useStyles = makeStyles((theme) => ({
   offerDesc: {
     display: "flex",
     justifyContent: "center",
-    [theme.breakpoints.up("md")]: {
-      margin: "32px 0"
-    },
-    [theme.breakpoints.down("md")]: {
-      margin: "16px 0"
-    },
+		...cssToReactStyleObject(toniqFontStyles.paragraphFont),
   },
   attributeWrapper: {
     [theme.breakpoints.up("md")]: {
@@ -666,5 +666,21 @@ const useStyles = makeStyles((theme) => ({
     borderTopLeftRadius: "16px",
     borderTopRightRadius: "16px",
   },
+	accordionWrapper: {
+		[theme.breakpoints.up("md")]: {
+			margin: "32px 0",
+		},
+		[theme.breakpoints.down("md")]: {
+			margin: "16px 0",
+		},
+	},
+	nftCard: {
+		[theme.breakpoints.up("md")]: {
+			marginTop: "32px",
+		},
+		[theme.breakpoints.down("md")]: {
+			marginTop: "16px",
+		},
+	}
 }));
 

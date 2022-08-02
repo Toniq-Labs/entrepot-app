@@ -11,7 +11,6 @@ export function Accordion(props) {
 			accordion: {
 				borderRadius: "16px",
 				backgroundColor: toniqColors.pagePrimary.backgroundColor,
-				padding: "16px",
 			},
 			header: {
 				display: "flex",
@@ -25,6 +24,7 @@ export function Accordion(props) {
 				maxHeight: "0",
 				transition: "max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)",
 				overflow: "hidden",
+				paddingBottom: "16px",
 			},
 			icon: {
 				position: "absolute",
@@ -37,6 +37,7 @@ export function Accordion(props) {
 				"&:checked~.detail": {
 					maxHeight: "3000px",
 					overflow: "visible",
+					paddingBottom: "0",
 				},
 				"&:checked~.header .icon": {
 					transform: "rotate(180deg)",
