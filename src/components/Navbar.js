@@ -12,6 +12,25 @@ import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, Entr
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 
 const api = extjs.connect("https://boundary.ic0.app/");
 
@@ -35,7 +54,11 @@ export default function Navbar(props) {
       setBalance(undefined);
     }
   };
+  useInterval(refresh, 30 *1000);
   
+  useEffect(() => {
+    refresh();
+  }, []);
   useEffect(() => {
     refresh();
   }, [props.account]);
