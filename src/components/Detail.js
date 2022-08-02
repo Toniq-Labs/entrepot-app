@@ -228,7 +228,7 @@ const Detail = (props) => {
             frameBorder="0"
             src={EntrepotNFTImage(canister, index, tokenid, true)}
             alt=""
-            className={classes.nftImage}
+            className={classes.nftIframe}
           />
         );
         break;
@@ -531,6 +531,29 @@ const useStyles = makeStyles((theme) => ({
   },
 	nftVideo: {
 		borderRadius: "16px",
+	},
+	nftIframe: {
+    overflow: "hidden",
+    position: "relative",
+    flexShrink: "0",
+    maxWidth: "100%",
+		borderRadius: "16px",
+		[theme.breakpoints.up("md")]: {
+      height: "608px",
+			width: "608px",
+    },
+		[theme.breakpoints.down("md")]: {
+      height: "608px",
+			width: "608px",
+    },
+		[theme.breakpoints.down("sm")]: {
+      height: "365px",
+			width: "365px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      height: "275px",
+			width: "275px",
+    },
 	},
   iconsBorder: {
     border: "1px solid #E9ECEE",
