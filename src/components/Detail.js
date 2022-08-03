@@ -305,12 +305,6 @@ const Detail = (props) => {
       case "x4oqm-bqaaa-aaaam-qahaq-cai":
       case "tco7x-piaaa-aaaam-qamiq-cai":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
-      
-      case "skjpp-haaaa-aaaae-qac7q-cai":
-        return <video width="100%" autoPlay muted loop>
-            <source src="https://skjpp-haaaa-aaaae-qac7q-cai.raw.ic0.app/?cc=0&tokenid=uthmp-rikor-uwiaa-aaaaa-beaax-4aqca-aaaaa-a" type="video/mp4" />
-          </video>;
-      
       // for pre-generated images residing on asset canisters
       // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
       case "6wih6-siaaa-aaaah-qczva-cai":
@@ -331,6 +325,7 @@ const Detail = (props) => {
       case "xgket-maaaa-aaaam-qatwq-cai":
       case "wlea5-diaaa-aaaam-qatra-cai":
       case "vvvht-eyaaa-aaaam-qatya-cai":
+      case "skjpp-haaaa-aaaae-qac7q-cai":
         return extractEmbeddedImage(EntrepotNFTImage(canister, index, tokenid, true), classes);
       
       // default case is to just use the thumbnail on the detail page
