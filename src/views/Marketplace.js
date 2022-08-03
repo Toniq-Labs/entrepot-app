@@ -3,13 +3,7 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
 import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
-import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import PriceICP from '../components/PriceICP';
 import {EntrepotUpdateStats, EntrepotAllStats} from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
 import {
@@ -28,6 +22,8 @@ import {
   ToniqChip,
   ToniqInput,
   ToniqDropdown,
+  ToniqToggleButton,
+  ToniqSlider,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
@@ -52,6 +48,29 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+
+function getLowestStat(stats, propKey) {
+  return stats.reduce((lowest, stat) => {
+    const currentValue = Number(stat.stats[propKey]);
+    if (currentValue < lowest) {
+      return currentValue;
+    } else {
+      return lowest;
+    }
+  }, Infinity)
+}
+
+function getHighestStat(stats, propKey) {
+  return stats.reduce((lowest, stat) => {
+    const currentValue = Number(stat.stats[propKey]);
+    if (currentValue > lowest) {
+      return currentValue;
+    } else {
+      return lowest;
+    }
+  }, -Infinity)
+}
+
 const useStyles = makeStyles(theme => ({
   breakpoints: {
     values: {
@@ -202,12 +221,33 @@ const sortOptions = [
   },
 ];
 
+const filterTypes = {
+  price: {
+    floor: 'floor',
+    averageSale: 'average sale',
+    high: 'high',
+  },
+  volume: {
+    
+  },
+}
+
 export default function Marketplace(props) {
   const classes = useStyles();
   const [sort, setSort] = React.useState(defaultSortOption);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = React.useState(false);
-  const [currentFilters, setCurrentFilters] = React.useState(undefined);
+  console.log('rendering');
+  const [currentFilters, setCurrentFilters] = React.useState({
+    price: {
+      range: undefined,
+      type: 'floor',
+    },
+    volume: {
+      range: undefined,
+      type: '30-day',
+    },
+  });
 
   const query = searchParams.get('search') || '';
   const [stats, setStats] = React.useState([]);
@@ -383,6 +423,25 @@ export default function Marketplace(props) {
           return 0;
       }
     });
+    
+  const priceRanges = {
+    [filterTypes.price.floor]: {
+      min: getLowestStat(stats, 'floor'),
+      max: getHighestStat(stats, 'floor'),
+    },
+    [filterTypes.price.averageSale]: {
+      min: getLowestStat(stats, 'average'),
+      max: getHighestStat(stats, 'average'),
+    },
+    [filterTypes.price.high]: {
+      min: getLowestStat(stats, 'high'),
+      max: getHighestStat(stats, 'high'),
+    },
+  };
+  
+  console.log(priceRanges);
+    
+  console.log({filteredAndSortedCollections, stats});
 
   return (
     <>
@@ -415,6 +474,61 @@ export default function Marketplace(props) {
             onFilterClose={() => {
               setShowFilters(false);
             }}
+            filterControlChildren={
+              <>
+                <div>
+                  <div className="title">Price</div>
+                  <ToniqToggleButton
+                    text="Floor"
+                    active={currentFilters.price.type === filterTypes.price.floor}
+                    onClick={() => {
+                      setCurrentFilters({
+                        ...currentFilters,
+                        price: {
+                          ...currentFilters.price,
+                          type: filterTypes.price.floor,
+                        },
+                      });
+                    }}
+                  />
+                  <ToniqToggleButton
+                    text="Average Sale"
+                    active={currentFilters.price.type === filterTypes.price.averageSale}
+                    onClick={() => {
+                      setCurrentFilters({
+                        ...currentFilters,
+                        price: {
+                          ...currentFilters.price,
+                          type: filterTypes.price.averageSale,
+                        },
+                      });
+                    }}
+                  />
+                  <ToniqToggleButton
+                    text="High"
+                    active={currentFilters.price.type === filterTypes.price.high}
+                    onClick={() => {
+                      setCurrentFilters({
+                        ...currentFilters,
+                        price: {
+                          ...currentFilters.price,
+                          type: filterTypes.price.high,
+                        },
+                      });
+                    }}
+                  />
+                  <ToniqSlider
+                    min={priceRanges[currentFilters.price.type].min}
+                    max={priceRanges[currentFilters.price.type].max}
+                    suffix="ICP"
+                    double={true}
+                  />
+                </div>
+                <div>
+                  <div className="title">Volume</div>
+                </div>
+              </>
+            }
           >
             <div className={classes.marketplaceControls}>
               <div className={classes.filterSortRow}>
