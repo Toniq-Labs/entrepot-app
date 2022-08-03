@@ -6,7 +6,7 @@ import {
   Box,
   Grid,
 } from "@material-ui/core";
-import PriceICP from './PriceICP';
+import PriceICP, { icpToString } from './PriceICP';
 import PriceUSD from './PriceUSD';
 import OfferForm from './OfferForm';
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ import {
   useParams
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
-import { ToniqIcon, ToniqChip, ToniqButton } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
@@ -86,6 +86,7 @@ const Detail = (props) => {
       });
       setOwner(r.owner);
       setTransactions(r.transactions);
+      console.log(transactions)
     });
   }
   const _afterList = async () => {
@@ -406,8 +407,9 @@ const Detail = (props) => {
                     </div>
                     {owner ?
                     <span className={classes.ownerWrapper}>
-                      {`Owned by `}
-                      <span className={classes.ownerName}>ChavezOG</span>
+                      {/* {`Owned by `} */}
+                      {`Owner `}
+                      {/* <span className={classes.ownerName}>ChavezOG</span> */}
                       : &nbsp;
                       <span className={classes.ownerAddress} onClick={() => {
                         window.open(`https://dashboard.internetcomputer.org/account/"${owner}`, '_blank')
@@ -452,8 +454,46 @@ const Detail = (props) => {
               </Grid>
             </Accordion>
             <Accordion title="History" open={true}>
-              <Grid className={classes.accordionWrapper}>
+              <Grid container className={classes.accordionWrapper}>
 								<span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results (9)</span>
+                <Grid container className={classes.tableHeader}>
+                  <Grid item xs={2} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
+                  <Grid item xs={1} className={classes.tableHeaderName}>Activity</Grid>
+                  <Grid item xs={8} className={classes.tableHeaderName}>Details</Grid>
+                  <Grid item xs={1} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
+                </Grid>
+                {transactions ? 
+                <>
+                  <Grid container spacing={2}>
+                    {transactions.slice().map((transaction, index) => (
+                      <Grid item key={index} xs={12}>
+                        <DropShadowCard>
+                          <Grid container className={classes.historyCard}>
+                            <Grid item xs={6} md={2}>
+                              <Grid container>
+                                <Grid item xs={6}>Image</Grid>
+                                <Grid item xs={6}>
+                                  <div>
+                                    <span>Just Now</span>
+                                    <span className={classes.buyerMobile}>
+                                      TO: <ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                                    </span>
+                                  </div>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                            <Grid item xs={0} md={1}>Sale</Grid>
+                            <Grid item xs={8} className={classes.buyerDesktop}>
+                              TO: <ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                            </Grid>
+                            <Grid item xs={3} md={1} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                          </Grid>
+                        </DropShadowCard>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </> : <></>
+                }
 							</Grid>
             </Accordion>
           </Container>
@@ -707,6 +747,42 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("md")]: {
 			marginTop: "16px",
 		},
-	}
+	},
+  tableHeader: {
+    backgroundColor: "#F1F3F6",
+    [theme.breakpoints.up("md")]: {
+			display: "flex",
+      margin: "32px 0px",
+		},
+		[theme.breakpoints.down("md")]: {
+			display: "none",
+      margin: "0px",
+		},
+    padding: "8px 16px",
+    borderRadius: "8px",
+  },
+  tableHeaderName: {
+    textTransform: "uppercase",
+    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+  },
+  historyCard: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+  },
+  buyerMobile: {
+    [theme.breakpoints.up("md")]: {
+			display: "none",
+		},
+		[theme.breakpoints.down("md")]: {
+			display: "flex",
+		},
+  },
+  buyerDesktop: {
+    [theme.breakpoints.up("md")]: {
+			display: "flex",
+		},
+		[theme.breakpoints.down("md")]: {
+			display: "none",
+		},
+  }
 }));
 
