@@ -160,6 +160,13 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
       return "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/" + id;
     };
   }
+  if (collection === "skjpp-haaaa-aaaae-qac7q-cai") {
+    if (fullSize) {      
+      return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
+    } else {
+      return "https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/" + id;
+    };
+  }
   if (collection === TREASURECANISTER) {
     if (!fullSize) {
       return "/earn/loading.png";
@@ -175,7 +182,6 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     if (collection === "rw7qm-eiaaa-aaaak-aaiqq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
     if (collection === "5movr-diaaa-aaaak-aaftq-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
     if (collection === "dhyds-jaaaa-aaaao-aaiia-cai") return "https://images.entrepot.app/tnc/"+collection+"/" + id + ref;
-    if (collection === "skjpp-haaaa-aaaae-qac7q-cai") return "https://ucarecdn.com/66063b32-cb1b-4158-85ce-9b09cf7ee18b/final_thumbnail.jpg";
     //end of section
 
     if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
