@@ -222,6 +222,7 @@ const Detail = (props) => {
       case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
       case "5stux-vyaaa-aaaam-qasoa-cai":
       case "e4ca6-oiaaa-aaaai-acm2a-cai":
+      case "skjpp-haaaa-aaaae-qac7q-cai":
       case TREASURECANISTER:
         return (
           <iframe
@@ -239,12 +240,6 @@ const Detail = (props) => {
       case "x4oqm-bqaaa-aaaam-qahaq-cai":
       case "tco7x-piaaa-aaaam-qamiq-cai":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
-      
-      case "skjpp-haaaa-aaaae-qac7q-cai":
-        return <video className={classes.nftVideo} width="100%" autoPlay muted loop>
-            <source src="https://skjpp-haaaa-aaaae-qac7q-cai.raw.ic0.app/?cc=0&tokenid=uthmp-rikor-uwiaa-aaaaa-beaax-4aqca-aaaaa-a" type="video/mp4" />
-          </video>;
-      
       // for pre-generated images residing on asset canisters
       // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
       case "6wih6-siaaa-aaaah-qczva-cai":
