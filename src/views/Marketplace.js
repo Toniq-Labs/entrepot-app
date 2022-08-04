@@ -57,7 +57,7 @@ function getLowestStat(stats, propKey) {
     } else {
       return lowest;
     }
-  }, Infinity)
+  }, Infinity);
 }
 
 function getHighestStat(stats, propKey) {
@@ -68,7 +68,7 @@ function getHighestStat(stats, propKey) {
     } else {
       return lowest;
     }
-  }, -Infinity)
+  }, -Infinity);
 }
 
 const useStyles = makeStyles(theme => ({
@@ -229,11 +229,36 @@ const filterTypes = {
   price: {
     floor: 'floor',
     averageSale: 'average sale',
-    high: 'high',
   },
-  volume: {
-    
-  },
+  volume: {},
+};
+
+function doesCollectionPassFilters(collectionStats, currentFilters) {
+  if (!collectionStats) {
+    return false;
+  }
+
+  console.log(collectionStats);
+
+  if (currentFilters.price.range) {
+    if (currentFilters.price.type === filterTypes.price.floor) {
+      if (
+        Number(collectionStats.stats.floor) > currentFilters.price.range.max ||
+        Number(collectionStats.stats.floor) < currentFilters.price.range.min
+      ) {
+        return false;
+      }
+    } else if (currentFilters.price.type === filterTypes.price.averageSale) {
+      if (
+        Number(collectionStats.stats.average) > currentFilters.price.range.max ||
+        Number(collectionStats.stats.average) < currentFilters.price.range.min
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 export default function Marketplace(props) {
@@ -279,7 +304,13 @@ export default function Marketplace(props) {
           .join(' ')
           .toLowerCase()
           .indexOf(query.toLowerCase()) >= 0;
-      return allowed && (query == '' || inQuery);
+
+      const currentStats = stats.find(stat => stat.canister === collection.canister);
+
+      const passFilter = showFilters
+        ? doesCollectionPassFilters(currentStats, currentFilters)
+        : true;
+      return allowed && passFilter && (query == '' || inQuery);
     })
     .sort((a, b) => {
       switch (sort.value) {
@@ -428,7 +459,7 @@ export default function Marketplace(props) {
           return 0;
       }
     });
-    
+
   const priceRanges = {
     [filterTypes.price.floor]: {
       min: getLowestStat(stats, 'floor'),
@@ -438,14 +469,10 @@ export default function Marketplace(props) {
       min: getLowestStat(stats, 'average'),
       max: getHighestStat(stats, 'average'),
     },
-    [filterTypes.price.high]: {
-      min: getLowestStat(stats, 'high'),
-      max: getHighestStat(stats, 'high'),
-    },
   };
-  
+
   console.log(priceRanges);
-    
+
   console.log({filteredAndSortedCollections, stats});
 
   return (
@@ -509,24 +536,21 @@ export default function Marketplace(props) {
                       });
                     }}
                   />
-                  <ToniqToggleButton
-                    text="High"
-                    active={currentFilters.price.type === filterTypes.price.high}
-                    onClick={() => {
-                      setCurrentFilters({
-                        ...currentFilters,
-                        price: {
-                          ...currentFilters.price,
-                          type: filterTypes.price.high,
-                        },
-                      });
-                    }}
-                  />
                   <ToniqSlider
                     min={priceRanges[currentFilters.price.type].min}
                     max={priceRanges[currentFilters.price.type].max}
                     suffix="ICP"
                     double={true}
+                    onValueChange={event => {
+                      const values = event.detail;
+                      setCurrentFilters({
+                        ...currentFilters,
+                        price: {
+                          ...currentFilters.price,
+                          range: values,
+                        },
+                      });
+                    }}
                   />
                 </div>
                 <div>
