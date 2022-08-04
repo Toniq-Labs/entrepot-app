@@ -722,8 +722,9 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       justifyContent: "center",
     },
-    "& div": {
+    "& div, & iframe": {
       maxWidth: "64px",
+      maxHeight: "64px",
       borderRadius: "8px",
     },
     
