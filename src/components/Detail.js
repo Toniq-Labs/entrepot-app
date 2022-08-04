@@ -447,7 +447,7 @@ const Detail = (props) => {
                 ))}
               </Grid>
             </Accordion>
-            {transactions ? 
+            {transactions.length > 0 ? 
               <>
                 <Accordion title="History" open={true}>
                   <Grid container className={classes.accordionWrapper}>
