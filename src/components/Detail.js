@@ -22,6 +22,7 @@ import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import { DropShadowCard } from "../shared/DropShadowCard";
 import { Accordion } from "./Accordion";
+import Timestamp from "react-timestamp";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -86,7 +87,6 @@ const Detail = (props) => {
       });
       setOwner(r.owner);
       setTransactions(r.transactions);
-      console.log(transactions)
     });
   }
   const _afterList = async () => {
@@ -146,7 +146,6 @@ const Detail = (props) => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 16px;
     padding-top: 100%;
     width: 100%;
   `); 
@@ -453,49 +452,58 @@ const Detail = (props) => {
                 ))}
               </Grid>
             </Accordion>
-            <Accordion title="History" open={true}>
-              <Grid container className={classes.accordionWrapper}>
-								<span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results (9)</span>
-                <Grid container className={classes.tableHeader}>
-                  <Grid item xs={2} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
-                  <Grid item xs={1} className={classes.tableHeaderName}>Activity</Grid>
-                  <Grid item xs={8} className={classes.tableHeaderName}>Details</Grid>
-                  <Grid item xs={1} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
-                </Grid>
-                {transactions ? 
-                <>
-                  <Grid container spacing={2}>
-                    {transactions.slice().map((transaction, index) => (
-                      <Grid item key={index} xs={12}>
-                        <DropShadowCard>
-                          <Grid container className={classes.historyCard}>
-                            <Grid item xs={6} md={2}>
-                              <Grid container>
-                                <Grid item xs={6}>Image</Grid>
-                                <Grid item xs={6}>
-                                  <div>
-                                    <span>Just Now</span>
-                                    <span className={classes.buyerMobile}>
-                                      TO: <ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
-                                    </span>
-                                  </div>
+            {transactions ? 
+              <>
+                <Accordion title="History" open={true}>
+                  <Grid container className={classes.accordionWrapper}>
+                    <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({transactions.length})</span>
+                    <Grid container className={classes.tableHeader}>
+                      <Grid item xs={8} sm={6} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
+                      <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
+                      <Grid item xs={1} sm={2} md={4} className={classes.tableHeaderName}>Details</Grid>
+                      <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
+                    </Grid>
+                    
+                      <Grid container spacing={2} className={classes.ntfCardContainer}>
+                        {transactions.slice().map((transaction, index) => (
+                          <Grid item key={index} xs={12}>
+                            <DropShadowCard>
+                              <Grid container className={classes.historyCard} alignItems="center">
+                                <Grid item xs={8} sm={6} md={3}>
+                                  <Grid container alignItems="center" spacing={4}>
+                                    <Grid item xs={4} className={classes.imageWrapperHistory}>
+                                      {displayImage(tokenid)}
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                      <div>
+                                        <span>
+                                          <Timestamp
+                                            relative
+                                            autoUpdate
+                                            date={Number(BigInt(transaction.time) / 1000000000n)}
+                                          />
+                                        </span>
+                                        <span className={classes.buyerMobile}>
+                                          TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                                        </span>
+                                      </div>
+                                    </Grid>
+                                  </Grid>
                                 </Grid>
+                                <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>Sale</Grid>
+                                <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
+                                  TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                                </Grid>
+                                <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
                               </Grid>
-                            </Grid>
-                            <Grid item xs={0} md={1}>Sale</Grid>
-                            <Grid item xs={8} className={classes.buyerDesktop}>
-                              TO: <ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
-                            </Grid>
-                            <Grid item xs={3} md={1} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                            </DropShadowCard>
                           </Grid>
-                        </DropShadowCard>
+                        ))}
                       </Grid>
-                    ))}
                   </Grid>
-                </> : <></>
-                }
-							</Grid>
-            </Accordion>
+                </Accordion>
+              </>  : <></>
+            }
           </Container>
         </DropShadowCard>
       </Container>
@@ -707,6 +715,23 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       justifyContent: "center",
     },
+    "& div": {
+      borderRadius: "16px",
+    }
+  },
+  imageWrapperHistory: {
+    [theme.breakpoints.up("md")]: {
+      display: "grid",
+    },
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    "& div": {
+      maxWidth: "64px",
+      borderRadius: "8px",
+    },
+    
   },
   offerDesc: {
     display: "flex",
@@ -748,15 +773,23 @@ const useStyles = makeStyles((theme) => ({
 			marginTop: "16px",
 		},
 	},
+  ntfCardContainer: {
+    [theme.breakpoints.up("sm")]: {
+      marginTop: "32px",
+		},
+		[theme.breakpoints.down("sm")]: {
+      marginTop: "0px",
+		},
+  },
   tableHeader: {
     backgroundColor: "#F1F3F6",
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("sm")]: {
 			display: "flex",
-      margin: "32px 0px",
+      marginTop: "32px",
 		},
-		[theme.breakpoints.down("md")]: {
+		[theme.breakpoints.down("sm")]: {
 			display: "none",
-      margin: "0px",
+      marginTop: "0px",
 		},
     padding: "8px 16px",
     borderRadius: "8px",
@@ -769,19 +802,19 @@ const useStyles = makeStyles((theme) => ({
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
   },
   buyerMobile: {
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("sm")]: {
 			display: "none",
 		},
-		[theme.breakpoints.down("md")]: {
+		[theme.breakpoints.down("sm")]: {
 			display: "flex",
 		},
   },
   buyerDesktop: {
-    [theme.breakpoints.up("md")]: {
-			display: "flex",
+    [theme.breakpoints.up("sm")]: {
+			visibility: "visible",
 		},
-		[theme.breakpoints.down("md")]: {
-			display: "none",
+		[theme.breakpoints.down("sm")]: {
+			visibility: "hidden",
 		},
   }
 }));
