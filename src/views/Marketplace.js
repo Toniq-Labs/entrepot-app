@@ -71,6 +71,7 @@ function getHighestStat(stats, propKey) {
   }, -Infinity);
 }
 
+const filterOnTopBreakPoint = '@media (max-width: 800px)';
 const useStyles = makeStyles(theme => ({
   breakpoints: {
     values: {
@@ -97,12 +98,31 @@ const useStyles = makeStyles(theme => ({
   },
   filterSortRow: {
     display: 'flex',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '16px',
     ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    [filterOnTopBreakPoint]: {
+      flexDirection: 'column',
+      alignItems: 'unset',
+    }
   },
-  filterAndCollectionCount: {
+  filtersTrigger: {
     display: 'flex',
     gap: '16px',
+  },
+  filtersDotThing: {
+    [filterOnTopBreakPoint]: {
+      opacity: 0,
+    }
+  },
+  collectionsAndSort: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexGrow: 1,
+    [filterOnTopBreakPoint]: {
+      marginLeft: '16px',
+    }
   },
   marketplaceControls: {
     marginBottom: '32px',
@@ -590,7 +610,7 @@ export default function Marketplace(props) {
           >
             <div className={classes.marketplaceControls}>
               <div className={classes.filterSortRow}>
-                <div className={classes.filterAndCollectionCount}>
+                <div className={classes.filtersTrigger}>
                   <div
                     className={classes.filterAndIcon}
                     style={{
@@ -604,12 +624,15 @@ export default function Marketplace(props) {
                     <span>Filters</span>
                   </div>
                   <span
+                    className={classes.filtersDotThing}
                     style={{
                       display: showFilters ? 'none' : 'flex',
                     }}
                   >
                     •
                   </span>
+                </div>
+                <div className={classes.collectionsAndSort}>
                   <span
                     style={{
                       ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
@@ -618,21 +641,21 @@ export default function Marketplace(props) {
                   >
                     {filteredAndSortedCollections.length} Collections
                   </span>
+                  <ToniqDropdown
+                    style={{
+                      '--toniq-accent-secondary-background-color': 'transparent',
+                      width: '360px',
+                    }}
+                    icon={ArrowsSort24Icon}
+                    selectedLabelPrefix="Sort By:"
+                    selected={sort}
+                    onSelectChange={event => {
+                      console.log(event.detail);
+                      setSort(event.detail);
+                    }}
+                    options={sortOptions}
+                  />
                 </div>
-                <ToniqDropdown
-                  style={{
-                    '--toniq-accent-secondary-background-color': 'transparent',
-                    width: '360px',
-                  }}
-                  icon={ArrowsSort24Icon}
-                  selectedLabelPrefix="Sort By:"
-                  selected={sort}
-                  onSelectChange={event => {
-                    console.log(event.detail);
-                    setSort(event.detail);
-                  }}
-                  options={sortOptions}
-                />
               </div>
             </div>
             <Grid
