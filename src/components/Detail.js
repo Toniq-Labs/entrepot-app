@@ -16,7 +16,7 @@ import {
   useParams
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
-import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis, ToniqPagination } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
@@ -419,7 +419,7 @@ const Detail = (props) => {
 								<span className={classes.offerDesc}>There are currently no offers!</span>
               </Grid>
             </Accordion>
-            <Accordion title="Attributes" open={true}>
+            {/* <Accordion title="Attributes" open={true}>
 							<Grid container className={classes.accordionWrapper}>
                 {attributes.map((attribute) => (
                   <Grid item key={attribute.groupName} xs={12}>
@@ -446,7 +446,7 @@ const Detail = (props) => {
                   </Grid>
                 ))}
               </Grid>
-            </Accordion>
+            </Accordion> */}
             {transactions.length > 0 ? 
               <>
                 <Accordion title="History" open={true}>
@@ -458,43 +458,49 @@ const Detail = (props) => {
                       <Grid item xs={1} sm={2} md={4} className={classes.tableHeaderName}>Details</Grid>
                       <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
                     </Grid>
-                    
-                      <Grid container spacing={2} className={classes.ntfCardContainer}>
-                        {transactions.slice().map((transaction, index) => (
-                          <Grid item key={index} xs={12}>
-                            <DropShadowCard>
-                              <Grid container className={classes.historyCard} alignItems="center">
-                                <Grid item xs={8} sm={6} md={3}>
-                                  <Grid container alignItems="center" spacing={4}>
-                                    <Grid item xs={4} className={classes.imageWrapperHistory}>
-                                      {displayImage(tokenid)}
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                      <div>
-                                        <span>
-                                          <Timestamp
-                                            relative
-                                            autoUpdate
-                                            date={Number(BigInt(transaction.time) / 1000000000n)}
-                                          />
-                                        </span>
-                                        <span className={classes.buyerMobile}>
-                                          TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
-                                        </span>
-                                      </div>
-                                    </Grid>
+                    <Grid container spacing={2} className={classes.ntfCardContainer}>
+                      {transactions.slice().map((transaction, index) => (
+                        <Grid item key={index} xs={12}>
+                          <DropShadowCard>
+                            <Grid container className={classes.historyCard} alignItems="center">
+                              <Grid item xs={8} sm={6} md={3}>
+                                <Grid container alignItems="center" spacing={4}>
+                                  <Grid item xs={4} className={classes.imageWrapperHistory}>
+                                    {displayImage(tokenid)}
+                                  </Grid>
+                                  <Grid item xs={8}>
+                                    <div>
+                                      <span>
+                                        <Timestamp
+                                          relative
+                                          autoUpdate
+                                          date={Number(BigInt(transaction.time) / 1000000000n)}
+                                        />
+                                      </span>
+                                      <span className={classes.buyerMobile}>
+                                        TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                                      </span>
+                                    </div>
                                   </Grid>
                                 </Grid>
-                                <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>Sale</Grid>
-                                <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
-                                  TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
-                                </Grid>
-                                <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
                               </Grid>
-                            </DropShadowCard>
-                          </Grid>
-                        ))}
-                      </Grid>
+                              <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>Sale</Grid>
+                              <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
+                                TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} text={transaction.buyer} />
+                              </Grid>
+                              <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                            </Grid>
+                          </DropShadowCard>
+                        </Grid>
+                      ))}
+                    </Grid>
+                    <div className={classes.pagination}>
+                      <ToniqPagination
+                        currentPage={2}
+                        pageCount={13}
+                        pagesShown={6}
+                      />
+                    </div>
                   </Grid>
                 </Accordion>
               </>  : <></>
@@ -771,10 +777,10 @@ const useStyles = makeStyles((theme) => ({
 	},
   ntfCardContainer: {
     [theme.breakpoints.up("sm")]: {
-      marginTop: "32px",
+      margin: "32px 0px",
 		},
 		[theme.breakpoints.down("sm")]: {
-      marginTop: "0px",
+      margin: "16px 0px",
 		},
   },
   tableHeader: {
@@ -812,6 +818,11 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down("sm")]: {
 			visibility: "hidden",
 		},
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
   }
 }));
 
