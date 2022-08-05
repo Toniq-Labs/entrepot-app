@@ -374,7 +374,7 @@ const Detail = (props) => {
                           navigate("/marketplace/"+collection.route)
                         }}
                       >
-                        {collection.name}
+                        <span className={classes.hoverText}>{collection.name}</span>
                       </button>
                       <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />
                     </div>
