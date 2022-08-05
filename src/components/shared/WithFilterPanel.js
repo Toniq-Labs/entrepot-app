@@ -14,10 +14,11 @@ export function WithFilterPanel(props) {
             .with-filter-panel {
               display: flex;
               --toniq-interaction-transition-duration: 0;
+              --filter-element-padding: 32px;
             }
 
             .with-filter-panel .left-filter-panel > * {
-              width: calc(${filterPanelWidth} - 32px);
+              width: calc(${filterPanelWidth} - var(--filter-element-padding));
               box-sizing: border-box;
             }
             
@@ -49,6 +50,7 @@ export function WithFilterPanel(props) {
             }
 
             .with-filter-panel .right-section {
+              overflow: hidden;
               flex-grow: 1;
             }
 
@@ -69,12 +71,12 @@ export function WithFilterPanel(props) {
             }
 
             .with-filter-panel .filter-controls-wrapper > * {
-              padding: 32px 0;
+              padding: var(--filter-element-padding) 0;
             }
 
             .with-filter-panel .filter-controls-wrapper > * > .title {
               ${toniqFontStyles.boldParagraphFont};
-              margin-bottom: 32px;
+              margin-bottom: var(--filter-element-padding);
             }
 
             .with-filter-panel .filter-controls-wrapper > * + * {
@@ -85,11 +87,32 @@ export function WithFilterPanel(props) {
               margin: 8px;
             }
             .with-filter-panel .filter-controls-wrapper ${ToniqSlider} {
-              margin: 32px;
+              margin: var(--filter-element-padding);
               margin-top: 0;
             }
             .with-filter-panel .filter-controls-wrapper ${ToniqToggleButton} + ${ToniqSlider} {
-              margin-top: 32px;
+              margin-top: var(--filter-element-padding);
+            }
+            
+            @media (max-width: 800px) {
+              .with-filter-panel {
+                flex-direction: column;
+              }
+              .with-filter-panel .left-filter-panel {
+                flex-basis: 0;
+                padding: 0 16px;
+              }
+              .with-filter-panel .left-filter-panel.show-left-panel {
+                align-self: stretch;
+                flex-basis: auto;
+              }
+              .with-filter-panel .left-filter-panel > * {
+                width: unset;
+                box-sizing: border-box;
+              }
+              .with-filter-panel {
+                --filter-element-padding: 16px;
+              }
             }
           `),
         }}
