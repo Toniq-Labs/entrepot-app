@@ -9,6 +9,7 @@ import nnsIDL from './candid/nns.did.js';
 import cyclesIDL from './candid/cycles.did.js';
 import hzldIDL from './candid/hzld.did.js'; //hardcode to hzld...
 import extIDL from './candid/ext.did.js';
+import ext2IDL from './candid/ext2.did.js';
 import advancedIDL from './candid/advanced.did.js';
 import wrapperIDL from './candid/wrapper.did.js';
 import icpunksIDL from './candid/icpunks.did.js';
@@ -70,6 +71,7 @@ const _preloadedIdls = {
   'hzld' : hzldIDL,
   'nns' : nnsIDL,
   'ext' : extIDL,
+  'ext2' : ext2IDL,
   'nft' : nftIDL,
   'sale' : saleIDL,
   'treasure' : treasureIDL,
