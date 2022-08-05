@@ -40,13 +40,6 @@ const _showListingPrice = (n) => {
   n = Number(n) / 100000000;
   return n.toFixed(8).replace(/0{1,6}$/, "");
 };
-const _getRandomBytes = () => {
-  var bs = [];
-  for (var i = 0; i < 32; i++) {
-    bs.push(Math.floor(Math.random() * 256));
-  }
-  return bs;
-};
 export default function V2SaleComponent(props) {
   const getCollectionFromRoute = r => {
     return props.collections.find(e => e.route === r)
@@ -58,8 +51,9 @@ export default function V2SaleComponent(props) {
     navigate(`/marketplace/${collection?.route}`)
   };
   
-  const [currentPriceGroup, setCurrentPriceGroup] = React.useState(0);
+  const [currentPriceGroup, setCurrentPriceGroup] = React.useState(false);
   const [groups, setGroups] = React.useState([]);
+  const [currentGroup, setCurrentGroup] = React.useState(false);
   const [remaining, setRemaining] = React.useState(false);
   const [sold, setSold] = React.useState(false);
   const [startTime, setStartTime] = React.useState(false);
@@ -75,8 +69,55 @@ export default function V2SaleComponent(props) {
 		setEndTime(Number(salesSettings.end/1000000n))
 		setRemaining(Number(salesSettings.remaining))
 		setTotalToSell(Number(salesSettings.quantity))
-		setSold(Number(salesSettings.quantity-salesSettings.remaining))
-		setGroups(salesSettings.groups)
+		setSold(Number(salesSettings.quantity-salesSettings.remaining));
+    var ended = [];
+    var unavailable = [];
+    var live = [];
+    var soon = [];
+    for(var i = 0; i < salesSettings.groups.length; i++){
+      var g = salesSettings.groups[i];
+      if (Number(g.end/1000000n) < Date.now()) {
+        ended.push(g);
+      } else if (!g.available) {
+        unavailable.push(g);
+      } else if (Number(g.start/1000000n) > Date.now()) {
+        soon.push(g);
+      } else {
+        live.push(g);
+      };
+    };
+    //Sort ended, available and soon by start date
+    ended = ended.sort((a,b) => {
+      if (Number(a.start/1000000n) < Number(b.start/1000000n)) return -1;
+      if (Number(a.start/1000000n) > Number(b.start/1000000n)) return 1;
+      return 0;
+    });
+    unavailable = unavailable.sort((a,b) => {
+      if (Number(a.start/1000000n) < Number(b.start/1000000n)) return -1;
+      if (Number(a.start/1000000n) > Number(b.start/1000000n)) return 1;
+      return 0;
+    });
+    soon = soon.sort((a,b) => {
+      if (Number(a.start/1000000n) < Number(b.start/1000000n)) return -1;
+      if (Number(a.start/1000000n) > Number(b.start/1000000n)) return 1;
+      return 0;
+    });
+    //Sort live by price
+    if (live.length) {
+      live = live.sort((a,b) => {
+        if (Number(a.pricing[0][1]) < Number(b.pricing[0][1])) return -1;
+        if (Number(a.pricing[0][1]) > Number(b.pricing[0][1])) return 1;
+        return 0;
+      });
+      if (currentPriceGroup === false) setCurrentPriceGroup(Number(live[0].id));
+      var g = ended.concat(unavailable).concat(live).concat(soon);
+      setGroups(g);
+    } else {
+      var g = ended.concat(unavailable).concat(live).concat(soon);
+      setGroups(g);
+      if (g.length && currentPriceGroup === false) setCurrentPriceGroup(Number(g[0].id));
+    };
+    setCurrentGroup(groups.find(a => Number(a.id) == currentPriceGroup));
   };
   const theme = useTheme();
   const classes = useStyles();
@@ -88,7 +129,7 @@ export default function V2SaleComponent(props) {
       minHeight:"calc(100vh - 221px)"
     },
   };
-  const buyFromSale = async (qty, price) => {
+  const buyFromSale = async (id, qty, price) => {
     if (props.balance < (price + 10000n)){
       return props.alert(
         "There was an error",
@@ -105,12 +146,12 @@ export default function V2SaleComponent(props) {
       }
       const api = extjs.connect("https://boundary.ic0.app/", props.identity);
       var r = await api
-        .canister(collection.canister, "sale")
-        .reserve(
+        .canister(collection.canister, "ext2")
+        .ext_salePurchase(
+          id,
           price,
           qty,
-          props.account.address,
-          _getRandomBytes()
+          props.account.address
         );
       if (r.hasOwnProperty("err")) {
         throw r.err;
@@ -131,7 +172,7 @@ export default function V2SaleComponent(props) {
       while (true) {
         try {
           props.loader(true, "Completing purchase...");
-          r3 = await api.canister(collection.canister, "sale").retreive(paytoaddress);
+          r3 = await api.canister(collection.canister, "ext2").ext_saleSettle(paytoaddress);
         } catch (e) {
           continue;
         }
@@ -152,6 +193,7 @@ export default function V2SaleComponent(props) {
     }
     _updates();
   };
+  const getCurrentGroup = () => groups.find(a => Number(a.id) == currentPriceGroup);
   useInterval(_updates, 5 * 1000);
   React.useEffect(() => {
     _updates();
@@ -220,20 +262,81 @@ export default function V2SaleComponent(props) {
 								>
 									{groups.map((group, index) => {
 										var badge, badgeColor;
-										if (!group.available) {
-											badge = "UNAVAILABLE";
-											badge = "UNAVAILABLE";
+										if (Number(group.end/1000000n) < Date.now()) {
+											badge = "ENDED";
+											badgeColor = "#CC3232";
+										} else if (!group.available) {
+											badge = "OVER";
+											badgeColor = "#CC3232";
+										} else if (Number(group.start/1000000n) > Date.now()) {
+											badge = "SOON";
+											badgeColor = "#DB7B2B";
 										} else {
-											
-										};
-										return (<Tab className={classes.tabsViewTab} value={Number(group.id)} label={(<span style={{padding:"0 50px"}}>{group.name}<Chip style={{"float":"right"}} size="small" label="TEST" /></span>)} />);
+											badge = "LIVE";
+											badgeColor = "#99C140";
+                    };
+                    if (badge) {                      
+                      return (<Tab className={classes.tabsViewTab} value={Number(group.id)} label={(<span style={{padding:"0 0px"}}>{group.name}<Chip color='primary' style={{color:"white",fontSize:"10px",backgroundColor:badgeColor, marginLeft:20}} size="small" label={badge} /></span>)} />);
+                    } else {
+                      return (<Tab className={classes.tabsViewTab} value={Number(group.id)} label={(<span style={{padding:"0 0px"}}>{group.name}</span>)} />);
+                    };
 									})}
 								</Tabs>
 							</>
 						}
 					</>
 				}</>
-
+        <br />
+        <br />
+        <>{getCurrentGroup() ?
+          <>{ Number(getCurrentGroup().end/1000000n) < Date.now() ?
+            <p><strong><span style={{fontSize:"20px",color:"black"}}>This pricing group has ended!</span></strong></p>
+          : 
+            <>{ !getCurrentGroup().available ?
+              <p><strong><span style={{fontSize:"20px",color:"black"}}>This pricing group is no longer available due to purchase limits!</span></strong></p>
+            : 
+              <>{ Number(getCurrentGroup().start/1000000n) > Date.now() ?
+                <>
+                  <p><strong><span style={{fontSize:"20px",color:"black"}}>This pricing group opens <Timestamp relative autoUpdate date={Number(getCurrentGroup().start/1000000n)/1000} />!</span></strong></p><br />
+                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+                    {getCurrentGroup().pricing.map(o => {
+                      return (<Grid className={classes.stat} item sm={3}>
+                        <Button
+                          variant={"contained"}
+                          disabled
+                          color={"primary"}
+                          style={{ fontWeight: "bold", margin: "0 auto" }}
+                        >
+                          Buy {Number(o[0])} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[0]*o[1])} ICP
+                        </Button>
+                      </Grid>);
+                    })}
+                  </Grid>
+                </>
+              : 
+                <>
+                  <Grid justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
+                    {getCurrentGroup().pricing.map(o => {
+                      return (<Grid className={classes.stat} item sm={3}>
+                        <Button
+                          variant={"contained"}
+                          color={"primary"}
+                          onClick={() => buyFromSale(Number(groups.find(a => Number(a.id) == currentPriceGroup).id), Number(o[0]), o[0]*o[1])}
+                          style={{ fontWeight: "bold", margin: "0 auto" }}
+                        >
+                          Buy {Number(o[0])} NFT{o[0] === 1 ? "" : "s"}<br />for {_showListingPrice(o[0]*o[1])} ICP
+                        </Button>
+                      </Grid>);
+                    })}
+                  </Grid>
+                  <p><strong>Please note:</strong> All transactions are secured via Entrepot's escrow platform. There are no refunds or returns, once a transaction is made it can not be reversed. Entrepot provides a transaction service only. By clicking one of the buttons above you show acceptance of our <a href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit" target="_blank">Terms of Service</a></p>
+                </>
+              }</>
+            }</>
+          }</> 
+        :
+          ""
+        }</>
 				
       </div>
       
