@@ -238,8 +238,6 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
     return false;
   }
 
-  console.log(collectionStats);
-
   if (currentFilters.price.range) {
     if (currentFilters.price.type === filterTypes.price.floor) {
       if (
@@ -255,6 +253,15 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
       ) {
         return false;
       }
+    }
+  }
+
+  if (currentFilters.volume.range) {
+    if (
+      Number(collectionStats.stats.total) > currentFilters.volume.range.max ||
+      Number(collectionStats.stats.total) < currentFilters.volume.range.min
+    ) {
+      return false;
     }
   }
 
@@ -471,6 +478,11 @@ export default function Marketplace(props) {
     },
   };
 
+  const volumeRange = {
+    min: getLowestStat(stats, 'total'),
+    max: getHighestStat(stats, 'total'),
+  };
+
   console.log(priceRanges);
 
   console.log({filteredAndSortedCollections, stats});
@@ -541,6 +553,7 @@ export default function Marketplace(props) {
                     max={priceRanges[currentFilters.price.type].max}
                     suffix="ICP"
                     double={true}
+                    value={currentFilters.price.range || {}}
                     onValueChange={event => {
                       const values = event.detail;
                       setCurrentFilters({
@@ -555,6 +568,22 @@ export default function Marketplace(props) {
                 </div>
                 <div>
                   <div className="title">Volume</div>
+                  <ToniqSlider
+                    min={volumeRange.min}
+                    max={volumeRange.max}
+                    double={true}
+                    value={currentFilters.volume.range || {}}
+                    onValueChange={event => {
+                      const values = event.detail;
+                      setCurrentFilters({
+                        ...currentFilters,
+                        volume: {
+                          ...currentFilters.volume,
+                          range: values,
+                        },
+                      });
+                    }}
+                  />
                 </div>
               </>
             }
