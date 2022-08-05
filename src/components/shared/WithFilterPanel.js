@@ -85,7 +85,11 @@ export function WithFilterPanel(props) {
               margin: 8px;
             }
             .with-filter-panel .filter-controls-wrapper ${ToniqSlider} {
-              padding: 32px;
+              margin: 32px;
+              margin-top: 0;
+            }
+            .with-filter-panel .filter-controls-wrapper ${ToniqToggleButton} + ${ToniqSlider} {
+              margin-top: 32px;
             }
           `),
         }}
