@@ -266,7 +266,7 @@ export default function V2SaleComponent(props) {
 											badge = "ENDED";
 											badgeColor = "#CC3232";
 										} else if (!group.available) {
-											badge = "OVER";
+											badge = "N/A";
 											badgeColor = "#CC3232";
 										} else if (Number(group.start/1000000n) > Date.now()) {
 											badge = "SOON";
