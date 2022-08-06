@@ -233,7 +233,11 @@ export default function V2SaleComponent(props) {
         <br /><br />
         <>{!groups.length ? 
           <>
-            <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
+            { startTime ?
+              <p><strong><span style={{fontSize:"20px",color:"red"}}>Sorry, your address is not eligble for this sale!</span></strong></p>
+            :
+              <p><strong><span style={{fontSize:"20px",color:"black"}}>Loading...</span></strong></p>
+            }
           </>
         : 
 					<>
