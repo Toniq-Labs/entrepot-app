@@ -1,4 +1,3 @@
-/* global BigInt */
 import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -476,12 +475,6 @@ export default function Listings(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterData]);
   
-  const validListings = displayListings ? displayListings.filter(listing => {
-    // NFT prices below 0.01 ICP should not be displayed
-    const isAcceptablePrice = listing[1].price >= BigInt(1000000);
-    
-    return isAcceptablePrice;
-  }) : displayListings;
 
   return (//maxWidth:1200, margin:"0 auto",
     <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
@@ -696,12 +689,12 @@ export default function Listings(props) {
                       </Select>
                     </FormControl>
                   </Grid>
-                  {validListings && validListings.length > perPage ? (
+                  {displayListings && displayListings.length > perPage ? (
                     <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
                       <Pagination
                         className={classes.pagi}
                         size="small"
-                        count={Math.ceil(validListings.length / perPage)}
+                        count={Math.ceil(displayListings.length / perPage)}
                         page={page}
                         onChange={(e, v) => setPage(v)}
                       />
@@ -711,7 +704,7 @@ export default function Listings(props) {
               </div>
               <div style={{minHeight:500}}>
                 <div style={{}}>
-                {validListings === false ? 
+                {displayListings === false ? 
                   <>
                     <Typography
                       paragraph
@@ -723,7 +716,7 @@ export default function Listings(props) {
                   </>
                 :
                   <>
-                    {validListings.length === 0 ? (
+                    {displayListings.length === 0 ? (
                       <Typography
                         paragraph
                         style={{ fontWeight: "bold" }}
@@ -737,7 +730,7 @@ export default function Listings(props) {
                         style={{fontWeight: "bold" }}
                         align="left"
                       >
-                      {validListings.length} items
+                      {displayListings.length} items
                       </Typography>
                     )}
                   </>
@@ -768,7 +761,7 @@ export default function Listings(props) {
                     }} color="default" />
                   </Typography>
                 </div> : "" }
-                {validListings ?
+                {displayListings ?
                 <div>
                   <Grid
                     container
@@ -781,7 +774,7 @@ export default function Listings(props) {
                       justifyContent: "space-between",
                     }}
                   >
-                    {validListings
+                    {displayListings
                     .filter(
                       (token, i) =>
                         i >= (page - 1) * perPage && i < page * perPage
@@ -807,11 +800,11 @@ export default function Listings(props) {
                   </Grid>
                 </div> : "" }
                 
-                {validListings && validListings.length > perPage ? (
+                {displayListings && displayListings.length > perPage ? (
                   <Pagination
                     className={classes.pagi}
                     size="small"
-                    count={Math.ceil(validListings.length / perPage)}
+                    count={Math.ceil(displayListings.length / perPage)}
                     page={page}
                     onChange={(e, v) => setPage(v)}
                   />
