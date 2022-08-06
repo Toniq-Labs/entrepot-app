@@ -291,6 +291,8 @@ export default function Listings(props) {
     });  
     try{
       var listings = await api.token(c).listings();
+      //Remove listings below 0.01ICP
+      listings = displayListings.filter(l => l[1].price >= 1000000n);
       updateListings(listings);
     } catch(e) {};
       
