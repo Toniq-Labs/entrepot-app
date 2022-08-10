@@ -352,8 +352,7 @@ export default function UserActivity(props) {
                     value={sort}
                     onChange={changeSort}
                   >
-                    <MenuItem value={"mint_number"}>Minting #</MenuItem>
-                    <MenuItem value={"nri"}>NFT Rarity Index</MenuItem>
+                    <MenuItem value={"most_recent"}>Most Recent</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
