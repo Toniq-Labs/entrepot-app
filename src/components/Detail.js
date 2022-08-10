@@ -465,7 +465,7 @@ const Detail = (props) => {
                             {/* <span className={classes.ownerName}>ChavezOG</span> */}
                             : &nbsp;
                             <span className={classes.ownerAddress} onClick={() => {
-                              window.open(`https://dashboard.internetcomputer.org/account/"${owner}`, '_blank')
+                              window.open(`https://dashboard.internetcomputer.org/account/${owner}`, '_blank')
                             }}>{shorten(owner)}</span>
                           </span>
                         )}
