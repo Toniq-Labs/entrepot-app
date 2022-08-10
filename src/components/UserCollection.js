@@ -352,8 +352,6 @@ export default function UserCollection(props) {
       _displayNfts = _displayNfts.filter((token,i) => (_collectionFilter == 'all' || getEXTCanister(extjs.decodeTokenId(token).canister) == _collectionFilter));
       _displayNfts = _displayNfts.sort((a,b) => {
         switch(sort) {
-          case "most_recent":
-            return 0;
           case "price_asc":
             var ap = (a.price === 0 ? false : a.price);
             var bp = (b.price === 0 ? false : b.price);
@@ -514,7 +512,6 @@ export default function UserCollection(props) {
                     value={sort}
                     onChange={changeSort}
                   >
-                    <MenuItem value={"most_recent"}>Most Recent</MenuItem>
                     <MenuItem value={"mint_number"}>Minting #</MenuItem>
                     <MenuItem value={"nri"}>NFT Rarity Index</MenuItem>
                   </Select>
