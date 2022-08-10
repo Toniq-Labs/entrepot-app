@@ -24,6 +24,7 @@ import { DropShadowCard } from "../shared/DropShadowCard";
 import { Accordion } from "./Accordion";
 import Timestamp from "react-timestamp";
 import chunk from "lodash.chunk";
+import Favourite from "./Favourite";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -378,7 +379,12 @@ const Detail = (props) => {
             <Box className={classes.nftDescHeader}>
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={6} className={classes.imageWrapper}>
-                  {displayImage(tokenid)}
+                  <div style={{ position: "relative" }}>
+                    {displayImage(tokenid)}
+                    <div style={{ position: "absolute", top: "16px", left: "0" }}>
+                      <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} style={{ position: "absolute", top: "16px", left: "16px" }} />
+                    </div>
+                  </div>
                 </Grid>
                 <Grid item xs={12} sm={6} className={classes.nftDesc}>
                   <div className={classes.nftDescContainer1}>
