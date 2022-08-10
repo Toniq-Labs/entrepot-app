@@ -352,7 +352,7 @@ export default function UserActivity(props) {
                     value={sort}
                     onChange={changeSort}
                   >
-                    <MenuItem value={"most_recent"}>Most Recent</MenuItem>
+                    <MenuItem value={"mint_number"}>Most Recent</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
