@@ -452,16 +452,24 @@ const Detail = (props) => {
                         )}
                       </div>
                     </div>
-                    {owner ?
-                    <span className={classes.ownerWrapper}>
-                      {/* {`Owned by `} */}
-                      {`Owner `}
-                      {/* <span className={classes.ownerName}>ChavezOG</span> */}
-                      : &nbsp;
-                      <span className={classes.ownerAddress} onClick={() => {
-                        window.open(`https://dashboard.internetcomputer.org/account/"${owner}`, '_blank')
-                      }}>{shorten(owner)}</span>
-                    </span> : <></>
+                    {owner ? 
+                      <>
+                        {props.account.address === owner ? (
+                          <span className={classes.ownerWrapper}>
+                            Owned by you
+                          </span>
+                        ) : (
+                          <span className={classes.ownerWrapper}>
+                            {/* {`Owned by `} */}
+                            {`Owner `}
+                            {/* <span className={classes.ownerName}>ChavezOG</span> */}
+                            : &nbsp;
+                            <span className={classes.ownerAddress} onClick={() => {
+                              window.open(`https://dashboard.internetcomputer.org/account/"${owner}`, '_blank')
+                            }}>{shorten(owner)}</span>
+                          </span>
+                        )}
+                      </> : <></>
                     }
                   </div>
                 </Grid>
