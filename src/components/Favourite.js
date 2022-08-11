@@ -6,6 +6,8 @@ import IconButton from "@material-ui/core/IconButton";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotUpdateLiked } from '../utils';
+import { HeartFill24Icon, HeartOutline24Icon } from "@toniq-labs/design-system";
+import { ToniqIcon } from "@toniq-labs/design-system/dist/esm/elements/react-components";
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -70,8 +72,9 @@ export default function Favourite(props) {
       control={<Checkbox onChange={ev => {
         ev.stopPropagation();
         like();
-      }} checked={liked} icon={<FavoriteBorderIcon style={iconSize} />} checkedIcon={<FavoriteIcon style={iconSize}/>} />}
+      }} checked={liked} icon={<ToniqIcon icon={HeartOutline24Icon} style={{ color: "#00d092" }} />} checkedIcon={<ToniqIcon icon={HeartFill24Icon} style={{ color: "#00d092" }} />} />}
       label={props.showcount ? (count ? <span style={{fontSize:fontSize, color:"#00d092 "}}>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span> : "") : ""}
+      style={{ margin: "0", filter: "drop-shadow(0px 0px 16px #000000)" }}
     />
   </>);
 };
