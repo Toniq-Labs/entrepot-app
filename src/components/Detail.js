@@ -17,7 +17,7 @@ import {
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis, ToniqPagination } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
+import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, LoaderAnimated24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import { DropShadowCard } from "../shared/DropShadowCard";
@@ -67,6 +67,7 @@ const Detail = (props) => {
   const [offers, setOffers] = useState(false);
   const [offerListing, setOfferListing] = useState(false);
   const [openOfferForm, setOpenOfferForm] = useState(false);
+  const [attributes, setAttributes] = useState(false);
   const collection = props.collections.find(e => e.canister === canister)
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
@@ -76,9 +77,70 @@ const Detail = (props) => {
   const reloadOffers = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {
       const offerData = r.map(a => {return {buyer : a[0], amount : a[1], time : a[2]}}).sort((a,b) => Number(b.amount)-Number(a.amount));
-      setOffers(chunk(offerData, 9));
-      setOfferListing(offers[offerPage]);
+      if (offerData.length) {
+        setOffers(chunk(offerData, 9));
+        setOfferListing(offers[offerPage]);
+      } else {
+        setOfferListing([]);
+      }
     });
+  }
+  
+  const getAttributes = () => {
+    // Mock Attribute Data
+    setAttributes([
+      {
+        groupName: 'Group #1',
+        data: [
+          {
+            label: 'Background',
+            value: '#5452',
+            desc: '5% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#5462',
+            desc: '17% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#6312',
+            desc: '3% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#1123',
+            desc: '76% Have This'
+          }
+        ]
+      },
+      {
+        groupName: 'Group #2',
+        data: [
+          {
+            label: 'Body Color',
+            value: '#5631',
+            desc: '4% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#2123',
+            desc: '98% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#6631',
+            desc: '7% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#5643',
+            desc: '21% Have This'
+          }
+        ]
+      }
+    ])
+    // setAttributes([]);
   }
 
   const cancelListing = () => {
@@ -94,9 +156,14 @@ const Detail = (props) => {
       });
 
       setOwner(r.owner);
-      setTransactions(chunk(r.transactions, 9));
-      setHistory(transactions[historyPage]);
+      if (r.transactions.length) {
+        setTransactions(chunk(r.transactions, 9));
+        setHistory(transactions[historyPage]);
+      } else {
+        setHistory([]);
+      }
     });
+    getAttributes();
   }
 
   const _afterList = async () => {
@@ -114,14 +181,14 @@ const Detail = (props) => {
   };
 
   const getFloorDelta = amount => {
-    if (!floor) return "Loading...";
+    if (!floor) return reloadIcon();
     var fe = (floor*100000000);
     var ne = Number(amount);
     if (ne > fe){
       return (((ne-fe)/ne)*100).toFixed(2)+"% above";
     } else if (ne < fe) {      
       return ((1-(ne/fe))*100).toFixed(2)+"% below";
-    } else return "Loading..."
+    } else return reloadIcon();
   };
 
   const makeOffer = async () => {
@@ -288,60 +355,6 @@ const Detail = (props) => {
     }
   };
 
-  // Mock attributes data; Hidden for now until API has attributes data
-  const attributes = [
-    {
-      groupName: 'Group #1',
-      data: [
-        {
-          label: 'Background',
-          value: '#5452',
-          desc: '5% Have This'
-        },
-        {
-          label: 'Background',
-          value: '#5462',
-          desc: '17% Have This'
-        },
-        {
-          label: 'Background',
-          value: '#6312',
-          desc: '3% Have This'
-        },
-        {
-          label: 'Background',
-          value: '#1123',
-          desc: '76% Have This'
-        }
-      ]
-    },
-    {
-      groupName: 'Group #2',
-      data: [
-        {
-          label: 'Body Color',
-          value: '#5631',
-          desc: '4% Have This'
-        },
-        {
-          label: 'Body Color',
-          value: '#2123',
-          desc: '98% Have This'
-        },
-        {
-          label: 'Body Color',
-          value: '#6631',
-          desc: '7% Have This'
-        },
-        {
-          label: 'Body Color',
-          value: '#5643',
-          desc: '21% Have This'
-        }
-      ]
-    }
-  ]
-
   const getPriceData = () => {
     if (listing.price > 0n) {
       return listing.price;
@@ -352,6 +365,23 @@ const Detail = (props) => {
     } else {
       return undefined;
     }
+  }
+
+  const reloadIcon = () => {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", }}>
+        <ToniqIcon
+          style={{
+            color: String(
+              toniqColors.pagePrimary
+                .foregroundColor
+            ),
+            alignSelf: "center",
+          }}
+          icon={LoaderAnimated24Icon}
+        />
+      </div>
+    );
   }
 
   React.useEffect(() => {
@@ -485,13 +515,9 @@ const Detail = (props) => {
             </Box>
             <Accordion title="Offers" open={true}>
               {
-                !offers ? (
-                  <Grid className={classes.accordionWrapper}>
-                    <span className={classes.offerDesc}>Loading...</span>
-                  </Grid>
-                ) : (
+                offerListing ? (
                   <>
-                    {offers && offerListing && offerListing.length > 0 ? 
+                    {offerListing.length > 0 ? 
                       <Grid container className={classes.accordionWrapper}>
                         <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
                         <Grid container className={classes.tableHeader}>
@@ -529,7 +555,22 @@ const Detail = (props) => {
                                       </Grid>
                                     </Grid>
                                   </Grid>
-                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>{floor ? getFloorDelta(offer.amount) : "Loading..."}</Grid>
+                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>
+                                    {floor ? (
+                                      getFloorDelta(offer.amount)
+                                    ) : (
+                                      <ToniqIcon
+                                        style={{
+                                          color: String(
+                                            toniqColors.pagePrimary
+                                              .foregroundColor
+                                          ),
+                                          alignSelf: "center",
+                                        }}
+                                        icon={LoaderAnimated24Icon}
+                                      />
+                                    )}
+                                  </Grid>
                                   <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
                                     {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
                                       <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
@@ -557,48 +598,61 @@ const Detail = (props) => {
                         <span className={classes.offerDesc}>There are currently no offers!</span>
                       </Grid>
                     }
-                  </>
+                </>
+                ) : (
+                  <Grid className={classes.accordionWrapper}>
+                    {reloadIcon()}
+                  </Grid>
               )}
               
             </Accordion>
-            {/* Hidden for now until API has data */}
-            {/* <Accordion title="Attributes" open={true}>
-							<Grid container className={classes.accordionWrapper}>
-                {attributes.map((attribute) => (
-                  <Grid item key={attribute.groupName} xs={12}>
-                    <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
-                    <Grid container className={classes.attributeWrapper} spacing={2}>
-                      {attribute.data.map((data) => (
-                        <Grid item key={data.value} xs={12} md={3}>
-                          <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
-                            <span className={classes.attributeHeader}>
-                              <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
-                            </span>
-                            <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
-                              <Grid item>
-                                <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
-                              </Grid>
-                              <Grid item>
-                                <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
-                              </Grid>
+            <Accordion title="Attributes" open={true}>
+							{
+                attributes ? (
+                  <>
+                    { attributes.length > 0 ? 
+                      <Grid container className={classes.accordionWrapper}>
+                        {attributes.map((attribute) => (
+                          <Grid item key={attribute.groupName} xs={12}>
+                            <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
+                            <Grid container className={classes.attributeWrapper} spacing={2}>
+                              {attribute.data.map((data) => (
+                                <Grid item key={data.value} xs={12} md={3}>
+                                  <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
+                                    <span className={classes.attributeHeader}>
+                                      <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
+                                    </span>
+                                    <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
+                                      <Grid item>
+                                        <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
+                                      </Grid>
+                                      <Grid item>
+                                        <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
+                                      </Grid>
+                                    </Grid>
+                                  </DropShadowCard>
+                                </Grid>
+                              ))}
                             </Grid>
-                          </DropShadowCard>
-                        </Grid>
-                      ))}
-                    </Grid>
+                          </Grid>
+                        ))}
+                      </Grid> : 
+                      <Grid className={classes.accordionWrapper}>
+                        <span className={classes.offerDesc}>No Attributes</span>
+                      </Grid>
+                    }
+                  </>
+                ) : (
+                  <Grid className={classes.accordionWrapper}>
+                    {reloadIcon()}
                   </Grid>
-                ))}
-              </Grid>
-            </Accordion> */}
+                )}
+            </Accordion>
             <Accordion title="History" open={true}>
             {
-                !history ? (
-                  <Grid className={classes.accordionWrapper}>
-                    <span className={classes.offerDesc}>Loading...</span>
-                  </Grid>
-                ) : (
+                history ? (
                   <>
-                    {history && history.length > 0 ? 
+                    {history.length > 0 ? 
                       <Grid container className={classes.accordionWrapper}>
                         <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
                         <Grid container className={classes.tableHeader}>
@@ -659,6 +713,10 @@ const Detail = (props) => {
                       </Grid>
                     }
                   </>
+                ) : (
+                  <Grid className={classes.accordionWrapper}>
+                    {reloadIcon()}
+                  </Grid>
               )}
               
             </Accordion>
