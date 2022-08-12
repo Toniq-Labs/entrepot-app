@@ -201,7 +201,11 @@ const Detail = (props) => {
   }
   
     const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+      try{
+        getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+      } catch (error) { // can't follow redirect if there is one, so need to parse the pre-redirect html blob
+        getDetailsUrl(iframeUrl, 'URL=([^"]+)"')
+      };
       if(detailsUrl){
         return (
           <video width="100%" autoPlay muted loop>
