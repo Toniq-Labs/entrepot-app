@@ -160,6 +160,13 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
       return "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/" + id;
     };
   }
+  if (collection === "skjpp-haaaa-aaaae-qac7q-cai") {
+    if (fullSize) {      
+      return "https://"+collection+".raw.ic0.app/?tokenid=" + id;
+    } else {
+      return "https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/" + id;
+    };
+  }
   if (collection === TREASURECANISTER) {
     if (!fullSize) {
       return "/earn/loading.png";

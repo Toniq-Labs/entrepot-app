@@ -233,7 +233,7 @@ export default function Marketplace(props) {
                     <Card style={{height:375,}} className={classes.root}>
                       <CardMedia
                         className={classes.media}
-                        image={collection.hasOwnProperty('collection') ? collection.collection : "/collections/"+collection.canister+".jpg"}
+                        image={collection.hasOwnProperty('collection') && collection.collection ? collection.collection : "/collections/"+collection.canister+".jpg"}
                         title={collection.name}
                       />
                       <CardContent style={{textAlign:"center"}}>

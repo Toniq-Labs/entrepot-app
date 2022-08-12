@@ -204,7 +204,7 @@ const Detail = (props) => {
       getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
       if(detailsUrl){
         return (
-          <video width="100%" controls autoPlay muted loop>
+          <video width="100%" autoPlay muted loop>
             <source src={detailsUrl} type="video/mp4" />
           </video>
         );
@@ -251,6 +251,7 @@ const Detail = (props) => {
       // for interactive NFTs or videos
       //case "xcep7-sqaaa-aaaah-qcukq-cai":
       //case "rqiax-3iaaa-aaaah-qcyta-cai":
+
       case "interactive_nfts_or_videos":
       //case TREASURECANISTER:
         return (
@@ -277,7 +278,6 @@ const Detail = (props) => {
       // for videos that don't fit in the iframe and need a video tag
       case "videos_that_dont_fit_in_frame":
         return extractEmbeddedVideo(EntrepotNFTImage(canister, index, tokenid, true), classes);
-      
       // for pre-generated images residing on asset canisters
       // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals 
       case "asset_canisters":
