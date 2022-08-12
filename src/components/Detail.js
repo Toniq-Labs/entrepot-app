@@ -352,7 +352,7 @@ const Detail = (props) => {
         ]
       }
     ])
-    // setAttributes([]);
+    setAttributes([]);
   }
 
   const getPriceData = () => {
@@ -586,7 +586,7 @@ const Detail = (props) => {
                         <div className={classes.pagination}>
                           <ToniqPagination
                             currentPage={offerPage + 1}
-                            pageCount={offerListing.length}
+                            pageCount={offers.length}
                             pagesShown={6}
                             onPageChange={(event) => {
                               setOfferPage(event.detail - 1);
