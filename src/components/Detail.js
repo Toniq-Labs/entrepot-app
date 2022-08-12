@@ -85,63 +85,6 @@ const Detail = (props) => {
       }
     });
   }
-  
-  const getAttributes = () => {
-    // Mock Attribute Data
-    setAttributes([
-      {
-        groupName: 'Group #1',
-        data: [
-          {
-            label: 'Background',
-            value: '#5452',
-            desc: '5% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#5462',
-            desc: '17% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#6312',
-            desc: '3% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#1123',
-            desc: '76% Have This'
-          }
-        ]
-      },
-      {
-        groupName: 'Group #2',
-        data: [
-          {
-            label: 'Body Color',
-            value: '#5631',
-            desc: '4% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#2123',
-            desc: '98% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#6631',
-            desc: '7% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#5643',
-            desc: '21% Have This'
-          }
-        ]
-      }
-    ])
-    // setAttributes([]);
-  }
 
   const cancelListing = () => {
     props.list(tokenid, 0, props.loader, _afterList);
@@ -354,6 +297,63 @@ const Detail = (props) => {
         break;
     }
   };
+
+  const getAttributes = () => {
+    // Mock Attribute Data
+    setAttributes([
+      {
+        groupName: 'Group #1',
+        data: [
+          {
+            label: 'Background',
+            value: '#5452',
+            desc: '5% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#5462',
+            desc: '17% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#6312',
+            desc: '3% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#1123',
+            desc: '76% Have This'
+          }
+        ]
+      },
+      {
+        groupName: 'Group #2',
+        data: [
+          {
+            label: 'Body Color',
+            value: '#5631',
+            desc: '4% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#2123',
+            desc: '98% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#6631',
+            desc: '7% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#5643',
+            desc: '21% Have This'
+          }
+        ]
+      }
+    ])
+    // setAttributes([]);
+  }
 
   const getPriceData = () => {
     if (listing.price > 0n) {
@@ -590,6 +590,7 @@ const Detail = (props) => {
                             pagesShown={6}
                             onPageChange={(event) => {
                               setOfferPage(event.detail - 1);
+                              setOfferListing(false);
                             }}
                           />
                         </div>
@@ -704,6 +705,7 @@ const Detail = (props) => {
                             pagesShown={6}
                             onPageChange={(event) => {
                               setHistoryPage(event.detail - 1);
+                              setHistory(false);
                             }}
                           />
                         </div>
