@@ -175,9 +175,11 @@ const Detail = (props) => {
     const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
     if (simplifiedText.includes("URL=")) {
       setDetailsUrl(simplifiedText.match(regExp2)[1]);
-    } else {
+    } elseif (simplifiedText.includes("source") {
       setDetailsUrl(simplifiedText.match(regExp)[1]);
-    };
+    } else {
+      setDetailsUrl(url);
+    }
   }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
