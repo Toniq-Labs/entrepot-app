@@ -4,6 +4,8 @@ import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-com
 import { makeStyles } from '@material-ui/core';
 import {randomString} from 'augment-vir';
 
+
+
 export function Accordion(props) {
 	const [open, setOpen] = useState(props.open);
 	
