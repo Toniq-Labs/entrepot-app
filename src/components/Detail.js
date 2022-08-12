@@ -175,7 +175,7 @@ const Detail = (props) => {
     const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
     if (simplifiedText.includes("URL=")) {
       setDetailsUrl(simplifiedText.match(regExp2)[1]);
-    } elseif (simplifiedText.includes("source") {
+    } else if (simplifiedText.includes("source")) {
       setDetailsUrl(simplifiedText.match(regExp)[1]);
     } else {
       setDetailsUrl(url);
