@@ -104,7 +104,7 @@ export default function CollectionDetails(props) {
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
       
       {['kyc'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
-        return (<Tooltip title="This KYC badge indicates the collection creator has completed KYC with Toniq"><img alt="KYC" style={{ width: 32 }} src={"/icon/kyc.png"} /></Tooltip>);
+        return (<Tooltip placement="right" title="This KYC badge indicates the collection creator has completed KYC with Toniq"><img alt="KYC" style={{ width: 32 }} src={"/icon/kyc.png"} /></Tooltip>);
       })}
       
       {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
