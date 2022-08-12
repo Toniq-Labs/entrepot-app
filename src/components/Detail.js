@@ -168,12 +168,15 @@ const Detail = (props) => {
     );
   };
 
-  const getDetailsUrl = async (url, regExp) => {
+  const getDetailsUrl = async (url, regExp, regExp2) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const text = await blob.text();
     const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
-    setDetailsUrl(simplifiedText.match(regExp)[1]);
+    if (simplifiedText.includes("URL=")) {
+      setDetailsUrl(simplifiedText.match(regExp2)[1]);
+    } else {
+      setDetailsUrl(simplifiedText.match(regExp)[1]);
   }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
@@ -201,11 +204,7 @@ const Detail = (props) => {
   }
   
     const extractEmbeddedVideo = (iframeUrl, classes) => {
-      try{
-        getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      } catch(error) {} finally { // can't follow redirect if there is one, so need to parse the pre-redirect html blob
-        getDetailsUrl(iframeUrl, 'URL=([^"]+)"')
-      };
+      getDetailsUrl(iframeUrl, /source src="([^"]+)"/, 'URL=([^"]+)"');
       if(detailsUrl){
         return (
           <video width="100%" autoPlay muted loop>
