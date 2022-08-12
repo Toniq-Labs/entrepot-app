@@ -156,7 +156,7 @@ const Detail = (props) => {
 
   const imageStyles = cssToReactStyleObject(css`
     background-image: url('${unsafeCSS(detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true))}');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     padding-top: 100%;
@@ -237,13 +237,15 @@ const Detail = (props) => {
       case "skjpp-haaaa-aaaae-qac7q-cai":
       case TREASURECANISTER:
         return (
-          <iframe
-            frameBorder="0"
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            title={tokenid}
-            className={classes.nftIframe}
-          />
+          <div className={classes.nftIframeContainer}>
+            <iframe
+              frameBorder="0"
+              src={EntrepotNFTImage(canister, index, tokenid, true)}
+              alt=""
+              title={tokenid}
+              className={classes.nftIframe}
+            />
+          </div>
         );
         break;
       
@@ -378,11 +380,11 @@ const Detail = (props) => {
           <Container className={classes.nftDescWrapper} style={{maxWidth: 1312}}>
             <Box className={classes.nftDescHeader}>
               <Grid container spacing={4}>
-                <Grid item xs={12} sm={6} className={classes.imageWrapper}>
-                  <div style={{ position: "relative" }}>
+                <Grid item xs={12} sm={6}>
+                  <div style={{ position: "relative" }} className={classes.imageWrapper}>
                     {displayImage(tokenid)}
                     <div style={{ position: "absolute", top: "7px", left: "7px" }}>
-                      <Favourite size="large" refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
+                      <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
                     </div>
                   </div>
                 </Grid>
@@ -483,13 +485,13 @@ const Detail = (props) => {
             </Box>
             <Accordion title="Offers" open={true}>
               {
-                !offerListing ? (
+                !offers ? (
                   <Grid className={classes.accordionWrapper}>
                     <span className={classes.offerDesc}>Loading...</span>
                   </Grid>
                 ) : (
                   <>
-                    {offerListing.length > 0 ? 
+                    {offers && offerListing && offerListing.length > 0 ? 
                       <Grid container className={classes.accordionWrapper}>
                         <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
                         <Grid container className={classes.tableHeader}>
@@ -736,28 +738,21 @@ const useStyles = makeStyles((theme) => ({
 	nftVideo: {
 		borderRadius: "16px",
 	},
-	nftIframe: {
+  nftIframeContainer: {
     overflow: "hidden",
     position: "relative",
-    flexShrink: "0",
-    maxWidth: "100%",
+    width: "100%",
+    paddingTop: "100%",
 		borderRadius: "16px",
-		[theme.breakpoints.up("md")]: {
-      height: "608px",
-			width: "608px",
-    },
-		[theme.breakpoints.down("md")]: {
-      height: "608px",
-			width: "608px",
-    },
-		[theme.breakpoints.down("sm")]: {
-      height: "365px",
-			width: "365px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      height: "275px",
-			width: "275px",
-    },
+  },
+	nftIframe: {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    bottom: "0",
+    right: "0",
+    width: "100%",
+    height: "100%",
 	},
   iconsBorder: {
     border: "1px solid #E9ECEE",
@@ -873,7 +868,9 @@ const useStyles = makeStyles((theme) => ({
     },
     "& div": {
       borderRadius: "16px",
-    }
+    },
+    borderRadius: "16px",
+    backgroundColor: "#f1f1f1",
   },
   imageWrapperHistory: {
     [theme.breakpoints.up("md")]: {
@@ -887,8 +884,8 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "64px",
       maxHeight: "64px",
       borderRadius: "8px",
+      backgroundColor: "#f1f1f1",
     },
-    
   },
   offerDesc: {
     display: "flex",
