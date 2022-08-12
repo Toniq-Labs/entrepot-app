@@ -168,7 +168,15 @@ const Detail = (props) => {
     );
   };
 
-  const getDetailsUrl = async (url, regExp, regExp2) => {
+  const getImageDetailsUrl = async (url, regExp) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const text = await blob.text();
+    const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
+    setDetailsUrl(simplifiedText.match(regExp)[1]);
+  }
+  
+  const getVideoDetailsUrl = async (url, regExp, regExp2) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const text = await blob.text();
@@ -183,7 +191,7 @@ const Detail = (props) => {
   }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
-    getDetailsUrl(svgUrl, /image href="([^"]+)"/);
+    getImageDetailsUrl(svgUrl, /image href="([^"]+)"/);
 
     return (
       <img
@@ -207,7 +215,7 @@ const Detail = (props) => {
   }
   
     const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getDetailsUrl(iframeUrl, /source src="([^"]+)"/, 'URL=([^"]+)"');
+      getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/, 'URL=([^"]+)"');
       if(detailsUrl){
         return (
           <video width="100%" autoPlay muted loop>
