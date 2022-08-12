@@ -1,6 +1,13 @@
 import React from 'react';
 import {css} from 'element-vir';
-import {Filter24Icon, toniqFontStyles, X24Icon, toniqColors, ToniqToggleButton, ToniqSlider} from '@toniq-labs/design-system';
+import {
+  Filter24Icon,
+  toniqFontStyles,
+  X24Icon,
+  toniqColors,
+  ToniqToggleButton,
+  ToniqSlider,
+} from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 const filterPanelWidth = css`340px`;
@@ -21,7 +28,7 @@ export function WithFilterPanel(props) {
               width: calc(${filterPanelWidth} - var(--filter-element-padding));
               box-sizing: border-box;
             }
-            
+
             .with-filter-panel .left-filter-panel {
               display: flex;
               flex-direction: column;
@@ -50,7 +57,6 @@ export function WithFilterPanel(props) {
             }
 
             .with-filter-panel .right-section {
-              overflow: hidden;
               flex-grow: 1;
             }
 
@@ -82,7 +88,7 @@ export function WithFilterPanel(props) {
             .with-filter-panel .filter-controls-wrapper > * + * {
               border-top: 1px solid ${toniqColors.pageTertiary.foregroundColor};
             }
-            
+
             .with-filter-panel .filter-controls-wrapper ${ToniqToggleButton} {
               margin: 8px;
             }
@@ -93,7 +99,7 @@ export function WithFilterPanel(props) {
             .with-filter-panel .filter-controls-wrapper ${ToniqToggleButton} + ${ToniqSlider} {
               margin-top: var(--filter-element-padding);
             }
-            
+
             @media (max-width: 800px) {
               .with-filter-panel {
                 flex-direction: column;
