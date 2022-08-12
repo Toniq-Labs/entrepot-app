@@ -177,6 +177,7 @@ const Detail = (props) => {
       setDetailsUrl(simplifiedText.match(regExp2)[1]);
     } else {
       setDetailsUrl(simplifiedText.match(regExp)[1]);
+    };
   }
 
   const extractEmbeddedImage = (svgUrl, classes) => {
