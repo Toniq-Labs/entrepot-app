@@ -203,7 +203,7 @@ const Detail = (props) => {
     const extractEmbeddedVideo = (iframeUrl, classes) => {
       try{
         getDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      } catch (error) { // can't follow redirect if there is one, so need to parse the pre-redirect html blob
+      } catch(error) {} finally { // can't follow redirect if there is one, so need to parse the pre-redirect html blob
         getDetailsUrl(iframeUrl, 'URL=([^"]+)"')
       };
       if(detailsUrl){
