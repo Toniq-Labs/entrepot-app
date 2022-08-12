@@ -26,12 +26,12 @@ export function icpToString(priceE8s /* BigInt */, convertToIcp, truncate) {
 
 export default function PriceICP(props) {
     return (
-        <span style={{display: 'inline-flex', alignItems: 'center', gap: '8px'}}>
+        <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
         
-            <ToniqIcon icon={props.large ? Icp24Icon : Icp16Icon}/>
+            <ToniqIcon icon={props.large ? Icp24Icon : Icp16Icon} />
             <span style={{
                 ...cssToReactStyleObject(toniqFontStyles.boldFont),
-                ...cssToReactStyleObject(toniqFontStyles.h3Font)
+                ...cssToReactStyleObject(props.large ? toniqFontStyles.h3Font : toniqFontStyles.monospaceFont),
               }}>
                 {icpToString(props.price, !props.clean, props.volume)}
             </span>
