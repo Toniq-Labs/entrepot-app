@@ -521,22 +521,22 @@ const Detail = (props) => {
                       <Grid container className={classes.accordionWrapper}>
                         <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
                         <Grid container className={classes.tableHeader}>
-                          <Grid item xs={8} sm={6} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
+                          <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
                           <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Floor Delta</Grid>
-                          <Grid item xs={1} sm={2} md={4} className={classes.tableHeaderName}>Buyer</Grid>
+                          <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Buyer</Grid>
                           <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Price</Grid>
                         </Grid>
                         <Grid container spacing={2} className={classes.ntfCardContainer}>
                           {offerListing.slice().map((offer, index) => (
                             <Grid item key={index} xs={12}>
                               <DropShadowCard>
-                                <Grid container className={classes.historyCard} alignItems="center">
-                                  <Grid item xs={8} sm={6} md={3}>
+                                <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                  <Grid item xs={10} md={4}>
                                     <Grid container alignItems="center" spacing={4}>
-                                      <Grid item xs={4} className={classes.imageWrapperHistory}>
+                                      <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
                                         {displayImage(tokenid)}
                                       </Grid>
-                                      <Grid item xs={8}>
+                                      <Grid item xs={8} sm={10} md={8}>
                                         <div>
                                           <span>
                                             <Timestamp
@@ -555,7 +555,7 @@ const Detail = (props) => {
                                       </Grid>
                                     </Grid>
                                   </Grid>
-                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>
+                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>
                                     {floor ? (
                                       getFloorDelta(offer.amount)
                                     ) : (
@@ -571,7 +571,7 @@ const Detail = (props) => {
                                       />
                                     )}
                                   </Grid>
-                                  <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
+                                  <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
                                     {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
                                       <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
                                       <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
@@ -657,22 +657,22 @@ const Detail = (props) => {
                       <Grid container className={classes.accordionWrapper}>
                         <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
                         <Grid container className={classes.tableHeader}>
-                          <Grid item xs={8} sm={6} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
+                          <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
                           <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
-                          <Grid item xs={1} sm={2} md={4} className={classes.tableHeaderName}>Details</Grid>
+                          <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Details</Grid>
                           <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
                         </Grid>
                         <Grid container spacing={2} className={classes.ntfCardContainer}>
                           {history.slice().map((transaction, index) => (
                             <Grid item key={index} xs={12}>
                               <DropShadowCard>
-                                <Grid container className={classes.historyCard} alignItems="center">
-                                  <Grid item xs={8} sm={6} md={3}>
+                                <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                  <Grid item xs={10} md={4}>
                                     <Grid container alignItems="center" spacing={4}>
-                                      <Grid item xs={4} className={classes.imageWrapperHistory}>
+                                      <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
                                         {displayImage(tokenid)}
                                       </Grid>
-                                      <Grid item xs={8}>
+                                      <Grid item xs={8} sm={10} md={8}>
                                         <div>
                                           <span>
                                             <Timestamp
@@ -688,8 +688,8 @@ const Detail = (props) => {
                                       </Grid>
                                     </Grid>
                                   </Grid>
-                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop}>Sale</Grid>
-                                  <Grid item xs={1} sm={2} md={4} className={classes.buyerDesktop}>
+                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>Sale</Grid>
+                                  <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
                                     TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
                                   </Grid>
                                   <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
@@ -1012,7 +1012,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
     ...cssToReactStyleObject(toniqFontStyles.labelFont),
   },
-  historyCard: {
+  tableCard: {
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
   },
   buyerMobile: {
@@ -1025,10 +1025,10 @@ const useStyles = makeStyles((theme) => ({
   },
   buyerDesktop: {
     [theme.breakpoints.up("sm")]: {
-			visibility: "visible",
+			display: "flex",
 		},
 		[theme.breakpoints.down("sm")]: {
-			visibility: "hidden",
+			display: "none",
 		},
   },
   pagination: {
