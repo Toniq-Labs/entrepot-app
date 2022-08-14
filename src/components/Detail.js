@@ -218,7 +218,7 @@ const Detail = (props) => {
       getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/, 'URL=([^"]+)"');
       if(detailsUrl){
         return (
-          <video width="100%" autoPlay muted loop>
+          <video width="100%" autoPlay loop>
             <source src={detailsUrl} type="video/mp4" />
           </video>
         );
