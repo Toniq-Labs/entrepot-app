@@ -479,215 +479,217 @@ const Detail = (props) => {
                 </Grid>
               </Grid>
             </Box>
-            <Accordion title="Offers" open={true}>
-              {
-                offerListing ? (
-                  <>
-                    {offerListing.length > 0 ? 
-                      <Grid container className={classes.accordionWrapper}>
-                        <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
-                        <Grid container className={classes.tableHeader}>
-                          <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
-                          <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Floor Delta</Grid>
-                          <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Buyer</Grid>
-                          <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Price</Grid>
-                        </Grid>
-                        <Grid container spacing={2} className={classes.ntfCardContainer}>
-                          {offerListing.slice().map((offer, index) => (
-                            <Grid item key={index} xs={12}>
-                              <DropShadowCard>
-                                <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
-                                  <Grid item xs={10} md={4}>
-                                    <Grid container alignItems="center" spacing={4}>
-                                      <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
-                                        {displayImage(tokenid)}
-                                      </Grid>
-                                      <Grid item xs={8} sm={10} md={8}>
-                                        <div>
-                                          <span>
-                                            <Timestamp
-                                              relative
-                                              autoUpdate
-                                              date={Number(offer.time / 1000000000n)}
-                                            />
-                                          </span>
-                                          <span className={classes.buyerMobile}>
-                                            {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
-                                              <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
-                                              <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
-                                            }
-                                          </span>
-                                        </div>
-                                      </Grid>
-                                    </Grid>
-                                  </Grid>
-                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>
-                                    {floor ? (
-                                      getFloorDelta(offer.amount)
-                                    ) : (
-                                      <ToniqIcon
-                                        style={{
-                                          color: String(
-                                            toniqColors.pagePrimary
-                                              .foregroundColor
-                                          ),
-                                          alignSelf: "center",
-                                        }}
-                                        icon={LoaderAnimated24Icon}
-                                      />
-                                    )}
-                                  </Grid>
-                                  <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
-                                    {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
-                                      <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
-                                      <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
-                                    }
-                                  </Grid>
-                                  <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(offer.amount, true, true)}</Grid>
-                                </Grid>
-                              </DropShadowCard>
-                            </Grid>
-                          ))}
-                        </Grid>
-                        <div className={classes.pagination}>
-                          <ToniqPagination
-                            currentPage={offerPage + 1}
-                            pageCount={offers.length}
-                            pagesShown={6}
-                            onPageChange={(event) => {
-                              setOfferPage(event.detail - 1);
-                              setOfferListing(false);
-                            }}
-                          />
-                        </div>
-                      </Grid> : 
-                      <Grid className={classes.accordionWrapper}>
-                        <span className={classes.offerDesc}>There are currently no offers!</span>
-                      </Grid>
-                    }
-                </>
-                ) : (
-                  <Grid className={classes.accordionWrapper}>
-                    {reloadIcon()}
-                  </Grid>
-              )}
-              
-            </Accordion>
-            <Accordion title="Attributes" open={true}>
-							{
-                attributes ? (
-                  <>
-                    { attributes.length > 0 ? 
-                      <Grid container className={classes.accordionWrapper}>
-                        {attributes.map((attribute) => (
-                          <Grid item key={attribute.groupName} xs={12}>
-                            <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
-                            <Grid container className={classes.attributeWrapper} spacing={2}>
-                              {attribute.data.map((data) => (
-                                <Grid item key={data.value} xs={12} md={3}>
-                                  <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
-                                    <span className={classes.attributeHeader}>
-                                      <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
-                                    </span>
-                                    <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
-                                      <Grid item>
-                                        <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
-                                      </Grid>
-                                      <Grid item>
-                                        <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
-                                      </Grid>
-                                    </Grid>
-                                  </DropShadowCard>
-                                </Grid>
-                              ))}
-                            </Grid>
+            <Box style={{ paddingTop: "16px" }}>
+              <Accordion title="Offers" open={true}>
+                {
+                  offerListing ? (
+                    <>
+                      {offerListing.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
+                          <Grid container className={classes.tableHeader}>
+                            <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
+                            <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Floor Delta</Grid>
+                            <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Buyer</Grid>
+                            <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Price</Grid>
                           </Grid>
-                        ))}
-                      </Grid> : 
-                      <Grid className={classes.accordionWrapper}>
-                        <span className={classes.offerDesc}>No Attributes</span>
-                      </Grid>
-                    }
-                  </>
-                ) : (
-                  <Grid className={classes.accordionWrapper}>
-                    {reloadIcon()}
-                  </Grid>
-                )}
-            </Accordion>
-            <Accordion title="History" open={true}>
-            {
-                history ? (
-                  <>
-                    {history.length > 0 ? 
-                      <Grid container className={classes.accordionWrapper}>
-                        <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
-                        <Grid container className={classes.tableHeader}>
-                          <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
-                          <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
-                          <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Details</Grid>
-                          <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
-                        </Grid>
-                        <Grid container spacing={2} className={classes.ntfCardContainer}>
-                          {history.slice().map((transaction, index) => (
-                            <Grid item key={index} xs={12}>
-                              <DropShadowCard>
-                                <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
-                                  <Grid item xs={10} md={4}>
-                                    <Grid container alignItems="center" spacing={4}>
-                                      <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
-                                        {displayImage(tokenid)}
-                                      </Grid>
-                                      <Grid item xs={8} sm={10} md={8}>
-                                        <div>
-                                          <span>
-                                            <Timestamp
-                                              relative
-                                              autoUpdate
-                                              date={Number(BigInt(transaction.time) / 1000000000n)}
-                                            />
-                                          </span>
-                                          <span className={classes.buyerMobile}>
-                                            TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
-                                          </span>
-                                        </div>
+                          <Grid container spacing={2} className={classes.ntfCardContainer}>
+                            {offerListing.slice().map((offer, index) => (
+                              <Grid item key={index} xs={12}>
+                                <DropShadowCard>
+                                  <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                    <Grid item xs={10} md={4}>
+                                      <Grid container alignItems="center" spacing={4}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                          {displayImage(tokenid)}
+                                        </Grid>
+                                        <Grid item xs={8} sm={10} md={8}>
+                                          <div>
+                                            <span>
+                                              <Timestamp
+                                                relative
+                                                autoUpdate
+                                                date={Number(offer.time / 1000000000n)}
+                                              />
+                                            </span>
+                                            <span className={classes.buyerMobile}>
+                                              {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
+                                                <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
+                                                <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                              }
+                                            </span>
+                                          </div>
+                                        </Grid>
                                       </Grid>
                                     </Grid>
+                                    <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>
+                                      {floor ? (
+                                        getFloorDelta(offer.amount)
+                                      ) : (
+                                        <ToniqIcon
+                                          style={{
+                                            color: String(
+                                              toniqColors.pagePrimary
+                                                .foregroundColor
+                                            ),
+                                            alignSelf: "center",
+                                          }}
+                                          icon={LoaderAnimated24Icon}
+                                        />
+                                      )}
+                                    </Grid>
+                                    <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
+                                      {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
+                                        <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
+                                        <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                      }
+                                    </Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(offer.amount, true, true)}</Grid>
                                   </Grid>
-                                  <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>Sale</Grid>
-                                  <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
-                                    TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                </DropShadowCard>
+                              </Grid>
+                            ))}
+                          </Grid>
+                          <div className={classes.pagination}>
+                            <ToniqPagination
+                              currentPage={offerPage + 1}
+                              pageCount={offers.length}
+                              pagesShown={6}
+                              onPageChange={(event) => {
+                                setOfferPage(event.detail - 1);
+                                setOfferListing(false);
+                              }}
+                            />
+                          </div>
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>There are currently no offers!</span>
+                        </Grid>
+                      }
+                  </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                )}
+                
+              </Accordion>
+              <Accordion title="Attributes" open={true}>
+                {
+                  attributes ? (
+                    <>
+                      { attributes.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          {attributes.map((attribute) => (
+                            <Grid item key={attribute.groupName} xs={12}>
+                              <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
+                              <Grid container className={classes.attributeWrapper} spacing={2}>
+                                {attribute.data.map((data) => (
+                                  <Grid item key={data.value} xs={12} md={3}>
+                                    <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
+                                      <span className={classes.attributeHeader}>
+                                        <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
+                                      </span>
+                                      <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
+                                        <Grid item>
+                                          <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
+                                        </Grid>
+                                        <Grid item>
+                                          <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
+                                        </Grid>
+                                      </Grid>
+                                    </DropShadowCard>
                                   </Grid>
-                                  <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
-                                </Grid>
-                              </DropShadowCard>
+                                ))}
+                              </Grid>
                             </Grid>
                           ))}
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>No Attributes</span>
                         </Grid>
-                        <div className={classes.pagination}>
-                          <ToniqPagination
-                            currentPage={historyPage + 1}
-                            pageCount={transactions.length}
-                            pagesShown={6}
-                            onPageChange={(event) => {
-                              setHistoryPage(event.detail - 1);
-                              setHistory(false);
-                            }}
-                          />
-                        </div>
-                      </Grid> : 
-                      <Grid className={classes.accordionWrapper}>
-                        <span className={classes.offerDesc}>No Activity</span>
-                      </Grid>
-                    }
-                  </>
-                ) : (
-                  <Grid className={classes.accordionWrapper}>
-                    {reloadIcon()}
-                  </Grid>
-              )}
-              
-            </Accordion>
+                      }
+                    </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                  )}
+              </Accordion>
+              <Accordion title="History" open={true}>
+              {
+                  history ? (
+                    <>
+                      {history.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
+                          <Grid container className={classes.tableHeader}>
+                            <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
+                            <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
+                            <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Details</Grid>
+                            <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
+                          </Grid>
+                          <Grid container spacing={2} className={classes.ntfCardContainer}>
+                            {history.slice().map((transaction, index) => (
+                              <Grid item key={index} xs={12}>
+                                <DropShadowCard>
+                                  <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                    <Grid item xs={10} md={4}>
+                                      <Grid container alignItems="center" spacing={4}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                          {displayImage(tokenid)}
+                                        </Grid>
+                                        <Grid item xs={8} sm={10} md={8}>
+                                          <div>
+                                            <span>
+                                              <Timestamp
+                                                relative
+                                                autoUpdate
+                                                date={Number(BigInt(transaction.time) / 1000000000n)}
+                                              />
+                                            </span>
+                                            <span className={classes.buyerMobile}>
+                                              TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                            </span>
+                                          </div>
+                                        </Grid>
+                                      </Grid>
+                                    </Grid>
+                                    <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>Sale</Grid>
+                                    <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
+                                      TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                    </Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                                  </Grid>
+                                </DropShadowCard>
+                              </Grid>
+                            ))}
+                          </Grid>
+                          <div className={classes.pagination}>
+                            <ToniqPagination
+                              currentPage={historyPage + 1}
+                              pageCount={transactions.length}
+                              pagesShown={6}
+                              onPageChange={(event) => {
+                                setHistoryPage(event.detail - 1);
+                                setHistory(false);
+                              }}
+                            />
+                          </div>
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>No Activity</span>
+                        </Grid>
+                      }
+                    </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                )}
+                
+              </Accordion>
+            </Box>
           </Container>
         </DropShadowCard>
       </Container>
@@ -891,6 +893,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#f1f1f1",
   },
   imageWrapperHistory: {
+    maxWidth: "96px",
     [theme.breakpoints.up("md")]: {
       display: "grid",
     },
@@ -899,8 +902,6 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
     },
     "& div, & iframe": {
-      maxWidth: "64px",
-      maxHeight: "64px",
       borderRadius: "8px",
       backgroundColor: "#f1f1f1",
     },
@@ -971,6 +972,7 @@ const useStyles = makeStyles((theme) => ({
     ...cssToReactStyleObject(toniqFontStyles.labelFont),
   },
   tableCard: {
+    maxHeight: "96px",
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
   },
   buyerMobile: {
