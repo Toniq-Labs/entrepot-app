@@ -167,7 +167,7 @@ export default function Navbar(props) {
           />
           <ToniqButton
             className={`toniq-button-outline ${classes.icpButton}`}
-            style={{width: '120px', marginLeft: '8px', alignSelf: 'center', ...cssToReactStyleObject(toniqFontStyles.boldMonospaceFont), fontSize: '19px'}}
+            style={{width: '120px', marginLeft: '8px', alignSelf: 'center', ...cssToReactStyleObject(toniqFontStyles.monospaceFont), fontSize: '19px'}}
             onClick={handleDrawerToggle}
             icon={balance === undefined ? props.account ? LoaderAnimated24Icon : Wallet24Icon : Icp24Icon}
             text={balance === undefined ? '' : icpToString(balance, true, true)}

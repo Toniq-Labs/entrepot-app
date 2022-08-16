@@ -248,7 +248,15 @@ export default function Marketplace(props) {
                               </Grid>
                               <Grid style={{borderRight:"1px dashed #ddd"}} item md={4}>
                                 <span style={{color:"#00d092",}}>Listings</span><br />
-                                <strong style={cssToReactStyleObject(toniqFontStyles.boldMonospaceFont)}>{stats.find(a => a.canister == collection.canister).stats.listings}</strong>
+                                <strong
+                                  style={
+                                    {
+                                      ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+                                      ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
+                                    }}
+                                >
+                                  {stats.find(a => a.canister == collection.canister).stats.listings}
+                                </strong>
                               </Grid>
                               <Grid item md={4}>
                                 <span style={{color:"#00d092"}}>Floor Price</span><br />
