@@ -230,26 +230,7 @@ const Detail = (props) => {
         break;
       
       // for interactive NFTs or videos
-      //case "xcep7-sqaaa-aaaah-qcukq-cai":
-      //case "rqiax-3iaaa-aaaah-qcyta-cai":
-      case "dv6u3-vqaaa-aaaah-qcdlq-cai":
-      case "eb7r3-myaaa-aaaah-qcdya-cai":
-      case "pk6rk-6aaaa-aaaae-qaazq-cai":
-      case "dhiaa-ryaaa-aaaae-qabva-cai":
-      case "mk3kn-pyaaa-aaaah-qcoda-cai":
-      case "jeghr-iaaaa-aaaah-qco7q-cai":
-      case "er7d4-6iaaa-aaaaj-qac2q-cai":
-      case "poyn6-dyaaa-aaaah-qcfzq-cai":
-      case "crt3j-mqaaa-aaaah-qcdnq-cai":
-      case "nges7-giaaa-aaaaj-qaiya-cai":
-      case "ag2h7-riaaa-aaaah-qce6q-cai":
-      case "ri5pt-5iaaa-aaaan-qactq-cai":
-      case "sbcwr-3qaaa-aaaam-qamoa-cai":
-      case "sbcwr-3qaaa-aaaam-qamoa-cai":
-      case "3db6u-aiaaa-aaaah-qbjbq-cai": // drip test
-      case "5stux-vyaaa-aaaam-qasoa-cai":
-      case "e4ca6-oiaaa-aaaai-acm2a-cai":
-      case "skjpp-haaaa-aaaae-qac7q-cai":
+      case "interactive_nfts_or_videos":
       case TREASURECANISTER:
         return (
           <div className={classes.nftIframeContainer}>
@@ -376,7 +357,7 @@ const Detail = (props) => {
   }, []);
   return (
     <>
-      <Container maxWidth="xl" className={classes.container}>
+      <Container className={classes.container}>
         <button
           variant="text"
           onClick={() => navigate(-1)}
@@ -392,7 +373,7 @@ const Detail = (props) => {
           </Grid>
         </button>
         <DropShadowCard className={classes.nftCard}>
-          <Container className={classes.nftDescWrapper} style={{maxWidth: 1312}}>
+          <Container className={classes.nftDescWrapper}>
             <Box className={classes.nftDescHeader}>
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={6}>
@@ -760,16 +741,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    padding: "20px 120px 120px",
-    [theme.breakpoints.down("md")]: {
-      padding: "110px 66px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "5px 5px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "5px 5px",
-    },
+    maxWidth: 1312,
   },
   nftImage: {
     width: "100%",
@@ -829,6 +801,7 @@ const useStyles = makeStyles((theme) => ({
     "-webkit-tap-highlight-color": "transparent",
   },
   nftDescWrapper: {
+    maxWidth: 1312,
     [theme.breakpoints.up("sm")]: {
       padding: "0px 16px",
     },
