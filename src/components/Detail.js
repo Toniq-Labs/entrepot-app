@@ -496,7 +496,7 @@ const Detail = (props) => {
                           <Grid container spacing={2} className={classes.ntfCardContainer}>
                             {offerListing.slice().map((offer, index) => (
                               <Grid item key={index} xs={12}>
-                                <DropShadowCard>
+                                <DropShadowCard enableHover>
                                   <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
                                     <Grid item xs={10} md={4}>
                                       <Grid container alignItems="center" spacing={4}>
@@ -586,7 +586,7 @@ const Detail = (props) => {
                               <Grid container className={classes.attributeWrapper} spacing={2}>
                                 {attribute.data.map((data) => (
                                   <Grid item key={data.value} xs={12} md={3}>
-                                    <DropShadowCard style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
+                                    <DropShadowCard enableHover style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
                                       <span className={classes.attributeHeader}>
                                         <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
                                       </span>
@@ -632,7 +632,7 @@ const Detail = (props) => {
                           <Grid container spacing={2} className={classes.ntfCardContainer}>
                             {history.slice().map((transaction, index) => (
                               <Grid item key={index} xs={12}>
-                                <DropShadowCard>
+                                <DropShadowCard enableHover>
                                   <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
                                     <Grid item xs={10} md={4}>
                                       <Grid container alignItems="center" spacing={4}>
