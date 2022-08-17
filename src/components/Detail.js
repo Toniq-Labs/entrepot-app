@@ -239,6 +239,7 @@ const Detail = (props) => {
         
         <iframe
         frameBorder="0"
+        scrolling="no"
         src={EntrepotNFTImage(canister, index, tokenid, true)}
         alt=""
         className={classes.nftImage}
@@ -249,9 +250,10 @@ const Detail = (props) => {
           cursor: "pointer",
           height: 720,
           width: 700,
-          marginLeft:"auto",
+          marginLeft:"-100px",
           marginRight:"auto",
           display: "block",
+          overflow: "hidden",
           
         }}
       />
