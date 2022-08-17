@@ -250,7 +250,7 @@ const Detail = (props) => {
           cursor: "pointer",
           height: 720,
           width: 700,
-          marginLeft:"auto",
+          marginLeft:"-90px",
           marginRight:"auto",
           display: "block",
           overflow: "hidden",
