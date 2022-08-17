@@ -232,7 +232,33 @@ const Detail = (props) => {
     }else{
         var detailPage = "Missing";
     };
-    
+
+    if (canister == "ugdkf-taaaa-aaaak-acoia-cai")
+    {
+       return (        
+        
+        <iframe
+        frameBorder="0"
+        src={EntrepotNFTImage(canister, index, tokenid, true)}
+        alt=""
+        className={classes.nftImage}
+        style={{
+          border:"none",
+          maxWidth:1500,
+          maxHeight:"max-content",
+          cursor: "pointer",
+          height: 720,
+          width: 700,
+          marginLeft:"auto",
+          marginRight:"auto",
+          display: "block",
+          
+        }}
+      />
+      )
+    }
+
+    // console.log(detailPage)
     switch(detailPage){
       
       // for generative collections where assets are all stored on the same canister
