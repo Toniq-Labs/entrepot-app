@@ -40,8 +40,13 @@ import { MissingPage404 } from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 const api = extjs.connect("https://boundary.ic0.app/");
+
 const txfee = 10000;
 const txmin = 100000;
+const singleSecond = 1000;
+const singleMinute = 60 * singleSecond;
+const PURCHASE_TIME_LIMIT = 2 * singleMinute;
+
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
@@ -290,6 +295,7 @@ export default function App() {
         "There was an error",
         "Your balance is insufficient to complete this transaction"
       );
+    const purchaseStartTime = Date.now();
     var tokenid = extjs.encodeTokenId(canisterId, index);
     try {
       var answer = await _buyForm(tokenid, listing.price);
@@ -309,6 +315,10 @@ export default function App() {
         );
       if (r.hasOwnProperty("err")) throw r.err;
       var paytoaddress = r.ok;
+      const lockTimeDuration = Date.now() - purchaseStartTime;
+      if (lockTimeDuration > PURCHASE_TIME_LIMIT) {
+        throw new Error(`Purchase timed out: took ${(lockTimeDuration / 1000).toFixed(1)} seconds`);
+      }
       loader(true, "Transferring ICP...");
       await _api
         .token()
