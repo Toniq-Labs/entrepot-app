@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
     [filterOnTopBreakPoint]: {
       flexDirection: 'column',
       alignItems: 'unset',
-    }
+    },
   },
   filtersTrigger: {
     display: 'flex',
@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
   filtersDotThing: {
     [filterOnTopBreakPoint]: {
       opacity: 0,
-    }
+    },
   },
   collectionsAndSort: {
     display: 'flex',
@@ -122,7 +122,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     [filterOnTopBreakPoint]: {
       marginLeft: '16px',
-    }
+    },
   },
   marketplaceControls: {
     marginBottom: '32px',
@@ -498,14 +498,10 @@ export default function Marketplace(props) {
     },
   };
 
-  const volumeRange = {
+  const volumeLimits = {
     min: getLowestStat(stats, 'total'),
     max: getHighestStat(stats, 'total'),
   };
-
-  console.log(priceRanges);
-
-  console.log({filteredAndSortedCollections, stats});
 
   return (
     <>
@@ -569,11 +565,12 @@ export default function Marketplace(props) {
                     }}
                   />
                   <ToniqSlider
+                    logScale={true}
                     min={priceRanges[currentFilters.price.type].min}
                     max={priceRanges[currentFilters.price.type].max}
                     suffix="ICP"
                     double={true}
-                    value={currentFilters.price.range || {}}
+                    value={currentFilters.price.range || priceRanges[currentFilters.price.type]}
                     onValueChange={event => {
                       const values = event.detail;
                       setCurrentFilters({
@@ -589,10 +586,11 @@ export default function Marketplace(props) {
                 <div>
                   <div className="title">Volume</div>
                   <ToniqSlider
-                    min={volumeRange.min}
-                    max={volumeRange.max}
+                    logScale={true}
+                    min={volumeLimits.min}
+                    max={volumeLimits.max}
                     double={true}
-                    value={currentFilters.volume.range || {}}
+                    value={currentFilters.volume.range || volumeLimits}
                     onValueChange={event => {
                       const values = event.detail;
                       setCurrentFilters({
