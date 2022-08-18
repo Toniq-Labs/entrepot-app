@@ -3,55 +3,29 @@ import React, { useState } from "react";
 import {
   makeStyles,
   Container,
+  Box,
   Grid,
-  Typography,
-  Button,
-  TableContainer,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TableHead,
-  IconButton,
 } from "@material-ui/core";
-import DashboardIcon from "@material-ui/icons//Dashboard";
-import PeopleIcon from "@material-ui/icons/People";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ShareIcon from "@material-ui/icons/Share";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import ShopIcon from "@material-ui/icons/Shop";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
-import ListIcon from '@material-ui/icons/List';
-import AcUnitIcon from "@material-ui/icons/AcUnit";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import DetailsIcon from "@material-ui/icons/Details";
-import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Timestamp from "react-timestamp";
-import Favourite from './Favourite';
-import PriceICP from './PriceICP';
+import PriceICP, { icpToString } from './PriceICP';
 import PriceUSD from './PriceUSD';
-import Alert from '@material-ui/lab/Alert';
 import OfferForm from './OfferForm';
 import { useNavigate } from "react-router-dom";
 import extjs from "../ic/extjs.js";
-import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD, EntrepotGetOffers, EntrepotCollectionStats } from '../utils';
+import { EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotGetICPUSD, EntrepotCollectionStats } from '../utils';
 import {
   useParams
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
+import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis, ToniqPagination } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, LoaderAnimated24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
+import {css} from 'element-vir';
+import {unsafeCSS} from 'lit';
+import { DropShadowCard } from "../shared/DropShadowCard";
+import { Accordion } from "./Accordion";
+import Timestamp from "react-timestamp";
+import chunk from "lodash.chunk";
+import Favourite from "./Favourite";
+
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -75,44 +49,47 @@ const api = extjs.connect("https://boundary.ic0.app/");
 
 const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const shorten = a => {
-  return a.substring(0, 12) + "...";
-};
-const emptyListing = {
-  pricing: "",
-  img: "",
+  return a.substring(0, 18) + "...";
 };
 
-const _getRandomBytes = () => {
-  var bs = [];
-  for (var i = 0; i < 32; i++) {
-    bs.push(Math.floor(Math.random() * 256));
-  }
-  return bs;
-};
 const Detail = (props) => {
   let { tokenid } = useParams();
   let { index, canister} = extjs.decodeTokenId(tokenid);
   const navigate = useNavigate();
-  const [floor, setFloor] = React.useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
-  const [listing, setListing] = React.useState(false);
-  const [detailsUrl, setDetailsUrl] = React.useState(false);
-  const [transactions, setTransactions] = React.useState(false);
-  const [owner, setOwner] = React.useState(false);
-  const [offers, setOffers] = React.useState(false);
-  const [openOfferForm, setOpenOfferForm] = React.useState(false);
+  const [floor, setFloor] = useState((EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : ""));
+  const [listing, setListing] = useState(false);
+  const [detailsUrl, setDetailsUrl] = useState(false);
+  const [transactions, setTransactions] = useState(false);
+  const [history, setHistory] = useState(false);
+  const [historyPage, setHistoryPage] = useState(0);
+  const [offerPage, setOfferPage] = useState(0);
+  const [owner, setOwner] = useState(false);
+  const [offers, setOffers] = useState(false);
+  const [offerListing, setOfferListing] = useState(false);
+  const [openOfferForm, setOpenOfferForm] = useState(false);
+  const [attributes, setAttributes] = useState(false);
   const collection = props.collections.find(e => e.canister === canister)
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
   const classes = useStyles();
+
   const reloadOffers = async () => {
     await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(tokenid).then(r => {
-      setOffers(r.map(a => {return {buyer : a[0], amount : a[1], time : a[2]}}).sort((a,b) => Number(b.amount)-Number(a.amount)));
+      const offerData = r.map(a => {return {buyer : a[0], amount : a[1], time : a[2]}}).sort((a,b) => Number(b.amount)-Number(a.amount));
+      if (offerData.length) {
+        setOffers(chunk(offerData, 9));
+        setOfferListing(offers[offerPage]);
+      } else {
+        setOfferListing([]);
+      }
     });
   }
+
   const cancelListing = () => {
     props.list(tokenid, 0, props.loader, _afterList);
   };
+
   const _refresh = async () => {
     reloadOffers();
     await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/token/"+tokenid).then(r => r.json()).then(r => {
@@ -120,35 +97,46 @@ const Detail = (props) => {
         price : BigInt(r.price),
         time : r.time,
       });
+
       setOwner(r.owner);
-      setTransactions(r.transactions);
+      if (r.transactions.length) {
+        setTransactions(chunk(r.transactions, 9));
+        setHistory(transactions[historyPage]);
+      } else {
+        setHistory([]);
+      }
     });
+    getAttributes();
   }
+
   const _afterList = async () => {
     await _refresh();
   };
+
   const _afterBuy = async () => {
     await reloadOffers();
     await _refresh();
   }
+
   const closeOfferForm = () => {
     reloadOffers();
     setOpenOfferForm(false);
   };
+
   const getFloorDelta = amount => {
-    if (!floor) return "-";
+    if (!floor) return reloadIcon();
     var fe = (floor*100000000);
     var ne = Number(amount);
     if (ne > fe){
       return (((ne-fe)/ne)*100).toFixed(2)+"% above";
     } else if (ne < fe) {      
       return ((1-(ne/fe))*100).toFixed(2)+"% below";
-    } else return "-"
+    } else return reloadIcon();
   };
+
   const makeOffer = async () => {
     setOpenOfferForm(true);
   };
-  
   
   useInterval(_refresh, 2  * 1000);
   useInterval(() => {
@@ -190,41 +178,37 @@ const Detail = (props) => {
     }
   }
 
+  const imageStyles = cssToReactStyleObject(css`
+    background-image: url('${unsafeCSS(detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true))}');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-top: 100%;
+    width: 100%;
+  `); 
+
   const extractEmbeddedImage = (svgUrl, classes) => {
     getImageDetailsUrl(svgUrl, /image href="([^"]+)"/);
 
     return (
-      <img
-        src={detailsUrl}
-        alt=""
-        className={classes.nftImage}
-        style={{
-          border:"none",
-          maxWidth:500,
-          maxHeight:"100%",
-          cursor: "pointer",
-          height: "100%",
-          width: "100%",
-          marginLeft:"auto",
-          marginRight:"auto",
-          display: "block",
-          objectFit: "contain",
-        }}
-      />
+      <div className={classes.nftImage}>
+        <div style={imageStyles} />
+      </div>
     );
   }
   
     const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/, 'URL=([^"]+)"');
+      getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/);
       if(detailsUrl){
         return (
-          <video width="100%" autoPlay loop>
+          <video width="100%" autoPlay muted loop>
             <source src={detailsUrl} type="video/mp4" />
           </video>
         );
       }
     }
   
+
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
     if(collection.hasOwnProperty("detailpage")){
@@ -239,50 +223,25 @@ const Detail = (props) => {
       // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
       case "generative_assets_on_nft_canister":
         return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
+          <div className={classes.nftImage}>
+            <div style={imageStyles} />
+          </div>
         );
         break;
       
       // for interactive NFTs or videos
-      //case "xcep7-sqaaa-aaaah-qcukq-cai":
-      //case "rqiax-3iaaa-aaaah-qcyta-cai":
-
       case "interactive_nfts_or_videos":
-      //case TREASURECANISTER:
+      case TREASURECANISTER:
         return (
-          <iframe
-            frameBorder="0"
-            src={EntrepotNFTImage(canister, index, tokenid, true)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-            }}
-          />
+          <div className={classes.nftIframeContainer}>
+            <iframe
+              frameBorder="0"
+              src={EntrepotNFTImage(canister, index, tokenid, true)}
+              alt=""
+              title={tokenid}
+              className={classes.nftIframe}
+            />
+          </div>
         );
         break;
       
@@ -297,29 +256,100 @@ const Detail = (props) => {
       // default case is to just use the thumbnail on the detail page
       default:
         return (
-          <img
-            src={EntrepotNFTImage(canister, index, tokenid, false)}
-            alt=""
-            className={classes.nftImage}
-            style={{
-              border:"none",
-              maxWidth:500,
-              maxHeight:"100%",
-              cursor: "pointer",
-              height: "100%",
-              width: "100%",
-              marginLeft:"auto",
-              marginRight:"auto",
-              display: "block",
-              objectFit: "contain",
-            }}
-          />
+          <div className={classes.nftImage}>
+            <div style={imageStyles} />
+          </div>
         );
         break;
     }
   };
-  
-  
+
+  const getAttributes = () => {
+    // Mock Attribute Data
+    setAttributes([
+      {
+        groupName: 'Group #1',
+        data: [
+          {
+            label: 'Background',
+            value: '#5452',
+            desc: '5% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#5462',
+            desc: '17% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#6312',
+            desc: '3% Have This'
+          },
+          {
+            label: 'Background',
+            value: '#1123',
+            desc: '76% Have This'
+          }
+        ]
+      },
+      {
+        groupName: 'Group #2',
+        data: [
+          {
+            label: 'Body Color',
+            value: '#5631',
+            desc: '4% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#2123',
+            desc: '98% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#6631',
+            desc: '7% Have This'
+          },
+          {
+            label: 'Body Color',
+            value: '#5643',
+            desc: '21% Have This'
+          }
+        ]
+      }
+    ])
+    setAttributes([]);
+  }
+
+  const getPriceData = () => {
+    if (listing.price > 0n) {
+      return listing.price;
+    } else if (offers && offers.length > 0) {
+      return offers[0].amount;
+    } else if (transactions && transactions.length > 0) {
+      return transactions[0].price;
+    } else {
+      return undefined;
+    }
+  }
+
+  const reloadIcon = () => {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", }}>
+        <ToniqIcon
+          style={{
+            color: String(
+              toniqColors.pagePrimary
+                .foregroundColor
+            ),
+            alignSelf: "center",
+          }}
+          icon={LoaderAnimated24Icon}
+        />
+      </div>
+    );
+  }
+
   React.useEffect(() => {
     props.loader(true);
     _refresh().then(() => props.loader(false));
@@ -327,390 +357,341 @@ const Detail = (props) => {
   }, []);
   return (
     <>
-      <Container maxWidth="xl" className={classes.container}>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={12} md={5}>
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-                marginBottom: "20px",
-                borderRadius: 4
-              }}
-            >
-              {displayImage(tokenid)}
-            </div>
-            
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <FormatAlignLeftIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Description</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div className={classes.div}>
-                  <p>{collection.description ? collection.description : collection.blurb}</p>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-            
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <ListIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Properties</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  <div style={{textAlign:"center"}}>
-                    <Typography
-                      paragraph
-                      style={{ paddingTop: 20, fontWeight: "bold" }}
-                      align="center"
-                    >
-                      Coming Soon!{/*Loading...*/}
-                    </Typography>
-                  </div>
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-            
-            
-          </Grid>
-          <Grid item xs={12} sm={12} md={7}>
-            <div className={classes.personal}>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={() => navigate(-1)}
-                style={{fontWeight:"bold", color:"black", borderColor:"black"}}
-              >
-                Back
-              </Button>
-              
-            </div>
-            <Typography variant="h4" className={classes.typo}>
-              <a onClick={() => navigate("/marketplace/"+collection.route)} style={{color:"#648DE2", textDecoration:"none", cursor:"pointer"}}>{collection.name}</a> #{EntrepotNFTMintNumber(collection.canister, index)}
-            </Typography>
-            <Grid container>
-              <Grid item style={{marginRight:20}}>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{fontWeight:"bold"}}
-                    component="a"
-                    target="_blank"
-                    href={EntrepotNFTLink(collection.canister, index, tokenid)}
-                  >
-                    View NFT onchain
-                  </Button>
-              </Grid>
-              <Grid item>
-                <div style={{marginTop:-5}} className={classes.icon}>
-                  <Favourite  identity={props.identity} loggedIn={props.loggedIn} showcount={true} size={"large"} tokenid={tokenid} />
-                </div>
-              </Grid>
+      <Container className={classes.container}>
+        <button
+          variant="text"
+          onClick={() => navigate(-1)}
+          className={classes.removeNativeButtonStyles}
+        >
+          <Grid container spacing={1}>
+            <Grid item>
+              <ToniqIcon icon={ArrowLeft24Icon}>Return to Collection</ToniqIcon>
             </Grid>
-
-            <div
-              style={{
-                border: "1px solid #E9ECEE",
-                padding: "20px 15px",
-                margin: "20px 0px",
-              }}
-            >
-              { listing === false ?
-              <div style={{textAlign:"center"}}>
-                <Typography
-                  paragraph
-                  style={{ paddingTop: 20, fontWeight: "bold" }}
-                  align="center"
-                >
-                  Loading...
-                </Typography>
-              </div> : 
-                <>{ listing.price > 0n ?
-                <>
-                  <Typography variant="h6"><strong>Price</strong></Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px 0px",
-                    }}
-                  >
-                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                      <PriceICP size={30} price={listing.price} />
-                    </Typography>
-                    <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                      (<PriceUSD price={EntrepotGetICPUSD(listing.price)} />)
-                    </Typography>
-                  </div>
-                </> : 
-                  <>{offers && offers.length > 0 ?
-                      <>
-                        <Typography variant="h6"><strong>Best Offer Price</strong></Typography>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            padding: "10px 0px",
-                          }}
-                        >
-                          <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                            <PriceICP size={30} price={offers[0].amount} />
-                          </Typography>
-                          <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                            (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
-                          </Typography>
-                        </div>
-                      </> : 
-                      <>{ transactions && transactions.length > 0 ?
-                        <>
-                          <Typography variant="h6"><strong>Last Price</strong></Typography>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px 0px",
-                            }}
-                          >
-                            <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                              <PriceICP size={30} price={transactions[0].price} />
-                            </Typography>
-                            <Typography variant="body2" style={{ marginLeft: "10px" }}>
-                              (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
-                            </Typography>
-                          </div>
-                        </> : 
-                        <>
-                          <Typography variant="h6"><strong>Unlisted</strong></Typography>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px 0px",
-                            }}
-                          >
-                          </div>
-                        </>
-                      }</>
-                    }</>
-                  }
-                </>
-              }
-              { owner && props.account && props.account.address == owner ?
-                <>
-                  <div className={classes.button}>
-                    {listing !== false && listing && listing.price > 0n?
-                    <>
-                      <Button
-                        onClick={ev => {
-                          props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
-                        }}
-                        variant="contained"
-                        color="primary"
-                        style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                      >Update Listing</Button> 
-                      <Button
-                        onClick={ev => {
-                          cancelListing();
-                        }}
-                        variant="outlined"
-                        color="primary"
-                        style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
-                      >Cancel Listing</Button>
-                    </>
-                    : 
-                    <Button
-                      onClick={ev => {
-                        props.listNft({id : tokenid, listing:listing}, props.loader, _afterList);
-                      }}
-                      variant="contained"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                    >List Item</Button> }
-                    
-                  </div>
-                </>:
-                <>
-                { listing !== false && props.loggedIn ?
-                  <div className={classes.button}>
-                    {listing && listing.price > 0n ?
-                    <Button
-                      onClick={ev => {
-                        props.buyNft(collection.canister, index, listing, _afterBuy);
-                      }}
-                      variant="contained"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", backgroundColor: "#003240", color: "white", marginBottom:10 }}
-                    >Buy Now</Button> : "" }
-                    
-                    <Button
-                      onClick={ev => {
-                        makeOffer();
-                      }}
-                      variant="outlined"
-                      color="primary"
-                      style={{ fontWeight: "bold", marginRight: "10px", marginBottom:10 }}
-                    >Submit Offer</Button>
-                  </div> : "" }
-                </>
-              }
-              {owner && props.account.address == owner?
-              <div style={{marginTop:20}}><strong>Owned by you</strong></div> : "" }
-              {owner && props.account.address != owner?
-              <div style={{marginTop:20}}><strong>Owner:</strong> <a href={"https://dashboard.internetcomputer.org/account/"+owner} target="_blank">{shorten(owner)}</a></div> : "" }
-            </div>
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <LocalOfferIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Offers</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  { offers === false ?
-                    <div style={{textAlign:"center"}}>
-                      <Typography
-                        paragraph
-                        style={{ paddingTop: 20, fontWeight: "bold" }}
-                        align="center"
-                      >
-                        Loading...
-                      </Typography>
-                    </div>
-                  :
-                    <>
-                      { offers.length === 0 ?
-                      <>
-                        <div style={{textAlign:"center"}}>
-                          <Typography
-                            paragraph
-                            style={{ paddingTop: 20, fontWeight: "bold" }}
-                            align="center"
-                          >
-                            There are currently no offers!
-                          </Typography>
-                        </div>
-                      </>:
-                      <>
-                        <Alert severity="info">Offers are non-binding and indicative only.</Alert>
-                        <Table sx={{ minWidth: 1500, fontWeight: "bold" }} aria-label="a dense table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="left"></TableCell>
-                              <TableCell align="right"><strong>Price</strong></TableCell>
-                              <TableCell align="center"><strong>Floor Delta</strong></TableCell>
-                              <TableCell align="center"><strong>Time</strong></TableCell>
-                              <TableCell align="center"><strong>Buyer</strong></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {offers
-                              .slice()
-                              .map((offer, i) => {
-                                return (
-                                  <TableRow key={i}>
-                                    <TableCell><LocalOfferIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Offer</strong></TableCell>
-                                    <TableCell align="right"><strong><PriceICP price={offer.amount} /></strong><br />
-                                    {EntrepotGetICPUSD(offer.amount) ? <small><PriceUSD price={EntrepotGetICPUSD(offer.amount)} /></small> : ""}</TableCell>
-                                    <TableCell align="center">{floor ? getFloorDelta(offer.amount) : "-"}</TableCell>
-                                    <TableCell align="center"><Timestamp
-                                      relative
-                                      autoUpdate
-                                      date={Number(offer.time / 1000000000n)}
-                                    /></TableCell>
-                                    <TableCell align="center">
-                                      {props.identity && props.identity.getPrincipal().toText() == offer.buyer.toText() ? <Button onClick={cancelOffer} size={"small"} style={{color:"white", backgroundColor:"#c32626"}} variant={"contained"}>Cancel</Button> : <a href={"https://icscan.io/account/"+offer.buyer.toText()} target="_blank">{shorten(offer.buyer.toText())}</a>}
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              })
-                            }
-                          </TableBody>
-                        </Table>
-                      </>}
-                    </>
-                  }
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion defaultExpanded>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{fontSize:35}} />}
-              >
-                <ShowChartIcon style={{marginTop:3}} />
-                <Typography className={classes.heading}>Activity</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer>
-                  { transactions === false ?
-                    <div style={{textAlign:"center"}}>
-                      <Typography
-                        paragraph
-                        style={{ paddingTop: 20, fontWeight: "bold" }}
-                        align="center"
-                      >
-                        Loading...
-                      </Typography>
-                    </div>
-                  :
-                    <>
-                    {transactions.length == 0 ?                    
-                      <div style={{textAlign:"center"}}>
-                        <Typography
-                          paragraph
-                          style={{ paddingTop: 20, fontWeight: "bold" }}
-                          align="center"
-                        >
-                          No activity
-                        </Typography>
-                      </div>
-                    :<>
-                    <Table sx={{ minWidth: 1500, fontWeight: "bold" }} aria-label="a dense table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="left"></TableCell>
-                          <TableCell align="right"><strong>Price</strong></TableCell>
-                          <TableCell align="center"><strong>From</strong></TableCell>
-                          <TableCell align="center"><strong>To</strong></TableCell>
-                          <TableCell align="center"><strong>Time</strong></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {transactions
-                          .slice()
-                          .map((transaction, i) => {
-                            return (
-                              <TableRow key={i}>
-                                <TableCell><ShoppingCartIcon style={{fontSize:18,verticalAlign:"middle"}} /> <strong>Sale</strong></TableCell>
-                                <TableCell align="right"><strong><PriceICP price={BigInt(transaction.price)} /></strong><br />
-                                {EntrepotGetICPUSD(BigInt(transaction.price)) ? <small><PriceUSD price={EntrepotGetICPUSD(BigInt(transaction.price))} /></small> : ""}</TableCell>
-                                <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.seller} target="_blank">{shorten(transaction.seller)}</a></TableCell>
-                                <TableCell align="center"><a href={"https://dashboard.internetcomputer.org/account/"+transaction.buyer} target="_blank">{shorten(transaction.buyer)}</a></TableCell>
-                                <TableCell align="center"><Timestamp
-                                  relative
-                                  autoUpdate
-                                  date={Number(BigInt(transaction.time) / 1000000000n)}
-                                /></TableCell>
-                              </TableRow>
-                            );
-                          })
-                        }
-                      </TableBody>
-                    </Table>
-                    </>}
-                    </>
-                  }
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
+            <Grid item>
+              <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>Return to Collection</span>
+            </Grid>
           </Grid>
-        </Grid>
+        </button>
+        <DropShadowCard className={classes.nftCard}>
+          <Container className={classes.nftDescWrapper}>
+            <Box className={classes.nftDescHeader}>
+              <Grid container spacing={4}>
+                <Grid item xs={12} sm={6}>
+                  <div style={{ position: "relative" }} className={classes.imageWrapper}>
+                    {displayImage(tokenid)}
+                    <div style={{ position: "absolute", top: "7px", left: "7px" }}>
+                      <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
+                    </div>
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={6} className={classes.nftDesc}>
+                  <div className={classes.nftDescContainer1}>
+                    <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), display: "block"}}>{collection.name} #{EntrepotNFTMintNumber(collection.canister, index)}</span>
+                    <Box style={{cursor: "pointer"}}>
+                      <ToniqChip text="View NFT OnChain" onClick={() => {
+                        window.open(EntrepotNFTLink(collection.canister, index, tokenid), '_blank')
+                      }}/>
+                    </Box>
+                    <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>COLLECTION</span>
+                  </div>
+                  <div className={classes.nftDescContainer2}>
+                    <div style={{ display: "flex", alignItems: "center"}}>
+                      <button
+                        className={classes.removeNativeButtonStyles}
+                        style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginRight: "11px"}}
+                        onClick={() => {
+                          navigate("/marketplace/"+collection.route)
+                        }}
+                      >
+                        <span className={classes.hoverText}>{collection.name}</span>
+                      </button>
+                      <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center"}}>
+                      <div className={classes.nftDescContainer3}>
+                        {getPriceData() ? 
+                          <>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                              <PriceICP large={true} volume={true} clean={false} size={20} price={getPriceData()} />
+                              <span style={{ ...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginLeft: "8px" }}>(<PriceUSD price={EntrepotGetICPUSD(getPriceData())} />)</span>
+                            </div>
+                          </> : 
+                          <>
+                            <span style={{
+                                ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                                ...cssToReactStyleObject(toniqFontStyles.h3Font)
+                              }}>
+                                Unlisted
+                            </span>
+                          </>
+                        }
+                        {owner && props.account && props.account.address === owner ? (
+                          <div style={{ display: "flex", gap: "16px" }}>
+                            {listing !== false && listing && listing.price > 0n ? (
+                              <>
+                                <ToniqButton text="Update Listing" onClick={() => {
+                                  props.listNft({ id: tokenid, listing: listing }, props.loader, _afterList);
+                                }}/>
+                                <ToniqButton text="Cancel Listing" className="toniq-button-secondary" onClick={() => {
+                                  cancelListing();
+                                }}/>
+                                {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                              </>
+                            ) : (
+                              <ToniqButton text="List Item" onClick={() => {
+                                props.listNft({ id: tokenid, listing: listing }, props.loader, _afterList);
+                              }}/>
+                            )}
+                          </div>
+                        ) : (
+                          <div style={{ display: "flex", gap: "16px" }}>
+                            <ToniqButton text="Buy Now" onClick={() => {
+                              props.buyNft(collection.canister, index, listing, _afterBuy);
+                            }}/>
+                            <ToniqButton text="Make Offer" className="toniq-button-secondary" onClick={() => {
+                              makeOffer();
+                            }}/>
+                            {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {owner ? 
+                      <>
+                        {props.account.address === owner ? (
+                          <span className={classes.ownerWrapper}>
+                            Owned by you
+                          </span>
+                        ) : (
+                          <span className={classes.ownerWrapper}>
+                            {/* {`Owned by `} */}
+                            {`Owner `}
+                            {/* <span className={classes.ownerName}>ChavezOG</span> */}
+                            : &nbsp;
+                            <span className={classes.ownerAddress} onClick={() => {
+                              window.open(`https://dashboard.internetcomputer.org/account/${owner}`, '_blank')
+                            }}>{shorten(owner)}</span>
+                          </span>
+                        )}
+                      </> : <></>
+                    }
+                  </div>
+                </Grid>
+              </Grid>
+            </Box>
+            <Box style={{ paddingTop: "16px" }}>
+              <Accordion title="Offers" open={true}>
+                {
+                  offerListing ? (
+                    <>
+                      {offerListing.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
+                          <Grid container className={classes.tableHeader}>
+                            <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
+                            <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Floor Delta</Grid>
+                            <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Buyer</Grid>
+                            <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Price</Grid>
+                          </Grid>
+                          <Grid container spacing={2} className={classes.ntfCardContainer}>
+                            {offerListing.slice().map((offer, index) => (
+                              <Grid item key={index} xs={12}>
+                                <DropShadowCard enableHover>
+                                  <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                    <Grid item xs={10} md={4}>
+                                      <Grid container alignItems="center" spacing={4}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                          {displayImage(tokenid)}
+                                        </Grid>
+                                        <Grid item xs={8} sm={10} md={8}>
+                                          <div>
+                                            <span>
+                                              <Timestamp
+                                                relative
+                                                autoUpdate
+                                                date={Number(offer.time / 1000000000n)}
+                                              />
+                                            </span>
+                                            <span className={classes.buyerMobile}>
+                                              {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
+                                                <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
+                                                <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                              }
+                                            </span>
+                                          </div>
+                                        </Grid>
+                                      </Grid>
+                                    </Grid>
+                                    <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>
+                                      {floor ? (
+                                        getFloorDelta(offer.amount)
+                                      ) : (
+                                        <ToniqIcon
+                                          style={{
+                                            color: String(
+                                              toniqColors.pagePrimary
+                                                .foregroundColor
+                                            ),
+                                            alignSelf: "center",
+                                          }}
+                                          icon={LoaderAnimated24Icon}
+                                        />
+                                      )}
+                                    </Grid>
+                                    <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
+                                      {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
+                                        <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
+                                        <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                      }
+                                    </Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(offer.amount, true, true)}</Grid>
+                                  </Grid>
+                                </DropShadowCard>
+                              </Grid>
+                            ))}
+                          </Grid>
+                          <div className={classes.pagination}>
+                            <ToniqPagination
+                              currentPage={offerPage + 1}
+                              pageCount={offers.length}
+                              pagesShown={6}
+                              onPageChange={(event) => {
+                                setOfferPage(event.detail - 1);
+                                setOfferListing(false);
+                              }}
+                            />
+                          </div>
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>There are currently no offers!</span>
+                        </Grid>
+                      }
+                  </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                )}
+                
+              </Accordion>
+              <Accordion title="Attributes" open={true}>
+                {
+                  attributes ? (
+                    <>
+                      { attributes.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          {attributes.map((attribute) => (
+                            <Grid item key={attribute.groupName} xs={12}>
+                              <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
+                              <Grid container className={classes.attributeWrapper} spacing={2}>
+                                {attribute.data.map((data) => (
+                                  <Grid item key={data.value} xs={12} md={3}>
+                                    <DropShadowCard enableHover style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
+                                      <span className={classes.attributeHeader}>
+                                        <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
+                                      </span>
+                                      <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
+                                        <Grid item>
+                                          <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
+                                        </Grid>
+                                        <Grid item>
+                                          <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
+                                        </Grid>
+                                      </Grid>
+                                    </DropShadowCard>
+                                  </Grid>
+                                ))}
+                              </Grid>
+                            </Grid>
+                          ))}
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>No Attributes</span>
+                        </Grid>
+                      }
+                    </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                  )}
+              </Accordion>
+              <Accordion title="History" open={true}>
+              {
+                  history ? (
+                    <>
+                      {history.length > 0 ? 
+                        <Grid container className={classes.accordionWrapper}>
+                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
+                          <Grid container className={classes.tableHeader}>
+                            <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
+                            <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
+                            <Grid item xs={1} sm={2} md={3} className={classes.tableHeaderName}>Details</Grid>
+                            <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
+                          </Grid>
+                          <Grid container spacing={2} className={classes.ntfCardContainer}>
+                            {history.slice().map((transaction, index) => (
+                              <Grid item key={index} xs={12}>
+                                <DropShadowCard enableHover>
+                                  <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
+                                    <Grid item xs={10} md={4}>
+                                      <Grid container alignItems="center" spacing={4}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                          {displayImage(tokenid)}
+                                        </Grid>
+                                        <Grid item xs={8} sm={10} md={8}>
+                                          <div>
+                                            <span>
+                                              <Timestamp
+                                                relative
+                                                autoUpdate
+                                                date={Number(BigInt(transaction.time) / 1000000000n)}
+                                              />
+                                            </span>
+                                            <span className={classes.buyerMobile}>
+                                              TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                            </span>
+                                          </div>
+                                        </Grid>
+                                      </Grid>
+                                    </Grid>
+                                    <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>Sale</Grid>
+                                    <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
+                                      TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                    </Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                                  </Grid>
+                                </DropShadowCard>
+                              </Grid>
+                            ))}
+                          </Grid>
+                          <div className={classes.pagination}>
+                            <ToniqPagination
+                              currentPage={historyPage + 1}
+                              pageCount={transactions.length}
+                              pagesShown={6}
+                              onPageChange={(event) => {
+                                setHistoryPage(event.detail - 1);
+                                setHistory(false);
+                              }}
+                            />
+                          </div>
+                        </Grid> : 
+                        <Grid className={classes.accordionWrapper}>
+                          <span className={classes.offerDesc}>No Activity</span>
+                        </Grid>
+                      }
+                    </>
+                  ) : (
+                    <Grid className={classes.accordionWrapper}>
+                      {reloadIcon()}
+                    </Grid>
+                )}
+                
+              </Accordion>
+            </Box>
+          </Container>
+        </DropShadowCard>
       </Container>
       <OfferForm floor={floor} address={props.account.address} balance={props.balance} complete={reloadOffers} identity={props.identity} alert={props.alert} open={openOfferForm} close={closeOfferForm} loader={props.loader} error={props.error} tokenid={tokenid} />
     </>
@@ -762,26 +743,36 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    padding: "20px 120px 120px",
-    [theme.breakpoints.down("md")]: {
-      padding: "110px 66px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "5px 5px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "5px 5px",
-    },
+    maxWidth: 1312,
   },
   nftImage: {
-    [theme.breakpoints.up("md")]: {
-      minHeight:600,
-    },
-    [theme.breakpoints.down("sm")]: {
-    },
-    [theme.breakpoints.down("xs")]: {
-    },
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    flexShrink: "0",
+    maxWidth: "100%",
+    marginTop: "auto",
+    marginBottom: "auto",
   },
+	nftVideo: {
+		borderRadius: "16px",
+	},
+  nftIframeContainer: {
+    overflow: "hidden",
+    position: "relative",
+    width: "100%",
+    paddingTop: "100%",
+		borderRadius: "16px",
+  },
+	nftIframe: {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    bottom: "0",
+    right: "0",
+    width: "100%",
+    height: "100%",
+	},
   iconsBorder: {
     border: "1px solid #E9ECEE",
     borderRadius: "5px",
@@ -799,5 +790,211 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     marginLeft : 20
   },
+  removeNativeButtonStyles: {
+    background: "none",
+    padding: 0,
+    margin: 0,
+    border: "none",
+    font: "inherit",
+    color: "inherit",
+    cursor: "pointer",
+    textTransform: "inherit",
+    textDecoration: "inherit",
+    "-webkit-tap-highlight-color": "transparent",
+  },
+  nftDescWrapper: {
+    maxWidth: 1312,
+    [theme.breakpoints.up("sm")]: {
+      padding: "0px 16px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "0",
+    },
+  },
+  nftDescHeader: {
+    [theme.breakpoints.up("md")]: {
+      margin: "16px 0"
+    },
+  },
+  nftDesc: {
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.up("lg")]: {
+      justifyContent: "center",
+    },
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "left",
+    },
+  },
+  nftDescContainer1: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "8px",
+    [theme.breakpoints.up("sm")]: {
+      gap: "32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      gap: "16px",
+    },
+  },
+  nftDescContainer2: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "8px",
+    [theme.breakpoints.up("sm")]: {
+      gap: "40px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      gap: "16px",
+    },
+  },
+  nftDescContainer3: {
+    gap: "16px",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+      alignItems: "center",
+    },
+    [theme.breakpoints.down("md")]: {
+      display: "grid",
+    },
+  },
+  ownerWrapper: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    wordBreak: "break-all",
+  },
+  ownerName: {
+    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    color: toniqColors.pageInteraction.foregroundColor,
+  },
+  ownerAddress: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    cursor: "pointer",
+    "&:hover": {
+      color: toniqColors.pageInteraction.foregroundColor,      
+    },
+  },
+  hoverText: {
+    "&:hover": {
+      color: toniqColors.pageInteraction.foregroundColor,      
+    },
+  },
+  imageWrapper: {
+    [theme.breakpoints.up("md")]: {
+      display: "grid",
+    },
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    "& div": {
+      borderRadius: "16px",
+    },
+    borderRadius: "16px",
+    backgroundColor: "#f1f1f1",
+  },
+  imageWrapperHistory: {
+    maxWidth: "96px",
+    [theme.breakpoints.up("md")]: {
+      display: "grid",
+    },
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    "& div, & iframe": {
+      borderRadius: "8px",
+      backgroundColor: "#f1f1f1",
+    },
+  },
+  offerDesc: {
+    display: "flex",
+    justifyContent: "center",
+		...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+  },
+  attributeWrapper: {
+    [theme.breakpoints.up("md")]: {
+      marginTop: "16px",
+      marginBottom: "16px"
+    },
+    [theme.breakpoints.down("md")]: {
+      marginTop: "8px",
+      marginBottom: "8px"
+    },
+  },
+  attributeHeader: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "#F1F3F6",
+    width: "100%",
+    padding: "4px 0",
+    borderTopLeftRadius: "16px",
+    borderTopRightRadius: "16px",
+  },
+	accordionWrapper: {
+		[theme.breakpoints.up("md")]: {
+			margin: "32px 0",
+		},
+		[theme.breakpoints.down("md")]: {
+			margin: "16px 0",
+		},
+	},
+	nftCard: {
+		[theme.breakpoints.up("md")]: {
+			marginTop: "32px",
+		},
+		[theme.breakpoints.down("md")]: {
+			marginTop: "16px",
+		},
+	},
+  ntfCardContainer: {
+    [theme.breakpoints.up("sm")]: {
+      margin: "32px 0px",
+		},
+		[theme.breakpoints.down("sm")]: {
+      margin: "16px 0px",
+		},
+  },
+  tableHeader: {
+    backgroundColor: "#F1F3F6",
+    [theme.breakpoints.up("sm")]: {
+			display: "flex",
+      marginTop: "32px",
+		},
+		[theme.breakpoints.down("sm")]: {
+			display: "none",
+      marginTop: "0px",
+		},
+    padding: "8px 16px",
+    borderRadius: "8px",
+  },
+  tableHeaderName: {
+    textTransform: "uppercase",
+    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+  },
+  tableCard: {
+    maxHeight: "96px",
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+  },
+  buyerMobile: {
+    [theme.breakpoints.up("sm")]: {
+			display: "none",
+		},
+		[theme.breakpoints.down("sm")]: {
+			display: "flex",
+		},
+  },
+  buyerDesktop: {
+    [theme.breakpoints.up("sm")]: {
+			display: "flex",
+		},
+		[theme.breakpoints.down("sm")]: {
+			display: "none",
+		},
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  }
 }));
 

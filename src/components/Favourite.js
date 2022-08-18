@@ -1,21 +1,19 @@
-import React, { useState } from "react";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import React, { useState, useEffect, useRef } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
-import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes, EntrepotUpdateLiked } from '../utils';
+import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes } from '../utils';
+import { HeartFill24Icon, HeartOutline24Icon } from "@toniq-labs/design-system";
+import { ToniqIcon } from "@toniq-labs/design-system/dist/esm/elements/react-components";
+
 function useInterval(callback, delay) {
-  const savedCallback = React.useRef();
+  const savedCallback = useRef();
 
   // Remember the latest callback.
-  React.useEffect(() => {
+  useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
   // Set up the interval.
-  React.useEffect(() => {
+  useEffect(() => {
     function tick() {
       savedCallback.current();
     }
@@ -25,18 +23,20 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+
 var skipRefresh = false;
 export default function Favourite(props) {
-  const [liked, setLiked] = React.useState(EntrepotIsLiked(props.tokenid));
-  const [count, setCount] = React.useState(false);
-  const fontSize = (props?.size == "large" ? 20 : 12);
-  const iconSize = (props?.size == "large" ? { width:24,height:24 } : { width:22,height:22});
+  const [liked, setLiked] = useState(EntrepotIsLiked(props.tokenid));
+  const [count, setCount] = useState(false);
+
   const _refresh = async () => {
     if (skipRefresh) return;
     if (props.showcount) EntrepotGetLikes(props.tokenid).then(r => setCount(r));
     setLiked(EntrepotIsLiked(props.tokenid));
   };
+
   useInterval(_refresh, 10 * 1000);
+
   const like = async () => {
     if (!props.loggedIn) return;
     skipRefresh = true;
@@ -54,24 +54,29 @@ export default function Favourite(props) {
     setCount(c);
     skipRefresh = false;
   };
-  React.useEffect(() => {
+
+  useEffect(() => {
     _refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return (<>
-    <FormControlLabel
-      labelPlacement={"start"}
-      onMouseDown={ev => {
-        ev.stopPropagation();
-      }}
-      onClick={ev => {
-        ev.stopPropagation();
-      }}
-      control={<Checkbox onChange={ev => {
-        ev.stopPropagation();
-        like();
-      }} checked={liked} icon={<FavoriteBorderIcon style={iconSize} />} checkedIcon={<FavoriteIcon style={iconSize}/>} />}
-      label={props.showcount ? (count ? <span style={{fontSize:fontSize, color:"#00d092 "}}>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span> : "") : ""}
-    />
-  </>);
+
+  return (
+    <Checkbox
+			onChange={(ev) => {
+				ev.stopPropagation();
+				like();
+			}}
+			checked={liked}
+			icon={
+				<ToniqIcon
+					icon={HeartOutline24Icon}
+					style={{ color: "#FFFFFF" }}
+				/>
+			}
+			checkedIcon={
+				<ToniqIcon icon={HeartFill24Icon} style={{ color: "#FFFFFF" }} />
+			}
+			style={{ margin: "0", filter: "drop-shadow(0px 0px 16px #000000)" }}
+		/>
+  );
 };

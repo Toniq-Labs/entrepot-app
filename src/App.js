@@ -52,13 +52,16 @@ const useStyles = makeStyles((theme) => ({
   },
   inner: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: "32px 64px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "16px 18px",
+    },
   },
   content: {
     flexGrow: 1,
     marginTop: 73,
     paddingBottom:50,
-
+    background: "#FFF"
   },
   footer: {
     textAlign: "center",
