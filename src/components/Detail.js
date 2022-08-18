@@ -246,7 +246,6 @@ const Detail = (props) => {
         style={{
           border:"none",
           maxWidth:1500,
-          maxHeight:"max-content",
           cursor: "pointer",
           height: 720,
           width: 700,
