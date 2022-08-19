@@ -859,7 +859,7 @@ export default function App() {
   return (
     <>
       {appLoaded ? <>
-        <Navbar view={rootPage} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
+        <Navbar view={rootPage} processPayments={processPayments} setBalance={setBalance} identity={identity}  account={accounts.length > 0 ? accounts[currentAccount] : false} alert={alert} loader={loader} logout={logout} login={login} collections={collections} collection={false} currentAccount={currentAccount} changeAccount={setCurrentAccount} accounts={accounts} />
         <main className={classes.content}>
           <div className={classes.inner}>
             <Routes>

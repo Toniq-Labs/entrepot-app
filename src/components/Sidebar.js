@@ -226,6 +226,9 @@ export default function Wallet(props) {
           </Menu>
         </ListItem> : "" }
         <ListItem>
+					<Button onClick={(e) => setAnchorElLogin(e.currentTarget)} fullWidth variant="outlined" color="primary" style={{fontWeight:"bold"}}>Change Accounts</Button>
+        </ListItem>
+        <ListItem>
           <Button onClick={props.logout} fullWidth variant="contained" color="secondary" style={{fontWeight:"bold",color:"white"}}>Logout</Button>
         </ListItem>
       </List> : ""}

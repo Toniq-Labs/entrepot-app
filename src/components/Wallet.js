@@ -39,6 +39,8 @@ import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import SearchIcon from '@material-ui/icons/Search';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import TopupForm from "./TopupForm";
 import extjs from '../ic/extjs.js';
 import { clipboardCopy } from '../utils';
 import { useNavigate } from "react-router";
@@ -88,6 +90,7 @@ export default function Wallet(props) {
   const classes = useStyles();
   const theme = useTheme();
   const container = window !== undefined ? () => window.document.body : undefined;
+  const [showTopupForm, setShowTopupForm] = React.useState(false);
   const [balance, setBalance] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -199,7 +202,29 @@ export default function Wallet(props) {
             </ListItemIcon>
             <ListItemText primary="Check Payments" />
           </MenuItem>
-          
+					{props.accounts.length > 1 ?
+						<>
+						<MenuItem onClick={(e) => {setAnchorElAccounts(e.currentTarget); handleClose();}}>
+							<ListItemIcon>
+								<SupervisorAccountIcon fontSize="small" />
+							</ListItemIcon>
+							<ListItemText primary="Change Accounts" />
+						</MenuItem>
+						<Menu
+							anchorEl={anchorElAccounts}
+							keepMounted
+							open={Boolean(anchorElAccounts)}
+							onClose={() => setAnchorElAccounts(null)}
+						>
+							{props.accounts.map((account, i) => {
+							if (account.address == props.account.address) return [];
+							return (<MenuItem key={i} onClick ={()=> selectAccount(i)}>
+							 <Avatar style={{width:20, height: 20, marginRight:5}}><Blockie address={account.address} /></Avatar> <ListItemText primary={account.name} />
+							</MenuItem>)
+							})}
+						</Menu>
+						</>
+           : "" }
           <Divider light />
           <MenuItem onClick={() => {props.logout(); handleClose();}}>
             <ListItemIcon>
@@ -213,23 +238,9 @@ export default function Wallet(props) {
           {(balance !== false ? <PriceICP size={24} price={balance} /> : "Loading...")}
           </Typography>
         </ListItem>
-        {props.accounts.length > 1 ?
         <ListItem>
-          <Button onClick={(e) => setAnchorElAccounts(e.currentTarget)} fullWidth variant="outlined" color="primary" style={{fontWeight:"bold"}}>Change Accounts</Button>
-          <Menu
-            anchorEl={anchorElAccounts}
-            keepMounted
-            open={Boolean(anchorElAccounts)}
-            onClose={() => setAnchorElAccounts(null)}
-          >
-            {props.accounts.map((account, i) => {
-            if (account.address == props.account.address) return [];
-            return (<MenuItem key={i} onClick ={()=> selectAccount(i)}>
-             <Avatar style={{width:20, height: 20, marginRight:5}}><Blockie address={account.address} /></Avatar> <ListItemText primary={account.name} />
-            </MenuItem>)
-            })}
-          </Menu>
-        </ListItem> : "" }
+					<Button onClick={() => setShowTopupForm(true)} fullWidth variant="contained" color="primary" style={{fontWeight:"bold"}}>Add ICP</Button>
+        </ListItem>
       </List> : ""}
       { props.account === false ? 
       <List>
@@ -345,7 +356,7 @@ export default function Wallet(props) {
         </ListItem>
       </List> 
     </>: ""}
-      
+		<TopupForm address={props.account.address} open={showTopupForm} close={() => setShowTopupForm(false)} loader={props.loader} alert={props.alert} />
     </div>
   );
   

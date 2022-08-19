@@ -189,6 +189,7 @@ export default function Navbar(props) {
       identity={props.identity}
       account={props.account}
       loader={props.loader}
+      alert={props.alert}
       logout={props.logout}
       login={props.login}
       collection={props.collection}
