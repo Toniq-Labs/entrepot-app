@@ -170,24 +170,24 @@ export default function CollectionDetails(props) {
         </Grid>
         <Grid container spacing={2} justifyContent="center">
           <Grid item>
-            <ToniqIcon icon={BrandInstagram32Icon} className={classes.link} onClick={() => {
-              if (collection.instagram) window.open(`${collection.instagram}`, '_blank');
-            }} />
+            <a href={collection.instagram} target="_blank" rel="noreferrer">
+              <ToniqIcon icon={BrandInstagram32Icon} />
+            </a>
           </Grid>
           <Grid item>
-            <ToniqIcon icon={BrandTwitch32Icon} className={classes.link} onClick={() => {
-              if (collection.twitch)  window.open(`${collection.twitch}`, '_blank')
-            }} />
+            <a href={collection.twitch} target="_blank" rel="noreferrer">
+              <ToniqIcon icon={BrandTwitch32Icon} />
+            </a>
           </Grid>
           <Grid item>
-            <ToniqIcon icon={BrandTiktok32Icon} className={classes.link} onClick={() => {
-              if (collection.tiktok)  window.open(`${collection.tiktok}`, '_blank')
-            }} />
+            <a href={collection.tiktok} target="_blank" rel="noreferrer">
+              <ToniqIcon icon={BrandTiktok32Icon} />
+            </a>
           </Grid>
           <Grid item>
-            <ToniqIcon icon={BrandTwitter32Icon} className={classes.link} onClick={() => {
-              if (collection.twitter)  window.open(`${collection.twitter}`, '_blank')
-            }} />
+            <a href={collection.twitter} target="_blank" rel="noreferrer">
+              <ToniqIcon icon={BrandTwitter32Icon} />
+            </a>
           </Grid>
         </Grid>
         {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
