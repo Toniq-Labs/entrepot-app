@@ -162,9 +162,7 @@ export default function CollectionDetails(props) {
             <div style={{ display: "flex", justifyContent: "center", gap: "16px"}}>
               <Avatar variant="square" style={{ height: "24px", width: "24px", borderRadius: "8px", justifyContent: "center" }} src={(typeof collection.avatar != 'undefined' && collection.avatar ? collection.avatar : "/collections/" + collection.canister + ".jpg")} />
               <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>Worldwide-webb</span>
-              {['kyc'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
-                return (<ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />);
-              })}
+              { collection.kyc ? <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} /> : "" }
             </div>
           </Grid>
         </Grid>
