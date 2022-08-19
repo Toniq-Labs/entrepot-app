@@ -405,7 +405,7 @@ const Detail = (props) => {
                       >
                         <span className={classes.hoverText}>{collection.name}</span>
                       </button>
-                      <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />
+                      { collection.kyc ? <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} /> : "" }
                     </div>
                     <div style={{ display: "flex", alignItems: "center"}}>
                       <div className={classes.nftDescContainer3}>
