@@ -236,8 +236,20 @@ const Detail = (props) => {
     if (canister == "ugdkf-taaaa-aaaak-acoia-cai")
     {
        return (        
-        
+        <>
+          <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              @media (max-width: 1600px) {
+                [name='specially-sized-iframe'] {
+                  transform: scale(0.55);
+                }
+              }
+            `,
+          }}
+        ></style>
         <iframe
+        name="specially-sized-iframe"
         frameBorder="0"
         scrolling="no"
         src={EntrepotNFTImage(canister, index, tokenid, true)}
@@ -245,17 +257,15 @@ const Detail = (props) => {
         className={classes.nftImage}
         style={{
           border:"none",
-          maxWidth:1500,
           cursor: "pointer",
           height: 720,
-          width: 700,
-          marginLeft:"-100px",
-          marginRight:"auto",
+          minWidth: 700,
           display: "block",
           overflow: "hidden",
           
         }}
       />
+      </>
       )
     }
 
@@ -361,7 +371,10 @@ const Detail = (props) => {
               style={{
                 border: "1px solid #E9ECEE",
                 marginBottom: "20px",
-                borderRadius: 4
+                borderRadius: 4,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               {displayImage(tokenid)}
