@@ -216,6 +216,8 @@ EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
     height: "70%",
     margin: "0 auto", 
   }
+
+  if (collection == "ugdkf-taaaa-aaaak-acoia-cai") avatarImgStyle.objectFit = "contain";
   if (collection == "zhibq-piaaa-aaaah-qcvka-cai") avatarImgStyle.objectFit = "fill";
   if (collection == "jeghr-iaaaa-aaaah-qco7q-cai") return (<embed alt={tokenid} style={{ ...avatarImgStyle, display: "block"}} src={image}/>);
   if (collection === TREASURECANISTER) {
