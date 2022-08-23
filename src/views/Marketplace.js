@@ -517,6 +517,9 @@ export default function Marketplace(props) {
             style={{
               '--toniq-accent-tertiary-background-color': 'transparent',
               marginBottom: '16px',
+              width: '500px',
+              maxWidth: '100%',
+              boxSizing: 'border-box',
             }}
             placeholder="Search for collections..."
             icon={Search24Icon}
