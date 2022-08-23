@@ -8,7 +8,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Tooltip from '@material-ui/core/Tooltip';
 import extjs from "../ic/extjs.js";
 import { makeStyles } from "@material-ui/core";
-import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon } from "@toniq-labs/design-system";
+import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Kyc32Icon } from "@toniq-labs/design-system";
 import { ToniqChip, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 const api = extjs.connect("https://boundary.ic0.app/");
 const numberWithCommas = (x) => {
