@@ -45,7 +45,7 @@ const txfee = 10000;
 const txmin = 100000;
 const singleSecond = 1000;
 const singleMinute = 60 * singleSecond;
-const PURCHASE_TIME_LIMIT = 2 * singleMinute;
+const PURCHASE_TIME_LIMIT = 1.85 * singleMinute;
 
 const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
