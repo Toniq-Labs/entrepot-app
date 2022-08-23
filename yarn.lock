@@ -2026,10 +2026,10 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@toniq-labs/design-system@0.0.24":
-  "integrity" "sha512-/RefFhqJ0Lj19v5ZBSX8bDFu468URQ56j69qlIQ8UUsz92nzJ6LYESH67ZKmr7U8m7zXu5DdMKKwadGknJOzpw=="
-  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.24.tgz"
-  "version" "0.0.24"
+"@toniq-labs/design-system@0.0.25":
+  "integrity" "sha512-0zR5q+1wwlwIs1HhkMeuYJyXACPOn1+5UfthVGtql1QDIRUQntewhCtcvvqdwVXKEdH6Wy2Tt8yuzelJ5+g+4Q=="
+  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.25.tgz"
+  "version" "0.0.25"
   dependencies:
     "augment-vir" "2.4.0"
     "element-vir" "5.5.1"
