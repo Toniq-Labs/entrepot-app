@@ -514,6 +514,7 @@ export default function Marketplace(props) {
         >
           <h1 className={classes.heading}>All Collections</h1>
           <ToniqInput
+            value={query}
             style={{
               '--toniq-accent-tertiary-background-color': 'transparent',
               marginBottom: '16px',
