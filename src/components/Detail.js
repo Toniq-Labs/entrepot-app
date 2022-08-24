@@ -69,6 +69,7 @@ const Detail = (props) => {
   const [openOfferForm, setOpenOfferForm] = useState(false);
   const [attributes, setAttributes] = useState(false);
   const collection = props.collections.find(e => e.canister === canister)
+  const [motokoContent, setMotokoContent] = useState('');
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
@@ -106,6 +107,22 @@ const Detail = (props) => {
         setHistory([]);
       }
     });
+
+    let { index, canister } = extjs.decodeTokenId(tokenid);
+    if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
+      await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(EntrepotNFTImage(canister, index, tokenid, true))}`)
+      .then(response => {
+        if (response.ok) return response.json()
+        throw new Error('Network response was not ok.')
+      })
+      .then(data => {
+        // Overriding Motoko styling
+        const content = data.contents.replace(/(<style\b[^>]*>)[^<>]*(<\/style>)/g,
+        "<style>.container { height: 100%; aspect-ratio: 0.7; margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-direction: column;}.box { width: 100%; height: 100%; position: relative; transform: rotate3d(0, -1, 0, 0); transition: all 500ms ease; transform-style: preserve-3d; }.box.flipped { transform: rotate3d(0, -1, 0, 180deg);}.box img { border-radius: 15px;}.box .front { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backface-visibility: hidden; z-index: 2;}.box .back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg);}</style>"
+        ).replace(/style="width:500px;height:700px;"/g, 'style="width:100%;height:100%;"')
+        setMotokoContent(content)
+      });
+    }
     getAttributes();
   }
 
@@ -197,53 +214,36 @@ const Detail = (props) => {
     );
   }
   
-    const extractEmbeddedVideo = (iframeUrl, classes) => {
-      getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-      if(detailsUrl){
-        return (
-          <video width="100%" autoPlay muted loop>
-            <source src={detailsUrl} type="video/mp4" />
-          </video>
-        );
-      }
+  const extractEmbeddedVideo = (iframeUrl, classes) => {
+    getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/);
+    if(detailsUrl){
+      return (
+        <video width="100%" autoPlay muted loop>
+          <source src={detailsUrl} type="video/mp4" />
+        </video>
+      );
     }
-  
+  }
 
   const displayImage = tokenid => {
     let { index, canister} = extjs.decodeTokenId(tokenid);
+    let detailPage;
+
     if(collection.hasOwnProperty("detailpage")){
-        var detailPage = collection["detailpage"];
-    }else{
-        var detailPage = "Missing";
+      detailPage = collection["detailpage"];
+    } else{
+      detailPage = "Missing";
     };
 
-    if (canister == "ugdkf-taaaa-aaaak-acoia-cai")
-    {
-       return (        
-        
-        <iframe
-        frameBorder="0"
-        scrolling="no"
-        src={EntrepotNFTImage(canister, index, tokenid, true)}
-        alt=""
-        className={classes.nftImage}
-        style={{
-          border:"none",
-          maxWidth:1500,
-          cursor: "pointer",
-          height: 720,
-          width: 700,
-          marginLeft:"-100px",
-          marginRight:"auto",
-          display: "block",
-          overflow: "hidden",
-          
-        }}
-      />
+    // Motoko Mechs specific
+    if (canister === "ugdkf-taaaa-aaaak-acoia-cai") {       
+      return (
+        <div className={classes.nftIframeContainer}>
+          { <div style={{position: "absolute", top: "0", left: "0", bottom: "0", right: "0", width: "100%", height: "100%" }} dangerouslySetInnerHTML={{ __html: motokoContent }} /> }
+        </div>
       )
     }
 
-    // console.log(detailPage)
     switch(detailPage){
       
       // for generative collections where assets are all stored on the same canister
@@ -432,7 +432,7 @@ const Detail = (props) => {
                       >
                         <span className={classes.hoverText}>{collection.name}</span>
                       </button>
-                      <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} />
+                      { collection.kyc ? <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} /> : "" }
                     </div>
                     <div style={{ display: "flex", alignItems: "center"}}>
                       <div className={classes.nftDescContainer3}>
@@ -1024,4 +1024,3 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   }
 }));
-
