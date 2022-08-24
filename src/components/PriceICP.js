@@ -37,10 +37,8 @@ export default function PriceICP(props) {
           ...cssToReactStyleObject(
             props.large
               ? toniqFontStyles.h3Font
-              : {
-                  ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-                  ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
-                },
+              : toniqFontStyles.boldParagraphFont,
+                toniqFontStyles.monospaceFont,
           ),
         }}
       >
