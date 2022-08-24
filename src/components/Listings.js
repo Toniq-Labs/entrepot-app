@@ -483,7 +483,7 @@ export default function Listings(props) {
       {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
       </Drawer>*/}
       <div style={{}}>
-        <div style={{maxWidth:1200, margin:"0 auto 0",}}>
+        <div style={{maxWidth:1320, margin:"0 auto 0",}}>
           <div style={{textAlign:"center"}}>
             <CollectionDetails classes={classes} stats={stats} collection={collection} />
             <Tabs
