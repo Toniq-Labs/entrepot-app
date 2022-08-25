@@ -6,7 +6,9 @@ import { makeStyles } from "@material-ui/core";
 import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon } from "@toniq-labs/design-system";
 import { ToniqChip, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { icpToString } from "./PriceICP.js";
+
 const api = extjs.connect("https://boundary.ic0.app/");
+
 const numberWithCommas = (x) => {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -79,7 +81,13 @@ const useStyles = makeStyles((theme) => ({
   link: {
     cursor: "pointer",
   },
+  blurbWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
   blurb: {
+    textAlign: "center",
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     display: "-webkit-box",
     "-webkit-box-orient": "vertical",
@@ -210,7 +218,7 @@ export default function CollectionDetails(props) {
         {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
         {
           collection.blurb ?
-          <div>
+          <div className={classes.blurbWrapper}>
             <div className={`${classes.blurb} ${!isBlurbOpen ? classes.blurbCollapsed : ''}`} dangerouslySetInnerHTML={{ __html: collection.blurb }} />
             <button
               style={{...cssToReactStyleObject(toniqFontStyles.boldParagraphFont), border: "none", background: "none", cursor: "pointer"}}

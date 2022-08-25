@@ -56,6 +56,7 @@ import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
+import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 const drawerWidth = 0;//300;
@@ -476,346 +477,338 @@ export default function Listings(props) {
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterData]);
-  
 
-  return (//maxWidth:1200, margin:"0 auto",
-    <div style={{ minHeight:"calc(100vh - 221px)", marginBottom:-75}}>
-      {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
-      </Drawer>*/}
-      <div style={{}}>
-        <div style={{maxWidth:1320, margin:"0 auto 0",}}>
-          <div style={{textAlign:"center"}}>
-            <CollectionDetails classes={classes} stats={stats} collection={collection} />
-            <Tabs
-              value={"all"}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-              onChange={(e, nv) => {
-                if (nv === "sold") navigate(`/marketplace/${collection?.route}/activity`)
-              }}
-            >
-              <Tab style={{fontWeight:"bold"}} value="all" label={(<span style={{padding:"0 50px"}}><ArtTrackIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Items</span></span>)} />
-              <Tab style={{fontWeight:"bold"}} value="sold" label={(<span style={{padding:"0 50px"}}><ShowChartIcon style={{position:"absolute",marginLeft:"-30px"}} /><span style={{}}>Activity</span></span>)} />
-            </Tabs>
-          </div>
-        </div>
-        {_isCanister(collection.canister) && collection.market ?
-        <div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
-          <div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
-            <List>
-              <ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
-                <ListItemIcon style={{minWidth:40}}>
-                  <FilterListIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{noWrap:true}} 
-                  secondaryTypographyProps={{noWrap:true}} 
-                  primary={(<strong>Filter</strong>)}
-                />
-                  <ListItemIcon>
-                  {toggleFilter ? <CloseIcon fontSize={"large"} /> : "" }
-                  </ListItemIcon>
-              </ListItem>
-              {toggleFilter ? <>
-                <ListItem style={{paddingRight:0}}>
-                  <ListItemIcon style={{minWidth:40}}>
-                    <AllInclusiveIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{noWrap:true}} 
-                    secondaryTypographyProps={{noWrap:true}} 
-                    primary={(<strong>Price</strong>)}
-                  />
-                </ListItem>
-                <ListItem>
-                  <div style={{width:"100%"}}>
-                    <TextField value={minPrice} onChange={minPriceChange} style={{width:"100%", marginBottom:20}} label="Min. Price" />
-                    <TextField value={maxPrice} onChange={maxPriceChange} style={{width:"100%", marginBottom:20}} label="Max. Price" />
-                  </div>
-                </ListItem>
-              {filterData && filterData[0].map(a => {
-                return (<div key={a[0]}>
-                  <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter(a[0])}>
-                    <ListItemIcon style={{minWidth:40}}>
-                      <ListIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primaryTypographyProps={{noWrap:true}} 
-                      secondaryTypographyProps={{noWrap:true}} 
-                      primary={(<strong>{a[1]}</strong>)}
-                    />
-                      <ListItemIcon>
-                        {isOpenFilter(a[0]) ?  <ExpandLessIcon fontSize={"large"} /> : <ExpandMoreIcon fontSize={"large"} /> }
-                      </ListItemIcon>
-                  </ListItem>
-                  {isOpenFilter(a[0]) ? 
-                  <ListItem>
-                    <div style={{width:"100%"}}>
-                      {a[2].filter(b => filterGetCount(a[0], b[0]) > 0).map(b => {
-                        return (
-                          <div key={a[0]+"_"+b[0]} style={{width:"100%"}}>
-                            <FormControlLabel style={{maxWidth:"80%"}}
-                              control={<Checkbox checked={(selectedFilters.find(c => c[0] == a[0] && c[1] == b[0]) ? true : false)} onChange={() => {handleToggleFilterTrait(a[0], b[0])}}  />}
-                              label={b[1]}
-                            />
-                            <Chip style={{float:"right"}} label={filterGetCount(a[0], b[0])} variant="outlined" />
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ListItem> : "" }
-                </div>)
-              })}</> : ""}
-            
-              {toggleFilter ?
-              <>
-                {collection?.route == "cronics" ? (
-                  <>
-                  {cronicFilterTraits.map(filterName => {
-                    return (
-                      <div key={"cronicFilterTraits"+filterName}>
-                        <ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter("_cronicFilter"+filterName)}>
-                        <ListItemIcon style={{minWidth:40}}>
-                          <ListIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                          primaryTypographyProps={{noWrap:true}} 
-                          secondaryTypographyProps={{noWrap:true}} 
-                          primary={(<strong>{capitalize(filterName)}</strong>)}
-                        />
-                          <ListItemIcon>
-                            {isOpenFilter("_cronicFilter"+filterName) ?  <ExpandLessIcon fontSize={"large"} /> : <ExpandMoreIcon fontSize={"large"} /> }
-                          </ListItemIcon>
-                        </ListItem>
-                        {isOpenFilter("_cronicFilter"+filterName) ? 
-                        <ListItem>
-                          <div style={{width:"100%", padding:"0 20px",}}>
-                            <InputLabel>Dominant:</InputLabel>
-                            <Box sx={{ width: 150 }}>
-                              <Slider
-                                value={legacyFilterState[filterName+"Dom"]}
-                                onChange={(ev, nv) => cronicSetFilterTrait(filterName+"Dom", nv)}
-                                min={0}
-                                step={1}
-                                max={63}
-                                valueLabelDisplay="auto"
-                              />
-                            </Box>
-                            <InputLabel>Recessive:</InputLabel>
-                            <Box sx={{ width: "100%" }}>
-                              <Slider
-                                value={legacyFilterState[filterName+"Rec"]}
-                                onChange={(ev, nv) => cronicSetFilterTrait(filterName+"Rec", nv)}
-                                min={0}
-                                step={1}
-                                max={63}
-                                valueLabelDisplay="auto"
-                              />
-                            </Box>
-                          </div>
-                        </ListItem> : "" }
-                      </div>
-                    );
-                  })}
-                  </>
-                ) : ""}
-                
-                {/*["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
-                  <FormControl style={{ marginRight : 20, minWidth: 120 }}>
-                    <InputLabel>Wearable Type</InputLabel>
-                    <Select value={wearableFilter} onChange={changeWearableFilter}>
-                      <MenuItem value={"all"}>All Wearables</MenuItem>
-                      <MenuItem value={"pets"}>Pets</MenuItem>
-                      <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
-                      <MenuItem value={"hats"}>Hats/Hair</MenuItem>
-                      <MenuItem value={"eyewear"}>Eyewear</MenuItem>
-                    </Select>
-                  </FormControl>
-                ) : (
-                  ""
-                )*/}
-              </>
-               : "" }
-            </List>
-          </div>
-          <div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
-            <div style={{}}>
-              <div className={classes.filters} style={{}}>
-                <Grid container style={{minHeight:66}}>
-                  <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
-                    <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
-                      <ToggleButton value={""} onClick={changeToggleFilter}>
-                        <FilterListIcon />
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                    <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
-                    <ToggleButton value={""} onClick={async () => {
-                      setDisplayListings(false);
-                      await _updates();
-                      setTimeout(updateListings, 300);
-                    }}>
-                      <CachedIcon />
-                    </ToggleButton>
-                    </ToggleButtonGroup>
-                    <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small" value={gridSize} exclusive onChange={changeGrid}>
-                      <ToggleButton value={"small"}>
-                        <ViewModuleIcon />
-                      </ToggleButton>
-                      <ToggleButton value={"large"}>
-                        <ViewComfyIcon />
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </Grid>
-                  <Grid item xs={12} sm={"auto"} >
-                    <FormControl style={{ marginRight: 20 }}>
-                      <InputLabel>Showing</InputLabel>
-                      <Select value={showing} onChange={changeShowing}>
-                        <MenuItem value={"all"}>Entire Collection</MenuItem>
-                        <MenuItem value={"listed"}>Listed Only</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={"auto"} >
-                    <FormControl style={{ marginRight: 20 }}>
-                      <InputLabel>Sort by</InputLabel>
-                      <Select value={sort} onChange={changeSort}>
-                        <MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
-                        <MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
-                        <MenuItem value={"mint_number"}>Minting #</MenuItem>
-                        {collection?.nftv ? (
-                          <MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
-                        ) : (
-                          ""
-                        )}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  {displayListings && displayListings.length > perPage ? (
-                    <Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
-                      <Pagination
-                        className={classes.pagi}
-                        size="small"
-                        count={Math.ceil(displayListings.length / perPage)}
-                        page={page}
-                        onChange={(e, v) => setPage(v)}
-                      />
-                    </Grid>
-                  ) : ""}
-                </Grid>
-              </div>
-              <div style={{minHeight:500}}>
-                <div style={{}}>
-                {displayListings === false ? 
-                  <>
-                    <Typography
-                      paragraph
-                      style={{ fontWeight: "bold" }}
-                      align="left"
-                    >
-                      Loading...
-                    </Typography>
-                  </>
-                :
-                  <>
-                    {displayListings.length === 0 ? (
-                      <Typography
-                        paragraph
-                        style={{ fontWeight: "bold" }}
-                        align="left"
-                      >
-                        We found no results
-                      </Typography>
-                    ) : (
-                      <Typography
-                        paragraph
-                        style={{fontWeight: "bold" }}
-                        align="left"
-                      >
-                      {displayListings.length} items
-                      </Typography>
-                    )}
-                  </>
-                }
-                </div>
-                {selectedFilters.length > 0 || minPrice || maxPrice ?
-                <div>
-                  <Typography
-                    paragraph
-                    style={{  fontWeight: "bold" }}
-                    align="left"
-                  >
-                    {minPrice ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. Price:"+minPrice} onDelete={() => setMinPrice("")} color="primary" /> :""}
-                    {maxPrice ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. Price:"+maxPrice} onDelete={() => setMaxPrice("")} color="primary" /> :""}
-                    {selectedFilters.length > 0 ?
-                      <>
-                        {showSelectedFilters().map((a, i) => {
-                          return (
-                            <Chip key={a[1][0]+"_"+a[1][1]} style={{marginRight:10,marginBottom:10}} label={a[0]} onDelete={() => handleToggleFilterTrait(a[1][0],a[1][1])} color="primary" />
-                          );
-                        })}
-                      </> : ""
-                    }
-                    <Chip style={{marginRight:10,marginBottom:10}} label={"Reset"} onClick={() => {
-                      setSelectedFilters([]);
-                      setMinPrice("");
-                      setMaxPrice("");
-                    }} color="default" />
-                  </Typography>
-                </div> : "" }
-                {displayListings ?
-                <div>
-                  <Grid
-                    container
-                    spacing={2}
-                    direction="row"
-                    alignItems="stretch"
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: (gridSize === "small" ? "repeat(auto-fill, 300px)" : "repeat(auto-fill, 200px)"),
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {displayListings
-                    .filter(
-                      (token, i) =>
-                        i >= (page - 1) * perPage && i < page * perPage
-                    )
-                    .map((listing, i) => {
-                      return (
-                        <NFT
-                          collections={props.collections} 
-                          gridSize={gridSize}
-                          loggedIn={props.loggedIn}
-                          identity={props.identity}
-                          tokenid={extjs.encodeTokenId(collection?.canister, listing[0])}
-                          key={extjs.encodeTokenId(collection?.canister, listing[0])}
-                          floor={stats.floor}
-                          buy={props.buyNft}
-                          afterBuy={_updates}
-                          view="marketplace"
-                          listing={listing[1]}
-                          metadata={listing[2]}
-                        />
-                      );
-                    })}
-                  </Grid>
-                </div> : "" }
-                
-                {displayListings && displayListings.length > perPage ? (
-                  <Pagination
-                    className={classes.pagi}
-                    size="small"
-                    count={Math.ceil(displayListings.length / perPage)}
-                    page={page}
-                    onChange={(e, v) => setPage(v)}
-                  />
-                ) : ""}
-              </div>
-            </div>
-          </div>
-        </div> : ""}
+  return (
+    <div style={{ minHeight:"calc(100vh - 221px)"}}>
+      <div style={{maxWidth:1320, margin:"0 auto 0"}}>
+        <CollectionDetails classes={classes} stats={stats} collection={collection} />
+        <StyledTabs
+          value={"nfts"}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={(e, tab) => {
+            if (tab === "activity") navigate(`/marketplace/${collection?.route}/activity`)
+          }}
+        >
+          <StyledTab value="nfts" label="NFTs" />
+          <StyledTab value="activity" label="Activity" />
+        </StyledTabs>
       </div>
+      {_isCanister(collection.canister) && collection.market ?
+			<div id="mainListings" style={{position:"relative",marginLeft:-24, marginRight:-24, marginBottom:-24,borderTop:"1px solid #aaa",borderBottom:"1px solid #aaa",display:"flex"}}>
+				<div className={(toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed)}>
+					<List>
+						<ListItem style={{paddingRight:0}} button onClick={changeToggleFilter}>
+							<ListItemIcon style={{minWidth:40}}>
+								<FilterListIcon />
+							</ListItemIcon>
+							<ListItemText
+								primaryTypographyProps={{noWrap:true}} 
+								secondaryTypographyProps={{noWrap:true}} 
+								primary={(<strong>Filter</strong>)}
+							/>
+								<ListItemIcon>
+								{toggleFilter ? <CloseIcon fontSize={"large"} /> : "" }
+								</ListItemIcon>
+						</ListItem>
+						{toggleFilter ? <>
+							<ListItem style={{paddingRight:0}}>
+								<ListItemIcon style={{minWidth:40}}>
+									<AllInclusiveIcon />
+								</ListItemIcon>
+								<ListItemText
+									primaryTypographyProps={{noWrap:true}} 
+									secondaryTypographyProps={{noWrap:true}} 
+									primary={(<strong>Price</strong>)}
+								/>
+							</ListItem>
+							<ListItem>
+								<div style={{width:"100%"}}>
+									<TextField value={minPrice} onChange={minPriceChange} style={{width:"100%", marginBottom:20}} label="Min. Price" />
+									<TextField value={maxPrice} onChange={maxPriceChange} style={{width:"100%", marginBottom:20}} label="Max. Price" />
+								</div>
+							</ListItem>
+						{filterData && filterData[0].map(a => {
+							return (<div key={a[0]}>
+								<ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter(a[0])}>
+									<ListItemIcon style={{minWidth:40}}>
+										<ListIcon />
+									</ListItemIcon>
+									<ListItemText
+										primaryTypographyProps={{noWrap:true}} 
+										secondaryTypographyProps={{noWrap:true}} 
+										primary={(<strong>{a[1]}</strong>)}
+									/>
+										<ListItemIcon>
+											{isOpenFilter(a[0]) ?  <ExpandLessIcon fontSize={"large"} /> : <ExpandMoreIcon fontSize={"large"} /> }
+										</ListItemIcon>
+								</ListItem>
+								{isOpenFilter(a[0]) ? 
+								<ListItem>
+									<div style={{width:"100%"}}>
+										{a[2].filter(b => filterGetCount(a[0], b[0]) > 0).map(b => {
+											return (
+												<div key={a[0]+"_"+b[0]} style={{width:"100%"}}>
+													<FormControlLabel style={{maxWidth:"80%"}}
+														control={<Checkbox checked={(selectedFilters.find(c => c[0] == a[0] && c[1] == b[0]) ? true : false)} onChange={() => {handleToggleFilterTrait(a[0], b[0])}}  />}
+														label={b[1]}
+													/>
+													<Chip style={{float:"right"}} label={filterGetCount(a[0], b[0])} variant="outlined" />
+												</div>
+											)
+										})}
+									</div>
+								</ListItem> : "" }
+							</div>)
+						})}</> : ""}
+					
+						{toggleFilter ?
+						<>
+							{collection?.route == "cronics" ? (
+								<>
+								{cronicFilterTraits.map(filterName => {
+									return (
+										<div key={"cronicFilterTraits"+filterName}>
+											<ListItem style={{paddingRight:0}} button onClick={() => handleToggleFilter("_cronicFilter"+filterName)}>
+											<ListItemIcon style={{minWidth:40}}>
+												<ListIcon />
+											</ListItemIcon>
+											<ListItemText
+												primaryTypographyProps={{noWrap:true}} 
+												secondaryTypographyProps={{noWrap:true}} 
+												primary={(<strong>{capitalize(filterName)}</strong>)}
+											/>
+												<ListItemIcon>
+													{isOpenFilter("_cronicFilter"+filterName) ?  <ExpandLessIcon fontSize={"large"} /> : <ExpandMoreIcon fontSize={"large"} /> }
+												</ListItemIcon>
+											</ListItem>
+											{isOpenFilter("_cronicFilter"+filterName) ? 
+											<ListItem>
+												<div style={{width:"100%", padding:"0 20px",}}>
+													<InputLabel>Dominant:</InputLabel>
+													<Box sx={{ width: 150 }}>
+														<Slider
+															value={legacyFilterState[filterName+"Dom"]}
+															onChange={(ev, nv) => cronicSetFilterTrait(filterName+"Dom", nv)}
+															min={0}
+															step={1}
+															max={63}
+															valueLabelDisplay="auto"
+														/>
+													</Box>
+													<InputLabel>Recessive:</InputLabel>
+													<Box sx={{ width: "100%" }}>
+														<Slider
+															value={legacyFilterState[filterName+"Rec"]}
+															onChange={(ev, nv) => cronicSetFilterTrait(filterName+"Rec", nv)}
+															min={0}
+															step={1}
+															max={63}
+															valueLabelDisplay="auto"
+														/>
+													</Box>
+												</div>
+											</ListItem> : "" }
+										</div>
+									);
+								})}
+								</>
+							) : ""}
+							
+							{/*["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
+								<FormControl style={{ marginRight : 20, minWidth: 120 }}>
+									<InputLabel>Wearable Type</InputLabel>
+									<Select value={wearableFilter} onChange={changeWearableFilter}>
+										<MenuItem value={"all"}>All Wearables</MenuItem>
+										<MenuItem value={"pets"}>Pets</MenuItem>
+										<MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
+										<MenuItem value={"hats"}>Hats/Hair</MenuItem>
+										<MenuItem value={"eyewear"}>Eyewear</MenuItem>
+									</Select>
+								</FormControl>
+							) : (
+								""
+							)*/}
+						</>
+						 : "" }
+					</List>
+				</div>
+				<div className={classes.listingsView} style={{flexGrow:1, padding:"10px 16px 50px 16px"}}>
+					<div style={{}}>
+						<div className={classes.filters} style={{}}>
+							<Grid container style={{minHeight:66}}>
+								<Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
+									<ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
+										<ToggleButton value={""} onClick={changeToggleFilter}>
+											<FilterListIcon />
+										</ToggleButton>
+									</ToggleButtonGroup>
+									<ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
+									<ToggleButton value={""} onClick={async () => {
+										setDisplayListings(false);
+										await _updates();
+										setTimeout(updateListings, 300);
+									}}>
+										<CachedIcon />
+									</ToggleButton>
+									</ToggleButtonGroup>
+									<ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small" value={gridSize} exclusive onChange={changeGrid}>
+										<ToggleButton value={"small"}>
+											<ViewModuleIcon />
+										</ToggleButton>
+										<ToggleButton value={"large"}>
+											<ViewComfyIcon />
+										</ToggleButton>
+									</ToggleButtonGroup>
+								</Grid>
+								<Grid item xs={12} sm={"auto"} >
+									<FormControl style={{ marginRight: 20 }}>
+										<InputLabel>Showing</InputLabel>
+										<Select value={showing} onChange={changeShowing}>
+											<MenuItem value={"all"}>Entire Collection</MenuItem>
+											<MenuItem value={"listed"}>Listed Only</MenuItem>
+										</Select>
+									</FormControl>
+								</Grid>
+								<Grid item xs={12} sm={"auto"} >
+									<FormControl style={{ marginRight: 20 }}>
+										<InputLabel>Sort by</InputLabel>
+										<Select value={sort} onChange={changeSort}>
+											<MenuItem value={"price_asc"}>Price: Low to High</MenuItem>
+											<MenuItem value={"price_desc"}>Price: High to Low</MenuItem>
+											<MenuItem value={"mint_number"}>Minting #</MenuItem>
+											{collection?.nftv ? (
+												<MenuItem value={"gri"}>NFT Rarity Index</MenuItem>
+											) : (
+												""
+											)}
+										</Select>
+									</FormControl>
+								</Grid>
+								{displayListings && displayListings.length > perPage ? (
+									<Grid xs={12} md={"auto"}  item style={{marginLeft:"auto"}}>
+										<Pagination
+											className={classes.pagi}
+											size="small"
+											count={Math.ceil(displayListings.length / perPage)}
+											page={page}
+											onChange={(e, v) => setPage(v)}
+										/>
+									</Grid>
+								) : ""}
+							</Grid>
+						</div>
+						<div style={{minHeight:500}}>
+							<div style={{}}>
+							{displayListings === false ? 
+								<>
+									<Typography
+										paragraph
+										style={{ fontWeight: "bold" }}
+										align="left"
+									>
+										Loading...
+									</Typography>
+								</>
+							:
+								<>
+									{displayListings.length === 0 ? (
+										<Typography
+											paragraph
+											style={{ fontWeight: "bold" }}
+											align="left"
+										>
+											We found no results
+										</Typography>
+									) : (
+										<Typography
+											paragraph
+											style={{fontWeight: "bold" }}
+											align="left"
+										>
+										{displayListings.length} items
+										</Typography>
+									)}
+								</>
+							}
+							</div>
+							{selectedFilters.length > 0 || minPrice || maxPrice ?
+							<div>
+								<Typography
+									paragraph
+									style={{  fontWeight: "bold" }}
+									align="left"
+								>
+									{minPrice ? <Chip style={{marginRight:10,marginBottom:10}} label={"Min. Price:"+minPrice} onDelete={() => setMinPrice("")} color="primary" /> :""}
+									{maxPrice ? <Chip style={{marginRight:10,marginBottom:10}} label={"Max. Price:"+maxPrice} onDelete={() => setMaxPrice("")} color="primary" /> :""}
+									{selectedFilters.length > 0 ?
+										<>
+											{showSelectedFilters().map((a, i) => {
+												return (
+													<Chip key={a[1][0]+"_"+a[1][1]} style={{marginRight:10,marginBottom:10}} label={a[0]} onDelete={() => handleToggleFilterTrait(a[1][0],a[1][1])} color="primary" />
+												);
+											})}
+										</> : ""
+									}
+									<Chip style={{marginRight:10,marginBottom:10}} label={"Reset"} onClick={() => {
+										setSelectedFilters([]);
+										setMinPrice("");
+										setMaxPrice("");
+									}} color="default" />
+								</Typography>
+							</div> : "" }
+							{displayListings ?
+							<div>
+								<Grid
+									container
+									spacing={2}
+									direction="row"
+									alignItems="stretch"
+									style={{
+										display: "grid",
+										gridTemplateColumns: (gridSize === "small" ? "repeat(auto-fill, 300px)" : "repeat(auto-fill, 200px)"),
+										justifyContent: "space-between",
+									}}
+								>
+									{displayListings
+									.filter(
+										(token, i) =>
+											i >= (page - 1) * perPage && i < page * perPage
+									)
+									.map((listing, i) => {
+										return (
+											<NFT
+												collections={props.collections} 
+												gridSize={gridSize}
+												loggedIn={props.loggedIn}
+												identity={props.identity}
+												tokenid={extjs.encodeTokenId(collection?.canister, listing[0])}
+												key={extjs.encodeTokenId(collection?.canister, listing[0])}
+												floor={stats.floor}
+												buy={props.buyNft}
+												afterBuy={_updates}
+												view="marketplace"
+												listing={listing[1]}
+												metadata={listing[2]}
+											/>
+										);
+									})}
+								</Grid>
+							</div> : "" }
+							
+							{displayListings && displayListings.length > perPage ? (
+								<Pagination
+									className={classes.pagi}
+									size="small"
+									count={Math.ceil(displayListings.length / perPage)}
+									page={page}
+									onChange={(e, v) => setPage(v)}
+								/>
+							) : ""}
+						</div>
+					</div>
+				</div>
+			</div> : ""}
     </div>
   );
 }
