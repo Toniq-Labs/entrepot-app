@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     display: "flex",
     flexDirection: "column",
+    textAlign: "center",
     gap: "32px",
     marginBottom: "32px",
     [theme.breakpoints.down("sm")]: {
