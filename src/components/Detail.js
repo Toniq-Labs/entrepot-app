@@ -251,7 +251,7 @@ const Detail = (props) => {
     if (canister === "ugdkf-taaaa-aaaak-acoia-cai") {       
       return (
         <div className={classes.nftIframeContainer}>
-          { <div dangerouslySetInnerHTML={{ __html: detailsUrl }} /> }
+          { <div dangerouslySetInnerHTML={{ __html: motokoContent }} /> }
         </div>
       )
     }
