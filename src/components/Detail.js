@@ -101,6 +101,7 @@ const Detail = (props) => {
   const [offers, setOffers] = React.useState(false);
   const [openOfferForm, setOpenOfferForm] = React.useState(false);
   const collection = props.collections.find(e => e.canister === canister)
+  const [motokoContent, setMotokoContent] = useState('');
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
@@ -123,6 +124,19 @@ const Detail = (props) => {
       setOwner(r.owner);
       setTransactions(r.transactions);
     });
+    let { index, canister } = extjs.decodeTokenId(tokenid);
+    if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
+      await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(EntrepotNFTImage(canister, index, tokenid, true))}`)
+      .then(response => {
+        if (response.ok) return response.json()
+        throw new Error('Network response was not ok.')
+      })
+      .then(data => {
+        // Overriding Motoko styling
+        const content = data.contents
+        setMotokoContent(content)
+      });
+    }
   }
   const _afterList = async () => {
     await _refresh();
@@ -233,6 +247,17 @@ const Detail = (props) => {
         var detailPage = "Missing";
     };
 
+    // Motoko Mechs specific
+    if (canister === "ugdkf-taaaa-aaaak-acoia-cai") {       
+      return (
+        <div className={classes.nftIframeContainer}>
+          { <div dangerouslySetInnerHTML={{ __html: motokoContent }} /> }
+        </div>
+      )
+    }
+
+    // console.log(detailPage)
+    
     if (index == 99 && canister == "kss7i-hqaaa-aaaah-qbvmq-cai") detailPage = "interactive_nfts_or_videos"
     
     switch(detailPage){
