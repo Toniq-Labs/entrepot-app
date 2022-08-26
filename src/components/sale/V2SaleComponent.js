@@ -44,6 +44,13 @@ const _showListingPrice = (n) => {
   return n.toFixed(8).replace(/0{1,6}$/, "");
 };
 export default function V2SaleComponent(props) {
+  React.useEffect(() => {
+    if (blurbElement.clientHeight > 110) {
+      setCollapseBlurb(true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blurbElement]);
+  
   const getCollectionFromRoute = r => {
     return props.collections.find(e => e.route === r)
   };
