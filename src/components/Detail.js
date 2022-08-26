@@ -233,9 +233,11 @@ const Detail = (props) => {
         var detailPage = "Missing";
     };
 
- 
+    if (index == 99 && canister == "kss7i-hqaaa-aaaah-qbvmq-cai") detailPage = "interactive_nfts_or_videos"
+    
     switch(detailPage){
       
+     
       // for generative collections where assets are all stored on the same canister
       // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
       case "generative_assets_on_nft_canister":
