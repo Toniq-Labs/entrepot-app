@@ -72,7 +72,6 @@ export default function V2SaleComponent(props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blurbElement]);
-  }
   
   const _updates = async () => {
     var resp = await api.canister(collection.canister, "ext2").ext_saleSettings((props.account ? props.account.address : ""));
@@ -224,8 +223,7 @@ export default function V2SaleComponent(props) {
       {collapseBlurb ? (
       <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
       ) : ""}
-      <br>
-      <br>
+      <br /><br />
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
 					{startTime >= Date.now() ?
 						<Grid className={classes.stat} item md={3} xs={6}>
