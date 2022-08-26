@@ -298,7 +298,7 @@ export default function Marketplace(props) {
   const [currentFilters, setCurrentFilters] = React.useState({
     price: {
       range: undefined,
-      type: 'floor',
+      type: 'floor', 
     },
     volume: {
       range: undefined,
@@ -517,7 +517,6 @@ export default function Marketplace(props) {
             value={query}
             style={{
               '--toniq-accent-tertiary-background-color': 'transparent',
-              marginBottom: '16px',
               width: '500px',
               maxWidth: '100%',
               boxSizing: 'border-box',

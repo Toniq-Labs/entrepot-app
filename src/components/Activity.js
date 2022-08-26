@@ -177,17 +177,19 @@ export default function Activity(props) {
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
       <div style={{maxWidth:1320, margin:"0 auto 0"}}>
         <CollectionDetails classes={classes} stats={stats} collection={collection} />
-        <StyledTabs
-          value={"activity"}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={(e, tab) => {
-            if (tab === "nfts") navigate(`/marketplace/${collection?.route}`)
-          }}
-        >
-          <StyledTab value="nfts" label="NFTs"/>
-          <StyledTab value="activity" label="Activity" />
-        </StyledTabs>
+        <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
+          <StyledTabs
+            value={"activity"}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={(e, tab) => {
+              if (tab === "nfts") navigate(`/marketplace/${collection?.route}`)
+            }}
+          >
+            <StyledTab value="nfts" label="NFTs"/>
+            <StyledTab value="activity" label="Activity" />
+          </StyledTabs>
+        </div>
       </div>
       
       {_isCanister(collection.canister) && collection.market ?

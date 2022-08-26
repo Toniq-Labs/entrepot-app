@@ -40,6 +40,7 @@ export function WithFilterPanel(props) {
 
               flex-basis: 0;
               padding: 0;
+              margin-top: 16px;
             }
 
             .with-filter-panel .left-filter-panel.show-left-panel {
