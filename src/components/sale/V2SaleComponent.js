@@ -16,6 +16,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -59,6 +62,10 @@ export default function V2SaleComponent(props) {
   const [startTime, setStartTime] = React.useState(false);
   const [endTime, setEndTime] = React.useState(false);
   const [totalToSell, setTotalToSell] = React.useState(false);
+  const [blurbElement, setBlurbElement] = useState(false);
+  const [collapseBlurb, setCollapseBlurb] = useState(false);
+  const [isBlurbOpen, setIsBlurbOpen] = useState(false);
+
     
   const _updates = async () => {
     var resp = await api.canister(collection.canister, "ext2").ext_saleSettings((props.account ? props.account.address : ""));
@@ -206,6 +213,10 @@ export default function V2SaleComponent(props) {
         <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('"+collection.banner+"')"}}></div>
         <h1>Welcome to the official {collection.name} sale</h1>
         </div>
+        <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden",fontSize: "1.2em" }} dangerouslySetInnerHTML={{ __html : collection?.blurb }}></div>
+      {collapseBlurb ? (
+      <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
+      ) : ""}
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
 					{startTime >= Date.now() ?
 						<Grid className={classes.stat} item md={3} xs={6}>
