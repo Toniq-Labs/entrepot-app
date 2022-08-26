@@ -185,6 +185,7 @@ EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     //end of section
 
     if (collection === "6wih6-siaaa-aaaah-qczva-cai") return "https://"+collection+".raw.ic0.app/?cc"+Date.now()+"&type=thumbnail&tokenid=" + id + ref;
+    if (collection === "kss7i-hqaaa-aaaah-qbvmq-cai") return "https://"+collection+".raw.ic0.app/?type=thumbnail&tokenid="+id;
     return "https://images.entrepot.app/t/"+collection+"/" + id;
     //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
   }
