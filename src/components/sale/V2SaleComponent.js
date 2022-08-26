@@ -224,6 +224,8 @@ export default function V2SaleComponent(props) {
       {collapseBlurb ? (
       <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
       ) : ""}
+      <br>
+      <br>
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
 					{startTime >= Date.now() ?
 						<Grid className={classes.stat} item md={3} xs={6}>
