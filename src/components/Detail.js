@@ -124,22 +124,6 @@ const Detail = (props) => {
       setOwner(r.owner);
       setTransactions(r.transactions);
     });
-
-    let { index, canister } = extjs.decodeTokenId(tokenid);
-    if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
-      await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(EntrepotNFTImage(canister, index, tokenid, true))}`)
-      .then(response => {
-        if (response.ok) return response.json()
-        throw new Error('Network response was not ok.')
-      })
-      .then(data => {
-        // Overriding Motoko styling
-        const content = data.contents.replace(/(<style\b[^>]*>)[^<>]*(<\/style>)/g,
-        "<style>.container { height: 100%; aspect-ratio: 0.7; margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-direction: column;}.box { width: 100%; height: 100%; position: relative; transform: rotate3d(0, -1, 0, 0); transition: all 500ms ease; transform-style: preserve-3d; }.box.flipped { transform: rotate3d(0, -1, 0, 180deg);}.box img { border-radius: 15px;}.box .front { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backface-visibility: hidden; z-index: 2;}.box .back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg);}</style>"
-        ).replace(/style="width:500px;height:700px;"/g, 'style="width:100%;height:100%;"')
-        setMotokoContent(content)
-      });
-    }
   }
   const _afterList = async () => {
     await _refresh();
@@ -254,7 +238,7 @@ const Detail = (props) => {
     if (canister === "ugdkf-taaaa-aaaak-acoia-cai") {       
       return (
         <div className={classes.nftIframeContainer}>
-          { <div dangerouslySetInnerHTML={{ __html: motokoContent }} /> }
+          { <div dangerouslySetInnerHTML={{ __html: detailsUrl }} /> }
         </div>
       )
     }
