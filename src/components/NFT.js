@@ -44,6 +44,7 @@ import PriceICP from './PriceICP';
 import getNri from "../ic/nftv.js";
 import { makeStyles } from "@material-ui/core";
 import { EntrepotEarnDetails, EntrepotNFTImage, EntrepotNFTLink, EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetICPUSD } from '../utils';
+import {getEXTCanister} from '../utilities/load-tokens';
 const api = extjs.connect("https://boundary.ic0.app/");
 const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
 const _showListingPrice = (n) => {
@@ -100,10 +101,6 @@ var toWrappedMap = {
   "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
   "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
   "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai"
-};
-const getEXTCanister = c => {
-  if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
-  else return c;
 };
 const getEXTID = tokenid => {
   const { index, canister} = extjs.decodeTokenId(tokenid);

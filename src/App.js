@@ -44,6 +44,7 @@ import {
 import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
+import {Profile} from './views/Profile/Profile';
 const api = extjs.connect('https://boundary.ic0.app/');
 
 const txfee = 10000;
@@ -975,6 +976,32 @@ export default function App() {
           <main className={classes.content}>
             <div className={classes.inner}>
               <Routes>
+                <Route path="/profile">
+                  <Route
+                    path=":statusFilter"
+                    exact
+                    element={
+                      <Profile
+                        loader={loader}
+                        identity={identity}
+                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        collections={collections}
+                      />
+                    }
+                  />
+                  <Route
+                    path=""
+                    exact
+                    element={
+                      <Profile
+                        loader={loader}
+                        identity={identity}
+                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        collections={collections}
+                      />
+                    }
+                  />
+                </Route>
                 <Route
                   path="/marketplace/asset/:tokenid"
                   exact

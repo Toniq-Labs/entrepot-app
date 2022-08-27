@@ -27,6 +27,7 @@ import {
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
 import {WithFilterPanel} from '../components/shared/WithFilterPanel';
+import {ChipWithLabel} from '../shared/ChipWithLabel';
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -153,21 +154,6 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 1,
     justifyContent: 'center',
     gap: '16px',
-  },
-  collectionDetailsCell: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    alignItems: 'stretch',
-    textAlign: 'center',
-    flexBasis: '0',
-    minWidth: '80px',
-    flexGrow: 1,
-  },
-  collectionDetailsChip: {
-    ...cssToReactStyleObject(toniqFontStyles.boldFont),
-    ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
-    fontSize: '15px',
   },
 }));
 
@@ -669,27 +655,14 @@ export default function Marketplace(props) {
                                 return (
                                   <div className={classes.collectionDetailsWrapper}>
                                     {collectionStatDetails.map((cellDetails, _index, fullArray) => (
-                                      <div
-                                        key={cellDetails.label}
+                                      <ChipWithLabel
                                         style={{
                                           maxWidth: `${100 / fullArray.length}%`,
                                         }}
-                                        className={classes.collectionDetailsCell}
-                                      >
-                                        <span
-                                          style={{
-                                            textTransform: 'uppercase',
-                                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                          }}
-                                        >
-                                          {cellDetails.label}
-                                        </span>
-                                        <ToniqChip
-                                          className={`toniq-chip-secondary ${classes.collectionDetailsChip}`}
-                                          icon={cellDetails.icon}
-                                          text={cellDetails.value}
-                                        ></ToniqChip>
-                                      </div>
+                                        label={cellDetails.label}
+                                        icon={cellDetails.icon}
+                                        text={cellDetails.value}
+                                      />
                                     ))}
                                   </div>
                                 );
