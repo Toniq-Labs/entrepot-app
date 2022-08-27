@@ -245,19 +245,10 @@ export default function UserCollection(props) {
     var rf = r;
     return rf;
   };
-  
-  function filterOutDevCollections(canisters) {
-    return canisters.filter(canister => {
-      const collection = getCollection(canister);
-      return !collection.dev
-    })
-  }
   const filterAfter = r => {
     var rf = r;
     if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
-    return rf.filter(nft => {
-      return !getCollection(nft.canister)?.dev;
-    });
+    return rf;
   };
   const tabLink = p => {
     return (myPage ? p : "/"+address+p);
@@ -328,7 +319,7 @@ export default function UserCollection(props) {
     console.log("mapped");
     data = filterBefore(data);
     console.log("filtered");
-    setTokenCanisters(filterOutDevCollections(data.map(d => d.canister)));
+    setTokenCanisters(data.map(d => d.canister));
     setResults(data);
     console.log("set");
   }
@@ -392,7 +383,7 @@ export default function UserCollection(props) {
       })
       setDisplayNfts(_displayNfts);
       setHideCollectionFilter(false);
-      setTokenCanisters(filterOutDevCollections(_nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister))));
+      setTokenCanisters(_nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister)));
       canUpdateNfts = true;
     }
   };
