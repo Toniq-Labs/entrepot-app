@@ -14,6 +14,7 @@ import {useInterval} from '../../utilities/use-interval';
 import {EntrepotNFTImage} from '../../utils';
 import {profileStyles} from './ProfileStyles';
 import {ChipWithLabel} from '../../shared/ChipWithLabel';
+import {NftCard} from '../../components/shared/NftCard';
 // import {NftCard} from '../components/shared/NftCard';
 // import {
 //   ToniqIcon,
@@ -35,6 +36,8 @@ const ProfileTabs = {
   Watching: 'Watching',
   Activity: 'Activity',
 };
+
+const selectedColor = String(toniqColors.brandPrimary.foregroundColor);
 
 export function Profile(props) {
   const classes = profileStyles();
@@ -122,6 +125,7 @@ export function Profile(props) {
             {profileDetails.map(profileDetail => {
               return (
                 <ChipWithLabel
+                  key={profileDetail.label}
                   style={{flexGrow: 0}}
                   label={profileDetail.label}
                   text={profileDetail.text}
@@ -130,13 +134,39 @@ export function Profile(props) {
               );
             })}
           </div>
+          <div style={{display: 'flex'}}>
+            {Object.values(ProfileTabs).map(profileTab => {
+              const selectedStyles =
+                currentTab === profileTab
+                  ? {
+                      ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                      color: selectedColor,
+                      borderColor: selectedColor,
+                      borderWidth: '2px',
+                    }
+                  : {};
+
+              return (
+                <div
+                  onClick={() => {
+                    setCurrentTab(profileTab);
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    ...selectedStyles,
+                  }}
+                  className={classes.profileTab}
+                >
+                  {profileTab}
+                </div>
+              );
+            })}
+            <div className={classes.profileTab} style={{flexGrow: 1}}></div>
+          </div>
         </div>
         <div>
           {userNfts.filter(createFilterCallback(currentFilters, userCollections)).map(userNft => (
-            <>
-              <span>{userNft.token}</span>
-              <br />
-            </>
+            <NftCard key={userNft.token}>{userNft.token}</NftCard>
           ))}
         </div>
       </div>

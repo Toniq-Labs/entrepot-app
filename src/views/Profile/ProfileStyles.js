@@ -3,6 +3,8 @@ import {cssToReactStyleObject, toniqFontStyles, toniqColors} from '@toniq-labs/d
 
 const filterOnTopBreakPoint = '@media (max-width: 800px)';
 
+console.log(String(toniqColors.pageTertiary.foregroundColor));
+
 export const profileStyles = makeStyles(() => ({
   breakpoints: {
     values: {
@@ -26,6 +28,11 @@ export const profileStyles = makeStyles(() => ({
     // 8px here plus 24px padding on wrapper makes 32px total between this and the nav bar
     marginTop: '8px',
     marginBottom: '24px',
+  },
+  profileTab: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    borderBottom: `1px solid ${String(toniqColors.divider.foregroundColor)}`,
+    padding: '16px 8px',
   },
   filterSortRow: {
     display: 'flex',

@@ -15,7 +15,6 @@ export function ChipWithLabel(props) {
         flexGrow: 1,
         ...props.style,
       }}
-      key={props.label}
     >
       <span
         style={{

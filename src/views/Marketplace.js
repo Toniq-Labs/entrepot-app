@@ -656,6 +656,7 @@ export default function Marketplace(props) {
                                   <div className={classes.collectionDetailsWrapper}>
                                     {collectionStatDetails.map((cellDetails, _index, fullArray) => (
                                       <ChipWithLabel
+                                        key={cellDetails.label}
                                         style={{
                                           maxWidth: `${100 / fullArray.length}%`,
                                         }}
