@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import getGenes from "./CronicStats.js";
 import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import CollectionDetails from './CollectionDetails';
-import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
+import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 import { WithFilterPanel } from "./shared/WithFilterPanel.js";
@@ -16,14 +16,17 @@ import {
   Search24Icon,
   Filter24Icon,
   ArrowsSort24Icon,
-} from '@toniq-labs/design-system';import {
+} from '@toniq-labs/design-system';
+import {
   ToniqIcon,
   ToniqInput,
   ToniqDropdown,
   ToniqToggleButton,
   ToniqSlider,
+  ToniqCheckbox,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { useSearchParams } from "react-router-dom";
+import getNri from "../ic/nftv.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -87,23 +90,42 @@ const filterTypes = {
   },
   price: {
     floor: 'floor',
-    averageSale: 'average sale',
+    averageSale: 'averageSale',
   },
+  rarity: 'rarity',
+  mintNumber: 'mintNumber',
 };
 
 function doesCollectionPassFilters(listingStats, currentFilters) {
   if (!listingStats) {
     return false;
   }
-  if (currentFilters.price.range) {
+  if (currentFilters.price[currentFilters.price.type].range) {
     if (
-      Number(listingStats.price) / 100000000 > currentFilters.price.range.max ||
-      Number(listingStats.price) / 100000000 < currentFilters.price.range.min
+      Number(listingStats.price) / 100000000 > currentFilters.price[currentFilters.price.type].range.max ||
+      Number(listingStats.price) / 100000000 < currentFilters.price[currentFilters.price.type].range.min
     ) {
       return false;
     }
   }
 
+  if (currentFilters.rarity.range) {
+    if (
+      Number(listingStats.rarity) > currentFilters.rarity.range.max ||
+      Number(listingStats.rarity) < currentFilters.rarity.range.min
+    ) {
+      return false;
+    }
+  }
+
+  if (currentFilters.mintNumber.range) {
+    if (
+      Number(listingStats.mintNumber) > currentFilters.mintNumber.range.max ||
+      Number(listingStats.mintNumber) < currentFilters.mintNumber.range.min
+    ) {
+      return false;
+    }
+  }
   return true;
 }
 
@@ -131,8 +153,21 @@ export default function Listings(props) {
       type: 'forSale',
     },
     price: {
+      [filterTypes.price.floor]: {
+        range: undefined,
+      },
+      [filterTypes.price.averageSale]: {
+        range: undefined,
+      },
+      type: 'floor'
+    },
+    rarity: {
       range: undefined,
-      type: 'floor',
+      type: 'rarity',
+    },
+    mintNumber: {
+      range: undefined,
+      type: 'mintNumber',
     },
   });
 
@@ -185,7 +220,7 @@ export default function Listings(props) {
     c = c ?? collection?.canister;
 
     EntrepotUpdateStats().then(() => {
-      setStats(EntrepotCollectionStats(collection.canister))
+      setStats(EntrepotCollectionStats(c))
     });
 
     try{
@@ -194,7 +229,13 @@ export default function Listings(props) {
     } catch(e) {};
   };
 
-  const lowestPrice = listings.reduce((lowest, listing) => {
+  const statusListings = listings
+    .filter(listing => (listing[1] === false || listing[1].price >= 1000000n))
+    .filter(listing => {
+      return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
+    });
+  
+  const lowestPrice = statusListings.reduce((lowest, listing) => {
     const currentValue = Number(listing[1].price) / 100000000;
     if (currentValue < lowest) {
       return currentValue;
@@ -203,8 +244,30 @@ export default function Listings(props) {
     }
   }, Infinity);
 
-  const highestPrice = listings.reduce((highest, listing) => {
+  const highestPrice = statusListings.reduce((highest, listing) => {
     const currentValue = Number(listing[1].price) / 100000000;
+    if (currentValue > highest) {
+      return currentValue;
+    } else {
+      return highest;
+    }
+  }, -Infinity);
+
+  const lowestMint = statusListings.reduce((lowest, listing) => {
+    const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
+    const { index, canister} = extjs.decodeTokenId(tokenid);
+    const currentValue = EntrepotNFTMintNumber(canister, index);
+    if (currentValue < lowest) {
+      return currentValue;
+    } else {
+      return lowest;
+    }
+  }, Infinity);
+
+  const highestMint = statusListings.reduce((highest, listing) => {
+    const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
+    const { index, canister} = extjs.decodeTokenId(tokenid);
+    const currentValue = EntrepotNFTMintNumber(canister, index);
     if (currentValue > highest) {
       return currentValue;
     } else {
@@ -221,16 +284,27 @@ export default function Listings(props) {
       min: lowestPrice,
       max: highestPrice,
     },
+    [filterTypes.rarity]: {
+      min: 0,
+      max: 100,
+    },
+    [filterTypes.mintNumber]: {
+      min: lowestMint,
+      max: highestMint,
+    },
   };
   
-  const filteredAndSortedListings = listings
-    .filter(listing => (listing[1] === false || listing[1].price >= 1000000n))
+  const filteredAndSortedListings = statusListings
     .filter(listing => {
-      return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
-    })
-    .filter(listing => {
+      const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
+      const { index, canister} = extjs.decodeTokenId(tokenid);
+      const rarity = (getNri(canister, index) * 100).toFixed(1);
+      const mintNumber = EntrepotNFTMintNumber(canister, index);
+
       const listingStats = {
         price: listing[1].price,
+        rarity,
+        mintNumber,
       }
 
       const passFilter = showFilters
@@ -359,32 +433,73 @@ export default function Listings(props) {
                   }}
                 />
                 <ToniqSlider
-                      logScale={true}
-                      min={priceRanges[currentFilters.price.type].min}
-                      max={priceRanges[currentFilters.price.type].max}
-                      suffix="ICP"
-                      double={true}
-                      value={currentFilters.price.range || priceRanges[currentFilters.price.type]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        setCurrentFilters({
-                          ...currentFilters,
-                          price: {
-                            ...currentFilters.price,
-                            range: values,
-                          },
-                        });
-                      }}
-                    />
+                  logScale={true}
+                  min={priceRanges[currentFilters.price.type].min}
+                  max={priceRanges[currentFilters.price.type].max}
+                  suffix="ICP"
+                  double={true}
+                  value={currentFilters.price[currentFilters.price.type].range || priceRanges[currentFilters.price.type]}
+                  onValueChange={event => {
+                    const values = event.detail;
+                    setCurrentFilters({
+                      ...currentFilters,
+                      price: {
+                        ...currentFilters.price,
+                        [currentFilters.price.type]: {
+                          range: values,
+                        },
+                      },
+                    });
+                  }}
+                />
               </div>
               <div>
                 <div className="title">Rarity</div>
+                <ToniqSlider
+                  logScale={true}
+                  min={priceRanges[currentFilters.rarity.type].min}
+                  max={priceRanges[currentFilters.rarity.type].max}
+                  suffix="%"
+                  double={true}
+                  value={currentFilters.rarity.range || priceRanges[currentFilters.rarity.type]}
+                  onValueChange={event => {
+                    const values = event.detail;
+                    setCurrentFilters({
+                      ...currentFilters,
+                      rarity: {
+                        ...currentFilters.rarity,
+                        range: values,
+                      },
+                    });
+                  }}
+                />
               </div>
               <div>
                 <div className="title">Mint #</div>
+                <ToniqSlider
+                  logScale={true}
+                  min={priceRanges[currentFilters.mintNumber.type].min}
+                  max={priceRanges[currentFilters.mintNumber.type].max}
+                  double={true}
+                  value={currentFilters.mintNumber.range || priceRanges[currentFilters.mintNumber.type]}
+                  onValueChange={event => {
+                    const values = event.detail;
+                    setCurrentFilters({
+                      ...currentFilters,
+                      mintNumber: {
+                        ...currentFilters.mintNumber,
+                        range: values,
+                      },
+                    });
+                  }}
+                />
               </div>
               <div>
                 <div className="title">Traits</div>
+              </div>
+              <div>
+                <ToniqCheckbox text="Current Listings" />
+                <ToniqCheckbox text="Sold Listings" />
               </div>
             </>
           }
