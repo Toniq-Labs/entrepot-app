@@ -705,12 +705,14 @@ export default function App() {
     };
   };
   const updateCollections = async () => {
-     const response = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections")
+    var response
+    //Remove dev marked canisters
+    if (isDevEnv() == false) {
+      response = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collections")
+    } else {
+      response = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/collectionsDev")
+    };
      var r2 = await response.json();
-      //Remove dev marked canisters
-      if (isDevEnv() == false) {
-        r2 = r2.filter(a => !a.dev);
-      };
       r2 = r2.map(a => ({...a, canister : a.id})).filter(a => _isCanister(a.canister));
       if (collections.length == 0) {
         setCollections(r2);

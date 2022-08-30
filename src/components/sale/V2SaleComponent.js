@@ -1,5 +1,5 @@
 /* global BigInt */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import extjs from "../../ic/extjs.js";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -16,6 +16,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
 const api = extjs.connect("https://boundary.ic0.app/");
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -59,7 +62,17 @@ export default function V2SaleComponent(props) {
   const [startTime, setStartTime] = React.useState(false);
   const [endTime, setEndTime] = React.useState(false);
   const [totalToSell, setTotalToSell] = React.useState(false);
-    
+  const [blurbElement, setBlurbElement] = useState(false);
+  const [collapseBlurb, setCollapseBlurb] = useState(false);
+  const [isBlurbOpen, setIsBlurbOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (blurbElement.clientHeight > 110) {
+      setCollapseBlurb(true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blurbElement]);
+  
   const _updates = async () => {
     var resp = await api.canister(collection.canister, "ext2").ext_saleSettings((props.account ? props.account.address : ""));
 		if (!resp.length) return;
@@ -206,6 +219,17 @@ export default function V2SaleComponent(props) {
         <div style={{width: "100%", height: 200, borderRadius:10,backgroundPosition: "top", backgroundSize: "cover",backgroundImage:"url('"+collection.banner+"')"}}></div>
         <h1>Welcome to the official {collection.name} sale</h1>
         </div>
+        <div>
+	<a href={"https://icscan.io/nft/collection/"+collection.canister} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/icscan.png"} /></a>
+        {['telegram', 'twitter', 'medium', 'discord', 'dscvr', 'distrikt'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+          return (<a href={collection[a]} target="_blank"><img alt="create" style={{ width: 32 }} src={"/icon/"+a+".png"} /></a>);
+        })}
+	</div>
+        <div ref={e => { setBlurbElement(e); }} style={{...(collapseBlurb && !isBlurbOpen ? {maxHeight:110, wordBreak: "break-word", WebkitMask : "linear-gradient(rgb(255, 255, 255) 45%, transparent)"} : {}), overflow:"hidden",fontSize: "1.2em" }} dangerouslySetInnerHTML={{ __html : collection?.blurb }}></div>
+      {collapseBlurb ? (
+      <Button fullWidth endIcon={(!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />)} onClick={() => setIsBlurbOpen(!isBlurbOpen)}></Button>
+      ) : ""}
+      <br /><br />
         <Grid  justifyContent="center" direction="row" alignItems="center" container spacing={2} style={{}}>
 					{startTime >= Date.now() ?
 						<Grid className={classes.stat} item md={3} xs={6}>
