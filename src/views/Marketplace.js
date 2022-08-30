@@ -1,5 +1,5 @@
 import React from 'react';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
 import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
@@ -13,7 +13,6 @@ import {
   LoaderAnimated24Icon,
   Icp16Icon,
   Search24Icon,
-  Filter24Icon,
   ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
 import {NftCard} from '../components/shared/NftCard';
@@ -95,43 +94,6 @@ const useStyles = makeStyles(theme => ({
     // 8px here plus 24px padding on wrapper makes 32px total between this and the nav bar
     marginTop: '8px',
     marginBottom: '24px',
-  },
-  filterSortRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-    [filterOnTopBreakPoint]: {
-      flexDirection: 'column',
-      alignItems: 'unset',
-    },
-  },
-  filtersTrigger: {
-    display: 'flex',
-    gap: '16px',
-  },
-  filtersDotThing: {
-    [filterOnTopBreakPoint]: {
-      opacity: 0,
-    },
-  },
-  collectionsAndSort: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexGrow: 1,
-    [filterOnTopBreakPoint]: {
-      marginLeft: '16px',
-    },
-  },
-  marketplaceControls: {
-    marginBottom: '32px',
-  },
-  filterAndIcon: {
-    cursor: 'pointer',
-    marginLeft: '16px',
-    gap: '8px',
-    flexShrink: 0,
   },
   media: {
     cursor: 'pointer',
@@ -534,9 +496,9 @@ export default function Marketplace(props) {
             }}
           />
           <WithFilterPanel
-            showFilterPanel={showFilters}
-            onFilterClose={() => {
-              setShowFilters(false);
+            showFilters={showFilters}
+            onShowFiltersChange={newShowFilters => {
+              setShowFilters(newShowFilters);
             }}
             filterControlChildren={
               <>
@@ -609,57 +571,33 @@ export default function Marketplace(props) {
                 </div>
               </>
             }
+            otherControlsChildren={
+              <>
+                <span
+                  style={{
+                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                    color: toniqColors.pageSecondary.foregroundColor,
+                  }}
+                >
+                  {filteredAndSortedCollections.length} Collections
+                </span>
+                <ToniqDropdown
+                  style={{
+                    '--toniq-accent-secondary-background-color': 'transparent',
+                    width: '360px',
+                  }}
+                  icon={ArrowsSort24Icon}
+                  selectedLabelPrefix="Sort By:"
+                  selected={sort}
+                  onSelectChange={event => {
+                    console.log(event.detail);
+                    setSort(event.detail);
+                  }}
+                  options={sortOptions}
+                />
+              </>
+            }
           >
-            <div className={classes.marketplaceControls}>
-              <div className={classes.filterSortRow}>
-                <div className={classes.filtersTrigger}>
-                  <div
-                    className={classes.filterAndIcon}
-                    style={{
-                      display: showFilters ? 'none' : 'flex',
-                    }}
-                    onClick={() => {
-                      setShowFilters(true);
-                    }}
-                  >
-                    <ToniqIcon icon={Filter24Icon} />
-                    <span>Filters</span>
-                  </div>
-                  <span
-                    className={classes.filtersDotThing}
-                    style={{
-                      display: showFilters ? 'none' : 'flex',
-                    }}
-                  >
-                    •
-                  </span>
-                </div>
-                <div className={classes.collectionsAndSort}>
-                  <span
-                    style={{
-                      ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                      color: toniqColors.pageSecondary.foregroundColor,
-                    }}
-                  >
-                    {filteredAndSortedCollections.length} Collections
-                  </span>
-                  <ToniqDropdown
-                    style={{
-                      '--toniq-accent-secondary-background-color': 'transparent',
-                      width: '360px',
-                    }}
-                    icon={ArrowsSort24Icon}
-                    selectedLabelPrefix="Sort By:"
-                    selected={sort}
-                    onSelectChange={event => {
-                      console.log(event.detail);
-                      setSort(event.detail);
-                    }}
-                    options={sortOptions}
-                  />
-                </div>
-              </div>
-            </div>
             <Grid
               container
               direction="row"
