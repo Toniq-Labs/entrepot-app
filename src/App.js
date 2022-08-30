@@ -142,7 +142,7 @@ var otherPrincipalsForPlug = [
 const isDevEnv = () => {
   if (window.location.hostname == "localhost") return true;
   if(window.location.host.indexOf("deploy-preview") == 0) return true;
-  if(window.location.host.indexOf("friendly-raman-30db7b") == 0) return true;
+  if(window.location.host.indexOf("friendly-raman-30db7b") >= 0) return true;
   return false;
 };
 const TREASURECANISTER = "yigae-jqaaa-aaaah-qczbq-cai";
