@@ -113,6 +113,9 @@ export const profileStyles = makeStyles(() => ({
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     color: String(toniqColors.pageSecondary.foregroundColor),
   },
+  tabList: {
+    marginBottom: '16px',
+  },
   collectionCardBriefWrapper: {
     display: 'flex',
     flexDirection: 'column',

@@ -1,35 +1,13 @@
 /* global BigInt */
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {
-  cssToReactStyleObject,
-  toniqFontStyles,
-  toniqColors,
-  Icp16Icon,
-} from '@toniq-labs/design-system';
-import axios from 'axios';
+import {cssToReactStyleObject, toniqFontStyles, Icp16Icon} from '@toniq-labs/design-system';
 import extjs from '../../ic/extjs.js';
 import {loadAllUserTokens, getEXTCanister} from '../../utilities/load-tokens';
 import {useInterval} from '../../utilities/use-interval';
 import {EntrepotNFTImage} from '../../utils';
 import {profileStyles} from './ProfileStyles';
-import {ChipWithLabel} from '../../shared/ChipWithLabel';
-import {NftCard} from '../../components/shared/NftCard';
-// import {NftCard} from '../components/shared/NftCard';
-// import {
-//   ToniqIcon,
-//   ToniqChip,
-//   ToniqInput,
-//   ToniqDropdown,
-//   ToniqToggleButton,
-//   ToniqSlider,
-// } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-
-function createFilterCallback(currentFilters, collections) {
-  return nft => {
-    return true;
-  };
-}
+import {ProfileHeader} from './ProfileHeader';
+import {ProfileBody} from './ProfileBody';
 
 const ProfileTabs = {
   MyNfts: 'My NFTs',
@@ -37,17 +15,14 @@ const ProfileTabs = {
   Activity: 'Activity',
 };
 
-const selectedColor = String(toniqColors.brandPrimary.foregroundColor);
-
 export function Profile(props) {
   const classes = profileStyles();
   const [userCollections, setUserCollections] = React.useState([]);
   const [userNfts, setUserNfts] = React.useState([]);
+  const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
-  const [currentFilters, setCurrentFilters] = React.useState({});
 
   async function refresh() {
-    console.debug('DOING THE THING');
     const address = props.account.address;
     const allUserNfts = (
       await Promise.all([loadAllUserTokens(address, props.identity.getPrincipal().toText())])
@@ -119,56 +94,21 @@ export function Profile(props) {
           ...cssToReactStyleObject(toniqFontStyles.toniqFont),
         }}
       >
-        <div style={{display: 'flex', flexDirection: 'column'}}>
-          <h1 className={classes.heading}>My Profile</h1>
-          <div style={{display: 'flex', gap: '16px'}}>
-            {profileDetails.map(profileDetail => {
-              return (
-                <ChipWithLabel
-                  key={profileDetail.label}
-                  style={{flexGrow: 0}}
-                  label={profileDetail.label}
-                  text={profileDetail.text}
-                  icon={profileDetail.icon}
-                />
-              );
-            })}
-          </div>
-          <div style={{display: 'flex'}}>
-            {Object.values(ProfileTabs).map(profileTab => {
-              const selectedStyles =
-                currentTab === profileTab
-                  ? {
-                      ...cssToReactStyleObject(toniqFontStyles.boldFont),
-                      color: selectedColor,
-                      borderColor: selectedColor,
-                      borderWidth: '2px',
-                    }
-                  : {};
-
-              return (
-                <div
-                  onClick={() => {
-                    setCurrentTab(profileTab);
-                  }}
-                  style={{
-                    cursor: 'pointer',
-                    ...selectedStyles,
-                  }}
-                  className={classes.profileTab}
-                >
-                  {profileTab}
-                </div>
-              );
-            })}
-            <div className={classes.profileTab} style={{flexGrow: 1}}></div>
-          </div>
-        </div>
-        <div>
-          {userNfts.filter(createFilterCallback(currentFilters, userCollections)).map(userNft => (
-            <NftCard key={userNft.token}>{userNft.token}</NftCard>
-          ))}
-        </div>
+        <ProfileHeader
+          nftCount={userNfts.length}
+          profileDetails={profileDetails}
+          classes={classes}
+          query={query}
+          tabs={ProfileTabs}
+          currentTab={currentTab}
+          onCurrentTabChange={newTab => {
+            setCurrentTab(newTab);
+          }}
+          onQueryChange={newQuery => {
+            setQuery(newQuery);
+          }}
+        />
+        <ProfileBody userNfts={userNfts} userCollections={userCollections} />
       </div>
     </>
   );
