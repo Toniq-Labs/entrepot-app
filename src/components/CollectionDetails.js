@@ -107,7 +107,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       minWidth: 103,
     },
-  }
+  },
+  web: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    }
+  },
 }));
 
 export default function CollectionDetails(props) {
@@ -155,43 +162,44 @@ export default function CollectionDetails(props) {
                 ""
               )}
             </Grid>
-            <Grid item xs={12} sm="auto">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "16px",
-                }}
-              >
-                <Avatar
-                  variant="square"
-                  style={{
-                    height: "24px",
-                    width: "24px",
-                    borderRadius: "8px",
-                    justifyContent: "center",
-                  }}
-                  src={
-                    typeof collection.avatar != "undefined" && collection.avatar
-                      ? collection.avatar
-                      : "/collections/" + collection.canister + ".jpg"
-                  }
-                />
-                <span
-                  style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}
-                >
-                  Worldwide-webb
-                </span>
-                {collection.kyc ? (
-                  <ToniqIcon
-                    icon={CircleWavyCheck24Icon}
-                    style={{ color: "#00D093" }}
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-            </Grid>
+            {
+              collection.web ? 
+                <Grid item xs={12} sm="auto">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "16px",
+                    }}
+                  >
+                    <Avatar
+                      variant="square"
+                      style={{
+                        height: "24px",
+                        width: "24px",
+                        borderRadius: "8px",
+                        justifyContent: "center",
+                      }}
+                      src={
+                        typeof collection.avatar != "undefined" && collection.avatar
+                          ? collection.avatar
+                          : "/collections/" + collection.canister + ".jpg"
+                      }
+                    />
+                    <a href={ collection.web} target="_blank" rel="noreferrer" className={classes.web}>
+                      { collection.web }
+                    </a>
+                    {collection.kyc ? (
+                      <ToniqIcon
+                        icon={CircleWavyCheck24Icon}
+                        style={{ color: "#00D093" }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </Grid> : ""
+            }
           </Grid>
           <Grid container spacing={2} justifyContent="center">
             <Grid item>

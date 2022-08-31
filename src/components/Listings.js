@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles} from "@material-ui/core";
 import getGenes from "./CronicStats.js";
 import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
@@ -14,19 +14,20 @@ import {
   toniqFontStyles,
   toniqColors,
   Search24Icon,
-  Filter24Icon,
   ArrowsSort24Icon,
+  toniqShadows,
 } from '@toniq-labs/design-system';
 import {
-  ToniqIcon,
   ToniqInput,
   ToniqDropdown,
   ToniqToggleButton,
   ToniqSlider,
   ToniqCheckbox,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import getNri from "../ic/nftv.js";
+import orderBy from "lodash.orderby";
+import LazyLoad from 'react-lazyload';
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -62,24 +63,77 @@ const _isCanister = c => {
   return c.length == 27 && c.split("-").length == 5;
 };
 
+const useStyles = makeStyles(theme => ({
+  traitCategoryWrapper: {
+    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    "& input": {
+      display: "none",
+      "&:checked + label > span:last-child": {
+        backgroundColor: "#00D093",
+        color: "#FFFFFF"
+      },
+    }
+  },
+  traitCategory: {
+    display: "flex",
+    justifyContent: "space-between",
+    "& span:last-child": {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: 24,
+      height: 24,
+      borderRadius: "16px",
+      backgroundColor: "#F1F3F6",
+      ...cssToReactStyleObject(toniqFontStyles.boldLabelFont),
+    }
+  },
+}));
+
 const defaultSortOption = {
-  value: 'floor_asc',
-  label: 'Floor Price: Low to High',
+  value: {
+    type: 'price',
+    sort: 'asc',
+  },
+  label: 'Price: Low to High',
 };
 
 const sortOptions = [
   defaultSortOption,
   {
-    value: 'floor_desc',
-    label: 'Floor Price: High to Low',
+    value: {
+      type: 'price',
+      sort: 'desc',
+    },
+    label: 'Price: High to Low',
   },
   {
-    value: 'minting_number',
-    label: 'Minting #',
+    value: {
+      type: 'rarity',
+      sort: 'asc',
+    },
+    label: 'Rarity: Low to High',
   },
   {
-    value: 'nft_rarity_index',
-    label: 'NFT Rarity Index',
+    value: {
+      type: 'rarity',
+      sort: 'desc',
+    },
+    label: 'Rarity: High to Low',
+  },
+  {
+    value: {
+      type: 'mintNumber',
+      sort: 'asc',
+    },
+    label: 'Mint #: Low to High',
+  },
+  {
+    value: {
+      type: 'mintNumber',
+      sort: 'desc',
+    },
+    label: 'Mint #: High to Low',
   },
 ];
 
@@ -88,22 +142,19 @@ const filterTypes = {
     forSale: "forSale",
     entireCollection: "entireCollection",
   },
-  price: {
-    floor: 'floor',
-    averageSale: 'averageSale',
-  },
+  price: 'price',
   rarity: 'rarity',
   mintNumber: 'mintNumber',
 };
 
-function doesCollectionPassFilters(listingStats, currentFilters) {
-  if (!listingStats) {
+function doesCollectionPassFilters(listing, currentFilters) {
+  if (!listing) {
     return false;
   }
-  if (currentFilters.price[currentFilters.price.type].range) {
+  if (currentFilters.price.range) {
     if (
-      Number(listingStats.price) / 100000000 > currentFilters.price[currentFilters.price.type].range.max ||
-      Number(listingStats.price) / 100000000 < currentFilters.price[currentFilters.price.type].range.min
+      listing.price > currentFilters.price.range.max ||
+      listing.price < currentFilters.price.range.min
     ) {
       return false;
     }
@@ -111,8 +162,8 @@ function doesCollectionPassFilters(listingStats, currentFilters) {
 
   if (currentFilters.rarity.range) {
     if (
-      Number(listingStats.rarity) > currentFilters.rarity.range.max ||
-      Number(listingStats.rarity) < currentFilters.rarity.range.min
+      Number(listing.rarity) > currentFilters.rarity.range.max ||
+      Number(listing.rarity) < currentFilters.rarity.range.min
     ) {
       return false;
     }
@@ -120,8 +171,8 @@ function doesCollectionPassFilters(listingStats, currentFilters) {
 
   if (currentFilters.mintNumber.range) {
     if (
-      Number(listingStats.mintNumber) > currentFilters.mintNumber.range.max ||
-      Number(listingStats.mintNumber) < currentFilters.mintNumber.range.min
+      Number(listing.mintNumber) > currentFilters.mintNumber.range.max ||
+      Number(listing.mintNumber) < currentFilters.mintNumber.range.min
     ) {
       return false;
     }
@@ -141,25 +192,22 @@ export default function Listings(props) {
   };
   const [stats, setStats] = useState(false);
   const [listings, setListings] = useState([]);
-  const [filterData, setFilterData] = useState(false);
-  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
+  const [traitsData, setTraitsData] = useState(false);
+  const [traitsCategories, setTraitsCategories] = useState([]);
+  const [collection] = useState(getCollectionFromRoute(params?.route));
   const [showFilters, setShowFilters] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const [sort, setSort] = useState(defaultSortOption);
+  const [page, setPage] = useState(1);
   const [currentFilters, setCurrentFilters] = useState({
     status: {
       range: undefined,
       type: 'forSale',
     },
     price: {
-      [filterTypes.price.floor]: {
-        range: undefined,
-      },
-      [filterTypes.price.averageSale]: {
-        range: undefined,
-      },
-      type: 'floor'
+      range: undefined,
+      type: 'price',
     },
     rarity: {
       range: undefined,
@@ -203,40 +251,78 @@ export default function Listings(props) {
     });
   }
 
-  const loadFilterData = async () => {
-    if (collection?.filter){
-      try{
-        var fd = await fetch('/filter/'+collection?.canister+'.json')
-        .then((response) => response.json());
-        return fd;
-      } catch(error){
+  const loadTraits = async () => {
+    if (collection?.filter) {
+      try {
+        return await fetch("/filter/" + collection?.canister + ".json").then(
+          (response) => response.json()
+        );
+      } catch (error) {
         console.error(error);
       }
     }
     return false;
   };
   
-  const _updates = async (s, c) => {
-    c = c ?? collection?.canister;
+  const _updates = async (s, canister) => {
+    canister = canister ?? collection?.canister;
 
     EntrepotUpdateStats().then(() => {
-      setStats(EntrepotCollectionStats(c))
+      setStats(EntrepotCollectionStats(canister))
     });
 
-    try{
-      var listings = await api.token(c).listings();
+    try {
+      var result = await api.token(canister).listings();
+
+      var traitsCategories = traitsData[0].map((trait) => {
+        return {
+          category: trait[1],
+          values: trait[2].map((trait) => {
+            return trait[1];
+          }),
+          isOpen: false,
+        };
+      })
+      setTraitsCategories(traitsCategories);
+
+      var listings = result
+        .map((listing) => {
+          const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
+          const { index, canister} = extjs.decodeTokenId(tokenid);
+          const rarity = (getNri(canister, index) * 100).toFixed(1);
+          const mintNumber = EntrepotNFTMintNumber(canister, index);
+          const traits = traitsData[1][index][1].map((trait) => {
+            const traitCategory = trait[0];
+            const traitValue = trait[1];
+            return {
+              category: traitsCategories[traitCategory].category,
+              values: traitsCategories[traitCategory].values[traitValue],
+            }
+          })
+
+          return {
+            ...listing,
+            price: Number(listing[1].price) / 100000000,
+            rarity,
+            mintNumber,
+            tokenid,
+            index,
+            canister,
+            traits
+          }
+        })
       setListings(listings);
     } catch(e) {};
   };
 
-  const statusListings = listings
-    .filter(listing => (listing[1] === false || listing[1].price >= 1000000n))
+  const filteredStatusListings = listings
+    .filter(listing => (listing[1] === false || listing.price >= 0.01))
     .filter(listing => {
       return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
     });
   
-  const lowestPrice = statusListings.reduce((lowest, listing) => {
-    const currentValue = Number(listing[1].price) / 100000000;
+  const lowestPrice = filteredStatusListings.reduce((lowest, listing) => {
+    const currentValue = listing.price;
     if (currentValue < lowest) {
       return currentValue;
     } else {
@@ -244,8 +330,8 @@ export default function Listings(props) {
     }
   }, Infinity);
 
-  const highestPrice = statusListings.reduce((highest, listing) => {
-    const currentValue = Number(listing[1].price) / 100000000;
+  const highestPrice = filteredStatusListings.reduce((highest, listing) => {
+    const currentValue = listing.price;
     if (currentValue > highest) {
       return currentValue;
     } else {
@@ -253,10 +339,8 @@ export default function Listings(props) {
     }
   }, -Infinity);
 
-  const lowestMint = statusListings.reduce((lowest, listing) => {
-    const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
-    const { index, canister} = extjs.decodeTokenId(tokenid);
-    const currentValue = EntrepotNFTMintNumber(canister, index);
+  const lowestMint = filteredStatusListings.reduce((lowest, listing) => {
+    const currentValue = EntrepotNFTMintNumber(listing?.canister, listing?.index);
     if (currentValue < lowest) {
       return currentValue;
     } else {
@@ -264,10 +348,8 @@ export default function Listings(props) {
     }
   }, Infinity);
 
-  const highestMint = statusListings.reduce((highest, listing) => {
-    const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
-    const { index, canister} = extjs.decodeTokenId(tokenid);
-    const currentValue = EntrepotNFTMintNumber(canister, index);
+  const highestMint = filteredStatusListings.reduce((highest, listing) => {
+    const currentValue = EntrepotNFTMintNumber(listing?.canister, listing?.index);
     if (currentValue > highest) {
       return currentValue;
     } else {
@@ -276,11 +358,7 @@ export default function Listings(props) {
   }, -Infinity);
 
   const priceRanges = {
-    [filterTypes.price.floor]: {
-      min: lowestPrice,
-      max: highestPrice,
-    },
-    [filterTypes.price.averageSale]: {
+    [filterTypes.price]: {
       min: lowestPrice,
       max: highestPrice,
     },
@@ -293,33 +371,47 @@ export default function Listings(props) {
       max: highestMint,
     },
   };
-  
-  const filteredAndSortedListings = statusListings
-    .filter(listing => {
-      const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
-      const { index, canister} = extjs.decodeTokenId(tokenid);
-      const rarity = (getNri(canister, index) * 100).toFixed(1);
-      const mintNumber = EntrepotNFTMintNumber(canister, index);
 
-      const listingStats = {
-        price: listing[1].price,
-        rarity,
-        mintNumber,
-      }
-
+  const filteredAndSortedListings = orderBy(
+    filteredStatusListings.filter((listing) => {
+      const inQuery =
+        [listing.tokenid, listing.mintNumber]
+          .join(' ')
+          .toLowerCase()
+          .indexOf(query.toLowerCase()) >= 0;
       const passFilter = showFilters
-        ? doesCollectionPassFilters(listingStats, currentFilters)
+        ? doesCollectionPassFilters(listing, currentFilters)
         : true;
-      return passFilter;
-    })
+      return passFilter && (query === '' || inQuery);
+    }),
+    [sort.value.type],
+    [sort.value.sort]
+  );
+
+  var toWrappedMap = {
+    "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
+    "4nvhy-3qaaa-aaaah-qcnoq-cai" : "y3b7h-siaaa-aaaah-qcnwa-cai",
+    "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
+    "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
+    "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai"
+  };
+
+  const getEXTCanister = canister => {
+    if (toWrappedMap.hasOwnProperty(canister)) return toWrappedMap[canister];
+    else return canister;
+  };
+
+  const getEXTID = listing => {
+    return extjs.encodeTokenId(getEXTCanister(listing.canister), listing.index);
+  };
 
   useInterval(_updates, 10 * 1000);
 
   useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
-    loadFilterData().then(r => {
-      if (r) {        
-        setFilterData(r);
+    loadTraits().then(traits => {
+      if (traits) {        
+        setTraitsData(traits);
       } else {
         _updates();
       }
@@ -330,12 +422,12 @@ export default function Listings(props) {
   useDidMountEffect(() => {
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterData]);
+  }, [traitsData]);
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
       <div style={{maxWidth:1320, margin:"0 auto 0"}}>
-        <CollectionDetails classes={classes} stats={stats} collection={collection} />
+        <CollectionDetails stats={stats} collection={collection} />
       </div>
       <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
         <StyledTabs
@@ -353,8 +445,7 @@ export default function Listings(props) {
           value={query}
           style={{
             '--toniq-accent-tertiary-background-color': 'transparent',
-            width: '1000px',
-            maxWidth: '100%',
+            maxWidth: '300px',
             boxSizing: 'border-box',
           }}
           placeholder="Search for mint # or token ID"
@@ -369,7 +460,10 @@ export default function Listings(props) {
           }}
         />
         <WithFilterPanel
-          showFilterPanel={showFilters}
+          showFilters={showFilters}
+          onShowFiltersChange={newShowFilters => {
+            setShowFilters(newShowFilters);
+          }}
           onFilterClose={() => {
             setShowFilters(false);
           }}
@@ -406,48 +500,20 @@ export default function Listings(props) {
               </div>
               <div>
                 <div className="title">Price</div>
-                <ToniqToggleButton
-                  text="Floor"
-                  active={currentFilters.price.type === filterTypes.price.floor}
-                  onClick={() => {
-                    setCurrentFilters({
-                      ...currentFilters,
-                      price: {
-                        ...currentFilters.price,
-                        type: filterTypes.price.floor,
-                      },
-                    });
-                  }}
-                />
-                <ToniqToggleButton
-                  text="Average Sale"
-                  active={currentFilters.price.type === filterTypes.price.averageSale}
-                  onClick={() => {
-                    setCurrentFilters({
-                      ...currentFilters,
-                      price: {
-                        ...currentFilters.price,
-                        type: filterTypes.price.averageSale,
-                      },
-                    });
-                  }}
-                />
                 <ToniqSlider
                   logScale={true}
                   min={priceRanges[currentFilters.price.type].min}
                   max={priceRanges[currentFilters.price.type].max}
                   suffix="ICP"
                   double={true}
-                  value={currentFilters.price[currentFilters.price.type].range || priceRanges[currentFilters.price.type]}
+                  value={currentFilters.price.range || priceRanges[currentFilters.price]}
                   onValueChange={event => {
                     const values = event.detail;
                     setCurrentFilters({
                       ...currentFilters,
                       price: {
                         ...currentFilters.price,
-                        [currentFilters.price.type]: {
-                          range: values,
-                        },
+                        range: values,
                       },
                     });
                   }}
@@ -495,41 +561,45 @@ export default function Listings(props) {
                 />
               </div>
               <div>
-                <div className="title">Traits</div>
+                <div className="title">Traits ({traitsCategories.length})</div>
+                <Grid container spacing={2}>
+                  {traitsCategories.map((traitsCategory, index) => {
+                    return (
+                      <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                        <input
+                          id={traitsCategory.category}
+                          type="checkbox"
+                          onChange={() => {
+                            var currentCategory = traitsCategories;
+                            currentCategory[index] = {
+                              ...currentCategory[index],
+                              isOpen: !currentCategory[index].isOpen,
+                            }
+                            setTraitsCategories(currentCategory);
+                          }}
+                        />
+                        <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
+                          <span>{traitsCategory.category}</span>
+                          <span className={classes.traitCategoryCounter}>{traitsCategory.values.length}</span>
+                        </label>
+                      </Grid>
+                    )
+                  })}
+                </Grid>
               </div>
-              <div>
-                <ToniqCheckbox text="Current Listings" />
-                <ToniqCheckbox text="Sold Listings" />
-              </div>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <ToniqCheckbox text="Current Listings" />
+                </Grid>
+                <Grid item xs={12}>
+                  <ToniqCheckbox text="Sold Listings" />
+                </Grid>
+              </Grid>
             </>
           }
-        >
-          <div className={classes.marketplaceControls}>
-            <div className={classes.filterSortRow}>
-              <div className={classes.filtersTrigger}>
-                <div
-                  className={classes.filterAndIcon}
-                  style={{
-                    display: showFilters ? 'none' : 'flex',
-                  }}
-                  onClick={() => {
-                    setShowFilters(true);
-                  }}
-                >
-                  <ToniqIcon icon={Filter24Icon} />
-                  <span>Filters</span>
-                </div>
-                <span
-                  className={classes.filtersDotThing}
-                  style={{
-                    display: showFilters ? 'none' : 'flex',
-                  }}
-                >
-                  •
-                </span>
-              </div>
-              <div className={classes.collectionsAndSort}>
-                <span
+          otherControlsChildren={
+            <>
+              <span
                   style={{
                     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
                     color: toniqColors.pageSecondary.foregroundColor,
@@ -550,52 +620,29 @@ export default function Listings(props) {
                   }}
                   options={sortOptions}
                 />
-              </div>
-            </div>
-          </div>
-          {/* NFT Here */}
+            </>
+          }
+        >
+          {
+            filteredAndSortedListings.length ?
+              <Grid container spacing={2}>
+                {filteredAndSortedListings.map((listing, index) => {
+                  return (
+                    <Grid key={index} item style={{ padding: "16px", background: "#FFF", ...cssToReactStyleObject(toniqShadows.popupShadow), }}>
+                      <LazyLoad  offset={100}>
+                        {/* TODO: Create NFT Individual Card component */}
+                        <Link to={`/marketplace/asset/` + getEXTID(listing)}>
+                          <span>{listing.mintNumber}</span>
+                        </Link>
+                        {/* TODO: Create NFT Individual Card component */}
+                      </LazyLoad>
+                    </Grid>
+                  );
+                })}
+              </Grid> : ""
+          }
         </WithFilterPanel>
       </div>
     </div>
   );
 }
-const filterOnTopBreakPoint = '@media (max-width: 800px)';
-const useStyles = makeStyles((theme) => ({
-  filterSortRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-    [filterOnTopBreakPoint]: {
-      flexDirection: 'column',
-      alignItems: 'unset',
-    },
-  },
-  filtersTrigger: {
-    display: 'flex',
-    gap: '16px',
-  },
-  filtersDotThing: {
-    [filterOnTopBreakPoint]: {
-      opacity: 0,
-    },
-  },
-  collectionsAndSort: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexGrow: 1,
-    [filterOnTopBreakPoint]: {
-      marginLeft: '16px',
-    },
-  },
-  marketplaceControls: {
-    margin: '4px 0 32px',
-  },
-  filterAndIcon: {
-    cursor: 'pointer',
-    marginLeft: '16px',
-    gap: '8px',
-    flexShrink: 0,
-  },
-}));
