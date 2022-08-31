@@ -15,14 +15,18 @@ import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
 import getNri from '../../ic/nftv.js';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-
-const api = extjs.connect('https://boundary.ic0.app/');
+import {
+  loadProfileNftsAndCollections,
+  blankNftFilterStats,
+  createNftFilterStats,
+} from './ProfileUtils';
 
 const ProfileTabs = {
   MyNfts: 'My NFTs',
   Watching: 'Watching',
   Activity: 'Activity',
 };
+
 export function Profile(props) {
   const classes = profileStyles();
   const [userCollections, setUserCollections] = React.useState([]);
@@ -30,71 +34,31 @@ export function Profile(props) {
   const [userNfts, setUserNfts] = React.useState([]);
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
+  const [nftFilterStats, setNftFilterStats] = React.useState(blankNftFilterStats);
 
   async function refresh() {
-    const address = props.account.address;
-    const allUserNfts = (
-      await Promise.all([loadAllUserTokens(address, props.identity.getPrincipal().toText())])
-    ).flat();
+    if (props.account && props.identity && props.collections) {
+      const {userNfts, userCollections} = await loadProfileNftsAndCollections(
+        props.account.address,
+        props.identity,
+        props.collections,
+      );
 
-    const allUserNftCanisterIds = new Set(allUserNfts.map(userNft => userNft.canister));
+      console.log({userNfts, userCollections});
+      setUserNfts(userNfts);
+      setUserCollections(userCollections);
 
-    const userCollections = props.collections.filter(collection => {
-      const isAllowedToView = !collection.dev;
+      const filterStats = createNftFilterStats(userNfts);
 
-      return isAllowedToView && allUserNftCanisterIds.has(collection.canister);
-    });
-
-    const userCollectionCanisterIds = new Set(
-      userCollections.map(collection => collection.canister),
-    );
-
-    const rawAllowedUserNfts = allUserNfts.filter(nft => {
-      return userCollectionCanisterIds.has(nft.canister);
-    });
-
-    const finalUserNfts = await Promise.all(
-      rawAllowedUserNfts.map(async rawNft => {
-        const {index} = extjs.decodeTokenId(rawNft.token);
-
-        const tokenMetadata = await api.token(rawNft.token).getMetadata();
-        const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
-        const offers = await api
-          .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-          .offers(getEXTID(rawNft.token));
-        const listing = rawNft.price
-          ? {
-              price: BigInt(rawNft.price),
-              locked: rawNft.time > 0 ? [BigInt(rawNft.time)] : [],
-            }
-          : undefined;
-        const nri = getNri(rawNft.canister, index);
-
-        const userNft = {
-          ...rawNft,
-          image: EntrepotNFTImage(getEXTCanister(rawNft.canister), index, rawNft.token, false, 0),
-          tokenMetadata,
-          mintNumber,
-          offers,
-          listing,
-          nri,
-        };
-
-        console.log({userNft});
-
-        return userNft;
-      }),
-    );
-
-    console.log({finalUserNfts, userCollections});
-    setUserNfts(finalUserNfts);
-    setUserCollections(userCollections);
-    setLoading(false);
+      console.log({filterStats});
+      setNftFilterStats(filterStats);
+      setLoading(false);
+    }
   }
 
   React.useEffect(() => {
     refresh();
-  }, [props.account]);
+  }, [props.account, props.identity, props.collections]);
 
   useInterval(refresh, 10 * 60 * 1000);
 
@@ -151,6 +115,7 @@ export function Profile(props) {
         ) : (
           <ProfileBody
             style={{flexGrow: 1, maxWidth: '100%'}}
+            nftFilterStats={nftFilterStats}
             userNfts={userNfts}
             userCollections={userCollections}
           />
