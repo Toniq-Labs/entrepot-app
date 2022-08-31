@@ -7,11 +7,34 @@ import {
   toniqColors,
   ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
-import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {
+  ToniqDropdown,
+  ToniqButton,
+} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import PriceICP from '../../components/PriceICP';
 
 function createFilterCallback(currentFilters, collections) {
   return nft => {
     return true;
+  };
+}
+
+function createSortCallback(currentSort) {
+  return (a, b) => {
+    switch (currentSort.value) {
+      case 'minting_number_asc':
+        return a.mintNumber - b.mintNumber;
+      case 'minting_number_desc':
+        return b.mintNumber - a.mintNumber;
+      case 'price_asc':
+        return a.price - b.price;
+      case 'price_desc':
+        return b.price - a.price;
+      case 'rarity_asc':
+        return (a.nri || 0) - (b.nri || 0);
+      case 'rarity_desc':
+        return (b.nri || 0) - (a.nri || 0);
+    }
   };
 }
 
@@ -50,6 +73,7 @@ export function ProfileBody(props) {
 
   return (
     <WithFilterPanel
+      style={props.style}
       showFilters={showFilters}
       onShowFiltersChange={showFilters => {
         setShowFilters(showFilters);
@@ -69,7 +93,7 @@ export function ProfileBody(props) {
               color: toniqColors.pageSecondary.foregroundColor,
             }}
           >
-            {props.nftCount} NFTs
+            {props.userNfts.length} NFTs
           </span>
           <ToniqDropdown
             style={{
@@ -88,12 +112,62 @@ export function ProfileBody(props) {
         </>
       }
     >
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '32px',
+          maxWidth: '100%',
+          paddingBottom: '32px',
+        }}
+      >
         {props.userNfts
           .filter(createFilterCallback(currentFilters, props.userCollections))
-          .map(userNft => (
-            <NftCard key={userNft.token}>{userNft.token}</NftCard>
-          ))}
+          .sort(createSortCallback(sort))
+          .map(userNft => {
+            const listing = userNft.listing ? (
+              <PriceICP price={userNft.listing.price} />
+            ) : (
+              'Unlisted'
+            );
+
+            return (
+              <NftCard imageUrl={userNft.image} key={userNft.token}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <span
+                    style={{
+                      marginBottom: '16px',
+                      marginTop: '16px',
+                      ...cssToReactStyleObject(toniqFontStyles.h3Font),
+                    }}
+                  >
+                    #{userNft.mintNumber}
+                  </span>
+                  <div style={{display: 'flex'}}>
+                    <div style={{flexGrow: 1}}>
+                      <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
+                        {listing}
+                      </span>
+                      <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
+                        {userNft.nri || ''}
+                      </span>
+                    </div>
+                    <ToniqButton
+                      style={{marginRight: '16px'}}
+                      className="toniq-button-secondary"
+                      text="Sell"
+                    />
+                    <ToniqButton text="Transfer" />
+                  </div>
+                </div>
+              </NftCard>
+            );
+          })}
       </div>
     </WithFilterPanel>
   );

@@ -3,8 +3,6 @@ import {cssToReactStyleObject, toniqFontStyles, toniqColors} from '@toniq-labs/d
 
 const filterOnTopBreakPoint = '@media (max-width: 800px)';
 
-console.log(String(toniqColors.pageTertiary.foregroundColor));
-
 export const profileStyles = makeStyles(() => ({
   breakpoints: {
     values: {
@@ -114,6 +112,7 @@ export const profileStyles = makeStyles(() => ({
     color: String(toniqColors.pageSecondary.foregroundColor),
   },
   tabList: {
+    marginTop: '16px',
     marginBottom: '16px',
   },
   collectionCardBriefWrapper: {
