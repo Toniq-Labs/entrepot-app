@@ -15,7 +15,7 @@ import {
   Search24Icon,
   ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
-import {NftCard} from '../components/shared/NftCard';
+import {NftCard} from '../shared/NftCard';
 import {
   ToniqIcon,
   ToniqChip,
@@ -26,7 +26,7 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
-import {WithFilterPanel} from '../components/shared/WithFilterPanel';
+import {WithFilterPanel} from '../shared/WithFilterPanel';
 import {ChipWithLabel} from '../shared/ChipWithLabel';
 
 function useInterval(callback, delay) {

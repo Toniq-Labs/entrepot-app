@@ -1,6 +1,6 @@
-import {NftCard} from '../../components/shared/NftCard';
+import {NftCard} from '../../shared/NftCard';
 import React from 'react';
-import {WithFilterPanel} from '../../components/shared/WithFilterPanel';
+import {WithFilterPanel} from '../../shared/WithFilterPanel';
 import {
   cssToReactStyleObject,
   toniqFontStyles,
@@ -297,7 +297,9 @@ export function ProfileBody(props) {
           display: 'flex',
           flexWrap: 'wrap',
           gap: '32px',
+          justifyContent: 'center',
           maxWidth: '100%',
+          backgroundColor: 'white',
           paddingBottom: '32px',
         }}
       >
