@@ -10,14 +10,12 @@ import {
 import {
   ToniqDropdown,
   ToniqButton,
-  ToniqSlider,
-  ToniqCheckbox,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import PriceICP from '../../components/PriceICP';
-import {SelectableNameWithCount} from '../../shared/SelectableNameWithCount';
 import {icpToString} from '../../components/PriceICP';
+import {ProfileFilters, nftFilterStatus} from './ProfileFilters';
 
-function createFilterCallback(currentFilters, collections) {
+function createFilterCallback(currentFilters) {
   return nft => {
     const price = Number(icpToString(nft.price, true, false));
 
@@ -36,8 +34,18 @@ function createFilterCallback(currentFilters, collections) {
       ? true
       : currentFilters.collections.includes(nft.collection.name);
 
-    const isListingShown = currentFilters.currentListings ? true : !nft.listing;
-    return isWithinPrice && isWithinMintNumber && isWithinCollection && isListingShown;
+    const matchesStatus =
+      currentFilters.status === nftFilterStatus.Unlisted
+        ? !nft.listing
+        : currentFilters.status === nftFilterStatus.ForSale
+        ? !!nft.listing
+        : currentFilters.status === nftFilterStatus.OffersReceived
+        ? !!nft.offers?.length
+        : true;
+
+    const checks = [isWithinPrice, isWithinMintNumber, isWithinCollection, matchesStatus];
+
+    return checks.every(check => check);
   };
 }
 
@@ -89,7 +97,7 @@ const sortOptions = [
 ];
 
 const initFilters = {
-  status: [],
+  status: nftFilterStatus.All,
   price: undefined,
   rarity: undefined,
   mintNumber: undefined,
@@ -97,14 +105,16 @@ const initFilters = {
   traits: [],
   allCollections: true,
   collections: [],
-  currentListings: true,
-  soldListings: false,
 };
 
 export function ProfileBody(props) {
   const [showFilters, setShowFilters] = React.useState(false);
   const [currentFilters, setCurrentFilters] = React.useState(initFilters);
   const [sort, setSort] = React.useState(defaultSortOption);
+
+  const filteredNfts = props.userNfts
+    .filter(createFilterCallback(currentFilters))
+    .sort(createSortCallback(sort));
 
   return (
     <WithFilterPanel
@@ -114,156 +124,13 @@ export function ProfileBody(props) {
         setShowFilters(showFilters);
       }}
       filterControlChildren={
-        <>
-          {props.nftFilterStats.price.min !== props.nftFilterStats.price.max && (
-            <div>
-              <div className="title">Listing Price</div>
-              <ToniqSlider
-                min={props.nftFilterStats.price.min}
-                max={props.nftFilterStats.price.max}
-                suffix="ICP"
-                step="0.01"
-                double={true}
-                value={currentFilters.price || props.nftFilterStats.price}
-                onValueChange={event => {
-                  const values = event.detail;
-                  setCurrentFilters({
-                    ...currentFilters,
-                    price: {
-                      ...values,
-                    },
-                  });
-                }}
-              />
-            </div>
-          )}
-          {props.nftFilterStats.rarity.min !== props.nftFilterStats.rarity.max && (
-            <div>
-              <div className="title">Rarity</div>
-              <ToniqSlider
-                min={props.nftFilterStats.rarity.min}
-                max={props.nftFilterStats.rarity.max}
-                suffix="%"
-                double={true}
-                value={currentFilters.rarity || props.nftFilterStats.rarity}
-                onValueChange={event => {
-                  const values = event.detail;
-                  setCurrentFilters({
-                    ...currentFilters,
-                    rarity: {
-                      ...values,
-                    },
-                  });
-                }}
-              />
-            </div>
-          )}
-          {props.nftFilterStats.mintNumber.min !== props.nftFilterStats.mintNumber.max > 1 && (
-            <div>
-              <div className="title">Mint #</div>
-              <ToniqSlider
-                min={props.nftFilterStats.mintNumber.min}
-                max={props.nftFilterStats.mintNumber.max}
-                double={true}
-                value={currentFilters.mintNumber || props.nftFilterStats.mintNumber}
-                onValueChange={event => {
-                  const values = event.detail;
-                  setCurrentFilters({
-                    ...currentFilters,
-                    mintNumber: {
-                      ...values,
-                    },
-                  });
-                }}
-              />
-            </div>
-          )}
-          {props.userCollections.length > 1 && (
-            <div>
-              <div className="title">Collections ({props.userCollections.length})</div>
-              <div
-                style={{
-                  borderBottom: `1px solid ${String(toniqColors.divider.foregroundColor)}`,
-                  paddingBottom: '24px',
-                }}
-              >
-                <SelectableNameWithCount
-                  title="All Collections"
-                  selected={currentFilters.allCollections}
-                  count={props.userNfts.length}
-                  onClick={() => {
-                    setCurrentFilters({
-                      ...currentFilters,
-                      allCollections: true,
-                      collections: [],
-                    });
-                  }}
-                />
-              </div>
-              <div style={{paddingTop: '32px'}}>
-                {props.userCollections
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map(collection => {
-                    return (
-                      <SelectableNameWithCount
-                        title={collection.name}
-                        imageUrl={collection.avatar}
-                        selected={currentFilters.collections.includes(collection.name)}
-                        count={props.nftFilterStats.collections[collection.name]}
-                        onClick={() => {
-                          const isAlreadyIncluded = currentFilters.collections.includes(
-                            collection.name,
-                          );
-
-                          const newCollections = isAlreadyIncluded
-                            ? currentFilters.collections.filter(collectionName => {
-                                return collectionName !== collection.name;
-                              })
-                            : currentFilters.collections.concat(collection.name);
-
-                          setCurrentFilters({
-                            ...currentFilters,
-                            allCollections: !newCollections.length,
-                            collections: newCollections,
-                          });
-                        }}
-                      />
-                    );
-                  })}
-              </div>
-            </div>
-          )}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-          >
-            <ToniqCheckbox
-              checked={currentFilters.currentListings}
-              text="Current Listings"
-              onCheckedChange={event => {
-                const value = event.detail;
-                setCurrentFilters({
-                  ...currentFilters,
-                  currentListings: value,
-                });
-              }}
-            />
-            <ToniqCheckbox
-              checked={currentFilters.soldListings}
-              text="Sold Listings"
-              onCheckedChange={event => {
-                const value = event.detail;
-                setCurrentFilters({
-                  ...currentFilters,
-                  soldListings: value,
-                });
-              }}
-            />
-          </div>
-        </>
+        <ProfileFilters
+          userCollections={props.userCollections}
+          userNfts={props.userNfts}
+          nftFilterStats={props.nftFilterStats}
+          updateFilters={setCurrentFilters}
+          filters={currentFilters}
+        />
       }
       otherControlsChildren={
         <>
@@ -273,7 +140,7 @@ export function ProfileBody(props) {
               color: toniqColors.pageSecondary.foregroundColor,
             }}
           >
-            {props.userNfts.length} NFTs
+            {filteredNfts.length} NFTs
           </span>
           <ToniqDropdown
             style={{
@@ -303,53 +170,60 @@ export function ProfileBody(props) {
           paddingBottom: '32px',
         }}
       >
-        {props.userNfts
-          .filter(createFilterCallback(currentFilters, props.userCollections))
-          .sort(createSortCallback(sort))
-          .map(userNft => {
-            const listing = userNft.listing ? (
-              <PriceICP price={userNft.listing.price} />
-            ) : (
-              'Unlisted'
-            );
+        {filteredNfts.map(userNft => {
+          const listing = userNft.listing ? <PriceICP price={userNft.listing.price} /> : 'Unlisted';
 
-            return (
-              <NftCard imageUrl={userNft.image} key={userNft.token}>
-                <div
+          return (
+            <NftCard imageUrl={userNft.image} key={userNft.token}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <span
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
+                    marginBottom: '16px',
+                    marginTop: '16px',
+                    ...cssToReactStyleObject(toniqFontStyles.h3Font),
                   }}
                 >
-                  <span
-                    style={{
-                      marginBottom: '16px',
-                      marginTop: '16px',
-                      ...cssToReactStyleObject(toniqFontStyles.h3Font),
-                    }}
-                  >
-                    #{userNft.mintNumber}
-                  </span>
-                  <div style={{display: 'flex'}}>
-                    <div style={{flexGrow: 1}}>
-                      <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
-                        {listing}
-                      </span>
-                      <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
-                        {userNft.nri || ''}
-                      </span>
-                    </div>
-                    <ToniqButton
-                      style={{marginRight: '16px'}}
-                      className="toniq-button-secondary"
-                      text="Sell"
-                    />
-                    <ToniqButton text="Transfer" />
+                  #{userNft.mintNumber}
+                </span>
+                <div style={{display: 'flex'}}>
+                  <div style={{flexGrow: 1}}>
+                    <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
+                      {listing}
+                    </span>
+                    <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
+                      {userNft.nri || ''}
+                    </span>
                   </div>
+                  <ToniqButton
+                    style={{marginRight: '16px'}}
+                    className="toniq-button-secondary"
+                    text="Sell"
+                    onClick={() => {
+                      props.onSellClick({
+                        id: userNft.token,
+                        listing: userNft.listing,
+                      });
+                    }}
+                  />
+                  <ToniqButton
+                    text="Transfer"
+                    onClick={() => {
+                      props.onTransferClick({
+                        id: userNft.token,
+                        listing: userNft.listing,
+                      });
+                    }}
+                  />
                 </div>
-              </NftCard>
-            );
-          })}
+              </div>
+            </NftCard>
+          );
+        })}
       </div>
     </WithFilterPanel>
   );

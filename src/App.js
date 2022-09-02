@@ -982,6 +982,8 @@ export default function App() {
                     exact
                     element={
                       <Profile
+                        onSellClick={listNft}
+                        onTransferClick={transferNft}
                         loader={loader}
                         identity={identity}
                         account={accounts.length > 0 ? accounts[currentAccount] : false}
@@ -994,6 +996,8 @@ export default function App() {
                     exact
                     element={
                       <Profile
+                        onSellClick={listNft}
+                        onTransferClick={transferNft}
                         loader={loader}
                         identity={identity}
                         account={accounts.length > 0 ? accounts[currentAccount] : false}

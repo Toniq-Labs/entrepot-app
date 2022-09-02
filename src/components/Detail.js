@@ -445,7 +445,7 @@ const Detail = (props) => {
                           <>
                             <div style={{ display: "flex", alignItems: "center" }}>
                               <PriceICP large={true} volume={true} clean={false} size={20} price={getPriceData()} />
-                              <span style={{ ...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginLeft: "8px" }}>(<PriceUSD price={EntrepotGetICPUSD(getPriceData())} />)</span>
+                              <span style={{ ...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginLeft: "8px" }}>{typeof EntrepotGetICPUSD(getPriceData()) === 'number' ? (<PriceUSD price={EntrepotGetICPUSD(getPriceData())} />) : ''}</span>
                             </div>
                           </> : 
                           <>

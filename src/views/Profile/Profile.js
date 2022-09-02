@@ -114,6 +114,8 @@ export function Profile(props) {
           </div>
         ) : (
           <ProfileBody
+            onSellClick={props.onSellClick}
+            onTransferClick={props.onTransferClick}
             style={{flexGrow: 1, maxWidth: '100%'}}
             nftFilterStats={nftFilterStats}
             userNfts={userNfts}
