@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, makeStyles} from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import getGenes from "./CronicStats.js";
 import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
@@ -72,6 +72,10 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: "#00D093",
         color: "#FFFFFF"
       },
+      "&:checked ~ .traitsAccordion": {
+        maxHeight: "3000px",
+        overflow: "visible",
+      },
     }
   },
   traitCategory: {
@@ -87,6 +91,24 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: "#F1F3F6",
       ...cssToReactStyleObject(toniqFontStyles.boldLabelFont),
     }
+  },
+  traitsWrapper: {
+    display: "grid",
+    gap: "16px",
+  },
+  traitsContainer: {
+    display: "grid",
+    gap: "32px",
+    margin: "32px 0px",
+    [theme.breakpoints.down("sm")]: {
+      gap: "16px",
+      margin: "16px 0px",
+		},
+  },
+  traitsAccordion: {
+    maxHeight: "0",
+    transition: "max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)",
+    overflow: "hidden",
   },
 }));
 
@@ -198,6 +220,7 @@ export default function Listings(props) {
   const [showFilters, setShowFilters] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
+  const queryTrait = searchParams.get('searchTrait') || '';
   const [sort, setSort] = useState(defaultSortOption);
   const [page, setPage] = useState(1);
   const [currentFilters, setCurrentFilters] = useState({
@@ -279,8 +302,7 @@ export default function Listings(props) {
           category: trait[1],
           values: trait[2].map((trait) => {
             return trait[1];
-          }),
-          isOpen: false,
+          })
         };
       })
       setTraitsCategories(traitsCategories);
@@ -310,7 +332,8 @@ export default function Listings(props) {
             canister,
             traits
           }
-        })
+        });
+
       setListings(listings);
     } catch(e) {};
   };
@@ -320,7 +343,7 @@ export default function Listings(props) {
     .filter(listing => {
       return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
     });
-  
+
   const lowestPrice = filteredStatusListings.reduce((lowest, listing) => {
     const currentValue = listing.price;
     if (currentValue < lowest) {
@@ -569,19 +592,50 @@ export default function Listings(props) {
                         <input
                           id={traitsCategory.category}
                           type="checkbox"
-                          onChange={() => {
-                            var currentCategory = traitsCategories;
-                            currentCategory[index] = {
-                              ...currentCategory[index],
-                              isOpen: !currentCategory[index].isOpen,
-                            }
-                            setTraitsCategories(currentCategory);
-                          }}
                         />
                         <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
                           <span>{traitsCategory.category}</span>
                           <span className={classes.traitCategoryCounter}>{traitsCategory.values.length}</span>
                         </label>
+                        <div className={`${classes.traitsAccordion} traitsAccordion`}>
+                          <div className={classes.traitsContainer}>
+                            {
+                              traitsCategory.values.length > 10 ? 
+                              <ToniqInput
+                                value={queryTrait}
+                                style={{
+                                  width: '100%',
+                                  boxSizing: 'border-box',
+                                }}
+                                placeholder="Search..."
+                                icon={Search24Icon}
+                                onValueChange={event => {
+                                  const searchTrait = event.detail;
+                                  if (searchTrait) {
+                                    setSearchParams({searchTrait});
+                                  } else {
+                                    setSearchParams({});
+                                  }
+                                }}
+                              /> : ""
+                            }
+                            <div className={classes.traitsWrapper}>
+                              {
+                                traitsCategory.values.filter((trait) => {
+                                  const inQuery = trait
+                                    .toString()
+                                    .toLowerCase()
+                                    .indexOf(queryTrait.toLowerCase()) >= 0;
+                                  return (queryTrait === '' || inQuery);
+                                }).map((trait) => {
+                                  return (
+                                    <ToniqCheckbox key={`${trait}-${index}`} text={trait} />
+                                  )
+                                })
+                              }
+                            </div>
+                          </div>
+                        </div>
                       </Grid>
                     )
                   })}
@@ -625,7 +679,7 @@ export default function Listings(props) {
         >
           {
             filteredAndSortedListings.length ?
-              <Grid container spacing={2}>
+              <Grid container spacing={2} style={{ margin: "0 16px" }}>
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item style={{ padding: "16px", background: "#FFF", ...cssToReactStyleObject(toniqShadows.popupShadow), }}>
