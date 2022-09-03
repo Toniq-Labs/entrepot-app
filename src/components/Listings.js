@@ -56,11 +56,12 @@ const useDidMountEffect = (func, deps) => {
     useEffect(() => {
         if (didMount.current) func();
         else didMount.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 }
 
 const _isCanister = c => {
-  return c.length == 27 && c.split("-").length == 5;
+  return c.length === 27 && c.split("-").length === 5;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -199,6 +200,20 @@ function doesCollectionPassFilters(listing, currentFilters) {
       return false;
     }
   }
+
+  if (currentFilters.traits.values.length) {
+    return currentFilters.traits.values.reduce((currentCategory, category) => {
+      const categoryIndex = listing.traits.findIndex((listingTrait) => {
+        return listingTrait.category === category.category;
+      })
+
+      const trait = category.values.reduce((currentTrait, trait) => {
+        return currentTrait || trait === listing.traits[categoryIndex].value
+      }, false);
+
+      return currentCategory && trait;
+    }, true);
+  }
   return true;
 }
 
@@ -240,6 +255,10 @@ export default function Listings(props) {
       range: undefined,
       type: 'mintNumber',
     },
+    traits: {
+      values: [],
+      type: 'traits',
+    }
   });
 
   const navigate = useNavigate();
@@ -260,7 +279,7 @@ export default function Listings(props) {
   };
 
   var filterHooks = [];
-  if (collection.route == 'cronics'){
+  if (collection.route === 'cronics'){
     filterHooks.push((results) => {
       return results.filter(result => {
         for(var i = 0; i < cronicFilterTraits.length; i++){        
@@ -308,17 +327,18 @@ export default function Listings(props) {
       setTraitsCategories(traitsCategories);
 
       var listings = result
-        .map((listing) => {
+        .map((listing, listingIndex) => {
           const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
           const { index, canister} = extjs.decodeTokenId(tokenid);
           const rarity = (getNri(canister, index) * 100).toFixed(1);
           const mintNumber = EntrepotNFTMintNumber(canister, index);
-          const traits = traitsData[1][index][1].map((trait) => {
+
+          const traits = traitsData[1][listingIndex][1].map((trait) => {
             const traitCategory = trait[0];
             const traitValue = trait[1];
             return {
               category: traitsCategories[traitCategory].category,
-              values: traitsCategories[traitCategory].values[traitValue],
+              value: traitsCategories[traitCategory].values[traitValue],
             }
           })
 
@@ -629,7 +649,39 @@ export default function Listings(props) {
                                   return (queryTrait === '' || inQuery);
                                 }).map((trait) => {
                                   return (
-                                    <ToniqCheckbox key={`${trait}-${index}`} text={trait} />
+                                    <ToniqCheckbox
+                                      key={`${trait}-${index}`}
+                                      text={trait}
+                                      onCheckedChange={event => {
+                                        const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                          return trait.category === traitsCategory.category;
+                                        })
+                                        if (event.detail) {
+                                          if (traitIndex !== -1) {
+                                            if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
+                                          } else {
+                                            currentFilters.traits.values.push({
+                                              category: traitsCategory.category,
+                                              values: [trait],
+                                            });
+                                          }
+                                        } else {
+                                          if (traitIndex !== -1) {
+                                            const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                              return value === trait;
+                                            })
+                                            currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                          }
+                                        }
+                                        setCurrentFilters({
+                                          ...currentFilters,
+                                          traits: {
+                                            ...currentFilters.traits,
+                                            values: currentFilters.traits.values,
+                                          },
+                                        });
+                                      }}
+                                    />
                                   )
                                 })
                               }
