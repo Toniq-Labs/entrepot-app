@@ -28,6 +28,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import getNri from "../ic/nftv.js";
 import orderBy from "lodash.orderby";
 import LazyLoad from 'react-lazyload';
+import { getEXTID } from "../utilities/load-tokens.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -431,23 +432,6 @@ export default function Listings(props) {
     [sort.value.sort]
   );
 
-  var toWrappedMap = {
-    "qcg3w-tyaaa-aaaah-qakea-cai" : "bxdf4-baaaa-aaaah-qaruq-cai",
-    "4nvhy-3qaaa-aaaah-qcnoq-cai" : "y3b7h-siaaa-aaaah-qcnwa-cai",
-    "d3ttm-qaaaa-aaaai-qam4a-cai" : "3db6u-aiaaa-aaaah-qbjbq-cai",
-    "xkbqi-2qaaa-aaaah-qbpqq-cai" : "q6hjz-kyaaa-aaaah-qcama-cai",
-    "fl5nr-xiaaa-aaaai-qbjmq-cai" : "jeghr-iaaaa-aaaah-qco7q-cai"
-  };
-
-  const getEXTCanister = canister => {
-    if (toWrappedMap.hasOwnProperty(canister)) return toWrappedMap[canister];
-    else return canister;
-  };
-
-  const getEXTID = listing => {
-    return extjs.encodeTokenId(getEXTCanister(listing.canister), listing.index);
-  };
-
   useInterval(_updates, 10 * 1000);
 
   useEffect(() => {
@@ -670,7 +654,12 @@ export default function Listings(props) {
                                             const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
                                               return value === trait;
                                             })
-                                            currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                            
+                                            if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                              currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                            } else {
+                                              currentFilters.traits.values.splice(traitIndex, 1)
+                                            }
                                           }
                                         }
                                         setCurrentFilters({
@@ -737,7 +726,7 @@ export default function Listings(props) {
                     <Grid key={index} item style={{ padding: "16px", background: "#FFF", ...cssToReactStyleObject(toniqShadows.popupShadow), }}>
                       <LazyLoad  offset={100}>
                         {/* TODO: Create NFT Individual Card component */}
-                        <Link to={`/marketplace/asset/` + getEXTID(listing)}>
+                        <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)}>
                           <span>{listing.mintNumber}</span>
                         </Link>
                         {/* TODO: Create NFT Individual Card component */}
