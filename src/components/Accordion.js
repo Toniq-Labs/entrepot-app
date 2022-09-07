@@ -17,7 +17,7 @@ export function Accordion(props) {
 			header: {
 				display: "flex",
 				position: "relative",
-				justifyContent: "center",
+				justifyContent: props.center ? "center": "left",
 				cursor: "pointer",
 				borderRadius: "8px",
 				...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
@@ -26,7 +26,6 @@ export function Accordion(props) {
 				maxHeight: "0",
 				transition: "max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)",
 				overflow: "hidden",
-				paddingBottom: "16px",
 			},
 			icon: {
 				position: "absolute",

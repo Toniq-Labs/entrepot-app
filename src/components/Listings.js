@@ -16,6 +16,8 @@ import {
   Search24Icon,
   ArrowsSort24Icon,
   toniqShadows,
+  LayoutGrid24Icon,
+  GridDots24Icon,
 } from '@toniq-labs/design-system';
 import {
   ToniqInput,
@@ -23,12 +25,14 @@ import {
   ToniqToggleButton,
   ToniqSlider,
   ToniqCheckbox,
+  ToniqIcon,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { Link, useSearchParams } from "react-router-dom";
 import getNri from "../ic/nftv.js";
 import orderBy from "lodash.orderby";
 import LazyLoad from 'react-lazyload';
 import { getEXTID } from "../utilities/load-tokens.js";
+import { Accordion } from "./Accordion.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -112,6 +116,9 @@ const useStyles = makeStyles(theme => ({
     transition: "max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)",
     overflow: "hidden",
   },
+  gridControl: {
+    cursor: "pointer",
+  }
 }));
 
 const defaultSortOption = {
@@ -239,6 +246,7 @@ export default function Listings(props) {
   const queryTrait = searchParams.get('searchTrait') || '';
   const [sort, setSort] = useState(defaultSortOption);
   const [page, setPage] = useState(1);
+  const [gridSize, setGridSize] = useState('large');
   const [currentFilters, setCurrentFilters] = useState({
     status: {
       range: undefined,
@@ -468,24 +476,45 @@ export default function Listings(props) {
           <StyledTab value="nfts" label="NFTs" />
           <StyledTab value="activity" label="Activity" />
         </StyledTabs>
-        <ToniqInput
-          value={query}
-          style={{
-            '--toniq-accent-tertiary-background-color': 'transparent',
-            maxWidth: '300px',
-            boxSizing: 'border-box',
-          }}
-          placeholder="Search for mint # or token ID"
-          icon={Search24Icon}
-          onValueChange={event => {
-            const search = event.detail;
-            if (search) {
-              setSearchParams({search});
-            } else {
-              setSearchParams({});
-            }
-          }}
-        />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <ToniqInput
+            value={query}
+            style={{
+              '--toniq-accent-tertiary-background-color': 'transparent',
+              maxWidth: '300px',
+              boxSizing: 'border-box',
+              flexGrow: '1',
+            }}
+            placeholder="Search for mint # or token ID"
+            icon={Search24Icon}
+            onValueChange={event => {
+              const search = event.detail;
+              if (search) {
+                setSearchParams({search});
+              } else {
+                setSearchParams({});
+              }
+            }}
+          />
+          <div style={{ display: "flex", gap: "16px" }}>
+            <ToniqIcon
+              icon={LayoutGrid24Icon}
+              onClick={() => {
+                setGridSize('large')
+              }}
+              style={{ color: gridSize === 'large' ? '#000000': 'gray' }}
+              className={classes.gridControl}
+            />
+            <ToniqIcon
+              icon={GridDots24Icon}
+              onClick={() => {
+                setGridSize('small')
+              }}
+              style={{ color: gridSize !== 'large' ? '#000000': 'gray' }}
+              className={classes.gridControl}
+            />
+          </div>
+        </div>
         <WithFilterPanel
           showFilters={showFilters}
           onShowFiltersChange={newShowFilters => {
@@ -497,190 +526,203 @@ export default function Listings(props) {
           filterControlChildren={
             <>
               <div>
-                <div className="title">Status</div>
-                <ToniqToggleButton
-                  text="For Sale"
-                  active={currentFilters.status.type === filterTypes.status.forSale}
-                  onClick={() => {
-                    setCurrentFilters({
-                      ...currentFilters,
-                      status: {
-                        ...currentFilters.status,
-                        type: filterTypes.status.forSale,
-                      },
-                    });
-                  }}
-                />
-                <ToniqToggleButton
-                  text="Entire Collection"
-                  active={currentFilters.status.type === filterTypes.status.entireCollection}
-                  onClick={() => {
-                    setCurrentFilters({
-                      ...currentFilters,
-                      status: {
-                        ...currentFilters.status,
-                        type: filterTypes.status.entireCollection,
-                      },
-                    });
-                  }}
-                />
+                <Accordion title="Status" open={true}>
+                  <div style={{ margin: "32px 0" }}>
+                    <ToniqToggleButton
+                      text="For Sale"
+                      active={currentFilters.status.type === filterTypes.status.forSale}
+                      onClick={() => {
+                        setCurrentFilters({
+                          ...currentFilters,
+                          status: {
+                            ...currentFilters.status,
+                            type: filterTypes.status.forSale,
+                          },
+                        });
+                      }}
+                    />
+                    <ToniqToggleButton
+                      text="Entire Collection"
+                      active={currentFilters.status.type === filterTypes.status.entireCollection}
+                      onClick={() => {
+                        setCurrentFilters({
+                          ...currentFilters,
+                          status: {
+                            ...currentFilters.status,
+                            type: filterTypes.status.entireCollection,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                </Accordion>
               </div>
               <div>
-                <div className="title">Price</div>
-                <ToniqSlider
-                  logScale={true}
-                  min={priceRanges[currentFilters.price.type].min}
-                  max={priceRanges[currentFilters.price.type].max}
-                  suffix="ICP"
-                  double={true}
-                  value={currentFilters.price.range || priceRanges[currentFilters.price]}
-                  onValueChange={event => {
-                    const values = event.detail;
-                    setCurrentFilters({
-                      ...currentFilters,
-                      price: {
-                        ...currentFilters.price,
-                        range: values,
-                      },
-                    });
-                  }}
-                />
+                <Accordion title="Price" open={true}>
+                  <div style={{ margin: "32px 0" }}>
+                    <ToniqSlider
+                      logScale={true}
+                      min={priceRanges[currentFilters.price.type].min}
+                      max={priceRanges[currentFilters.price.type].max}
+                      suffix="ICP"
+                      double={true}
+                      value={currentFilters.price.range || priceRanges[currentFilters.price]}
+                      onValueChange={event => {
+                        const values = event.detail;
+                        setCurrentFilters({
+                          ...currentFilters,
+                          price: {
+                            ...currentFilters.price,
+                            range: values,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                </Accordion>
               </div>
               <div>
-                <div className="title">Rarity</div>
-                <ToniqSlider
-                  logScale={true}
-                  min={priceRanges[currentFilters.rarity.type].min}
-                  max={priceRanges[currentFilters.rarity.type].max}
-                  suffix="%"
-                  double={true}
-                  value={currentFilters.rarity.range || priceRanges[currentFilters.rarity.type]}
-                  onValueChange={event => {
-                    const values = event.detail;
-                    setCurrentFilters({
-                      ...currentFilters,
-                      rarity: {
-                        ...currentFilters.rarity,
-                        range: values,
-                      },
-                    });
-                  }}
-                />
+                <Accordion title="Rarity" open={true}>
+                  <div style={{ margin: "32px 0" }}>
+                    <ToniqSlider
+                      logScale={true}
+                      min={priceRanges[currentFilters.rarity.type].min}
+                      max={priceRanges[currentFilters.rarity.type].max}
+                      suffix="%"
+                      double={true}
+                      value={currentFilters.rarity.range || priceRanges[currentFilters.rarity.type]}
+                      onValueChange={event => {
+                        const values = event.detail;
+                        setCurrentFilters({
+                          ...currentFilters,
+                          rarity: {
+                            ...currentFilters.rarity,
+                            range: values,
+                          },
+                        });
+                      }}
+                    />
+                    </div>
+                  </Accordion>
               </div>
               <div>
-                <div className="title">Mint #</div>
-                <ToniqSlider
-                  logScale={true}
-                  min={priceRanges[currentFilters.mintNumber.type].min}
-                  max={priceRanges[currentFilters.mintNumber.type].max}
-                  double={true}
-                  value={currentFilters.mintNumber.range || priceRanges[currentFilters.mintNumber.type]}
-                  onValueChange={event => {
-                    const values = event.detail;
-                    setCurrentFilters({
-                      ...currentFilters,
-                      mintNumber: {
-                        ...currentFilters.mintNumber,
-                        range: values,
-                      },
-                    });
-                  }}
-                />
+                <Accordion title="Mint #" open={true}>
+                  <div style={{ margin: "32px 0" }}>
+                    <ToniqSlider
+                      logScale={true}
+                      min={priceRanges[currentFilters.mintNumber.type].min}
+                      max={priceRanges[currentFilters.mintNumber.type].max}
+                      double={true}
+                      value={currentFilters.mintNumber.range || priceRanges[currentFilters.mintNumber.type]}
+                      onValueChange={event => {
+                        const values = event.detail;
+                        setCurrentFilters({
+                          ...currentFilters,
+                          mintNumber: {
+                            ...currentFilters.mintNumber,
+                            range: values,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                </Accordion>
               </div>
               <div>
-                <div className="title">Traits ({traitsCategories.length})</div>
-                <Grid container spacing={2}>
-                  {traitsCategories.map((traitsCategory, index) => {
-                    return (
-                      <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
-                        <input
-                          id={traitsCategory.category}
-                          type="checkbox"
-                        />
-                        <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
-                          <span>{traitsCategory.category}</span>
-                          <span className={classes.traitCategoryCounter}>{traitsCategory.values.length}</span>
-                        </label>
-                        <div className={`${classes.traitsAccordion} traitsAccordion`}>
-                          <div className={classes.traitsContainer}>
-                            {
-                              traitsCategory.values.length > 10 ? 
-                              <ToniqInput
-                                value={queryTrait}
-                                style={{
-                                  width: '100%',
-                                  boxSizing: 'border-box',
-                                }}
-                                placeholder="Search..."
-                                icon={Search24Icon}
-                                onValueChange={event => {
-                                  const searchTrait = event.detail;
-                                  if (searchTrait) {
-                                    setSearchParams({searchTrait});
-                                  } else {
-                                    setSearchParams({});
-                                  }
-                                }}
-                              /> : ""
-                            }
-                            <div className={classes.traitsWrapper}>
+                <Accordion title={`Traits (${traitsCategories.length})`} open={true}>
+                  <Grid container spacing={2} style={{ margin: "32px 0" }}>
+                    {traitsCategories.map((traitsCategory, index) => {
+                      return (
+                        <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                          <input
+                            id={traitsCategory.category}
+                            type="checkbox"
+                          />
+                          <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
+                            <span>{traitsCategory.category}</span>
+                            <span className={classes.traitCategoryCounter}>{traitsCategory.values.length}</span>
+                          </label>
+                          <div className={`${classes.traitsAccordion} traitsAccordion`}>
+                            <div className={classes.traitsContainer}>
                               {
-                                traitsCategory.values.filter((trait) => {
-                                  const inQuery = trait
-                                    .toString()
-                                    .toLowerCase()
-                                    .indexOf(queryTrait.toLowerCase()) >= 0;
-                                  return (queryTrait === '' || inQuery);
-                                }).map((trait) => {
-                                  return (
-                                    <ToniqCheckbox
-                                      key={`${trait}-${index}`}
-                                      text={trait}
-                                      onCheckedChange={event => {
-                                        const traitIndex = currentFilters.traits.values.findIndex((trait) => {
-                                          return trait.category === traitsCategory.category;
-                                        })
-                                        if (event.detail) {
-                                          if (traitIndex !== -1) {
-                                            if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
-                                          } else {
-                                            currentFilters.traits.values.push({
-                                              category: traitsCategory.category,
-                                              values: [trait],
-                                            });
-                                          }
-                                        } else {
-                                          if (traitIndex !== -1) {
-                                            const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
-                                              return value === trait;
-                                            })
-                                            
-                                            if (currentFilters.traits.values[traitIndex].values.length !== 1) {
-                                              currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                traitsCategory.values.length > 10 ? 
+                                <ToniqInput
+                                  value={queryTrait}
+                                  style={{
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                  }}
+                                  placeholder="Search..."
+                                  icon={Search24Icon}
+                                  onValueChange={event => {
+                                    const searchTrait = event.detail;
+                                    if (searchTrait) {
+                                      setSearchParams({searchTrait});
+                                    } else {
+                                      setSearchParams({});
+                                    }
+                                  }}
+                                /> : ""
+                              }
+                              <div className={classes.traitsWrapper}>
+                                {
+                                  traitsCategory.values.filter((trait) => {
+                                    const inQuery = trait
+                                      .toString()
+                                      .toLowerCase()
+                                      .indexOf(queryTrait.toLowerCase()) >= 0;
+                                    return (queryTrait === '' || inQuery);
+                                  }).map((trait) => {
+                                    return (
+                                      <ToniqCheckbox
+                                        key={`${trait}-${index}`}
+                                        text={trait}
+                                        onCheckedChange={event => {
+                                          const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                            return trait.category === traitsCategory.category;
+                                          })
+                                          if (event.detail) {
+                                            if (traitIndex !== -1) {
+                                              if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
                                             } else {
-                                              currentFilters.traits.values.splice(traitIndex, 1)
+                                              currentFilters.traits.values.push({
+                                                category: traitsCategory.category,
+                                                values: [trait],
+                                              });
+                                            }
+                                          } else {
+                                            if (traitIndex !== -1) {
+                                              const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                                return value === trait;
+                                              })
+                                              
+                                              if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                                currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                              } else {
+                                                currentFilters.traits.values.splice(traitIndex, 1)
+                                              }
                                             }
                                           }
-                                        }
-                                        setCurrentFilters({
-                                          ...currentFilters,
-                                          traits: {
-                                            ...currentFilters.traits,
-                                            values: currentFilters.traits.values,
-                                          },
-                                        });
-                                      }}
-                                    />
-                                  )
-                                })
-                              }
+                                          setCurrentFilters({
+                                            ...currentFilters,
+                                            traits: {
+                                              ...currentFilters.traits,
+                                              values: currentFilters.traits.values,
+                                            },
+                                          });
+                                        }}
+                                      />
+                                    )
+                                  })
+                                }
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Grid>
-                    )
-                  })}
-                </Grid>
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
+                </Accordion>
               </div>
               <Grid container spacing={2}>
                 <Grid item xs={12}>

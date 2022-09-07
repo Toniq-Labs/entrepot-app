@@ -511,8 +511,8 @@ const Detail = (props) => {
                 </Grid>
               </Grid>
             </Box>
-            <Box style={{ paddingTop: "16px" }}>
-              <Accordion title="Offers" open={true}>
+            <Box style={{ display: "grid", gap: "16px", paddingTop: "16px" }}>
+              <Accordion title="Offers" open={true} center={true}>
                 {
                   offerListing ? (
                     <>
@@ -606,7 +606,7 @@ const Detail = (props) => {
                 )}
                 
               </Accordion>
-              <Accordion title="Attributes" open={true}>
+              <Accordion title="Attributes" open={true} center={true}>
                 {
                   attributes ? (
                     <>
@@ -648,7 +648,7 @@ const Detail = (props) => {
                     </Grid>
                   )}
               </Accordion>
-              <Accordion title="History" open={true}>
+              <Accordion title="History" open={true} center={true}>
               {
                   history ? (
                     <>
