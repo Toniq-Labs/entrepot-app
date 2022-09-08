@@ -37,6 +37,7 @@ export function NftCard(props) {
     background-color: ${toniqColors.pagePrimary.backgroundColor};
     border: 1px solid ${hovered ? toniqColors.pageInteraction.foregroundColor : css`transparent`};
     padding: 16px;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
