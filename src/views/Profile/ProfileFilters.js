@@ -4,20 +4,14 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {toniqColors} from '@toniq-labs/design-system';
 import {SelectableNameWithCount} from '../../shared/SelectableNameWithCount';
-
-export const nftFilterStatus = {
-  All: 'All',
-  Unlisted: 'Unlisted',
-  ForSale: 'For Sale',
-  OffersReceived: 'Offers Received',
-};
+import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 
 export function ProfileFilters(props) {
   return (
     <>
       <div>
         <div className="title">Status</div>
-        {Object.values(nftFilterStatus).map(filterStatus => {
+        {Object.values(nftStatusesByTab[props.currentTab]).map(filterStatus => {
           return (
             <ToniqToggleButton
               key={filterStatus}
@@ -126,7 +120,12 @@ export function ProfileFilters(props) {
                   <SelectableNameWithCount
                     key={collection.name}
                     title={collection.name}
-                    imageUrl={collection.avatar}
+                    imageUrl={
+                      collection.avatar ||
+                      (collection.hasOwnProperty('collection') && collection.collection
+                        ? collection.collection
+                        : '/collections/' + collection.canister + '.jpg')
+                    }
                     selected={props.filters.collections.includes(collection.name)}
                     count={props.nftFilterStats.collections[collection.name]}
                     onClick={() => {

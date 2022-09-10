@@ -4,7 +4,7 @@ import {loadAllUserTokens, getEXTCanister, getEXTID, nftIdToNft} from '../../uti
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import getNri from '../../ic/nftv.js';
 import {createNftFilterStats, blankNftFilterStats} from './ProfileNftStats';
-import {ProfileTabs} from './ProfileTabs';
+import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -39,13 +39,12 @@ async function includeCollections(nftsObject, allCollections) {
     });
 
     const allowedNfts = nfts.filter(nft => allowedCanistersSet.has(nft.canister));
-
-    const finalUserNfts = await Promise.all(allowedNfts.map(nft => getNftData(nft, collections)));
+    console.log('what now');
 
     accum[type] = {
-      nfts: finalUserNfts,
+      nfts: allowedNfts,
       collections,
-      stats: createNftFilterStats(finalUserNfts),
+      stats: createNftFilterStats(allowedNfts),
     };
 
     return accum;
@@ -55,10 +54,10 @@ async function includeCollections(nftsObject, allCollections) {
 export async function loadProfileNftsAndCollections(address, identity, allCollections) {
   const allNftsSets = await includeCollections(
     {
-      [ProfileTabs.MyNfts]: await getOwnedNfts(address, identity),
+      [ProfileTabs.MyNfts]: await getOwnedNfts(address, identity, allCollections),
       [ProfileTabs.Watching]: [
-        ...(await getFavoritesNfts(address, identity)),
-        ...(await getOffersMadeNfts(address, identity)),
+        ...(await getFavoritesNfts(address, identity, allCollections)),
+        ...(await getOffersMadeNfts(address, identity, allCollections)),
       ],
     },
     allCollections,
@@ -67,31 +66,66 @@ export async function loadProfileNftsAndCollections(address, identity, allCollec
   return allNftsSets;
 }
 
-async function getOwnedNfts(address, identity) {
-  const allUserNfts = (
-    await Promise.all([loadAllUserTokens(address, identity.getPrincipal().toText())])
-  ).flat();
+async function getOwnedNfts(address, identity, collections) {
+  const allUserNfts = await Promise.all(
+    (await Promise.all([loadAllUserTokens(address, identity.getPrincipal().toText())]))
+      .flat()
+      .map(async nft => {
+        console.log('setting status');
+        const nftWithData = await getNftData(nft, collections);
+        return {
+          ...nftWithData,
+          statuses: new Set(
+            [
+              nftWithData.listing
+                ? nftStatusesByTab[ProfileTabs.MyNfts].ForSale
+                : nftStatusesByTab[ProfileTabs.MyNfts].Unlisted,
+              nftWithData.offers?.length
+                ? nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived
+                : undefined,
+            ].filter(a => !!a),
+          ),
+        };
+      }),
+  );
 
   return allUserNfts;
 }
 
-async function getOffersMadeNfts(address, identity) {
+async function getOffersMadeNfts(address, identity, collections) {
   const offersMadeNftIds = await extjs
     .connect('https://boundary.ic0.app/', identity)
     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
     .offered();
-  const offersMadeNfts = offersMadeNftIds.map(nftId => nftIdToNft(address, nftId));
+  const offersMadeNfts = await Promise.all(
+    offersMadeNftIds.map(async nftId => {
+      const nft = nftIdToNft(address, nftId);
+      const nftWithData = await getNftData(nft, collections);
+      return {
+        ...nftWithData,
+        statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].OffersMade]),
+      };
+    }),
+  );
   console.log('offers made here');
   return offersMadeNfts;
 }
 
-async function getFavoritesNfts(address, identity) {
+async function getFavoritesNfts(address, identity, collections) {
   const favoriteNftIds = await extjs
     .connect('https://boundary.ic0.app/', identity)
     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
     .liked();
-  const favoriteNfts = favoriteNftIds.map(nftId => nftIdToNft(address, nftId));
-  console.log('favorites here');
+  const favoriteNfts = await Promise.all(
+    favoriteNftIds.map(async nftId => {
+      const nft = nftIdToNft(address, nftId);
+      const nftWithData = await getNftData(nft, collections);
+      return {
+        ...nftWithData,
+        statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].Favorites]),
+      };
+    }),
+  );
   return favoriteNfts;
 }
 

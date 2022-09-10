@@ -14,6 +14,7 @@ import {
 import PriceICP from '../../components/PriceICP';
 import {icpToString} from '../../components/PriceICP';
 import {ProfileFilters, nftFilterStatus} from './ProfileFilters';
+import {AllFilter} from './ProfileTabs';
 
 function createFilterCallback(currentFilters) {
   return nft => {
@@ -35,13 +36,7 @@ function createFilterCallback(currentFilters) {
       : currentFilters.collections.includes(nft.collection.name);
 
     const matchesStatus =
-      currentFilters.status === nftFilterStatus.Unlisted
-        ? !nft.listing
-        : currentFilters.status === nftFilterStatus.ForSale
-        ? !!nft.listing
-        : currentFilters.status === nftFilterStatus.OffersReceived
-        ? !!nft.offers?.length
-        : true;
+      currentFilters.status === AllFilter ? true : nft.statuses.has(currentFilters.status);
 
     const checks = [isWithinPrice, isWithinMintNumber, isWithinCollection, matchesStatus];
 
@@ -97,7 +92,7 @@ const sortOptions = [
 ];
 
 const initFilters = {
-  status: nftFilterStatus.All,
+  status: AllFilter,
   price: undefined,
   rarity: undefined,
   mintNumber: undefined,
@@ -125,6 +120,7 @@ export function ProfileBody(props) {
       }}
       filterControlChildren={
         <ProfileFilters
+          currentTab={props.currentTab}
           userCollections={props.userCollections}
           userNfts={props.userNfts}
           nftFilterStats={props.nftFilterStats}
@@ -191,12 +187,19 @@ export function ProfileBody(props) {
                   #{userNft.mintNumber}
                 </span>
                 <div style={{display: 'flex'}}>
-                  <div style={{flexGrow: 1}}>
+                  <div
+                    style={{
+                      flexGrow: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                    }}
+                  >
                     <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
                       {listing}
                     </span>
                     <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
-                      {userNft.nri || ''}
+                      {userNft.nri ? `NRI: ${userNft.nri * 100}%` : ''}
                     </span>
                   </div>
                   <ToniqButton

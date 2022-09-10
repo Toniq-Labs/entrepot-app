@@ -21,6 +21,7 @@ export function Profile(props) {
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
 
+  console.log({allCollections: props.collections});
   const currentNftsAndCollections = allUserNfts[currentTab];
 
   async function refresh() {
@@ -96,6 +97,7 @@ export function Profile(props) {
           </div>
         ) : (
           <ProfileBody
+            currentTab={currentTab}
             onSellClick={props.onSellClick}
             onTransferClick={props.onTransferClick}
             style={{flexGrow: 1, maxWidth: '100%'}}
