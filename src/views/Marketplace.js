@@ -279,7 +279,6 @@ export default function Marketplace(props) {
           .join(' ')
           .toLowerCase()
           .indexOf(query.toLowerCase()) >= 0;
-
       const currentStats = stats.find(stat => stat.canister === collection.canister);
 
       const passFilter = showFilters

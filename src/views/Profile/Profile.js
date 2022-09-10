@@ -6,52 +6,34 @@ import {
   Icp16Icon,
   LoaderAnimated24Icon,
 } from '@toniq-labs/design-system';
-import extjs from '../../ic/extjs.js';
-import {loadAllUserTokens, getEXTCanister, getEXTID} from '../../utilities/load-tokens';
 import {useInterval} from '../../utilities/use-interval';
-import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import {profileStyles} from './ProfileStyles';
 import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
-import getNri from '../../ic/nftv.js';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {
-  loadProfileNftsAndCollections,
-  blankNftFilterStats,
-  createNftFilterStats,
-} from './ProfileUtils';
-
-const ProfileTabs = {
-  MyNfts: 'My NFTs',
-  Watching: 'Watching',
-  Activity: 'Activity',
-};
+import {loadProfileNftsAndCollections, emptyAllUserNfts} from './ProfileLoadNfts';
+import {ProfileTabs} from './ProfileTabs';
 
 export function Profile(props) {
   const classes = profileStyles();
-  const [userCollections, setUserCollections] = React.useState([]);
+  const [allUserNfts, setAllUserNfts] = React.useState(emptyAllUserNfts);
   const [loading, setLoading] = React.useState(true);
-  const [userNfts, setUserNfts] = React.useState([]);
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
-  const [nftFilterStats, setNftFilterStats] = React.useState(blankNftFilterStats);
+
+  const currentNftsAndCollections = allUserNfts[currentTab];
 
   async function refresh() {
     if (props.account && props.identity && props.collections) {
-      const {userNfts, userCollections} = await loadProfileNftsAndCollections(
+      const allResults = await loadProfileNftsAndCollections(
         props.account.address,
         props.identity,
         props.collections,
       );
 
-      console.log({userNfts, userCollections});
-      setUserNfts(userNfts);
-      setUserCollections(userCollections);
+      console.log({allResults});
 
-      const filterStats = createNftFilterStats(userNfts);
-
-      console.log({filterStats});
-      setNftFilterStats(filterStats);
+      setAllUserNfts(allResults);
       setLoading(false);
     }
   }
@@ -64,16 +46,16 @@ export function Profile(props) {
 
   const profileDetails = [
     {
-      label: 'Total NFTs',
-      text: userNfts.length,
+      label: 'Owned NFTs',
+      text: allUserNfts[ProfileTabs.MyNfts].nfts.length,
     },
     {
       label: 'Collections',
-      text: userCollections.length,
+      text: allUserNfts[ProfileTabs.MyNfts].collections.length,
     },
     {
       label: 'Floor Value',
-      text: -1,
+      text: allUserNfts[ProfileTabs.MyNfts].stats.price.min,
       icon: Icp16Icon,
     },
   ];
@@ -92,7 +74,7 @@ export function Profile(props) {
         }}
       >
         <ProfileHeader
-          nftCount={userNfts.length}
+          nftCount={currentNftsAndCollections.nfts.length}
           profileDetails={profileDetails}
           classes={classes}
           query={query}
@@ -117,9 +99,9 @@ export function Profile(props) {
             onSellClick={props.onSellClick}
             onTransferClick={props.onTransferClick}
             style={{flexGrow: 1, maxWidth: '100%'}}
-            nftFilterStats={nftFilterStats}
-            userNfts={userNfts}
-            userCollections={userCollections}
+            nftFilterStats={currentNftsAndCollections.stats}
+            userNfts={currentNftsAndCollections.nfts}
+            userCollections={currentNftsAndCollections.collections}
           />
         )}
       </div>
