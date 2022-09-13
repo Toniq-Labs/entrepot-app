@@ -72,7 +72,7 @@ export default function Create(props) {
       title : "OG Medals",
       link : "/marketplace/ogmedals",
       image : "/collections/ogmedals/collection.jpg",
-      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 discussion website: DSCVR.!</>),
+      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 decentralized social app: DSCVR!</>),
     },
   
   ];
