@@ -119,7 +119,7 @@ export default function Create(props) {
             {
               cards.map((card, i) => {
                 return (<Grid key={i} item md={4} style={{ marginBottom: 20}}>
-                  <Card className={classes.root} style={{alignItems:"center", marginRight:0}}>
+                  <Card className={classes.root} style={{alignItems:"center", textAlign:"center", margin:"auto"}}>
                     <a href={card.link}><CardMedia
                       className={classes.media}
                       image={card.image}
