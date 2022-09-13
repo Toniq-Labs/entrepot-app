@@ -90,7 +90,7 @@ export default function Create(props) {
               <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
-              <p style={{ textAlign: "center", fontSize: "1.3em" }}>
+              <p style={{ textAlign: "center", fontSize: "1.3em", marginBottom:"50px"}}>
                 If you would like to release your own collection of NFTs on
                 Entrepot NFT Marketplace please complete the form below to request access to Toniq Mint — our no-code self mint decentralized application
                 running on the Internet Computer. You do not need to know how to mint an NFT to launch!
@@ -108,7 +108,7 @@ export default function Create(props) {
               </Grid>
             </Grid>
           </Grid>
-          <Features />
+          <Features style={{marginTop:"50px"}}/>
           <h1 className={classes.heading}>Our Collections</h1>
           <Grid
             container
