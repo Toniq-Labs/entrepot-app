@@ -85,7 +85,7 @@ export default function Create(props) {
             margin: "0px auto",
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} style={{marginBottom:"50px"}}>
             <Grid item xs={12} sm={12} md={12}>
               <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
             </Grid>
@@ -108,7 +108,7 @@ export default function Create(props) {
               </Grid>
             </Grid>
           </Grid>
-          <Features style={{marginTop:"50px"}}/>
+          <Features />
           <h1 className={classes.heading}>Our Collections</h1>
           <Grid
             container
