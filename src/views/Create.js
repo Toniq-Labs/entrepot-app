@@ -99,7 +99,7 @@ export default function Create(props) {
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guide</Button>
                 </Grid>
-                <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
+                <Grid item xs={12} sm={3} style={{textAlign:"center"}} color={"primary"}>
                   <Button size="large" variant="contained" target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
