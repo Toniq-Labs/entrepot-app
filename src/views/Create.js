@@ -57,22 +57,25 @@ export default function Create(props) {
 
   var cards = [
     {
-      title : "Cronic Wearables",
-      link : "/marketplace/wearables",
-      image : "/collections/cronic-wearables.jpg",
-      content : (<>Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+      title : "Poked bots",
+      link : "/marketplace/poked",
+      image : "/collections/poked/collection.jpg",
+      content : (<>Poked bots by Poked Studio! These 10,000 unique bots designed by Internet Computer legend  — Jon Ball — 
+                 are making their way into the metaverse!</>),
     },
     {
-      title : "ICmojis",
-      link : "/marketplace/icmojis",
-      image : "/collections/icmojis.jpg",
-      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+      title : "BTC Flower",
+      link : "/marketplace/btcflower",
+      image : "/collections/btcflower/collection.jpg",
+      content : (<>Brought to you by by world renowned street artist — Ludo. In early 2018, BTC Flower made its debut on the streets of Paris. 
+                 The digital version of the R.I.P Banking System art piece exists as an assortment of 2009 unique variations.</>),
     },
     {
-      title : "Rise of the Magni",
-      link : "/",
-      image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!</>),
+      title : "OG Medals",
+      link : "/marketplace/ogmedals",
+      image : "/collections/ogmedals/collection.jpg",
+      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 
+                 discussion website: DSCVR. These artworks quickly became one of the most desirable collectables on the Internet Computer!</>),
     },
   
   ];
@@ -91,15 +94,19 @@ export default function Create(props) {
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
               <p style={{ textAlign: "center", fontSize: "1.3em" }}>
-                If you would like to release your own collection of NFTs on the
-                Entrepot.app marketplace then please complete the following Application form. Entrepot utilizes a community driven approach to project selection on the launchpad. Applications for launch are automatically shared publicly in our discord for community review and feedback.
+                If you would like to release your own collection of NFTs on
+                Entrepot NFT Marketplace please complete the form below to request access to Toniq Mint — our no-code self mint decentralized application
+                running on the Internet Computer. You do not need to know how to mint an NFT to launch!
               </p>
               <Grid container spacing={2} style={{paddingBottom:20}}>
                 <Grid item xs={12} sm={6} style={{textAlign:"right"}}>
-                  <Button size="large" variant="outlined" target="_blank" href="https://entrepot-launchpad.paperform.co/">Application Form</Button>
+                  <Button size="large" variant="outlined" target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Button size="large" variant="outlined" target="_blank" href="https://discord.gg/toniqlabs">Join our Discord</Button>
+                  <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guides</Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button size="large" variant="outlined" target="_blank" href="https://calendar.google.com/calendar/u/0?cid=Y184dG5qZmhhbW91Y281aHRuc2M1aDZmNTNtc0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t">Launch Calendar</Button>
                 </Grid>
               </Grid>
             </Grid>
