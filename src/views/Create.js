@@ -60,22 +60,19 @@ export default function Create(props) {
       title : "Poked bots",
       link : "/marketplace/poked",
       image : "/collections/poked/collection.jpg",
-      content : (<>Poked bots by Poked Studio! These 10,000 unique bots designed by Internet Computer legend  — Jon Ball — 
-                 are making their way into the metaverse!</>),
+      content : (<>Poked bots by Poked Studio! These 10,000 unique bots designed by Internet Computer legend  — Jon Ball — are making their way into the metaverse </>),
     },
     {
       title : "BTC Flower",
       link : "/marketplace/btcflower",
       image : "/collections/btcflower/collection.jpg",
-      content : (<>Brought to you by by world renowned street artist — Ludo. In early 2018, BTC Flower made its debut on the streets of Paris. 
-                 The digital version of the R.I.P Banking System art piece exists as an assortment of 2009 unique variations.</>),
+      content : (<>In early 2018, BTC Flower by street artist ludo made its debut on the streets of Paris. The digital version of the R.I.P Banking System art piece exists as an assortment of 2009 unique variations.</>),
     },
     {
       title : "OG Medals",
       link : "/marketplace/ogmedals",
       image : "/collections/ogmedals/collection.jpg",
-      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 
-                 discussion website: DSCVR. These artworks quickly became one of the most desirable collectables on the Internet Computer!</>),
+      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 discussion website: DSCVR. These artworks quickly became one of the most desirable collectables on ICP!</>),
     },
   
   ];
@@ -102,7 +99,7 @@ export default function Create(props) {
                 <Grid item xs={12} sm={4} style={{textAlign:"right"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} style={{textAlign:"center"}}>>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guides</Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
