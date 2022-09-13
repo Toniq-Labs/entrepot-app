@@ -99,7 +99,7 @@ export default function Create(props) {
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guide</Button>
                 </Grid>
-                <Grid item xs={12} sm={3} style={{textAlign:"center", fontWeight:"bold"}}>
+                <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
                   <Button size="large" variant="contained" style={{backgroundColor:"#00D092", fontWeight:"bold"}} target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
@@ -118,7 +118,7 @@ export default function Create(props) {
           >
             {
               cards.map((card, i) => {
-                return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
+                return (<Grid key={i} item md={4} style={{ marginBottom: 20, alignItems:center}}>
                   <Card className={classes.root}>
                     <a href={card.link}><CardMedia
                       className={classes.media}
