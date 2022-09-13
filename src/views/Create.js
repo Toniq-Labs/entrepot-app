@@ -99,8 +99,8 @@ export default function Create(props) {
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guide</Button>
                 </Grid>
-                <Grid item className={classes.marketBtn} xs={12} sm={3} style={{textAlign:"center"}}>
-                  <Button size="large" variant="contained" target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
+                <Grid item className={classes.marketBtn} xs={12} sm={3} style={{textAlign:"center", fontWeight:"bold"}}>
+                  <Button size="large" variant="contained" style={{backgroundColor:"#00D092"}} target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} style={{textAlign:"center"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://calendar.google.com/calendar/u/0?cid=Y184dG5qZmhhbW91Y281aHRuc2M1aDZmNTNtc0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t">Launch Calendar</Button>
