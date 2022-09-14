@@ -85,7 +85,7 @@ export default function Create(props) {
             margin: "0px auto",
           }}
         >
-          <Grid container spacing={2} style={{marginBottom:"20px"}}>
+          <Grid container style={{marginBottom:"20px"}}>
             <Grid item xs={12} sm={12} md={12}>
               <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
             </Grid>
