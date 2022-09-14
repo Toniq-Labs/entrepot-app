@@ -89,20 +89,20 @@ export default function Create(props) {
             <Grid item xs={12} sm={12} md={12}>
               <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
             </Grid>
-            <Grid item xs={12} sm={12} md={12}>
+            <Grid item xs={12} sm={12} md={12} style={{justifyContent: "center"}}>
               <p style={{ textAlign: "center", fontSize: "1.3em", marginBottom:"50px"}}>
                 If you would like to release your own collection of NFTs on
                 Entrepot NFT Marketplace please complete the form below to request access to Toniq Mint — our no-code self mint decentralized application
                 running on the Internet Computer. You do not need to know how to mint an NFT to launch!
               </p>
-              <Grid container spacing={2} xs={2} sm={6} md={12} style={{paddingBottom:20, justifyContent: "center"}}>
-                <Grid item xs={12} sm={2} md={3} style={{textAlign:"right"}}>
+              <Grid container spacing={2} xs={12} sm={12} md={12} style={{paddingBottom:20, justifyContent: "center"}}>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"right"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guide</Button>
                 </Grid>
-                <Grid item xs={12} sm={2} md={3} style={{textAlign:"center"}}>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"center"}}>
                   <Button size="large" variant="contained" style={{backgroundColor:"#00D092", fontWeight:"bold"}} target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
                 </Grid>
-                <Grid item xs={12} sm={2} md={3} style={{textAlign:"left"}}>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"left"}}>
                   <Button size="large" variant="outlined" target="_blank" href="https://calendar.google.com/calendar/u/0?cid=Y184dG5qZmhhbW91Y281aHRuc2M1aDZmNTNtc0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t">Launch Calendar</Button>
                 </Grid>
               </Grid>
