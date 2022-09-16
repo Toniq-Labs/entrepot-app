@@ -13,28 +13,43 @@ import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {loadProfileNftsAndCollections, emptyAllUserNfts} from './ProfileLoadNfts';
 import {ProfileTabs} from './ProfileTabs';
+import {resolvedOrUndefined} from '../../utilities/async';
 
 export function Profile(props) {
   const classes = profileStyles();
-  const [allUserNfts, setAllUserNfts] = React.useState(emptyAllUserNfts);
+
+  // this is a ref, instead of state, so that we can always get the latest version, even in async
+  // tasks that were started with outdated versioned of this variable. This saves us from race
+  // conditions where the old state overrides the new state when async tasks finish.
+  const allUserNfts = React.useRef(emptyAllUserNfts);
+  // since the above is not a state object, we have to force updates with the following:
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
   const [loading, setLoading] = React.useState(true);
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
 
   console.log({allCollections: props.collections});
-  const currentNftsAndCollections = allUserNfts[currentTab];
+  const currentNftsAndCollections = resolvedOrUndefined(allUserNfts.current[currentTab]);
+  if (
+    currentNftsAndCollections == undefined &&
+    allUserNfts.current[currentTab] instanceof Promise
+  ) {
+    allUserNfts.current[currentTab].then(resolved => {
+      allUserNfts.current[currentTab] = resolved;
+      forceUpdate();
+    });
+  }
 
-  async function refresh() {
+  function refresh() {
     if (props.account && props.identity && props.collections) {
-      const allResults = await loadProfileNftsAndCollections(
+      const allResults = loadProfileNftsAndCollections(
         props.account.address,
         props.identity,
         props.collections,
       );
 
-      console.log({allResults});
-
-      setAllUserNfts(allResults);
+      allUserNfts.current = allResults;
       setLoading(false);
     }
   }
@@ -48,15 +63,15 @@ export function Profile(props) {
   const profileDetails = [
     {
       label: 'Owned NFTs',
-      text: allUserNfts[ProfileTabs.MyNfts].nfts.length,
+      text: resolvedOrUndefined(allUserNfts.current[ProfileTabs.MyNfts])?.nfts.length ?? 0,
     },
     {
       label: 'Collections',
-      text: allUserNfts[ProfileTabs.MyNfts].collections.length,
+      text: resolvedOrUndefined(allUserNfts.current[ProfileTabs.MyNfts])?.collections.length ?? 0,
     },
     {
       label: 'Floor Value',
-      text: allUserNfts[ProfileTabs.MyNfts].stats.price.min,
+      text: resolvedOrUndefined(allUserNfts.current[ProfileTabs.MyNfts])?.stats.price.min ?? 0,
       icon: Icp16Icon,
     },
   ];
@@ -75,7 +90,7 @@ export function Profile(props) {
         }}
       >
         <ProfileHeader
-          nftCount={currentNftsAndCollections.nfts.length}
+          nftCount={currentNftsAndCollections?.nfts.length ?? 0}
           profileDetails={profileDetails}
           classes={classes}
           query={query}
@@ -88,7 +103,7 @@ export function Profile(props) {
             setQuery(newQuery);
           }}
         />
-        {loading ? (
+        {loading || !currentNftsAndCollections ? (
           <div style={{display: 'flex', padding: '32px', gap: '16px'}}>
             <ToniqIcon icon={LoaderAnimated24Icon} />
             <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont)}}>

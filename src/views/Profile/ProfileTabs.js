@@ -18,4 +18,9 @@ export const nftStatusesByTab = {
     OffersMade: 'Offers Made',
     Favorites: 'Favorites',
   },
+  [ProfileTabs.Activity]: {
+    All: AllFilter,
+    Bought: 'Bought',
+    Sold: 'Sold',
+  },
 };

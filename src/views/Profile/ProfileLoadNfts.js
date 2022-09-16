@@ -9,59 +9,56 @@ import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 const api = extjs.connect('https://boundary.ic0.app/');
 
 export const emptyAllUserNfts = {
-  [ProfileTabs.MyNfts]: {
-    nfts: [],
-    collections: [],
-    stats: blankNftFilterStats,
-  },
-  [ProfileTabs.Watching]: {
-    nfts: [],
-    collections: [],
-    stats: blankNftFilterStats,
-  },
+  [ProfileTabs.MyNfts]: undefined,
+  [ProfileTabs.Watching]: undefined,
+  [ProfileTabs.Activity]: undefined,
 };
 
-async function includeCollections(nftsObject, allCollections) {
+function includeCollectionsAndStats(nfts, allCollections) {
   const allowedCollections = allCollections.filter(collection => {
     const isAllowedToView = !collection.dev;
     return isAllowedToView;
   });
   const allowedCanistersSet = new Set(allowedCollections.map(collection => collection.canister));
 
-  return await Object.keys(nftsObject).reduce(async (accumPromise, type) => {
-    const accum = await accumPromise;
-    const nfts = nftsObject[type];
+  const allNftCanisters = new Set(nfts.map(nft => nft.canister));
 
-    const allNftCanisters = new Set(nfts.map(nft => nft.canister));
+  const collections = allowedCollections.filter(collection => {
+    return allNftCanisters.has(collection.canister);
+  });
 
-    const collections = allowedCollections.filter(collection => {
-      return allNftCanisters.has(collection.canister);
-    });
+  const allowedNfts = nfts.filter(nft => allowedCanistersSet.has(nft.canister));
 
-    const allowedNfts = nfts.filter(nft => allowedCanistersSet.has(nft.canister));
-    console.log('what now');
-
-    accum[type] = {
-      nfts: allowedNfts,
-      collections,
-      stats: createNftFilterStats(allowedNfts),
-    };
-
-    return accum;
-  }, Promise.resolve({}));
+  return {
+    nfts: allowedNfts,
+    collections,
+    stats: createNftFilterStats(allowedNfts),
+  };
 }
 
-export async function loadProfileNftsAndCollections(address, identity, allCollections) {
-  const allNftsSets = await includeCollections(
-    {
-      [ProfileTabs.MyNfts]: await getOwnedNfts(address, identity, allCollections),
-      [ProfileTabs.Watching]: [
-        ...(await getFavoritesNfts(address, identity, allCollections)),
-        ...(await getOffersMadeNfts(address, identity, allCollections)),
-      ],
-    },
-    allCollections,
-  );
+export function loadProfileNftsAndCollections(address, identity, allCollections) {
+  const allNftsSets = {
+    [ProfileTabs.MyNfts]: new Promise(async resolve =>
+      resolve(
+        includeCollectionsAndStats(
+          await getOwnedNfts(address, identity, allCollections),
+          allCollections,
+        ),
+      ),
+    ),
+    [ProfileTabs.Watching]: new Promise(async resolve =>
+      resolve(
+        includeCollectionsAndStats(
+          [
+            ...(await getFavoritesNfts(address, identity, allCollections)),
+            ...(await getOffersMadeNfts(address, identity, allCollections)),
+          ],
+          allCollections,
+        ),
+      ),
+    ),
+    [ProfileTabs.Activity]: includeCollectionsAndStats([], allCollections),
+  };
 
   return allNftsSets;
 }
