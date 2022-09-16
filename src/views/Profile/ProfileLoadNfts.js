@@ -57,10 +57,47 @@ export function loadProfileNftsAndCollections(address, identity, allCollections)
         ),
       ),
     ),
-    [ProfileTabs.Activity]: includeCollectionsAndStats([], allCollections),
+    [ProfileTabs.Activity]: new Promise(async resolve =>
+      resolve(
+        includeCollectionsAndStats(
+          await getActivityNfts(address, identity, allCollections),
+          allCollections,
+        ),
+      ),
+    ),
   };
 
   return allNftsSets;
+}
+
+async function getActivityNfts(address, identity, collections) {
+  const rawData = (
+    await (
+      await fetch(
+        'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/transactions',
+      )
+    ).json()
+  ).filter(nft => nft.token !== '');
+  const activityData = await Promise.all(
+    rawData.map(async nft => {
+      const isBuyer = nft.buyer === address;
+      const nftWithData = await getNftData(nft, collections);
+      return {
+        ...nftWithData,
+        type: isBuyer ? 'Purchase' : 'Sale',
+        date: new Date(nftWithData.time / 1_000_000),
+        statuses: new Set([
+          isBuyer
+            ? nftStatusesByTab[ProfileTabs.Activity].Bought
+            : nftStatusesByTab[ProfileTabs.Activity].Sold,
+        ]),
+      };
+    }),
+  );
+
+  console.log({activityData});
+
+  return activityData;
 }
 
 async function getOwnedNfts(address, identity, collections) {
