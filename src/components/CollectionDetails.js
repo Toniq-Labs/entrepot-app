@@ -106,7 +106,7 @@ export default function CollectionDetails(props) {
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
         {['commission'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
           return (
-            <h4 style={{marginTop:-20}}>Creator royalty: {parseInt(100*collection[a])-1}%</h4>
+            <h4 style={{marginTop:-20}}>Creator royalty: {parseInt(1000*collection[a])/10 - 1}%</h4>
           )})
         }
       {['kyc'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(() => {
