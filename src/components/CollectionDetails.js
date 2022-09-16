@@ -104,7 +104,7 @@ export default function CollectionDetails(props) {
     <div style={{width:"100%", maxWidth:"760px", margin:"0 auto"}}>
       <h1>{collection.name}</h1>
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
-        {['commission'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(() => {
+        {['commission'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
           return (
             <h4 style={{marginTop:-20}}>Creatory Royalty: {(100*(a-.01))}%</h4>
           )})
