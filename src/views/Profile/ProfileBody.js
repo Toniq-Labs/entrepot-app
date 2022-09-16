@@ -13,8 +13,9 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import PriceICP from '../../components/PriceICP';
 import {icpToString} from '../../components/PriceICP';
-import {ProfileFilters, nftFilterStatus} from './ProfileFilters';
-import {AllFilter} from './ProfileTabs';
+import {ProfileFilters} from './ProfileFilters';
+import {AllFilter, ProfileTabs} from './ProfileTabs';
+import {getRelativeDate} from '../../utilities/relative-date';
 
 function createFilterCallback(currentFilters) {
   return nft => {
@@ -107,6 +108,8 @@ export function ProfileBody(props) {
   const [currentFilters, setCurrentFilters] = React.useState(initFilters);
   const [sort, setSort] = React.useState(defaultSortOption);
 
+  console.log({bodyProps: props});
+
   const filteredNfts = props.userNfts
     .filter(createFilterCallback(currentFilters))
     .sort(createSortCallback(sort));
@@ -169,6 +172,13 @@ export function ProfileBody(props) {
         {filteredNfts.map(userNft => {
           const listing = userNft.listing ? <PriceICP price={userNft.listing.price} /> : 'Unlisted';
 
+          const formattedDateString = userNft.date
+            ? userNft.date.toISOString().replace('T', ' ').replace(/\.\d+/, '')
+            : '';
+          const relativeDate = userNft.date ? getRelativeDate(userNft.date) : '';
+          const isOnlyOfferYours =
+            userNft.offers.length === 1 && userNft.offers[0][3] === props.address;
+
           return (
             <NftCard imageUrl={userNft.image} key={userNft.token}>
               <div
@@ -202,26 +212,63 @@ export function ProfileBody(props) {
                       {userNft.nri ? `NRI: ${userNft.nri * 100}%` : ''}
                     </span>
                   </div>
-                  <ToniqButton
-                    style={{marginRight: '16px'}}
-                    className="toniq-button-secondary"
-                    text="Sell"
-                    onClick={() => {
-                      props.onSellClick({
-                        id: userNft.token,
-                        listing: userNft.listing,
-                      });
-                    }}
-                  />
-                  <ToniqButton
-                    text="Transfer"
-                    onClick={() => {
-                      props.onTransferClick({
-                        id: userNft.token,
-                        listing: userNft.listing,
-                      });
-                    }}
-                  />
+                  {props.currentTab === ProfileTabs.MyNfts ? (
+                    <>
+                      <ToniqButton
+                        style={{marginRight: '16px'}}
+                        className="toniq-button-secondary"
+                        text="Sell"
+                        onClick={() => {
+                          props.onSellClick({
+                            id: userNft.token,
+                            listing: userNft.listing,
+                          });
+                        }}
+                      />
+                      <ToniqButton
+                        text="Transfer"
+                        onClick={() => {
+                          props.onTransferClick({
+                            id: userNft.token,
+                            listing: userNft.listing,
+                          });
+                        }}
+                      />
+                    </>
+                  ) : props.currentTab === ProfileTabs.Activity ? (
+                    <>
+                      <span
+                        style={{
+                          ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+                        }}
+                        title={formattedDateString}
+                      >
+                        {relativeDate}
+                      </span>
+                    </>
+                  ) : props.currentTab === ProfileTabs.Watching ? (
+                    <>
+                      <div style={{display: 'flex', flexDirection: 'column'}}>
+                        <span
+                          style={{
+                            ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+                          }}
+                        >{`${userNft.offers.length} Offer${
+                          userNft.offers.length > 1 ? 's' : ''
+                        }`}</span>
+                        <span
+                          style={{
+                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                            color: String(toniqColors.pageSecondary.foregroundColor),
+                          }}
+                        >
+                          {isOnlyOfferYours ? '(yours)' : ''}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
             </NftCard>

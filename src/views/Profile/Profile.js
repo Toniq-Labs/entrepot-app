@@ -29,17 +29,7 @@ export function Profile(props) {
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
 
-  console.log({allCollections: props.collections});
   const currentNftsAndCollections = resolvedOrUndefined(allUserNfts.current[currentTab]);
-  if (
-    currentNftsAndCollections == undefined &&
-    allUserNfts.current[currentTab] instanceof Promise
-  ) {
-    allUserNfts.current[currentTab].then(resolved => {
-      allUserNfts.current[currentTab] = resolved;
-      forceUpdate();
-    });
-  }
 
   function refresh() {
     if (props.account && props.identity && props.collections) {
@@ -50,6 +40,17 @@ export function Profile(props) {
       );
 
       allUserNfts.current = allResults;
+
+      Object.keys(allUserNfts.current).map(key =>
+        allUserNfts.current[key].then(resolved => {
+          allUserNfts.current[key] = resolved;
+          forceUpdate();
+          if (Object.values(allUserNfts).every(value => !(value instanceof Promise))) {
+            console.info({allLoadedProfileNfts: allUserNfts});
+          }
+        }),
+      );
+
       setLoading(false);
     }
   }
@@ -112,6 +113,7 @@ export function Profile(props) {
           </div>
         ) : (
           <ProfileBody
+            address={props.account.address}
             currentTab={currentTab}
             onSellClick={props.onSellClick}
             onTransferClick={props.onTransferClick}
