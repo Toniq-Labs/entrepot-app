@@ -57,22 +57,22 @@ export default function Create(props) {
 
   var cards = [
     {
-      title : "Cronic Wearables",
-      link : "/marketplace/wearables",
-      image : "/collections/cronic-wearables.jpg",
-      content : (<>Cronic Wearables! These are a seperate collection of NFTs that you can send to your Cronic, and it will wear it!</>),
+      title : "Poked bots",
+      link : "/marketplace/poked",
+      image : "/collections/poked/collection.jpg",
+      content : (<>Poked bots by Poked Studio! These 10,000 unique bots designed by Internet Computer legend  — Jon Ball — are making their way into the metaverse </>),
     },
     {
-      title : "ICmojis",
-      link : "/marketplace/icmojis",
-      image : "/collections/icmojis.jpg",
-      content : (<>Make your friends smile with these unique NFTs or collect them all! Plans are being developed to make ICmojis even more fun to use so stay tuned for future updates!</>),
+      title : "BTC Flower",
+      link : "/marketplace/btcflower",
+      image : "/collections/btcflower/collection.jpg",
+      content : (<>In early 2018, BTC Flower by street artist ludo made its debut on the streets of Paris. The digital version of the R.I.P Banking System art piece exists as an assortment of 2009 unique variations.</>),
     },
     {
-      title : "Rise of the Magni",
-      link : "/",
-      image : "/collections/rotm.jpg",
-      content : (<>Another blockchain game by ToniqLabs, the first set of Magni NFTs will be available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!</>),
+      title : "OG Medals",
+      link : "/marketplace/ogmedals",
+      image : "/collections/ogmedals/collection.jpg",
+      content : (<>1000 OG Medals airdropped by DKLORD89 "Drop King" to to active early believers inside the most popular WEB 3.0 decentralized social media platform: DSCVR!</>),
     },
   
   ];
@@ -85,21 +85,25 @@ export default function Create(props) {
             margin: "0px auto",
           }}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} style={{marginBottom:"20px"}}>
             <Grid item xs={12} sm={12} md={12}>
-              <h1 style={{ textAlign: "center" }}>Create, mint, release!</h1>
+              <h1 style={{ textAlign: "center" }}>Launch your project!</h1>
             </Grid>
-            <Grid item xs={12} sm={12} md={12}>
-              <p style={{ textAlign: "center", fontSize: "1.3em" }}>
-                If you would like to release your own collection of NFTs on the
-                Entrepot.app marketplace then please complete the following Application form. Entrepot utilizes a community driven approach to project selection on the launchpad. Applications for launch are automatically shared publicly in our discord for community review and feedback.
+            <Grid item xs={12} sm={12} md={12} style={{justifyContent: "center"}}>
+              <p style={{ textAlign: "center", fontSize: "1.3em", marginBottom:"50px"}}>
+                The easiest way to mint NFTs on the Internet Computer is to complete
+                the form below to get access to Toniq Mint — our no-code self-minting tool. Anyone can mint NFTs on the Internet Computer using our on chain tools.
+                If you are looking for more technical resources to mint NFTs, please reach out to support@toniqlabs.com.
               </p>
-              <Grid container spacing={2} style={{paddingBottom:20}}>
-                <Grid item xs={12} sm={6} style={{textAlign:"right"}}>
-                  <Button size="large" variant="outlined" target="_blank" href="https://entrepot-launchpad.paperform.co/">Application Form</Button>
+              <Grid container spacing={2} xs={12} sm={12} md={12} style={{paddingBottom:20, justifyContent: "center"}}>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"right"}}>
+                  <Button size="large" variant="outlined" target="_blank" href="https://toniq-labs.gitbook.io/toniq-mint/">User Guide</Button>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Button size="large" variant="outlined" target="_blank" href="https://discord.gg/toniqlabs">Join our Discord</Button>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"center"}}>
+                  <Button size="large" variant="contained" style={{backgroundColor:"#00D092", fontWeight:"bold"}} target="_blank" href="https://toniqmint-access-request.paperform.co">Request Access</Button>
+                </Grid>
+                <Grid item xs={4} sm={3} md={2} style={{textAlign:"left"}}>
+                  <Button size="large" variant="outlined" target="_blank" href="https://calendar.google.com/calendar/u/0?cid=Y184dG5qZmhhbW91Y281aHRuc2M1aDZmNTNtc0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t">Launch Calendar</Button>
                 </Grid>
               </Grid>
             </Grid>
@@ -114,8 +118,8 @@ export default function Create(props) {
           >
             {
               cards.map((card, i) => {
-                return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
-                  <Card className={classes.root}>
+                return (<Grid key={i} item md={4} style={{ marginBottom: 20}}>
+                  <Card className={classes.root} style={{alignItems:"center", textAlign:"center", margin:"auto"}}>
                     <a href={card.link}><CardMedia
                       className={classes.media}
                       image={card.image}
