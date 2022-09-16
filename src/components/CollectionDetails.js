@@ -108,7 +108,7 @@ export default function CollectionDetails(props) {
           return (
             <h4 style={{marginTop:-20}}>Creatory royalty: {parseInt(100*(parseFloat(collection[a])-.01))}%</h4>
           )})
-        };
+        }
       {['kyc'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(() => {
         return (
           <Tooltip placement="right" title="This KYC badge indicates the collection creator has completed KYC with Toniq">
