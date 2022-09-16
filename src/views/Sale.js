@@ -80,7 +80,9 @@ export default function Sale(props) {
             alignItems="center"
           >
             {
-              props.collections.filter(a => typeof a.sale != 'undefined' && a.sale == true).map((collection, i) => {
+              props.collections.filter(a => typeof a.sale != 'undefined' && a.sale == true).sort((a,b) => {
+                return b.priority - a.priority;
+              }).map((collection, i) => {
                 return (<Grid key={i} item md={4} style={{ marginBottom: 20 }}>
                   <Link style={{textDecoration:"none"}} to={"/sale/"+collection.route}>
                     <Card className={classes.root}>
