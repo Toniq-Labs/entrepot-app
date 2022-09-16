@@ -30,8 +30,6 @@ const contentStyles = cssToReactStyleObject(css`
 `);
 
 export function NftCard(props) {
-  const [hovered, setHovered] = useState(false);
-
   const styles = cssToReactStyleObject(css`
     border-radius: 16px;
     background-color: ${toniqColors.pagePrimary.backgroundColor};
@@ -53,6 +51,7 @@ export function NftCard(props) {
 
   return (
     <DropShadowCard
+      onClick={props.onClick}
       className={props.className}
       enableHover={true}
       style={{...styles, ...props.style}}

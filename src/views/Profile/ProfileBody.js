@@ -16,6 +16,7 @@ import {icpToString} from '../../components/PriceICP';
 import {ProfileFilters} from './ProfileFilters';
 import {AllFilter, ProfileTabs} from './ProfileTabs';
 import {getRelativeDate} from '../../utilities/relative-date';
+import {useNavigate} from 'react-router-dom';
 
 function createFilterCallback(currentFilters) {
   return nft => {
@@ -108,6 +109,8 @@ export function ProfileBody(props) {
   const [currentFilters, setCurrentFilters] = React.useState(initFilters);
   const [sort, setSort] = React.useState(defaultSortOption);
 
+  const navigate = useNavigate();
+
   console.log({bodyProps: props});
 
   const filteredNfts = props.userNfts
@@ -180,7 +183,14 @@ export function ProfileBody(props) {
             userNft.offers.length === 1 && userNft.offers[0][3] === props.address;
 
           return (
-            <NftCard imageUrl={userNft.image} key={userNft.token}>
+            <NftCard
+              onClick={() => {
+                console.log('derp');
+                navigate(`/marketplace/asset/${userNft.token}`);
+              }}
+              imageUrl={userNft.image}
+              key={userNft.token}
+            >
               <div
                 style={{
                   display: 'flex',
@@ -218,20 +228,22 @@ export function ProfileBody(props) {
                         style={{marginRight: '16px'}}
                         className="toniq-button-secondary"
                         text="Sell"
-                        onClick={() => {
+                        onClick={event => {
                           props.onSellClick({
                             id: userNft.token,
                             listing: userNft.listing,
                           });
+                          event.stopPropagation();
                         }}
                       />
                       <ToniqButton
                         text="Transfer"
-                        onClick={() => {
+                        onClick={event => {
                           props.onTransferClick({
                             id: userNft.token,
                             listing: userNft.listing,
                           });
+                          event.stopPropagation();
                         }}
                       />
                     </>

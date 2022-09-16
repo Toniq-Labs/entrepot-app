@@ -29,6 +29,7 @@ export function DropShadowCard(props) {
       }}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
+      onClick={props.onClick}
       className={props.className}
     >
       {props.children}
