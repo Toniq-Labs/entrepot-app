@@ -150,8 +150,10 @@ export default function NFT(props) {
       .listings()
       .then(r => {
         var f = r.find(a => a[0] == index);
-        if (f[1]) setListing(f[1]);
-        else setListing(false);
+        if (f[1]) {
+          setListing(f[1]);
+          console.log({nftListingStuff: f});
+        } else setListing(false);
       });
   };
   const getMetadata = async () => {

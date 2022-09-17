@@ -11,7 +11,7 @@ import {profileStyles} from './ProfileStyles';
 import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {loadProfileNftsAndCollections, emptyAllUserNfts} from './ProfileLoadNfts';
+import {startLoadingProfileNftsAndCollections, emptyAllUserNfts} from './ProfileLoadNfts';
 import {ProfileTabs} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 
@@ -33,7 +33,7 @@ export function Profile(props) {
 
   function refresh() {
     if (props.account && props.identity && props.collections) {
-      const allResults = loadProfileNftsAndCollections(
+      const allResults = startLoadingProfileNftsAndCollections(
         props.account.address,
         props.identity,
         props.collections,

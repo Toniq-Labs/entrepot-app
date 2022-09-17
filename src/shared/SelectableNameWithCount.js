@@ -1,4 +1,29 @@
 import {toniqColors, cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
+
+export function makeCountIndicator(count, selected) {
+  return (
+    <div
+      style={{
+        ...cssToReactStyleObject(toniqFontStyles.boldLabelFont),
+        backgroundColor: selected
+          ? String(toniqColors.accentPrimary.backgroundColor)
+          : String(toniqColors.accentSecondary.backgroundColor),
+        color: selected
+          ? String(toniqColors.accentPrimary.foregroundColor)
+          : String(toniqColors.accentSecondary.foregroundColor),
+        minHeight: '24px',
+        minWidth: '24px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '50%',
+      }}
+    >
+      <span>{count}</span>
+    </div>
+  );
+}
+
 export function SelectableNameWithCount(props) {
   if (props.count === 0) {
     return undefined;
@@ -18,27 +43,7 @@ export function SelectableNameWithCount(props) {
     ></div>
   ) : undefined;
 
-  const countElement = props.count ? (
-    <div
-      style={{
-        ...cssToReactStyleObject(toniqFontStyles.boldLabelFont),
-        backgroundColor: props.selected
-          ? String(toniqColors.accentPrimary.backgroundColor)
-          : String(toniqColors.accentSecondary.backgroundColor),
-        color: props.selected
-          ? String(toniqColors.accentPrimary.foregroundColor)
-          : String(toniqColors.accentSecondary.foregroundColor),
-        minHeight: '24px',
-        minWidth: '24px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: '50%',
-      }}
-    >
-      <span>{props.count}</span>
-    </div>
-  ) : undefined;
+  const countElement = props.count ? makeCountIndicator(props.count, props.selected) : undefined;
 
   return (
     <div
@@ -65,6 +70,7 @@ export function SelectableNameWithCount(props) {
         {props.title}
       </span>
       {countElement}
+      {props.children}
     </div>
   );
 }

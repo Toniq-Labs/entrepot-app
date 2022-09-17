@@ -14,7 +14,17 @@ export const emptyAllUserNfts = {
   [ProfileTabs.Activity]: undefined,
 };
 
-function includeCollectionsAndStats(nfts, allCollections) {
+function trait2dArrayToObject(traitArray) {
+  return traitArray.reduce((accum, currentTrait) => {
+    if (currentTrait[0] in accum) {
+      accum[currentTrait[0]].push(currentTrait[1]);
+    }
+    accum[currentTrait[0]] = [currentTrait[1]];
+    return accum;
+  }, {});
+}
+
+async function includeCollectionsAndStats(nfts, allCollections) {
   const allowedCollections = allCollections.filter(collection => {
     const isAllowedToView = !collection.dev;
     return isAllowedToView;
@@ -27,7 +37,21 @@ function includeCollectionsAndStats(nfts, allCollections) {
     return allNftCanisters.has(collection.canister);
   });
 
+  await Promise.all(
+    collections.map(async collection => {
+      if (!('traits' in collection)) {
+        const traits = await loadTraits(collection);
+        collection.traits = traits;
+      }
+    }),
+  );
+
   const allowedNfts = nfts.filter(nft => allowedCanistersSet.has(nft.canister));
+  allowedNfts.forEach(nft => {
+    if (nft.collection.traits?.length) {
+      nft.traits = trait2dArrayToObject(nft.collection.traits[1][nft.index][1]);
+    }
+  });
 
   return {
     nfts: allowedNfts,
@@ -36,11 +60,11 @@ function includeCollectionsAndStats(nfts, allCollections) {
   };
 }
 
-export function loadProfileNftsAndCollections(address, identity, allCollections) {
+export function startLoadingProfileNftsAndCollections(address, identity, allCollections) {
   const allNftsSets = {
     [ProfileTabs.MyNfts]: new Promise(async resolve =>
       resolve(
-        includeCollectionsAndStats(
+        await includeCollectionsAndStats(
           await getOwnedNfts(address, identity, allCollections),
           allCollections,
         ),
@@ -48,7 +72,7 @@ export function loadProfileNftsAndCollections(address, identity, allCollections)
     ),
     [ProfileTabs.Watching]: new Promise(async resolve =>
       resolve(
-        includeCollectionsAndStats(
+        await includeCollectionsAndStats(
           [
             ...(await getFavoritesNfts(address, identity, allCollections)),
             ...(await getOffersMadeNfts(address, identity, allCollections)),
@@ -59,7 +83,7 @@ export function loadProfileNftsAndCollections(address, identity, allCollections)
     ),
     [ProfileTabs.Activity]: new Promise(async resolve =>
       resolve(
-        includeCollectionsAndStats(
+        await includeCollectionsAndStats(
           await getActivityNfts(address, identity, allCollections),
           allCollections,
         ),
@@ -68,6 +92,21 @@ export function loadProfileNftsAndCollections(address, identity, allCollections)
   };
 
   return allNftsSets;
+}
+
+async function loadTraits(collection) {
+  if (collection?.filter) {
+    try {
+      const traitData = await fetch('/filter/' + collection.canister + '.json').then(response =>
+        response.json(),
+      );
+      console.log({traitData});
+      return traitData;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
 }
 
 async function getActivityNfts(address, identity, collections) {
@@ -169,19 +208,23 @@ async function getNftData(rawNft, collections) {
   const tokenMetadata = await api.token(rawNft.token).getMetadata();
   const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
   const offers = await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getEXTID(rawNft.token));
-  const listing = rawNft.price
+  const rawListing = await (
+    await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + rawNft.token)
+  ).json();
+
+  const listing = rawListing?.price
     ? {
-        price: BigInt(rawNft.price),
-        locked: rawNft.time > 0 ? [BigInt(rawNft.time)] : [],
+        price: BigInt(rawListing.price),
+        locked: rawListing.time > 0 ? [BigInt(rawListing.time)] : [],
       }
     : undefined;
   const nri = getNri(rawNft.canister, index);
-  // figure out how to retrieve traits
-  const traits = [];
   const collection = collections.find(collection => collection.canister === rawNft.canister);
 
   const userNft = {
     ...rawNft,
+    index,
+    rawListing,
     image: EntrepotNFTImage(getEXTCanister(rawNft.canister), index, rawNft.token, false, 0),
     tokenMetadata,
     mintNumber,
@@ -189,7 +232,7 @@ async function getNftData(rawNft, collections) {
     offers,
     listing,
     nri,
-    traits,
+    traits: undefined,
   };
 
   return userNft;

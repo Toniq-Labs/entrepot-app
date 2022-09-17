@@ -14,7 +14,7 @@ import {
 import PriceICP from '../../components/PriceICP';
 import {icpToString} from '../../components/PriceICP';
 import {ProfileFilters} from './ProfileFilters';
-import {AllFilter, ProfileTabs} from './ProfileTabs';
+import {AllFilter, ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {getRelativeDate} from '../../utilities/relative-date';
 import {useNavigate} from 'react-router-dom';
 
@@ -40,7 +40,36 @@ function createFilterCallback(currentFilters) {
     const matchesStatus =
       currentFilters.status === AllFilter ? true : nft.statuses.has(currentFilters.status);
 
-    const checks = [isWithinPrice, isWithinMintNumber, isWithinCollection, matchesStatus];
+    const areAnyTraitsSelected = Object.values(currentFilters.traits ?? []).some(collectionTraits =>
+      Object.values(collectionTraits ?? []).some(traits =>
+        (Object.values(traits) ?? []).some(value => !!value),
+      ),
+    );
+
+    const matchesTraits = areAnyTraitsSelected
+      ? currentFilters.traits.hasOwnProperty(nft.collection.id) &&
+        Object.keys(currentFilters.traits[nft.collection.id]).some(traitKey => {
+          const traitValues = Object.keys(
+            currentFilters.traits[nft.collection.id][traitKey],
+          ).filter(key => {
+            return !!currentFilters.traits[nft.collection.id][traitKey][key];
+          });
+
+          return traitValues.some(
+            traitValue =>
+              nft.traits?.[traitKey]?.includes(Number(traitValue)) ||
+              nft.traits?.[traitKey]?.includes(String(traitValue)),
+          );
+        })
+      : true;
+
+    const checks = [
+      isWithinPrice,
+      isWithinMintNumber,
+      isWithinCollection,
+      matchesStatus,
+      matchesTraits,
+    ];
 
     return checks.every(check => check);
   };
@@ -99,7 +128,7 @@ const initFilters = {
   rarity: undefined,
   mintNumber: undefined,
   allTraits: true,
-  traits: [],
+  traits: {},
   allCollections: true,
   collections: [],
 };
@@ -110,8 +139,6 @@ export function ProfileBody(props) {
   const [sort, setSort] = React.useState(defaultSortOption);
 
   const navigate = useNavigate();
-
-  console.log({bodyProps: props});
 
   const filteredNfts = props.userNfts
     .filter(createFilterCallback(currentFilters))
@@ -179,8 +206,7 @@ export function ProfileBody(props) {
             ? userNft.date.toISOString().replace('T', ' ').replace(/\.\d+/, '')
             : '';
           const relativeDate = userNft.date ? getRelativeDate(userNft.date) : '';
-          const isOnlyOfferYours =
-            userNft.offers.length === 1 && userNft.offers[0][3] === props.address;
+          const includesYourOffer = userNft.offers.find(offer => offer[3] === props.address);
 
           return (
             <NftCard
@@ -248,7 +274,7 @@ export function ProfileBody(props) {
                       />
                     </>
                   ) : props.currentTab === ProfileTabs.Activity ? (
-                    <>
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
                       <span
                         style={{
                           ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
@@ -257,13 +283,24 @@ export function ProfileBody(props) {
                       >
                         {relativeDate}
                       </span>
-                    </>
+                      <span
+                        style={{
+                          ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                          color: String(toniqColors.pageSecondary.foregroundColor),
+                        }}
+                      >
+                        {userNft.statuses.has(nftStatusesByTab[ProfileTabs.Activity].Bought)
+                          ? 'Bought'
+                          : 'Sold'}
+                      </span>
+                    </div>
                   ) : props.currentTab === ProfileTabs.Watching ? (
                     <>
                       <div style={{display: 'flex', flexDirection: 'column'}}>
                         <span
                           style={{
                             ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+                            alignSelf: 'flex-end',
                           }}
                         >{`${userNft.offers.length} Offer${
                           userNft.offers.length > 1 ? 's' : ''
@@ -274,7 +311,7 @@ export function ProfileBody(props) {
                             color: String(toniqColors.pageSecondary.foregroundColor),
                           }}
                         >
-                          {isOnlyOfferYours ? '(yours)' : ''}
+                          {includesYourOffer ? 'including yours' : ''}
                         </span>
                       </div>
                     </>

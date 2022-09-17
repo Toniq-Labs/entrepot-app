@@ -66,12 +66,25 @@ export function createNftFilterStats(nfts) {
     }
     accum.collections[nft.collection.name]++;
 
-    if (nft.traits && nft.traits.length) {
-      nft.traits.forEach(trait => {
-        if (!accum.traits.hasOwnProperty(trait)) {
-          accum.traits[trait] = 0;
+    if (nft.traits && nft.collection.traits) {
+      const collection = nft.collection;
+      if (!accum.traits.hasOwnProperty(collection.id)) {
+        accum.traits[collection.id] = {
+          collection,
+          traitsInUse: {},
+        };
+      }
+      Object.keys(nft.traits).forEach(traitId => {
+        const traitValues = nft.traits[traitId];
+        if (!accum.traits[collection.id].traitsInUse[traitId]) {
+          accum.traits[collection.id].traitsInUse[traitId] = {};
         }
-        accum.traits[trait]++;
+        traitValues.forEach(traitValue => {
+          if (!accum.traits[collection.id].traitsInUse[traitId][traitValue]) {
+            accum.traits[collection.id].traitsInUse[traitId][traitValue] = 0;
+          }
+          accum.traits[collection.id].traitsInUse[traitId][traitValue]++;
+        });
       });
     }
 
