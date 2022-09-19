@@ -104,7 +104,11 @@ export default function CollectionDetails(props) {
     <div style={{width:"100%", maxWidth:"760px", margin:"0 auto"}}>
       <h1>{collection.name}</h1>
         {size ? <h4 style={{marginTop:-20}}>Collection of {numberWithCommas(size)}</h4> : ""}
-      
+        {['commission'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(a => {
+          return (
+            <h4 style={{marginTop:-20}}>Creator royalty: {parseInt(1000*collection[a])/10 - 1}%</h4>
+          )})
+        }
       {['kyc'].filter(a => collection.hasOwnProperty(a) && collection[a]).map(() => {
         return (
           <Tooltip placement="right" title="This KYC badge indicates the collection creator has completed KYC with Toniq">
