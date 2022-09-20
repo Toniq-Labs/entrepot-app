@@ -5,32 +5,32 @@ import {toniqColors, cssToReactStyleObject} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
 import {useState} from 'react';
 
-const imageSize = css`272px`;
-
-const imageWrapperStyles = cssToReactStyleObject(css`
-  overflow: hidden;
-  border-radius: 8px;
-  position: relative;
-  flex-shrink: 0;
-  height: ${imageSize};
-  width: ${imageSize};
-  max-width: 100%;
-`);
-
-const imageOverlayStyles = cssToReactStyleObject(css`
-  position: absolute;
-`);
-
-const contentStyles = cssToReactStyleObject(css`
-  width: ${imageSize};
-  max-width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-`);
-
 export function NftCard(props) {
   const [hovered, setHovered] = useState(false);
+
+  const imageSize = props.small ? css`160px` : css`272px`;
+
+  const imageWrapperStyles = cssToReactStyleObject(css`
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    flex-shrink: 0;
+    height: ${imageSize};
+    width: ${imageSize};
+    max-width: 100%;
+  `);
+
+  const imageOverlayStyles = cssToReactStyleObject(css`
+    position: absolute;
+  `);
+
+  const contentStyles = cssToReactStyleObject(css`
+    width: ${imageSize};
+    max-width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  `);
 
   const styles = cssToReactStyleObject(css`
     border-radius: 16px;

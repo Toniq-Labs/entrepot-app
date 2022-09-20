@@ -38,6 +38,7 @@ import PriceICP from "./PriceICP.js";
 import { uppercaseFirstLetterOfWord } from "../utilities/string-utils.js";
 import { cronicFilterTraits } from "../model/constants.js";
 import { isInRange } from "../utilities/number-utils.js";
+import { MinimumOffer } from "./shared/MinimumOffer.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -126,6 +127,15 @@ const useStyles = makeStyles(theme => ({
   },
   cronicTraitsContainer: {
     padding: "16px",
+    "& toniq-slider": {
+      margin: '0 !important'
+    }
+  },
+  nftCard: {
+    position: 'relative',
+    "&:hover .offerChipContainer": {
+      display: "flex",
+    }
   }
 }));
 
@@ -187,7 +197,7 @@ const filterTypes = {
   traits: 'traits',
 };
 
-function doesCollectionPassFilters(listing, currentFilters) {
+function doesCollectionPassFilters(listing, currentFilters, traitsData, collection) {
   if (!listing) {
     return false;
   }
@@ -232,7 +242,7 @@ function doesCollectionPassFilters(listing, currentFilters) {
     }, true);
   }
 
-  if (!currentFilters.traits.values.length) {
+  if (!traitsData && collection?.route === 'cronics') {
     return cronicFilterTraits.reduce((currentCategory, category) => {
       return currentCategory && 
       isInRange(listing.traits[category].dominant, currentFilters.traits.values[category].dominant.min, currentFilters.traits.values[category].dominant.max) &&
@@ -454,7 +464,7 @@ export default function Listings(props) {
           .toLowerCase()
           .indexOf(query.toLowerCase()) >= 0;
       const passFilter = showFilters
-        ? doesCollectionPassFilters(listing, currentFilters)
+        ? doesCollectionPassFilters(listing, currentFilters, traitsData, collection)
         : true;
       return passFilter && (query === '' || inQuery);
     }),
@@ -518,7 +528,7 @@ export default function Listings(props) {
               }
             }}
           />
-          <div style={{ display: "flex", gap: "16px" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
             <ToniqIcon
               icon={LayoutGrid24Icon}
               onClick={() => {
@@ -867,47 +877,51 @@ export default function Listings(props) {
                     <Grid key={index} item>
                       <LazyLoad offset={100}>
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }}>
-                          <NftCard imageUrl={listing.image} key={listing.tokenid}>
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                              }}
-                            >
-                              <span
+                          <NftCard imageUrl={listing.image} key={listing.tokenid} small={gridSize === 'small'} className={classes.nftCard}>
+                            {
+                              gridSize === 'large' ? 
+                              <div
                                 style={{
-                                  marginBottom: '16px',
-                                  marginTop: '16px',
-                                  ...cssToReactStyleObject(toniqFontStyles.h3Font),
+                                  display: 'flex',
+                                  flexDirection: 'column',
                                 }}
                               >
-                                <span style={cssToReactStyleObject(toniqFontStyles.h3Font)}>
-                                  {
-                                    listing.price ? <PriceICP large={true} volume={true} clean={false} size={20} price={listing.price} /> : 'Unlisted'
-                                  }
+                                <span
+                                  style={{
+                                    marginBottom: '16px',
+                                    marginTop: '16px',
+                                    ...cssToReactStyleObject(toniqFontStyles.h3Font),
+                                  }}
+                                >
+                                  <span style={cssToReactStyleObject(toniqFontStyles.h3Font)}>
+                                    {
+                                      listing.price ? <PriceICP large={true} volume={true} clean={false} size={20} price={listing.price} /> : 'Unlisted'
+                                    }
+                                  </span>
                                 </span>
-                              </span>
-                              <div style={{display: 'flex'}}>
-                                <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column',}}>
-                                  <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
-                                    #{listing.mintNumber || ''}
-                                  </span>
-                                  <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
-                                    NRI: {listing.rarity || ''}%
-                                  </span>
+                                <div style={{display: 'flex'}}>
+                                  <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column',}}>
+                                    <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
+                                      #{listing.mintNumber || ''}
+                                    </span>
+                                    <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
+                                      NRI: {listing.rarity || ''}%
+                                    </span>
+                                  </div>
+                                  {
+                                    listing.price ? 
+                                    <ToniqButton
+                                      text="Buy Now"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        props.buyNft(listing.canister, listing.index, listing, _updates)
+                                      }}
+                                    /> : ''
+                                  }
                                 </div>
-                                {
-                                  listing.price ? 
-                                  <ToniqButton
-                                    text="Buy Now"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      props.buyNft(listing.canister, listing.index, listing, _updates)
-                                    }}
-                                  /> : ''
-                                }
-                              </div>
-                            </div>
+                              </div> : ''
+                            }
+                            <MinimumOffer tokenid={listing.tokenid} gridSize={gridSize} />
                           </NftCard>
                         </Link>
                       </LazyLoad>
