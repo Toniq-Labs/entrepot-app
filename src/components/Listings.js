@@ -212,8 +212,8 @@ function doesCollectionPassFilters(listing, currentFilters, traitsData, collecti
 
   if (currentFilters.rarity.range) {
     if (
-      Number(listing.rarity) > currentFilters.rarity.range.max ||
-      Number(listing.rarity) < currentFilters.rarity.range.min
+      listing.rarity > currentFilters.rarity.range.max ||
+      listing.rarity < currentFilters.rarity.range.min
     ) {
       return false;
     }
@@ -360,7 +360,7 @@ export default function Listings(props) {
         .map((listing, listingIndex) => {
           const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
           const { index, canister} = extjs.decodeTokenId(tokenid);
-          const rarity = (getNri(canister, index) * 100).toFixed(1);
+          const rarity = Number((getNri(canister, index) * 100).toFixed(1));
           const mintNumber = EntrepotNFTMintNumber(canister, index);
           let traits;
           if (traitsData) {
