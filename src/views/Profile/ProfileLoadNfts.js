@@ -8,12 +8,6 @@ import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
-export const emptyAllUserNfts = {
-  [ProfileTabs.MyNfts]: undefined,
-  [ProfileTabs.Watching]: undefined,
-  [ProfileTabs.Activity]: undefined,
-};
-
 function trait2dArrayToObject(traitArray) {
   return traitArray.reduce((accum, currentTrait) => {
     if (currentTrait[0] in accum) {

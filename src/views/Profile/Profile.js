@@ -11,8 +11,8 @@ import {profileStyles} from './ProfileStyles';
 import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {startLoadingProfileNftsAndCollections, emptyAllUserNfts} from './ProfileLoadNfts';
-import {ProfileTabs} from './ProfileTabs';
+import {startLoadingProfileNftsAndCollections} from './ProfileLoadNfts';
+import {ProfileTabs, ProfileViewType} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 
 export function Profile(props) {
@@ -21,13 +21,14 @@ export function Profile(props) {
   // this is a ref, instead of state, so that we can always get the latest version, even in async
   // tasks that were started with outdated versioned of this variable. This saves us from race
   // conditions where the old state overrides the new state when async tasks finish.
-  const allUserNfts = React.useRef(emptyAllUserNfts);
+  const allUserNfts = React.useRef({});
   // since the above is not a state object, we have to force updates with the following:
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const [loading, setLoading] = React.useState(true);
   const [query, setQuery] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
+  const [viewType, setViewType] = React.useState(ProfileViewType.Grid);
 
   const currentNftsAndCollections = resolvedOrUndefined(allUserNfts.current[currentTab]);
 
@@ -39,10 +40,16 @@ export function Profile(props) {
         props.collections,
       );
 
-      allUserNfts.current = allResults;
+      /**
+       * Only set promises if it hasn't been loaded already, this prevents future refreshes from
+       * wiping the screen and showing a loading screen.
+       */
+      if (!Object.keys(allUserNfts.current).length) {
+        allUserNfts.current = allResults;
+      }
 
-      Object.keys(allUserNfts.current).map(key =>
-        allUserNfts.current[key].then(resolved => {
+      Object.keys(allResults).map(key =>
+        allResults[key].then(resolved => {
           allUserNfts.current[key] = resolved;
           forceUpdate();
           if (Object.values(allUserNfts).every(value => !(value instanceof Promise))) {
@@ -97,6 +104,10 @@ export function Profile(props) {
           query={query}
           tabs={ProfileTabs}
           currentTab={currentTab}
+          viewType={viewType}
+          onViewTypeChange={newViewType => {
+            setViewType(newViewType);
+          }}
           onCurrentTabChange={newTab => {
             setCurrentTab(newTab);
           }}
@@ -113,6 +124,8 @@ export function Profile(props) {
           </div>
         ) : (
           <ProfileBody
+            query={query}
+            viewType={viewType}
             address={props.account.address}
             currentTab={currentTab}
             onSellClick={props.onSellClick}

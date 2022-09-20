@@ -4,6 +4,7 @@ import {
   ToniqSlider,
   ToniqIcon,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {mapObject} from 'augment-vir';
 import {
   toniqColors,
   ChevronDown24Icon,
@@ -22,6 +23,22 @@ function collectionTraitsExpandKey(collectionId) {
 }
 function collectionIndividualTraitExpandKey(collectionId, traitId) {
   return `traits:${collectionId}-trait:${traitId}`;
+}
+
+function scaleRarity(input, factor, round) {
+  const scaled = {
+    min: input.min * factor,
+    max: input.max * factor,
+  };
+
+  if (round) {
+    return {
+      min: Math.floor(scaled.min),
+      max: Math.ceil(scaled.max),
+    };
+  } else {
+    return scaled;
+  }
 }
 
 export function ProfileFilters(props) {
@@ -94,17 +111,17 @@ export function ProfileFilters(props) {
         <div>
           <div className="title">Rarity</div>
           <ToniqSlider
-            min={props.nftFilterStats.rarity.min}
-            max={props.nftFilterStats.rarity.max}
+            min={scaleRarity(props.nftFilterStats.rarity, 100, true).min}
+            max={scaleRarity(props.nftFilterStats.rarity, 100, true).max}
             suffix="%"
             double={true}
-            value={props.filters.rarity || props.nftFilterStats.rarity}
+            value={scaleRarity(props.filters.rarity || props.nftFilterStats.rarity, 100, true)}
             onValueChange={event => {
               const values = event.detail;
               props.updateFilters({
                 ...props.filters,
                 rarity: {
-                  ...values,
+                  ...scaleRarity(values, 0.01),
                 },
               });
             }}

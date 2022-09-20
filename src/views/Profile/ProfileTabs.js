@@ -24,3 +24,8 @@ export const nftStatusesByTab = {
     Sold: 'Sold',
   },
 };
+
+export const ProfileViewType = {
+  List: 'List',
+  Grid: 'Grid',
+};

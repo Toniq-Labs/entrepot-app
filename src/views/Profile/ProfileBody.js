@@ -7,20 +7,20 @@ import {
   toniqColors,
   ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
-import {
-  ToniqDropdown,
-  ToniqButton,
-} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import PriceICP from '../../components/PriceICP';
+import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../../components/PriceICP';
 import {ProfileFilters} from './ProfileFilters';
-import {AllFilter, ProfileTabs, nftStatusesByTab} from './ProfileTabs';
-import {getRelativeDate} from '../../utilities/relative-date';
+import {AllFilter, ProfileViewType} from './ProfileTabs';
 import {useNavigate} from 'react-router-dom';
+import {nftCardContents, listRow, ListRow} from './ProfileNftCard';
 
-function createFilterCallback(currentFilters) {
+function createFilterCallback(currentFilters, query) {
   return nft => {
     const price = Number(icpToString(nft.price, true, false));
+
+    const queryMatch = query
+      ? nft.collection.name.toLowerCase().includes(query.toLowerCase())
+      : true;
 
     const isWithinPrice =
       currentFilters.price == undefined
@@ -46,6 +46,11 @@ function createFilterCallback(currentFilters) {
       ),
     );
 
+    const matchesRarity =
+      currentFilters.rarity == undefined
+        ? true
+        : nft.nri && nft.nri <= currentFilters.rarity.max && nft.nri >= currentFilters.rarity.min;
+
     const matchesTraits = areAnyTraitsSelected
       ? currentFilters.traits.hasOwnProperty(nft.collection.id) &&
         Object.keys(currentFilters.traits[nft.collection.id]).some(traitKey => {
@@ -69,6 +74,8 @@ function createFilterCallback(currentFilters) {
       isWithinCollection,
       matchesStatus,
       matchesTraits,
+      queryMatch,
+      matchesRarity,
     ];
 
     return checks.every(check => check);
@@ -141,8 +148,10 @@ export function ProfileBody(props) {
   const navigate = useNavigate();
 
   const filteredNfts = props.userNfts
-    .filter(createFilterCallback(currentFilters))
+    .filter(createFilterCallback(currentFilters, props.query))
     .sort(createSortCallback(sort));
+
+  const isListView = props.viewType === ProfileViewType.List;
 
   return (
     <WithFilterPanel
@@ -191,135 +200,46 @@ export function ProfileBody(props) {
       <div
         style={{
           display: 'flex',
+          flexDirection: isListView ? 'column' : 'row',
           flexWrap: 'wrap',
-          gap: '32px',
+          gap: isListView ? '16px' : '32px',
           justifyContent: 'center',
           maxWidth: '100%',
           backgroundColor: 'white',
           paddingBottom: '32px',
         }}
       >
+        {isListView ? (
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: String(toniqColors.accentSecondary.backgroundColor),
+              borderRadius: '8px',
+              padding: '0 16px',
+            }}
+          >
+            <ListRow
+              items={[true, 'MINT #', 'NRI', 'PRICE', 'TIME']}
+              style={{
+                ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                maxHeight: '32px',
+              }}
+            />
+          </div>
+        ) : (
+          ''
+        )}
         {filteredNfts.map(userNft => {
-          const listing = userNft.listing ? <PriceICP price={userNft.listing.price} /> : 'Unlisted';
-
-          const formattedDateString = userNft.date
-            ? userNft.date.toISOString().replace('T', ' ').replace(/\.\d+/, '')
-            : '';
-          const relativeDate = userNft.date ? getRelativeDate(userNft.date) : '';
-          const includesYourOffer = userNft.offers.find(offer => offer[3] === props.address);
-
           return (
             <NftCard
+              listStyle={isListView}
               onClick={() => {
-                console.log('derp');
                 navigate(`/marketplace/asset/${userNft.token}`);
               }}
               imageUrl={userNft.image}
               key={userNft.token}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <span
-                  style={{
-                    marginBottom: '16px',
-                    marginTop: '16px',
-                    ...cssToReactStyleObject(toniqFontStyles.h3Font),
-                  }}
-                >
-                  #{userNft.mintNumber}
-                </span>
-                <div style={{display: 'flex'}}>
-                  <div
-                    style={{
-                      flexGrow: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                    }}
-                  >
-                    <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
-                      {listing}
-                    </span>
-                    <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
-                      {userNft.nri ? `NRI: ${userNft.nri * 100}%` : ''}
-                    </span>
-                  </div>
-                  {props.currentTab === ProfileTabs.MyNfts ? (
-                    <>
-                      <ToniqButton
-                        style={{marginRight: '16px'}}
-                        className="toniq-button-secondary"
-                        text="Sell"
-                        onClick={event => {
-                          props.onSellClick({
-                            id: userNft.token,
-                            listing: userNft.listing,
-                          });
-                          event.stopPropagation();
-                        }}
-                      />
-                      <ToniqButton
-                        text="Transfer"
-                        onClick={event => {
-                          props.onTransferClick({
-                            id: userNft.token,
-                            listing: userNft.listing,
-                          });
-                          event.stopPropagation();
-                        }}
-                      />
-                    </>
-                  ) : props.currentTab === ProfileTabs.Activity ? (
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                      <span
-                        style={{
-                          ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-                        }}
-                        title={formattedDateString}
-                      >
-                        {relativeDate}
-                      </span>
-                      <span
-                        style={{
-                          ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                          color: String(toniqColors.pageSecondary.foregroundColor),
-                        }}
-                      >
-                        {userNft.statuses.has(nftStatusesByTab[ProfileTabs.Activity].Bought)
-                          ? 'Bought'
-                          : 'Sold'}
-                      </span>
-                    </div>
-                  ) : props.currentTab === ProfileTabs.Watching ? (
-                    <>
-                      <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <span
-                          style={{
-                            ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-                            alignSelf: 'flex-end',
-                          }}
-                        >{`${userNft.offers.length} Offer${
-                          userNft.offers.length > 1 ? 's' : ''
-                        }`}</span>
-                        <span
-                          style={{
-                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                            color: String(toniqColors.pageSecondary.foregroundColor),
-                          }}
-                        >
-                          {includesYourOffer ? 'including yours' : ''}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
+              {nftCardContents(userNft, props)}
             </NftCard>
           );
         })}
