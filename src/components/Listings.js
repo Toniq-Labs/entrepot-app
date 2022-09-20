@@ -35,6 +35,9 @@ import { getEXTCanister, getEXTID } from "../utilities/load-tokens.js";
 import { Accordion } from "./Accordion.js";
 import { NftCard } from "./shared/NftCard.js";
 import PriceICP from "./PriceICP.js";
+import { uppercaseFirstLetterOfWord } from "../utilities/string-utils.js";
+import { cronicFilterTraits } from "../model/constants.js";
+import { isInRange } from "../utilities/number-utils.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -120,6 +123,9 @@ const useStyles = makeStyles(theme => ({
   },
   gridControl: {
     cursor: "pointer",
+  },
+  cronicTraitsContainer: {
+    padding: "16px",
   }
 }));
 
@@ -178,6 +184,7 @@ const filterTypes = {
   price: 'price',
   rarity: 'rarity',
   mintNumber: 'mintNumber',
+  traits: 'traits',
 };
 
 function doesCollectionPassFilters(listing, currentFilters) {
@@ -224,7 +231,28 @@ function doesCollectionPassFilters(listing, currentFilters) {
       return currentCategory && trait;
     }, true);
   }
+
+  if (!currentFilters.traits.values.length) {
+    return cronicFilterTraits.reduce((currentCategory, category) => {
+      return currentCategory && 
+      isInRange(listing.traits[category].dominant, currentFilters.traits.values[category].dominant.min, currentFilters.traits.values[category].dominant.max) &&
+      isInRange(listing.traits[category].recessive, currentFilters.traits.values[category].recessive.min, currentFilters.traits.values[category].recessive.max) 
+    }, true);
+  }
+
   return true;
+}
+
+function getCronicFilters() {
+  var filters = {};
+  cronicFilterTraits.forEach(trait => {
+    const range = {min: 0, max: 63}
+    filters[trait] = {
+      dominant: range,
+      recessive: range,
+    };
+  });
+  return filters;
 }
 
 export default function Listings(props) {
@@ -267,7 +295,7 @@ export default function Listings(props) {
       type: 'mintNumber',
     },
     traits: {
-      values: [],
+      values: !traitsData && collection?.route === 'cronics' ? getCronicFilters() : [],
       type: 'traits',
     }
   });
@@ -275,34 +303,6 @@ export default function Listings(props) {
   const navigate = useNavigate();
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
-  
-  const cronicFilterTraits = ["health","base","speed","attack","range","magic","defense","resistance","basic","special"];
-  var cftState = {};
-  cronicFilterTraits.forEach(a => {
-    cftState[a+"Dom"] = [0, 63];
-    cftState[a+"Rec"] = [0, 63];
-  });
-  const [legacyFilterState, setLegacyFilterState] = React.useState(cftState);
-  const cronicSetFilterTrait = (name, v) => {
-    var t = {...legacyFilterState};
-    t[name] = v;
-    setLegacyFilterState(t);
-  };
-
-  var filterHooks = [];
-  if (collection.route === 'cronics'){
-    filterHooks.push((results) => {
-      return results.filter(result => {
-        for(var i = 0; i < cronicFilterTraits.length; i++){        
-          if (legacyFilterState[cronicFilterTraits[i]+"Dom"][0] > getGenes(result[2].nonfungible.metadata[0]).battle[cronicFilterTraits[i]].dominant) return false;
-          if (legacyFilterState[cronicFilterTraits[i]+"Dom"][1] < getGenes(result[2].nonfungible.metadata[0]).battle[cronicFilterTraits[i]].dominant) return false;
-          if (legacyFilterState[cronicFilterTraits[i]+"Rec"][0] > getGenes(result[2].nonfungible.metadata[0]).battle[cronicFilterTraits[i]].recessive) return false;
-          if (legacyFilterState[cronicFilterTraits[i]+"Rec"][1] < getGenes(result[2].nonfungible.metadata[0]).battle[cronicFilterTraits[i]].recessive) return false;
-        };
-        return true;
-      });
-    });
-  }
 
   const loadTraits = async () => {
     if (collection?.filter) {
@@ -337,7 +337,7 @@ export default function Listings(props) {
           };
         })
         setTraitsCategories(traitsCategories);
-      } else {
+      } else if (collection?.route === "cronics") {
         traitsCategories = cronicFilterTraits.map((trait) => {
           return {
             category: trait
@@ -362,6 +362,8 @@ export default function Listings(props) {
                 value: traitsCategories[traitCategory].values[traitValue],
               }
             })
+          } else if (!traitsData && collection?.route === 'cronics') {
+            traits = getGenes(listing[2].nonfungible.metadata[0]).battle;
           }
 
           return {
@@ -425,7 +427,7 @@ export default function Listings(props) {
     }
   }, -Infinity);
 
-  const priceRanges = {
+  const filterRanges = {
     [filterTypes.price]: {
       min: lowestPrice,
       max: highestPrice,
@@ -437,6 +439,10 @@ export default function Listings(props) {
     [filterTypes.mintNumber]: {
       min: lowestMint,
       max: highestMint,
+    },
+    [filterTypes.traits]: {
+      min: 0,
+      max: 63,
     },
   };
 
@@ -578,11 +584,11 @@ export default function Listings(props) {
                   <div style={{ margin: "32px 0" }}>
                     <ToniqSlider
                       logScale={true}
-                      min={priceRanges[currentFilters.price.type].min}
-                      max={priceRanges[currentFilters.price.type].max}
+                      min={filterRanges[currentFilters.price.type].min}
+                      max={filterRanges[currentFilters.price.type].max}
                       suffix="ICP"
                       double={true}
-                      value={currentFilters.price.range || priceRanges[currentFilters.price]}
+                      value={currentFilters.price.range || filterRanges[currentFilters.price]}
                       onValueChange={event => {
                         const values = event.detail;
                         setCurrentFilters({
@@ -602,11 +608,11 @@ export default function Listings(props) {
                   <div style={{ margin: "32px 0" }}>
                     <ToniqSlider
                       logScale={true}
-                      min={priceRanges[currentFilters.rarity.type].min}
-                      max={priceRanges[currentFilters.rarity.type].max}
+                      min={filterRanges[currentFilters.rarity.type].min}
+                      max={filterRanges[currentFilters.rarity.type].max}
                       suffix="%"
                       double={true}
-                      value={currentFilters.rarity.range || priceRanges[currentFilters.rarity.type]}
+                      value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
                       onValueChange={event => {
                         const values = event.detail;
                         setCurrentFilters({
@@ -626,10 +632,10 @@ export default function Listings(props) {
                   <div style={{ margin: "32px 0" }}>
                     <ToniqSlider
                       logScale={true}
-                      min={priceRanges[currentFilters.mintNumber.type].min}
-                      max={priceRanges[currentFilters.mintNumber.type].max}
+                      min={filterRanges[currentFilters.mintNumber.type].min}
+                      max={filterRanges[currentFilters.mintNumber.type].max}
                       double={true}
-                      value={currentFilters.mintNumber.range || priceRanges[currentFilters.mintNumber.type]}
+                      value={currentFilters.mintNumber.range || filterRanges[currentFilters.mintNumber.type]}
                       onValueChange={event => {
                         const values = event.detail;
                         setCurrentFilters({
@@ -646,97 +652,174 @@ export default function Listings(props) {
               </div>
               <div>
                 <Accordion title={`Traits (${traitsCategories.length})`} open={true}>
-                  <Grid container spacing={2} style={{ margin: "32px 0" }}>
-                    {traitsCategories.map((traitsCategory, index) => {
-                      return (
-                        <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
-                          <input
-                            id={traitsCategory.category}
-                            type="checkbox"
-                          />
-                          <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
-                            <span>{traitsCategory.category}</span>
-                            {traitsCategory.values ? <span className={`${classes.traitCategoryCounter} traitCategoryCounter`}>{traitsCategory.values.length}</span> : ''}
-                          </label>
-                          <div className={`${classes.traitsAccordion} traitsAccordion`}>
-                            <div className={classes.traitsContainer}>
-                              {
-                                traitsCategory.values && traitsCategory.values.length > 10 ? 
-                                <ToniqInput
-                                  value={queryTrait}
-                                  style={{
-                                    width: '100%',
-                                    boxSizing: 'border-box',
-                                  }}
-                                  placeholder="Search..."
-                                  icon={Search24Icon}
-                                  onValueChange={event => {
-                                    const searchTrait = event.detail;
-                                    if (searchTrait) {
-                                      setSearchParams({searchTrait});
-                                    } else {
-                                      setSearchParams({});
-                                    }
-                                  }}
-                                /> : ""
-                              }
-                              <div className={classes.traitsWrapper}>
-                                {
-                                  traitsCategory.values && traitsCategory.values.filter((trait) => {
-                                    const inQuery = trait
-                                      .toString()
-                                      .toLowerCase()
-                                      .indexOf(queryTrait.toLowerCase()) >= 0;
-                                    return (queryTrait === '' || inQuery);
-                                  }).map((trait) => {
-                                    return (
-                                      <ToniqCheckbox
-                                        key={`${trait}-${index}`}
-                                        text={trait}
-                                        onCheckedChange={event => {
-                                          const traitIndex = currentFilters.traits.values.findIndex((trait) => {
-                                            return trait.category === traitsCategory.category;
-                                          })
-                                          if (event.detail) {
-                                            if (traitIndex !== -1) {
-                                              if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
-                                            } else {
-                                              currentFilters.traits.values.push({
-                                                category: traitsCategory.category,
-                                                values: [trait],
-                                              });
-                                            }
-                                          } else {
-                                            if (traitIndex !== -1) {
-                                              const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
-                                                return value === trait;
-                                              })
-                                              
-                                              if (currentFilters.traits.values[traitIndex].values.length !== 1) {
-                                                currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
-                                              } else {
-                                                currentFilters.traits.values.splice(traitIndex, 1)
-                                              }
-                                            }
-                                          }
+                  <Grid container spacing={2} style={{ margin: collection?.route === 'cronics' ? "16px 0" : "32px 0" }}>
+                    {collection?.route === 'cronics' ? 
+                      <>
+                        {traitsCategories.map((traitsCategory, index) => {
+                          return (
+                            <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                              <Accordion
+                                title={uppercaseFirstLetterOfWord(traitsCategory.category)}
+                                open={false}
+                              >
+                                <div className={classes.cronicTraitsContainer}>
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                      <span>Dominant: </span>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                      <ToniqSlider
+                                        min={filterRanges[currentFilters.traits.type].min}
+                                        max={filterRanges[currentFilters.traits.type].max}
+                                        double={true}
+                                        value={currentFilters.traits.values[traitsCategory.category].dominant || filterRanges[currentFilters.traits.type]}
+                                        onValueChange={event => {
+                                          const values = event.detail;
                                           setCurrentFilters({
                                             ...currentFilters,
                                             traits: {
                                               ...currentFilters.traits,
-                                              values: currentFilters.traits.values,
+                                              values: {
+                                                ...currentFilters.traits.values,
+                                                [traitsCategory.category]: {
+                                                  ...currentFilters.traits.values[traitsCategory.category],
+                                                  dominant: values,
+                                                },
+                                              },
                                             },
                                           });
                                         }}
                                       />
-                                    )
-                                  })
-                                }
+                                    </Grid>
+                                  </Grid>
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                      <span>Recessive: </span>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                      <ToniqSlider
+                                        min={filterRanges[currentFilters.traits.type].min}
+                                        max={filterRanges[currentFilters.traits.type].max}
+                                        double={true}
+                                        value={currentFilters.traits.values[traitsCategory.category].recessive || filterRanges[currentFilters.traits.type]}
+                                        onValueChange={event => {
+                                          const values = event.detail;
+                                          setCurrentFilters({
+                                            ...currentFilters,
+                                            traits: {
+                                              ...currentFilters.traits,
+                                              values: {
+                                                ...currentFilters.traits.values,
+                                                [traitsCategory.category]: {
+                                                  ...currentFilters.traits.values[traitsCategory.category],
+                                                  recessive: values,
+                                                },
+                                              },
+                                            },
+                                          });
+                                        }}
+                                      />
+                                    </Grid>
+                                  </Grid>
+                                </div>
+                              </Accordion>
+                            </Grid>
+                          )
+                        })}
+                      </> :
+                      <>
+                        {traitsCategories.map((traitsCategory, index) => {
+                          return (
+                            <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                              <input
+                                id={traitsCategory.category}
+                                type="checkbox"
+                              />
+                              <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
+                                <span>{traitsCategory.category}</span>
+                                {traitsCategory.values ? <span className={`${classes.traitCategoryCounter} traitCategoryCounter`}>{traitsCategory.values.length}</span> : ''}
+                              </label>
+                              <div className={`${classes.traitsAccordion} traitsAccordion`}>
+                                <div className={classes.traitsContainer}>
+                                  {
+                                    traitsCategory.values && traitsCategory.values.length > 10 ? 
+                                    <ToniqInput
+                                      value={queryTrait}
+                                      style={{
+                                        width: '100%',
+                                        boxSizing: 'border-box',
+                                      }}
+                                      placeholder="Search..."
+                                      icon={Search24Icon}
+                                      onValueChange={event => {
+                                        const searchTrait = event.detail;
+                                        if (searchTrait) {
+                                          setSearchParams({searchTrait});
+                                        } else {
+                                          setSearchParams({});
+                                        }
+                                      }}
+                                    /> : ""
+                                  }
+                                  <div className={classes.traitsWrapper}>
+                                    {
+                                      traitsCategory.values && traitsCategory.values.filter((trait) => {
+                                        const inQuery = trait
+                                          .toString()
+                                          .toLowerCase()
+                                          .indexOf(queryTrait.toLowerCase()) >= 0;
+                                        return (queryTrait === '' || inQuery);
+                                      }).map((trait) => {
+                                        return (
+                                          <ToniqCheckbox
+                                            key={`${trait}-${index}`}
+                                            text={trait}
+                                            onCheckedChange={event => {
+                                              const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                                return trait.category === traitsCategory.category;
+                                              })
+                                              if (event.detail) {
+                                                if (traitIndex !== -1) {
+                                                  if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
+                                                } else {
+                                                  currentFilters.traits.values.push({
+                                                    category: traitsCategory.category,
+                                                    values: [trait],
+                                                  });
+                                                }
+                                              } else {
+                                                if (traitIndex !== -1) {
+                                                  const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                                    return value === trait;
+                                                  })
+                                                  
+                                                  if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                                    currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                                  } else {
+                                                    currentFilters.traits.values.splice(traitIndex, 1)
+                                                  }
+                                                }
+                                              }
+                                              setCurrentFilters({
+                                                ...currentFilters,
+                                                traits: {
+                                                  ...currentFilters.traits,
+                                                  values: currentFilters.traits.values,
+                                                },
+                                              });
+                                            }}
+                                          />
+                                        )
+                                      })
+                                    }
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </Grid>
-                      )
-                    })}
+                            </Grid>
+                          )
+                        })}
+                      </>
+                    }
                   </Grid>
                 </Accordion>
               </div>
