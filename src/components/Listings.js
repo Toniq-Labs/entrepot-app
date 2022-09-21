@@ -17,6 +17,7 @@ import {
   ArrowsSort24Icon,
   LayoutGrid24Icon,
   GridDots24Icon,
+  LoaderAnimated24Icon,
 } from '@toniq-labs/design-system';
 import {
   ToniqInput,
@@ -39,6 +40,8 @@ import { uppercaseFirstLetterOfWord } from "../utilities/string-utils.js";
 import { cronicFilterTraits } from "../model/constants.js";
 import { isInRange } from "../utilities/number-utils.js";
 import { MinimumOffer } from "./shared/MinimumOffer.js";
+import { Loading } from "./shared/Loading.js";
+import Favourite from "./Favourite.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -276,7 +279,7 @@ export default function Listings(props) {
     };
   };
   const [stats, setStats] = useState(false);
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState(false);
   const [traitsData, setTraitsData] = useState(false);
   const [traitsCategories, setTraitsCategories] = useState([]);
   const [collection] = useState(getCollectionFromRoute(params?.route));
@@ -285,7 +288,6 @@ export default function Listings(props) {
   const query = searchParams.get('search') || '';
   const queryTrait = searchParams.get('searchTrait') || '';
   const [sort, setSort] = useState(defaultSortOption);
-  const [page, setPage] = useState(1);
   const [gridSize, setGridSize] = useState('large');
   const [currentFilters, setCurrentFilters] = useState({
     status: {
@@ -395,11 +397,11 @@ export default function Listings(props) {
     };
   };
 
-  const filteredStatusListings = listings
+  const filteredStatusListings = listings ? listings
     .filter(listing => (listing[1] === false || listing.price >= 1000000n))
     .filter(listing => {
       return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
-    });
+    }) : [];
 
   const lowestPrice = filteredStatusListings.reduce((lowest, listing) => {
     const currentValue = Number(listing.price) / 100000000;
@@ -508,7 +510,7 @@ export default function Listings(props) {
           <StyledTab value="nfts" label="NFTs" />
           <StyledTab value="activity" label="Activity" />
         </StyledTabs>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <ToniqInput
             value={query}
             style={{
@@ -516,6 +518,7 @@ export default function Listings(props) {
               maxWidth: '300px',
               boxSizing: 'border-box',
               flexGrow: '1',
+              marginLeft: '-16px',
             }}
             placeholder="Search for mint # or token ID"
             icon={Search24Icon}
@@ -550,7 +553,7 @@ export default function Listings(props) {
         <WithFilterPanel
           showFilters={showFilters}
           onShowFiltersChange={newShowFilters => {
-            setShowFilters(newShowFilters);
+            if (listings) setShowFilters(newShowFilters);
           }}
           onFilterClose={() => {
             setShowFilters(false);
@@ -833,25 +836,18 @@ export default function Listings(props) {
                   </Grid>
                 </Accordion>
               </div>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <ToniqCheckbox text="Current Listings" />
-                </Grid>
-                <Grid item xs={12}>
-                  <ToniqCheckbox text="Sold Listings" />
-                </Grid>
-              </Grid>
             </>
           }
           otherControlsChildren={
             <>
-              <span
+                <span
                   style={{
+                    display: 'flex',
                     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
                     color: toniqColors.pageSecondary.foregroundColor,
                   }}
                 >
-                  NFTs ({filteredAndSortedListings.length})
+                  NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : <ToniqIcon icon={LoaderAnimated24Icon} />}
                 </span>
                 <ToniqDropdown
                   style={{
@@ -871,13 +867,19 @@ export default function Listings(props) {
         >
           {
             filteredAndSortedListings.length ?
-              <Grid container spacing={2} style={{ margin: "0 16px" }}>
+              <Grid container spacing={4} justifyContent="center">
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item>
-                      <LazyLoad offset={100}>
+                      <LazyLoad offset={100} once>
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }}>
-                          <NftCard imageUrl={listing.image} key={listing.tokenid} small={gridSize === 'small'} className={classes.nftCard}>
+                          <NftCard 
+                            imageUrl={listing.image} 
+                            key={listing.tokenid} 
+                            small={gridSize === 'small'} 
+                            className={classes.nftCard}
+                            style={{ maxWidth: gridSize === 'small' ? '192px' : '304px', maxHeight: gridSize === 'small' ? '192px' : '416px' }}
+                          >
                             {
                               gridSize === 'large' ? 
                               <div
@@ -922,6 +924,19 @@ export default function Listings(props) {
                               </div> : ''
                             }
                             <MinimumOffer tokenid={listing.tokenid} gridSize={gridSize} />
+                            <div
+                              style={{ position: "absolute", top: "15px", left: "15px" }}
+                              onClick={(e) => {
+                                e.preventDefault();
+                              }}
+                            >
+                              <Favourite 
+                                refresher={props.faveRefresher} 
+                                identity={props.identity} 
+                                loggedIn={props.loggedIn} 
+                                tokenid={listing.tokenid} 
+                              />
+                            </div>
                           </NftCard>
                         </Link>
                       </LazyLoad>
@@ -930,6 +945,7 @@ export default function Listings(props) {
                 })}
               </Grid> : ""
           }
+          <Loading loading={!listings} />
         </WithFilterPanel>
       </div>
     </div>

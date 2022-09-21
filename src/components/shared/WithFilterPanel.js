@@ -10,7 +10,7 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
-const filterPanelWidth = css`340px`;
+const filterPanelWidth = css`304px`;
 
 export function WithFilterPanel(props) {
   return (
@@ -21,7 +21,7 @@ export function WithFilterPanel(props) {
             .with-filter-panel {
               display: flex;
               --toniq-interaction-transition-duration: 0;
-              --filter-element-padding: 32px;
+              --filter-element-padding: 16px;
             }
 
             .with-filter-panel .left-filter-panel > * {
@@ -40,12 +40,12 @@ export function WithFilterPanel(props) {
 
               flex-basis: 0;
               padding: 0;
-              margin-top: 16px;
+              margin-top: 12px;
+              gap: 16px;
             }
 
             .with-filter-panel .left-filter-panel.show-left-panel {
               flex-basis: ${filterPanelWidth};
-              padding: 0 16px;
             }
 
             .with-filter-panel .left-filter-panel-header {
@@ -119,7 +119,6 @@ export function WithFilterPanel(props) {
 
             .with-filter-panel .filter-and-icon {
               cursor: pointer;
-              margin-left: 16px;
               gap: 8px;
               flex-shrink: 0;
             }
@@ -137,7 +136,7 @@ export function WithFilterPanel(props) {
               }
               .with-filter-panel .left-filter-panel {
                 flex-basis: 0;
-                padding: 0 16px;
+                gap: 0;
               }
               .with-filter-panel .left-filter-panel.show-left-panel {
                 align-self: stretch;

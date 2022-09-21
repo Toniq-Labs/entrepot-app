@@ -104,6 +104,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     minHeight: 480,
+    maxWidth: 304,
     '@media (max-width: 400px)': {
       height: 'unset',
     },
@@ -113,14 +114,14 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexGrow: 1,
     alignItems: 'stretch',
+    gap: 16,
   },
   collectionCardCollectionName: {
     textOverflow: 'ellipsis',
-    overflow: 'hidden',
     alignSelf: 'stretch',
     ...cssToReactStyleObject(toniqFontStyles.h3Font),
     marginBottom: 0,
-    marginTop: '16px',
+    marginTop: 0,
     display: '-webkit-box',
     '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
@@ -129,7 +130,7 @@ const useStyles = makeStyles(theme => ({
   collectionCardBrief: {
     margin: 0,
     display: '-webkit-box',
-    '-webkit-line-clamp': 3,
+    '-webkit-line-clamp': 1,
     '-webkit-box-orient': 'vertical',
     overflow: 'hidden',
     textOverflow: 'clip',
@@ -142,14 +143,11 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexBasis: 0,
     flexGrow: 1,
-    minHeight: '54px',
     justifyContent: 'center',
-    flexDirection: 'column',
     alignSelf: 'stretch',
   },
   collectionDetailsWrapper: {
     display: 'flex',
-    flexWrap: 'wrap',
     flexShrink: 1,
     justifyContent: 'center',
     gap: '16px',
@@ -470,6 +468,9 @@ export default function Marketplace(props) {
       <div style={{width: '100%', display: 'block', position: 'relative'}}>
         <div
           style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
             margin: '0px auto',
             minHeight: 'calc(100vh - 221px)',
           }}
@@ -482,6 +483,7 @@ export default function Marketplace(props) {
               width: '500px',
               maxWidth: '100%',
               boxSizing: 'border-box',
+              marginLeft: '-16px',
             }}
             placeholder="Search for collections..."
             icon={Search24Icon}
@@ -613,7 +615,7 @@ export default function Marketplace(props) {
                       to={'/marketplace/' + collection.route}
                     >
                       <NftCard
-                        style={{flexGrow: 1}}
+                        style={{flexGrow: 1, maxHeight: 480, gap: 16}}
                         title={collection.name}
                         imageUrl={
                           collection.hasOwnProperty('collection') && collection.collection

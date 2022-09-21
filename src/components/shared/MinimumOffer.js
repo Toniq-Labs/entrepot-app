@@ -1,7 +1,7 @@
-import { makeStyles } from '@material-ui/core';
-import { cssToReactStyleObject, Icp16Icon, toniqFontStyles } from '@toniq-labs/design-system';
-import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core';
+import { cssToReactStyleObject, Icp16Icon, LoaderAnimated24Icon, toniqFontStyles } from '@toniq-labs/design-system';
+import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import extjs from '../../ic/extjs';
 import { icpToString } from '../PriceICP';
 
@@ -32,7 +32,9 @@ export function MinimumOffer(props) {
 	const [offers, setOffers] = useState(false);
 
 	const getOffers = async () => {
-		await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai").offers(props.tokenid).then(offers => {
+		await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai")
+		.offers(props.tokenid)
+		.then(offers => {
 			const offerData = offers
 				.map(offer => {
 					return offer[1];
@@ -42,6 +44,8 @@ export function MinimumOffer(props) {
 				});
 			if (offerData.length) {
 				setOffers(icpToString(offerData[offerData.length - 1], true, true));
+			} else {
+				setOffers('');
 			}
 		});
   }
@@ -54,7 +58,7 @@ export function MinimumOffer(props) {
   return (
 		<>
 			{
-				offers && 
+				offers && offers !== '' &&
 				<div
 					className={`offerChipContainer ${classes.offerChipContainer}`}
 					style={{ 
@@ -68,6 +72,25 @@ export function MinimumOffer(props) {
 							</div> : 
 							<div className={classes.offerChip}>
 								Minimum Offer is&nbsp;<ToniqIcon icon={Icp16Icon} />&nbsp;{offers}
+							</div>
+						}
+				</div> 
+			}
+			{
+				!offers && offers !== '' &&
+				<div
+					className={`offerChipContainer ${classes.offerChipContainer}`}
+					style={{ 
+						margin: props.gridSize === 'large' ? 0 : 'auto', 
+						height: props.gridSize === 'large' ? 272 : "unset" 
+					}}>
+						{
+							props.gridSize === 'small' ? 
+							<div className={classes.offerChip}>
+								<ToniqIcon icon={LoaderAnimated24Icon} />
+							</div> : 
+							<div className={classes.offerChip}>
+								<ToniqIcon icon={LoaderAnimated24Icon} />&nbsp;Loading Offers
 							</div>
 						}
 				</div>
