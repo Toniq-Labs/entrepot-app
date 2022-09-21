@@ -42,6 +42,7 @@ import { isInRange } from "../utilities/number-utils.js";
 import { MinimumOffer } from "./shared/MinimumOffer.js";
 import { Loading } from "./shared/Loading.js";
 import Favourite from "./Favourite.js";
+import { NoResult } from "./shared/NoResult.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -956,28 +957,9 @@ export default function Listings(props) {
                     </Grid>
                   );
                 })}
-              </Grid> : ""
+              </Grid> : ''
           }
-          {
-            listings && !filteredAndSortedListings.length && 
-            <div 
-              style={{ display: 'flex',
-                justifyContent: "center",
-                alignItems: "center",
-                background: '#FFFFFF',
-                border: "1px #00D093 solid",
-                borderRadius: "8px",
-                padding: "12px 16px",
-                maxWidth: "138px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop: 32,
-                ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont) 
-              }}
-            >
-              <span>No Result</span>
-            </div>
-          }
+          <NoResult noResult={listings && !filteredAndSortedListings.length} />
           <Loading loading={!listings} />
         </WithFilterPanel>
       </div>

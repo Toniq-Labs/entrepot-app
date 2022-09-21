@@ -547,7 +547,7 @@ const Detail = (props) => {
                                             <span className={classes.buyerMobile}>
                                               {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
                                                 <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
-                                                <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                                <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${offer.buyer}`} letterCount={5} text={offer.buyer.toText()} />
                                               }
                                             </span>
                                           </div>
@@ -573,7 +573,7 @@ const Detail = (props) => {
                                     <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
                                       {props.identity && props.identity.getPrincipal().toText() === offer.buyer.toText() ? 
                                         <ToniqButton text="Cancel" onClick={cancelOffer} /> : 
-                                        <ToniqMiddleEllipsis externalLink={true} letterCount={5} text={offer.buyer.toText()} />
+                                        <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${offer.buyer}`} letterCount={5} text={offer.buyer.toText()} />
                                       }
                                     </Grid>
                                     <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(offer.amount, true, true)}</Grid>
@@ -681,7 +681,7 @@ const Detail = (props) => {
                                               />
                                             </span>
                                             <span className={classes.buyerMobile}>
-                                              TO: &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                              TO: &nbsp;<ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${transaction.buyer}`} letterCount={5} text={transaction.buyer} />
                                             </span>
                                           </div>
                                         </Grid>
@@ -689,7 +689,7 @@ const Detail = (props) => {
                                     </Grid>
                                     <Grid item xs={1} sm={2} md={2} className={classes.buyerDesktop} style={{ marginLeft: "-16px" }}>Sale</Grid>
                                     <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
-                                      TO:  &nbsp;<ToniqMiddleEllipsis externalLink={true} letterCount={5} text={transaction.buyer} />
+                                      TO:  &nbsp;<ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${transaction.buyer}`} letterCount={5} text={transaction.buyer} />
                                     </Grid>
                                     <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
                                   </Grid>

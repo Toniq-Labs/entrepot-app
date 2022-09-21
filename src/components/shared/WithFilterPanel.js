@@ -184,7 +184,8 @@ export function WithFilterPanel(props) {
         <div className="right-section">
           <div className="controls">
             <div className="filter-sort-row">
-              <div className="filters-trigger">
+              {
+                !props.noFilters && <div className="filters-trigger">
                 <div
                   className="filter-and-icon"
                   style={{
@@ -206,6 +207,7 @@ export function WithFilterPanel(props) {
                   •
                 </span>
               </div>
+              }
               <div className="other-controls">{props.otherControlsChildren}</div>
             </div>
           </div>

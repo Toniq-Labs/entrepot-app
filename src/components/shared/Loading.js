@@ -6,16 +6,16 @@ import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-com
 export function Loading(props) {
 	const useStyles = makeStyles(theme => ({
 		loadingContainer: {
-			display: props.loading ? "flex" : "none",
-			justifyContent: "center",
-			alignItems: "center",
+			display: props.loading ? 'flex' : 'none',
+			justifyContent: 'center',
+			alignItems: 'center',
 			background: '#FFFFFF',
-			border: "1px #00D093 solid",
-			borderRadius: "8px",
-			padding: "12px 16px",
-			maxWidth: "138px",
-			marginLeft: "auto",
-			marginRight: "auto",
+			border: '1px #00D093 solid',
+			borderRadius: '8px',
+			padding: '12px 16px',
+			maxWidth: '138px',
+			marginLeft: 'auto',
+			marginRight: 'auto',
 			...cssToReactStyleObject(toniqFontStyles.boldParagraphFont)
 		},
 	}));
