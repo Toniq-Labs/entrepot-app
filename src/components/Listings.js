@@ -474,6 +474,16 @@ export default function Listings(props) {
     [sort.value.sort]
   );
 
+  const queryFilteredTraits = (traitsCategoryValues) => {
+    return traitsCategoryValues.filter((trait) => {
+      const inQuery = trait
+        .toString()
+        .toLowerCase()
+        .indexOf(queryTrait.toLowerCase()) >= 0;
+      return (queryTrait === '' || inQuery);
+    })
+  }
+
   useInterval(_updates, 10 * 1000);
 
   useEffect(() => {
@@ -776,54 +786,57 @@ export default function Listings(props) {
                                   }
                                   <div className={classes.traitsWrapper}>
                                     {
-                                      traitsCategory.values && traitsCategory.values.filter((trait) => {
-                                        const inQuery = trait
-                                          .toString()
-                                          .toLowerCase()
-                                          .indexOf(queryTrait.toLowerCase()) >= 0;
-                                        return (queryTrait === '' || inQuery);
-                                      }).map((trait) => {
-                                        return (
-                                          <ToniqCheckbox
-                                            key={`${trait}-${index}`}
-                                            text={trait}
-                                            onCheckedChange={event => {
-                                              const traitIndex = currentFilters.traits.values.findIndex((trait) => {
-                                                return trait.category === traitsCategory.category;
-                                              })
-                                              if (event.detail) {
-                                                if (traitIndex !== -1) {
-                                                  if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
-                                                } else {
-                                                  currentFilters.traits.values.push({
-                                                    category: traitsCategory.category,
-                                                    values: [trait],
-                                                  });
-                                                }
-                                              } else {
-                                                if (traitIndex !== -1) {
-                                                  const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
-                                                    return value === trait;
-                                                  })
-                                                  
-                                                  if (currentFilters.traits.values[traitIndex].values.length !== 1) {
-                                                    currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                      traitsCategory.values &&
+                                      queryFilteredTraits(traitsCategory.values)
+                                        .map((trait) => {
+                                          return (
+                                            <ToniqCheckbox
+                                              key={`${trait}-${index}`}
+                                              text={trait}
+                                              onCheckedChange={event => {
+                                                const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                                  return trait.category === traitsCategory.category;
+                                                })
+                                                if (event.detail) {
+                                                  if (traitIndex !== -1) {
+                                                    if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
                                                   } else {
-                                                    currentFilters.traits.values.splice(traitIndex, 1)
+                                                    currentFilters.traits.values.push({
+                                                      category: traitsCategory.category,
+                                                      values: [trait],
+                                                    });
+                                                  }
+                                                } else {
+                                                  if (traitIndex !== -1) {
+                                                    const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                                      return value === trait;
+                                                    })
+                                                    
+                                                    if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                                      currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                                    } else {
+                                                      currentFilters.traits.values.splice(traitIndex, 1)
+                                                    }
                                                   }
                                                 }
-                                              }
-                                              setCurrentFilters({
-                                                ...currentFilters,
-                                                traits: {
-                                                  ...currentFilters.traits,
-                                                  values: currentFilters.traits.values,
-                                                },
-                                              });
-                                            }}
-                                          />
-                                        )
-                                      })
+                                                setCurrentFilters({
+                                                  ...currentFilters,
+                                                  traits: {
+                                                    ...currentFilters.traits,
+                                                    values: currentFilters.traits.values,
+                                                  },
+                                                });
+                                              }}
+                                            />
+                                          )
+                                        })
+                                    }
+                                    {
+                                      traitsCategory.values &&
+                                      !queryFilteredTraits(traitsCategory.values).length && 
+                                      <div style={{ display: 'flex', justifyContent: 'center', ...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: 0.64 }}>
+                                        <span>No Result</span>
+                                      </div>
                                     }
                                   </div>
                                 </div>
@@ -867,7 +880,7 @@ export default function Listings(props) {
         >
           {
             filteredAndSortedListings.length ?
-              <Grid container spacing={4} justifyContent="center">
+              <Grid container spacing={4}>
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item>
@@ -944,6 +957,26 @@ export default function Listings(props) {
                   );
                 })}
               </Grid> : ""
+          }
+          {
+            listings && !filteredAndSortedListings.length && 
+            <div 
+              style={{ display: 'flex',
+                justifyContent: "center",
+                alignItems: "center",
+                background: '#FFFFFF',
+                border: "1px #00D093 solid",
+                borderRadius: "8px",
+                padding: "12px 16px",
+                maxWidth: "138px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: 32,
+                ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont) 
+              }}
+            >
+              <span>No Result</span>
+            </div>
           }
           <Loading loading={!listings} />
         </WithFilterPanel>
