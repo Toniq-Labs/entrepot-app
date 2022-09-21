@@ -4,7 +4,6 @@ import {
   Filter24Icon,
   toniqFontStyles,
   X24Icon,
-  toniqColors,
   ToniqToggleButton,
   ToniqSlider,
 } from '@toniq-labs/design-system';

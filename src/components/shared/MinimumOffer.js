@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { cssToReactStyleObject, Icp16Icon, LoaderAnimated24Icon, toniqFontStyles } from '@toniq-labs/design-system';
 import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';

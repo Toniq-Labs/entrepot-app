@@ -17,7 +17,7 @@ import {
 } from "react-router-dom";
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { ToniqIcon, ToniqChip, ToniqButton, ToniqMiddleEllipsis, ToniqPagination } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, DotsVertical24Icon, LoaderAnimated24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
+import { ArrowLeft24Icon, CircleWavyCheck24Icon, cssToReactStyleObject, LoaderAnimated24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import { DropShadowCard } from "../shared/DropShadowCard";
@@ -246,7 +246,7 @@ const Detail = (props) => {
 
     // console.log(detailPage)
     
-    if (index == 99 && canister == "kss7i-hqaaa-aaaah-qbvmq-cai") detailPage = "interactive_nfts_or_videos"
+    if (index === 99 && canister === "kss7i-hqaaa-aaaah-qbvmq-cai") detailPage = "interactive_nfts_or_videos"
     
     switch(detailPage){
       
@@ -259,7 +259,9 @@ const Detail = (props) => {
             <div style={imageStyles} />
           </div>
         );
+        /* eslint-disable no-unreachable */
         break;
+        /* eslint-enable */
       
       // for interactive NFTs or videos
       case "interactive_nfts_or_videos":
@@ -275,7 +277,9 @@ const Detail = (props) => {
             />
           </div>
         );
+        /* eslint-disable no-unreachable */
         break;
+        /* eslint-enable */
       
       // for videos that don't fit in the iframe and need a video tag
       case "videos_that_dont_fit_in_frame":
@@ -292,7 +296,9 @@ const Detail = (props) => {
             <div style={imageStyles} />
           </div>
         );
+        /* eslint-disable no-unreachable */
         break;
+        /* eslint-enable */
     }
   };
 

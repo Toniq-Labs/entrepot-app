@@ -209,7 +209,7 @@ export default function Activity(props) {
   };
   const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
-  const [collection, setCollection] = useState(getCollectionFromRoute(params?.route, props.collections));
+  const [collection] = useState(getCollectionFromRoute(params?.route, props.collections));
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const [sort, setSort] = useState(defaultSortOption);

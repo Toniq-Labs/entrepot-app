@@ -1,7 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
-import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import {EntrepotUpdateStats, EntrepotAllStats} from '../utils';
@@ -70,7 +69,6 @@ function getHighestStat(stats, propKey) {
   }, -Infinity);
 }
 
-const filterOnTopBreakPoint = '@media (max-width: 800px)';
 const useStyles = makeStyles(theme => ({
   breakpoints: {
     values: {
@@ -249,7 +247,6 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
 }
 
 export default function Marketplace(props) {
-  const navigate = useNavigate();
   const classes = useStyles();
   const [sort, setSort] = React.useState(defaultSortOption);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -273,7 +270,7 @@ export default function Marketplace(props) {
     EntrepotUpdateStats().then(setStats);
   };
   React.useEffect(() => {
-    if (EntrepotAllStats().length == 0) {
+    if (EntrepotAllStats().length === 0) {
       _updates();
     } else {
       setStats(EntrepotAllStats());
@@ -297,133 +294,147 @@ export default function Marketplace(props) {
       const passFilter = showFilters
         ? doesCollectionPassFilters(currentStats, currentFilters)
         : true;
-      return allowed && passFilter && (query == '' || inQuery);
+      return allowed && passFilter && (query === '' || inQuery);
     })
     .sort((a, b) => {
       switch (sort.value) {
         case 'featured':
           return b.priority - a.priority;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'listings_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.listings) -
-            Number(stats.find(x => x.canister == b.canister).stats.listings)
+            Number(stats.find(x => x.canister === a.canister).stats.listings) -
+            Number(stats.find(x => x.canister === b.canister).stats.listings)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'listings_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.listings) -
-            Number(stats.find(x => x.canister == a.canister).stats.listings)
+            Number(stats.find(x => x.canister === b.canister).stats.listings) -
+            Number(stats.find(x => x.canister === a.canister).stats.listings)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'total_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.total) -
-            Number(stats.find(x => x.canister == b.canister).stats.total)
+            Number(stats.find(x => x.canister === a.canister).stats.total) -
+            Number(stats.find(x => x.canister === b.canister).stats.total)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'total_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.total) -
-            Number(stats.find(x => x.canister == a.canister).stats.total)
+            Number(stats.find(x => x.canister === b.canister).stats.total) -
+            Number(stats.find(x => x.canister === a.canister).stats.total)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'floor_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.floor) -
-            Number(stats.find(x => x.canister == b.canister).stats.floor)
+            Number(stats.find(x => x.canister === a.canister).stats.floor) -
+            Number(stats.find(x => x.canister === b.canister).stats.floor)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'floor_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.floor) -
-            Number(stats.find(x => x.canister == a.canister).stats.floor)
+            Number(stats.find(x => x.canister === b.canister).stats.floor) -
+            Number(stats.find(x => x.canister === a.canister).stats.floor)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'alpha_asc':
           if (a.name < b.name) {
             return -1;
@@ -432,7 +443,9 @@ export default function Marketplace(props) {
             return 1;
           }
           return 0;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'alpha_desc':
           if (a.name < b.name) {
             return 1;
@@ -441,7 +454,9 @@ export default function Marketplace(props) {
             return -1;
           }
           return 0;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         default:
           return 0;
       }
