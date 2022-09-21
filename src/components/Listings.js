@@ -885,7 +885,7 @@ export default function Listings(props) {
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item>
-                      <LazyLoad offset={100} once>
+                      <LazyLoad offset={-250} once>
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }}>
                           <NftCard 
                             imageUrl={listing.image} 

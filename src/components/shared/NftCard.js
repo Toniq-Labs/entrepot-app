@@ -36,6 +36,7 @@ export function NftCard(props) {
     height: ${imageSizeInUse};
     width: ${imageSizeInUse};
     max-width: 100%;
+    background-color: #f1f1f1;
   `);
 
   const contentStyles = cssToReactStyleObject(css`
