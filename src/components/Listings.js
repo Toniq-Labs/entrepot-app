@@ -920,7 +920,7 @@ export default function Listings(props) {
                                       #{listing.mintNumber || ''}
                                     </span>
                                     <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
-                                      NRI: {listing.rarity || ''}%
+                                      NRI: {listing.rarity || '0'}%
                                     </span>
                                   </div>
                                   {
