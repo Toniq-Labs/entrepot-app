@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { cssToReactStyleObject, Icp16Icon, LoaderAnimated24Icon, toniqFontStyles } from '@toniq-labs/design-system';
 import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
@@ -30,9 +30,11 @@ const useStyles = makeStyles(theme => ({
 export function MinimumOffer(props) {
 	const classes = useStyles();
 	const [offers, setOffers] = useState(false);
+	let abortController = new AbortController();
+  let aborted = abortController.signal.aborted;
 
 	const getOffers = async () => {
-		await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai")
+		let offers = await api.canister("6z5wo-yqaaa-aaaah-qcsfa-cai")
 		.offers(props.tokenid)
 		.then(offers => {
 			const offerData = offers
@@ -42,16 +44,23 @@ export function MinimumOffer(props) {
 				.sort((a, b) => {
 					return Number(b) - Number(a)
 				});
-			if (offerData.length) {
-				setOffers(icpToString(offerData[offerData.length - 1], true, true));
+			return offerData;
+		});
+		aborted = abortController.signal.aborted;
+		if (aborted === false) {
+			if (offers.length) {
+				setOffers(icpToString(offers[offers.length - 1], true, true));
 			} else {
 				setOffers('');
 			}
-		});
+		}
   }
 
 	useEffect(() => {
     getOffers();
+		return () => {
+			abortController.abort();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
