@@ -5,7 +5,7 @@ import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import CollectionDetails from './CollectionDetails';
-import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage, EntrepotGetAllLiked } from '../utils';
+import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 import { WithFilterPanel } from "./shared/WithFilterPanel.js";
@@ -130,6 +130,7 @@ const useStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
   cronicTraitsContainer: {
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     padding: "16px",
     "& toniq-slider": {
       margin: '0 !important'
@@ -147,8 +148,17 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("md")]: {
       justifyContent: "center"
 		},
-  }
+  },
+  filterAccordionWrapper: {
+    margin: "32px 0",
+    [theme.breakpoints.down("sm")]: {
+      margin: "16px 0",
+		},
+  },
 }));
+
+var userStoredOptions;
+var storageKey = 'userStoredOptions';
 
 const defaultSortOption = {
   value: {
@@ -291,15 +301,11 @@ export default function Listings(props) {
   const [traitsData, setTraitsData] = useState(false);
   const [traitsCategories, setTraitsCategories] = useState([]);
   const [collection] = useState(getCollectionFromRoute(params?.route));
-  const [showFilters, setShowFilters] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const queryTrait = searchParams.get('searchTrait') || '';
-  const [sort, setSort] = useState(defaultSortOption);
-  const [gridSize, setGridSize] = useState('large');
-  const [currentFilters, setCurrentFilters] = useState({
+  const defaultFilter = {
     status: {
-      range: undefined,
       type: 'forSale',
     },
     price: {
@@ -318,11 +324,40 @@ export default function Listings(props) {
       values: !traitsData && collection?.route === 'cronics' ? getCronicFilters() : [],
       type: 'traits',
     }
-  });
+  }
+
+  const currentCanister = getCollectionFromRoute(params?.route).canister;
+  userStoredOptions = localStorage.getItem(`${storageKey}${currentCanister}`);
+  if (userStoredOptions) {
+    userStoredOptions = JSON.parse(userStoredOptions);
+  } else {
+    userStoredOptions = {
+      canister: currentCanister,
+      filterOptions: {
+        ...defaultFilter,
+      },
+      sortOption: defaultSortOption,
+      toggleFilterPanel: false,
+      gridSize: 'large',
+    };
+  };
+
+  const [showFilters, setShowFilters] = useState(userStoredOptions.toggleFilterPanel);
+  const [sort, setSort] = useState(userStoredOptions.sortOption);
+  const [gridSize, setGridSize] = useState(userStoredOptions.gridSize);
+  const [currentFilters, setCurrentFilters] = useState(userStoredOptions.filterOptions);
 
   const navigate = useNavigate();
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
+
+  const storeUserOptions = (key, value) => {
+    var storage = JSON.stringify({
+      ...userStoredOptions,
+      [key]: value,
+    })
+    localStorage.setItem(`${storageKey}${collection.canister}`, key ? storage : value);
+  }
 
   const loadTraits = async () => {
     if (collection?.filter) {
@@ -492,6 +527,16 @@ export default function Listings(props) {
     })
   }
 
+  const isChecked = (trait, category) => {
+    const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+      return trait.category === category;
+    })
+    if (traitIndex !== -1) {
+      return currentFilters.traits.values[traitIndex].values.includes(trait);
+    }
+    return false;
+  }
+
   useInterval(_updates, 10 * 1000);
 
   useEffect(() => {
@@ -553,7 +598,8 @@ export default function Listings(props) {
             <ToniqIcon
               icon={LayoutGrid24Icon}
               onClick={() => {
-                setGridSize('large')
+                setGridSize('large');
+                storeUserOptions('gridSize', 'large');
               }}
               style={{ color: gridSize === 'large' ? '#000000': 'gray' }}
               className={classes.gridControl}
@@ -561,7 +607,8 @@ export default function Listings(props) {
             <ToniqIcon
               icon={GridDots24Icon}
               onClick={() => {
-                setGridSize('small')
+                setGridSize('small');
+                storeUserOptions('gridSize', 'small');
               }}
               style={{ color: gridSize !== 'large' ? '#000000': 'gray' }}
               className={classes.gridControl}
@@ -571,40 +618,46 @@ export default function Listings(props) {
         <WithFilterPanel
           showFilters={showFilters}
           onShowFiltersChange={newShowFilters => {
-            if (listings) setShowFilters(newShowFilters);
+            setShowFilters(newShowFilters);
+            storeUserOptions('toggleFilterPanel', newShowFilters);
           }}
           onFilterClose={() => {
             setShowFilters(false);
+            storeUserOptions('toggleFilterPanel', false);
           }}
           filterControlChildren={
             <>
               <div>
                 <Accordion title="Status" open={true}>
-                  <div style={{ margin: "32px 0" }}>
+                  <div className={classes.filterAccordionWrapper}>
                     <ToniqToggleButton
                       text="For Sale"
                       active={currentFilters.status.type === filterTypes.status.forSale}
                       onClick={() => {
-                        setCurrentFilters({
+                        var filterOptions = {
                           ...currentFilters,
                           status: {
                             ...currentFilters.status,
                             type: filterTypes.status.forSale,
                           },
-                        });
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserOptions('filterOptions', filterOptions);
                       }}
                     />
                     <ToniqToggleButton
                       text="Entire Collection"
                       active={currentFilters.status.type === filterTypes.status.entireCollection}
                       onClick={() => {
-                        setCurrentFilters({
+                        var filterOptions = {
                           ...currentFilters,
                           status: {
                             ...currentFilters.status,
                             type: filterTypes.status.entireCollection,
                           },
-                        });
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserOptions('filterOptions', filterOptions);
                       }}
                     />
                   </div>
@@ -612,31 +665,38 @@ export default function Listings(props) {
               </div>
               <div>
                 <Accordion title="Price" open={true}>
-                  <div style={{ margin: "32px 0" }}>
-                    <ToniqSlider
-                      logScale={true}
-                      min={filterRanges[currentFilters.price.type].min}
-                      max={filterRanges[currentFilters.price.type].max}
-                      suffix="ICP"
-                      double={true}
-                      value={currentFilters.price.range || filterRanges[currentFilters.price]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        setCurrentFilters({
-                          ...currentFilters,
-                          price: {
-                            ...currentFilters.price,
-                            range: values,
-                          },
-                        });
-                      }}
-                    />
+                  <div className={classes.filterAccordionWrapper}>
+                    {
+                      filterRanges[currentFilters.price.type].min !== Infinity &&
+                      filterRanges[currentFilters.price.type].max !== Infinity ? 
+                      <ToniqSlider
+                        logScale={true}
+                        min={filterRanges[currentFilters.price.type].min}
+                        max={filterRanges[currentFilters.price.type].max}
+                        suffix="ICP"
+                        double={true}
+                        value={currentFilters.price.range || filterRanges[currentFilters.price]}
+                        onValueChange={event => {
+                          const values = event.detail;
+                          var filterOptions = {
+                            ...currentFilters,
+                            price: {
+                              ...currentFilters.price,
+                              range: values,
+                            },
+                          };
+                          setCurrentFilters(filterOptions);
+                          storeUserOptions('filterOptions', filterOptions);
+                        }}
+                      /> : 
+                      <ToniqIcon icon={LoaderAnimated24Icon} style={{ display: "flex", justifyContent: "center" }} />
+                    }
                   </div>
                 </Accordion>
               </div>
               <div>
                 <Accordion title="Rarity" open={true}>
-                  <div style={{ margin: "32px 0" }}>
+                  <div className={classes.filterAccordionWrapper}>
                     <ToniqSlider
                       logScale={true}
                       min={filterRanges[currentFilters.rarity.type].min}
@@ -646,49 +706,59 @@ export default function Listings(props) {
                       value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
                       onValueChange={event => {
                         const values = event.detail;
-                        setCurrentFilters({
+                        var filterOptions = {
                           ...currentFilters,
                           rarity: {
                             ...currentFilters.rarity,
                             range: values,
                           },
-                        });
-                      }}
-                    />
-                    </div>
-                  </Accordion>
-              </div>
-              <div>
-                <Accordion title="Mint #" open={true}>
-                  <div style={{ margin: "32px 0" }}>
-                    <ToniqSlider
-                      logScale={true}
-                      min={filterRanges[currentFilters.mintNumber.type].min}
-                      max={filterRanges[currentFilters.mintNumber.type].max}
-                      double={true}
-                      value={currentFilters.mintNumber.range || filterRanges[currentFilters.mintNumber.type]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        setCurrentFilters({
-                          ...currentFilters,
-                          mintNumber: {
-                            ...currentFilters.mintNumber,
-                            range: values,
-                          },
-                        });
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserOptions('filterOptions', filterOptions);
                       }}
                     />
                   </div>
                 </Accordion>
               </div>
               <div>
+                <Accordion title="Mint #" open={true}>
+                  <div className={classes.filterAccordionWrapper}>
+                    {
+                      filterRanges[currentFilters.mintNumber.type].min !== Infinity &&
+                      filterRanges[currentFilters.mintNumber.type].max !== Infinity ? 
+                      <ToniqSlider
+                        logScale={true}
+                        min={filterRanges[currentFilters.mintNumber.type].min}
+                        max={filterRanges[currentFilters.mintNumber.type].max}
+                        double={true}
+                        value={currentFilters.mintNumber.range || filterRanges[currentFilters.mintNumber.type]}
+                        onValueChange={event => {
+                          const values = event.detail;
+                          var filterOptions = {
+                            ...currentFilters,
+                            mintNumber: {
+                              ...currentFilters.mintNumber,
+                              range: values,
+                            },
+                          };
+                          setCurrentFilters(filterOptions);
+                          storeUserOptions('filterOptions', filterOptions);
+                        }}
+                      /> :
+                      <ToniqIcon icon={LoaderAnimated24Icon} style={{ display: "flex", justifyContent: "center" }} />
+                    }
+                    
+                  </div>
+                </Accordion>
+              </div>
+              <div>
                 <Accordion title={`Traits (${traitsCategories.length})`} open={true}>
-                  <Grid container spacing={2} style={{ margin: collection?.route === 'cronics' ? "16px 0" : "32px 0" }}>
+                  <div className={classes.filterAccordionWrapper}>
                     {collection?.route === 'cronics' ? 
-                      <>
+                      <Grid container spacing={2}>
                         {traitsCategories.map((traitsCategory, index) => {
                           return (
-                            <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                            <Grid key={index} item xs={12}>
                               <Accordion
                                 title={uppercaseFirstLetterOfWord(traitsCategory.category)}
                                 open={false}
@@ -706,7 +776,7 @@ export default function Listings(props) {
                                         value={currentFilters.traits.values[traitsCategory.category].dominant || filterRanges[currentFilters.traits.type]}
                                         onValueChange={event => {
                                           const values = event.detail;
-                                          setCurrentFilters({
+                                          var filterOptions = {
                                             ...currentFilters,
                                             traits: {
                                               ...currentFilters.traits,
@@ -718,7 +788,9 @@ export default function Listings(props) {
                                                 },
                                               },
                                             },
-                                          });
+                                          };
+                                          setCurrentFilters(filterOptions);
+                                          storeUserOptions('filterOptions', filterOptions);
                                         }}
                                       />
                                     </Grid>
@@ -735,7 +807,7 @@ export default function Listings(props) {
                                         value={currentFilters.traits.values[traitsCategory.category].recessive || filterRanges[currentFilters.traits.type]}
                                         onValueChange={event => {
                                           const values = event.detail;
-                                          setCurrentFilters({
+                                          var filterOptions = {
                                             ...currentFilters,
                                             traits: {
                                               ...currentFilters.traits,
@@ -747,7 +819,9 @@ export default function Listings(props) {
                                                 },
                                               },
                                             },
-                                          });
+                                          };
+                                          setCurrentFilters(filterOptions);
+                                          storeUserOptions('filterOptions', filterOptions);
                                         }}
                                       />
                                     </Grid>
@@ -757,8 +831,8 @@ export default function Listings(props) {
                             </Grid>
                           )
                         })}
-                      </> :
-                      <>
+                      </Grid> :
+                      <Grid container spacing={2}>
                         {traitsCategories.map((traitsCategory, index) => {
                           return (
                             <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
@@ -801,6 +875,7 @@ export default function Listings(props) {
                                             <ToniqCheckbox
                                               key={`${trait}-${index}`}
                                               text={trait}
+                                              checked={isChecked(trait, traitsCategory.category)}
                                               onCheckedChange={event => {
                                                 const traitIndex = currentFilters.traits.values.findIndex((trait) => {
                                                   return trait.category === traitsCategory.category;
@@ -827,13 +902,15 @@ export default function Listings(props) {
                                                     }
                                                   }
                                                 }
-                                                setCurrentFilters({
+                                                var filterOptions = {
                                                   ...currentFilters,
                                                   traits: {
                                                     ...currentFilters.traits,
                                                     values: currentFilters.traits.values,
                                                   },
-                                                });
+                                                };
+                                                setCurrentFilters(filterOptions);
+                                                storeUserOptions('filterOptions', filterOptions);
                                               }}
                                             />
                                           )
@@ -852,9 +929,9 @@ export default function Listings(props) {
                             </Grid>
                           )
                         })}
-                      </>
+                      </Grid>
                     }
-                  </Grid>
+                  </div>
                 </Accordion>
               </div>
             </>
@@ -880,6 +957,7 @@ export default function Listings(props) {
                   selected={sort}
                   onSelectChange={event => {
                     setSort(event.detail);
+                    storeUserOptions('sortOption', event.detail);
                   }}
                   options={sortOptions}
                 />
