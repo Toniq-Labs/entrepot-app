@@ -203,7 +203,6 @@ export default function UserActivity(props) {
   };
   const refresh = async (clearcache) => {
     if (!address) return;
-    console.log("refreshing");
     var data = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/transactions").then(r => r.json());
     data = data.filter((a,i) => data.findIndex(b => b.id == a.id) == i);
     data = data.filter(e => e.token != "");

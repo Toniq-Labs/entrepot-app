@@ -46,7 +46,6 @@ export default function Navbar(props) {
   
   
   const refresh = async () => {
-    console.log('refreshing');
     if (props.account){
       var b = await api.token().getBalance(props.account.address);
       setBalance(b);

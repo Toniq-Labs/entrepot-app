@@ -5,7 +5,7 @@ import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import CollectionDetails from './CollectionDetails';
-import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage } from '../utils';
+import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage, EntrepotGetAllLiked } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 import { WithFilterPanel } from "./shared/WithFilterPanel.js";
@@ -140,6 +140,13 @@ const useStyles = makeStyles(theme => ({
     "&:hover .offerChipContainer": {
       display: "flex",
     }
+  },
+  nftWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center"
+		},
   }
 }));
 
@@ -881,11 +888,11 @@ export default function Listings(props) {
         >
           {
             filteredAndSortedListings.length ?
-              <Grid container spacing={4}>
+              <Grid container spacing={4} className={classes.nftWrapper}>
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item>
-                      <LazyLoad offset={-250} once>
+                      <LazyLoad offset={-150} once>
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }}>
                           <NftCard 
                             imageUrl={listing.image} 
@@ -939,7 +946,7 @@ export default function Listings(props) {
                             }
                             <MinimumOffer tokenid={listing.tokenid} gridSize={gridSize} />
                             <div
-                              style={{ position: "absolute", top: "15px", left: "15px" }}
+                              style={{ position: "absolute", top: "24px", left: "24px" }}
                               onClick={(e) => {
                                 e.preventDefault();
                               }}

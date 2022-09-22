@@ -79,6 +79,13 @@ const useStyles = makeStyles(theme => ({
       xl: 1920,
     },
   },
+  collectionWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center"
+		},
+  },
   collectionContainer: {
     marginBottom: 20,
     maxWidth: '100%',
@@ -251,7 +258,6 @@ export default function Marketplace(props) {
   const [sort, setSort] = React.useState(defaultSortOption);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = React.useState(false);
-  console.log('rendering');
   const [currentFilters, setCurrentFilters] = React.useState({
     price: {
       range: undefined,
@@ -606,7 +612,6 @@ export default function Marketplace(props) {
                   selectedLabelPrefix="Sort By:"
                   selected={sort}
                   onSelectChange={event => {
-                    console.log(event.detail);
                     setSort(event.detail);
                   }}
                   options={sortOptions}
@@ -616,9 +621,7 @@ export default function Marketplace(props) {
           >
             <Grid
               container
-              direction="row"
-              justifyContent="center"
-              alignItems="flex-start"
+              className={classes.collectionWrapper}
               spacing={4}
             >
               {filteredAndSortedCollections.map((collection, i) => {

@@ -264,7 +264,6 @@ export default function UserCollection(props) {
     };
     if (!address) return;
     var data = [];; 
-    console.log("Refreshing", props.view);
     switch(props.view){
       case "collected":
         //TODO

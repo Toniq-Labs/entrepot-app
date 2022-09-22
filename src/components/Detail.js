@@ -5,6 +5,7 @@ import {
   Container,
   Box,
   Grid,
+  Link,
 } from "@material-ui/core";
 import PriceICP, { icpToString } from './PriceICP';
 import PriceUSD from './PriceUSD';
@@ -25,6 +26,9 @@ import { Accordion } from "./Accordion";
 import Timestamp from "react-timestamp";
 import chunk from "lodash.chunk";
 import Favourite from "./Favourite";
+import getGenes from "./CronicStats";
+import { cronicFilterTraits } from "../model/constants";
+import { uppercaseFirstLetterOfWord } from "../utilities/string-utils";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -70,7 +74,8 @@ const Detail = (props) => {
   const [attributes, setAttributes] = useState(false);
   const collection = props.collections.find(e => e.canister === canister)
   const [motokoContent, setMotokoContent] = useState('');
-  
+  const [traitsData, setTraitsData] = useState(false);
+
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
   const classes = useStyles();
@@ -123,7 +128,8 @@ const Detail = (props) => {
         setMotokoContent(content)
       });
     }
-    getAttributes();
+    
+    await getAttributes(index);
   }
 
   const _afterList = async () => {
@@ -302,61 +308,59 @@ const Detail = (props) => {
     }
   };
 
-  const getAttributes = () => {
-    // Mock Attribute Data
-    setAttributes([
-      {
-        groupName: 'Group #1',
-        data: [
-          {
-            label: 'Background',
-            value: '#5452',
-            desc: '5% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#5462',
-            desc: '17% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#6312',
-            desc: '3% Have This'
-          },
-          {
-            label: 'Background',
-            value: '#1123',
-            desc: '76% Have This'
-          }
-        ]
-      },
-      {
-        groupName: 'Group #2',
-        data: [
-          {
-            label: 'Body Color',
-            value: '#5631',
-            desc: '4% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#2123',
-            desc: '98% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#6631',
-            desc: '7% Have This'
-          },
-          {
-            label: 'Body Color',
-            value: '#5643',
-            desc: '21% Have This'
-          }
-        ]
+  const getAttributes = async(index) => {
+    let traitsCategories;
+    if (traitsData) {
+      traitsCategories = traitsData[0].map((trait) => {
+        return {
+          category: trait[1],
+          values: trait[2].map((trait) => {
+            return trait[1];
+          })
+        };
+      });
+    } else if (collection?.route === "cronics") {
+      traitsCategories = cronicFilterTraits.map((trait) => {
+        return {
+          category: trait
+        }
+      });
+    }
+
+    let traits;
+    if (traitsData) {
+      traits = traitsData[1][EntrepotNFTMintNumber(collection.canister, index) - 1][1].map((trait) => {
+        const traitCategory = trait[0];
+        const traitValue = trait[1];
+        return {
+          category: uppercaseFirstLetterOfWord(traitsCategories[traitCategory].category),
+          value: uppercaseFirstLetterOfWord(traitsCategories[traitCategory].values[traitValue]),
+        }
+      });
+      setAttributes(traits);
+    } else if (!traitsData && collection?.route === 'cronics') {
+      var result = await api.token(canister).listings();
+
+      if (result.length) {
+        var genes = getGenes(result[index][2].nonfungible.metadata[0]).battle;
+        
+        if (Object.keys(genes).length) {
+          var arrayObjectGenes = Object.entries(genes).map((gene) => ( { [gene[0]]: gene[1] } ));
+          
+          traits = arrayObjectGenes.map((gene) => {
+            const category =  Object.keys(gene)[0];
+            const value = `Dominant: ${gene[category].dominant} Recessive: ${gene[category].recessive}`;
+
+            return {
+              category: uppercaseFirstLetterOfWord(category),
+              value: uppercaseFirstLetterOfWord(value),
+            };
+          });
+
+          setAttributes(traits);
+        }
       }
-    ])
-    setAttributes([]);
+    }
   }
 
   const getPriceData = () => {
@@ -388,9 +392,27 @@ const Detail = (props) => {
     );
   }
 
+  const loadTraits = async () => {
+    if (collection?.filter) {
+      try {
+        return await fetch("/filter/" + collection?.canister + ".json").then(
+          (response) => response.json()
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return false;
+  };
+
   React.useEffect(() => {
     props.loader(true);
     _refresh().then(() => props.loader(false));
+    loadTraits().then(traits => {
+      if (traits) {        
+        setTraitsData(traits);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -417,7 +439,7 @@ const Detail = (props) => {
                 <Grid item xs={12} sm={6}>
                   <div style={{ position: "relative" }} className={classes.imageWrapper}>
                     {displayImage(tokenid)}
-                    <div style={{ position: "absolute", top: "7px", left: "7px" }}>
+                    <div style={{ position: "absolute", top: "16px", left: "16px" }}>
                       <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
                     </div>
                   </div>
@@ -426,9 +448,9 @@ const Detail = (props) => {
                   <div className={classes.nftDescContainer1}>
                     <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), display: "block"}}>{collection.name} #{EntrepotNFTMintNumber(collection.canister, index)}</span>
                     <Box style={{cursor: "pointer"}}>
-                      <ToniqChip text="View NFT OnChain" onClick={() => {
-                        window.open(EntrepotNFTLink(collection.canister, index, tokenid), '_blank')
-                      }}/>
+                      <Link href={EntrepotNFTLink(collection.canister, index, tokenid)} target="_blank" rel="noreferrer" underline="none">
+                        <ToniqChip text="View NFT OnChain" />
+                      </Link>
                     </Box>
                     <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>COLLECTION</span>
                   </div>
@@ -506,9 +528,9 @@ const Detail = (props) => {
                             {`Owner `}
                             {/* <span className={classes.ownerName}>ChavezOG</span> */}
                             : &nbsp;
-                            <span className={classes.ownerAddress} onClick={() => {
-                              window.open(`https://dashboard.internetcomputer.org/account/${owner}`, '_blank')
-                            }}>{shorten(owner)}</span>
+                            <Link href={`https://dashboard.internetcomputer.org/account/${owner}`} target="_blank" rel="noreferrer" underline="none">
+                              <span className={classes.ownerAddress}>{shorten(owner)}</span>
+                            </Link>
                           </span>
                         )}
                       </> : <></>
@@ -618,30 +640,32 @@ const Detail = (props) => {
                     <>
                       { attributes.length > 0 ? 
                         <Grid container className={classes.accordionWrapper}>
-                          {attributes.map((attribute) => (
-                            <Grid item key={attribute.groupName} xs={12}>
-                              <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{attribute.groupName}</span>
-                              <Grid container className={classes.attributeWrapper} spacing={2}>
-                                {attribute.data.map((data) => (
-                                  <Grid item key={data.value} xs={12} md={3}>
-                                    <DropShadowCard enableHover style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0"}}>
-                                      <span className={classes.attributeHeader}>
-                                        <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{data.label}</span>
-                                      </span>
-                                      <Grid container style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 8px 16px 8px" }} spacing={2}>
-                                        <Grid item>
-                                          <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), ...cssToReactStyleObject(toniqFontStyles.boldFont)}}>{data.value}</span>
-                                        </Grid>
-                                        <Grid item>
-                                          <ToniqChip className="toniq-chip-secondary" text={data.desc}></ToniqChip>
-                                        </Grid>
-                                      </Grid>
-                                    </DropShadowCard>
+                          <Grid container className={classes.attributeWrapper} spacing={2}>
+                            {attributes.map((attribute, attributeIndex) => (
+                              <Grid item key={attributeIndex} xs={12} md={3}>
+                                <DropShadowCard enableHover style={{display: "flex", flexDirection: "column", alignItems: "center", padding: "0", minHeight: 132}}>
+                                  <span className={classes.attributeHeader}>
+                                    <span style={cssToReactStyleObject(toniqFontStyles.paragraphFont)}>{attribute.category}</span>
+                                  </span>
+                                  <Grid container style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: 'center', padding: "8px 8px 16px 8px", flexGrow: 1 }}>
+                                    <span 
+                                      style={{
+                                        ...cssToReactStyleObject(toniqFontStyles.h3Font),
+                                        ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                                        display: '-webkit-box',
+                                        overflow: 'hidden',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                      }}
+                                      >{attribute.value}</span>
+                                    {/* <Grid item>
+                                      <ToniqChip className="toniq-chip-secondary" text={''}></ToniqChip>
+                                    </Grid> */}
                                   </Grid>
-                                ))}
+                                </DropShadowCard>
                               </Grid>
-                            </Grid>
-                          ))}
+                            ))}
+                          </Grid>
                         </Grid> : 
                         <Grid className={classes.accordionWrapper}>
                           <span className={classes.offerDesc}>No Attributes</span>

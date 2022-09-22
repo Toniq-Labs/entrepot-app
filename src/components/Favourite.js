@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Checkbox from "@material-ui/core/Checkbox";
 import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes } from '../utils';
 import { HeartFill24Icon, HeartOutline24Icon } from "@toniq-labs/design-system";
 import { ToniqIcon } from "@toniq-labs/design-system/dist/esm/elements/react-components";
@@ -61,22 +60,12 @@ export default function Favourite(props) {
   }, []);
 
   return (
-    <Checkbox
-			onChange={(ev) => {
-				ev.stopPropagation();
-				like();
-			}}
-			checked={liked}
-			icon={
-				<ToniqIcon
-					icon={HeartOutline24Icon}
-					style={{ color: "#FFFFFF" }}
-				/>
-			}
-			checkedIcon={
-				<ToniqIcon icon={HeartFill24Icon} style={{ color: "#FFFFFF" }} />
-			}
-			style={{ margin: "0", filter: "drop-shadow(0px 0px 16px #000000)" }}
-		/>
+    <ToniqIcon
+      icon={liked ? HeartFill24Icon : HeartOutline24Icon}
+      style={{ color: "#FFFFFF", margin: "0", filter: "drop-shadow(0px 0px 16px #000000)" }}
+      onClick={() => {
+        like();
+      }}
+    />
   );
 };
