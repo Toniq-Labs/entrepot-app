@@ -616,6 +616,7 @@ export default function Listings(props) {
         </div>
         <WithFilterPanel
           showFilters={showFilters}
+          showReset
           onShowFiltersChange={newShowFilters => {
             setShowFilters(newShowFilters);
             storeUserOptions('toggleFilterPanel', newShowFilters);
@@ -623,6 +624,10 @@ export default function Listings(props) {
           onFilterClose={() => {
             setShowFilters(false);
             storeUserOptions('toggleFilterPanel', false);
+          }}
+          onResetFiltersChange={() => {
+            setCurrentFilters(defaultFilter);
+            storeUserOptions('filterOptions', defaultFilter);
           }}
           filterControlChildren={
             <>

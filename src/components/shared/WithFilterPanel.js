@@ -6,6 +6,7 @@ import {
   X24Icon,
   ToniqToggleButton,
   ToniqSlider,
+  toniqColors,
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
@@ -69,6 +70,21 @@ export function WithFilterPanel(props) {
 
             .with-filter-panel .close-filter-panel-icon {
               cursor: pointer;
+            }
+
+            .reset-filter-panel-icon {
+              background: none;
+              padding: 0;
+              margin: 0;
+              border: none;
+              font: inherit;
+              color: inherit;
+              cursor: pointer;
+              text-transform: inherit;
+              text-decoration: inherit;
+              -webkit-tap-highlight-color: transparent;
+              ${toniqFontStyles.paragraphFont};
+              color: ${toniqColors.pageInteraction.foregroundColor}
             }
 
             .with-filter-panel .filter-controls-wrapper {
@@ -170,13 +186,26 @@ export function WithFilterPanel(props) {
               <ToniqIcon icon={Filter24Icon} />
               <span>Filters</span>
             </div>
-            <ToniqIcon
-              className="close-filter-panel-icon"
-              onClick={() => {
-                props.onShowFiltersChange(false);
-              }}
-              icon={X24Icon}
-            />
+            <div className="filter-text-and-icon">
+              {
+                props.showReset &&
+                <button
+                  className="reset-filter-panel-icon"
+                  onClick={() => {
+                    props.onResetFiltersChange();
+                  }}
+                >
+                  Reset
+                </button>
+              }
+              <ToniqIcon
+                className="close-filter-panel-icon"
+                onClick={() => {
+                  props.onShowFiltersChange(false);
+                }}
+                icon={X24Icon}
+              />
+            </div>
           </div>
           <div className="filter-controls-wrapper">{props.filterControlChildren}</div>
         </div>
