@@ -465,7 +465,7 @@ const Detail = (props) => {
                       >
                         <span className={classes.hoverText}>{collection.name}</span>
                       </button>
-                      { collection.kyc ? <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: "#00D093" }} /> : "" }
+                      { collection.kyc ? <ToniqIcon icon={CircleWavyCheck24Icon} style={{ color: toniqColors.pageInteraction.foregroundColor }} /> : "" }
                     </div>
                     <div style={{ display: "flex", alignItems: "center"}}>
                       <div className={classes.nftDescContainer3}>
@@ -604,7 +604,7 @@ const Detail = (props) => {
                                         <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${offer.buyer}`} letterCount={5} text={offer.buyer.toText()} />
                                       }
                                     </Grid>
-                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(offer.amount, true, true)}</Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: toniqColors.pageInteraction.foregroundColor }}>+{icpToString(offer.amount, true, true)}</Grid>
                                   </Grid>
                                 </DropShadowCard>
                               </Grid>
@@ -721,7 +721,7 @@ const Detail = (props) => {
                                     <Grid item xs={1} sm={2} md={3} className={classes.buyerDesktop}>
                                       TO:  &nbsp;<ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${transaction.buyer}`} letterCount={5} text={transaction.buyer} />
                                     </Grid>
-                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: "#00D093" }}>+{icpToString(transaction.price, true, true)}</Grid>
+                                    <Grid item xs={2} md={3} style={{ display: "flex", justifyContent: "right", fontWeight: "700", color: toniqColors.pageInteraction.foregroundColor }}>+{icpToString(transaction.price, true, true)}</Grid>
                                   </Grid>
                                 </DropShadowCard>
                               </Grid>

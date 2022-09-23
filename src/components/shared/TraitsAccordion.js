@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import {toniqColors, cssToReactStyleObject, ChevronDown24Icon, toniqFontStyles} from '@toniq-labs/design-system';
-import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {toniqColors, cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
 import { makeStyles } from '@material-ui/core';
 import {randomString} from 'augment-vir';
 
-export function Accordion(props) {
+export function TraitsAccordion(props) {
 	const [open, setOpen] = useState(props.open);
 	
 		const useStyles = makeStyles((theme) => ({
@@ -15,7 +14,7 @@ export function Accordion(props) {
 			header: {
 				display: "flex",
 				position: "relative",
-				justifyContent: props.center ? "center": "left",
+				justifyContent: "space-between",
 				cursor: "pointer",
 				borderRadius: "8px",
 				...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
@@ -38,10 +37,21 @@ export function Accordion(props) {
 					overflow: "visible",
 					paddingBottom: "0",
 				},
-				"&:checked~.header .icon": {
-					transform: "rotate(180deg)",
-				}
-			}
+				"&:checked~.header .traitCategoryCounter": {
+					backgroundColor: toniqColors.pageInteraction.foregroundColor,
+					color: "#FFFFFF"
+				},
+			},
+			traitCategoryCounter: {
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				width: 24,
+				height: 24,
+				borderRadius: "16px",
+				backgroundColor: "#F1F3F6",
+				...cssToReactStyleObject(toniqFontStyles.boldLabelFont)
+			},
 		}));
 
 		const classes = useStyles();
@@ -54,7 +64,7 @@ export function Accordion(props) {
 					}} />
 					<label htmlFor={id} className={`${classes.header} header`}>
 						{props.title}
-						<ToniqIcon icon={ChevronDown24Icon} className={`${classes.icon} icon`} />
+						{props.count ? <span className={`${classes.traitCategoryCounter} traitCategoryCounter`}>{props.count}</span> : ''}
 					</label>
 					<div className={`${classes.detail} detail`}>
 						{props.children}

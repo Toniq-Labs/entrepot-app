@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { cssToReactStyleObject, LoaderAnimated24Icon, toniqFontStyles } from '@toniq-labs/design-system';
+import { cssToReactStyleObject, LoaderAnimated24Icon, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 import { ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 export function Loading(props) {
@@ -10,7 +10,7 @@ export function Loading(props) {
 			justifyContent: 'center',
 			alignItems: 'center',
 			background: '#FFFFFF',
-			border: '1px #00D093 solid',
+			border: `1px ${toniqColors.pageInteraction.foregroundColor} solid`,
 			borderRadius: '8px',
 			padding: '12px 16px',
 			maxWidth: '138px',

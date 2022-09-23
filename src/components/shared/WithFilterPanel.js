@@ -87,6 +87,10 @@ export function WithFilterPanel(props) {
               color: ${toniqColors.pageInteraction.foregroundColor}
             }
 
+            .reset-filter-panel-icon:hover {
+              color: ${toniqColors.pageInteractionHover.foregroundColor}
+            }
+
             .with-filter-panel .filter-controls-wrapper {
               display: flex;
               flex-direction: column;
@@ -192,7 +196,7 @@ export function WithFilterPanel(props) {
                 <button
                   className="reset-filter-panel-icon"
                   onClick={() => {
-                    props.onResetFiltersChange();
+                    if (props.onResetFiltersChange) props.onResetFiltersChange();
                   }}
                 >
                   Reset
@@ -201,7 +205,7 @@ export function WithFilterPanel(props) {
               <ToniqIcon
                 className="close-filter-panel-icon"
                 onClick={() => {
-                  props.onShowFiltersChange(false);
+                  if (props.onShowFiltersChange) props.onShowFiltersChange(false);
                 }}
                 icon={X24Icon}
               />
@@ -220,7 +224,7 @@ export function WithFilterPanel(props) {
                     display: props.showFilters ? 'none' : 'flex',
                   }}
                   onClick={() => {
-                    props.onShowFiltersChange(true);
+                    if (props.onShowFiltersChange) props.onShowFiltersChange(true);
                   }}
                 >
                   <ToniqIcon icon={Filter24Icon} />

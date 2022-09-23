@@ -1,5 +1,5 @@
 import { styled, Tab, Tabs } from "@material-ui/core";
-import { cssToReactStyleObject, toniqFontStyles } from "@toniq-labs/design-system";
+import { cssToReactStyleObject, toniqColors, toniqFontStyles } from "@toniq-labs/design-system";
 
 export const StyledTabs = styled((props) => <Tabs {...props} />)({
 	background: "linear-gradient(rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16)) 0 calc(100% - 0px)/100% 1px no-repeat, transparent",
@@ -20,10 +20,16 @@ export const StyledTab = styled((props) => <Tab {...props} />)({
 	color: "#000000",
 	opacity: 0.64,
 	...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+	'&:hover': {
+		color: toniqColors.pageInteractionHover.foregroundColor,
+	},
 	'&.Mui-selected': {
 		...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-		color: "#00D093",
+		color: toniqColors.pageInteraction.foregroundColor,
 		opacity: 1,
+	},
+	'&.Mui-selected:hover': {
+		color: toniqColors.pageInteractionHover.foregroundColor,
 	},
 	'&.MuiTab-root': {
 		padding: 0,

@@ -3,7 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import extjs from "../ic/extjs.js";
 import { makeStyles } from "@material-ui/core";
-import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon } from "@toniq-labs/design-system";
+import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon, toniqColors } from "@toniq-labs/design-system";
 import { ToniqChip, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { icpToString } from "./PriceICP.js";
 
@@ -192,7 +192,7 @@ export default function CollectionDetails(props) {
                     {collection.kyc ? (
                       <ToniqIcon
                         icon={CircleWavyCheck24Icon}
-                        style={{ color: "#00D093" }}
+                        style={{ color: toniqColors.pageInteraction.foregroundColor }}
                       />
                     ) : (
                       ""

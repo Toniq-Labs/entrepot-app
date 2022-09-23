@@ -42,6 +42,7 @@ import { MinimumOffer } from "./shared/MinimumOffer.js";
 import { Loading } from "./shared/Loading.js";
 import Favourite from "./Favourite.js";
 import { NoResult } from "./shared/NoResult.js";
+import { TraitsAccordion } from "./shared/TraitsAccordion.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -84,7 +85,7 @@ const useStyles = makeStyles(theme => ({
     "& input": {
       display: "none",
       "&:checked + label > .traitCategoryCounter": {
-        backgroundColor: "#00D093",
+        backgroundColor: toniqColors.pageInteraction.foregroundColor,
         color: "#FFFFFF"
       },
       "&:checked ~ .traitsAccordion": {
@@ -92,20 +93,6 @@ const useStyles = makeStyles(theme => ({
         overflow: "visible",
       },
     }
-  },
-  traitCategory: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  traitCategoryCounter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 24,
-    height: 24,
-    borderRadius: "16px",
-    backgroundColor: "#F1F3F6",
-    ...cssToReactStyleObject(toniqFontStyles.boldLabelFont)
   },
   traitsWrapper: {
     display: "grid",
@@ -119,11 +106,6 @@ const useStyles = makeStyles(theme => ({
       gap: "16px",
       margin: "16px 0px",
 		},
-  },
-  traitsAccordion: {
-    maxHeight: "0",
-    transition: "max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)",
-    overflow: "hidden",
   },
   gridControl: {
     cursor: "pointer",
@@ -156,8 +138,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-var userStoredOptions;
-var storageKey = 'userStoredOptions';
+var userPreferences;
+var storageKey = 'userPreferences';
 
 const defaultSortOption = {
   value: {
@@ -166,6 +148,8 @@ const defaultSortOption = {
   },
   label: 'Price: Low to High',
 };
+
+const defaultOpenedAccordions = ['status', 'price', 'rarity', 'mintNumber', 'traits'];
 
 const sortOptions = [
   defaultSortOption,
@@ -208,8 +192,9 @@ const sortOptions = [
 
 const filterTypes = {
   status: {
-    forSale: "forSale",
-    entireCollection: "entireCollection",
+    forSale: 'forSale',
+    entireCollection: 'entireCollection',
+    type: 'status'
   },
   price: 'price',
   rarity: 'rarity',
@@ -288,6 +273,7 @@ function getCronicFilters() {
 export default function Listings(props) {
   const params = useParams();
   const classes = useStyles();
+
   const getCollectionFromRoute = r => {
     if (_isCanister(r)) {
       return props.collections.find(e => e.canister === r)
@@ -295,6 +281,15 @@ export default function Listings(props) {
       return props.collections.find(e => e.route === r)
     };
   };
+
+  const storeUserPreferences = (preferenceKey, value) => {
+    var storage = JSON.stringify({
+      ...userPreferences,
+      [preferenceKey]: value,
+    })
+    localStorage.setItem(`${storageKey}${collection.canister}`, preferenceKey ? storage : JSON.stringify(value));
+  }
+  
   const [stats, setStats] = useState(false);
   const [listings, setListings] = useState(false);
   const [traitsData, setTraitsData] = useState(false);
@@ -326,11 +321,11 @@ export default function Listings(props) {
   }
 
   const currentCanister = getCollectionFromRoute(params?.route).canister;
-  userStoredOptions = localStorage.getItem(`${storageKey}${currentCanister}`);
-  if (userStoredOptions) {
-    userStoredOptions = JSON.parse(userStoredOptions);
+  userPreferences = localStorage.getItem(`${storageKey}${currentCanister}`);
+  if (userPreferences) {
+    userPreferences = JSON.parse(userPreferences);
   } else {
-    userStoredOptions = {
+    userPreferences = {
       canister: currentCanister,
       filterOptions: {
         ...defaultFilter,
@@ -338,25 +333,20 @@ export default function Listings(props) {
       sortOption: defaultSortOption,
       toggleFilterPanel: false,
       gridSize: 'large',
+      openedAccordion: defaultOpenedAccordions,
     };
+    storeUserPreferences(false, userPreferences);
   };
 
-  const [showFilters, setShowFilters] = useState(userStoredOptions.toggleFilterPanel);
-  const [sort, setSort] = useState(userStoredOptions.sortOption);
-  const [gridSize, setGridSize] = useState(userStoredOptions.gridSize);
-  const [currentFilters, setCurrentFilters] = useState(userStoredOptions.filterOptions);
+  const [showFilters, setShowFilters] = useState(userPreferences.toggleFilterPanel);
+  const [sort, setSort] = useState(userPreferences.sortOption);
+  const [gridSize, setGridSize] = useState(userPreferences.gridSize);
+  const [openedAccordion, setOpenedAccordion] = useState(userPreferences.openedAccordion);
+  const [currentFilters, setCurrentFilters] = useState(userPreferences.filterOptions);
 
   const navigate = useNavigate();
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
-
-  const storeUserOptions = (key, value) => {
-    var storage = JSON.stringify({
-      ...userStoredOptions,
-      [key]: value,
-    })
-    localStorage.setItem(`${storageKey}${collection.canister}`, key ? storage : value);
-  }
 
   const loadTraits = async () => {
     if (collection?.filter) {
@@ -438,6 +428,22 @@ export default function Listings(props) {
       console.error(error);
     };
   };
+
+  const toggleAccordion = (currentAccordion) => {
+    const accordion = [...openedAccordion];
+    const accordionIndex = openedAccordion.findIndex((accordion) => {
+      return accordion === currentAccordion;
+    });
+
+    if (accordionIndex !== -1) {
+      accordion.splice(accordionIndex, 1);
+    } else {
+      accordion.push(currentAccordion);
+    }
+
+    setOpenedAccordion(accordion);
+    storeUserPreferences('openedAccordion', accordion);
+  }
 
   const filteredStatusListings = listings ? listings
     .filter(listing => (listing[1] === false || listing.price >= 1000000n))
@@ -526,7 +532,7 @@ export default function Listings(props) {
     })
   }
 
-  const isChecked = (trait, category) => {
+  const isTraitSelected = (trait, category) => {
     const traitIndex = currentFilters.traits.values.findIndex((trait) => {
       return trait.category === category;
     })
@@ -598,7 +604,7 @@ export default function Listings(props) {
               icon={LayoutGrid24Icon}
               onClick={() => {
                 setGridSize('large');
-                storeUserOptions('gridSize', 'large');
+                storeUserPreferences('gridSize', 'large');
               }}
               style={{ color: gridSize === 'large' ? '#000000': 'gray' }}
               className={classes.gridControl}
@@ -607,7 +613,7 @@ export default function Listings(props) {
               icon={GridDots24Icon}
               onClick={() => {
                 setGridSize('small');
-                storeUserOptions('gridSize', 'small');
+                storeUserPreferences('gridSize', 'small');
               }}
               style={{ color: gridSize !== 'large' ? '#000000': 'gray' }}
               className={classes.gridControl}
@@ -619,20 +625,26 @@ export default function Listings(props) {
           showReset
           onShowFiltersChange={newShowFilters => {
             setShowFilters(newShowFilters);
-            storeUserOptions('toggleFilterPanel', newShowFilters);
+            storeUserPreferences('toggleFilterPanel', newShowFilters);
           }}
           onFilterClose={() => {
             setShowFilters(false);
-            storeUserOptions('toggleFilterPanel', false);
+            storeUserPreferences('toggleFilterPanel', false);
           }}
           onResetFiltersChange={() => {
             setCurrentFilters(defaultFilter);
-            storeUserOptions('filterOptions', defaultFilter);
+            storeUserPreferences('filterOptions', defaultFilter);
           }}
           filterControlChildren={
             <>
               <div>
-                <Accordion title="Status" open={true}>
+                <Accordion
+                  title="Status"
+                  open={openedAccordion.includes(filterTypes.status.type)}
+                  onOpenAccordionChange={() => {
+                    toggleAccordion(filterTypes.status.type);
+                  }}
+                >
                   <div className={classes.filterAccordionWrapper}>
                     <ToniqToggleButton
                       text="For Sale"
@@ -646,7 +658,7 @@ export default function Listings(props) {
                           },
                         };
                         setCurrentFilters(filterOptions);
-                        storeUserOptions('filterOptions', filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
                       }}
                     />
                     <ToniqToggleButton
@@ -661,7 +673,7 @@ export default function Listings(props) {
                           },
                         };
                         setCurrentFilters(filterOptions);
-                        storeUserOptions('filterOptions', filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
                       }}
                     />
                   </div>
@@ -671,7 +683,13 @@ export default function Listings(props) {
                 filterRanges[currentFilters.price.type].min !== Infinity &&
                 filterRanges[currentFilters.price.type].max !== Infinity &&
                 <div>
-                  <Accordion title="Price" open={true}>
+                  <Accordion
+                    title="Price"
+                    open={openedAccordion.includes(filterTypes.price)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.price);
+                    }}
+                  >
                     <div className={classes.filterAccordionWrapper}>
                       <ToniqSlider
                         logScale={true}
@@ -690,7 +708,7 @@ export default function Listings(props) {
                             },
                           };
                           setCurrentFilters(filterOptions);
-                          storeUserOptions('filterOptions', filterOptions);
+                          storeUserPreferences('filterOptions', filterOptions);
                         }}
                       />
                     </div>
@@ -698,7 +716,13 @@ export default function Listings(props) {
                 </div>
               }
               <div>
-                <Accordion title="Rarity" open={true}>
+                <Accordion
+                  title="Rarity"
+                  open={openedAccordion.includes(filterTypes.rarity)}
+                  onOpenAccordionChange={() => {
+                    toggleAccordion(filterTypes.rarity);
+                  }}
+                >
                   <div className={classes.filterAccordionWrapper}>
                     <ToniqSlider
                       logScale={true}
@@ -717,7 +741,7 @@ export default function Listings(props) {
                           },
                         };
                         setCurrentFilters(filterOptions);
-                        storeUserOptions('filterOptions', filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
                       }}
                     />
                   </div>
@@ -727,7 +751,13 @@ export default function Listings(props) {
                 filterRanges[currentFilters.mintNumber.type].min !== Infinity &&
                 filterRanges[currentFilters.mintNumber.type].max !== Infinity &&
                 <div>
-                  <Accordion title="Mint #" open={true}>
+                  <Accordion
+                    title="Mint #"
+                    open={openedAccordion.includes(filterTypes.mintNumber)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.mintNumber);
+                    }}
+                  >
                     <div className={classes.filterAccordionWrapper}>
                       <ToniqSlider
                         logScale={true}
@@ -745,7 +775,7 @@ export default function Listings(props) {
                             },
                           };
                           setCurrentFilters(filterOptions);
-                          storeUserOptions('filterOptions', filterOptions);
+                          storeUserPreferences('filterOptions', filterOptions);
                         }}
                       />
                     </div>
@@ -756,7 +786,13 @@ export default function Listings(props) {
                 (traitsData || collection?.route === 'cronics') && 
                 traitsCategories.length ?
                 <div>
-                  <Accordion title={`Traits (${traitsCategories.length})`} open={true}>
+                  <Accordion
+                    title={`Traits (${traitsCategories.length})`}
+                    open={openedAccordion.includes(filterTypes.traits)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.traits);
+                    }}
+                  >
                     <div className={classes.filterAccordionWrapper} style={{ marginLeft: 8, marginRight: 8 }}>
                       {collection?.route === 'cronics' ? 
                         <Grid container spacing={2}>
@@ -765,7 +801,10 @@ export default function Listings(props) {
                               <Grid key={index} item xs={12}>
                                 <Accordion
                                   title={uppercaseFirstLetterOfWord(traitsCategory.category)}
-                                  open={false}
+                                  open={openedAccordion.includes(traitsCategory.category)}
+                                  onOpenAccordionChange={() => {
+                                    toggleAccordion(traitsCategory.category);
+                                  }}
                                 >
                                   <div className={classes.cronicTraitsContainer}>
                                     <Grid container spacing={2}>
@@ -794,7 +833,7 @@ export default function Listings(props) {
                                               },
                                             };
                                             setCurrentFilters(filterOptions);
-                                            storeUserOptions('filterOptions', filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                           }}
                                         />
                                       </Grid>
@@ -825,7 +864,7 @@ export default function Listings(props) {
                                               },
                                             };
                                             setCurrentFilters(filterOptions);
-                                            storeUserOptions('filterOptions', filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                           }}
                                         />
                                       </Grid>
@@ -840,15 +879,14 @@ export default function Listings(props) {
                           {traitsCategories.map((traitsCategory, index) => {
                             return (
                               <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
-                                <input
-                                  id={traitsCategory.category}
-                                  type="checkbox"
-                                />
-                                <label htmlFor={traitsCategory.category} className={classes.traitCategory}>
-                                  <span>{traitsCategory.category}</span>
-                                  {traitsCategory.values ? <span className={`${classes.traitCategoryCounter} traitCategoryCounter`}>{traitsCategory.values.length}</span> : ''}
-                                </label>
-                                <div className={`${classes.traitsAccordion} traitsAccordion`}>
+                                <TraitsAccordion
+                                  title={traitsCategory.category}
+                                  open={openedAccordion.includes(traitsCategory.category)}
+                                  count={traitsCategory.values.length}
+                                  onOpenAccordionChange={() => {
+                                    toggleAccordion(traitsCategory.category);
+                                  }}
+                                >
                                   <div className={classes.traitsContainer}>
                                     {
                                       traitsCategory.values && traitsCategory.values.length > 10 ? 
@@ -879,7 +917,7 @@ export default function Listings(props) {
                                               <ToniqCheckbox
                                                 key={`${trait}-${index}`}
                                                 text={trait}
-                                                checked={isChecked(trait, traitsCategory.category)}
+                                                checked={isTraitSelected(trait, traitsCategory.category)}
                                                 onCheckedChange={event => {
                                                   const traitIndex = currentFilters.traits.values.findIndex((trait) => {
                                                     return trait.category === traitsCategory.category;
@@ -914,7 +952,7 @@ export default function Listings(props) {
                                                     },
                                                   };
                                                   setCurrentFilters(filterOptions);
-                                                  storeUserOptions('filterOptions', filterOptions);
+                                                  storeUserPreferences('filterOptions', filterOptions);
                                                 }}
                                               />
                                             )
@@ -929,7 +967,7 @@ export default function Listings(props) {
                                       }
                                     </div>
                                   </div>
-                                </div>
+                                </TraitsAccordion>
                               </Grid>
                             )
                           })}
@@ -962,7 +1000,7 @@ export default function Listings(props) {
                   selected={sort}
                   onSelectChange={event => {
                     setSort(event.detail);
-                    storeUserOptions('sortOption', event.detail);
+                    storeUserPreferences('sortOption', event.detail);
                   }}
                   options={sortOptions}
                 />

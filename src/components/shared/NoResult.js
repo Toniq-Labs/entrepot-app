@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { cssToReactStyleObject, toniqFontStyles } from '@toniq-labs/design-system';
+import { cssToReactStyleObject, toniqColors, toniqFontStyles } from '@toniq-labs/design-system';
 
 export function NoResult(props) {
 	const useStyles = makeStyles(() => ({
@@ -9,7 +9,7 @@ export function NoResult(props) {
 			justifyContent: 'center',
 			alignItems: 'center',
 			background: '#FFFFFF',
-			border: '1px #00D093 solid',
+			border: `1px ${toniqColors.pageInteraction.foregroundColor} solid`,
 			borderRadius: '8px',
 			padding: '12px 16px',
 			maxWidth: '138px',
