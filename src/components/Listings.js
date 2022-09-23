@@ -27,7 +27,7 @@ import {
   ToniqIcon,
   ToniqButton,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import getNri from "../ic/nftv.js";
 import orderBy from "lodash.orderby";
 import LazyLoad from 'react-lazyload';
@@ -273,6 +273,7 @@ function getCronicFilters() {
 export default function Listings(props) {
   const params = useParams();
   const classes = useStyles();
+  const location = useLocation();
 
   const getCollectionFromRoute = r => {
     if (_isCanister(r)) {
@@ -281,14 +282,6 @@ export default function Listings(props) {
       return props.collections.find(e => e.route === r)
     };
   };
-
-  const storeUserPreferences = (preferenceKey, value) => {
-    var storage = JSON.stringify({
-      ...userPreferences,
-      [preferenceKey]: value,
-    })
-    localStorage.setItem(`${storageKey}${collection.canister}`, preferenceKey ? storage : JSON.stringify(value));
-  }
   
   const [stats, setStats] = useState(false);
   const [listings, setListings] = useState(false);
@@ -298,6 +291,15 @@ export default function Listings(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const queryTrait = searchParams.get('searchTrait') || '';
+
+  const storeUserPreferences = (preferenceKey, value) => {
+    var storage = JSON.stringify({
+      ...userPreferences,
+      [preferenceKey]: value,
+    })
+    localStorage.setItem(`${storageKey}${location.pathname}${collection.canister}`, preferenceKey ? storage : JSON.stringify(value));
+  }
+
   const defaultFilter = {
     status: {
       type: 'forSale',
@@ -321,12 +323,11 @@ export default function Listings(props) {
   }
 
   const currentCanister = getCollectionFromRoute(params?.route).canister;
-  userPreferences = localStorage.getItem(`${storageKey}${currentCanister}`);
+  userPreferences = localStorage.getItem(`${storageKey}${location.pathname}${currentCanister}`);
   if (userPreferences) {
     userPreferences = JSON.parse(userPreferences);
   } else {
     userPreferences = {
-      canister: currentCanister,
       filterOptions: {
         ...defaultFilter,
       },

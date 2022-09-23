@@ -18,7 +18,7 @@ import {
   ToniqIcon,
   ToniqPagination
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { ArrowsSort24Icon, cssToReactStyleObject, LoaderAnimated24Icon, Search24Icon, toniqColors, toniqFontStyles } from "@toniq-labs/design-system";
 import { Loading } from "./shared/Loading.js";
 import { NftCard } from "./shared/NftCard.js";
@@ -103,6 +103,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+var userPreferences;
+var storageKey = 'userPreferences';
+
 const defaultSortOption = {
   value: {
     type: 'price',
@@ -153,6 +156,8 @@ const sortOptions = [
 export default function Activity(props) {
   const params = useParams();
   const classes = useStyles();
+  const location = useLocation();
+  
   const getCollectionFromRoute = r => {
     if (_isCanister(r)) {
       return props.collections.find(e => e.canister === r)
@@ -160,12 +165,33 @@ export default function Activity(props) {
       return props.collections.find(e => e.route === r)
     };
   };
+
   const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
   const [collection] = useState(getCollectionFromRoute(params?.route, props.collections));
+
+  const storeUserPreferences = (preferenceKey, value) => {
+    var storage = JSON.stringify({
+      ...userPreferences,
+      [preferenceKey]: value,
+    })
+    localStorage.setItem(`${storageKey}${location.pathname}${collection.canister}`, preferenceKey ? storage : JSON.stringify(value));
+  }
+
+  const currentCanister = getCollectionFromRoute(params?.route).canister;
+  userPreferences = localStorage.getItem(`${storageKey}${location.pathname}${currentCanister}`);
+  if (userPreferences) {
+    userPreferences = JSON.parse(userPreferences);
+  } else {
+    userPreferences = {
+      sortOption: defaultSortOption,
+    };
+    storeUserPreferences(false, userPreferences);
+  };
+
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
-  const [sort, setSort] = useState(defaultSortOption);
+  const [sort, setSort] = useState(userPreferences.sortOption);
   const [activityPage, setActivityPage] = useState(0);
   
   const navigate = useNavigate();
@@ -311,11 +337,6 @@ export default function Activity(props) {
   const activityListing = activity[activityPage];
 
   useInterval(_updates, 60 * 1000);
-  
-  React.useEffect(() => {
-    // console.log(activityPage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityPage]);
 
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
@@ -386,6 +407,7 @@ export default function Activity(props) {
                 selected={sort}
                 onSelectChange={event => {
                   setSort(event.detail);
+                  storeUserPreferences('sortOption', event.detail);
                 }}
                 options={sortOptions}
               />
