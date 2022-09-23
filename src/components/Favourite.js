@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes } from '../utils';
 import { HeartFill24Icon, HeartOutline24Icon } from "@toniq-labs/design-system";
 import { ToniqIcon } from "@toniq-labs/design-system/dist/esm/elements/react-components";
+import { dispatch } from "../events/events";
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -37,7 +38,10 @@ export default function Favourite(props) {
   useInterval(_refresh, 10 * 1000);
 
   const like = async () => {
-    if (!props.loggedIn) return;
+    if (!props.loggedIn) {
+      dispatch('toggleDrawer');
+      return;
+    };
     skipRefresh = true;
     if (liked) {
       setCount(count - 1);

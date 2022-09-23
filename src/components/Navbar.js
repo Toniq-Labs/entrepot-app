@@ -12,6 +12,8 @@ import { Rocket24Icon, BuildingStore24Icon, Geometry24Icon, Lifebuoy24Icon, Entr
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
+import { subscribe, unsubscribe } from "../events/events";
+
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -53,13 +55,22 @@ export default function Navbar(props) {
       setBalance(undefined);
     }
   };
+
   useInterval(refresh, 30 *1000);
   
   useEffect(() => {
     refresh();
+    subscribe('toggleDrawer', () => handleDrawerToggle());
+
+    return () => {
+      unsubscribe('toggleDrawer')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
     refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
 
   const handleClick = () => {
