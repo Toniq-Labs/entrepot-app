@@ -6,7 +6,6 @@ import orderBy from "lodash.orderby";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { icpToString } from './PriceICP';
-import {css} from 'element-vir';
 import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
@@ -16,7 +15,8 @@ import {
   ToniqInput,
   ToniqDropdown,
   ToniqMiddleEllipsis,
-  ToniqIcon
+  ToniqIcon,
+  ToniqPagination
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { useSearchParams } from "react-router-dom";
 import { ArrowsSort24Icon, cssToReactStyleObject, LoaderAnimated24Icon, Search24Icon, toniqColors, toniqFontStyles } from "@toniq-labs/design-system";
@@ -26,6 +26,7 @@ import { getEXTCanister } from "../utilities/load-tokens.js";
 import PriceUSD from "./PriceUSD.js";
 import Timestamp from "react-timestamp";
 import { NoResult } from "./shared/NoResult.js";
+import chunk from "lodash.chunk";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -64,6 +65,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: '32px',
     [theme.breakpoints.down("sm")]: {
       marginTop: '16px',
+      paddingBottom: '16px',
 		},
   },
   listRowHeader: {
@@ -71,6 +73,33 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: toniqColors.accentSecondary.backgroundColor,
     borderRadius: '8px',
     padding: '0 16px',
+    [theme.breakpoints.down("sm")]: {
+      display: 'none',
+		},
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
+  activityInfoContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '16px',
+    maxHeight: '64px',
+    alignItems: 'center',
+    flexGrow: 1,
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: 'column',
+      alignItems: 'start',
+      ...cssToReactStyleObject(toniqFontStyles.labelFont),
+		},
+  },
+  hideWhenMobile: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+		},
   }
 }));
 
@@ -121,82 +150,6 @@ const sortOptions = [
   },
 ];
 
-function ListRow({items, style}) {
-  return (
-    <div
-      className="profile-list-view-nft-details-row"
-      style={{
-        display: 'flex',
-        gap: '16px',
-        maxHeight: '64px',
-        alignItems: 'center',
-        flexGrow: 1,
-        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        ...style,
-      }}
-    >
-      {items[0] ? (
-        <div
-          style={{
-            flexBasis: '48px',
-            flexShrink: 0,
-          }}
-        >
-          &nbsp;
-        </div>
-      ) : (
-        ''
-      )}
-      <div
-        style={{
-          flexBasis: 0,
-          marginLeft: '32px',
-          flexGrow: 1,
-          maxWidth: '72px',
-        }}
-      >
-        {items[1]}
-      </div>
-      <div
-        style={{
-          flexGrow: 1,
-          flexBasis: 0,
-          maxWidth: '78px',
-        }}
-      >
-        {items[2]}
-      </div>
-      <div
-        style={{
-          flexGrow: 1,
-          flexBasis: 0,
-          maxWidth: '180px',
-        }}
-      >
-        {items[3]}
-      </div>
-      <div
-        style={{
-          flexGrow: 1,
-          flexBasis: 0,
-          maxWidth: '185px',
-        }}
-      >
-        {items[4]}
-      </div>
-      <div
-        style={{
-          flexGrow: 1,
-          flexBasis: 0,
-        }}
-      >
-        {items[5]}
-      </div>
-      {items[6]}
-    </div>
-  );
-}
-
 export default function Activity(props) {
   const params = useParams();
   const classes = useStyles();
@@ -213,10 +166,96 @@ export default function Activity(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('search') || '';
   const [sort, setSort] = useState(defaultSortOption);
+  const [activityPage, setActivityPage] = useState(0);
   
   const navigate = useNavigate();
   
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
+
+  function ListRow({items, style}) {
+    return (
+      <div
+        className="profile-list-view-nft-details-row"
+        style={{
+          display: 'flex',
+          gap: '16px',
+          maxHeight: '64px',
+          alignItems: 'center',
+          flexGrow: 1,
+          ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+          ...style,
+        }}
+      >
+        {items[0] ? (
+          <div
+            style={{
+              flexBasis: '48px',
+              flexShrink: 0,
+            }}
+          >
+            &nbsp;
+          </div>
+        ) : (
+          ''
+        )}
+        <div
+          className={classes.activityInfoContainer}
+          style={{ ...style }}
+        >
+          <div
+            style={{
+              flexBasis: 0,
+              marginLeft: '32px',
+              flexGrow: 1,
+              maxWidth: '72px',
+            }}
+          >
+            {items[1]}
+          </div>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: 0,
+              maxWidth: '78px',
+              marginLeft: '32px',
+            }}
+          >
+            {items[2]}
+          </div>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: 0,
+              maxWidth: '180px',
+            }}
+            className={classes.hideWhenMobile}
+          >
+            {items[3]}
+          </div>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: 0,
+              maxWidth: '185px',
+            }}
+            className={classes.hideWhenMobile}
+          >
+            {items[4]}
+          </div>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: 0,
+            }}
+            className={classes.hideWhenMobile}
+          >
+            {items[5]}
+          </div>
+        </div>
+        {items[6]}
+      </div>
+    );
+  }
 
   const _updates = async () => {
     await refresh();
@@ -268,8 +307,16 @@ export default function Activity(props) {
     [sort.value.sort]
   );
 
+  const activity = chunk(filteredAndSortedListings, 9);
+  const activityListing = activity[activityPage];
+
   useInterval(_updates, 60 * 1000);
   
+  React.useEffect(() => {
+    // console.log(activityPage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activityPage]);
+
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     _updates();
@@ -316,7 +363,7 @@ export default function Activity(props) {
           />
         </div>
         <WithFilterPanel
-        noFilters={true}
+          noFilters={true}
           otherControlsChildren={
             <>
               <span
@@ -357,7 +404,7 @@ export default function Activity(props) {
                   }}
                 />
               </div>
-              {filteredAndSortedListings.map(listing => {
+              {activityListing.map(listing => {
                 return (
                   <NftCard
                     listStyle={true}
@@ -368,14 +415,6 @@ export default function Activity(props) {
                     key={listing.id}
                   >
                     <>
-                      <style
-                        dangerouslySetInnerHTML={{
-                          __html: String(css`
-                            .profile-list-view-nft-details-row > span {
-                            }
-                          `),
-                        }}
-                      ></style>
                       <ListRow
                         items={[
                           '',
@@ -406,6 +445,22 @@ export default function Activity(props) {
           }
           <NoResult noResult={listings && !filteredAndSortedListings.length} />
           <Loading loading={!listings} />
+          <div className={classes.pagination}>
+            <ToniqPagination
+              currentPage={activityPage + 1}
+              pageCount={activity.length}
+              pagesShown={6}
+              onPageChange={(event) => {
+                setActivityPage(event.detail - 1);
+              }}
+              onNext={(event) => {
+                setActivityPage(event.detail - 1);
+              }}
+              onPrevious={(event) => {
+                setActivityPage(event.detail - 1);
+              }}
+            />
+          </div>
         </WithFilterPanel>
       </div>
     </div>
