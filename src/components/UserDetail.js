@@ -5,13 +5,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
-import CallMadeIcon from '@material-ui/icons/CallMade';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
@@ -31,10 +24,6 @@ export default function UserDetail(props) {
     if (['new-request', 'earn-requests', 'earn-contracts', 'earn-nfts'].indexOf(v) >= 0)
       return 'earning';
     return v;
-  };
-  const pageTitle = {
-    collected: 'Collection',
-    selling: 'Selling',
   };
   const goTo = nv => {
     props.navigate(`/` + nv);
@@ -131,63 +120,12 @@ export default function UserDetail(props) {
         >
           <Tab
             className={props.classes.tabsViewTab}
-            value="collected"
-            label={
-              <span style={{padding: '0 50px'}}>
-                <CollectionsIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                <span style={{}}>Collected</span>
-              </span>
-            }
-          />
-          <Tab
-            className={props.classes.tabsViewTab}
-            value="selling"
-            label={
-              <span style={{padding: '0 50px'}}>
-                <AddShoppingCartIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                <span style={{}}>Selling</span>
-              </span>
-            }
-          />
-          <Tab
-            className={props.classes.tabsViewTab}
-            value="offers"
-            label={
-              <span style={{padding: '0 50px'}}>
-                <LocalOfferIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                <span style={{}}>Offers</span>
-                <ExpandMoreIcon style={{position: 'absolute', marginLeft: '30px'}} />
-              </span>
-            }
-          />
-          <Tab
-            className={props.classes.tabsViewTab}
             value="earning"
             label={
               <span style={{padding: '0 50px'}}>
                 <AccountBalanceIcon style={{position: 'absolute', marginLeft: '-30px'}} />
                 <span style={{}}>Earning</span>
                 <ExpandMoreIcon style={{position: 'absolute', marginLeft: '30px'}} />
-              </span>
-            }
-          />
-          <Tab
-            className={props.classes.tabsViewTab}
-            value="favorites"
-            label={
-              <span style={{padding: '0 50px'}}>
-                <FavoriteIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                <span style={{}}>Favorites</span>
-              </span>
-            }
-          />
-          <Tab
-            className={props.classes.tabsViewTab}
-            value="activity"
-            label={
-              <span style={{padding: '0 50px'}}>
-                <ImportExportIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                <span style={{}}>Activity</span>
               </span>
             }
           />
@@ -208,36 +146,6 @@ export default function UserDetail(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          {menuType == 'offers' ? (
-            <>
-              <MenuItem onClick={() => goTo('offers-received')}>
-                <ListItemIcon style={{minWidth: 30}}>
-                  <CallReceivedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>
-                  <span
-                    style={{fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase'}}
-                  >
-                    Offers Received
-                  </span>
-                </ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => goTo('offers-made')}>
-                <ListItemIcon style={{minWidth: 30}}>
-                  <CallMadeIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>
-                  <span
-                    style={{fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase'}}
-                  >
-                    Offers Made
-                  </span>
-                </ListItemText>
-              </MenuItem>
-            </>
-          ) : (
-            ''
-          )}
           {menuType == 'earning' ? (
             <>
               <MenuItem onClick={() => goTo('earn-requests')}>
