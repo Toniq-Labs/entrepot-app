@@ -954,6 +954,39 @@ export default function App() {
     </div>
   );
 
+  const profileRoutes = (
+    <>
+      <Route
+        path=":tab"
+        exact
+        element={
+          <Profile
+            onSellClick={listNft}
+            onTransferClick={transferNft}
+            loader={loader}
+            identity={identity}
+            account={accounts.length > 0 ? accounts[currentAccount] : false}
+            collections={collections}
+          />
+        }
+      />
+      <Route
+        path=""
+        exact
+        element={
+          <Profile
+            onSellClick={listNft}
+            onTransferClick={transferNft}
+            loader={loader}
+            identity={identity}
+            account={accounts.length > 0 ? accounts[currentAccount] : false}
+            collections={collections}
+          />
+        }
+      />
+    </>
+  );
+
   return (
     <>
       {appLoaded ? (
@@ -976,36 +1009,8 @@ export default function App() {
           <main className={classes.content}>
             <div className={classes.inner}>
               <Routes>
-                <Route path="/profile">
-                  <Route
-                    path=":statusFilter"
-                    exact
-                    element={
-                      <Profile
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
-                        loader={loader}
-                        identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
-                        collections={collections}
-                      />
-                    }
-                  />
-                  <Route
-                    path=""
-                    exact
-                    element={
-                      <Profile
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
-                        loader={loader}
-                        identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
-                        collections={collections}
-                      />
-                    }
-                  />
-                </Route>
+                <Route path="/profile">{profileRoutes}</Route>
+                <Route path="/:address/profile">{profileRoutes}</Route>
                 <Route
                   path="/marketplace/asset/:tokenid"
                   exact

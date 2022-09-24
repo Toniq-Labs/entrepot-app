@@ -4,7 +4,6 @@ import {
   ToniqSlider,
   ToniqIcon,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {mapObject} from 'augment-vir';
 import {
   toniqColors,
   ChevronDown24Icon,
@@ -14,7 +13,7 @@ import {
   X24Icon,
 } from '@toniq-labs/design-system';
 import {SelectableNameWithCount, makeCountIndicator} from '../../shared/SelectableNameWithCount';
-import {nftStatusesByTab} from './ProfileTabs';
+import {nftStatusesByTab, NftStatusTitles} from './ProfileTabs';
 
 const topLevelCollectionsExpandKey = 'top-collections';
 const topLevelTraitsExpandKey = 'top-traits';
@@ -57,7 +56,6 @@ export function ProfileFilters(props) {
       });
     }
   }
-  console.log({filterProps: props});
 
   const areAnyTraitsSelected = Object.values(props.filters.traits ?? []).some(collectionTraits =>
     Object.values(collectionTraits ?? []).some(traits =>
@@ -73,7 +71,7 @@ export function ProfileFilters(props) {
           return (
             <ToniqToggleButton
               key={filterStatus}
-              text={filterStatus}
+              text={NftStatusTitles[filterStatus]}
               active={props.filters.status == filterStatus}
               onClick={() => {
                 props.updateFilters({
@@ -205,9 +203,8 @@ export function ProfileFilters(props) {
                   ).some(traits => (Object.values(traits) ?? []).some(value => !!value));
 
                   return (
-                    <>
+                    <div key={collection.name}>
                       <SelectableNameWithCount
-                        key={collection.name}
                         title={collection.name}
                         imageUrl={
                           collection.avatar ||
@@ -330,7 +327,7 @@ export function ProfileFilters(props) {
                           );
                         })}
                       </div>
-                    </>
+                    </div>
                   );
                 })}
             </div>

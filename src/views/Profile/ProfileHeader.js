@@ -8,7 +8,7 @@ import {
 } from '@toniq-labs/design-system';
 import {ChipWithLabel} from '../../shared/ChipWithLabel';
 import {ToniqInput, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {ProfileViewType} from './ProfileTabs';
+import {ProfileViewType, TabTitles} from './ProfileTabs';
 
 const selectedColor = String(toniqColors.brandPrimary.foregroundColor);
 
@@ -53,7 +53,7 @@ export function ProfileHeader(props) {
               }}
               className={props.classes.profileTab}
             >
-              {profileTab}
+              {TabTitles[profileTab]}
             </div>
           );
         })}
@@ -69,7 +69,7 @@ export function ProfileHeader(props) {
             maxWidth: '100%',
             boxSizing: 'border-box',
           }}
-          placeholder="Search for collections and creators..."
+          placeholder="Search for collections..."
           icon={Search24Icon}
           onValueChange={event => {
             const search = event.detail;

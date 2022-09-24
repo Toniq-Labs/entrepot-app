@@ -10,9 +10,9 @@ import {
 import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../../components/PriceICP';
 import {ProfileFilters} from './ProfileFilters';
-import {AllFilter, ProfileViewType} from './ProfileTabs';
-import {useNavigate} from 'react-router-dom';
-import {nftCardContents, listRow, ListRow} from './ProfileNftCard';
+import {AllFilter, ProfileViewType, ProfileTabs, nftStatusesByTab} from './ProfileTabs';
+import {useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
+import {nftCardContents, ListRow} from './ProfileNftCard';
 
 function createFilterCallback(currentFilters, query) {
   return nft => {
@@ -101,6 +101,12 @@ function createSortCallback(currentSort) {
   };
 }
 
+const finalListRowTitles = {
+  [ProfileTabs.MyNfts]: 'ACTIONS',
+  [ProfileTabs.Watching]: 'OFFERS',
+  [ProfileTabs.Activity]: 'TIME',
+};
+
 const defaultSortOption = {
   value: 'price_desc',
   label: 'Price: High to Low',
@@ -141,11 +147,37 @@ const initFilters = {
 };
 
 export function ProfileBody(props) {
+  const [searchParams] = useSearchParams();
   const [showFilters, setShowFilters] = React.useState(false);
   const [currentFilters, setCurrentFilters] = React.useState(initFilters);
   const [sort, setSort] = React.useState(defaultSortOption);
 
   const navigate = useNavigate();
+
+  const statusParam = searchParams.get('status');
+  if (statusParam) {
+    if (
+      statusParam !== AllFilter &&
+      Object.values(nftStatusesByTab[props.currentTab]).includes(statusParam)
+    ) {
+      if (currentFilters.status !== statusParam) {
+        if (!showFilters) {
+          setShowFilters(true);
+        }
+        setCurrentFilters({
+          ...currentFilters,
+          status: statusParam,
+        });
+      }
+    } else {
+      navigate({search: `?${createSearchParams({})}`});
+    }
+  } else if (currentFilters.status !== AllFilter) {
+    setCurrentFilters({
+      ...currentFilters,
+      status: AllFilter,
+    });
+  }
 
   const filteredNfts = props.userNfts
     .filter(createFilterCallback(currentFilters, props.query))
@@ -166,7 +198,14 @@ export function ProfileBody(props) {
           userCollections={props.userCollections}
           userNfts={props.userNfts}
           nftFilterStats={props.nftFilterStats}
-          updateFilters={setCurrentFilters}
+          updateFilters={newFilters => {
+            setCurrentFilters(newFilters);
+            if (newFilters.status && newFilters.status !== currentFilters.status) {
+              navigate({
+                search: `?${createSearchParams({status: newFilters.status})}`,
+              });
+            }
+          }}
           filters={currentFilters}
         />
       }
@@ -219,7 +258,7 @@ export function ProfileBody(props) {
             }}
           >
             <ListRow
-              items={[true, 'MINT #', 'NRI', 'PRICE', 'TIME']}
+              items={[true, 'MINT #', 'NRI', 'PRICE', finalListRowTitles[props.currentTab]]}
               style={{
                 ...cssToReactStyleObject(toniqFontStyles.labelFont),
                 maxHeight: '32px',

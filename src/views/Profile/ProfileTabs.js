@@ -1,28 +1,45 @@
 export const ProfileTabs = {
-  MyNfts: 'My NFTs',
-  Watching: 'Watching',
-  Activity: 'Activity',
+  MyNfts: 'my-nfts',
+  Watching: 'watching',
+  Activity: 'activity',
 };
 
-export const AllFilter = 'All';
+export const TabTitles = {
+  [ProfileTabs.MyNfts]: 'My NFTs',
+  [ProfileTabs.Watching]: 'Watching',
+  [ProfileTabs.Activity]: 'Activity',
+};
+
+export const AllFilter = 'all';
 
 export const nftStatusesByTab = {
   [ProfileTabs.MyNfts]: {
     All: AllFilter,
-    Unlisted: 'Unlisted',
-    ForSale: 'For Sale',
-    OffersReceived: 'Offers Received',
+    Unlisted: 'unlisted',
+    ForSale: 'for-sale',
+    OffersReceived: 'offers-received',
   },
   [ProfileTabs.Watching]: {
     All: AllFilter,
-    OffersMade: 'Offers Made',
-    Favorites: 'Favorites',
+    OffersMade: 'offers-made',
+    Favorites: 'favorites',
   },
   [ProfileTabs.Activity]: {
     All: AllFilter,
-    Bought: 'Bought',
-    Sold: 'Sold',
+    Bought: 'bought',
+    Sold: 'sold',
   },
+};
+
+export const NftStatusTitles = {
+  [AllFilter]: 'All',
+  [nftStatusesByTab[ProfileTabs.MyNfts].Unlisted]: 'Unlisted',
+  [nftStatusesByTab[ProfileTabs.MyNfts].ForSale]: 'For Sale',
+  [nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived]: 'Offers Received',
+  [nftStatusesByTab[ProfileTabs.Watching].OffersMade]: 'Offers Made',
+  [nftStatusesByTab[ProfileTabs.Watching].Favorites]: 'Favorites',
+  [nftStatusesByTab[ProfileTabs.Activity].Bought]: 'Bought',
+  [nftStatusesByTab[ProfileTabs.Activity].Sold]: 'Sold',
 };
 
 export const ProfileViewType = {

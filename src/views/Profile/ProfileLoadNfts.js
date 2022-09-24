@@ -3,7 +3,7 @@ import extjs from '../../ic/extjs.js';
 import {loadAllUserTokens, getEXTCanister, getEXTID, nftIdToNft} from '../../utilities/load-tokens';
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import getNri from '../../ic/nftv.js';
-import {createNftFilterStats, blankNftFilterStats} from './ProfileNftStats';
+import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 
 const api = extjs.connect('https://boundary.ic0.app/');
