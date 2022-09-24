@@ -15,14 +15,15 @@ import {startLoadingProfileNftsAndCollections} from './ProfileLoadNfts';
 import {ProfileTabs, ProfileViewType} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 import {useParams, useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
+import {spreadableSearchParams} from '../../utilities/search-params';
 
 const profileSearchParamName = 'profile-search';
 
 export function Profile(props) {
   const classes = profileStyles();
   const navigate = useNavigate();
-  const {tab, address} = useParams();
-  const [searchParams] = useSearchParams();
+  const {tab: currentTab, address} = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const query = searchParams.get(profileSearchParamName) || '';
 
@@ -34,24 +35,21 @@ export function Profile(props) {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const [loading, setLoading] = React.useState(true);
-  const [currentTab, setCurrentTab] = React.useState(ProfileTabs.MyNfts);
-  const [viewType, setViewType] = React.useState(ProfileViewType.Grid);
+
+  const viewType = searchParams.get('view');
+
+  if (!Object.values(ProfileViewType).includes(viewType)) {
+    setSearchParams({...spreadableSearchParams(searchParams), view: ProfileViewType.Grid});
+  }
 
   const currentNftsAndCollections = resolvedOrUndefined(allUserNfts.current[currentTab]);
 
   if (!address || (address === 'undefined' && props.account)) {
     navigate({
       pathname: `/${props.account.address}/profile/${currentTab}`,
+      search: `?${createSearchParams(searchParams)}`,
     });
   }
-
-  React.useEffect(() => {
-    if (Object.values(ProfileTabs).includes(tab)) {
-      setCurrentTab(tab);
-    } else if (props.account.address) {
-      navigate(`/${props.account.address}/profile/${currentTab}`);
-    }
-  }, [tab]);
 
   function refresh() {
     if (props.account && props.identity && props.collections) {
@@ -127,20 +125,21 @@ export function Profile(props) {
           currentTab={currentTab}
           viewType={viewType}
           onViewTypeChange={newViewType => {
-            setViewType(newViewType);
+            setSearchParams({...spreadableSearchParams(searchParams), view: newViewType});
           }}
           onCurrentTabChange={newTab => {
             if (props.account.address) {
-              navigate(`/${props.account.address}/profile/${newTab}`);
+              navigate({
+                pathname: `/${props.account.address}/profile/${newTab}`,
+                search: `?${createSearchParams(searchParams)}`,
+              });
             }
           }}
           onQueryChange={newQuery => {
             const newSearch = createSearchParams(
               newQuery ? {[profileSearchParamName]: newQuery} : {},
             );
-            navigate({
-              search: `?${newSearch}`,
-            });
+            setSearchParams(newSearch);
           }}
         />
         {loading || !currentNftsAndCollections ? (

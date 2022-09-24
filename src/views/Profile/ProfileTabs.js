@@ -43,6 +43,6 @@ export const NftStatusTitles = {
 };
 
 export const ProfileViewType = {
-  List: 'List',
-  Grid: 'Grid',
+  List: 'list',
+  Grid: 'grid',
 };

@@ -78,7 +78,7 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
     [ProfileTabs.Activity]: new Promise(async resolve =>
       resolve(
         await includeCollectionsAndStats(
-          await getActivityNfts(address, identity, allCollections),
+          await getActivityNfts(address, allCollections),
           allCollections,
         ),
       ),
@@ -103,7 +103,7 @@ async function loadTraits(collection) {
   }
 }
 
-async function getActivityNfts(address, identity, collections) {
+async function getActivityNfts(address, collections) {
   const rawData = (
     await (
       await fetch(

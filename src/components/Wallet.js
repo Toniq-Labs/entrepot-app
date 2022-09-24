@@ -42,6 +42,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
+import {createSearchParams, useSearchParams} from 'react-router-dom';
+import {nftStatusesByTab, ProfileTabs, ProfileViewType} from '../views/Profile/ProfileTabs';
+import {spreadableSearchParams} from '../utilities/search-params';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -77,16 +80,15 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
   },
 }));
-const _showListingPrice = n => {
-  n = Number(n) / 100000000;
-  return n.toFixed(8).replace(/0{1,6}$/, '');
-};
-var intv = false;
 var loadedAccount = false;
+
 export default function Wallet(props) {
   const navigate = useNavigate();
   const classes = useStyles();
   const theme = useTheme();
+
+  const [searchParams] = useSearchParams();
+
   const container = window !== undefined ? () => window.document.body : undefined;
   const [balance, setBalance] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -338,7 +340,9 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/collected');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.MyNfts}`,
+                });
               }}
             >
               <ListItemIcon>
@@ -350,7 +354,13 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/selling');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.MyNfts}`,
+                  search: `?${createSearchParams({
+                    ...spreadableSearchParams(searchParams),
+                    status: nftStatusesByTab[ProfileTabs.MyNfts].ForSale,
+                  })}`,
+                });
               }}
             >
               <ListItemIcon>
@@ -362,7 +372,13 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/offers-received');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.MyNfts}`,
+                  search: `?${createSearchParams({
+                    ...spreadableSearchParams(searchParams),
+                    status: nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived,
+                  })}`,
+                });
               }}
             >
               <ListItemIcon>
@@ -374,7 +390,13 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/offers-made');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.Watching}`,
+                  search: `?${createSearchParams({
+                    ...spreadableSearchParams(searchParams),
+                    status: nftStatusesByTab[ProfileTabs.Watching].OffersMade,
+                  })}`,
+                });
               }}
             >
               <ListItemIcon>
@@ -424,7 +446,13 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/favorites');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.Watching}`,
+                  search: `?${createSearchParams({
+                    ...spreadableSearchParams(searchParams),
+                    status: nftStatusesByTab[ProfileTabs.Watching].Favorites,
+                  })}`,
+                });
               }}
             >
               <ListItemIcon>
@@ -436,7 +464,13 @@ export default function Wallet(props) {
               button
               onClick={() => {
                 props.close();
-                navigate('/activity');
+                navigate({
+                  pathname: `/profile/${ProfileTabs.Activity}`,
+                  search: `?${createSearchParams({
+                    ...spreadableSearchParams(searchParams),
+                    view: ProfileViewType.List,
+                  })}`,
+                });
               }}
             >
               <ListItemIcon>

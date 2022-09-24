@@ -13,6 +13,7 @@ import {ProfileFilters} from './ProfileFilters';
 import {AllFilter, ProfileViewType, ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
 import {nftCardContents, ListRow} from './ProfileNftCard';
+import {spreadableSearchParams} from '../../utilities/search-params';
 
 function createFilterCallback(currentFilters, query) {
   return nft => {
@@ -97,6 +98,10 @@ function createSortCallback(currentSort) {
         return (a.nri || 0) - (b.nri || 0);
       case 'rarity_desc':
         return (b.nri || 0) - (a.nri || 0);
+      case 'date_asc':
+        return a.time - b.time;
+      case 'date_desc':
+        return b.time - a.time;
     }
   };
 }
@@ -147,7 +152,7 @@ const initFilters = {
 };
 
 export function ProfileBody(props) {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = React.useState(false);
   const [currentFilters, setCurrentFilters] = React.useState(initFilters);
   const [sort, setSort] = React.useState(defaultSortOption);
@@ -155,13 +160,16 @@ export function ProfileBody(props) {
   const navigate = useNavigate();
 
   const statusParam = searchParams.get('status');
+
   if (statusParam) {
-    if (
-      statusParam !== AllFilter &&
-      Object.values(nftStatusesByTab[props.currentTab]).includes(statusParam)
-    ) {
+    if (!Object.values(nftStatusesByTab[props.currentTab]).includes(statusParam)) {
+      setSearchParams({
+        ...spreadableSearchParams(searchParams),
+        status: AllFilter,
+      });
+    } else if (Object.values(nftStatusesByTab[props.currentTab]).includes(statusParam)) {
       if (currentFilters.status !== statusParam) {
-        if (!showFilters) {
+        if (!showFilters && statusParam !== AllFilter) {
           setShowFilters(true);
         }
         setCurrentFilters({
@@ -169,14 +177,21 @@ export function ProfileBody(props) {
           status: statusParam,
         });
       }
-    } else {
-      navigate({search: `?${createSearchParams({})}`});
+      if (statusParam === AllFilter) {
+        const params = spreadableSearchParams(searchParams);
+        delete params.status;
+        setSearchParams(params);
+      }
     }
   } else if (currentFilters.status !== AllFilter) {
     setCurrentFilters({
       ...currentFilters,
       status: AllFilter,
     });
+  }
+
+  if (sort.value.startsWith('date') && props.currentTab !== ProfileTabs.Activity) {
+    setSort(defaultSortOption);
   }
 
   const filteredNfts = props.userNfts
@@ -201,9 +216,7 @@ export function ProfileBody(props) {
           updateFilters={newFilters => {
             setCurrentFilters(newFilters);
             if (newFilters.status && newFilters.status !== currentFilters.status) {
-              navigate({
-                search: `?${createSearchParams({status: newFilters.status})}`,
-              });
+              setSearchParams(createSearchParams({status: newFilters.status}));
             }
           }}
           filters={currentFilters}
@@ -231,7 +244,20 @@ export function ProfileBody(props) {
               console.log(event.detail);
               setSort(event.detail);
             }}
-            options={sortOptions}
+            options={sortOptions.concat(
+              props.currentTab === ProfileTabs.Activity
+                ? [
+                    {
+                      value: 'date_asc',
+                      label: 'Date: Oldest to Newest',
+                    },
+                    {
+                      value: 'date_desc',
+                      label: 'Date: Newest to Lowest',
+                    },
+                  ]
+                : [],
+            )}
           />
         </>
       }
