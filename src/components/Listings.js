@@ -43,6 +43,7 @@ import { Loading } from "./shared/Loading.js";
 import Favourite from "./Favourite.js";
 import { NoResult } from "./shared/NoResult.js";
 import { TraitsAccordion } from "./shared/TraitsAccordion.js";
+import { NftCardPlaceholder } from "./shared/NftCardPlaceholder.js";
 const api = extjs.connect("https://boundary.ic0.app/");
 
 function useInterval(callback, delay) {
@@ -78,6 +79,8 @@ const useDidMountEffect = (func, deps) => {
 const _isCanister = c => {
   return c.length === 27 && c.split("-").length === 5;
 };
+
+const preloaderItemColor = "#f1f1f1";
 
 const useStyles = makeStyles(theme => ({
   traitCategoryWrapper: {
@@ -1014,7 +1017,64 @@ export default function Listings(props) {
                 {filteredAndSortedListings.map((listing, index) => {
                   return (
                     <Grid key={index} item>
-                      <LazyLoad offset={-150} once>
+                      <LazyLoad
+                        offset={[-150, 0]}
+                        once
+                        placeholder={
+                          <NftCardPlaceholder style={{ maxWidth: gridSize === 'small' ? '192px' : '304px', maxHeight: gridSize === 'small' ? '192px' : '416px' }}>
+                            {
+                              gridSize === 'large' ? 
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    marginBottom: '16px',
+                                    marginTop: '16px',
+                                    backgroundColor: preloaderItemColor,
+                                    width: 90,
+                                    height: 32,
+                                    borderRadius: '8px'
+                                  }}
+                                />
+                                <div style={{display: 'flex'}}>
+                                  <div style={{display: 'flex', flexGrow: 1, flexDirection: 'column',}}>
+                                    <span
+                                      style={{
+                                        marginBottom: '8px',
+                                        backgroundColor: preloaderItemColor,
+                                        width: 50,
+                                        height: 24,
+                                        borderRadius: '8px'
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        backgroundColor: preloaderItemColor,
+                                        width: 60,
+                                        height: 16,
+                                        borderRadius: '8px'
+                                      }}
+                                    />
+                                  </div>
+                                  <span
+                                    style={{
+                                      backgroundColor: toniqColors.pageInteraction.foregroundColor,
+                                      width: 92,
+                                      height: 48,
+                                      borderRadius: '8px'
+                                    }}
+                                  />
+                                </div>
+                              </div> : ''
+                            }
+                          </NftCardPlaceholder>
+                        }
+                        debounce={500}
+                      >
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }}>
                           <NftCard 
                             imageUrl={listing.image} 
