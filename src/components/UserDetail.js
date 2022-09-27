@@ -44,10 +44,6 @@ export default function UserDetail(props) {
     setAnchorEl(null);
   };
 
-  const getTokens = async () => {
-    var stats = EntrepotAllStats();
-    var tokens = (await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+props.address+"/all").then(r => r.json())).map(a => Number(stats.find(b => b.canister == a.canister).stats.floor)).reduce((a,c) => a+c, 0);
-  };
   const styles = {
     empty: {
       maxWidth: 1200,
@@ -63,9 +59,7 @@ export default function UserDetail(props) {
       },
     },
   };
-  React.useEffect(() => {
-    getTokens();
-  }, [props.address]);
+
   return (
   <div>
     <div style={{maxWidth:1200, margin:"0 auto 0",}}>
