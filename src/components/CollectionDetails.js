@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import extjs from "../ic/extjs.js";
@@ -92,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     display: "-webkit-box",
     "-webkit-box-orient": "vertical",
+    "& > a": {
+      color: `${toniqColors.pagePrimary.foregroundColor}`,
+    }
   },
   blurbCollapsed: {
     "-webkit-line-clamp": 3,
@@ -117,17 +120,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 export default function CollectionDetails(props) {
   const classes = useStyles();
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [size, setSize] = useState(false);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const blurbRef = createRef();
   var collection = props.collection;
   var stats = props.stats;
+
+  function isEllipsisActive(element) {
+    if (!element) return false;
+    return (element.scrollHeight > element.clientHeight);
+  }
 
   React.useEffect(() => {
     api.token(collection.canister).size().then(s => {
       setSize(s);
     });
+
+    setShowReadMore(isEllipsisActive(blurbRef.current));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -226,16 +239,19 @@ export default function CollectionDetails(props) {
         </div>
         {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
         {
-          collection.blurb ?
+          collection.blurb &&
           <div className={classes.blurbWrapper}>
-            <div className={`${classes.blurb} ${!isBlurbOpen ? classes.blurbCollapsed : ''}`} dangerouslySetInnerHTML={{ __html: collection.blurb }} />
-            <button
-              style={{...cssToReactStyleObject(toniqFontStyles.boldParagraphFont), border: "none", background: "none", cursor: "pointer"}}
-              onClick={() => setIsBlurbOpen(!isBlurbOpen)}
-            >
-              {!isBlurbOpen ? 'Read More' : 'Read Less'}
-            </button>
-          </div> : ""
+            <div ref={blurbRef} className={`${classes.blurb} ${!isBlurbOpen ? classes.blurbCollapsed : ''}`} dangerouslySetInnerHTML={{ __html: collection.blurb }} />
+            {
+              showReadMore &&
+              <button
+                style={{...cssToReactStyleObject(toniqFontStyles.boldParagraphFont), border: "none", background: "none", cursor: "pointer"}}
+                onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+              >
+                {!isBlurbOpen ? 'Read More' : 'Read Less'}
+              </button>
+            }
+          </div>
         }
         {
           stats ? (
