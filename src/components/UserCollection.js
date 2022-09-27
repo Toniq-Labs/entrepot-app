@@ -264,18 +264,13 @@ export default function UserCollection(props) {
     };
     if (!address) return;
     var data = [];; 
+    // eslint-disable-next-line default-case
     switch(props.view){
       case "collected":
         //TODO
-        // var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
-        // data = response.data;
-        // data = data.map(a => ({...a, token : a.id}));
-        //Add wrapped
-        try{
-          data = await loadAllTokens(address, props.identity.getPrincipal().toText());
-        } catch(e){
-          data = [];
-        };
+        var response = await axios("https://us-central1-entrepot-api.cloudfunctions.net/api/user/"+address+"/all");
+        data = response.data;
+        data = data.map(a => ({...a, token : a.id}));
         break;
       case "new-request":
         //if (whitelistedPawnCanisters === false) return;
@@ -486,12 +481,12 @@ export default function UserCollection(props) {
             <Grid className={classes.topUi} container style={{minHeight:66}}>
               <Grid item xs={12} sm={"auto"} style={{marginBottom:10}}>
                 <ToggleButtonGroup className={classes.hideDesktop} style={{marginTop:5, marginRight:10}} size="small">
-                  <ToggleButton onClick={changeToggleFilter}>
+                  <ToggleButton value="" onClick={changeToggleFilter}>
                     <FilterListIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
                 <ToggleButtonGroup style={{marginTop:5, marginRight:10}} size="small">
-                  <ToggleButton onClick={() => setDisplayedResults(false)}>
+                  <ToggleButton value="" onClick={() => setDisplayedResults(false)}>
                     <CachedIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
