@@ -409,7 +409,7 @@ export default function Listings(props) {
         .map((listing, listingIndex) => {
           const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
           const { index, canister} = extjs.decodeTokenId(tokenid);
-          const rarity = getNri(canister, index) ? Number((getNri(canister, index) * 100).toFixed(1)) : false;
+          const rarity = typeof getNri(canister, index) === 'number' ? Number((getNri(canister, index) * 100).toFixed(1)) : false;
           const mintNumber = EntrepotNFTMintNumber(canister, index);
           let traits;
           if (traitsData) {
@@ -1202,7 +1202,7 @@ export default function Listings(props) {
                                       #{listing.mintNumber || ''}
                                     </span>
                                     {
-                                      listing.rarity &&
+                                      typeof listing.rarity === 'number' &&
                                       <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
                                         NRI: {listing.rarity}%
                                       </span>

@@ -94,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
     "-webkit-box-orient": "vertical",
     "& > a": {
       color: `${toniqColors.pagePrimary.foregroundColor}`,
+      "&:hover": {
+        color: toniqColors.pageInteractionHover.foregroundColor,
+      }
     }
   },
   blurbCollapsed: {
@@ -115,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     textDecoration: "none",
     "&:hover": {
-      textDecoration: "underline",
+      color: toniqColors.pageInteractionHover.foregroundColor,
     }
   },
 }));
@@ -200,7 +203,7 @@ export default function CollectionDetails(props) {
                       }
                     />
                     <a href={ collection.web} target="_blank" rel="noreferrer" className={classes.web}>
-                      { collection.web }
+                      { collection.name }
                     </a>
                     {collection.kyc ? (
                       <ToniqIcon
