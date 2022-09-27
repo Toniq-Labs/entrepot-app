@@ -20,13 +20,12 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { useLocation, useSearchParams } from "react-router-dom";
 import { ArrowsSort24Icon, cssToReactStyleObject, LoaderAnimated24Icon, Search24Icon, toniqColors, toniqFontStyles } from "@toniq-labs/design-system";
-import { Loading } from "./shared/Loading.js";
 import { NftCard } from "./shared/NftCard.js";
 import { getEXTCanister } from "../utilities/load-tokens.js";
 import PriceUSD from "./PriceUSD.js";
 import Timestamp from "react-timestamp";
-import { NoResult } from "./shared/NoResult.js";
 import chunk from "lodash.chunk";
+import { StateContainer } from "./shared/StateContainer.js";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -465,8 +464,10 @@ export default function Activity(props) {
               })}
             </div> : ''
           }
-          <NoResult noResult={listings && !filteredAndSortedListings.length} />
-          <Loading loading={!listings} />
+          <StateContainer show={listings && !filteredAndSortedListings.length}>No Result</StateContainer>
+          <StateContainer show={!listings}>
+            <ToniqIcon icon={LoaderAnimated24Icon} />&nbsp;Loading...
+          </StateContainer>
           <div className={classes.pagination}>
             <ToniqPagination
               currentPage={activityPage + 1}
