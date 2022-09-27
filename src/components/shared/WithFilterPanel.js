@@ -192,7 +192,7 @@ export function WithFilterPanel(props) {
             </div>
             <div className="filter-text-and-icon">
               {
-                props.showReset &&
+                props.onResetFiltersChange &&
                 <button
                   className="reset-filter-panel-icon"
                   onClick={() => {

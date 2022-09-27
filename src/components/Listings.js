@@ -626,7 +626,6 @@ export default function Listings(props) {
         </div>
         <WithFilterPanel
           showFilters={showFilters}
-          showReset
           onShowFiltersChange={newShowFilters => {
             setShowFilters(newShowFilters);
             storeUserPreferences('toggleFilterPanel', newShowFilters);

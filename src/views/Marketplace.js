@@ -108,8 +108,11 @@ const useStyles = makeStyles(theme => ({
   collectionCard: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight: 480,
+    minHeight: 490,
     maxWidth: 304,
+    [theme.breakpoints.only("md")]: {
+      maxWidth: 275,
+		},
     '@media (max-width: 400px)': {
       height: 'unset',
     },
@@ -135,7 +138,7 @@ const useStyles = makeStyles(theme => ({
   collectionCardBrief: {
     margin: 0,
     display: '-webkit-box',
-    '-webkit-line-clamp': 1,
+    '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
     overflow: 'hidden',
     textOverflow: 'clip',
@@ -148,14 +151,19 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexBasis: 0,
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'start',
     alignSelf: 'stretch',
+    minHeight: '54px',
   },
   collectionDetailsWrapper: {
     display: 'flex',
     flexShrink: 1,
     justifyContent: 'center',
     gap: '16px',
+    [theme.breakpoints.down("md")]: {
+      flexWrap: 'wrap',
+      flexShrink: 1,
+		},
   },
   collectionDetailsCell: {
     display: 'flex',
@@ -172,6 +180,10 @@ const useStyles = makeStyles(theme => ({
     ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
     fontSize: '15px',
   },
+  nftCard: {
+    flexGrow: 1,
+    gap: 16,
+  }
 }));
 
 const defaultSortOption = {
@@ -633,7 +645,7 @@ export default function Marketplace(props) {
                       to={'/marketplace/' + collection.route}
                     >
                       <NftCard
-                        style={{flexGrow: 1, maxHeight: 480, gap: 16}}
+                        className={classes.nftCard}
                         title={collection.name}
                         imageUrl={
                           collection.hasOwnProperty('collection') && collection.collection
