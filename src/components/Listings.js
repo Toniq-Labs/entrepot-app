@@ -1088,6 +1088,8 @@ export default function Listings(props) {
                 onSelectChange={event => {
                   setSort(event.detail);
                   storeUserPreferences('sortOption', event.detail);
+                  pageListing.current = 0;
+                  forceCheck();
                 }}
                 options={sortOptions}
               />
@@ -1097,7 +1099,7 @@ export default function Listings(props) {
         <div style={{ position: 'relative' }}>
           {
             getShowListings(chunkedAndFilteredAndSortedListings).length ?
-              <Grid container spacing={4} className={classes.nftWrapper}>
+              <Grid container spacing={showFilters && gridSize === 'small' ? 1 : 4} className={classes.nftWrapper}>
                 {hasListed()}
                 {getShowListings(chunkedAndFilteredAndSortedListings).map((listing, index) => {
                   return (
@@ -1118,6 +1120,7 @@ export default function Listings(props) {
                                 style={{
                                   display: 'flex',
                                   flexDirection: 'column',
+                                  minHeight: '116px',
                                 }}
                               >
                                 <span
@@ -1126,7 +1129,7 @@ export default function Listings(props) {
                                     marginTop: '16px',
                                     backgroundColor: preloaderItemColor,
                                     width: 90,
-                                    height: 32,
+                                    height: 36,
                                     borderRadius: '8px'
                                   }}
                                 />
@@ -1181,6 +1184,7 @@ export default function Listings(props) {
                                 style={{
                                   display: 'flex',
                                   flexDirection: 'column',
+                                  minHeight: '116px',
                                 }}
                               >
                                 <span
