@@ -531,7 +531,9 @@ export default function Listings(props) {
       const passFilter = showFilters
         ? doesCollectionPassFilters(listing, currentFilters, traitsData, collection)
         : true;
-      return passFilter && (query === '' || inQuery);
+      const isSortByPrice = sort.value.type !== 'price' || (sort.value.type === 'price' && listing.price);
+
+      return passFilter && (query === '' || inQuery) && isSortByPrice;
     }),
     [sort.value.type],
     [sort.value.sort]
