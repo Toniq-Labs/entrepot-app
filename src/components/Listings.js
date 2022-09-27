@@ -572,15 +572,28 @@ export default function Listings(props) {
     })
   }
 
-  const isTraitSelected = (trait, category) => {
-    const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+  const findCurrentFilterTraitIndex = (category) => {
+    return currentFilters.traits.values.findIndex((trait) => {
       return trait.category === category;
     })
+  }
+
+  const isTraitSelected = (trait, category) => {
+    const traitIndex = findCurrentFilterTraitIndex(category);
     if (traitIndex !== -1) {
       return currentFilters.traits.values[traitIndex].values.includes(trait);
     }
     return false;
   }
+
+  const selectedTraitsFilter = (category) => {
+    const traitIndex = findCurrentFilterTraitIndex(category);
+    if (traitIndex !== -1) {
+      return currentFilters.traits.values[traitIndex].values.length
+    }
+    return false;
+  }
+
 
   useInterval(_updates, 10 * 1000);
 
@@ -946,9 +959,9 @@ export default function Listings(props) {
                           return (
                             <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
                               <TraitsAccordion
-                                title={traitsCategory.category}
+                                title={<>{traitsCategory.category} {traitsCategory.values.length && `(${traitsCategory.values.length})`}</>}
                                 open={openedAccordion.includes(traitsCategory.category)}
-                                count={traitsCategory.values.length}
+                                count={selectedTraitsFilter(traitsCategory.category) || traitsCategory.values.length}
                                 onOpenAccordionChange={() => {
                                   toggleAccordion(traitsCategory.category);
                                 }}
