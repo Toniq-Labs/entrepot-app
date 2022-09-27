@@ -192,14 +192,14 @@ export function WithFilterPanel(props) {
             </div>
             <div className="filter-text-and-icon">
               {
-                props.onResetFiltersChange &&
+                props.onClearFiltersChange &&
                 <button
                   className="reset-filter-panel-icon"
                   onClick={() => {
-                    if (props.onResetFiltersChange) props.onResetFiltersChange();
+                    if (props.onClearFiltersChange) props.onClearFiltersChange();
                   }}
                 >
-                  Reset
+                  Clear
                 </button>
               }
               <ToniqIcon

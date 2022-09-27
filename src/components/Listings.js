@@ -409,7 +409,7 @@ export default function Listings(props) {
         .map((listing, listingIndex) => {
           const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
           const { index, canister} = extjs.decodeTokenId(tokenid);
-          const rarity = Number((getNri(canister, index) * 100).toFixed(1));
+          const rarity = getNri(canister, index) ? Number((getNri(canister, index) * 100).toFixed(1)) : false;
           const mintNumber = EntrepotNFTMintNumber(canister, index);
           let traits;
           if (traitsData) {
@@ -443,6 +443,13 @@ export default function Listings(props) {
       console.error(error);
     };
   };
+
+  const hasRarity = () => {
+    if (!listings) return false;
+    return listings.reduce((rarity, listing) => {
+      return rarity || listing.rarity;
+    }, false);
+  }
 
   const toggleAccordion = (currentAccordion) => {
     const accordion = [...openedAccordion];
@@ -710,7 +717,7 @@ export default function Listings(props) {
           setShowFilters(false);
           storeUserPreferences('toggleFilterPanel', false);
         }}
-        onResetFiltersChange={() => {
+        onClearFiltersChange={() => {
           setCurrentFilters(defaultFilter);
           storeUserPreferences('filterOptions', defaultFilter);
         }}
@@ -771,7 +778,7 @@ export default function Listings(props) {
                 >
                   <div className={classes.filterAccordionWrapper}>
                     <ToniqSlider
-                      logScale={true}
+                      logScale={filterRanges[currentFilters.price.type].max - filterRanges[currentFilters.price.type].min > 10000}
                       min={filterRanges[currentFilters.price.type].min}
                       max={filterRanges[currentFilters.price.type].max}
                       suffix="ICP"
@@ -794,38 +801,40 @@ export default function Listings(props) {
                 </Accordion>
               </div>
             }
-            <div>
-              <Accordion
-                title="Rarity"
-                open={openedAccordion.includes(filterTypes.rarity)}
-                onOpenAccordionChange={() => {
-                  toggleAccordion(filterTypes.rarity);
-                }}
-              >
-                <div className={classes.filterAccordionWrapper}>
-                  <ToniqSlider
-                    logScale={true}
-                    min={filterRanges[currentFilters.rarity.type].min}
-                    max={filterRanges[currentFilters.rarity.type].max}
-                    suffix="%"
-                    double={true}
-                    value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
-                    onValueChange={event => {
-                      const values = event.detail;
-                      var filterOptions = {
-                        ...currentFilters,
-                        rarity: {
-                          ...currentFilters.rarity,
-                          range: values,
-                        },
-                      };
-                      setCurrentFilters(filterOptions);
-                      storeUserPreferences('filterOptions', filterOptions);
-                    }}
-                  />
-                </div>
-              </Accordion>
-            </div>
+            {
+              hasRarity() &&
+              <div>
+                <Accordion
+                  title="Rarity"
+                  open={openedAccordion.includes(filterTypes.rarity)}
+                  onOpenAccordionChange={() => {
+                    toggleAccordion(filterTypes.rarity);
+                  }}
+                >
+                  <div className={classes.filterAccordionWrapper}>
+                    <ToniqSlider
+                      min={filterRanges[currentFilters.rarity.type].min}
+                      max={filterRanges[currentFilters.rarity.type].max}
+                      suffix="%"
+                      double={true}
+                      value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
+                      onValueChange={event => {
+                        const values = event.detail;
+                        var filterOptions = {
+                          ...currentFilters,
+                          rarity: {
+                            ...currentFilters.rarity,
+                            range: values,
+                          },
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
+                      }}
+                    />
+                  </div>
+                </Accordion>
+              </div>
+            }
             {
               filterRanges[currentFilters.mintNumber.type].min !== Infinity &&
               filterRanges[currentFilters.mintNumber.type].max !== Infinity &&
@@ -839,7 +848,6 @@ export default function Listings(props) {
                 >
                   <div className={classes.filterAccordionWrapper}>
                     <ToniqSlider
-                      logScale={true}
                       min={filterRanges[currentFilters.mintNumber.type].min}
                       max={filterRanges[currentFilters.mintNumber.type].max}
                       double={true}
@@ -1193,9 +1201,12 @@ export default function Listings(props) {
                                     <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>
                                       #{listing.mintNumber || ''}
                                     </span>
-                                    <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
-                                      NRI: {listing.rarity || '0'}%
-                                    </span>
+                                    {
+                                      listing.rarity &&
+                                      <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>
+                                        NRI: {listing.rarity}%
+                                      </span>
+                                    }
                                   </div>
                                   {
                                     listing.price ? 
