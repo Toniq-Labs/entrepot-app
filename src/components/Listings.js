@@ -531,11 +531,16 @@ export default function Listings(props) {
       const passFilter = showFilters
         ? doesCollectionPassFilters(listing, currentFilters, traitsData, collection)
         : true;
-      const isSortByPrice = sort.value.type !== 'price' || (sort.value.type === 'price' && listing.price);
 
-      return passFilter && (query === '' || inQuery) && isSortByPrice;
+      return passFilter && (query === '' || inQuery);
     }),
-    [sort.value.type],
+    [(value) => {
+      if (sort.value.type === 'price' && typeof value[sort.value.type] !== 'bigint' && isNaN(value[sort.value.type])) {
+        return sort.value.sort === 'asc' ? Infinity : -Infinity;
+      }
+
+      return value[sort.value.type];
+    }],
     [sort.value.sort]
   );
   
