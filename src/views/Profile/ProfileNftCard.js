@@ -196,7 +196,7 @@ export function nftCardContents(userNft, props) {
         >
           <span style={cssToReactStyleObject(toniqFontStyles.boldParagraphFont)}>{listing}</span>
           <span style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
-            {userNft.nri ? `NRI: ${userNft.nri * 100}%` : ''}
+            {userNft.nri ? `NRI: ${(userNft.nri * 100).toFixed(1)}%` : ''}
           </span>
         </div>
         {extraDetails}
