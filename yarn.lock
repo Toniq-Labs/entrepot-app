@@ -2026,14 +2026,14 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@toniq-labs/design-system@0.0.25":
-  "integrity" "sha512-0zR5q+1wwlwIs1HhkMeuYJyXACPOn1+5UfthVGtql1QDIRUQntewhCtcvvqdwVXKEdH6Wy2Tt8yuzelJ5+g+4Q=="
-  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.25.tgz"
-  "version" "0.0.25"
+"@toniq-labs/design-system@0.0.26":
+  "integrity" "sha512-l3Qu9qtoxnJEwV7VoBCgTqet3ioBE9WEcmLlQWYwR3OKn8kYd7vXWvkmZudX/PysMcSvp3r6SiWBWuEE58PaZQ=="
+  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.26.tgz"
+  "version" "0.0.26"
   dependencies:
-    "augment-vir" "2.4.0"
+    "augment-vir" "2.5.1"
     "element-vir" "5.5.1"
-    "lit" "2.3.0"
+    "lit" "2.3.1"
 
 "@toniq-labs/fleek-iterative-deploy@1.2.11":
   "integrity" "sha512-6QMkNs5nc/VcQKSYjEl8AIBRefrcVznU3ZXd0f0qcvfpzThc/uuzApEkQKtMgQUIcgMFGaFnc2mjHE06D0qrGg=="
@@ -3233,10 +3233,10 @@
   dependencies:
     "fs-extra" "10.1.0"
 
-"augment-vir@2.4.0":
-  "integrity" "sha512-lRQ3Qobx7+CbpbzK+9OMeZ/X+BGbr+0HCssdlSwoW/pf98dsT7kmUpwJuVpjfeSgLnLfcmJV29IXtb3y/kN+Qw=="
-  "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-2.4.0.tgz"
-  "version" "2.4.0"
+"augment-vir@2.5.1":
+  "integrity" "sha512-vG+yuCLZJsOri06viimFBLcioFIPEPKKLQXD9H1G5nBwFPU5L6wUEyYNjSXGjt5hRiZ5FhLo7B1Qxmc9PGvXQQ=="
+  "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-2.5.1.tgz"
+  "version" "2.5.1"
   dependencies:
     "fs-extra" "10.1.0"
 
@@ -8466,10 +8466,10 @@
     "lit-element" "^3.2.0"
     "lit-html" "^2.2.0"
 
-"lit@2.3.0":
-  "integrity" "sha512-ynSGsUYKSGN2weFQ1F3SZq0Ihlj+vr/3KAET//Yf8Tz86L7lZizlw9Px+ab5iN8Si4RkVoLqd9YtKQmjdyKHNg=="
-  "resolved" "https://registry.npmjs.org/lit/-/lit-2.3.0.tgz"
-  "version" "2.3.0"
+"lit@2.3.1":
+  "integrity" "sha512-TejktDR4mqG3qB32Y8Lm5Lye3c8SUehqz7qRsxe1PqGYL6me2Ef+jeQAEqh20BnnGncv4Yxy2njEIT0kzK1WCw=="
+  "resolved" "https://registry.npmjs.org/lit/-/lit-2.3.1.tgz"
+  "version" "2.3.1"
   dependencies:
     "@lit/reactive-element" "^1.4.0"
     "lit-element" "^3.2.0"
