@@ -535,9 +535,7 @@ export default function Listings(props) {
           .join(' ')
           .toLowerCase()
           .indexOf(query.toLowerCase()) >= 0;
-      const passFilter = showFilters
-        ? doesCollectionPassFilters(listing, currentFilters, traitsData, collection)
-        : true;
+      const passFilter = doesCollectionPassFilters(listing, currentFilters, traitsData, collection);
 
       return passFilter && (query === '' || inQuery);
     }),
