@@ -290,8 +290,7 @@ export default function UserCollection(props) {
       return;
     }
     if (!address) return;
-    var data = [];
-    console.log('Refreshing', props.view);
+    var data = [];; 
     // eslint-disable-next-line default-case
     switch (props.view) {
       case 'collected':

@@ -335,7 +335,6 @@ export default function UserLoan(props) {
   const refresh = async () => {
     if (!address && props.view != "earn") return;
     var data; 
-    console.log("Refreshing", props.view);
     switch(props.view){
       case "earn":
         if (displayView == "requests") {          

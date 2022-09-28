@@ -1,7 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
-import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import {EntrepotUpdateStats, EntrepotAllStats} from '../utils';
@@ -18,7 +17,6 @@ import {
 import {NftCard} from '../shared/NftCard';
 import {
   ToniqIcon,
-  ToniqChip,
   ToniqInput,
   ToniqDropdown,
   ToniqToggleButton,
@@ -71,7 +69,6 @@ function getHighestStat(stats, propKey) {
   }, -Infinity);
 }
 
-const filterOnTopBreakPoint = '@media (max-width: 800px)';
 const useStyles = makeStyles(theme => ({
   breakpoints: {
     values: {
@@ -81,6 +78,13 @@ const useStyles = makeStyles(theme => ({
       lg: 1280,
       xl: 1920,
     },
+  },
+  collectionWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center"
+		},
   },
   collectionContainer: {
     marginBottom: 20,
@@ -104,7 +108,11 @@ const useStyles = makeStyles(theme => ({
   collectionCard: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight: 480,
+    minHeight: 490,
+    maxWidth: 304,
+    [theme.breakpoints.only("md")]: {
+      maxWidth: 275,
+		},
     '@media (max-width: 400px)': {
       height: 'unset',
     },
@@ -114,14 +122,14 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexGrow: 1,
     alignItems: 'stretch',
+    gap: 16,
   },
   collectionCardCollectionName: {
     textOverflow: 'ellipsis',
-    overflow: 'hidden',
     alignSelf: 'stretch',
     ...cssToReactStyleObject(toniqFontStyles.h3Font),
     marginBottom: 0,
-    marginTop: '16px',
+    marginTop: 0,
     display: '-webkit-box',
     '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
@@ -130,7 +138,7 @@ const useStyles = makeStyles(theme => ({
   collectionCardBrief: {
     margin: 0,
     display: '-webkit-box',
-    '-webkit-line-clamp': 3,
+    '-webkit-line-clamp': 2,
     '-webkit-box-orient': 'vertical',
     overflow: 'hidden',
     textOverflow: 'clip',
@@ -143,18 +151,39 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexBasis: 0,
     flexGrow: 1,
-    minHeight: '54px',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    justifyContent: 'start',
     alignSelf: 'stretch',
+    minHeight: '54px',
   },
   collectionDetailsWrapper: {
     display: 'flex',
-    flexWrap: 'wrap',
     flexShrink: 1,
     justifyContent: 'center',
     gap: '16px',
+    [theme.breakpoints.down("md")]: {
+      flexWrap: 'wrap',
+      flexShrink: 1,
+		},
   },
+  collectionDetailsCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    alignItems: 'stretch',
+    textAlign: 'center',
+    flexBasis: '0',
+    minWidth: '80px',
+    flexGrow: 1,
+  },
+  collectionDetailsChip: {
+    ...cssToReactStyleObject(toniqFontStyles.boldFont),
+    ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
+    fontSize: '15px',
+  },
+  nftCard: {
+    flexGrow: 1,
+    gap: 16,
+  }
 }));
 
 const defaultSortOption = {
@@ -237,16 +266,14 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
 }
 
 export default function Marketplace(props) {
-  const navigate = useNavigate();
   const classes = useStyles();
   const [sort, setSort] = React.useState(defaultSortOption);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = React.useState(false);
-  console.log('rendering');
   const [currentFilters, setCurrentFilters] = React.useState({
     price: {
       range: undefined,
-      type: 'floor',
+      type: 'floor', 
     },
     volume: {
       range: undefined,
@@ -261,7 +288,7 @@ export default function Marketplace(props) {
     EntrepotUpdateStats().then(setStats);
   };
   React.useEffect(() => {
-    if (EntrepotAllStats().length == 0) {
+    if (EntrepotAllStats().length === 0) {
       _updates();
     } else {
       setStats(EntrepotAllStats());
@@ -290,127 +317,141 @@ export default function Marketplace(props) {
       switch (sort.value) {
         case 'featured':
           return b.priority - a.priority;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'listings_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.listings) -
-            Number(stats.find(x => x.canister == b.canister).stats.listings)
+            Number(stats.find(x => x.canister === a.canister).stats.listings) -
+            Number(stats.find(x => x.canister === b.canister).stats.listings)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'listings_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.listings) -
-            Number(stats.find(x => x.canister == a.canister).stats.listings)
+            Number(stats.find(x => x.canister === b.canister).stats.listings) -
+            Number(stats.find(x => x.canister === a.canister).stats.listings)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'total_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.total) -
-            Number(stats.find(x => x.canister == b.canister).stats.total)
+            Number(stats.find(x => x.canister === a.canister).stats.total) -
+            Number(stats.find(x => x.canister === b.canister).stats.total)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'total_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.total) -
-            Number(stats.find(x => x.canister == a.canister).stats.total)
+            Number(stats.find(x => x.canister === b.canister).stats.total) -
+            Number(stats.find(x => x.canister === a.canister).stats.total)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'floor_asc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == a.canister).stats.floor) -
-            Number(stats.find(x => x.canister == b.canister).stats.floor)
+            Number(stats.find(x => x.canister === a.canister).stats.floor) -
+            Number(stats.find(x => x.canister === b.canister).stats.floor)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'floor_desc':
           if (
-            stats.findIndex(x => x.canister == a.canister) < 0 &&
-            stats.findIndex(x => x.canister == b.canister) < 0
+            stats.findIndex(x => x.canister === a.canister) < 0 &&
+            stats.findIndex(x => x.canister === b.canister) < 0
           )
             return 0;
-          if (stats.findIndex(x => x.canister == a.canister) < 0) return 1;
-          if (stats.findIndex(x => x.canister == b.canister) < 0) return -1;
+          if (stats.findIndex(x => x.canister === a.canister) < 0) return 1;
+          if (stats.findIndex(x => x.canister === b.canister) < 0) return -1;
           if (
-            stats.find(x => x.canister == a.canister).stats === false &&
-            stats.find(x => x.canister == b.canister).stats === false
+            stats.find(x => x.canister === a.canister).stats === false &&
+            stats.find(x => x.canister === b.canister).stats === false
           )
             return 0;
-          if (stats.find(x => x.canister == a.canister).stats === false) return 1;
-          if (stats.find(x => x.canister == b.canister).stats === false) return -1;
+          if (stats.find(x => x.canister === a.canister).stats === false) return 1;
+          if (stats.find(x => x.canister === b.canister).stats === false) return -1;
           return (
-            Number(stats.find(x => x.canister == b.canister).stats.floor) -
-            Number(stats.find(x => x.canister == a.canister).stats.floor)
+            Number(stats.find(x => x.canister === b.canister).stats.floor) -
+            Number(stats.find(x => x.canister === a.canister).stats.floor)
           );
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'alpha_asc':
           if (a.name < b.name) {
             return -1;
@@ -419,7 +460,9 @@ export default function Marketplace(props) {
             return 1;
           }
           return 0;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         case 'alpha_desc':
           if (a.name < b.name) {
             return 1;
@@ -428,7 +471,9 @@ export default function Marketplace(props) {
             return -1;
           }
           return 0;
+          /* eslint-disable no-unreachable */
           break;
+          /* eslint-enable */
         default:
           return 0;
       }
@@ -455,6 +500,9 @@ export default function Marketplace(props) {
       <div style={{width: '100%', display: 'block', position: 'relative'}}>
         <div
           style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
             margin: '0px auto',
             minHeight: 'calc(100vh - 221px)',
           }}
@@ -464,10 +512,10 @@ export default function Marketplace(props) {
             value={query}
             style={{
               '--toniq-accent-tertiary-background-color': 'transparent',
-              marginBottom: '16px',
               width: '500px',
               maxWidth: '100%',
               boxSizing: 'border-box',
+              marginLeft: '-16px',
             }}
             placeholder="Search for collections..."
             icon={Search24Icon}
@@ -575,7 +623,6 @@ export default function Marketplace(props) {
                   selectedLabelPrefix="Sort By:"
                   selected={sort}
                   onSelectChange={event => {
-                    console.log(event.detail);
                     setSort(event.detail);
                   }}
                   options={sortOptions}
@@ -585,9 +632,7 @@ export default function Marketplace(props) {
           >
             <Grid
               container
-              direction="row"
-              justifyContent="center"
-              alignItems="flex-start"
+              className={classes.collectionWrapper}
               spacing={4}
             >
               {filteredAndSortedCollections.map((collection, i) => {
@@ -599,7 +644,7 @@ export default function Marketplace(props) {
                       to={'/marketplace/' + collection.route}
                     >
                       <NftCard
-                        style={{flexGrow: 1}}
+                        className={classes.nftCard}
                         title={collection.name}
                         imageUrl={
                           collection.hasOwnProperty('collection') && collection.collection

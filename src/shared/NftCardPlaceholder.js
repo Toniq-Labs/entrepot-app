@@ -1,26 +1,51 @@
 import React from 'react';
 import {css} from 'element-vir';
-import {unsafeCSS} from 'lit';
 import {toniqColors, cssToReactStyleObject} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
+import { makeStyles } from '@material-ui/core';
 
-export function NftCard(props) {
+export function NftCardPlaceholder(props) {
   const imageSize = props.small ? css`160px` : css`272px`;
   const listImageSize = css`64px`;
   const imageSizeInUse = props.listStyle ? listImageSize : imageSize;
 
-  const styles = cssToReactStyleObject(css`
-    border-radius: 16px;
-    background-color: ${toniqColors.pagePrimary.backgroundColor};
-    padding: 16px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: ${props.listStyle ? css`row` : css`column`};
-    align-items: center;
-  `);
+	const useStyles = makeStyles(theme => ({
+		"@keyframes loading": {
+			"to": {
+				backgroundPosition: "300% 0",
+			}
+		},
+		container: {
+			borderRadius: '16px',
+			backgroundColor: toniqColors.pagePrimary.backgroundColor,
+			padding: '16px',
+			cursor: 'pointer',
+			display: 'flex',
+			flexDirection: props.listStyle ? 'row' : 'column',
+			alignItems: 'center',
+			"&::after": {
+				content: '""',
+				position: 'absolute',
+				display: 'block',
+				left: 0,
+				top: 0,
+				width: '100%',
+				height: '100%',
+				borderRadius: '4px',
+				backgroundImage: "linear-gradient(90deg, rgba(246, 247, 248, 0) 0, rgba(246, 247, 248, 0.4) 20%, rgba(246, 247, 248, 0.4) 40%, rgba(246, 247, 248, 0) 100%)",
+				backgroundSize: "200px 100%",
+				backgroundPosition: "-150% 0",
+				pointerEvents: 'none',
+				backgroundRepeat: 'no-repeat',
+				'-webkit-animation': "$loading 1.5s infinite 0s ease-out",
+				animation: "$loading 1.5s infinite 0s ease-out",
+			}
+		}
+	}));
+
+	const classes = useStyles();
 
   const imageStyles = cssToReactStyleObject(css`
-    background-image: url('${unsafeCSS(props.imageUrl)}');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -49,10 +74,9 @@ export function NftCard(props) {
 
   return (
     <DropShadowCard
-      onClick={props.onClick}
-      className={props.className}
+      className={classes.container}
       enableHover={true}
-      style={{...styles, ...props.style}}
+      style={{...props.style}}
     >
       <div style={imageWrapperStyles}>
         <div style={imageStyles} />
