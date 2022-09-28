@@ -283,7 +283,7 @@ export default function Marketplace(props) {
 
       const passFilter = showFilters
         ? doesCollectionPassFilters(currentStats, currentFilters)
-        : true;
+        : !!currentStats;
       return allowed && passFilter && (query == '' || inQuery);
     })
     .sort((a, b) => {
