@@ -15,7 +15,7 @@ const numberWithCommas = (x) => {
     return parts.join(".");
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   banner: {
     borderRadius: 16,
     marginBottom: 80,

@@ -20,6 +20,18 @@ export function getEXTID(tokenid) {
   return extjs.encodeTokenId(getEXTCanister(canister), index);
 }
 
+export function nftIdToNft(address, nftId) {
+  const canister = extjs.decodeTokenId(nftId).canister;
+  return {
+    canister: getEXTCanister(canister),
+    id: nftId,
+    token: nftId,
+    price: 0,
+    time: 0,
+    owner: address,
+  };
+}
+
 export async function loadAllUserTokens(address, principal) {
   var response = await Promise.all(
     [
@@ -43,7 +55,7 @@ export async function loadAllUserTokens(address, principal) {
                 .getTokens(address, principal)
                 .then(r =>
                   r.map(b => ({
-                    canister: toWrappedMap[a],
+                    canister: getEXTCanister(a),
                     id: b.id,
                     token: b.id,
                     price: 0,

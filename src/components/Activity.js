@@ -10,7 +10,7 @@ import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
-import { WithFilterPanel } from "./shared/WithFilterPanel.js";
+import { WithFilterPanel } from "../shared/WithFilterPanel.js";
 import {
   ToniqInput,
   ToniqDropdown,
@@ -20,7 +20,7 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { useLocation, useSearchParams } from "react-router-dom";
 import { ArrowsSort24Icon, cssToReactStyleObject, LoaderAnimated24Icon, Search24Icon, toniqColors, toniqFontStyles } from "@toniq-labs/design-system";
-import { NftCard } from "./shared/NftCard.js";
+import { NftCard } from "../shared/NftCard.js";
 import { getEXTCanister } from "../utilities/load-tokens.js";
 import PriceUSD from "./PriceUSD.js";
 import Timestamp from "react-timestamp";

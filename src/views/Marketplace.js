@@ -14,10 +14,9 @@ import {
   Search24Icon,
   ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
-import {NftCard} from '../components/shared/NftCard';
+import {NftCard} from '../shared/NftCard';
 import {
   ToniqIcon,
-  ToniqChip,
   ToniqInput,
   ToniqDropdown,
   ToniqToggleButton,
@@ -25,7 +24,8 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../components/PriceICP';
 import {truncateNumber} from '../truncation';
-import {WithFilterPanel} from '../components/shared/WithFilterPanel';
+import {WithFilterPanel} from '../shared/WithFilterPanel';
+import {ChipWithLabel} from '../shared/ChipWithLabel';
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -306,13 +306,12 @@ export default function Marketplace(props) {
           .join(' ')
           .toLowerCase()
           .indexOf(query.toLowerCase()) >= 0;
-
       const currentStats = stats.find(stat => stat.canister === collection.canister);
 
       const passFilter = showFilters
         ? doesCollectionPassFilters(currentStats, currentFilters)
-        : true;
-      return allowed && passFilter && (query === '' || inQuery);
+        : !!currentStats;
+      return allowed && passFilter && (query == '' || inQuery);
     })
     .sort((a, b) => {
       switch (sort.value) {
@@ -700,27 +699,15 @@ export default function Marketplace(props) {
                                 return (
                                   <div className={classes.collectionDetailsWrapper}>
                                     {collectionStatDetails.map((cellDetails, _index, fullArray) => (
-                                      <div
+                                      <ChipWithLabel
                                         key={cellDetails.label}
                                         style={{
                                           maxWidth: `${100 / fullArray.length}%`,
                                         }}
-                                        className={classes.collectionDetailsCell}
-                                      >
-                                        <span
-                                          style={{
-                                            textTransform: 'uppercase',
-                                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                          }}
-                                        >
-                                          {cellDetails.label}
-                                        </span>
-                                        <ToniqChip
-                                          className={`toniq-chip-secondary ${classes.collectionDetailsChip}`}
-                                          icon={cellDetails.icon}
-                                          text={cellDetails.value}
-                                        ></ToniqChip>
-                                      </div>
+                                        label={cellDetails.label}
+                                        icon={cellDetails.icon}
+                                        text={cellDetails.value}
+                                      />
                                     ))}
                                   </div>
                                 );

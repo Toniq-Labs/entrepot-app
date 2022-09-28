@@ -8,7 +8,7 @@ import CollectionDetails from './CollectionDetails';
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
-import { WithFilterPanel } from "./shared/WithFilterPanel.js";
+import { WithFilterPanel } from "../shared/WithFilterPanel.js";
 import {
   cssToReactStyleObject,
   toniqFontStyles,
@@ -34,7 +34,7 @@ import orderBy from "lodash.orderby";
 import LazyLoad, { forceCheck } from 'react-lazyload';
 import { getEXTCanister, getEXTID } from "../utilities/load-tokens.js";
 import { Accordion } from "./Accordion.js";
-import { NftCard } from "./shared/NftCard.js";
+import { NftCard } from "../shared/NftCard.js";
 import PriceICP from "./PriceICP.js";
 import { uppercaseFirstLetterOfWord } from "../utilities/string-utils.js";
 import { cronicFilterTraits } from "../model/constants.js";
@@ -42,7 +42,7 @@ import { isInRange } from "../utilities/number-utils.js";
 import { MinimumOffer } from "./shared/MinimumOffer.js";
 import Favourite from "./Favourite.js";
 import { TraitsAccordion } from "./shared/TraitsAccordion.js";
-import { NftCardPlaceholder } from "./shared/NftCardPlaceholder.js";
+import { NftCardPlaceholder } from "../shared/NftCardPlaceholder.js";
 import chunk from "lodash.chunk";
 import { StateContainer } from "./shared/StateContainer.js";
 const api = extjs.connect("https://boundary.ic0.app/");
@@ -68,7 +68,7 @@ function useInterval(callback, delay) {
 }
 
 const useDidMountEffect = (func, deps) => {
-    const didMount = React.useRef(false);
+  const didMount = React.useRef(false);
 
     useEffect(() => {
         if (didMount.current) func();
@@ -291,10 +291,10 @@ export default function Listings(props) {
 
   const getCollectionFromRoute = r => {
     if (_isCanister(r)) {
-      return props.collections.find(e => e.canister === r)
+      return props.collections.find(e => e.canister === r);
     } else {
-      return props.collections.find(e => e.route === r)
-    };
+      return props.collections.find(e => e.route === r);
+    }
   };
   
   const [stats, setStats] = useState(false);
@@ -999,47 +999,48 @@ export default function Listings(props) {
                                       queryFilteredTraits(traitsCategory.values)
                                         .map((trait) => {
                                           return (
-                                            <ToniqCheckbox
-                                              key={`${trait}-${index}`}
-                                              text={trait}
-                                              checked={isTraitSelected(trait, traitsCategory.category)}
-                                              onCheckedChange={event => {
-                                                const traitIndex = currentFilters.traits.values.findIndex((trait) => {
-                                                  return trait.category === traitsCategory.category;
-                                                })
-                                                if (event.detail) {
-                                                  if (traitIndex !== -1) {
-                                                    if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
-                                                  } else {
-                                                    currentFilters.traits.values.push({
-                                                      category: traitsCategory.category,
-                                                      values: [trait],
-                                                    });
-                                                  }
-                                                } else {
-                                                  if (traitIndex !== -1) {
-                                                    const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
-                                                      return value === trait;
-                                                    })
-                                                    
-                                                    if (currentFilters.traits.values[traitIndex].values.length !== 1) {
-                                                      currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                            <div key={`${trait}-${index}`}>
+                                              <ToniqCheckbox
+                                                text={trait}
+                                                checked={isTraitSelected(trait, traitsCategory.category)}
+                                                onCheckedChange={event => {
+                                                  const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                                    return trait.category === traitsCategory.category;
+                                                  })
+                                                  if (event.detail) {
+                                                    if (traitIndex !== -1) {
+                                                      if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
                                                     } else {
-                                                      currentFilters.traits.values.splice(traitIndex, 1)
+                                                      currentFilters.traits.values.push({
+                                                        category: traitsCategory.category,
+                                                        values: [trait],
+                                                      });
+                                                    }
+                                                  } else {
+                                                    if (traitIndex !== -1) {
+                                                      const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                                        return value === trait;
+                                                      })
+                                                      
+                                                      if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                                        currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                                      } else {
+                                                        currentFilters.traits.values.splice(traitIndex, 1)
+                                                      }
                                                     }
                                                   }
-                                                }
-                                                var filterOptions = {
-                                                  ...currentFilters,
-                                                  traits: {
-                                                    ...currentFilters.traits,
-                                                    values: currentFilters.traits.values,
-                                                  },
-                                                };
-                                                setCurrentFilters(filterOptions);
-                                                storeUserPreferences('filterOptions', filterOptions);
-                                              }}
-                                            />
+                                                  var filterOptions = {
+                                                    ...currentFilters,
+                                                    traits: {
+                                                      ...currentFilters.traits,
+                                                      values: currentFilters.traits.values,
+                                                    },
+                                                  };
+                                                  setCurrentFilters(filterOptions);
+                                                  storeUserPreferences('filterOptions', filterOptions);
+                                                }}
+                                              />
+                                            </div>
                                           )
                                         })
                                     }
@@ -1168,7 +1169,6 @@ export default function Listings(props) {
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }} target="_blank" rel="noopener noreferrer">
                           <NftCard 
                             imageUrl={listing.image} 
-                            key={listing.tokenid} 
                             small={gridSize === 'small'} 
                             className={classes.nftCard}
                             style={{
