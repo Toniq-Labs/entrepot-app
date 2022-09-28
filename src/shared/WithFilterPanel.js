@@ -86,7 +86,7 @@ export function WithFilterPanel(props) {
             }
 
             .with-filter-panel .filter-controls-wrapper > * + * {
-              border-top: 1px solid ${toniqColors.pageTertiary.foregroundColor};
+              border-top: 1px solid ${toniqColors.divider.foregroundColor};
             }
 
             .with-filter-panel .filter-controls-wrapper ${ToniqToggleButton} {
