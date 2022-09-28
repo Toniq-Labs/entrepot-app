@@ -22,7 +22,7 @@ const profileSearchParamName = 'profile-search';
 export function Profile(props) {
   const classes = profileStyles();
   const navigate = useNavigate();
-  const {tab: currentTab, address} = useParams();
+  const {tab: currentTab = ProfileTabs.MyNfts, address} = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const query = searchParams.get(profileSearchParamName) || '';
