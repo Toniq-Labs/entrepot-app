@@ -427,7 +427,6 @@ export default function Listings(props) {
 
           return {
             ...listing,
-            image: EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, 0),
             price: listing[1].price,
             rarity,
             mintNumber,
@@ -1090,7 +1089,11 @@ export default function Listings(props) {
                   pageListing.current = 0;
                   forceCheck();
                 }}
-                options={sortOptions}
+                options={
+                  sortOptions.filter((sortOption) => {
+                    return (sortOption.value.type === 'rarity' && !hasRarity()) ? false : true;
+                  })
+                }
               />
           </>
         }
@@ -1168,7 +1171,7 @@ export default function Listings(props) {
                       >
                         <Link to={`/marketplace/asset/` + getEXTID(listing.tokenid)} style={{ textDecoration: "none" }} target="_blank" rel="noopener noreferrer">
                           <NftCard 
-                            imageUrl={listing.image} 
+                            imageUrl={EntrepotNFTImage(getEXTCanister(listing.canister), index, listing.tokenid, false, 0)} 
                             small={gridSize === 'small'} 
                             className={classes.nftCard}
                             style={{

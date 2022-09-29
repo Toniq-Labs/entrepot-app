@@ -87,7 +87,6 @@ const useStyles = makeStyles(theme => ({
 		},
   },
   collectionContainer: {
-    marginBottom: 20,
     maxWidth: '100%',
   },
   root: {
