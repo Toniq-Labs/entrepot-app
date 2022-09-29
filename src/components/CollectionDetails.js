@@ -3,11 +3,32 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import extjs from "../ic/extjs.js";
 import { makeStyles } from "@material-ui/core";
-import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon, toniqColors } from "@toniq-labs/design-system";
+import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
+import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon, toniqColors, WorldUpload24Icon } from "@toniq-labs/design-system";
 import { ToniqChip, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { icpToString } from "./PriceICP.js";
 
 const api = extjs.connect("https://boundary.ic0.app/");
+
+function useInterval(callback, delay) {
+  const savedCallback = React.useRef();
+
+  // Remember the latest callback.
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 
 const numberWithCommas = (x) => {
     var parts = x.toString().split(".");
@@ -55,6 +76,9 @@ const useStyles = makeStyles(theme => ({
       fontWeight: "900",
     },
   },
+  royalty: {
+    ...cssToReactStyleObject(toniqFontStyles.boldLabelFont),
+  },
   detailsWrapper: {
     width: "100%",
     maxWidth: "760px",
@@ -78,9 +102,6 @@ const useStyles = makeStyles(theme => ({
       flexFlow: "column-reverse",
       gap: "16px",
     },
-  },
-  link: {
-    cursor: "pointer",
   },
   blurbWrapper: {
     display: "flex",
@@ -114,13 +135,6 @@ const useStyles = makeStyles(theme => ({
       minWidth: 103,
     },
   },
-  web: {
-    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-    textDecoration: "none",
-    "&:hover": {
-      color: toniqColors.pageInteractionHover.foregroundColor,
-    }
-  },
 }));
 
 
@@ -129,9 +143,9 @@ export default function CollectionDetails(props) {
   const [isBlurbOpen, setIsBlurbOpen] = useState(false);
   const [size, setSize] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
+  const [stats, setStats] = useState(false);
   const blurbRef = createRef();
   var collection = props.collection;
-  var stats = props.stats;
 
   function isEllipsisActive(element) {
     if (!element) return false;
@@ -139,6 +153,8 @@ export default function CollectionDetails(props) {
   }
 
   React.useEffect(() => {
+    if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
+
     api.token(collection.canister).size().then(s => {
       setSize(s);
     });
@@ -146,6 +162,14 @@ export default function CollectionDetails(props) {
     setShowReadMore(isEllipsisActive(blurbRef.current));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const _updates = async (s, canister) => {
+    EntrepotUpdateStats().then(() => {
+      setStats(EntrepotCollectionStats(collection.canister));
+    });
+  };
+
+  useInterval(_updates, 10 * 1000);
   return (
     <>
       <div
@@ -168,55 +192,28 @@ export default function CollectionDetails(props) {
         />
       </div>
       <div className={classes.detailsWrapper}>
-        <span className={classes.nftName}>{collection.name}</span>
-        <div className={classes.detailsContainer}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} sm="auto">
-              {size ? (
-                <ToniqChip text={`Minted: ${numberWithCommas(size)}`} />
-              ) : (
-                ""
-              )}
+        <Grid container direction="column">
+          <Grid container item style={{ justifyContent: "center", alignItems: "center", gap: 16 }}>
+            <Grid item>
+              <span className={classes.nftName}>{collection.name}</span>
             </Grid>
-            {
-              collection.web ? 
-                <Grid item xs={12} sm="auto">
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "16px",
-                    }}
-                  >
-                    <Avatar
-                      variant="square"
-                      style={{
-                        height: "24px",
-                        width: "24px",
-                        borderRadius: "8px",
-                        justifyContent: "center",
-                      }}
-                      src={
-                        typeof collection.avatar != "undefined" && collection.avatar
-                          ? collection.avatar
-                          : "/collections/" + collection.canister + ".jpg"
-                      }
-                    />
-                    <a href={ collection.web} target="_blank" rel="noreferrer" className={classes.web}>
-                      { collection.name }
-                    </a>
-                    {collection.kyc ? (
-                      <ToniqIcon
-                        icon={CircleWavyCheck24Icon}
-                        style={{ color: toniqColors.pageInteraction.foregroundColor }}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </Grid> : ""
+            {true &&
+              <Grid item>
+                <ToniqIcon
+                  icon={CircleWavyCheck24Icon}
+                  style={{ color: toniqColors.pageInteraction.foregroundColor }}
+                />
+              </Grid>
             }
           </Grid>
+          {
+            collection.commission &&
+            <Grid item>
+              <span className={classes.royalty}>Creator Royalty {(collection.commission - 0.01) * 100}%</span>
+            </Grid>
+          }
+        </Grid>
+        <div className={classes.detailsContainer}>
           <Grid container spacing={2} justifyContent="center">
             <Grid item>
               <a href={collection.instagram} target="_blank" rel="noreferrer">
@@ -238,6 +235,14 @@ export default function CollectionDetails(props) {
                 <ToniqIcon icon={BrandTwitter32Icon} />
               </a>
             </Grid>
+            {
+              collection.web &&
+              <Grid item>
+                <a href={collection.web} target="_blank" rel="noreferrer">
+                  <img alt={collection.name} src="/web.svg" style={{height: 32}} />
+                </a>
+              </Grid>
+            }
           </Grid>
         </div>
         {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
@@ -273,7 +278,7 @@ export default function CollectionDetails(props) {
                 <ToniqChip
                   className={`toniq-chip-secondary ${classes.stats}`}
                   style={cssToReactStyleObject(toniqFontStyles.boldFont)}
-                  text={numberWithCommas(stats.listings)}
+                  text={icpToString(stats.listings, false, true)}
                 ></ToniqChip>
               </Grid>
               <Grid item className={classes.statsWrapper} style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
@@ -283,6 +288,14 @@ export default function CollectionDetails(props) {
                   style={cssToReactStyleObject(toniqFontStyles.boldFont)}
                   icon={Icp16Icon}
                   text={icpToString(stats.average, false, true)}
+                ></ToniqChip>
+              </Grid>
+              <Grid item className={classes.statsWrapper} style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
+                <span style={{ textTransform: "uppercase", opacity: "0.64" }}>Minted</span>
+                <ToniqChip
+                  className={`toniq-chip-secondary ${classes.stats}`}
+                  style={cssToReactStyleObject(toniqFontStyles.boldFont)}
+                  text={icpToString(size, false, true)}
                 ></ToniqChip>
               </Grid>
             </Grid>

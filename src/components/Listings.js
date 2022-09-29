@@ -5,7 +5,7 @@ import extjs from "../ic/extjs.js";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import CollectionDetails from './CollectionDetails';
-import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTMintNumber, EntrepotNFTImage } from '../utils';
+import { EntrepotNFTMintNumber, EntrepotNFTImage } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 import { WithFilterPanel } from "../shared/WithFilterPanel.js";
@@ -125,14 +125,15 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     "&:hover .offerChipContainer": {
       display: "flex",
-    }
+    },
+    "&:hover $favourite": {
+      display: "block"
+    },
   },
   nftWrapper: {
     flexDirection: "row",
     alignItems: "flex-start",
-    [theme.breakpoints.down("md")]: {
-      justifyContent: "center"
-		},
+    justifyContent: "center",
   },
   filterAccordionWrapper: {
     margin: "32px 0",
@@ -140,6 +141,12 @@ const useStyles = makeStyles(theme => ({
       margin: "16px 0",
 		},
   },
+  favourite: {
+    display: "none",
+    [theme.breakpoints.down("sm")]: {
+      display: "block"
+		},
+  }
 }));
 
 var userPreferences;
@@ -196,7 +203,7 @@ const sortOptions = [
 
 const filterTypes = {
   status: {
-    forSale: 'forSale',
+    listed: 'listed',
     entireCollection: 'entireCollection',
     type: 'status'
   },
@@ -296,8 +303,7 @@ export default function Listings(props) {
       return props.collections.find(e => e.route === r);
     }
   };
-  
-  const [stats, setStats] = useState(false);
+
   const [listings, setListings] = useState(false);
   const [traitsData, setTraitsData] = useState(false);
   const [traitsCategories, setTraitsCategories] = useState([]);
@@ -378,10 +384,6 @@ export default function Listings(props) {
   
   const _updates = async (s, canister) => {
     canister = canister ?? collection?.canister;
-
-    EntrepotUpdateStats().then(() => {
-      setStats(EntrepotCollectionStats(canister))
-    });
 
     try {
       var result = await api.token(canister).listings();
@@ -469,7 +471,7 @@ export default function Listings(props) {
   const filteredStatusListings = listings ? listings
     .filter(listing => (listing[1] === false || listing.price >= 1000000n))
     .filter(listing => {
-      return currentFilters.status.type === filterTypes.status.forSale ? listing[1] : true;
+      return currentFilters.status.type === filterTypes.status.listed ? listing[1] : true;
     }) : [];
 
   const lowestPrice = filteredStatusListings.reduce((lowest, listing) => {
@@ -602,7 +604,6 @@ export default function Listings(props) {
   useInterval(_updates, 10 * 1000);
 
   useEffect(() => {
-    if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     loadTraits().then(traits => {
       if (traits) {        
         setTraitsData(traits);
@@ -646,7 +647,7 @@ export default function Listings(props) {
   return (
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
     <div style={{maxWidth:1320, margin:"0 auto 0"}}>
-      <CollectionDetails stats={stats} collection={collection} />
+      <CollectionDetails collection={collection} />
     </div>
     <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
       <StyledTabs
@@ -730,14 +731,14 @@ export default function Listings(props) {
               >
                 <div className={classes.filterAccordionWrapper}>
                   <ToniqToggleButton
-                    text="For Sale"
-                    active={currentFilters.status.type === filterTypes.status.forSale}
+                    text="Listed"
+                    active={currentFilters.status.type === filterTypes.status.listed}
                     onClick={() => {
                       var filterOptions = {
                         ...currentFilters,
                         status: {
                           ...currentFilters.status,
-                          type: filterTypes.status.forSale,
+                          type: filterTypes.status.listed,
                         },
                       };
                       setCurrentFilters(filterOptions);
@@ -1228,12 +1229,13 @@ export default function Listings(props) {
                             }
                             <MinimumOffer tokenid={listing.tokenid} gridSize={gridSize} />
                             <div
+                              className={classes.favourite}
                               style={{ position: "absolute", top: "24px", left: "24px" }}
                               onClick={(e) => {
                                 e.preventDefault();
                               }}
                             >
-                              <Favourite 
+                              <Favourite
                                 refresher={props.faveRefresher} 
                                 identity={props.identity} 
                                 loggedIn={props.loggedIn} 

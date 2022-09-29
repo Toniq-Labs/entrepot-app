@@ -82,9 +82,7 @@ const useStyles = makeStyles(theme => ({
   collectionWrapper: {
     flexDirection: "row",
     alignItems: "flex-start",
-    [theme.breakpoints.down("md")]: {
-      justifyContent: "center"
-		},
+    justifyContent: "center",
   },
   collectionContainer: {
     maxWidth: '100%',

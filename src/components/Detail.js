@@ -64,8 +64,8 @@ const Detail = (props) => {
   const [listing, setListing] = useState(false);
   const [detailsUrl, setDetailsUrl] = useState(false);
   const [transactions, setTransactions] = useState(false);
-  const [history, setHistory] = useState(false);
-  const [historyPage, setHistoryPage] = useState(0);
+  const [activity, setActivity] = useState(false);
+  const [activityPage, setActivityPage] = useState(0);
   const [offerPage, setOfferPage] = useState(0);
   const [owner, setOwner] = useState(false);
   const [offers, setOffers] = useState(false);
@@ -107,9 +107,9 @@ const Detail = (props) => {
       setOwner(r.owner);
       if (r.transactions.length) {
         setTransactions(chunk(r.transactions, 9));
-        setHistory(transactions[historyPage]);
+        setActivity(transactions[activityPage]);
       } else {
-        setHistory([]);
+        setActivity([]);
       }
     });
 
@@ -564,7 +564,7 @@ const Detail = (props) => {
                                   <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
                                     <Grid item xs={10} md={4}>
                                       <Grid container alignItems="center" spacing={4}>
-                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperActivity}>
                                           {displayImage(tokenid)}
                                         </Grid>
                                         <Grid item xs={8} sm={10} md={8}>
@@ -682,13 +682,13 @@ const Detail = (props) => {
                     </Grid>
                   )}
               </Accordion>
-              <Accordion title="History" open={true} center={true}>
+              <Accordion title="Activity" open={true} center={true}>
               {
-                  history ? (
+                  activity ? (
                     <>
-                      {history.length > 0 ? 
+                      {activity.length > 0 ? 
                         <Grid container className={classes.accordionWrapper}>
-                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({history.length})</span>
+                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({activity.length})</span>
                           <Grid container className={classes.tableHeader}>
                             <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
                             <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
@@ -696,13 +696,13 @@ const Detail = (props) => {
                             <Grid item xs={2} md={3} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "right" }}>Cost</Grid>
                           </Grid>
                           <Grid container spacing={2} className={classes.ntfCardContainer}>
-                            {history.slice().map((transaction, index) => (
+                            {activity.slice().map((transaction, index) => (
                               <Grid item key={index} xs={12}>
                                 <DropShadowCard enableHover>
                                   <Grid container className={classes.tableCard} alignItems="center" spacing={4}>
                                     <Grid item xs={10} md={4}>
                                       <Grid container alignItems="center" spacing={4}>
-                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperHistory}>
+                                        <Grid item xs={4} sm={2} md={4} className={classes.imageWrapperActivity}>
                                           {displayImage(tokenid)}
                                         </Grid>
                                         <Grid item xs={8} sm={10} md={8}>
@@ -733,12 +733,12 @@ const Detail = (props) => {
                           </Grid>
                           <div className={classes.pagination}>
                             <ToniqPagination
-                              currentPage={historyPage + 1}
+                              currentPage={activityPage + 1}
                               pageCount={transactions.length}
                               pagesShown={6}
                               onPageChange={(event) => {
-                                setHistoryPage(event.detail - 1);
-                                setHistory(false);
+                                setActivityPage(event.detail - 1);
+                                setActivity(false);
                               }}
                             />
                           </div>
@@ -958,7 +958,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "16px",
     backgroundColor: "#f1f1f1",
   },
-  imageWrapperHistory: {
+  imageWrapperActivity: {
     maxWidth: "96px",
     [theme.breakpoints.up("md")]: {
       display: "grid",

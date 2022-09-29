@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { icpToString } from './PriceICP';
 import CollectionDetails from './CollectionDetails';
-import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats, EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD } from '../utils';
+import { EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD } from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import { StyledTab, StyledTabs } from "./shared/PageTab.js";
 import { WithFilterPanel } from "../shared/WithFilterPanel.js";
@@ -165,7 +165,6 @@ export default function Activity(props) {
     };
   };
 
-  const [stats, setStats] = React.useState(false);
   const [listings, setListings] = useState(false);
   const [collection] = useState(getCollectionFromRoute(params?.route, props.collections));
 
@@ -289,10 +288,6 @@ export default function Activity(props) {
   const refresh = async (canister) => {
     canister = canister ?? collection?.canister;
 
-    EntrepotUpdateStats().then(() => {
-      setStats(EntrepotCollectionStats(collection.canister))
-    }); 
-
     try {
       var result = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/canister/"+ canister +"/transactions").then(r => r.json());
       var listings = result
@@ -338,7 +333,6 @@ export default function Activity(props) {
   useInterval(_updates, 60 * 1000);
 
   React.useEffect(() => {
-    if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -346,7 +340,7 @@ export default function Activity(props) {
   return (
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
       <div style={{maxWidth:1320, margin:"0 auto 0"}}>
-        <CollectionDetails stats={stats} collection={collection} />
+        <CollectionDetails collection={collection} />
       </div>
       <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
         <StyledTabs

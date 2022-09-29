@@ -11,6 +11,7 @@ import {
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 const filterPanelWidth = css`304px`;
+const filterPanelStickyHeight = css`102px`;
 
 export function WithFilterPanel(props) {
   return (
@@ -33,8 +34,11 @@ export function WithFilterPanel(props) {
               display: flex;
               flex-direction: column;
               align-items: stretch;
-              overflow: hidden;
-              position: relative;
+              top: ${filterPanelStickyHeight};
+              height: calc(100vh - ${filterPanelStickyHeight});
+              position: sticky;
+              overflow-x: hidden;
+              overflow-y: hidden;
               flex-shrink: 0;
               transition: 300ms flex-basis, 300ms padding;
 
@@ -42,6 +46,11 @@ export function WithFilterPanel(props) {
               padding: 0;
               margin-top: 12px;
               gap: 16px;
+              scrollbar-width: none;
+            }
+
+            .with-filter-panel .left-filter-panel:hover {
+              overflow-y: scroll;
             }
 
             .with-filter-panel .left-filter-panel.show-left-panel {
@@ -156,6 +165,13 @@ export function WithFilterPanel(props) {
               .with-filter-panel .left-filter-panel {
                 flex-basis: 0;
                 gap: 0;
+                overflow: hidden;
+                position: relative;
+                height: unset;
+                top: unset;
+              }
+              .with-filter-panel .left-filter-panel:hover {
+                overflow: hidden;
               }
               .with-filter-panel .left-filter-panel.show-left-panel {
                 align-self: stretch;

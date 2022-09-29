@@ -24,13 +24,7 @@ function recursiveTruncation(
     decimalValues = split[1] ?? decimalValues;
     let amount = split[0] ?? '';
     
-    const isSingleDigitThousands = recursionDepth === 0 && amount.length === 4;
-    
-    if (isSingleDigitThousands) {
-        amount = `${amount[0]},${amount.slice(1)}`
-        decimalValues = '';
-    }
-    else if (amount.length > 3) {
+    if (amount.length > 3) {
         decimalValues = amount.slice(-3);
         return recursiveTruncation(amount.slice(0, -3), recursionDepth + 1, decimalValues);
     }
