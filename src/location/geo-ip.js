@@ -11,20 +11,25 @@ const blockedToniqEarnCountryCodes = [
 ];
 
 export async function checkIfToniqEarnAllowed() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         if (window.location.hostname === 'localhost') {
             // allow in localhost for testing
             resolve(true);
         }
         try {
-            window.geoip2.country((result) => {            
-                const allowed = !blockedToniqEarnCountryCodes.includes(result.country.iso_code.toLowerCase())
-                resolve(allowed);
-            }, (error) => {
-                console.error(error);
-                // if any error occurs, resort to simply allowing the user to access Toniq Earn features
-                resolve(true);
-            });
+            window.geoip2.country(
+                result => {
+                    const allowed = !blockedToniqEarnCountryCodes.includes(
+                        result.country.iso_code.toLowerCase(),
+                    );
+                    resolve(allowed);
+                },
+                error => {
+                    console.error(error);
+                    // if any error occurs, resort to simply allowing the user to access Toniq Earn features
+                    resolve(true);
+                },
+            );
         } catch (error) {
             console.error(error);
             // if any error occurs, resort to simply allowing the user to access Toniq Earn features

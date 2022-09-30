@@ -3,7 +3,11 @@ const join = require('path').join;
 
 const suffix = '-temp-copy.txt';
 
-const renamedFiles = ['.eslintignore', join('public', 'fonts'), join('public', 'fonts.css')];
+const renamedFiles = [
+    '.eslintignore',
+    join('public', 'fonts'),
+    join('public', 'fonts.css'),
+];
 
 function preBuild() {
     renamedFiles.forEach(fileToRename => {

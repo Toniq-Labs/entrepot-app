@@ -1,22 +1,22 @@
 name: ci-checks
 
 on:
-    push:
-        branches:
-            - '**'
+  push:
+    branches:
+      - '**'
 
 jobs:
-    ci-checks:
-        runs-on: ubuntu-latest
+  ci-checks:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v3
-            - name: Read .nvmrc
-              run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
-              id: nvm
-            - name: Setup up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '${{ steps.nvm.outputs.NVMRC }}'
-            - name: Check formatting
-              run: npm run format:check
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read .nvmrc
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        id: nvm
+      - name: Setup up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - name: Check formatting
+        run: npm run format:check
