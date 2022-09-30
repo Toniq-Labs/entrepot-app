@@ -154,14 +154,14 @@ const useStyles = makeStyles(theme => ({
     },
     listingContainer: {
         display: 'grid',
-        gridTemplateColumns: `repeat(auto-fit, ${gridLargeMaxWidth})`,
+        gridTemplateColumns: `repeat(auto-fill, ${gridLargeMaxWidth})`,
         justifyContent: 'center',
         gap: 32,
         [theme.breakpoints.down('xs')]: {
             gap: 16,
         },
         '&.small': {
-            gridTemplateColumns: `repeat(auto-fit, ${gridSmallMaxWidth})`,
+            gridTemplateColumns: `repeat(auto-fill, ${gridSmallMaxWidth})`,
         },
     },
 }));
