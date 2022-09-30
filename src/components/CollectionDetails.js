@@ -53,7 +53,6 @@ export default function CollectionDetails(props) {
   
   var stats = props.stats;
   var collection = props.collection;
-  console.log(collection)
   React.useEffect(() => {
     if (blurbElement.clientHeight > 110) {
       setCollapseBlurb(true);
