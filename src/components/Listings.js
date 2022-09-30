@@ -141,6 +141,7 @@ export default function Listings(props) {
   const [gridSize, setGridSize] = React.useState(localStorage.getItem("_gridSize") ?? "small");
   const [wearableFilter, setWearableFilter] = useState("all");
   const [collection, setCollection] = useState(getCollectionFromRoute(params?.route));
+  const [size, setSize] = useState(3000);
   
   const navigate = useNavigate();
   
@@ -279,6 +280,7 @@ export default function Listings(props) {
         (_a) => map[_a[2].nonfungible.metadata[0][0]] === wearableFilter
       );
     }
+
     return a;
   };
   
@@ -286,11 +288,20 @@ export default function Listings(props) {
     c = c ?? collection?.canister;
     if (!_isCanister(c)) return updateListings([]);
     if (!collection.market) return updateListings([]);
+
+    setSize(await api.token(collection.canister).size());
     EntrepotUpdateStats().then(() => {
       setStats(EntrepotCollectionStats(collection.canister))
     });  
     try{
       var listings = await api.token(c).listings();
+      if (collection?.canister === "46sy3-aiaaa-aaaah-qczza-cai")
+      {
+        listings = listings.filter( (val, idx) => {
+          if (idx >= size) return false;
+          return true;
+        } );
+      }
       //Remove listings below 0.01ICP
       listings = listings.filter(l => (l[1] == false || l[1].price >= 1000000n));
       updateListings(listings);
@@ -470,6 +481,9 @@ export default function Listings(props) {
         _updates();
       }
     });
+
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useDidMountEffect(() => {

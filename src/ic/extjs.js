@@ -249,9 +249,17 @@ class ExtConnection {
         });
       },
       size : async () => {
+        // console.log(tokenObj.canister);
+        if (tokenObj.canister=='46sy3-aiaaa-aaaah-qczza-cai') 
+        {
+          let x = await api.getRegistry()
+          return (x.length);
+        }
         if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
+
           loadedTokens[tokenObj.canister] = await api.getTokens();
         };
+      
         return loadedTokens[tokenObj.canister].length;
       },
       listings : async () => {
