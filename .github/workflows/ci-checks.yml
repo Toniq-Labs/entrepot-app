@@ -18,5 +18,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
+      - name: install
+        run: npm ci
       - name: Check formatting
         run: npm run format:check
