@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes } from '../utils';
-import { HeartFill24Icon, HeartOutline24Icon } from "@toniq-labs/design-system";
+import { cssToReactStyleObject, HeartFill24Icon, HeartOutline24Icon, toniqFontStyles } from "@toniq-labs/design-system";
 import { ToniqIcon } from "@toniq-labs/design-system/dist/esm/elements/react-components";
 import { dispatch } from "../events/events";
+import { makeStyles } from "@material-ui/core";
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -26,6 +27,7 @@ function useInterval(callback, delay) {
 
 var skipRefresh = false;
 export default function Favourite(props) {
+  const classes = useStyles();
   const [liked, setLiked] = useState(EntrepotIsLiked(props.tokenid));
   const [count, setCount] = useState(false);
 
@@ -64,12 +66,33 @@ export default function Favourite(props) {
   }, []);
 
   return (
-    <ToniqIcon
-      icon={liked ? HeartFill24Icon : HeartOutline24Icon}
-      style={{ color: "#FFFFFF", margin: "0", filter: "drop-shadow(0px 0px 16px #000000)" }}
-      onClick={() => {
-        like();
-      }}
-    />
+    <div className={`${classes.host} ${props.className}`}>
+      {
+        props.showcount && count &&
+        <span>{count >= 1000 ? (count/1000).toFixed(1)+"k" : count}</span>
+      }
+      <ToniqIcon
+        className={classes.icon}
+        icon={liked ? HeartFill24Icon : HeartOutline24Icon}
+        onClick={() => {
+          like();
+        }}
+      />
+    </div>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  host: {
+    display: "flex",
+    gap: "8px",
+    ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    fontSize: 18,
+  },
+  icon: {
+    color: "#FFFFFF",
+    margin: "0",
+    filter: "drop-shadow(0px 0px 16px #000000)",
+    cursor: "pointer",
+  }
+}));

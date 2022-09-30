@@ -1,5 +1,5 @@
 /* global BigInt */
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import {
   makeStyles,
   Container,
@@ -29,6 +29,7 @@ import Favourite from "./Favourite";
 import getGenes from "./CronicStats";
 import { cronicFilterTraits } from "../model/constants";
 import { uppercaseFirstLetterOfWord } from "../utilities/string-utils";
+import { isEllipsisActive } from "../utilities/element-utils";
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -75,6 +76,9 @@ const Detail = (props) => {
   const collection = props.collections.find(e => e.canister === canister)
   const [motokoContent, setMotokoContent] = useState('');
   const [traitsData, setTraitsData] = useState(false);
+  const [isBlurbOpen, setIsBlurbOpen] = useState(false);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const blurbRef = createRef();
 
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
   
@@ -332,9 +336,10 @@ const Detail = (props) => {
       traits = traitsData[1][EntrepotNFTMintNumber(collection.canister, index) - 1][1].map((trait) => {
         const traitCategory = trait[0];
         const traitValue = trait[1];
+
         return {
           category: uppercaseFirstLetterOfWord(traitsCategories[traitCategory].category),
-          value: uppercaseFirstLetterOfWord(traitsCategories[traitCategory].values[traitValue]),
+          value: uppercaseFirstLetterOfWord(typeof traitsCategories[traitCategory].values[traitValue] === 'string' ? traitsCategories[traitCategory].values[traitValue] : Boolean(traitsCategories[traitCategory].values[traitValue]).toString()),
         }
       });
       setAttributes(traits);
@@ -353,7 +358,7 @@ const Detail = (props) => {
 
             return {
               category: uppercaseFirstLetterOfWord(category),
-              value: uppercaseFirstLetterOfWord(value),
+              value: uppercaseFirstLetterOfWord(typeof value === 'string' ? (value) : Boolean(value).toString()),
             };
           });
 
@@ -408,11 +413,13 @@ const Detail = (props) => {
   React.useEffect(() => {
     props.loader(true);
     _refresh().then(() => props.loader(false));
+
     loadTraits().then(traits => {
       if (traits) {        
         setTraitsData(traits);
       }
     });
+    setShowReadMore(isEllipsisActive(blurbRef.current));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -437,20 +444,20 @@ const Detail = (props) => {
             <Box className={classes.nftDescHeader}>
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={6}>
-                  <div style={{ position: "relative" }} className={classes.imageWrapper}>
+                  <div className={classes.imageWrapper}>
                     {displayImage(tokenid)}
-                    <div style={{ position: "absolute", top: "16px", left: "16px" }}>
-                      <Favourite refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
-                    </div>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6} className={classes.nftDesc}>
                   <div className={classes.nftDescContainer1}>
                     <span style={{...cssToReactStyleObject(toniqFontStyles.h2Font), display: "block"}}>{collection.name} #{EntrepotNFTMintNumber(collection.canister, index)}</span>
                     <Box style={{cursor: "pointer"}}>
-                      <Link href={EntrepotNFTLink(collection.canister, index, tokenid)} target="_blank" rel="noreferrer" underline="none">
-                        <ToniqChip text="View NFT OnChain" />
-                      </Link>
+                      <div style={{ display: "flex", gap: 32 }}>
+                        <Link href={EntrepotNFTLink(collection.canister, index, tokenid)} target="_blank" rel="noreferrer" underline="none">
+                          <ToniqChip text="View NFT OnChain" />
+                        </Link>
+                        <Favourite className={classes.favourite} showcount={true} count={2} refresher={props.faveRefresher} identity={props.identity} loggedIn={props.loggedIn} tokenid={tokenid} />
+                      </div>
                     </Box>
                     <span style={{...cssToReactStyleObject(toniqFontStyles.labelFont), opacity: "0.64"}}>COLLECTION</span>
                   </div>
@@ -475,7 +482,7 @@ const Detail = (props) => {
                               <PriceICP large={true} volume={true} clean={false} size={20} price={getPriceData()} />
                               <span style={{ ...cssToReactStyleObject(toniqFontStyles.paragraphFont), marginLeft: "8px" }}>
                                 {
-                                  EntrepotGetICPUSD(getPriceData()) && (<PriceUSD price={EntrepotGetICPUSD(getPriceData())} />)
+                                  EntrepotGetICPUSD(getPriceData()) && <>(<PriceUSD price={EntrepotGetICPUSD(getPriceData())} />)</>
                                 }
                               </span>
                             </div>
@@ -539,18 +546,32 @@ const Detail = (props) => {
                         )}
                       </> : <></>
                     }
+                    {
+                      collection.blurb &&
+                      <div className={classes.blurbWrapper}>
+                        <div ref={blurbRef} className={`${classes.blurb} ${!isBlurbOpen ? classes.blurbCollapsed : ''}`} dangerouslySetInnerHTML={{ __html: collection.blurb }} />
+                        {
+                          showReadMore &&
+                          <button
+                            style={{...cssToReactStyleObject(toniqFontStyles.boldParagraphFont), border: "none", background: "none", cursor: "pointer"}}
+                            onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                          >
+                            {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                          </button>
+                        }
+                      </div>
+                    }
                   </div>
                 </Grid>
               </Grid>
             </Box>
-            <Box style={{ display: "grid", gap: "16px", paddingTop: "16px" }}>
+            <Box style={{ display: "grid", gap: "16px", padding: "16px 0" }}>
               <Accordion title="Offers" open={true} center={true}>
                 {
                   offerListing ? (
                     <>
                       {offerListing.length > 0 ? 
                         <Grid container className={classes.accordionWrapper}>
-                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({offers.length})</span>
                           <Grid container className={classes.tableHeader}>
                             <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Time</Grid>
                             <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Floor Delta</Grid>
@@ -688,7 +709,6 @@ const Detail = (props) => {
                     <>
                       {activity.length > 0 ? 
                         <Grid container className={classes.accordionWrapper}>
-                          <span style={{...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: "0.64"}}>Results ({activity.length})</span>
                           <Grid container className={classes.tableHeader}>
                             <Grid item xs={8} sm={6} md={4} className={classes.tableHeaderName} style={{ display: "flex", justifyContent: "center" }}>Date</Grid>
                             <Grid item xs={1} sm={2} md={2} className={classes.tableHeaderName}>Activity</Grid>
@@ -885,8 +905,9 @@ const useStyles = makeStyles((theme) => ({
   nftDesc: {
     display: "flex",
     flexDirection: "column",
-    [theme.breakpoints.up("lg")]: {
-      justifyContent: "center",
+    paddingTop: "32px!important",
+    [theme.breakpoints.down("md")]: {
+      paddingTop: "16px!important",
     },
     [theme.breakpoints.down("xs")]: {
       justifyContent: "left",
@@ -1061,5 +1082,33 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     width: "100%",
+  },
+  blurbWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  blurb: {
+    textAlign: "center",
+    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+    display: "-webkit-box",
+    "-webkit-box-orient": "vertical",
+    "& > a": {
+      color: `${toniqColors.pagePrimary.foregroundColor}`,
+      "&:hover": {
+        color: toniqColors.pageInteractionHover.foregroundColor,
+      }
+    }
+  },
+  blurbCollapsed: {
+    "-webkit-line-clamp": 3,
+    overflow: "hidden",
+  },
+  favourite: {
+    color: toniqColors.pageInteraction.foregroundColor,
+    "& > toniq-icon": {
+      color: toniqColors.pageInteraction.foregroundColor,
+      filter: "none",
+    }
   }
 }));

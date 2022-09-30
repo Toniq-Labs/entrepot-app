@@ -4,9 +4,11 @@ import Grid from '@material-ui/core/Grid';
 import extjs from "../ic/extjs.js";
 import { makeStyles } from "@material-ui/core";
 import { EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats } from '../utils';
-import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon, toniqColors, WorldUpload24Icon } from "@toniq-labs/design-system";
+import { cssToReactStyleObject, toniqFontStyles, toniqShadows, BrandInstagram32Icon, BrandTwitch32Icon, BrandTiktok32Icon, BrandTwitter32Icon, CircleWavyCheck24Icon, Icp16Icon, toniqColors } from "@toniq-labs/design-system";
 import { ToniqChip, ToniqIcon } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import { icpToString } from "./PriceICP.js";
+import { isEllipsisActive } from "../utilities/element-utils.js";
+import { formatNumber } from "../utilities/number-utils.js";
 
 const api = extjs.connect("https://boundary.ic0.app/");
 
@@ -28,12 +30,6 @@ function useInterval(callback, delay) {
       return () => clearInterval(id);
     }
   }, [delay]);
-}
-
-const numberWithCommas = (x) => {
-    var parts = x.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
 }
 
 const useStyles = makeStyles(theme => ({
@@ -147,11 +143,6 @@ export default function CollectionDetails(props) {
   const blurbRef = createRef();
   var collection = props.collection;
 
-  function isEllipsisActive(element) {
-    if (!element) return false;
-    return (element.scrollHeight > element.clientHeight);
-  }
-
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
 
@@ -197,7 +188,7 @@ export default function CollectionDetails(props) {
             <Grid item>
               <span className={classes.nftName}>{collection.name}</span>
             </Grid>
-            {true &&
+            {collection.kyc &&
               <Grid item>
                 <ToniqIcon
                   icon={CircleWavyCheck24Icon}
@@ -209,7 +200,7 @@ export default function CollectionDetails(props) {
           {
             collection.commission &&
             <Grid item>
-              <span className={classes.royalty}>Creator Royalty {(collection.commission - 0.01) * 100}%</span>
+              <span className={classes.royalty}>Creator Royalty: {formatNumber((collection.commission - 0.01) * 100, true)}%</span>
             </Grid>
           }
         </Grid>
@@ -239,7 +230,7 @@ export default function CollectionDetails(props) {
               collection.web &&
               <Grid item>
                 <a href={collection.web} target="_blank" rel="noreferrer">
-                  <img alt={collection.name} src="/web.svg" style={{height: 32}} />
+                  <img alt={collection.name} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAB1ElEQVRYhe3Xy2oUQRQG4K+TMCqIN9BoVrpRMEgixix0o4LgM7jxIdQHEN14eQsvexGCkkV2IknUBEUkDxBEYdAENY4y7aJqnE473QkyPWYxPxRdVX2q/r8up+pUImAYV3ECQ6rFL7zBPXxMIvkCduMl1ioWsB2n8BnjcAffcLxi4ixG8R23EzzDTpxFgoloNB+/2XLaRRHPsTqEGhqx8ihmY/5YFJQtL3VRwA/U8htuCZOZfJIrdx15ASnmSsqVCRjDdJVEHTCGxYEek/6F1gws4mKPuWfgv89AX0BfwJYXMIyHWBFOxRRNXOtgez3+a9l9wQMcKCMoCz524QX24xHqsb6JqQ72U9irPah9uIwzwqm3WkQ0E1MeN/FT+zr+F0zEPm4U8ZYtwWm81Y4LWjgijCbNpRUcztnOxz4mFaBsCepCyJSNF2AZt4Tpztsv5+pqOIR3JTyFS3BBWO/7GCnroAAjsW0T58p4iwQQdnbD+qnerBeksW0n2z+8G4Xgd/EEl3Aw1m3WCz7gKd6XESTaoz+/gZhuo38dbx0BDcFfe41taAwI78KTwnOpVxiNnK8T4bZawB68Et5sVWKH8DitY3wQX4UTa9B6P64Ka3iMK/j0GzErczA0LPD5AAAAAElFTkSuQmCC" />
                 </a>
               </Grid>
             }
@@ -278,7 +269,7 @@ export default function CollectionDetails(props) {
                 <ToniqChip
                   className={`toniq-chip-secondary ${classes.stats}`}
                   style={cssToReactStyleObject(toniqFontStyles.boldFont)}
-                  text={icpToString(stats.listings, false, true)}
+                  text={formatNumber(stats.listings, true)}
                 ></ToniqChip>
               </Grid>
               <Grid item className={classes.statsWrapper} style={cssToReactStyleObject(toniqFontStyles.labelFont)}>
@@ -295,7 +286,7 @@ export default function CollectionDetails(props) {
                 <ToniqChip
                   className={`toniq-chip-secondary ${classes.stats}`}
                   style={cssToReactStyleObject(toniqFontStyles.boldFont)}
-                  text={icpToString(size, false, true)}
+                  text={formatNumber(size, true)}
                 ></ToniqChip>
               </Grid>
             </Grid>

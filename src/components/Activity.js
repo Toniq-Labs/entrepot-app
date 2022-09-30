@@ -26,6 +26,7 @@ import PriceUSD from "./PriceUSD.js";
 import Timestamp from "react-timestamp";
 import chunk from "lodash.chunk";
 import { StateContainer } from "./shared/StateContainer.js";
+import moment from 'moment';
 
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
@@ -107,26 +108,34 @@ var storageKey = 'userPreferences';
 
 const defaultSortOption = {
   value: {
-    type: 'price',
-    sort: 'asc',
+    type: 'time',
+    sort: 'desc',
   },
-  label: 'Price: Low to High',
+  label: 'Recently Sold',
 };
 
 const sortOptions = [
+  defaultSortOption,
   {
     value: {
-      type: 'mintNumber',
+      type: 'time',
       sort: 'asc',
     },
-    label: 'Mint #: Low to High',
+    label: 'Oldest',
   },
   {
     value: {
-      type: 'mintNumber',
+      type: 'price',
+      sort: 'asc',
+    },
+    label: 'Price: Low to High',
+  },
+  {
+    value: {
+      type: 'price',
       sort: 'desc',
     },
-    label: 'Mint #: High to Low',
+    label: 'Price: High to Low',
   },
   {
     value: {
@@ -142,13 +151,19 @@ const sortOptions = [
     },
     label: 'Rarity: High to Low',
   },
-  defaultSortOption,
   {
     value: {
-      type: 'price',
+      type: 'mintNumber',
+      sort: 'asc',
+    },
+    label: 'Mint #: Low to High',
+  },
+  {
+    value: {
+      type: 'mintNumber',
       sort: 'desc',
     },
-    label: 'Price: High to Low',
+    label: 'Mint #: High to Low',
   },
 ];
 
@@ -270,13 +285,23 @@ export default function Activity(props) {
             style={{
               flexGrow: 1,
               flexBasis: 0,
+              maxWidth: '185px',
             }}
             className={classes.hideWhenMobile}
           >
             {items[5]}
           </div>
+          <div
+            style={{
+              flexGrow: 1,
+              flexBasis: 0,
+            }}
+            className={classes.hideWhenMobile}
+          >
+            {items[6]}
+          </div>
         </div>
-        {items[6]}
+        {items[7]}
       </div>
     );
   }
@@ -291,14 +316,14 @@ export default function Activity(props) {
     try {
       var result = await fetch("https://us-central1-entrepot-api.cloudfunctions.net/api/canister/"+ canister +"/transactions").then(r => r.json());
       var listings = result
-        .map((e) => {
-          const { index, canister} = extjs.decodeTokenId(e.token);
+        .map((listing) => {
+          const { index, canister} = extjs.decodeTokenId(listing.token);
           const rarity = Number((getNri(canister, index) * 100).toFixed(1));
           const mintNumber = EntrepotNFTMintNumber(canister, index);
 
           return {
-            ...e,
-            image: EntrepotNFTImage(getEXTCanister(canister), index, e.token, false, 0),
+            ...listing,
+            image: EntrepotNFTImage(getEXTCanister(canister), index, listing.token, false, 0),
             rarity,
             mintNumber,
           };
@@ -323,7 +348,13 @@ export default function Activity(props) {
           .indexOf(query.toLowerCase()) >= 0;
       return (query === '' || inQuery);
     }),
-    [sort.value.type],
+    [(value) => {
+      if (sort.value.type === 'time') {
+        return new Date(Number(value[sort.value.type] / 1000000000));
+      }
+
+      return value[sort.value.type];
+    }],
     [sort.value.sort]
   );
 
@@ -339,7 +370,7 @@ export default function Activity(props) {
   
   return (
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
-      <div style={{maxWidth:1320, margin:"0 auto 0"}}>
+      <div style={{ margin:"0 auto" }}>
         <CollectionDetails collection={collection} />
       </div>
       <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
@@ -380,15 +411,6 @@ export default function Activity(props) {
           noFilters={true}
           otherControlsChildren={
             <>
-              <span
-                style={{
-                  display: 'flex',
-                  ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                  color: toniqColors.pageSecondary.foregroundColor,
-                }}
-              >
-                NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : <ToniqIcon icon={LoaderAnimated24Icon} />}
-              </span>
               <ToniqDropdown
                 style={{
                   display: 'flex',
@@ -412,7 +434,7 @@ export default function Activity(props) {
             <div className={classes.listRowContainer}>
               <div className={classes.listRowHeader}>
                 <ListRow
-                  items={[true, 'MINT #', 'NRI', 'PRICE', 'FROM', 'TO', 'TIME']}
+                  items={[true, 'MINT #', 'NRI', 'PRICE', 'FROM', 'TO', 'DATE', 'TIME']}
                   style={{
                     ...cssToReactStyleObject(toniqFontStyles.labelFont),
                     maxHeight: '32px',
@@ -438,12 +460,10 @@ export default function Activity(props) {
                           <>
                             {icpToString(listing.price, true, true)}&nbsp;ICP&nbsp;(<PriceUSD price={EntrepotGetICPUSD(listing.price)} />)
                           </>,
-                          <>
-                            <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${listing.seller}`} letterCount={5} text={listing.seller} />
-                          </>,
-                          <>
-                            <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${listing.buyer}`} letterCount={5} text={listing.buyer} />
-                          </>,
+                          listing.seller ? <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${listing.seller}`} letterCount={5} text={listing.seller} /> : '-',
+                          listing.buyer ? <ToniqMiddleEllipsis externalLink={`https://icscan.io/account/${listing.buyer}`} letterCount={5} text={listing.buyer} /> : '-',
+                          moment.unix(Number(listing.time / 1000000000)).format('MMMM D, YYYY (h:mm a)')
+                          ,
                           <Timestamp
                             relative
                             autoUpdate

@@ -165,7 +165,7 @@ export function WithFilterPanel(props) {
               .with-filter-panel .left-filter-panel {
                 flex-basis: 0;
                 gap: 0;
-                overflow: hidden;
+                overflow-y: scroll;
                 position: relative;
                 height: unset;
                 top: unset;

@@ -37,7 +37,7 @@ import { Accordion } from "./Accordion.js";
 import { NftCard } from "../shared/NftCard.js";
 import PriceICP from "./PriceICP.js";
 import { uppercaseFirstLetterOfWord } from "../utilities/string-utils.js";
-import { cronicFilterTraits } from "../model/constants.js";
+import { cronicFilterTraits, gridLargeMaxHeigh, gridLargeMaxWidth, gridSmallMaxHeight, gridSmallMaxWidth, preloaderItemColor } from "../model/constants.js";
 import { isInRange } from "../utilities/number-utils.js";
 import { MinimumOffer } from "./shared/MinimumOffer.js";
 import Favourite from "./Favourite.js";
@@ -80,8 +80,6 @@ const useDidMountEffect = (func, deps) => {
 const _isCanister = c => {
   return c.length === 27 && c.split("-").length === 5;
 };
-
-const preloaderItemColor = "#f1f1f1";
 
 const useStyles = makeStyles(theme => ({
   traitCategoryWrapper: {
@@ -143,9 +141,21 @@ const useStyles = makeStyles(theme => ({
   },
   favourite: {
     display: "none",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       display: "block"
 		},
+  },
+  listingContainer: {
+    display: "grid",
+    gridTemplateColumns: `repeat(auto-fit, ${gridLargeMaxWidth})`,
+    justifyContent: "center",
+    gap: 32,
+    [theme.breakpoints.down("xs")]: {
+      gap: 16,
+		},
+    "&.small": {
+      gridTemplateColumns: `repeat(auto-fit, ${gridSmallMaxWidth})`,
+    }
   }
 }));
 
@@ -322,7 +332,7 @@ export default function Listings(props) {
 
   const defaultFilter = {
     status: {
-      type: 'forSale',
+      type: 'listed',
     },
     price: {
       range: undefined,
@@ -646,475 +656,475 @@ export default function Listings(props) {
 
   return (
     <div style={{ minHeight:"calc(100vh - 221px)"}}>
-    <div style={{maxWidth:1320, margin:"0 auto 0"}}>
-      <CollectionDetails collection={collection} />
-    </div>
-    <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
-      <StyledTabs
-        value={"nfts"}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={(e, tab) => {
-          if (tab === "activity") navigate(`/marketplace/${collection?.route}/activity`)
-        }}
-      >
-        <StyledTab value="nfts" label="NFTs" />
-        <StyledTab value="activity" label="Activity" />
-      </StyledTabs>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <ToniqInput
-          value={query}
-          style={{
-            '--toniq-accent-tertiary-background-color': 'transparent',
-            maxWidth: '300px',
-            boxSizing: 'border-box',
-            flexGrow: '1',
-            marginLeft: '-16px',
-          }}
-          placeholder="Search for mint # or token ID"
-          icon={Search24Icon}
-          onValueChange={event => {
-            const search = event.detail;
-            if (search) {
-              setSearchParams({search});
-            } else {
-              setSearchParams({});
-            }
-          }}
-        />
-        <div style={{ display: "flex", gap: "8px" }}>
-          <ToniqIcon
-            icon={LayoutGrid24Icon}
-            onClick={() => {
-              setGridSize('large');
-              storeUserPreferences('gridSize', 'large');
-              forceCheck();
-            }}
-            style={{ color: gridSize === 'large' ? '#000000': 'gray' }}
-            className={classes.gridControl}
-          />
-          <ToniqIcon
-            icon={GridDots24Icon}
-            onClick={() => {
-              setGridSize('small');
-              storeUserPreferences('gridSize', 'small');
-              forceCheck();
-            }}
-            style={{ color: gridSize !== 'large' ? '#000000': 'gray' }}
-            className={classes.gridControl}
-          />
-        </div>
+      <div style={{ margin:"0 auto" }}>
+        <CollectionDetails collection={collection} />
       </div>
-      <WithFilterPanel
-        showFilters={showFilters}
-        onShowFiltersChange={newShowFilters => {
-          setShowFilters(newShowFilters);
-          storeUserPreferences('toggleFilterPanel', newShowFilters);
-        }}
-        onFilterClose={() => {
-          setShowFilters(false);
-          storeUserPreferences('toggleFilterPanel', false);
-        }}
-        onClearFiltersChange={() => {
-          setCurrentFilters(defaultFilter);
-          storeUserPreferences('filterOptions', defaultFilter);
-        }}
-        filterControlChildren={
-          <>
-            <div>
-              <Accordion
-                title="Status"
-                open={openedAccordion.includes(filterTypes.status.type)}
-                onOpenAccordionChange={() => {
-                  toggleAccordion(filterTypes.status.type);
-                }}
-              >
-                <div className={classes.filterAccordionWrapper}>
-                  <ToniqToggleButton
-                    text="Listed"
-                    active={currentFilters.status.type === filterTypes.status.listed}
-                    onClick={() => {
-                      var filterOptions = {
-                        ...currentFilters,
-                        status: {
-                          ...currentFilters.status,
-                          type: filterTypes.status.listed,
-                        },
-                      };
-                      setCurrentFilters(filterOptions);
-                      storeUserPreferences('filterOptions', filterOptions);
+      <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
+        <StyledTabs
+          value={"nfts"}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={(e, tab) => {
+            if (tab === "activity") navigate(`/marketplace/${collection?.route}/activity`)
+          }}
+        >
+          <StyledTab value="nfts" label="NFTs" />
+          <StyledTab value="activity" label="Activity" />
+        </StyledTabs>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <ToniqInput
+            value={query}
+            style={{
+              '--toniq-accent-tertiary-background-color': 'transparent',
+              maxWidth: '300px',
+              boxSizing: 'border-box',
+              flexGrow: '1',
+              marginLeft: '-16px',
+            }}
+            placeholder="Search for mint # or token ID"
+            icon={Search24Icon}
+            onValueChange={event => {
+              const search = event.detail;
+              if (search) {
+                setSearchParams({search});
+              } else {
+                setSearchParams({});
+              }
+            }}
+          />
+          <div style={{ display: "flex", gap: "8px" }}>
+            <ToniqIcon
+              icon={LayoutGrid24Icon}
+              onClick={() => {
+                setGridSize('large');
+                storeUserPreferences('gridSize', 'large');
+                forceCheck();
+              }}
+              style={{ color: gridSize === 'large' ? '#000000': 'gray' }}
+              className={classes.gridControl}
+            />
+            <ToniqIcon
+              icon={GridDots24Icon}
+              onClick={() => {
+                setGridSize('small');
+                storeUserPreferences('gridSize', 'small');
+                forceCheck();
+              }}
+              style={{ color: gridSize !== 'large' ? '#000000': 'gray' }}
+              className={classes.gridControl}
+            />
+          </div>
+        </div>
+        <WithFilterPanel
+          showFilters={showFilters}
+          onShowFiltersChange={newShowFilters => {
+            setShowFilters(newShowFilters);
+            storeUserPreferences('toggleFilterPanel', newShowFilters);
+          }}
+          onFilterClose={() => {
+            setShowFilters(false);
+            storeUserPreferences('toggleFilterPanel', false);
+          }}
+          onClearFiltersChange={() => {
+            setCurrentFilters(defaultFilter);
+            storeUserPreferences('filterOptions', defaultFilter);
+          }}
+          filterControlChildren={
+            <>
+              <div>
+                <Accordion
+                  title="Status"
+                  open={openedAccordion.includes(filterTypes.status.type)}
+                  onOpenAccordionChange={() => {
+                    toggleAccordion(filterTypes.status.type);
+                  }}
+                >
+                  <div className={classes.filterAccordionWrapper}>
+                    <ToniqToggleButton
+                      text="Listed"
+                      active={currentFilters.status.type === filterTypes.status.listed}
+                      onClick={() => {
+                        var filterOptions = {
+                          ...currentFilters,
+                          status: {
+                            ...currentFilters.status,
+                            type: filterTypes.status.listed,
+                          },
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
+                      }}
+                    />
+                    <ToniqToggleButton
+                      text="Entire Collection"
+                      active={currentFilters.status.type === filterTypes.status.entireCollection}
+                      onClick={() => {
+                        var filterOptions = {
+                          ...currentFilters,
+                          status: {
+                            ...currentFilters.status,
+                            type: filterTypes.status.entireCollection,
+                          },
+                        };
+                        setCurrentFilters(filterOptions);
+                        storeUserPreferences('filterOptions', filterOptions);
+                      }}
+                    />
+                  </div>
+                </Accordion>
+              </div>
+              {
+                filterRanges[currentFilters.price.type].min !== Infinity &&
+                filterRanges[currentFilters.price.type].max !== Infinity &&
+                <div>
+                  <Accordion
+                    title="Price"
+                    open={openedAccordion.includes(filterTypes.price)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.price);
                     }}
-                  />
-                  <ToniqToggleButton
-                    text="Entire Collection"
-                    active={currentFilters.status.type === filterTypes.status.entireCollection}
-                    onClick={() => {
-                      var filterOptions = {
-                        ...currentFilters,
-                        status: {
-                          ...currentFilters.status,
-                          type: filterTypes.status.entireCollection,
-                        },
-                      };
-                      setCurrentFilters(filterOptions);
-                      storeUserPreferences('filterOptions', filterOptions);
-                    }}
-                  />
+                  >
+                    <div className={classes.filterAccordionWrapper}>
+                      <ToniqSlider
+                        logScale={filterRanges[currentFilters.price.type].max - filterRanges[currentFilters.price.type].min > 10000}
+                        min={filterRanges[currentFilters.price.type].min}
+                        max={filterRanges[currentFilters.price.type].max}
+                        suffix="ICP"
+                        double={true}
+                        value={currentFilters.price.range || filterRanges[currentFilters.price]}
+                        onValueChange={event => {
+                          const values = event.detail;
+                          var filterOptions = {
+                            ...currentFilters,
+                            price: {
+                              ...currentFilters.price,
+                              range: values,
+                            },
+                          };
+                          setCurrentFilters(filterOptions);
+                          storeUserPreferences('filterOptions', filterOptions);
+                        }}
+                      />
+                    </div>
+                  </Accordion>
                 </div>
-              </Accordion>
-            </div>
-            {
-              filterRanges[currentFilters.price.type].min !== Infinity &&
-              filterRanges[currentFilters.price.type].max !== Infinity &&
-              <div>
-                <Accordion
-                  title="Price"
-                  open={openedAccordion.includes(filterTypes.price)}
-                  onOpenAccordionChange={() => {
-                    toggleAccordion(filterTypes.price);
-                  }}
-                >
-                  <div className={classes.filterAccordionWrapper}>
-                    <ToniqSlider
-                      logScale={filterRanges[currentFilters.price.type].max - filterRanges[currentFilters.price.type].min > 10000}
-                      min={filterRanges[currentFilters.price.type].min}
-                      max={filterRanges[currentFilters.price.type].max}
-                      suffix="ICP"
-                      double={true}
-                      value={currentFilters.price.range || filterRanges[currentFilters.price]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        var filterOptions = {
-                          ...currentFilters,
-                          price: {
-                            ...currentFilters.price,
-                            range: values,
-                          },
-                        };
-                        setCurrentFilters(filterOptions);
-                        storeUserPreferences('filterOptions', filterOptions);
-                      }}
-                    />
-                  </div>
-                </Accordion>
-              </div>
-            }
-            {
-              hasRarity() &&
-              <div>
-                <Accordion
-                  title="Rarity"
-                  open={openedAccordion.includes(filterTypes.rarity)}
-                  onOpenAccordionChange={() => {
-                    toggleAccordion(filterTypes.rarity);
-                  }}
-                >
-                  <div className={classes.filterAccordionWrapper}>
-                    <ToniqSlider
-                      min={filterRanges[currentFilters.rarity.type].min}
-                      max={filterRanges[currentFilters.rarity.type].max}
-                      suffix="%"
-                      double={true}
-                      value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        var filterOptions = {
-                          ...currentFilters,
-                          rarity: {
-                            ...currentFilters.rarity,
-                            range: values,
-                          },
-                        };
-                        setCurrentFilters(filterOptions);
-                        storeUserPreferences('filterOptions', filterOptions);
-                      }}
-                    />
-                  </div>
-                </Accordion>
-              </div>
-            }
-            {
-              filterRanges[currentFilters.mintNumber.type].min !== Infinity &&
-              filterRanges[currentFilters.mintNumber.type].max !== Infinity &&
-              <div>
-                <Accordion
-                  title="Mint #"
-                  open={openedAccordion.includes(filterTypes.mintNumber)}
-                  onOpenAccordionChange={() => {
-                    toggleAccordion(filterTypes.mintNumber);
-                  }}
-                >
-                  <div className={classes.filterAccordionWrapper}>
-                    <ToniqSlider
-                      min={filterRanges[currentFilters.mintNumber.type].min}
-                      max={filterRanges[currentFilters.mintNumber.type].max}
-                      double={true}
-                      value={currentFilters.mintNumber.range || filterRanges[currentFilters.mintNumber.type]}
-                      onValueChange={event => {
-                        const values = event.detail;
-                        var filterOptions = {
-                          ...currentFilters,
-                          mintNumber: {
-                            ...currentFilters.mintNumber,
-                            range: values,
-                          },
-                        };
-                        setCurrentFilters(filterOptions);
-                        storeUserPreferences('filterOptions', filterOptions);
-                      }}
-                    />
-                  </div>
-                </Accordion>
-              </div>
-            }
-            {
-              (traitsData || collection?.route === 'cronics') && 
-              traitsCategories.length ?
-              <div>
-                <Accordion
-                  title={`Traits (${traitsCategories.length})`}
-                  open={openedAccordion.includes(filterTypes.traits)}
-                  onOpenAccordionChange={() => {
-                    toggleAccordion(filterTypes.traits);
-                  }}
-                >
-                  <div className={classes.filterAccordionWrapper} style={{ marginLeft: 8, marginRight: 8 }}>
-                    {collection?.route === 'cronics' ? 
-                      <Grid container spacing={2}>
-                        {traitsCategories.map((traitsCategory, index) => {
-                          return (
-                            <Grid key={index} item xs={12}>
-                              <Accordion
-                                title={uppercaseFirstLetterOfWord(traitsCategory.category)}
-                                open={openedAccordion.includes(traitsCategory.category)}
-                                onOpenAccordionChange={() => {
-                                  toggleAccordion(traitsCategory.category);
-                                }}
-                              >
-                                <div className={classes.cronicTraitsContainer}>
-                                  <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                      <span>Dominant: </span>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <ToniqSlider
-                                        min={filterRanges[currentFilters.traits.type].min}
-                                        max={filterRanges[currentFilters.traits.type].max}
-                                        double={true}
-                                        value={currentFilters.traits.values[traitsCategory.category].dominant || filterRanges[currentFilters.traits.type]}
-                                        onValueChange={event => {
-                                          const values = event.detail;
-                                          var filterOptions = {
-                                            ...currentFilters,
-                                            traits: {
-                                              ...currentFilters.traits,
-                                              values: {
-                                                ...currentFilters.traits.values,
-                                                [traitsCategory.category]: {
-                                                  ...currentFilters.traits.values[traitsCategory.category],
-                                                  dominant: values,
+              }
+              {
+                hasRarity() &&
+                <div>
+                  <Accordion
+                    title="Rarity"
+                    open={openedAccordion.includes(filterTypes.rarity)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.rarity);
+                    }}
+                  >
+                    <div className={classes.filterAccordionWrapper}>
+                      <ToniqSlider
+                        min={filterRanges[currentFilters.rarity.type].min}
+                        max={filterRanges[currentFilters.rarity.type].max}
+                        suffix="%"
+                        double={true}
+                        value={currentFilters.rarity.range || filterRanges[currentFilters.rarity.type]}
+                        onValueChange={event => {
+                          const values = event.detail;
+                          var filterOptions = {
+                            ...currentFilters,
+                            rarity: {
+                              ...currentFilters.rarity,
+                              range: values,
+                            },
+                          };
+                          setCurrentFilters(filterOptions);
+                          storeUserPreferences('filterOptions', filterOptions);
+                        }}
+                      />
+                    </div>
+                  </Accordion>
+                </div>
+              }
+              {
+                filterRanges[currentFilters.mintNumber.type].min !== Infinity &&
+                filterRanges[currentFilters.mintNumber.type].max !== Infinity &&
+                <div>
+                  <Accordion
+                    title="Mint #"
+                    open={openedAccordion.includes(filterTypes.mintNumber)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.mintNumber);
+                    }}
+                  >
+                    <div className={classes.filterAccordionWrapper}>
+                      <ToniqSlider
+                        min={filterRanges[currentFilters.mintNumber.type].min}
+                        max={filterRanges[currentFilters.mintNumber.type].max}
+                        double={true}
+                        value={currentFilters.mintNumber.range || filterRanges[currentFilters.mintNumber.type]}
+                        onValueChange={event => {
+                          const values = event.detail;
+                          var filterOptions = {
+                            ...currentFilters,
+                            mintNumber: {
+                              ...currentFilters.mintNumber,
+                              range: values,
+                            },
+                          };
+                          setCurrentFilters(filterOptions);
+                          storeUserPreferences('filterOptions', filterOptions);
+                        }}
+                      />
+                    </div>
+                  </Accordion>
+                </div>
+              }
+              {
+                (traitsData || collection?.route === 'cronics') && 
+                traitsCategories.length ?
+                <div>
+                  <Accordion
+                    title={`Traits (${traitsCategories.length})`}
+                    open={openedAccordion.includes(filterTypes.traits)}
+                    onOpenAccordionChange={() => {
+                      toggleAccordion(filterTypes.traits);
+                    }}
+                  >
+                    <div className={classes.filterAccordionWrapper} style={{ marginLeft: 8, marginRight: 8 }}>
+                      {collection?.route === 'cronics' ? 
+                        <Grid container spacing={2}>
+                          {traitsCategories.map((traitsCategory, index) => {
+                            return (
+                              <Grid key={index} item xs={12}>
+                                <Accordion
+                                  title={uppercaseFirstLetterOfWord(traitsCategory.category)}
+                                  open={openedAccordion.includes(traitsCategory.category)}
+                                  onOpenAccordionChange={() => {
+                                    toggleAccordion(traitsCategory.category);
+                                  }}
+                                >
+                                  <div className={classes.cronicTraitsContainer}>
+                                    <Grid container spacing={2}>
+                                      <Grid item xs={12}>
+                                        <span>Dominant: </span>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <ToniqSlider
+                                          min={filterRanges[currentFilters.traits.type].min}
+                                          max={filterRanges[currentFilters.traits.type].max}
+                                          double={true}
+                                          value={currentFilters.traits.values[traitsCategory.category].dominant || filterRanges[currentFilters.traits.type]}
+                                          onValueChange={event => {
+                                            const values = event.detail;
+                                            var filterOptions = {
+                                              ...currentFilters,
+                                              traits: {
+                                                ...currentFilters.traits,
+                                                values: {
+                                                  ...currentFilters.traits.values,
+                                                  [traitsCategory.category]: {
+                                                    ...currentFilters.traits.values[traitsCategory.category],
+                                                    dominant: values,
+                                                  },
                                                 },
                                               },
-                                            },
-                                          };
-                                          setCurrentFilters(filterOptions);
-                                          storeUserPreferences('filterOptions', filterOptions);
-                                        }}
-                                      />
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
+                                          }}
+                                        />
+                                      </Grid>
                                     </Grid>
-                                  </Grid>
-                                  <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                      <span>Recessive: </span>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <ToniqSlider
-                                        min={filterRanges[currentFilters.traits.type].min}
-                                        max={filterRanges[currentFilters.traits.type].max}
-                                        double={true}
-                                        value={currentFilters.traits.values[traitsCategory.category].recessive || filterRanges[currentFilters.traits.type]}
-                                        onValueChange={event => {
-                                          const values = event.detail;
-                                          var filterOptions = {
-                                            ...currentFilters,
-                                            traits: {
-                                              ...currentFilters.traits,
-                                              values: {
-                                                ...currentFilters.traits.values,
-                                                [traitsCategory.category]: {
-                                                  ...currentFilters.traits.values[traitsCategory.category],
-                                                  recessive: values,
+                                    <Grid container spacing={2}>
+                                      <Grid item xs={12}>
+                                        <span>Recessive: </span>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <ToniqSlider
+                                          min={filterRanges[currentFilters.traits.type].min}
+                                          max={filterRanges[currentFilters.traits.type].max}
+                                          double={true}
+                                          value={currentFilters.traits.values[traitsCategory.category].recessive || filterRanges[currentFilters.traits.type]}
+                                          onValueChange={event => {
+                                            const values = event.detail;
+                                            var filterOptions = {
+                                              ...currentFilters,
+                                              traits: {
+                                                ...currentFilters.traits,
+                                                values: {
+                                                  ...currentFilters.traits.values,
+                                                  [traitsCategory.category]: {
+                                                    ...currentFilters.traits.values[traitsCategory.category],
+                                                    recessive: values,
+                                                  },
                                                 },
                                               },
-                                            },
-                                          };
-                                          setCurrentFilters(filterOptions);
-                                          storeUserPreferences('filterOptions', filterOptions);
-                                        }}
-                                      />
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
+                                          }}
+                                        />
+                                      </Grid>
                                     </Grid>
-                                  </Grid>
-                                </div>
-                              </Accordion>
-                            </Grid>
-                          )
-                        })}
-                      </Grid> :
-                      <Grid container spacing={2}>
-                        {traitsCategories.map((traitsCategory, index) => {
-                          return (
-                            <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
-                              <TraitsAccordion
-                                title={<>{traitsCategory.category} {traitsCategory.values.length && `(${traitsCategory.values.length})`}</>}
-                                open={openedAccordion.includes(traitsCategory.category)}
-                                count={selectedTraitsFilter(traitsCategory.category) || traitsCategory.values.length}
-                                onOpenAccordionChange={() => {
-                                  toggleAccordion(traitsCategory.category);
-                                }}
-                              >
-                                <div className={classes.traitsContainer}>
-                                  {
-                                    traitsCategory.values && traitsCategory.values.length > 10 ? 
-                                    <ToniqInput
-                                      value={queryTrait}
-                                      style={{
-                                        width: '100%',
-                                        boxSizing: 'border-box',
-                                      }}
-                                      placeholder="Search..."
-                                      icon={Search24Icon}
-                                      onValueChange={event => {
-                                        const searchTrait = event.detail;
-                                        if (searchTrait) {
-                                          setSearchParams({searchTrait});
-                                        } else {
-                                          setSearchParams({});
-                                        }
-                                      }}
-                                    /> : ""
-                                  }
-                                  <div className={classes.traitsWrapper}>
+                                  </div>
+                                </Accordion>
+                              </Grid>
+                            )
+                          })}
+                        </Grid> :
+                        <Grid container spacing={2}>
+                          {traitsCategories.map((traitsCategory, index) => {
+                            return (
+                              <Grid key={index} item xs={12} className={classes.traitCategoryWrapper}>
+                                <TraitsAccordion
+                                  title={<>{traitsCategory.category} {traitsCategory.values.length && `(${traitsCategory.values.length})`}</>}
+                                  open={openedAccordion.includes(traitsCategory.category)}
+                                  count={selectedTraitsFilter(traitsCategory.category) || traitsCategory.values.length}
+                                  onOpenAccordionChange={() => {
+                                    toggleAccordion(traitsCategory.category);
+                                  }}
+                                >
+                                  <div className={classes.traitsContainer}>
                                     {
-                                      traitsCategory.values &&
-                                      queryFilteredTraits(traitsCategory.values)
-                                        .map((trait) => {
-                                          return (
-                                            <div key={`${trait}-${index}`}>
-                                              <ToniqCheckbox
-                                                text={trait}
-                                                checked={isTraitSelected(trait, traitsCategory.category)}
-                                                onCheckedChange={event => {
-                                                  const traitIndex = currentFilters.traits.values.findIndex((trait) => {
-                                                    return trait.category === traitsCategory.category;
-                                                  })
-                                                  if (event.detail) {
-                                                    if (traitIndex !== -1) {
-                                                      if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
-                                                    } else {
-                                                      currentFilters.traits.values.push({
-                                                        category: traitsCategory.category,
-                                                        values: [trait],
-                                                      });
-                                                    }
-                                                  } else {
-                                                    if (traitIndex !== -1) {
-                                                      const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
-                                                        return value === trait;
-                                                      })
-                                                      
-                                                      if (currentFilters.traits.values[traitIndex].values.length !== 1) {
-                                                        currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                      traitsCategory.values && traitsCategory.values.length > 10 ? 
+                                      <ToniqInput
+                                        value={queryTrait}
+                                        style={{
+                                          width: '100%',
+                                          boxSizing: 'border-box',
+                                        }}
+                                        placeholder="Search..."
+                                        icon={Search24Icon}
+                                        onValueChange={event => {
+                                          const searchTrait = event.detail;
+                                          if (searchTrait) {
+                                            setSearchParams({searchTrait});
+                                          } else {
+                                            setSearchParams({});
+                                          }
+                                        }}
+                                      /> : ""
+                                    }
+                                    <div className={classes.traitsWrapper}>
+                                      {
+                                        traitsCategory.values &&
+                                        queryFilteredTraits(traitsCategory.values)
+                                          .map((trait) => {
+                                            return (
+                                              <div key={`${trait}-${index}`}>
+                                                <ToniqCheckbox
+                                                  text={trait}
+                                                  checked={isTraitSelected(trait, traitsCategory.category)}
+                                                  onCheckedChange={event => {
+                                                    const traitIndex = currentFilters.traits.values.findIndex((trait) => {
+                                                      return trait.category === traitsCategory.category;
+                                                    })
+                                                    if (event.detail) {
+                                                      if (traitIndex !== -1) {
+                                                        if (!currentFilters.traits.values[traitIndex].values.includes(trait)) currentFilters.traits.values[traitIndex].values.push(trait);
                                                       } else {
-                                                        currentFilters.traits.values.splice(traitIndex, 1)
+                                                        currentFilters.traits.values.push({
+                                                          category: traitsCategory.category,
+                                                          values: [trait],
+                                                        });
+                                                      }
+                                                    } else {
+                                                      if (traitIndex !== -1) {
+                                                        const valueIndex = currentFilters.traits.values[traitIndex].values.findIndex((value) => {
+                                                          return value === trait;
+                                                        })
+                                                        
+                                                        if (currentFilters.traits.values[traitIndex].values.length !== 1) {
+                                                          currentFilters.traits.values[traitIndex].values.splice(valueIndex, 1);
+                                                        } else {
+                                                          currentFilters.traits.values.splice(traitIndex, 1)
+                                                        }
                                                       }
                                                     }
-                                                  }
-                                                  var filterOptions = {
-                                                    ...currentFilters,
-                                                    traits: {
-                                                      ...currentFilters.traits,
-                                                      values: currentFilters.traits.values,
-                                                    },
-                                                  };
-                                                  setCurrentFilters(filterOptions);
-                                                  storeUserPreferences('filterOptions', filterOptions);
-                                                }}
-                                              />
-                                            </div>
-                                          )
-                                        })
-                                    }
-                                    {
-                                      traitsCategory.values &&
-                                      !queryFilteredTraits(traitsCategory.values).length && 
-                                      <div style={{ display: 'flex', justifyContent: 'center', ...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: 0.64 }}>
-                                        <span>No Result</span>
-                                      </div>
-                                    }
+                                                    var filterOptions = {
+                                                      ...currentFilters,
+                                                      traits: {
+                                                        ...currentFilters.traits,
+                                                        values: currentFilters.traits.values,
+                                                      },
+                                                    };
+                                                    setCurrentFilters(filterOptions);
+                                                    storeUserPreferences('filterOptions', filterOptions);
+                                                  }}
+                                                />
+                                              </div>
+                                            )
+                                          })
+                                      }
+                                      {
+                                        traitsCategory.values &&
+                                        !queryFilteredTraits(traitsCategory.values).length && 
+                                        <div style={{ display: 'flex', justifyContent: 'center', ...cssToReactStyleObject(toniqFontStyles.paragraphFont), opacity: 0.64 }}>
+                                          <span>No Result</span>
+                                        </div>
+                                      }
+                                    </div>
                                   </div>
-                                </div>
-                              </TraitsAccordion>
-                            </Grid>
-                          )
-                        })}
-                      </Grid>
-                    }
-                  </div>
-                </Accordion>
-              </div> : ''
-            }
-          </>
-        }
-        otherControlsChildren={
-          <>
-              <span
-                style={{
-                  display: 'flex',
-                  ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                  color: toniqColors.pageSecondary.foregroundColor,
-                }}
-              >
-                NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
-              </span>
-              <ToniqDropdown
-                style={{
-                  '--toniq-accent-secondary-background-color': 'transparent',
-                  width: '360px',
-                }}
-                icon={ArrowsSort24Icon}
-                selectedLabelPrefix="Sort By:"
-                selected={sort}
-                onSelectChange={event => {
-                  setSort(event.detail);
-                  storeUserPreferences('sortOption', event.detail);
-                  pageListing.current = 0;
-                  forceCheck();
-                }}
-                options={
-                  sortOptions.filter((sortOption) => {
-                    return (sortOption.value.type === 'rarity' && !hasRarity()) ? false : true;
-                  })
-                }
-              />
-          </>
-        }
-      >
-        <div style={{ position: 'relative' }}>
-          {
-            getShowListings(chunkedAndFilteredAndSortedListings).length ?
-              <Grid container spacing={showFilters && gridSize === 'small' ? 1 : 4} className={classes.nftWrapper}>
-                {hasListed()}
-                {getShowListings(chunkedAndFilteredAndSortedListings).map((listing, index) => {
-                  return (
-                    <Grid key={index} item>
+                                </TraitsAccordion>
+                              </Grid>
+                            )
+                          })}
+                        </Grid>
+                      }
+                    </div>
+                  </Accordion>
+                </div> : ''
+              }
+            </>
+          }
+          otherControlsChildren={
+            <>
+                <span
+                  style={{
+                    display: 'flex',
+                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                    color: toniqColors.pageSecondary.foregroundColor,
+                  }}
+                >
+                  NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
+                </span>
+                <ToniqDropdown
+                  style={{
+                    '--toniq-accent-secondary-background-color': 'transparent',
+                    width: '360px',
+                  }}
+                  icon={ArrowsSort24Icon}
+                  selectedLabelPrefix="Sort By:"
+                  selected={sort}
+                  onSelectChange={event => {
+                    setSort(event.detail);
+                    storeUserPreferences('sortOption', event.detail);
+                    pageListing.current = 0;
+                    forceCheck();
+                  }}
+                  options={
+                    sortOptions.filter((sortOption) => {
+                      return (sortOption.value.type === 'rarity' && !hasRarity()) ? false : true;
+                    })
+                  }
+                />
+            </>
+          }
+        >
+          <div style={{ position: 'relative' }}>
+            {
+              getShowListings(chunkedAndFilteredAndSortedListings).length ?
+                <div className={`${gridSize === 'small' ? 'small' : ''} ${classes.listingContainer}`}>
+                  {hasListed()}
+                  {getShowListings(chunkedAndFilteredAndSortedListings).map((listing, index) => {
+                    return (
                       <LazyLoad
+                        key={index}
                         offset={[500, 0]}
                         placeholder={
                           <NftCardPlaceholder
                             small={gridSize === 'small'}
                             style={{
-                              maxWidth: gridSize === 'small' ? '192px' : '304px',
-                              maxHeight: gridSize === 'small' ? '192px' : '416px'
+                              maxWidth: gridSize === 'small' ? gridSmallMaxWidth : gridLargeMaxWidth,
+                              maxHeight: gridSize === 'small' ? gridSmallMaxHeight : gridLargeMaxHeigh
                             }}
                           >
                             {
@@ -1176,8 +1186,8 @@ export default function Listings(props) {
                             small={gridSize === 'small'} 
                             className={classes.nftCard}
                             style={{
-                              maxWidth: gridSize === 'small' ? '192px' : '304px',
-                              maxHeight: gridSize === 'small' ? '192px' : '416px'
+                              maxWidth: gridSize === 'small' ? gridSmallMaxWidth : gridLargeMaxWidth,
+                              maxHeight: gridSize === 'small' ? gridSmallMaxHeight : gridLargeMaxHeigh
                             }}
                           >
                             {
@@ -1245,25 +1255,24 @@ export default function Listings(props) {
                           </NftCard>
                         </Link>
                       </LazyLoad>
-                    </Grid>
-                  );
-                })}
-              </Grid> : ''
-          }
-          <StateContainer show={listings && !getShowListings(chunkedAndFilteredAndSortedListings).length}>No Result</StateContainer>
-          <StateContainer innerRef={loadingRef} show={!listings || pageListing.current < chunkedAndFilteredAndSortedListings.length}>
-            <ToniqIcon icon={LoaderAnimated24Icon} />&nbsp;Loading...
-          </StateContainer>
-          <StateContainer
-            show={pageListing.current !== 0 &&
-              chunkedAndFilteredAndSortedListings.length !== 0 &&
-              (pageListing.current >= chunkedAndFilteredAndSortedListings.length)}
-          >
-            End of Results
-          </StateContainer>
-        </div>
-      </WithFilterPanel>
-    </div>
+                    );
+                  })}
+                </div> : ''
+            }
+            <StateContainer show={listings && !getShowListings(chunkedAndFilteredAndSortedListings).length}>No Result</StateContainer>
+            <StateContainer innerRef={loadingRef} show={!listings || pageListing.current < chunkedAndFilteredAndSortedListings.length}>
+              <ToniqIcon icon={LoaderAnimated24Icon} />&nbsp;Loading...
+            </StateContainer>
+            <StateContainer
+              show={pageListing.current !== 0 &&
+                chunkedAndFilteredAndSortedListings.length !== 0 &&
+                (pageListing.current >= chunkedAndFilteredAndSortedListings.length)}
+            >
+              End of Results
+            </StateContainer>
+          </div>
+        </WithFilterPanel>
+      </div>
     </div>
   );
 }

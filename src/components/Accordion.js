@@ -34,7 +34,7 @@ export function Accordion(props) {
 			checkbox: {
 				display: "none",
 				"&:checked~.detail": {
-					maxHeight: "3000px",
+					maxHeight: "max-content",
 					overflow: "visible",
 					paddingBottom: "0",
 				},
