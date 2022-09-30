@@ -8,10 +8,6 @@ import {
     cssToReactStyleObject,
     toniqFontStyles,
     toniqShadows,
-    BrandInstagram32Icon,
-    BrandTwitch32Icon,
-    BrandTiktok32Icon,
-    BrandTwitter32Icon,
     CircleWavyCheck24Icon,
     Icp16Icon,
     toniqColors,
@@ -235,27 +231,23 @@ export default function CollectionDetails(props) {
                     )}
                 </Grid>
                 <div className={classes.detailsContainer}>
-                    <Grid container spacing={2} justifyContent="center">
+                    <Grid container spacing={2} justifyContent="center" alignItems="center">
                         <Grid item>
-                            <a href={collection.instagram} target="_blank" rel="noreferrer">
-                                <ToniqIcon icon={BrandInstagram32Icon} />
+                            <a href={"https://icscan.io/nft/collection/"+collection.canister} target="_blank" rel="noreferrer">
+                                <img alt={collection.name} src="/icon/svg/icscan.svg" style={{ width: 32 }} />
                             </a>
                         </Grid>
-                        <Grid item>
-                            <a href={collection.twitch} target="_blank" rel="noreferrer">
-                                <ToniqIcon icon={BrandTwitch32Icon} />
-                            </a>
-                        </Grid>
-                        <Grid item>
-                            <a href={collection.tiktok} target="_blank" rel="noreferrer">
-                                <ToniqIcon icon={BrandTiktok32Icon} />
-                            </a>
-                        </Grid>
-                        <Grid item>
-                            <a href={collection.twitter} target="_blank" rel="noreferrer">
-                                <ToniqIcon icon={BrandTwitter32Icon} />
-                            </a>
-                        </Grid>
+                        {['telegram', 'twitter', 'medium', 'discord', 'dscvr', 'distrikt']
+                          .filter(social => collection.hasOwnProperty(social) && collection[social])
+                          .map(social => {
+                            return (
+                              <Grid key={social} item>
+                                <a href={collection[social]} target="_blank" rel="noreferrer">
+                                  <img alt="create" style={{ width: 32 }} src={"/icon/svg/" + social + ".svg"} />
+                                </a>
+                              </Grid>
+                            );
+                        })}
                         {collection.web && (
                             <Grid item>
                                 <a href={collection.web} target="_blank" rel="noreferrer">
