@@ -374,7 +374,7 @@ class ExtConnection {
         return new Promise((resolve, reject) => {
           if (this._metadata.hasOwnProperty(tokenObj.canister)) {
             resolve(this._metadata[tokenObj.canister]);
-          } else {
+          } else if (api.metadata) {
             switch(tokenObj.canister) {
               default:
                 api.metadata(tokenObj.token).then(r => {

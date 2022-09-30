@@ -5,6 +5,7 @@ import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import getNri from '../../ic/nftv.js';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
+import {wait} from 'augment-vir';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -137,9 +138,10 @@ async function getOwnedNfts(address, identity, collections) {
   const allUserNfts = await Promise.all(
     (await Promise.all([loadAllUserTokens(address, identity.getPrincipal().toText())]))
       .flat()
-      .map(async nft => {
-        console.log('setting status');
+      .map(async (nft, index) => {
         const nftWithData = await getNftData(nft, collections);
+        // throttle requests a bit so we don't overload the browser
+        await wait(index);
         return {
           ...nftWithData,
           statuses: new Set(
