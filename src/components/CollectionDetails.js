@@ -233,21 +233,46 @@ export default function CollectionDetails(props) {
                 <div className={classes.detailsContainer}>
                     <Grid container spacing={2} justifyContent="center" alignItems="center">
                         <Grid item>
-                            <a href={"https://icscan.io/nft/collection/"+collection.canister} target="_blank" rel="noreferrer">
-                                <img alt={collection.name} src="/icon/svg/icscan.svg" style={{ width: 32 }} />
+                            <a
+                                href={'https://icscan.io/nft/collection/' + collection.canister}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <img
+                                    alt={collection.name}
+                                    src="/icon/svg/icscan.svg"
+                                    style={{width: 32}}
+                                />
                             </a>
                         </Grid>
-                        {['telegram', 'twitter', 'medium', 'discord', 'dscvr', 'distrikt']
-                          .filter(social => collection.hasOwnProperty(social) && collection[social])
-                          .map(social => {
-                            return (
-                              <Grid key={social} item>
-                                <a href={collection[social]} target="_blank" rel="noreferrer">
-                                  <img alt="create" style={{ width: 32 }} src={"/icon/svg/" + social + ".svg"} />
-                                </a>
-                              </Grid>
-                            );
-                        })}
+                        {[
+                            'telegram',
+                            'twitter',
+                            'medium',
+                            'discord',
+                            'dscvr',
+                            'distrikt',
+                        ]
+                            .filter(
+                                social => collection.hasOwnProperty(social) && collection[social],
+                            )
+                            .map(social => {
+                                return (
+                                    <Grid key={social} item>
+                                        <a
+                                            href={collection[social]}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <img
+                                                alt="create"
+                                                style={{width: 32}}
+                                                src={'/icon/svg/' + social + '.svg'}
+                                            />
+                                        </a>
+                                    </Grid>
+                                );
+                            })}
                         {collection.web && (
                             <Grid item>
                                 <a href={collection.web} target="_blank" rel="noreferrer">
