@@ -211,7 +211,7 @@ function useForceUpdate() {
 }
 
 export function ListingsBody(props) {
-    const {collection, getCollectionFromRoute} = props;
+    const {collection, getCollectionFromRoute, buyNft, faveRefresher, identity, loggedIn} = props;
     const params = useParams();
     const location = useLocation();
     const componentMounted = useRef(true);
@@ -609,6 +609,8 @@ export function ListingsBody(props) {
                     _updates={_updates}
                     listings={listings}
                     loadingRef={loadingRef}
+                    buyNft={buyNft}
+                    faveRefresher={faveRefresher} identity={identity} loggedIn={loggedIn}
                 />
             </WithFilterPanel>
         </div>

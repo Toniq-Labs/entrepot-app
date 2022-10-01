@@ -2,11 +2,11 @@ import {GridDots24Icon, LayoutGrid24Icon, Search24Icon} from '@toniq-labs/design
 import {ToniqIcon, ToniqInput} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {StyledTab, StyledTabs} from '../../components/shared/PageTab';
 import {forceCheck} from 'react-lazyload';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 export function ListingsTabs(props) {
     const {collection, gridSize, setGridSize, query, setSearchParams, storeUserPreferences} = props;
-		const navigate = useNavigate();
+    const navigate = useNavigate();
 
     return (
         <>

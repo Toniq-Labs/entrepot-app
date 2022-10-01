@@ -13,7 +13,7 @@ import {icpToString} from '../PriceICP';
 const api = extjs.connect('https://boundary.ic0.app/');
 
 const useStyles = makeStyles(theme => ({
-    offerChipContainer: {
+    hoverCard: {
         display: 'none',
         justifyContent: 'center',
         alignItems: 'center',
@@ -77,7 +77,7 @@ export function MinimumOffer(props) {
         <>
             {offers && offers !== '' && (
                 <div
-                    className={`offerChipContainer ${classes.offerChipContainer}`}
+                    className={`hoverCard ${classes.hoverCard}`}
                     style={{
                         margin: props.gridSize === 'large' ? 0 : 'auto',
                         height: props.gridSize === 'large' ? 272 : 'unset',
@@ -99,7 +99,7 @@ export function MinimumOffer(props) {
             )}
             {!offers && offers !== '' && (
                 <div
-                    className={`offerChipContainer ${classes.offerChipContainer}`}
+                    className={`hoverCard ${classes.hoverCard}`}
                     style={{
                         margin: props.gridSize === 'large' ? 0 : 'auto',
                         height: props.gridSize === 'large' ? 272 : 'unset',

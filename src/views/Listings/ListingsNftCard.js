@@ -1,10 +1,9 @@
 import chunk from 'lodash.chunk';
 import {
-    gridLargeMaxHeigh,
+    gridLargeMaxHeight,
     gridLargeMaxWidth,
     gridSmallMaxHeight,
     gridSmallMaxWidth,
-    preloaderItemColor,
 } from '../../model/constants';
 import {NftCardPlaceholder} from '../../shared/NftCardPlaceholder';
 import LazyLoad from 'react-lazyload';
@@ -24,11 +23,12 @@ import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/element
 import {MinimumOffer} from '../../components/shared/MinimumOffer';
 import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
+import {ListingInfo} from './ListingInfo';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
         position: 'relative',
-        '&:hover .offerChipContainer': {
+        '&:hover .hoverCard': {
             display: 'flex',
         },
         '&:hover $favourite': {
@@ -56,6 +56,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function ListingsNftCard(props) {
+    const {buyNft, faveRefresher, identity, loggedIn} = props;
     const {
         gridSize,
         filteredAndSortedListings,
@@ -66,6 +67,8 @@ export function ListingsNftCard(props) {
         loadingRef,
     } = props;
     const classes = useStyles();
+    const preloaderItemColor = '#f1f1f1';
+
     const chunkedAndFilteredAndSortedListings = chunk(
         filteredAndSortedListings,
         gridSize === 'small' ? 24 : 12,
@@ -112,7 +115,7 @@ export function ListingsNftCard(props) {
                                             maxHeight:
                                                 gridSize === 'small'
                                                     ? gridSmallMaxHeight
-                                                    : gridLargeMaxHeigh,
+                                                    : gridLargeMaxHeight,
                                         }}
                                     >
                                         {gridSize === 'large' ? (
@@ -201,7 +204,7 @@ export function ListingsNftCard(props) {
                                             maxHeight:
                                                 gridSize === 'small'
                                                     ? gridSmallMaxHeight
-                                                    : gridLargeMaxHeigh,
+                                                    : gridLargeMaxHeight,
                                         }}
                                     >
                                         {gridSize === 'large' ? (
@@ -216,16 +219,9 @@ export function ListingsNftCard(props) {
                                                     style={{
                                                         marginBottom: '16px',
                                                         marginTop: '16px',
-                                                        ...cssToReactStyleObject(
-                                                            toniqFontStyles.h3Font,
-                                                        ),
                                                     }}
                                                 >
-                                                    <span
-                                                        style={cssToReactStyleObject(
-                                                            toniqFontStyles.h3Font,
-                                                        )}
-                                                    >
+                                                    <span>
                                                         {listing.price ? (
                                                             <PriceICP
                                                                 large={true}
@@ -272,7 +268,7 @@ export function ListingsNftCard(props) {
                                                             text="Buy Now"
                                                             onClick={e => {
                                                                 e.preventDefault();
-                                                                props.buyNft(
+                                                                buyNft(
                                                                     listing.canister,
                                                                     listing.index,
                                                                     listing,
@@ -304,9 +300,9 @@ export function ListingsNftCard(props) {
                                             }}
                                         >
                                             <Favourite
-                                                refresher={props.faveRefresher}
-                                                identity={props.identity}
-                                                loggedIn={props.loggedIn}
+                                                refresher={faveRefresher}
+                                                identity={identity}
+                                                loggedIn={loggedIn}
                                                 tokenid={listing.tokenid}
                                             />
                                         </div>
