@@ -221,7 +221,11 @@ export function ListingsNftCard(props) {
                                                         marginTop: '16px',
                                                     }}
                                                 >
-                                                    <span>
+                                                    <span
+                                                        style={cssToReactStyleObject(
+                                                            toniqFontStyles.h3Font,
+                                                        )}
+                                                    >
                                                         {listing.price ? (
                                                             <PriceICP
                                                                 large={true}
