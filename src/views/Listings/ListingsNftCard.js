@@ -227,7 +227,6 @@ export function ListingsNftCard(props) {
                                                                 large={true}
                                                                 volume={true}
                                                                 clean={false}
-                                                                size={20}
                                                                 price={listing.price}
                                                             />
                                                         ) : (
@@ -288,6 +287,14 @@ export function ListingsNftCard(props) {
                                             tokenid={listing.tokenid}
                                             gridSize={gridSize}
                                         />
+                                        {gridSize !== 'large' && (
+                                            <ListingInfo
+                                                gridSize={gridSize}
+                                                buyNft={buyNft}
+                                                listing={listing}
+                                                _updates={_updates}
+                                            />
+                                        )}
                                         <div
                                             className={classes.favourite}
                                             style={{

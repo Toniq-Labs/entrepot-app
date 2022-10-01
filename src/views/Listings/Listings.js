@@ -9,7 +9,7 @@ const _isCanister = c => {
 };
 
 export default function Listings(props) {
-    const { buyNft, faveRefresher, identity, loggedIn } = props;
+    const {buyNft, faveRefresher, identity, loggedIn} = props;
     const params = useParams();
     const getCollectionFromRoute = r => {
         if (_isCanister(r)) {
@@ -25,7 +25,14 @@ export default function Listings(props) {
             <div style={{margin: '0 auto'}}>
                 <CollectionDetails collection={collection} />
             </div>
-            <ListingsBody collection={collection} getCollectionFromRoute={getCollectionFromRoute} buyNft={buyNft} faveRefresher={faveRefresher} identity={identity} loggedIn={loggedIn} />
+            <ListingsBody
+                collection={collection}
+                getCollectionFromRoute={getCollectionFromRoute}
+                buyNft={buyNft}
+                faveRefresher={faveRefresher}
+                identity={identity}
+                loggedIn={loggedIn}
+            />
         </div>
     );
 }

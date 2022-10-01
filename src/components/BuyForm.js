@@ -63,7 +63,7 @@ export default function BuyForm(props) {
                                 </Grid>
                                 <Grid item xs={6} style={{textAlign: 'right'}}>
                                     <span>
-                                        <PriceICP size={20} price={props.price} />
+                                        <PriceICP price={props.price} />
                                     </span>
                                 </Grid>
                                 <Grid item xs={6} style={{textAlign: 'left'}}>
@@ -71,10 +71,7 @@ export default function BuyForm(props) {
                                 </Grid>
                                 <Grid item xs={6} style={{textAlign: 'right'}}>
                                     <span>
-                                        <PriceICP
-                                            size={20}
-                                            price={EntrepotEarnDetailsData(props.tokenid)}
-                                        />
+                                        <PriceICP price={EntrepotEarnDetailsData(props.tokenid)} />
                                     </span>
                                 </Grid>
                                 <Grid item xs={6} style={{textAlign: 'left'}}>
@@ -89,7 +86,6 @@ export default function BuyForm(props) {
                                         }
                                     >
                                         <PriceICP
-                                            size={20}
                                             price={
                                                 EntrepotEarnDetailsData(props.tokenid) - props.price
                                             }
@@ -112,7 +108,7 @@ export default function BuyForm(props) {
                         <Grid item xs={6} style={{textAlign: 'right'}}>
                             <strong>
                                 <span style={{fontSize: '1.5em', color: 'red'}}>
-                                    {props.price ? <PriceICP size={35} price={props.price} /> : ''}
+                                    {props.price ? <PriceICP price={props.price} /> : ''}
                                 </span>
                             </strong>
                             <br />

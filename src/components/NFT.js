@@ -668,7 +668,7 @@ export default function NFT(props) {
                                                 color: '#',
                                             }}
                                         >
-                                            Best <PriceICP size={13} price={offer.amount} />
+                                            Best <PriceICP price={offer.amount} />
                                         </div>
                                     ) : (
                                         ''

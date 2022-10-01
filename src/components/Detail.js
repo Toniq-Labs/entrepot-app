@@ -645,7 +645,6 @@ const Detail = props => {
                                                                 large={true}
                                                                 volume={true}
                                                                 clean={false}
-                                                                size={20}
                                                                 price={getPriceData()}
                                                             />
                                                             <span

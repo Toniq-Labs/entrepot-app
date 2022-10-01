@@ -250,11 +250,7 @@ export default function Wallet(props) {
                         <Typography
                             style={{width: '100%', textAlign: 'center', fontWeight: 'bold'}}
                         >
-                            {balance !== false ? (
-                                <PriceICP size={24} price={balance} />
-                            ) : (
-                                'Loading...'
-                            )}
+                            {balance !== false ? <PriceICP price={balance} /> : 'Loading...'}
                         </Typography>
                     </ListItem>
                     {props.accounts.length > 1 ? (

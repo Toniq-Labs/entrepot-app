@@ -610,7 +610,9 @@ export function ListingsBody(props) {
                     listings={listings}
                     loadingRef={loadingRef}
                     buyNft={buyNft}
-                    faveRefresher={faveRefresher} identity={identity} loggedIn={loggedIn}
+                    faveRefresher={faveRefresher}
+                    identity={identity}
+                    loggedIn={loggedIn}
                 />
             </WithFilterPanel>
         </div>
