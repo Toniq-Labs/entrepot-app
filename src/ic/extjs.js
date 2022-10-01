@@ -258,7 +258,7 @@ class ExtConnection {
             }
         }
         if (!this._canisters.hasOwnProperty(cid)) {
-            if (this._agent == 'infinityWallet' || this._agent == 'plug') {
+            if (this._agent === 'infinityWallet' || this._agent === 'plug') {
                 this._canisters[cid] = new VirtualActor(cid, idl, this._agent);
             } else {
                 this._canisters[cid] = Actor.createActor(idl, {
@@ -297,6 +297,11 @@ class ExtConnection {
                 });
             },
             size: async () => {
+                if (tokenObj.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
+                    let x = await api.getRegistry();
+                    return x.length;
+                }
+
                 if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
                     loadedTokens[tokenObj.canister] = await api.getTokens();
                 }
@@ -309,7 +314,9 @@ class ExtConnection {
                 var listings = await api.listings();
                 return loadedTokens[tokenObj.canister].map(a => [
                     a[0],
-                    listings.find(b => b[0] == a[0]) ? listings.find(b => b[0] == a[0])[1] : false,
+                    listings.find(b => b[0] === a[0])
+                        ? listings.find(b => b[0] === a[0])[1]
+                        : false,
                     a[1],
                 ]);
             },

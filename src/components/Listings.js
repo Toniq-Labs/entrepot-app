@@ -357,6 +357,10 @@ export default function Listings(props) {
         searchParams,
         setSearchParams,
     ] = useSearchParams();
+    const [
+        size,
+        setSize,
+    ] = useState(false);
     const query = searchParams.get('search') || '';
     const queryTrait = searchParams.get('searchTrait') || '';
 
@@ -450,6 +454,7 @@ export default function Listings(props) {
 
     const _updates = async (s, canister) => {
         canister = canister ?? collection?.canister;
+        setSize(await api.token(collection.canister).size());
 
         try {
             var result = await api.token(canister).listings();
@@ -539,6 +544,12 @@ export default function Listings(props) {
     const filteredStatusListings = listings
         ? listings
               .filter(listing => listing[1] === false || listing.price >= 1000000n)
+              .filter((listing, listingIndex) => {
+                  if (collection?.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
+                      return listingIndex < size;
+                  }
+                  return true;
+              })
               .filter(listing => {
                   return currentFilters.status.type === filterTypes.status.listed
                       ? listing[1]
