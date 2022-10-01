@@ -1,5 +1,4 @@
-# dependencies
-/node_modules
-/node_modules2
 .DS_Store
+src/tsx/**/*.js
 /build
+/node_modules

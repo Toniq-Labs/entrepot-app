@@ -43,6 +43,8 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
+import {EntrepotHomepage} from './tsx/elements/homepage';
+
 const api = extjs.connect('https://boundary.ic0.app/');
 
 const txfee = 10000;
@@ -1083,6 +1085,7 @@ export default function App() {
         <>
             {appLoaded ? (
                 <>
+                    <EntrepotHomepage />
                     <Navbar
                         view={rootPage}
                         processPayments={processPayments}
