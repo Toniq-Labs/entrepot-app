@@ -12,7 +12,7 @@ import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
 import Detail from './components/Detail';
-import Listings from './components/Listings';
+import Listings from './views/Listings/Listings.js';
 import BuyForm from './components/BuyForm';
 import Activity from './components/Activity';
 import UserCollection from './components/UserCollection';

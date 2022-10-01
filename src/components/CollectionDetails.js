@@ -169,7 +169,7 @@ export default function CollectionDetails(props) {
             .then(s => {
                 setSize(s);
             });
-
+        _updates();
         setShowReadMore(isEllipsisActive(blurbRef.current));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

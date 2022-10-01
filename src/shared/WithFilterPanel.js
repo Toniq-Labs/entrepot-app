@@ -87,7 +87,6 @@ export function WithFilterPanel(props) {
                             margin: 0;
                             border: none;
                             font: inherit;
-                            color: inherit;
                             cursor: pointer;
                             text-transform: inherit;
                             text-decoration: inherit;
