@@ -5441,7 +5441,7 @@
   "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.273.tgz"
   "version" "1.4.273"
 
-"element-vir@6.1.5":
+"element-vir@^6.1.2", "element-vir@6.1.5":
   "integrity" "sha512-BShEyqtEQG/09h/D0zGnoyQc5aVgA7TTSjgY71+bTLeQZtcncHaS6FiFVePrbEa6sUfwwegRAtO4Q4WM+1wzGA=="
   "resolved" "https://registry.npmjs.org/element-vir/-/element-vir-6.1.5.tgz"
   "version" "6.1.5"

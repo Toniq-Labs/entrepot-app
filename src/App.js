@@ -21,7 +21,6 @@ import UserActivity from './components/UserActivity';
 import Marketplace from './views/Marketplace';
 import Mint from './views/Mint';
 import Create from './views/Create';
-import Home from './views/Home';
 import Typography from '@material-ui/core/Typography';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
@@ -43,7 +42,9 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
-import {EntrepotHomepage} from './tsx/elements/homepage';
+import {EntrepotHomePage} from './tsx/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
+import {EntrepotTestPage} from './tsx/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
+import {environmentByUrl} from './tsx/environment/environment-by-url';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -1085,7 +1086,6 @@ export default function App() {
         <>
             {appLoaded ? (
                 <>
-                    <EntrepotHomepage />
                     <Navbar
                         view={rootPage}
                         processPayments={processPayments}
@@ -1932,19 +1932,12 @@ export default function App() {
                                         />
                                     }
                                 />
-                                <Route
-                                    path="/"
-                                    exact
-                                    element={
-                                        <Home
-                                            collections={collections}
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                        />
-                                    }
-                                />
+                                {environmentByUrl ? (
+                                    <Route path="/test" exact element={<EntrepotTestPage />} />
+                                ) : (
+                                    ''
+                                )}
+                                <Route path="/" exact element={<EntrepotHomePage />} />
                                 <Route
                                     path="/sale"
                                     exact

@@ -31,7 +31,6 @@ export async function checkIfToniqEarnAllowed() {
                 },
             );
         } catch (error) {
-            console.error(error);
             // if any error occurs, resort to simply allowing the user to access Toniq Earn features
             resolve(true);
         }
