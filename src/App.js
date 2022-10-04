@@ -14,7 +14,7 @@ import {Route, Routes, useLocation} from 'react-router-dom';
 import Detail from './components/Detail';
 import Listings from './views/Listings/Listings.js';
 import BuyForm from './components/BuyForm';
-import Activity from './components/Activity';
+import ListingActivity from './views/Listings/ListingActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
@@ -22,9 +22,7 @@ import Marketplace from './views/Marketplace';
 import Mint from './views/Mint';
 import Create from './views/Create';
 import Home from './views/Home';
-import CardTest from './views/CardTest';
 import Typography from '@material-ui/core/Typography';
-import Iconic from './views/Iconic';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
 import Opener from './components/Opener';
@@ -1145,7 +1143,7 @@ export default function App() {
                                     path="/marketplace/:route/activity"
                                     exact
                                     element={
-                                        <Activity
+                                        <ListingActivity
                                             error={error}
                                             view={'listings'}
                                             isToniqEarnAllowed={isToniqEarnAllowed}

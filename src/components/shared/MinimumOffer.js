@@ -42,27 +42,27 @@ export function MinimumOffer(props) {
     let aborted = abortController.signal.aborted;
 
     const getOffers = async () => {
-        let offers = await api
-            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-            .offers(props.tokenid)
-            .then(offers => {
-                const offerData = offers
-                    .map(offer => {
-                        return offer[1];
-                    })
-                    .sort((a, b) => {
-                        return Number(b) - Number(a);
-                    });
-                return offerData;
-            });
+        let offers = await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(props.tokenid);
         aborted = abortController.signal.aborted;
         if (aborted === false) {
             if (offers.length) {
-                setOffers(icpToString(offers[offers.length - 1], true, true));
+                setOffers(offers);
             } else {
                 setOffers('');
             }
         }
+    };
+
+    const getHighestOffer = () => {
+        if (!offers) return '';
+        let sortedOffers = offers
+            .map(offer => {
+                return offer[1];
+            })
+            .sort((a, b) => {
+                return Number(a) - Number(b);
+            });
+        return icpToString(sortedOffers[sortedOffers.length - 1], true, true);
     };
 
     useEffect(() => {
@@ -74,49 +74,36 @@ export function MinimumOffer(props) {
     }, []);
 
     return (
-        <>
+        <div style={{ display: props.gridSize === 'large'? 'block': 'none'}}>
             {offers && offers !== '' && (
                 <div
                     className={`hoverCard ${classes.hoverCard}`}
                     style={{
-                        margin: props.gridSize === 'large' ? 0 : 'auto',
-                        height: props.gridSize === 'large' ? 272 : 'unset',
+                        margin: 0,
+                        height: 304,
                     }}
                 >
-                    {props.gridSize === 'small' ? (
-                        <div className={classes.offerChip}>
-                            <ToniqIcon icon={Icp16Icon} />
-                            &nbsp;{offers}
-                        </div>
-                    ) : (
-                        <div className={classes.offerChip}>
-                            Minimum Offer is&nbsp;
-                            <ToniqIcon icon={Icp16Icon} />
-                            &nbsp;{offers}
-                        </div>
-                    )}
+                    <div className={classes.offerChip}>
+                        Highest Offer is&nbsp;
+                        <ToniqIcon icon={Icp16Icon} />
+                        &nbsp;{getHighestOffer()}
+                    </div>
                 </div>
             )}
             {!offers && offers !== '' && (
                 <div
                     className={`hoverCard ${classes.hoverCard}`}
                     style={{
-                        margin: props.gridSize === 'large' ? 0 : 'auto',
-                        height: props.gridSize === 'large' ? 272 : 'unset',
+                        margin: 0,
+                        height: 304,
                     }}
                 >
-                    {props.gridSize === 'small' ? (
-                        <div className={classes.offerChip}>
-                            <ToniqIcon icon={LoaderAnimated24Icon} />
-                        </div>
-                    ) : (
-                        <div className={classes.offerChip}>
-                            <ToniqIcon icon={LoaderAnimated24Icon} />
-                            &nbsp;Loading Offers
-                        </div>
-                    )}
+                    <div className={classes.offerChip}>
+                        <ToniqIcon icon={LoaderAnimated24Icon} />
+                        &nbsp;Loading Offers
+                    </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }

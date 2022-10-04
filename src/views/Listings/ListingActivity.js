@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core';
-import extjs from '../ic/extjs.js';
-import getNri from '../ic/nftv.js';
+import extjs from '../../ic/extjs.js';
+import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
-import {icpToString} from './PriceICP';
-import CollectionDetails from './CollectionDetails';
-import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD} from '../utils';
-import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
-import {StyledTab, StyledTabs} from './shared/PageTab.js';
-import {WithFilterPanel} from '../shared/WithFilterPanel.js';
+import PriceICP, {icpToString} from '../../components/PriceICP';
+import CollectionDetails from '../../components/CollectionDetails';
+import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD} from '../../utils';
+import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
+import {StyledTab, StyledTabs} from '../../components/shared/PageTab.js';
+import {WithFilterPanel} from '../../shared/WithFilterPanel.js';
 import {
     ToniqInput,
     ToniqDropdown,
@@ -27,12 +27,12 @@ import {
     toniqColors,
     toniqFontStyles,
 } from '@toniq-labs/design-system';
-import {NftCard} from '../shared/NftCard.js';
-import {getEXTCanister} from '../utilities/load-tokens.js';
-import PriceUSD from './PriceUSD.js';
+import {NftCard} from '../../shared/NftCard.js';
+import {getEXTCanister} from '../../utilities/load-tokens.js';
+import PriceUSD from '../../components/PriceUSD.js';
 import Timestamp from 'react-timestamp';
 import chunk from 'lodash.chunk';
-import {StateContainer} from './shared/StateContainer.js';
+import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 
 function useInterval(callback, delay) {
@@ -174,7 +174,7 @@ const sortOptions = [
     },
 ];
 
-export default function Activity(props) {
+export default function ListingActivity(props) {
     const params = useParams();
     const classes = useStyles();
     const location = useLocation();
@@ -505,14 +505,25 @@ export default function Activity(props) {
                                                     '',
                                                     `#${listing.mintNumber}`,
                                                     `${listing.rarity}%`,
-                                                    <>
-                                                        {icpToString(listing.price, true, true)}
-                                                        &nbsp;ICP&nbsp;(
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignContent: 'center',
+                                                            justifyContent: 'left',
+                                                        }}
+                                                    >
+                                                        <PriceICP
+                                                            large={false}
+                                                            volume={true}
+                                                            clean={false}
+                                                            price={listing.price}
+                                                        />
+                                                        &nbsp; (
                                                         <PriceUSD
                                                             price={EntrepotGetICPUSD(listing.price)}
                                                         />
                                                         )
-                                                    </>,
+                                                    </div>,
                                                     listing.seller ? (
                                                         <ToniqMiddleEllipsis
                                                             externalLink={`https://icscan.io/account/${listing.seller}`}
