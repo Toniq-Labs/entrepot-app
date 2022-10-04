@@ -556,7 +556,7 @@ export default function Marketplace(props) {
                                     <div className="title">Price</div>
                                     <ToniqToggleButton
                                         text="Floor"
-                                        active={
+                                        toggled={
                                             currentFilters.price.type === filterTypes.price.floor
                                         }
                                         onClick={() => {
@@ -571,7 +571,7 @@ export default function Marketplace(props) {
                                     />
                                     <ToniqToggleButton
                                         text="Average Sale"
-                                        active={
+                                        toggled={
                                             currentFilters.price.type ===
                                             filterTypes.price.averageSale
                                         }

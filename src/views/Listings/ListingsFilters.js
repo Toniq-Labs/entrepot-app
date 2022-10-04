@@ -199,7 +199,7 @@ export function ListingsFilters(props) {
                     <div className={classes.filterAccordionWrapper}>
                         <ToniqToggleButton
                             text="Listed"
-                            active={currentFilters.status.type === filterTypes.status.listed}
+                            toggled={currentFilters.status.type === filterTypes.status.listed}
                             onClick={() => {
                                 var filterOptions = {
                                     ...currentFilters,
@@ -214,7 +214,7 @@ export function ListingsFilters(props) {
                         />
                         <ToniqToggleButton
                             text="Entire Collection"
-                            active={
+                            toggled={
                                 currentFilters.status.type === filterTypes.status.entireCollection
                             }
                             onClick={() => {

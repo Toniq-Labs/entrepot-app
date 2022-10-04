@@ -116,35 +116,35 @@ export default function Navbar(props) {
         <>
             <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
-                active={props.view === 'sale'}
+                toggled={props.view === 'sale'}
                 onClick={() => goTo('/sale')}
                 text="Launchpad"
                 icon={Rocket24Icon}
             />
             <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
-                active={props.view === 'marketplace'}
+                toggled={props.view === 'marketplace'}
                 onClick={() => goTo('/marketplace')}
                 text="Marketplace"
                 icon={BuildingStore24Icon}
             />
             <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
-                active={props.view === 'earn'}
+                toggled={props.view === 'earn'}
                 onClick={() => goTo('/earn')}
                 text="Earn"
                 icon={Infinity24Icon}
             />
             <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
-                active={props.view === 'create'}
+                toggled={props.view === 'create'}
                 onClick={() => goTo('/create')}
                 text="Create"
                 icon={Geometry24Icon}
             />
             <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
-                active={props.view === 'contact'}
+                toggled={props.view === 'contact'}
                 onClick={() => goTo('/contact')}
                 text="Support"
                 icon={Lifebuoy24Icon}
@@ -217,7 +217,7 @@ export default function Navbar(props) {
 
                         <ToniqToggleButton
                             className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-                            active={open}
+                            toggled={open}
                             onClick={() => {
                                 setWalletOpen(false);
                                 setOpen(!open);
@@ -226,7 +226,7 @@ export default function Navbar(props) {
                         />
                         <ToniqToggleButton
                             className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
-                            active={walletOpen}
+                            toggled={walletOpen}
                             onClick={() => {
                                 setWalletOpen(!walletOpen);
                                 setOpen(false);

@@ -75,7 +75,7 @@ export function ProfileFilters(props) {
                         <ToniqToggleButton
                             key={filterStatus}
                             text={NftStatusTitles[filterStatus]}
-                            active={props.filters.status == filterStatus}
+                            toggled={props.filters.status == filterStatus}
                             onClick={() => {
                                 props.updateFilters({
                                     ...props.filters,
