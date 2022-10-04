@@ -2041,13 +2041,13 @@
     "@toml-tools/lexer" "^0.3.1"
     "chevrotain" "4.1.1"
 
-"@toniq-labs/design-system@0.0.26":
-  "integrity" "sha512-l3Qu9qtoxnJEwV7VoBCgTqet3ioBE9WEcmLlQWYwR3OKn8kYd7vXWvkmZudX/PysMcSvp3r6SiWBWuEE58PaZQ=="
-  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.26.tgz"
-  "version" "0.0.26"
+"@toniq-labs/design-system@0.1.3":
+  "integrity" "sha512-VJyirccRJXFWVXRDMcbCtdg01Momq5HhDRVIllFKklleUQpAOJLIzjZ2X4Url0QaWkmk3Vton4GTVgBsfCKmLQ=="
+  "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.1.3.tgz"
+  "version" "0.1.3"
   dependencies:
     "augment-vir" "2.5.1"
-    "element-vir" "5.5.1"
+    "element-vir" "6.1.2"
     "lit" "2.3.1"
 
 "@toniq-labs/fleek-iterative-deploy@1.2.11":
@@ -3270,13 +3270,6 @@
   "integrity" "sha512-W7fkv/JqViIi70CJTPW3/cpJyJ5fFgHKgfBmdWHToFykdJhxztXxBXoZZ2UDePCEh7ffTWn0KIQ7AEMFGZtesw=="
   "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-1.12.2.tgz"
   "version" "1.12.2"
-  dependencies:
-    "fs-extra" "10.1.0"
-
-"augment-vir@2.2.1":
-  "integrity" "sha512-V2qQ03O+4Gym2F45/nyrfG/kJDY33PAhF7VlEoD6yIuY8eSgB5w6Xu8ilJsrlkB5k54Bws5T14hMWY9mnef6oQ=="
-  "resolved" "https://registry.npmjs.org/augment-vir/-/augment-vir-2.2.1.tgz"
-  "version" "2.2.1"
   dependencies:
     "fs-extra" "10.1.0"
 
@@ -5437,13 +5430,13 @@
   "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.57.tgz"
   "version" "1.4.57"
 
-"element-vir@5.5.1":
-  "integrity" "sha512-jLzZIRCUHuNSGA+gmuK//Bk8gaE3lGIAYsO0mwZtHHxOF15dq5xFzCKs8NFihm10km642iqLKgu8ki/3wIPhEA=="
-  "resolved" "https://registry.npmjs.org/element-vir/-/element-vir-5.5.1.tgz"
-  "version" "5.5.1"
+"element-vir@6.1.2":
+  "integrity" "sha512-UUbHuEjweY3tDUcEOdelpxQ8hWsGmabV565mFqJAXEkT1Tn7rd+3GHpUCA8Asq4zFJyR7CJZywHr3zBFveeUvg=="
+  "resolved" "https://registry.npmjs.org/element-vir/-/element-vir-6.1.2.tgz"
+  "version" "6.1.2"
   dependencies:
-    "augment-vir" "2.2.1"
-    "lit" "2.2.3"
+    "augment-vir" "2.5.0"
+    "lit" "2.3.1"
 
 "elliptic@^6.5.2", "elliptic@^6.5.3", "elliptic@^6.5.4":
   "integrity" "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ=="
@@ -8583,15 +8576,6 @@
   "version" "2.3.1"
   dependencies:
     "@types/trusted-types" "^2.0.2"
-
-"lit@2.2.3":
-  "integrity" "sha512-5/v+r9dH3Pw/o0rhp/qYk3ERvOUclNF31bWb0FiW6MPgwdQIr+/KCt/p3zcd8aPl8lIGnxdGrVcZA+gWS6oFOQ=="
-  "resolved" "https://registry.npmjs.org/lit/-/lit-2.2.3.tgz"
-  "version" "2.2.3"
-  dependencies:
-    "@lit/reactive-element" "^1.3.0"
-    "lit-element" "^3.2.0"
-    "lit-html" "^2.2.0"
 
 "lit@2.3.1":
   "integrity" "sha512-TejktDR4mqG3qB32Y8Lm5Lye3c8SUehqz7qRsxe1PqGYL6me2Ef+jeQAEqh20BnnGncv4Yxy2njEIT0kzK1WCw=="
