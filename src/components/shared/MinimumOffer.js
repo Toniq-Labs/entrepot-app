@@ -74,7 +74,7 @@ export function MinimumOffer(props) {
     }, []);
 
     return (
-        <div style={{ display: props.gridSize === 'large'? 'block': 'none'}}>
+        <div style={{display: props.gridSize === 'large' ? 'block' : 'none'}}>
             {offers && offers !== '' && (
                 <div
                     className={`hoverCard ${classes.hoverCard}`}
