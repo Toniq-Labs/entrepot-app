@@ -1,11 +1,20 @@
 import {defineElement, listen, defineElementEvent, html, css} from 'element-vir';
-import {toniqFontStyles} from '@toniq-labs/design-system';
+import {classMap} from 'lit/directives/class-map.js';
+import {
+    toniqFontStyles,
+    removeNativeFormStyles,
+    toniqColors,
+    createFocusStyles,
+} from '@toniq-labs/design-system';
 
 export type TopTab = {
     label: string;
 };
 
-export const entrepotTopTabsElement = defineElement<{tabs: TopTab[]}>()({
+export const entrepotTopTabsElement = defineElement<{
+    tabs: ReadonlyArray<TopTab>;
+    selected: Readonly<TopTab>;
+}>()({
     tagName: 'toniq-entrepot-top-tabs',
     styles: css`
         :host {
@@ -14,17 +23,44 @@ export const entrepotTopTabsElement = defineElement<{tabs: TopTab[]}>()({
         }
 
         button {
+            ${removeNativeFormStyles};
+            padding: 12px;
+            position: relative;
+            outline: none;
         }
 
         ul {
-            padding: 0;
             list-style: none;
             display: flex;
             flex-wrap: wrap;
-            gap: 24px;
+            flex-grow: 1;
+        }
+
+        ${createFocusStyles({
+            mainSelector: 'button:focus',
+            elementBorderSize: 0,
+            outlineGap: 0,
+        })};
+
+        ul,
+        li {
+            padding: 0;
+        }
+
+        li.selected {
+            ${toniqFontStyles.boldParagraphFont};
+            color: ${toniqColors.pageInteraction.foregroundColor};
+            border-bottom-color: ${toniqColors.pageInteraction.foregroundColor};
+            border-bottom-width: 2px;
+            pointer-events: none;
         }
 
         li {
+            border-bottom: 1px solid ${toniqColors.divider.foregroundColor};
+        }
+
+        li:last-of-type {
+            flex-grow: 1;
         }
     `,
     events: {
@@ -34,18 +70,24 @@ export const entrepotTopTabsElement = defineElement<{tabs: TopTab[]}>()({
         return html`
             <ul>
                 ${inputs.tabs.map(tab =>
-                    makeTopTab(tab, () => {
+                    makeTopTab(tab, tab === inputs.selected, () => {
                         dispatch(new events.tabChange(tab));
                     }),
                 )}
+                <li></li>
             </ul>
         `;
     },
 });
 
-function makeTopTab(tab: TopTab, clickCallback: () => void) {
+function makeTopTab(tab: TopTab, isSelected: boolean, clickCallback: () => void) {
     return html`
-        <li ${listen('click', clickCallback)}>
+        <li
+            class=${classMap({
+                selected: isSelected,
+            })}
+            ${listen('click', clickCallback)}
+        >
             <button>${tab.label}</button>
         </li>
     `;

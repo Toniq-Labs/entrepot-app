@@ -6,11 +6,16 @@ const devHosts = [
 ];
 
 function getEnvironmentByUrl(): EnvironmentEnum {
-    if (devHosts.some(devHost => window.location.hostname.startsWith(devHost))) {
+    const hostName = window.location.hostname;
+    if (devHosts.some(devHost => hostName.startsWith(devHost))) {
         return EnvironmentEnum.Dev;
+    } else if (hostName.startsWith('deploy-preview') && hostName.endsWith('netlify.app')) {
+        return EnvironmentEnum.DeployPreview;
     }
 
     return EnvironmentEnum.Prod;
 }
 
 export const environmentByUrl: EnvironmentEnum = getEnvironmentByUrl();
+
+export const isProd: boolean = environmentByUrl === EnvironmentEnum.Prod;

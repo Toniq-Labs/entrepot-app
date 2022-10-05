@@ -44,7 +44,7 @@ import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
 import {EntrepotHomePage} from './tsx/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
 import {EntrepotTestPage} from './tsx/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
-import {environmentByUrl} from './tsx/environment/environment-by-url';
+import {isProd} from './tsx/environment/environment-by-url';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -1932,10 +1932,10 @@ export default function App() {
                                         />
                                     }
                                 />
-                                {environmentByUrl ? (
-                                    <Route path="/test" exact element={<EntrepotTestPage />} />
-                                ) : (
+                                {isProd ? (
                                     ''
+                                ) : (
+                                    <Route path="/test" exact element={<EntrepotTestPage />} />
                                 )}
                                 <Route path="/" exact element={<EntrepotHomePage />} />
                                 <Route

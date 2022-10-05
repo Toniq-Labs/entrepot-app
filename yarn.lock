@@ -5441,7 +5441,7 @@
   "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.273.tgz"
   "version" "1.4.273"
 
-"element-vir@^6.1.2", "element-vir@6.1.5":
+"element-vir@^6.1.5", "element-vir@6.1.5":
   "integrity" "sha512-BShEyqtEQG/09h/D0zGnoyQc5aVgA7TTSjgY71+bTLeQZtcncHaS6FiFVePrbEa6sUfwwegRAtO4Q4WM+1wzGA=="
   "resolved" "https://registry.npmjs.org/element-vir/-/element-vir-6.1.5.tgz"
   "version" "6.1.5"
@@ -11578,6 +11578,11 @@
     "@types/json-schema" "^7.0.4"
     "ajv" "^6.12.2"
     "ajv-keywords" "^3.4.1"
+
+"scroll-snap-api@^1.0.2":
+  "integrity" "sha512-MRYDydb4sPIma744L682TmeXQaR7pgWFJArMCsgJB08tUnjZjxz5Y7U84l6+lPRALQZW2STzqJ8NXvHfy7WcfQ=="
+  "resolved" "https://registry.npmjs.org/scroll-snap-api/-/scroll-snap-api-1.0.2.tgz"
+  "version" "1.0.2"
 
 "scrypt-js@^3.0.0":
   "integrity" "sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA=="
