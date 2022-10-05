@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         width: 'auto',
         minWidth: 24,
-        height: 24,
+        maxHeight: 24,
         padding: 4,
         borderRadius: '16px',
         backgroundColor: '#F1F3F6',
@@ -625,7 +625,6 @@ export function ListingsFilters(props) {
                                                                             }}
                                                                         >
                                                                             <ToniqCheckbox
-                                                                                text={trait}
                                                                                 checked={isTraitSelected(
                                                                                     trait,
                                                                                     traitsCategory.category,
@@ -725,26 +724,49 @@ export function ListingsFilters(props) {
                                                                                         filterOptions,
                                                                                     );
                                                                                 }}
-                                                                            />
-                                                                            <span
-                                                                                className={`${
-                                                                                    isTraitSelected(
-                                                                                        trait,
-                                                                                        traitsCategory.category,
-                                                                                    )
-                                                                                        ? 'selected'
-                                                                                        : ''
-                                                                                } ${
-                                                                                    classes.traitCounter
-                                                                                }`}
+                                                                                style={{
+                                                                                    width: '100%',
+                                                                                }}
                                                                             >
-                                                                                {
-                                                                                    traitsCategory
-                                                                                        .count[
-                                                                                        trait
-                                                                                    ]
-                                                                                }
-                                                                            </span>
+                                                                                <div
+                                                                                    style={{
+                                                                                        display:
+                                                                                            'flex',
+                                                                                        placeContent:
+                                                                                            'center space-between',
+                                                                                        width: '100%',
+                                                                                        gap: 4,
+                                                                                    }}
+                                                                                >
+                                                                                    <span
+                                                                                        style={{
+                                                                                            textAlign:
+                                                                                                'left',
+                                                                                        }}
+                                                                                    >
+                                                                                        {trait}
+                                                                                    </span>
+                                                                                    <span
+                                                                                        className={`${
+                                                                                            isTraitSelected(
+                                                                                                trait,
+                                                                                                traitsCategory.category,
+                                                                                            )
+                                                                                                ? 'selected'
+                                                                                                : ''
+                                                                                        } ${
+                                                                                            classes.traitCounter
+                                                                                        }`}
+                                                                                    >
+                                                                                        {
+                                                                                            traitsCategory
+                                                                                                .count[
+                                                                                                trait
+                                                                                            ]
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            </ToniqCheckbox>
                                                                         </div>
                                                                     );
                                                                 })}

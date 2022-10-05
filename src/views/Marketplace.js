@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef, useRef} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
 import {Link} from 'react-router-dom';
@@ -265,6 +265,7 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
 
 export default function Marketplace(props) {
     const classes = useStyles();
+    const searchbar = useRef();
     const [
         sort,
         setSort,
@@ -308,6 +309,17 @@ export default function Marketplace(props) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    React.useEffect(() => {
+        const searchbarEl = document.querySelector('.searchbar');
+        if (searchbarEl && searchbarEl.shadowRoot && query !== '') {
+            const searchInput = searchbarEl.shadowRoot.querySelector('input');
+            if (searchInput) {
+                searchInput.focus();
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query]);
     useInterval(_updates, 60 * 1000);
 
     const filteredAndSortedCollections = props.collections
@@ -526,6 +538,7 @@ export default function Marketplace(props) {
                 >
                     <h1 className={classes.heading}>All Collections</h1>
                     <ToniqInput
+                        className="searchbar"
                         value={query}
                         style={{
                             '--toniq-accent-tertiary-background-color': 'transparent',

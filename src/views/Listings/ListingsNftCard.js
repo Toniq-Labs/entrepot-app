@@ -182,7 +182,6 @@ export function ListingsNftCard(props) {
                                 <Link
                                     to={`/marketplace/asset/` + getEXTID(listing.tokenid)}
                                     style={{textDecoration: 'none'}}
-                                    target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     <NftCard

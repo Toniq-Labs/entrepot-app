@@ -533,7 +533,7 @@ const Detail = props => {
             <Container className={classes.container}>
                 <button
                     variant="text"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(`/marketplace/${collection.route}`)}
                     className={classes.removeNativeButtonStyles}
                 >
                     <Grid container spacing={1}>

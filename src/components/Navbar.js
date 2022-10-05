@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useNavigate} from 'react-router';
+import React, {useState, useEffect, useRef} from 'react';
+import {useLocation, useNavigate} from 'react-router';
 import AppBar from '@material-ui/core/AppBar';
 import {createSearchParams} from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -58,6 +58,7 @@ const api = extjs.connect('https://boundary.ic0.app/');
 
 export default function Navbar(props) {
     const navigate = useNavigate();
+    const location = useLocation();
     const [
         open,
         setOpen,
@@ -72,8 +73,10 @@ export default function Navbar(props) {
     ] = React.useState(undefined);
     const classes = useStyles();
     const [searchParams] = useSearchParams();
-
-    const query = searchParams.get('search') || '';
+    const newParam = useRef('');
+    let query = useRef(
+        location.pathname !== '/marketplace' ? searchParams.get('search') || '' : '',
+    );
 
     const refresh = async () => {
         if (props.account) {
@@ -200,16 +203,25 @@ export default function Navbar(props) {
                             style={{alignSelf: 'center', marginLeft: '16px'}}
                             icon={Search24Icon}
                             placeholder="Search for NFTs..."
-                            value={query}
+                            value={query.current}
                             onValueChange={event => {
-                                const newParam = event.detail;
-
-                                navigate({
-                                    pathname: 'marketplace',
-                                    search: `?${createSearchParams(
-                                        newParam ? {search: newParam} : {},
-                                    )}`,
-                                });
+                                newParam.current = event.detail;
+                            }}
+                            onKeyDown={event => {
+                                if (event.key === 'Enter') {
+                                    const searchInput =
+                                        event.target.shadowRoot.querySelector('input');
+                                    if (searchInput) {
+                                        searchInput.value = '';
+                                        searchInput.blur();
+                                    }
+                                    navigate({
+                                        pathname: 'marketplace',
+                                        search: `?${createSearchParams(
+                                            newParam.current ? {search: newParam.current} : {},
+                                        )}`,
+                                    });
+                                }
                             }}
                         />
                         <div className={classes.grow} />
