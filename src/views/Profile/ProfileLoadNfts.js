@@ -9,16 +9,6 @@ import {wait} from 'augment-vir';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
-function trait2dArrayToObject(traitArray) {
-    return traitArray.reduce((accum, currentTrait) => {
-        if (currentTrait[0] in accum) {
-            accum[currentTrait[0]].push(currentTrait[1]);
-        }
-        accum[currentTrait[0]] = [currentTrait[1]];
-        return accum;
-    }, {});
-}
-
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {
         const isAllowedToView = !collection.dev;
@@ -32,21 +22,7 @@ async function includeCollectionsAndStats(nfts, allCollections) {
         return allNftCanisters.has(collection.canister);
     });
 
-    await Promise.all(
-        collections.map(async collection => {
-            if (!('traits' in collection)) {
-                const traits = await loadTraits(collection);
-                collection.traits = traits;
-            }
-        }),
-    );
-
     const allowedNfts = nfts.filter(nft => allowedCanistersSet.has(nft.canister));
-    allowedNfts.forEach(nft => {
-        if (nft.collection.traits?.length) {
-            nft.traits = trait2dArrayToObject(nft.collection.traits[1][nft.index][1]);
-        }
-    });
 
     return {
         nfts: allowedNfts,
@@ -89,21 +65,6 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
     return allNftsSets;
 }
 
-async function loadTraits(collection) {
-    if (collection?.filter) {
-        try {
-            const traitData = await fetch('/filter/' + collection.canister + '.json').then(
-                response => response.json(),
-            );
-            console.log({traitData});
-            return traitData;
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
-    }
-}
-
 async function getActivityNfts(address, collections) {
     const rawData = (
         await (
@@ -115,9 +76,9 @@ async function getActivityNfts(address, collections) {
         ).json()
     ).filter(nft => nft.token !== '');
     const activityData = await Promise.all(
-        rawData.map(async nft => {
+        rawData.map(async (nft, index) => {
             const isBuyer = nft.buyer === address;
-            const nftWithData = await getNftData(nft, collections);
+            const nftWithData = await getNftData(nft, collections, index);
             return {
                 ...nftWithData,
                 type: isBuyer ? 'Purchase' : 'Sale',
@@ -141,9 +102,7 @@ async function getOwnedNfts(address, identity, collections) {
         (await Promise.all([loadAllUserTokens(address, identity.getPrincipal().toText())]))
             .flat()
             .map(async (nft, index) => {
-                const nftWithData = await getNftData(nft, collections);
-                // throttle requests a bit so we don't overload the browser
-                await wait(index);
+                const nftWithData = await getNftData(nft, collections, index);
                 return {
                     ...nftWithData,
                     statuses: new Set(
@@ -169,9 +128,9 @@ async function getOffersMadeNfts(address, identity, collections) {
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .offered();
     const offersMadeNfts = await Promise.all(
-        offersMadeNftIds.map(async nftId => {
+        offersMadeNftIds.map(async (nftId, index) => {
             const nft = nftIdToNft(address, nftId);
-            const nftWithData = await getNftData(nft, collections);
+            const nftWithData = await getNftData(nft, collections, index, true);
             return {
                 ...nftWithData,
                 statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].OffersMade]),
@@ -188,9 +147,9 @@ async function getFavoritesNfts(address, identity, collections) {
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .liked();
     const favoriteNfts = await Promise.all(
-        favoriteNftIds.map(async nftId => {
+        favoriteNftIds.map(async (nftId, index) => {
             const nft = nftIdToNft(address, nftId);
-            const nftWithData = await getNftData(nft, collections);
+            const nftWithData = await getNftData(nft, collections, index);
             return {
                 ...nftWithData,
                 statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].Favorites]),
@@ -200,23 +159,34 @@ async function getFavoritesNfts(address, identity, collections) {
     return favoriteNfts;
 }
 
-async function getNftData(rawNft, collections) {
+async function getNftData(rawNft, collections, waitIndex, loadListing) {
+    await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
     const {index} = extjs.decodeTokenId(rawNft.token);
 
-    const tokenMetadata = await api.token(rawNft.token).getMetadata();
     const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
-    const offers = await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getEXTID(rawNft.token));
-    const rawListing = await (
-        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + rawNft.token)
-    ).json();
+    const offers = loadListing
+        ? await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getEXTID(rawNft.token))
+        : [];
+    const rawListing = loadListing
+        ? await (
+              await fetch(
+                  'https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + rawNft.token,
+              )
+          ).json()
+        : undefined;
 
     const listing = rawListing?.price
         ? {
               price: BigInt(rawListing.price),
               locked: rawListing.time > 0 ? [BigInt(rawListing.time)] : [],
           }
+        : rawNft.price
+        ? {
+              price: BigInt(rawNft.price),
+              locked: false,
+          }
         : undefined;
-    const nri = getNri(rawNft.canister, index);
+    const nri = undefined; // getNri(rawNft.canister, index);
     const collection = collections.find(collection => collection.canister === rawNft.canister);
 
     const userNft = {
@@ -224,7 +194,6 @@ async function getNftData(rawNft, collections) {
         index,
         rawListing,
         image: EntrepotNFTImage(getEXTCanister(rawNft.canister), index, rawNft.token, false, 0),
-        tokenMetadata,
         mintNumber,
         collection,
         offers,

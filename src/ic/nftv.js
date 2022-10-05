@@ -1,7 +1,7 @@
 export default function getNri(canister, index) {
     if (typeof index == 'undefined') {
         return loadNri(canister);
-        //Easy load without extra import
+        // Easy load without extra import
     } else {
         if (gridata.hasOwnProperty(canister)) return gridata[canister][index];
         else return false;
