@@ -50,8 +50,6 @@ function createFilterCallback(filterStats, currentFilters, query) {
 
         const scaledRarityStats = scaleRarity(scaleRarity(filterStats.rarity, 100, true), 0.01);
 
-        console.log({filterStats, currentFilters, scaledRarityStats});
-
         const matchesRarity =
             currentFilters.rarity == undefined ||
             (currentFilters.rarity.max === scaledRarityStats.max &&
