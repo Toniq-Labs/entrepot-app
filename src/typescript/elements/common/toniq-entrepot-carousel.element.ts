@@ -16,7 +16,7 @@ export type CarouselItem = {
 };
 
 export const entrepotCarousel = defineElement<{
-    items: CarouselItem[];
+    items: ReadonlyArray<CarouselItem>;
 }>()({
     tagName: 'toniq-entrepot-carousel',
     stateInit: {

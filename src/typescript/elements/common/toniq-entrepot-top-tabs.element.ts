@@ -7,8 +7,9 @@ import {
     createFocusStyles,
 } from '@toniq-labs/design-system';
 
-export type TopTab = {
+export type TopTab<ValueGeneric = unknown> = {
     label: string;
+    value: ValueGeneric;
 };
 
 export const entrepotTopTabsElement = defineElement<{
@@ -40,10 +41,11 @@ export const entrepotTopTabsElement = defineElement<{
             mainSelector: 'button:focus',
             elementBorderSize: 0,
             outlineGap: 0,
-        })};
+        })}
 
         ul,
         li {
+            margin: 0;
             padding: 0;
         }
 
@@ -70,7 +72,7 @@ export const entrepotTopTabsElement = defineElement<{
         return html`
             <ul>
                 ${inputs.tabs.map(tab =>
-                    makeTopTab(tab, tab === inputs.selected, () => {
+                    makeTopTab(tab, tab.label === inputs.selected.label, () => {
                         dispatch(new events.tabChange(tab));
                     }),
                 )}

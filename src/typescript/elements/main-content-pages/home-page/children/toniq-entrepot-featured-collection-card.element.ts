@@ -2,18 +2,20 @@ import {defineElement, html, css, assign, listen} from 'element-vir';
 import {
     entrepotSocialLinkElement,
     SocialLinkDetails,
-} from '../../common/toniq-entrepot-social-link.element';
-import {entrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
+} from '../../../common/toniq-entrepot-social-link.element';
+import {entrepotFlipCardElement} from '../../../common/toniq-entrepot-flip-card.element';
 import {ToniqButton, toniqFontStyles} from '@toniq-labs/design-system';
 
-export type FeaturedCollectionDetails = Readonly<{
-    collectionName: string;
-    imageUrls: string[];
-    longDescription: string;
-    socialLinks: SocialLinkDetails[];
-}>;
+export type FeaturedCollectionInputs = Readonly<
+    typeof entrepotFeaturedCollectionCardElement['inputsType']
+>;
 
-export const entrepotFeaturedCollectionCardElement = defineElement<FeaturedCollectionDetails>()({
+export const entrepotFeaturedCollectionCardElement = defineElement<{
+    collectionName: string;
+    imageUrls: ReadonlyArray<string>;
+    longDescription: string;
+    socialLinks: ReadonlyArray<SocialLinkDetails>;
+}>()({
     tagName: 'toniq-entrepot-featured-collection-card',
     stateInit: {
         flipped: false,
@@ -86,7 +88,13 @@ export const entrepotFeaturedCollectionCardElement = defineElement<FeaturedColle
         .card-face.back {
             width: 100%;
             height: 100%;
+            max-height: 100%;
+            max-width: 100%;
             box-sizing: border-box;
+        }
+
+        .card-face.back p {
+            overflow-y: auto;
         }
     `,
     renderCallback: ({inputs, state, updateState}) => {

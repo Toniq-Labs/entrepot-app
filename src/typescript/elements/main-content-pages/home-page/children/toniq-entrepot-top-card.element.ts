@@ -3,16 +3,18 @@ import {
     applyBackgroundAndForeground,
     toniqColors,
     toniqFontStyles,
-    toniqShadows,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css} from 'element-vir';
-import {makeDropShadowCardStyles} from '../../styles/drop-shadow-card.style';
+import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
+import {ValidIcp, toIcp} from '../../../../data/icp';
 
-export const entrepotHomePageTopCard = defineElement<{
+export type TopCardInputs = Readonly<typeof entrepotHomePageTopCardElement['inputsType']>;
+
+export const entrepotHomePageTopCardElement = defineElement<{
     imageUrl?: string | undefined;
     collectionName: string;
-    floorPrice: number;
-    volume: number;
+    floorPrice: ValidIcp;
+    volume: ValidIcp;
     index?: number | undefined;
 }>()({
     tagName: 'toniq-entrepot-home-page-top-card',
@@ -30,12 +32,13 @@ export const entrepotHomePageTopCard = defineElement<{
         .index-number {
             ${toniqFontStyles.h3Font};
             ${applyBackgroundAndForeground(toniqColors.pageInteraction)};
-            border-right: 1px solid ${toniqColors.divider.foregroundColor};
+            border-right: 1px dashed ${toniqColors.pageInteraction.foregroundColor};
 
             border-top-left-radius: inherit;
             border-bottom-left-radius: inherit;
             width: 44px;
             justify-content: center;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
         }
@@ -49,9 +52,10 @@ export const entrepotHomePageTopCard = defineElement<{
             border-radius: inherit;
             ${toniqFontStyles.paragraphFont};
             margin-right: 32px;
+            overflow: hidden;
         }
 
-        .main-contents span {
+        .main-contents div {
             display: flex;
             align-items: center;
             flex-shrink: 0;
@@ -79,14 +83,30 @@ export const entrepotHomePageTopCard = defineElement<{
             border-radius: 8px;
         }
 
-        .collection-name {
+        /* double selector to override ".main-contents div" */
+        .collection-name.collection-name {
             ${toniqFontStyles.boldFont};
-            flex-grow: 3;
+            flex-grow: 1;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+
+        .collection-name span {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .floor-price {
-            flex-grow: 1;
             padding: 0 12px;
+            margin-right: 20px;
+        }
+
+        .price {
+            ${toniqFontStyles.monospaceFont};
+            flex-basis: 90px;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 17px;
         }
     `,
     renderCallback: ({inputs}) => {
@@ -106,8 +126,8 @@ export const entrepotHomePageTopCard = defineElement<{
                       </div>
                   `;
 
-        const displayFloorPrice = `${inputs.floorPrice} ICP`;
-        const displayVolume = `${inputs.volume} ICP`;
+        const displayFloorPrice = `${toIcp(inputs.floorPrice)} ICP`;
+        const displayVolume = `${toIcp(inputs.volume)} ICP`;
 
         return html`
             ${indexTemplate}
@@ -117,9 +137,15 @@ export const entrepotHomePageTopCard = defineElement<{
                 })}"
             >
                 ${imageTemplate}
-                <span class="collection-name">${inputs.collectionName}</span>
-                <span class="floor-price">${displayFloorPrice}</span>
-                <span>${displayVolume}</span>
+                <div class="collection-name">
+                    <span>${inputs.collectionName}</span>
+                </div>
+                <div class="price floor-price">
+                    <span>${displayFloorPrice}</span>
+                </div>
+                <div class="price">
+                    <span>${displayVolume}</span>
+                </div>
             </div>
         `;
     },
