@@ -9,13 +9,13 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../../components/PriceICP';
-import {ProfileFilters} from './ProfileFilters';
+import {ProfileFilters, scaleRarity} from './ProfileFilters';
 import {AllFilter, ProfileViewType, ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
 import {nftCardContents, ListRow} from './ProfileNftCard';
 import {spreadableSearchParams} from '../../utilities/search-params';
 
-function createFilterCallback(currentFilters, query) {
+function createFilterCallback(filterStats, currentFilters, query) {
     return nft => {
         const price = Number(icpToString(nft.price, true, false));
 
@@ -48,8 +48,14 @@ function createFilterCallback(currentFilters, query) {
                 ),
         );
 
+        const scaledRarityStats = scaleRarity(scaleRarity(filterStats.rarity, 100, true), 0.01);
+
+        console.log({filterStats, currentFilters, scaledRarityStats});
+
         const matchesRarity =
-            currentFilters.rarity == undefined
+            currentFilters.rarity == undefined ||
+            (currentFilters.rarity.max === scaledRarityStats.max &&
+                currentFilters.rarity.min === scaledRarityStats.min)
                 ? true
                 : nft.nri &&
                   nft.nri <= currentFilters.rarity.max &&
@@ -210,7 +216,7 @@ export function ProfileBody(props) {
     }
 
     const filteredNfts = props.userNfts
-        .filter(createFilterCallback(currentFilters, props.query))
+        .filter(createFilterCallback(props.nftFilterStats, currentFilters, props.query))
         .sort(createSortCallback(sort));
 
     const isListView = props.viewType === ProfileViewType.List;

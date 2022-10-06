@@ -24,7 +24,7 @@ function collectionIndividualTraitExpandKey(collectionId, traitId) {
     return `traits:${collectionId}-trait:${traitId}`;
 }
 
-function scaleRarity(input, factor, round) {
+export function scaleRarity(input, factor, round) {
     const scaled = {
         min: input.min * factor,
         max: input.max * factor,
