@@ -1,8 +1,8 @@
 /* global BigInt */
+import getNri from '../../ic/nftv.js';
 import extjs from '../../ic/extjs.js';
 import {loadAllUserTokens, getEXTCanister, getEXTID, nftIdToNft} from '../../utilities/load-tokens';
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
-import getNri from '../../ic/nftv.js';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from 'augment-vir';
@@ -186,7 +186,6 @@ async function getNftData(rawNft, collections, waitIndex, loadListing) {
               locked: false,
           }
         : undefined;
-    const nri = undefined; // getNri(rawNft.canister, index);
     const collection = collections.find(collection => collection.canister === rawNft.canister);
 
     const userNft = {
@@ -198,9 +197,10 @@ async function getNftData(rawNft, collections, waitIndex, loadListing) {
         collection,
         offers,
         listing,
-        nri,
         traits: undefined,
     };
 
     return userNft;
 }
+
+export async function loadNri(nfts) {}

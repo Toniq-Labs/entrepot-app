@@ -12,16 +12,19 @@ import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {startLoadingProfileNftsAndCollections} from './ProfileLoadNfts';
+import {getThrottledNriDataForCanisters} from '../../typescript/local-cache/get-nri';
 import {ProfileTabs, ProfileViewType} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 import {useParams, useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
 import {spreadableSearchParams} from '../../utilities/search-params';
+import {createNftFilterStats} from './ProfileNftStats';
 
 const profileSearchParamName = 'profile-search';
 
 export function Profile(props) {
     const classes = profileStyles();
     const navigate = useNavigate();
+    const nriDataRef = React.useRef(undefined);
     const {tab: currentTab = ProfileTabs.MyNfts, address} = useParams();
     const [
         searchParams,
@@ -60,6 +63,23 @@ export function Profile(props) {
         });
     }
 
+    function insertNriData(nriData) {
+        if (!nriData) {
+            return;
+        }
+        Object.keys(allUserNfts.current).forEach(key => {
+            const nftData = allUserNfts.current[key];
+            if (nftData instanceof Promise) {
+                return;
+            }
+
+            nftData.nfts.forEach(nft => {
+                nft.nri = nriData[nft.canister]?.[nft.index];
+            });
+            nftData.stats = createNftFilterStats(nftData.nfts);
+        });
+    }
+
     function refresh() {
         if (props.account && props.identity && props.collections) {
             const allResults = startLoadingProfileNftsAndCollections(
@@ -67,6 +87,14 @@ export function Profile(props) {
                 props.identity,
                 props.collections,
             );
+
+            getThrottledNriDataForCanisters(
+                props.collections.map(collection => collection.id),
+            ).then(nriData => {
+                insertNriData(nriData);
+                nriDataRef.current = nriData;
+                forceUpdate();
+            });
 
             /**
              * Only set promises if it hasn't been loaded already, this prevents future refreshes
@@ -79,6 +107,8 @@ export function Profile(props) {
             Object.keys(allResults).map(key =>
                 allResults[key].then(resolved => {
                     allUserNfts.current[key] = resolved;
+
+                    insertNriData(nriDataRef.current);
                     forceUpdate();
                     if (Object.values(allUserNfts).every(value => !(value instanceof Promise))) {
                         console.info({allLoadedProfileNfts: allUserNfts});

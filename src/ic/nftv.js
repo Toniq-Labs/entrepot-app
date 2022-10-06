@@ -17,12 +17,14 @@ async function loadNri(canister) {
                     return data;
                 });
             } else {
-                return response.text().then(text => {
+                return response.text().then(() => {
                     return false;
                 });
             }
         });
-        if (fd) gridata[canister] = fd;
+        if (fd) {
+            gridata[canister] = fd;
+        }
     } catch (error) {
         console.error(canister, error);
         return false;
