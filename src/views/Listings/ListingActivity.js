@@ -261,7 +261,9 @@ export default function ListingActivity(props) {
                 ) : (
                     ''
                 )}
-                <div style={{display: 'flex', justifyContent: 'space-between', flexGrow: 1, gap: 16}}>
+                <div
+                    style={{display: 'flex', justifyContent: 'space-between', flexGrow: 1, gap: 16}}
+                >
                     <div className={classes.activityInfoContainer} style={{...style}}>
                         <div
                             style={{
@@ -283,11 +285,16 @@ export default function ListingActivity(props) {
                         >
                             {items[2]}
                         </div>
-                        <div style={{
+                        <div
+                            style={{
                                 flexGrow: 1,
                                 flexBasis: 0,
                                 minWidth: 150,
-                            }} className={classes.hideWhenMobile}>{items[3]}</div>
+                            }}
+                            className={classes.hideWhenMobile}
+                        >
+                            {items[3]}
+                        </div>
                     </div>
                     <div
                         className={`${classes.activityInfoContainer} ${classes.hideWhenMobile}`}
