@@ -5,7 +5,7 @@ import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
-import PriceICP, {icpToString} from '../../components/PriceICP';
+import PriceICP from '../../components/PriceICP';
 import CollectionDetails from '../../components/CollectionDetails';
 import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
@@ -108,6 +108,33 @@ const useStyles = makeStyles(theme => ({
             display: 'none',
         },
     },
+    hideWhenTablet: {
+        [theme.breakpoints.down('md')]: {
+            display: 'none',
+        },
+    },
+    showWhenMobile: {
+        display: 'none',
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+    },
+    toggleSort: {
+        background: 'none',
+        padding: 0,
+        margin: 0,
+        border: 'none',
+        font: 'inherit',
+        cursor: 'pointer',
+        textTransform: 'inherit',
+        textDecoration: 'inherit',
+        '-webkit-tap-highlight-color': 'transparent',
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
 }));
 
 var userPreferences;
@@ -116,61 +143,31 @@ var storageKey = 'userPreferences';
 const defaultSortOption = {
     value: {
         type: 'time',
-        sort: 'desc',
     },
-    label: 'Recently Sold',
+    label: 'Time',
 };
+
+const defaultSortType = 'asc';
 
 const sortOptions = [
     defaultSortOption,
     {
         value: {
-            type: 'time',
-            sort: 'asc',
-        },
-        label: 'Oldest',
-    },
-    {
-        value: {
             type: 'price',
-            sort: 'asc',
         },
-        label: 'Price: Low to High',
-    },
-    {
-        value: {
-            type: 'price',
-            sort: 'desc',
-        },
-        label: 'Price: High to Low',
+        label: 'Price',
     },
     {
         value: {
             type: 'rarity',
-            sort: 'asc',
         },
-        label: 'Rarity: Low to High',
-    },
-    {
-        value: {
-            type: 'rarity',
-            sort: 'desc',
-        },
-        label: 'Rarity: High to Low',
+        label: 'Rarity',
     },
     {
         value: {
             type: 'mintNumber',
-            sort: 'asc',
         },
-        label: 'Mint #: Low to High',
-    },
-    {
-        value: {
-            type: 'mintNumber',
-            sort: 'desc',
-        },
-        label: 'Mint #: High to Low',
+        label: 'Mint #',
     },
 ];
 
@@ -211,6 +208,7 @@ export default function ListingActivity(props) {
     } else {
         userPreferences = {
             sortOption: defaultSortOption,
+            sortType: defaultSortType,
         };
         storeUserPreferences(false, userPreferences);
     }
@@ -223,7 +221,11 @@ export default function ListingActivity(props) {
     const [
         sort,
         setSort,
-    ] = useState(userPreferences.sortOption);
+    ] = useState(userPreferences.sortOption || defaultSortOption);
+    const [
+        sortType,
+        setSortType,
+    ] = useState(userPreferences.sortType || defaultSortType);
     const [
         activityPage,
         setActivityPage,
@@ -259,68 +261,73 @@ export default function ListingActivity(props) {
                 ) : (
                     ''
                 )}
-                <div className={classes.activityInfoContainer} style={{...style}}>
-                    <div
-                        style={{
-                            flexBasis: 0,
-                            marginLeft: '32px',
-                            flexGrow: 1,
-                            maxWidth: '72px',
-                        }}
-                    >
-                        {items[1]}
+                <div style={{display: 'flex', justifyContent: 'space-between', flexGrow: 1, gap: 16}}>
+                    <div className={classes.activityInfoContainer} style={{...style}}>
+                        <div
+                            style={{
+                                flexBasis: 0,
+                                marginLeft: '32px',
+                                flexGrow: 1,
+                                maxWidth: '72px',
+                            }}
+                        >
+                            {items[1]}
+                        </div>
+                        <div
+                            style={{
+                                flexGrow: 1,
+                                flexBasis: 0,
+                                maxWidth: '78px',
+                                marginLeft: '32px',
+                            }}
+                        >
+                            {items[2]}
+                        </div>
+                        <div style={{
+                                flexGrow: 1,
+                                flexBasis: 0,
+                                minWidth: 150,
+                            }} className={classes.hideWhenMobile}>{items[3]}</div>
                     </div>
                     <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                            maxWidth: '78px',
-                            marginLeft: '32px',
-                        }}
+                        className={`${classes.activityInfoContainer} ${classes.hideWhenMobile}`}
+                        style={{justifyContent: 'end', ...style}}
                     >
-                        {items[2]}
+                        <div
+                            style={{
+                                width: 180,
+                            }}
+                            className={classes.hideWhenMobile}
+                        >
+                            {items[4]}
+                        </div>
+                        <div
+                            style={{
+                                width: 180,
+                            }}
+                            className={classes.hideWhenMobile}
+                        >
+                            {items[5]}
+                        </div>
+                        <div
+                            style={{
+                                width: 250,
+                            }}
+                            className={classes.hideWhenTablet}
+                        >
+                            {items[6]}
+                        </div>
+                        <div
+                            style={{
+                                width: 120,
+                            }}
+                            className={classes.hideWhenTablet}
+                        >
+                            {items[7]}
+                        </div>
                     </div>
-                    <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                            maxWidth: '180px',
-                        }}
-                        className={classes.hideWhenMobile}
-                    >
-                        {items[3]}
-                    </div>
-                    <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                            maxWidth: '185px',
-                        }}
-                        className={classes.hideWhenMobile}
-                    >
-                        {items[4]}
-                    </div>
-                    <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                            maxWidth: '185px',
-                        }}
-                        className={classes.hideWhenMobile}
-                    >
-                        {items[5]}
-                    </div>
-                    <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                        }}
-                        className={classes.hideWhenMobile}
-                    >
-                        {items[6]}
-                    </div>
+                    <div className={classes.showWhenMobile}>{items[7]}</div>
                 </div>
-                {items[7]}
             </div>
         );
     }
@@ -393,7 +400,7 @@ export default function ListingActivity(props) {
                 return value[sort.value.type];
             },
         ],
-        [sort.value.sort],
+        [sortType],
     );
 
     const activity = chunk(filteredAndSortedListings, 9);
@@ -446,29 +453,35 @@ export default function ListingActivity(props) {
                             }
                         }}
                     />
-                </div>
-                <WithFilterPanel
-                    noFilters={true}
-                    otherControlsChildren={
-                        <>
-                            <ToniqDropdown
-                                style={{
-                                    display: 'flex',
-                                    '--toniq-accent-secondary-background-color': 'transparent',
-                                    width: '360px',
-                                }}
+                    <div style={{display: 'flex', gap: 4}}>
+                        <button
+                            className={classes.toggleSort}
+                            onClick={() => {
+                                sortType === 'asc' ? setSortType('desc') : setSortType('asc');
+                                storeUserPreferences('sortType', sortType);
+                            }}
+                        >
+                            <ToniqIcon
                                 icon={ArrowsSort24Icon}
-                                selectedLabelPrefix="Sort By:"
-                                selected={sort}
-                                onSelectChange={event => {
-                                    setSort(event.detail);
-                                    storeUserPreferences('sortOption', event.detail);
-                                }}
-                                options={sortOptions}
+                                style={{transform: sortType === 'asc' ? 'scaleX(1)' : 'scaleX(-1)'}}
                             />
-                        </>
-                    }
-                >
+                        </button>
+                        <ToniqDropdown
+                            style={{
+                                '--toniq-accent-secondary-background-color': 'transparent',
+                                width: 200,
+                            }}
+                            selectedLabelPrefix="Sort By:"
+                            selected={sort}
+                            onSelectChange={event => {
+                                setSort(event.detail);
+                                storeUserPreferences('sortOption', event.detail);
+                            }}
+                            options={sortOptions}
+                        />
+                    </div>
+                </div>
+                <WithFilterPanel noFilters={true}>
                     {filteredAndSortedListings.length ? (
                         <div className={classes.listRowContainer}>
                             <div className={classes.listRowHeader}>

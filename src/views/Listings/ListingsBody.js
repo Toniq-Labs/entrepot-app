@@ -3,12 +3,6 @@ import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import {WithFilterPanel} from '../../shared/WithFilterPanel.js';
-import {
-    cssToReactStyleObject,
-    toniqColors,
-    ArrowsSort24Icon,
-    toniqFontStyles,
-} from '@toniq-labs/design-system';
 import {useLocation, useSearchParams} from 'react-router-dom';
 import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
@@ -18,10 +12,10 @@ import {ListingsTabs} from './ListingsTabs.js';
 import {ListingsFilters} from './ListingsFilters.js';
 import {ListingsNftCard} from './ListingsNftCard.js';
 import {EntrepotNFTMintNumber} from '../../utils.js';
-import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components.js';
 import {isInRange} from '../../utilities/number-utils.js';
 import getGenes from '../../components/CronicStats.js';
 import extjs from '../../ic/extjs';
+import {ListingsOtherControls} from './ListingsOtherControls';
 const api = extjs.connect('https://boundary.ic0.app/');
 
 function useInterval(callback, delay) {
@@ -60,10 +54,11 @@ var storageKey = 'userPreferences';
 const defaultSortOption = {
     value: {
         type: 'price',
-        sort: 'asc',
     },
-    label: 'Price: Low to High',
+    label: 'Price',
 };
+
+const defaultSortType = 'asc';
 
 const defaultOpenedAccordions = [
     'status',
@@ -77,38 +72,15 @@ const sortOptions = [
     defaultSortOption,
     {
         value: {
-            type: 'price',
-            sort: 'desc',
-        },
-        label: 'Price: High to Low',
-    },
-    {
-        value: {
             type: 'rarity',
-            sort: 'asc',
         },
-        label: 'Rarity: Low to High',
-    },
-    {
-        value: {
-            type: 'rarity',
-            sort: 'desc',
-        },
-        label: 'Rarity: High to Low',
+        label: 'Rarity',
     },
     {
         value: {
             type: 'mintNumber',
-            sort: 'asc',
         },
-        label: 'Mint #: Low to High',
-    },
-    {
-        value: {
-            type: 'mintNumber',
-            sort: 'desc',
-        },
-        label: 'Mint #: High to Low',
+        label: 'Mint #',
     },
 ];
 
@@ -285,6 +257,7 @@ export function ListingsBody(props) {
                 ...defaultFilter,
             },
             sortOption: defaultSortOption,
+            sortType: defaultSortType,
             toggleFilterPanel: false,
             gridSize: 'large',
             openedAccordion: defaultOpenedAccordions,
@@ -300,6 +273,10 @@ export function ListingsBody(props) {
         sort,
         setSort,
     ] = useState(userPreferences.sortOption);
+    const [
+        sortType,
+        setSortType,
+    ] = useState(userPreferences.sortType || defaultSortType);
     const [
         gridSize,
         setGridSize,
@@ -480,7 +457,7 @@ export function ListingsBody(props) {
                 return value[sort.value.type];
             },
         ],
-        [sort.value.sort],
+        [sortType],
     );
 
     useInterval(_updates, 10 * 1000);
@@ -568,37 +545,19 @@ export function ListingsBody(props) {
                     />
                 }
                 otherControlsChildren={
-                    <>
-                        <span
-                            style={{
-                                display: 'flex',
-                                ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                                color: toniqColors.pageSecondary.foregroundColor,
-                            }}
-                        >
-                            NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
-                        </span>
-                        <ToniqDropdown
-                            style={{
-                                '--toniq-accent-secondary-background-color': 'transparent',
-                                width: '360px',
-                            }}
-                            icon={ArrowsSort24Icon}
-                            selectedLabelPrefix="Sort By:"
-                            selected={sort}
-                            onSelectChange={event => {
-                                setSort(event.detail);
-                                storeUserPreferences('sortOption', event.detail);
-                                pageListing.current = 0;
-                                forceCheck();
-                            }}
-                            options={sortOptions.filter(sortOption => {
-                                return sortOption.value.type === 'rarity' && !hasRarity()
-                                    ? false
-                                    : true;
-                            })}
-                        />
-                    </>
+                    <ListingsOtherControls
+                        listings={listings}
+                        filteredAndSortedListings={filteredAndSortedListings}
+                        setSort={setSort}
+                        storeUserPreferences={storeUserPreferences}
+                        pageListing={pageListing}
+                        forceCheck={forceCheck}
+                        hasRarity={hasRarity}
+                        sort={sort}
+                        sortOptions={sortOptions}
+                        sortType={sortType}
+                        setSortType={setSortType}
+                    />
                 }
             >
                 <ListingsNftCard

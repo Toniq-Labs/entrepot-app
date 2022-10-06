@@ -1,4 +1,4 @@
-import React, {createRef, useRef} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
 import {Link} from 'react-router-dom';
@@ -182,41 +182,41 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
         gap: 16,
     },
+    toggleSort: {
+        background: 'none',
+        padding: 0,
+        margin: 0,
+        border: 'none',
+        font: 'inherit',
+        cursor: 'pointer',
+        textTransform: 'inherit',
+        textDecoration: 'inherit',
+        '-webkit-tap-highlight-color': 'transparent',
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
 }));
 
 const defaultSortOption = {
-    value: 'total_desc',
-    label: 'Total Volume: High to Low',
+    value: 'total',
+    label: 'Total Volume',
 };
+const defaultSortType = 'desc';
 const sortOptions = [
     {
-        value: 'listings_asc',
-        label: 'Listings: Low to High',
-    },
-    {
-        value: 'listings_desc',
-        label: 'Listings: High to Low',
+        value: 'listings',
+        label: 'Listings',
     },
     defaultSortOption,
     {
-        value: 'total_asc',
-        label: 'Total Volume: Low to High',
+        value: 'floor',
+        label: 'Floor Price',
     },
     {
-        value: 'floor_asc',
-        label: 'Floor Price: Low to High',
-    },
-    {
-        value: 'floor_desc',
-        label: 'Floor Price: High to Low',
-    },
-    {
-        value: 'alpha_asc',
-        label: 'Alphabetically: A-Z',
-    },
-    {
-        value: 'alpha_desc',
-        label: 'Alphabetically: Z-A',
+        value: 'alpha',
+        label: 'Alphabetically',
     },
 ];
 
@@ -265,11 +265,14 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
 
 export default function Marketplace(props) {
     const classes = useStyles();
-    const searchbar = useRef();
     const [
         sort,
         setSort,
     ] = React.useState(defaultSortOption);
+    const [
+        sortType,
+        setSortType,
+    ] = React.useState(defaultSortType);
     const [
         searchParams,
         setSearchParams,
@@ -343,7 +346,7 @@ export default function Marketplace(props) {
             return allowed && passFilter && (query == '' || inQuery);
         })
         .sort((a, b) => {
-            switch (sort.value) {
+            switch (`${sort.value}_${sortType}`) {
                 case 'featured':
                     return b.priority - a.priority;
                     /* eslint-disable no-unreachable */
@@ -652,19 +655,37 @@ export default function Marketplace(props) {
                                 >
                                     {filteredAndSortedCollections.length} Collections
                                 </span>
-                                <ToniqDropdown
-                                    style={{
-                                        '--toniq-accent-secondary-background-color': 'transparent',
-                                        width: '360px',
-                                    }}
-                                    icon={ArrowsSort24Icon}
-                                    selectedLabelPrefix="Sort By:"
-                                    selected={sort}
-                                    onSelectChange={event => {
-                                        setSort(event.detail);
-                                    }}
-                                    options={sortOptions}
-                                />
+                                <div style={{display: 'flex', gap: 4}}>
+                                    <button
+                                        className={classes.toggleSort}
+                                        onClick={() => {
+                                            sortType === 'asc'
+                                                ? setSortType('desc')
+                                                : setSortType('asc');
+                                        }}
+                                    >
+                                        <ToniqIcon
+                                            icon={ArrowsSort24Icon}
+                                            style={{
+                                                transform:
+                                                    sortType === 'asc' ? 'scaleX(1)' : 'scaleX(-1)',
+                                            }}
+                                        />
+                                    </button>
+                                    <ToniqDropdown
+                                        style={{
+                                            '--toniq-accent-secondary-background-color':
+                                                'transparent',
+                                            width: 250,
+                                        }}
+                                        selectedLabelPrefix="Sort By:"
+                                        selected={sort}
+                                        onSelectChange={event => {
+                                            setSort(event.detail);
+                                        }}
+                                        options={sortOptions}
+                                    />
+                                </div>
                             </>
                         }
                     >
