@@ -42,9 +42,9 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
-import {EntrepotHomePage} from './tsx/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
-import {EntrepotTestPage} from './tsx/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
-import {isProd} from './tsx/environment/environment-by-url';
+import {EntrepotHomePage} from './typescript/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
+import {EntrepotTestPage} from './typescript/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
+import {isProd} from './typescript/environment/environment-by-url';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 

@@ -1,5 +1,5 @@
 import {RequiredAndNotNullBy} from 'augment-vir';
-import {scrollSnapToNext, ScrollDirection} from 'scroll-snap-api';
+import {scrollSnapToNext, ScrollDirection, getScrollSnapPositions} from 'scroll-snap-api';
 import {classMap} from 'lit/directives/class-map.js';
 import {
     applyBackgroundAndForeground,
@@ -8,14 +8,12 @@ import {
     toniqColors,
     ToniqIcon,
 } from '@toniq-labs/design-system';
-import {defineElement, html, css, assign, listen} from 'element-vir';
+import {defineElement, html, css, assign, listen, onResize} from 'element-vir';
 
 export type CarouselItem = {
     imageUrl: string;
     link: string;
 };
-
-const carouselEdgeBuffer = 0;
 
 export const entrepotCarousel = defineElement<{
     items: CarouselItem[];
@@ -26,6 +24,7 @@ export const entrepotCarousel = defineElement<{
             left: 0,
             right: Infinity,
         },
+        scrollSnapPositions: [] as number[],
         scrollThrottle: false,
     },
     styles: css`
@@ -112,8 +111,16 @@ export const entrepotCarousel = defineElement<{
         }
     `,
     renderCallback: ({inputs, state, updateState, host}) => {
+        const leftArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, 0);
+        const rightArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, -1);
+
         return html`
             <div
+                ${onResize(() => {
+                    updateState({
+                        scrollSnapPositions: getScrollSnapPositions(getScrollContainer(host)).x,
+                    });
+                })}
                 data-query-id="scrolling-container"
                 class="images-container"
                 ${listen('scroll', event => {
@@ -140,7 +147,7 @@ export const entrepotCarousel = defineElement<{
                 <div class="arrow left">
                     <${ToniqIcon}
                         class=${classMap({
-                            hidden: state.scrollPosition.left <= carouselEdgeBuffer,
+                            hidden: state.scrollPosition.left <= (leftArrowHideZone ?? 100),
                         })}
                         ${assign(ToniqIcon, {
                             icon: ArrowLeft24Icon,
@@ -162,7 +169,10 @@ export const entrepotCarousel = defineElement<{
                 <div class="arrow right">
                     <${ToniqIcon}
                         class=${classMap({
-                            hidden: state.scrollPosition.right <= carouselEdgeBuffer,
+                            hidden:
+                                rightArrowHideZone == undefined
+                                    ? state.scrollPosition.right <= 100
+                                    : state.scrollPosition.left >= rightArrowHideZone,
                         })}
                         ${assign(ToniqIcon, {
                             icon: ArrowRight24Icon,
@@ -177,13 +187,33 @@ export const entrepotCarousel = defineElement<{
     },
 });
 
-function updateScrollPosition(
-    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>,
-    direction: ScrollDirection,
-) {
+function getMidSnapPosition(positions: number[], positionToRead: number): number | undefined {
+    const increment = positionToRead >= 0 ? 1 : -1;
+    const indexToRead: number =
+        positionToRead < 0 ? positions.length + positionToRead : positionToRead;
+    const nextIndex = indexToRead + increment;
+
+    const start = positions[indexToRead];
+    const end = positions[nextIndex];
+
+    if (start == undefined || end == undefined) {
+        return undefined;
+    }
+
+    return (start + end) / 2 + increment * 20;
+}
+
+function getScrollContainer(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>) {
     const scrollContainer = host.shadowRoot.querySelector('[data-query-id="scrolling-container"]');
     if (!(scrollContainer instanceof HTMLElement)) {
         throw new Error(`Failed to find scroll container.`);
     }
-    scrollSnapToNext(scrollContainer, direction);
+    return scrollContainer;
+}
+
+function updateScrollPosition(
+    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>,
+    direction: ScrollDirection,
+) {
+    scrollSnapToNext(getScrollContainer(host), direction);
 }
