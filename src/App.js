@@ -32,6 +32,7 @@ import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
 import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
 import legacyPrincipalPayouts from './payments.json';
 import getNri from './ic/nftv.js';
+import {throttle} from './typescript/augments/function';
 import {
     EntrepotUpdateUSD,
     EntrepotUpdateLiked,
@@ -225,6 +226,11 @@ export default function App() {
     const [
         showConfirm,
         setShowConfirm,
+    ] = React.useState(false);
+
+    const [
+        showHeaderShadow,
+        setShowHeaderShadow,
     ] = React.useState(false);
     //Account
 
@@ -927,6 +933,16 @@ export default function App() {
         updateCollections();
         EntrepotUpdateUSD();
         EntrepotUpdateStats();
+        window.document.addEventListener(
+            'scroll',
+            throttle(250, () => {
+                if (window.document.body.parentElement.scrollTop <= 10) {
+                    setShowHeaderShadow(false);
+                } else {
+                    setShowHeaderShadow(true);
+                }
+            }),
+        );
         if (identity) EntrepotUpdateLiked(identity);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -1076,6 +1092,7 @@ export default function App() {
             {appLoaded ? (
                 <>
                     <Navbar
+                        showHeaderShadow={showHeaderShadow}
                         view={rootPage}
                         processPayments={processPayments}
                         setBalance={setBalance}

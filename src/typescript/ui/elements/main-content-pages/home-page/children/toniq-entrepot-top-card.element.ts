@@ -32,7 +32,7 @@ export const entrepotHomePageTopCardElement = defineElement<{
         .index-number {
             ${toniqFontStyles.h3Font};
             ${applyBackgroundAndForeground(toniqColors.pageInteraction)};
-            border-right: 1px dashed ${toniqColors.pageInteraction.foregroundColor};
+            border-right: 1px solid ${toniqColors.dividerFaint.foregroundColor};
 
             border-top-left-radius: inherit;
             border-bottom-left-radius: inherit;
