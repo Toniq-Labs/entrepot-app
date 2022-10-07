@@ -5,7 +5,7 @@ import {html, css, assign, defineElementNoInputs, listen} from 'element-vir';
 import {entrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {entrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
-import {shuffle} from '../../../augments/array';
+import {shuffle} from '../../../../augments/array';
 
 const images = [
     'https://ixk4q-oiaaa-aaaaj-qap3q-cai.raw.ic0.app/?index=60',

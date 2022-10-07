@@ -1,5 +1,5 @@
 import Dexie, {Table} from 'dexie';
-import {NriData} from '../data/models/nri-data';
+import {NriData} from '../models/nri-data';
 
 export type NriCacheItem = {
     canisterId: string;

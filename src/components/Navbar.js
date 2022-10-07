@@ -160,8 +160,6 @@ export default function Navbar(props) {
         ...cssToReactStyleObject(toniqFontStyles.extraBoldFont),
     };
 
-    console.log({balance});
-
     return (
         <>
             <style

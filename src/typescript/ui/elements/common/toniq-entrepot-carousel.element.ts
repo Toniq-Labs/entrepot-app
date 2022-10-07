@@ -9,14 +9,16 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css, assign, listen, onResize} from 'element-vir';
+import {throttle} from '../../../augments/function';
 
 export type CarouselItem = {
     imageUrl: string;
     link: string;
 };
 
-export const entrepotCarousel = defineElement<{
+export const entrepotCarouselElement = defineElement<{
     items: ReadonlyArray<CarouselItem>;
+    automaticRotation?: boolean;
 }>()({
     tagName: 'toniq-entrepot-carousel',
     stateInit: {
@@ -26,12 +28,16 @@ export const entrepotCarousel = defineElement<{
         },
         scrollSnapPositions: [] as number[],
         scrollThrottle: false,
+        rotationIntervalId: undefined as undefined | number,
+        enableRotation: true,
     },
     styles: css`
         :host {
-            display: flex;
+            display: block;
             position: relative;
-            padding: 32px 0;
+            margin: 32px 0;
+            max-height: 340px;
+            overflow-y: hidden;
         }
 
         .carousel-image-wrapper {
@@ -57,13 +63,12 @@ export const entrepotCarousel = defineElement<{
             overflow-x: scroll;
             scroll-snap-type: x mandatory;
             z-index: 9;
+            padding-bottom: 100px;
         }
 
         .arrow {
             --background-degrees: 90deg;
             position: sticky;
-            height: 100%;
-            /* zero width here so that it does not take up space that pushes the thumbnails */
             width: 200px;
             max-width: 20%;
             top: 0;
@@ -110,7 +115,22 @@ export const entrepotCarousel = defineElement<{
             pointer-events: none;
         }
     `,
+    cleanupCallback: ({state}) => {
+        window.clearInterval(state.rotationIntervalId);
+    },
     renderCallback: ({inputs, state, updateState, host}) => {
+        if (inputs.automaticRotation && state.rotationIntervalId == undefined) {
+            updateState({
+                rotationIntervalId: window.setInterval(() => {
+                    rotateCarousel(host);
+                }, 8000),
+            });
+        } else if (!inputs.automaticRotation && state.rotationIntervalId != undefined) {
+            window.clearInterval(state.rotationIntervalId);
+            updateState({
+                rotationIntervalId: undefined,
+            });
+        }
         const leftArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, 0);
         const rightArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, -1);
 
@@ -121,27 +141,9 @@ export const entrepotCarousel = defineElement<{
                         scrollSnapPositions: getScrollSnapPositions(getScrollContainer(host)).x,
                     });
                 })}
-                data-query-id="scrolling-container"
                 class="images-container"
                 ${listen('scroll', event => {
-                    const element = event.target as HTMLElement;
-                    if (!state.scrollThrottle) {
-                        setTimeout(() => {
-                            updateState({
-                                scrollPosition: {
-                                    left: element.scrollLeft,
-                                    right:
-                                        element.scrollWidth -
-                                        element.scrollLeft -
-                                        element.clientWidth,
-                                },
-                                scrollThrottle: false,
-                            });
-                        }, 100);
-                        updateState({
-                            scrollThrottle: true,
-                        });
-                    }
+                    throttledUpdateScrollPosition(event.target as HTMLElement, updateState);
                 })}
             >
                 <div class="arrow left">
@@ -204,7 +206,7 @@ function getMidSnapPosition(positions: number[], positionToRead: number): number
 }
 
 function getScrollContainer(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>) {
-    const scrollContainer = host.shadowRoot.querySelector('[data-query-id="scrolling-container"]');
+    const scrollContainer = host.shadowRoot.querySelector('.images-container');
     if (!(scrollContainer instanceof HTMLElement)) {
         throw new Error(`Failed to find scroll container.`);
     }
@@ -217,3 +219,45 @@ function updateScrollPosition(
 ) {
     scrollSnapToNext(getScrollContainer(host), direction);
 }
+
+function rotateCarousel(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>) {
+    // don't rotate if the user is mousing over the carousel
+    if (host.matches(':hover')) {
+        return;
+    }
+    const scrollContainer = getScrollContainer(host);
+    const snapPositions = getScrollSnapPositions(getScrollContainer(host)).x;
+    const firstScrollPosition = snapPositions[0] ?? 0;
+    const lastScrollPosition = snapPositions.slice(-1).pop();
+
+    if (
+        lastScrollPosition &&
+        scrollContainer.scrollLeft >=
+            lastScrollPosition -
+                // small buffer
+                10
+    ) {
+        scrollContainer.scrollTo({
+            behavior: 'smooth',
+            left: firstScrollPosition,
+        });
+    } else {
+        scrollSnapToNext(scrollContainer, 'right');
+    }
+}
+
+const throttledUpdateScrollPosition = throttle(
+    250,
+    (
+        element: HTMLElement,
+        updateState: (newState: Partial<typeof entrepotCarouselElement['stateType']>) => void,
+    ) => {
+        updateState({
+            scrollPosition: {
+                left: element.scrollLeft,
+                right: element.scrollWidth - element.scrollLeft - element.clientWidth,
+            },
+            scrollThrottle: false,
+        });
+    },
+);

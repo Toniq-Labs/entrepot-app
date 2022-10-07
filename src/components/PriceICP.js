@@ -24,7 +24,6 @@ export function icpToString(priceE8s /* BigNumber */, convertToIcp, truncate) {
 }
 
 export default function PriceICP(props) {
-    console.log(props);
     return (
         <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
             <ToniqIcon icon={props.large ? Icp24Icon : Icp16Icon} />

@@ -9,7 +9,7 @@ import {
     TopCardInputs,
     entrepotHomePageTopCardElement,
 } from './children/toniq-entrepot-top-card.element';
-import {CarouselItem, entrepotCarousel} from '../../common/toniq-entrepot-carousel.element';
+import {CarouselItem, entrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
 import {isTruthy} from 'augment-vir';
 import {toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
 import {entrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
@@ -129,11 +129,12 @@ export const entrepotHomePageElement = defineElement<{
         const headerCount = topCardsToShow.length > 5 ? 2 : 1;
 
         return html`
-            <${entrepotCarousel}
-                ${assign(entrepotCarousel, {
+            <${entrepotCarouselElement}
+                ${assign(entrepotCarouselElement, {
                     items: inputs.carouselItems,
+                    automaticRotation: true,
                 })}
-            ></${entrepotCarousel}>
+            ></${entrepotCarouselElement}>
             
             ${
                 selectedTopTab
