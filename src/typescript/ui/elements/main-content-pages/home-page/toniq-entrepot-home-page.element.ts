@@ -61,6 +61,7 @@ export const entrepotHomePageElement = defineElement<{
         }
 
         .top-cards-header {
+            display: flex;
             column-count: 2;
             column-gap: 32px;
             margin: 64px;
@@ -107,16 +108,16 @@ export const entrepotHomePageElement = defineElement<{
     `,
     renderCallback: ({inputs, state, updateState}) => {
         const tabs: ReadonlyArray<TopTab<ReadonlyArray<TopCardInputs>>> = [
-            inputs.topCollections.top.length
-                ? {
-                      label: 'Top Collections',
-                      value: inputs.topCollections.top,
-                  }
-                : undefined,
             inputs.topCollections.past24Hours.length
                 ? {
                       label: 'Past 24 Hours',
                       value: inputs.topCollections.past24Hours,
+                  }
+                : undefined,
+            inputs.topCollections.top.length
+                ? {
+                      label: 'Top Collections',
+                      value: inputs.topCollections.top,
                   }
                 : undefined,
         ].filter(isTruthy);
