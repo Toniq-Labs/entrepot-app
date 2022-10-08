@@ -58,7 +58,13 @@ export function truncateNumber(originalValue) {
         const decimalValues = results.decimalValues.replace(/0+$/, '').slice(0, decimalPlaces);
         const withDecimal = decimalValues.length ? `.${decimalValues}` : '';
 
-        return `${results.value}${withDecimal}${suffix}`;
+        if (suffix.length) {
+            return `${Number(`${results.value}${withDecimal}`)
+                .toFixed(2)
+                .replace(/\.0+$/, '')}${suffix}`;
+        } else {
+            return `${results.value}${withDecimal}${suffix}`;
+        }
     } catch (error) {
         console.error(error);
         return String(originalValue);

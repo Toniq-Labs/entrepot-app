@@ -24,7 +24,7 @@ import {
 import {icpToString} from '../components/PriceICP';
 import {WithFilterPanel} from '../shared/WithFilterPanel';
 import {ChipWithLabel} from '../shared/ChipWithLabel';
-import {formatNumber} from '../utilities/number-utils';
+import {formatNumber, numberWithCommas} from '../utilities/number-utils';
 import {gridLargeMaxWidth} from '../model/constants';
 
 function useInterval(callback, delay) {
@@ -749,11 +749,8 @@ export default function Marketplace(props) {
                                                                 {
                                                                     label: 'Listings',
                                                                     icon: undefined,
-                                                                    value: formatNumber(
-                                                                        collectionStatsWrapper.stats
-                                                                            .listings,
-                                                                        true,
-                                                                    ),
+                                                                    value: collectionStatsWrapper
+                                                                        .stats.listings,
                                                                 },
                                                                 {
                                                                     label: 'Floor Price',

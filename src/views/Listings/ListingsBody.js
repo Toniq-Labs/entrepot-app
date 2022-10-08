@@ -258,7 +258,7 @@ export function ListingsBody(props) {
             },
             sortOption: defaultSortOption,
             sortType: defaultSortType,
-            toggleFilterPanel: false,
+            toggleFilterPanel: true,
             gridSize: 'large',
             openedAccordion: defaultOpenedAccordions,
         };
@@ -339,6 +339,8 @@ export function ListingsBody(props) {
                         ? Number((getNri(canister, index) * 100).toFixed(1))
                         : false;
                 const mintNumber = EntrepotNFTMintNumber(canister, index);
+                // eslint-disable-next-line no-undef
+                const price = listing[1].price ? BigInt(listing[1].price) : listing[1].price;
                 let traits;
                 if (traitsData) {
                     traits = traitsData[1][listingIndex][1].map(trait => {
@@ -355,7 +357,7 @@ export function ListingsBody(props) {
 
                 return {
                     ...listing,
-                    price: listing[1].price,
+                    price,
                     rarity,
                     mintNumber,
                     tokenid,
@@ -365,35 +367,39 @@ export function ListingsBody(props) {
                 };
             });
 
-            traitsCategories = traitsCategories.map((category, categoryIndex) => {
-                const traitsCount = category.values
-                    .map(traits => {
-                        const traitCount = listings.reduce((current, listing) => {
-                            const categoryIndex = listing.traits.findIndex(listingTrait => {
-                                return listingTrait.category === category.category;
-                            });
+            if (traitsData) {
+                traitsCategories = traitsCategories.map((category, categoryIndex) => {
+                    const traitsCount = category.values
+                        .map(traits => {
+                            const traitCount = listings.reduce((current, listing) => {
+                                const categoryIndex = listing.traits.findIndex(listingTrait => {
+                                    return listingTrait.category === category.category;
+                                });
 
+                                return (
+                                    current +
+                                    (traits === listing.traits[categoryIndex].value ? 1 : 0)
+                                );
+                            }, 0);
+
+                            return {
+                                [traits]: traitCount,
+                            };
+                        })
+                        .reduce((currentTraitCount, traitCount) => {
+                            const traitKey = Object.keys(traitCount)[0];
                             return (
-                                current + (traits === listing.traits[categoryIndex].value ? 1 : 0)
+                                (currentTraitCount[traitKey] = traitCount[traitKey]),
+                                currentTraitCount
                             );
-                        }, 0);
+                        }, {});
 
-                        return {
-                            [traits]: traitCount,
-                        };
-                    })
-                    .reduce((currentTraitCount, traitCount) => {
-                        const traitKey = Object.keys(traitCount)[0];
-                        return (
-                            (currentTraitCount[traitKey] = traitCount[traitKey]), currentTraitCount
-                        );
-                    }, {});
-
-                return {
-                    ...category,
-                    count: traitsCount,
-                };
-            });
+                    return {
+                        ...category,
+                        count: traitsCount,
+                    };
+                });
+            }
 
             setTraitsCategories(traitsCategories);
             setListings(listings);

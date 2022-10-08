@@ -1,14 +1,6 @@
 import {makeStyles} from '@material-ui/core';
-import {
-    ArrowsSort24Icon,
-    cssToReactStyleObject,
-    toniqColors,
-    toniqFontStyles,
-} from '@toniq-labs/design-system';
-import {
-    ToniqDropdown,
-    ToniqIcon,
-} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {cssToReactStyleObject, toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
+import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 const useStyles = makeStyles(theme => ({
     toggleSort: {
@@ -62,9 +54,10 @@ export function ListingsOtherControls(props) {
                         storeUserPreferences('sortType', sortType);
                     }}
                 >
-                    <ToniqIcon
-                        icon={ArrowsSort24Icon}
-                        style={{transform: sortType === 'asc' ? 'scaleX(1)' : 'scaleX(-1)'}}
+                    <img
+                        alt="sort"
+                        src="/icon/svg/sort.svg"
+                        style={{transform: sortType === 'asc' ? 'scaleY(1)' : 'scaleY(-1)'}}
                     />
                 </button>
                 <ToniqDropdown

@@ -23,6 +23,7 @@ import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/element
 import {MinimumOffer} from '../../components/shared/MinimumOffer';
 import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
+import {useEffect} from 'react';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
@@ -75,6 +76,20 @@ export function ListingsNftCard(props) {
 
     const hasListed = () => {
         hasListing.current = true;
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        const listingPage = sessionStorage.getItem('listingPage');
+        if (
+            scrollPosition &&
+            listings &&
+            getShowListings(chunkedAndFilteredAndSortedListings).length
+        ) {
+            pageListing.current = Number(listingPage);
+            setTimeout(() => {
+                window.scrollTo(0, parseInt(scrollPosition));
+                sessionStorage.removeItem('scrollPosition');
+                sessionStorage.removeItem('listingPage');
+            }, 250);
+        }
     };
 
     const getShowListings = listings => {
@@ -183,6 +198,16 @@ export function ListingsNftCard(props) {
                                     to={`/marketplace/asset/` + getEXTID(listing.tokenid)}
                                     style={{textDecoration: 'none'}}
                                     rel="noopener noreferrer"
+                                    onClick={() => {
+                                        sessionStorage.setItem(
+                                            'scrollPosition',
+                                            window.pageYOffset,
+                                        );
+                                        sessionStorage.setItem(
+                                            'listingPage',
+                                            String(pageListing.current),
+                                        );
+                                    }}
                                 >
                                     <NftCard
                                         imageUrl={EntrepotNFTImage(

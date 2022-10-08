@@ -15,7 +15,7 @@ import {
 import {ToniqChip, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from './PriceICP.js';
 import {isEllipsisActive} from '../utilities/element-utils.js';
-import {formatNumber} from '../utilities/number-utils.js';
+import {formatNumber, numberWithCommas} from '../utilities/number-utils.js';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -338,7 +338,7 @@ export default function CollectionDetails(props) {
                             <ToniqChip
                                 className={`toniq-chip-secondary ${classes.stats}`}
                                 style={cssToReactStyleObject(toniqFontStyles.boldFont)}
-                                text={formatNumber(stats.listings, true)}
+                                text={stats.listings}
                             ></ToniqChip>
                         </Grid>
                         <Grid
@@ -367,7 +367,7 @@ export default function CollectionDetails(props) {
                             <ToniqChip
                                 className={`toniq-chip-secondary ${classes.stats}`}
                                 style={cssToReactStyleObject(toniqFontStyles.boldFont)}
-                                text={formatNumber(size, true)}
+                                text={size}
                             ></ToniqChip>
                         </Grid>
                     </Grid>
