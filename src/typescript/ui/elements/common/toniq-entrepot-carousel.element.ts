@@ -16,6 +16,8 @@ export type CarouselItem = {
     link: string;
 };
 
+const carouselImageWidth = 340;
+
 export const entrepotCarouselElement = defineElement<{
     items: ReadonlyArray<CarouselItem>;
     automaticRotation?: boolean;
@@ -42,7 +44,7 @@ export const entrepotCarouselElement = defineElement<{
 
         .carousel-image-wrapper {
             height: 340px;
-            width: 340px;
+            width: ${carouselImageWidth}px;
             position: relative;
             display: flex;
             justify-content: center;
@@ -122,8 +124,13 @@ export const entrepotCarouselElement = defineElement<{
         if (inputs.automaticRotation && state.rotationIntervalId == undefined) {
             updateState({
                 rotationIntervalId: window.setInterval(() => {
-                    rotateCarousel(host);
-                }, 8000),
+                    rotateCarousel({
+                        host,
+                        direction: 'right',
+                        allowWrapping: true,
+                        blockIfHovering: true,
+                    });
+                }, 4000),
             });
         } else if (!inputs.automaticRotation && state.rotationIntervalId != undefined) {
             window.clearInterval(state.rotationIntervalId);
@@ -155,7 +162,12 @@ export const entrepotCarouselElement = defineElement<{
                             icon: ArrowLeft24Icon,
                         })}
                         ${listen('click', () => {
-                            updateScrollPosition(host, 'left');
+                            rotateCarousel({
+                                allowWrapping: false,
+                                blockIfHovering: false,
+                                direction: 'left',
+                                host,
+                            });
                         })}
                     ></${ToniqIcon}>
                 </div>
@@ -180,7 +192,12 @@ export const entrepotCarouselElement = defineElement<{
                             icon: ArrowRight24Icon,
                         })}
                         ${listen('click', () => {
-                            updateScrollPosition(host, 'right');
+                            rotateCarousel({
+                                allowWrapping: false,
+                                blockIfHovering: false,
+                                direction: 'right',
+                                host,
+                            });
                         })}
                     ></${ToniqIcon}>
                 </div>
@@ -213,37 +230,88 @@ function getScrollContainer(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'
     return scrollContainer;
 }
 
-function updateScrollPosition(
-    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>,
-    direction: ScrollDirection,
-) {
-    scrollSnapToNext(getScrollContainer(host), direction);
-}
-
-function rotateCarousel(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>) {
+function rotateCarousel({
+    host,
+    direction,
+    allowWrapping,
+    blockIfHovering,
+}: {
+    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>;
+    direction: 'left' | 'right';
+    allowWrapping: boolean;
+    blockIfHovering: boolean;
+}) {
     // don't rotate if the user is mousing over the carousel
-    if (host.matches(':hover')) {
+    if (blockIfHovering && host.matches(':hover')) {
         return;
     }
+
     const scrollContainer = getScrollContainer(host);
+    const containerWidth = scrollContainer.clientWidth;
     const snapPositions = getScrollSnapPositions(getScrollContainer(host)).x;
     const firstScrollPosition = snapPositions[0] ?? 0;
-    const lastScrollPosition = snapPositions.slice(-1).pop();
+    const lastScrollPosition = snapPositions.slice(-1).pop() ?? containerWidth;
 
     if (
-        lastScrollPosition &&
+        direction === 'right' &&
         scrollContainer.scrollLeft >=
             lastScrollPosition -
                 // small buffer
                 10
     ) {
-        scrollContainer.scrollTo({
-            behavior: 'smooth',
-            left: firstScrollPosition,
-        });
+        if (allowWrapping) {
+            scrollContainer.scrollTo({
+                behavior: 'smooth',
+                left: firstScrollPosition,
+            });
+        }
+    } else if (
+        direction === 'left' &&
+        scrollContainer.scrollLeft <=
+            firstScrollPosition +
+                // small buffer
+                10
+    ) {
+        if (allowWrapping) {
+            scrollContainer.scrollTo({
+                behavior: 'smooth',
+                left: lastScrollPosition,
+            });
+        }
     } else {
-        scrollSnapToNext(scrollContainer, 'right');
+        const currentPosition = getSnapPositionClosestTo(scrollContainer.scrollLeft, snapPositions);
+        const directionFactor = direction === 'right' ? 1 : -1;
+        const nextPosition = getSnapPositionClosestTo(
+            (currentPosition || 0) +
+                (scrollContainer.clientWidth - carouselImageWidth) * directionFactor,
+            snapPositions,
+        );
+
+        if (direction === 'right' && nextPosition > currentPosition) {
+            scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+        } else if (direction === 'left' && nextPosition < currentPosition) {
+            scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+        } else {
+            scrollSnapToNext(scrollContainer, direction);
+        }
     }
+}
+
+function getSnapPositionClosestTo(
+    closestToThis: number,
+    snapPositions: ReadonlyArray<number>,
+): number {
+    const closestPosition = snapPositions.reduce((closest, position) => {
+        const positionDistance = Math.abs(closestToThis - position);
+        const closestDistance = Math.abs(closestToThis - closest);
+        if (positionDistance < closestDistance) {
+            return position;
+        } else {
+            return closest;
+        }
+    }, Infinity);
+
+    return closestPosition;
 }
 
 const throttledUpdateScrollPosition = throttle(
