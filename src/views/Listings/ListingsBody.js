@@ -258,7 +258,6 @@ export function ListingsBody(props) {
             },
             sortOption: defaultSortOption,
             sortType: defaultSortType,
-            toggleFilterPanel: true,
             gridSize: 'large',
             openedAccordion: defaultOpenedAccordions,
         };
@@ -268,7 +267,7 @@ export function ListingsBody(props) {
     const [
         showFilters,
         setShowFilters,
-    ] = useState(userPreferences.toggleFilterPanel);
+    ] = useState(true);
     const [
         sort,
         setSort,
@@ -523,11 +522,9 @@ export function ListingsBody(props) {
                 showFilters={showFilters}
                 onShowFiltersChange={newShowFilters => {
                     setShowFilters(newShowFilters);
-                    storeUserPreferences('toggleFilterPanel', newShowFilters);
                 }}
                 onFilterClose={() => {
                     setShowFilters(false);
-                    storeUserPreferences('toggleFilterPanel', false);
                 }}
                 onClearFiltersChange={() => {
                     setCurrentFilters(defaultFilter);
