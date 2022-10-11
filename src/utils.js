@@ -255,6 +255,9 @@ const clipboardCopy = text => {
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
             if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            if (collection === 'e3izy-jiaaa-aaaah-qacbq-cai')
+                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+
             //end of section
 
             if (collection === '6wih6-siaaa-aaaah-qczva-cai')
