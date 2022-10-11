@@ -128,7 +128,7 @@ export function nftCardContents(userNft, props) {
                         : 'Sold'}
                 </span>
             </div>
-        ) : props.currentTab === ProfileTabs.Watching ? (
+        ) : (
             <>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                     <span
@@ -149,8 +149,6 @@ export function nftCardContents(userNft, props) {
                     </span>
                 </div>
             </>
-        ) : (
-            <></>
         );
 
     return isListView ? (

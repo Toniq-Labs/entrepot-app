@@ -1,12 +1,14 @@
 export const ProfileTabs = {
     MyNfts: 'my-nfts',
-    Watching: 'watching',
+    Favorites: 'favorites',
+    Offers: 'offers',
     Activity: 'activity',
 };
 
 export const TabTitles = {
     [ProfileTabs.MyNfts]: 'My NFTs',
-    [ProfileTabs.Watching]: 'Watching',
+    [ProfileTabs.Favorites]: 'Favorites',
+    [ProfileTabs.Offers]: 'Offers',
     [ProfileTabs.Activity]: 'Activity',
 };
 
@@ -19,10 +21,13 @@ export const nftStatusesByTab = {
         ForSale: 'for-sale',
         OffersReceived: 'offers-received',
     },
-    [ProfileTabs.Watching]: {
+    [ProfileTabs.Favorites]: {
         All: AllFilter,
-        OffersMade: 'offers-made',
-        Favorites: 'favorites',
+        HasOffers: 'has-offers',
+    },
+    [ProfileTabs.Offers]: {
+        All: AllFilter,
+        HasOtherOffers: 'has-other-offers',
     },
     [ProfileTabs.Activity]: {
         All: AllFilter,
@@ -36,8 +41,8 @@ export const NftStatusTitles = {
     [nftStatusesByTab[ProfileTabs.MyNfts].Unlisted]: 'Unlisted',
     [nftStatusesByTab[ProfileTabs.MyNfts].ForSale]: 'For Sale',
     [nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived]: 'Offers Received',
-    [nftStatusesByTab[ProfileTabs.Watching].OffersMade]: 'Offers Made',
-    [nftStatusesByTab[ProfileTabs.Watching].Favorites]: 'Favorites',
+    [nftStatusesByTab[ProfileTabs.Favorites].HasOffers]: 'Has Offers',
+    [nftStatusesByTab[ProfileTabs.Offers].HasOtherOffers]: 'Has Other Offers',
     [nftStatusesByTab[ProfileTabs.Activity].Bought]: 'Bought',
     [nftStatusesByTab[ProfileTabs.Activity].Sold]: 'Sold',
 };

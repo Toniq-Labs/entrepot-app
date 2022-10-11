@@ -133,26 +133,27 @@ export function ProfileFilters(props) {
                     />
                 </div>
             )}
-            {props.nftFilterStats.mintNumber.min !== props.nftFilterStats.mintNumber.max > 1 && (
-                <div>
-                    <div className="title">Mint #</div>
-                    <ToniqSlider
-                        min={props.nftFilterStats.mintNumber.min}
-                        max={props.nftFilterStats.mintNumber.max}
-                        double={true}
-                        value={props.filters.mintNumber || props.nftFilterStats.mintNumber}
-                        onValueChange={event => {
-                            const values = event.detail;
-                            props.updateFilters({
-                                ...props.filters,
-                                mintNumber: {
-                                    ...values,
-                                },
-                            });
-                        }}
-                    />
-                </div>
-            )}
+            {props.nftFilterStats.mintNumber.min !== props.nftFilterStats.mintNumber.max &&
+                props.nftFilterStats.mintNumber.max > 1 && (
+                    <div>
+                        <div className="title">Mint #</div>
+                        <ToniqSlider
+                            min={props.nftFilterStats.mintNumber.min}
+                            max={props.nftFilterStats.mintNumber.max}
+                            double={true}
+                            value={props.filters.mintNumber || props.nftFilterStats.mintNumber}
+                            onValueChange={event => {
+                                const values = event.detail;
+                                props.updateFilters({
+                                    ...props.filters,
+                                    mintNumber: {
+                                        ...values,
+                                    },
+                                });
+                            }}
+                        />
+                    </div>
+                )}
             {Object.keys(props.nftFilterStats.traits).length > 0 && (
                 <div>
                     <div

@@ -407,11 +407,7 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.Watching}`,
-                                    search: `?${createSearchParams({
-                                        ...spreadableSearchParams(searchParams),
-                                        status: nftStatusesByTab[ProfileTabs.Watching].OffersMade,
-                                    })}`,
+                                    pathname: `/profile/${ProfileTabs.Offers}`,
                                 });
                             }}
                         >
@@ -463,11 +459,7 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.Watching}`,
-                                    search: `?${createSearchParams({
-                                        ...spreadableSearchParams(searchParams),
-                                        status: nftStatusesByTab[ProfileTabs.Watching].Favorites,
-                                    })}`,
+                                    pathname: `/profile/${ProfileTabs.Favorites}`,
                                 });
                             }}
                         >

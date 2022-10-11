@@ -115,7 +115,8 @@ function createSortCallback(currentSort) {
 
 const finalListRowTitles = {
     [ProfileTabs.MyNfts]: 'ACTIONS',
-    [ProfileTabs.Watching]: 'OFFERS',
+    [ProfileTabs.Favorites]: 'OFFERS',
+    [ProfileTabs.Offers]: 'OTHER OFFERS',
     [ProfileTabs.Activity]: 'TIME',
 };
 
@@ -147,17 +148,6 @@ const sortOptions = [
     },
 ];
 
-const initFilters = {
-    status: AllFilter,
-    price: undefined,
-    rarity: undefined,
-    mintNumber: undefined,
-    allTraits: true,
-    traits: {},
-    allCollections: true,
-    collections: [],
-};
-
 export function ProfileBody(props) {
     const [
         searchParams,
@@ -167,10 +157,6 @@ export function ProfileBody(props) {
         showFilters,
         setShowFilters,
     ] = React.useState(false);
-    const [
-        currentFilters,
-        setCurrentFilters,
-    ] = React.useState(initFilters);
     const [
         sort,
         setSort,
@@ -187,12 +173,12 @@ export function ProfileBody(props) {
                 status: AllFilter,
             });
         } else if (Object.values(nftStatusesByTab[props.currentTab]).includes(statusParam)) {
-            if (currentFilters.status !== statusParam) {
+            if (props.currentFilters.status !== statusParam) {
                 if (!showFilters && statusParam !== AllFilter) {
                     setShowFilters(true);
                 }
-                setCurrentFilters({
-                    ...currentFilters,
+                props.setCurrentFilters({
+                    ...props.currentFilters,
                     status: statusParam,
                 });
             }
@@ -202,9 +188,9 @@ export function ProfileBody(props) {
                 setSearchParams(params);
             }
         }
-    } else if (currentFilters.status !== AllFilter) {
-        setCurrentFilters({
-            ...currentFilters,
+    } else if (props.currentFilters.status !== AllFilter) {
+        props.setCurrentFilters({
+            ...props.currentFilters,
             status: AllFilter,
         });
     }
@@ -214,7 +200,7 @@ export function ProfileBody(props) {
     }
 
     const filteredNfts = props.userNfts
-        .filter(createFilterCallback(props.nftFilterStats, currentFilters, props.query))
+        .filter(createFilterCallback(props.nftFilterStats, props.currentFilters, props.query))
         .sort(createSortCallback(sort));
 
     const isListView = props.viewType === ProfileViewType.List;
@@ -233,12 +219,15 @@ export function ProfileBody(props) {
                     userNfts={props.userNfts}
                     nftFilterStats={props.nftFilterStats}
                     updateFilters={newFilters => {
-                        setCurrentFilters(newFilters);
-                        if (newFilters.status && newFilters.status !== currentFilters.status) {
+                        props.setCurrentFilters(newFilters);
+                        if (
+                            newFilters.status &&
+                            newFilters.status !== props.currentFilters.status
+                        ) {
                             setSearchParams(createSearchParams({status: newFilters.status}));
                         }
                     }}
-                    filters={currentFilters}
+                    filters={props.currentFilters}
                 />
             }
             otherControlsChildren={

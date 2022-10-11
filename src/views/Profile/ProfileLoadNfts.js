@@ -41,11 +41,20 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
                 ),
             ),
         ),
-        [ProfileTabs.Watching]: new Promise(async resolve =>
+        [ProfileTabs.Favorites]: new Promise(async resolve =>
             resolve(
                 await includeCollectionsAndStats(
                     [
                         ...(await getFavoritesNfts(address, identity, allCollections)),
+                    ],
+                    allCollections,
+                ),
+            ),
+        ),
+        [ProfileTabs.Offers]: new Promise(async resolve =>
+            resolve(
+                await includeCollectionsAndStats(
+                    [
                         ...(await getOffersMadeNfts(address, identity, allCollections)),
                     ],
                     allCollections,
@@ -78,7 +87,7 @@ async function getActivityNfts(address, collections) {
     const activityData = await Promise.all(
         rawData.map(async (nft, index) => {
             const isBuyer = nft.buyer === address;
-            const nftWithData = await getNftData(nft, collections, index);
+            const nftWithData = await getNftData(nft, collections, index, false, address);
             return {
                 ...nftWithData,
                 type: isBuyer ? 'Purchase' : 'Sale',
@@ -92,8 +101,6 @@ async function getActivityNfts(address, collections) {
         }),
     );
 
-    console.log({activityData});
-
     return activityData;
 }
 
@@ -102,7 +109,7 @@ async function getOwnedNfts(address, identity, collections) {
         (await Promise.all([loadAllUserTokens(address, identity.getPrincipal().toText())]))
             .flat()
             .map(async (nft, index) => {
-                const nftWithData = await getNftData(nft, collections, index);
+                const nftWithData = await getNftData(nft, collections, index, false, address);
                 return {
                     ...nftWithData,
                     statuses: new Set(
@@ -130,14 +137,17 @@ async function getOffersMadeNfts(address, identity, collections) {
     const offersMadeNfts = await Promise.all(
         offersMadeNftIds.map(async (nftId, index) => {
             const nft = nftIdToNft(address, nftId);
-            const nftWithData = await getNftData(nft, collections, index, true);
+            const nftWithData = await getNftData(nft, collections, index, true, address);
             return {
                 ...nftWithData,
-                statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].OffersMade]),
+                statuses: new Set(
+                    nftWithData.offers.length - nftWithData.selfOffers.length
+                        ? [nftStatusesByTab[ProfileTabs.Offers].HasOtherOffers]
+                        : [],
+                ),
             };
         }),
     );
-    console.log('offers made here');
     return offersMadeNfts;
 }
 
@@ -149,17 +159,21 @@ async function getFavoritesNfts(address, identity, collections) {
     const favoriteNfts = await Promise.all(
         favoriteNftIds.map(async (nftId, index) => {
             const nft = nftIdToNft(address, nftId);
-            const nftWithData = await getNftData(nft, collections, index);
+            const nftWithData = await getNftData(nft, collections, index, false, address);
             return {
                 ...nftWithData,
-                statuses: new Set([nftStatusesByTab[ProfileTabs.Watching].Favorites]),
+                statuses: new Set(
+                    nftWithData.offers.length - nftWithData.selfOffers.length
+                        ? [nftStatusesByTab[ProfileTabs.Favorites].HasOffers]
+                        : [],
+                ),
             };
         }),
     );
     return favoriteNfts;
 }
 
-async function getNftData(rawNft, collections, waitIndex, loadListing) {
+async function getNftData(rawNft, collections, waitIndex, loadListing, address) {
     await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
     const {index} = extjs.decodeTokenId(rawNft.token);
 
@@ -188,10 +202,12 @@ async function getNftData(rawNft, collections, waitIndex, loadListing) {
         : undefined;
     const collection = collections.find(collection => collection.canister === rawNft.canister);
 
+    const selfOffers = offers.filter(offer => offer[3] === address);
     const userNft = {
         ...rawNft,
         index,
         rawListing,
+        selfOffers,
         image: EntrepotNFTImage(getEXTCanister(rawNft.canister), index, rawNft.token, false, 0),
         mintNumber,
         collection,

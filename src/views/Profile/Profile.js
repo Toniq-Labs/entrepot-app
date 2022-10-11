@@ -13,13 +13,24 @@ import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {startLoadingProfileNftsAndCollections} from './ProfileLoadNfts';
 import {getThrottledNriDataForCanisters} from '../../typescript/local-cache/get-nri';
-import {ProfileTabs, ProfileViewType} from './ProfileTabs';
+import {ProfileTabs, ProfileViewType, AllFilter} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 import {useParams, useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';
 import {spreadableSearchParams} from '../../utilities/search-params';
 import {createNftFilterStats} from './ProfileNftStats';
 
 const profileSearchParamName = 'profile-search';
+
+const initFilters = {
+    status: AllFilter,
+    price: undefined,
+    rarity: undefined,
+    mintNumber: undefined,
+    allTraits: true,
+    traits: {},
+    allCollections: true,
+    collections: [],
+};
 
 export function Profile(props) {
     const classes = profileStyles();
@@ -47,6 +58,11 @@ export function Profile(props) {
         loading,
         setLoading,
     ] = React.useState(true);
+
+    const [
+        currentFilters,
+        setCurrentFilters,
+    ] = React.useState(initFilters);
 
     const viewType = searchParams.get('view');
 
@@ -178,6 +194,7 @@ export function Profile(props) {
                     }}
                     onCurrentTabChange={newTab => {
                         if (props.account.address) {
+                            setCurrentFilters(initFilters);
                             navigate({
                                 pathname: `/${props.account.address}/profile/${newTab}`,
                                 search: `?${createSearchParams(searchParams)}`,
@@ -200,6 +217,8 @@ export function Profile(props) {
                     </div>
                 ) : (
                     <ProfileBody
+                        currentFilters={currentFilters}
+                        setCurrentFilters={setCurrentFilters}
                         query={query}
                         viewType={viewType}
                         address={props.account.address}
