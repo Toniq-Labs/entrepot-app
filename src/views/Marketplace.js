@@ -11,7 +11,6 @@ import {
     LoaderAnimated24Icon,
     Icp16Icon,
     Search24Icon,
-    ArrowsSort24Icon,
 } from '@toniq-labs/design-system';
 import {NftCard} from '../shared/NftCard';
 import {
@@ -24,7 +23,6 @@ import {
 import {icpToString} from '../components/PriceICP';
 import {WithFilterPanel} from '../shared/WithFilterPanel';
 import {ChipWithLabel} from '../shared/ChipWithLabel';
-import {formatNumber, numberWithCommas} from '../utilities/number-utils';
 import {gridLargeMaxWidth} from '../model/constants';
 
 function useInterval(callback, delay) {
@@ -664,11 +662,12 @@ export default function Marketplace(props) {
                                                 : setSortType('asc');
                                         }}
                                     >
-                                        <ToniqIcon
-                                            icon={ArrowsSort24Icon}
+                                        <img
+                                            alt="sort"
+                                            src="/icon/svg/sort.svg"
                                             style={{
                                                 transform:
-                                                    sortType === 'asc' ? 'scaleX(1)' : 'scaleX(-1)',
+                                                    sortType === 'asc' ? 'scaleY(1)' : 'scaleY(-1)',
                                             }}
                                         />
                                     </button>
