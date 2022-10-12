@@ -14,7 +14,7 @@ import {Route, Routes, useLocation} from 'react-router-dom';
 import Detail from './components/Detail';
 import Listings from './views/Listings/Listings.js';
 import BuyForm from './components/BuyForm';
-import ListingActivity from './views/Listings/ListingActivity';
+import ListingsActivity from './views/Listings/ListingsActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
@@ -1143,7 +1143,7 @@ export default function App() {
                                     path="/marketplace/:route/activity"
                                     exact
                                     element={
-                                        <ListingActivity
+                                        <ListingsActivity
                                             error={error}
                                             view={'listings'}
                                             isToniqEarnAllowed={isToniqEarnAllowed}

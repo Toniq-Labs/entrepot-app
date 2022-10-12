@@ -20,7 +20,6 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {useLocation, useSearchParams} from 'react-router-dom';
 import {
-    ArrowsSort24Icon,
     cssToReactStyleObject,
     LoaderAnimated24Icon,
     Search24Icon,
@@ -171,7 +170,7 @@ const sortOptions = [
     },
 ];
 
-export default function ListingActivity(props) {
+export default function ListingsActivity(props) {
     const params = useParams();
     const classes = useStyles();
     const location = useLocation();
@@ -468,9 +467,12 @@ export default function ListingActivity(props) {
                                 storeUserPreferences('sortType', sortType);
                             }}
                         >
-                            <ToniqIcon
-                                icon={ArrowsSort24Icon}
-                                style={{transform: sortType === 'asc' ? 'scaleX(1)' : 'scaleX(-1)'}}
+                            <img
+                                alt="sort"
+                                src="/icon/svg/sort.svg"
+                                style={{
+                                    transform: sortType === 'asc' ? 'scaleY(1)' : 'scaleY(-1)',
+                                }}
                             />
                         </button>
                         <ToniqDropdown
