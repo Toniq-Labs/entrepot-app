@@ -170,7 +170,7 @@ const Detail = props => {
     let {index, canister} = extjs.decodeTokenId(tokenid);
     if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
       await fetch(
-        `https://api.allorigins.win/get?url=${encodeURIComponent(
+        `http://www.whateverorigin.org/get?url=${encodeURIComponent(
           EntrepotNFTImage(canister, index, tokenid, true),
         )}`,
       )
@@ -181,6 +181,7 @@ const Detail = props => {
         .then(data => {
           // Overriding Motoko styling
           const content = data.contents;
+          console.log(content);
           setMotokoContent(content);
         });
     }
@@ -291,13 +292,13 @@ const Detail = props => {
     }
 
     // Motoko Mechs specific
-    if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
-      return (
-        <div className={classes.nftIframeContainer}>
-          {<div dangerouslySetInnerHTML={{__html: motokoContent}} />}
-        </div>
-      );
-    }
+    // if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
+    //   return (
+    //     <div className={classes.nftIframeContainer}>
+    //       {<div dangerouslySetInnerHTML={{__html: motokoContent}} />}
+    //     </div>
+    //   );
+    // }
 
     // console.log(detailPage)
 
