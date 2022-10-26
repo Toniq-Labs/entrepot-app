@@ -346,11 +346,13 @@ const Detail = props => {
               maxWidth: 500,
               maxHeight: '100%',
               cursor: 'pointer',
+              minHeight: 500,
               height: '100%',
               width: '100%',
               marginLeft: 'auto',
               marginRight: 'auto',
               display: 'block',
+              overflow: 'hidden',
             }}
           />
         );
