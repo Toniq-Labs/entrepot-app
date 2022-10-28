@@ -63,6 +63,13 @@ const useStyles = makeStyles(theme => ({
         zIndex: 1600,
         color: '#fff',
     },
+    inner: {
+        flexGrow: 1,
+        padding: '32px 64px',
+        [theme.breakpoints.down('sm')]: {
+            padding: '16px 18px',
+        },
+    },
     content: {
         flexGrow: 1,
         marginTop: 73,
