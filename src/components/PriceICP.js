@@ -1,4 +1,4 @@
-import {truncateNumber} from '../truncation';
+import {truncateNumber} from 'augment-vir';
 import {
     cssToReactStyleObject,
     toniqFontStyles,
@@ -13,7 +13,7 @@ function getIcpPrice(n) {
     return n.toFixed(8).replace(/0{1,6}$/, '');
 }
 
-export function icpToString(priceE8s /* BigInt */, convertToIcp, truncate) {
+export function icpToString(priceE8s /* BigNumber */, convertToIcp, truncate) {
     const initialPrice = convertToIcp ? getIcpPrice(priceE8s) : priceE8s;
 
     if (truncate) {

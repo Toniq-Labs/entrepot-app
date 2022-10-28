@@ -509,6 +509,8 @@ export default function Marketplace(props) {
             }
         });
 
+    console.log({filteredAndSortedCollections});
+
     const priceRanges = {
         [filterTypes.price.floor]: {
             min: getLowestStat(stats, 'floor'),

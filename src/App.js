@@ -21,7 +21,6 @@ import UserActivity from './components/UserActivity';
 import Marketplace from './views/Marketplace';
 import Mint from './views/Mint';
 import Create from './views/Create';
-import Home from './views/Home';
 import Typography from '@material-ui/core/Typography';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
@@ -33,6 +32,7 @@ import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
 import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
 import legacyPrincipalPayouts from './payments.json';
 import getNri from './ic/nftv.js';
+import {throttle} from './typescript/augments/function';
 import {
     EntrepotUpdateUSD,
     EntrepotUpdateLiked,
@@ -43,6 +43,10 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
+import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
+import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
+import {isProd} from './typescript/environment/environment-by-url';
+
 const api = extjs.connect('https://boundary.ic0.app/');
 
 const txfee = 10000;
@@ -79,10 +83,6 @@ const useStyles = makeStyles(theme => ({
         background: '#091216',
         color: 'white',
         paddingTop: 30,
-        // marginLeft : -24,
-        // marginRight : -24,
-        // marginBottom : -24,
-        // marginTop : 80,
     },
 }));
 const emptyAlert = {
@@ -233,6 +233,11 @@ export default function App() {
     const [
         showConfirm,
         setShowConfirm,
+    ] = React.useState(false);
+
+    const [
+        showHeaderShadow,
+        setShowHeaderShadow,
     ] = React.useState(false);
     //Account
 
@@ -935,6 +940,16 @@ export default function App() {
         updateCollections();
         EntrepotUpdateUSD();
         EntrepotUpdateStats();
+        window.document.addEventListener(
+            'scroll',
+            throttle(250, () => {
+                if (window.document.body.parentElement.scrollTop <= 10) {
+                    setShowHeaderShadow(false);
+                } else {
+                    setShowHeaderShadow(true);
+                }
+            }),
+        );
         if (identity) EntrepotUpdateLiked(identity);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -1084,6 +1099,7 @@ export default function App() {
             {appLoaded ? (
                 <>
                     <Navbar
+                        showHeaderShadow={showHeaderShadow}
                         view={rootPage}
                         processPayments={processPayments}
                         setBalance={setBalance}
@@ -1929,19 +1945,12 @@ export default function App() {
                                         />
                                     }
                                 />
-                                <Route
-                                    path="/"
-                                    exact
-                                    element={
-                                        <Home
-                                            collections={collections}
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                        />
-                                    }
-                                />
+                                {isProd ? (
+                                    ''
+                                ) : (
+                                    <Route path="/test" exact element={<EntrepotTestPage />} />
+                                )}
+                                <Route path="/" exact element={<EntrepotTestPage />} />
                                 <Route
                                     path="/sale"
                                     exact

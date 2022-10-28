@@ -1,6 +1,6 @@
 import {wait} from 'augment-vir';
 import {entrepotDatabase, NriCacheItem} from './database';
-import {NriData} from '../data/models/nri-data';
+import {NriData} from '../models/nri-data';
 
 export async function getThrottledNriDataForCanisters(
     canisterIds: string[],

@@ -165,15 +165,26 @@ export default function Navbar(props) {
             <style
                 dangerouslySetInnerHTML={{
                     __html: `
-      .${classes.smallScreenNav} ${ToniqToggleButton.tagName} {
-        margin: 8px 16px;
-      }
-    `,
+                    .${classes.smallScreenNav} ${ToniqToggleButton.tagName} {
+                        margin: 8px 16px;
+                    }
+                `,
                 }}
             />
             <div className={classes.root}>
                 <CssBaseline />
-                <AppBar position="fixed" style={{zIndex: 1400, background: 'white'}}>
+                <AppBar
+                    position="fixed"
+                    style={{
+                        zIndex: 1400,
+                        background: 'white',
+                        ...(props.showHeaderShadow
+                            ? {}
+                            : {
+                                  boxShadow: 'none',
+                              }),
+                    }}
+                >
                     <Toolbar style={{gap: '4px', alignItems: 'stretch', minHeight: '70px'}}>
                         <Typography
                             style={{display: 'flex', alignItems: 'center'}}
