@@ -1943,7 +1943,7 @@ export default function App() {
                                 ) : (
                                     <Route path="/test" exact element={<EntrepotTestPage />} />
                                 )}
-                                <Route path="/" exact element={<EntrepotHomePage />} />
+                                <Route path="/" exact element={<EntrepotTestPage />} />
                                 <Route
                                     path="/sale"
                                     exact
