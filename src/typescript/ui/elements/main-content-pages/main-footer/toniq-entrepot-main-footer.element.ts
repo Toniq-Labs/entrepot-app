@@ -1,11 +1,11 @@
 import {
     applyBackgroundAndForeground,
-    BrandDiscord32Icon,
-    BrandInstagramFlat32Icon,
-    BrandTelegram32Icon,
-    BrandTiktokFlat32Icon,
-    BrandTwitch32Icon,
-    BrandTwitter32Icon,
+    BrandDiscord24Icon,
+    BrandInstagramFlat24Icon,
+    BrandTelegram24Icon,
+    BrandTiktokFlat24Icon,
+    BrandTwitch24Icon,
+    BrandTwitter24Icon,
     EntrepotLogo144Icon,
     ToniqButton,
     toniqColorCssVarNames,
@@ -25,27 +25,27 @@ const footerSocialIcons: ReadonlyArray<{
     link: string;
 }> = [
     {
-        icon: BrandDiscord32Icon,
+        icon: BrandDiscord24Icon,
         link: '',
     },
     {
-        icon: BrandTiktokFlat32Icon,
+        icon: BrandTiktokFlat24Icon,
         link: '',
     },
     {
-        icon: BrandTelegram32Icon,
+        icon: BrandTelegram24Icon,
         link: '',
     },
     {
-        icon: BrandTwitter32Icon,
+        icon: BrandTwitter24Icon,
         link: '',
     },
     {
-        icon: BrandTwitch32Icon,
+        icon: BrandTwitch24Icon,
         link: '',
     },
     {
-        icon: BrandInstagramFlat32Icon,
+        icon: BrandInstagramFlat24Icon,
         link: '',
     },
 ];
