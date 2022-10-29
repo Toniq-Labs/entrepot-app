@@ -96,8 +96,7 @@ const useStyles = makeStyles(theme => ({
     host: {
         display: 'flex',
         gap: '8px',
-        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-        fontSize: 18,
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
     },
     icon: {
         color: '#FFFFFF',

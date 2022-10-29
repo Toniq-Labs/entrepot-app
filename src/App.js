@@ -11,7 +11,7 @@ import {StoicIdentity} from 'ic-stoic-identity';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
-import Detail from './components/Detail';
+import Detail from './views/Detail/Detail.js';
 import Listings from './views/Listings/Listings.js';
 import BuyForm from './components/BuyForm';
 import ListingsActivity from './views/Listings/ListingsActivity';
