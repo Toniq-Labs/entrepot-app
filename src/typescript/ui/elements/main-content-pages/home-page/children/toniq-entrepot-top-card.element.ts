@@ -8,9 +8,9 @@ import {defineElement, html, css} from 'element-vir';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {ValidIcp, toIcp} from '../../../../../data/icp';
 
-export type TopCardInputs = Readonly<typeof entrepotHomePageTopCardElement['inputsType']>;
+export type TopCardInputs = Readonly<typeof EntrepotHomePageTopCardElement['inputsType']>;
 
-export const entrepotHomePageTopCardElement = defineElement<{
+export const EntrepotHomePageTopCardElement = defineElement<{
     imageUrl?: string | undefined;
     collectionName: string;
     floorPrice: ValidIcp;

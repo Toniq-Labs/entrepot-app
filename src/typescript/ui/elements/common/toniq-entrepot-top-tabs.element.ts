@@ -12,7 +12,7 @@ export type TopTab<ValueGeneric = unknown> = {
     value: ValueGeneric;
 };
 
-export const entrepotTopTabsElement = defineElement<{
+export const EntrepotTopTabsElement = defineElement<{
     tabs: ReadonlyArray<TopTab>;
     selected: Readonly<TopTab>;
 }>()({

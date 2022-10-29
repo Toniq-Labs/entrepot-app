@@ -2,9 +2,9 @@ import randomWords from 'random-words';
 import {toniqFontStyles} from '@toniq-labs/design-system';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {html, css, assign, defineElementNoInputs, listen} from 'element-vir';
-import {entrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
+import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
-import {entrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
+import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
 import {shuffle} from '../../../../augments/array';
 
 const images = [
@@ -41,7 +41,7 @@ function makeTopCards() {
     });
 }
 
-const homepageInputs: typeof entrepotHomePageElement['inputsType'] = {
+const homepageInputs: typeof EntrepotHomePageElement['inputsType'] = {
     carouselItems: doubleImages.map(url => {
         return {
             imageUrl: url,
@@ -73,7 +73,7 @@ const homepageInputs: typeof entrepotHomePageElement['inputsType'] = {
     },
 };
 
-const entrepotTestElement = defineElementNoInputs({
+const EntrepotTestElement = defineElementNoInputs({
     tagName: 'toniq-entrepot-test-page',
     styles: css`
         :host {
@@ -87,7 +87,7 @@ const entrepotTestElement = defineElementNoInputs({
             ${toniqFontStyles.h2Font};
         }
 
-        ${entrepotFlipCardElement} {
+        ${EntrepotFlipCardElement} {
             height: 200px;
             width: 200px;
         }
@@ -100,12 +100,12 @@ const entrepotTestElement = defineElementNoInputs({
     renderCallback: () => {
         console.log({homepageInputs});
         return html`
-            <${entrepotHomePageElement}
-                ${assign(entrepotHomePageElement, homepageInputs)}
-            ></${entrepotHomePageElement}>
+            <${EntrepotHomePageElement}
+                ${assign(EntrepotHomePageElement, homepageInputs)}
+            ></${EntrepotHomePageElement}>
             
         `;
     },
 });
 
-export const EntrepotTestPage = wrapInReactComponent(entrepotTestElement);
+export const EntrepotTestPage = wrapInReactComponent(EntrepotTestElement);

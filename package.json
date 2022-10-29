@@ -45,7 +45,7 @@
         "@testing-library/jest-dom": "^5.16.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
-        "@toniq-labs/design-system": "0.1.8",
+        "@toniq-labs/design-system": "0.1.9",
         "@toruslabs/openlogin": "^1.4.0",
         "assert": "^2.0.0",
         "augment-vir": "^2.5.1",

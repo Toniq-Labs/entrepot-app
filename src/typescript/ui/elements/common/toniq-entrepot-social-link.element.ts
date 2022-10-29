@@ -21,7 +21,7 @@ export type SocialLinkDetails = Readonly<{
     type: SocialLinkTypeEnum;
 }>;
 
-export const entrepotSocialLinkElement = defineElement<{
+export const EntrepotSocialLinkElement = defineElement<{
     socialLinkDetails: SocialLinkDetails;
 }>()({
     tagName: 'toniq-entrepot-social-link',

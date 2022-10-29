@@ -33,6 +33,7 @@ import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent
 import legacyPrincipalPayouts from './payments.json';
 import getNri from './ic/nftv.js';
 import {throttle} from './typescript/augments/function';
+import {EntrepotFooter} from './typescript/ui/elements/main-content-pages/main-footer/toniq-entrepot-main-footer.element';
 import {
     EntrepotUpdateUSD,
     EntrepotUpdateLiked,
@@ -75,14 +76,6 @@ const useStyles = makeStyles(theme => ({
         marginTop: 73,
         paddingBottom: 50,
         background: '#FFF',
-    },
-    footer: {
-        textAlign: 'center',
-        bottom: 0,
-        height: '100px !important',
-        background: '#091216',
-        color: 'white',
-        paddingTop: 30,
     },
 }));
 const emptyAlert = {
@@ -1046,20 +1039,6 @@ export default function App() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [identity]);
-    const footer = (
-        <div className={classes.footer}>
-            <Typography variant="body1">
-                Developed by ToniqLabs &copy; All rights reserved 2021
-                <br />
-                <a
-                    href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit"
-                    target="_blank"
-                >
-                    Terms of Service
-                </a>
-            </Typography>
-        </div>
-    );
 
     const profileRoutes = (
         <>
@@ -2027,7 +2006,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    {footer}
+                    <EntrepotFooter style={{}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />
