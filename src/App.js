@@ -2006,7 +2006,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter style={{}} />
+                    <EntrepotFooter />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />

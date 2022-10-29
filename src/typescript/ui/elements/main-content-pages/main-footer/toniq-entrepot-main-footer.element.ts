@@ -150,6 +150,7 @@ const EntrepotFooterElement = defineElementNoInputs({
         .logo ${ToniqIcon} {
             height: 48px;
             width: 48px;
+            flex-shrink: 0;
             color: ${toniqColors.pageInteraction.foregroundColor};
         }
 
@@ -158,6 +159,7 @@ const EntrepotFooterElement = defineElementNoInputs({
             justify-content: space-evenly;
             flex-grow: 1;
             overflow: hidden;
+            gap: 40px;
         }
 
         .main-footer-content > * {
@@ -172,13 +174,14 @@ const EntrepotFooterElement = defineElementNoInputs({
         }
 
         .links-section > * {
-            margin-bottom: 48px;
+            padding-bottom: 48px;
         }
 
         .individual-link-section {
-            display: inline-flex;
+            display: flex;
             flex-direction: column;
             gap: 8px;
+            break-inside: avoid;
         }
 
         .link-section-title,
@@ -229,6 +232,8 @@ const EntrepotFooterElement = defineElementNoInputs({
             justify-content: space-between;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
             padding: 32px 0;
+            flex-wrap: wrap;
+            gap: 32px;
         }
 
         .copyright-line > * {
@@ -247,6 +252,32 @@ const EntrepotFooterElement = defineElementNoInputs({
 
         a {
             color: inherit;
+        }
+
+        @media (max-width: 1250px) {
+            .links-section {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .community-section {
+                order: -1;
+                padding-bottom: 40px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .main-footer-content {
+                flex-direction: column;
+            }
+            .main-footer-content > * {
+                max-width: unset;
+            }
+            .individual-link-section {
+                display: flex;
+            }
+            .copyright-line {
+                justify-content: center;
+            }
         }
     `,
     renderCallback: ({state, updateState}) => {
