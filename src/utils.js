@@ -255,8 +255,9 @@ const clipboardCopy = text => {
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === 'xjjax-uqaaa-aaaal-qbfgq-cai')
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-        if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai')
-        return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+      if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai')
+        return 'https://ucarecdn.com/0375f953-b839-47ca-8a12-cc20e4f6f918/icp_flower.gif'
+        //return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
 
       //end of section
 
