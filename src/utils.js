@@ -199,7 +199,6 @@ const clipboardCopy = text => {
     else ref = '?' + ref;
     if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false)
     {
-      console.log(index);
       return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
     }
      
