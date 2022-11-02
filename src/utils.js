@@ -197,6 +197,11 @@ const clipboardCopy = text => {
   EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
     if (typeof ref == 'undefined') ref = '';
     else ref = '?' + ref;
+    if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false)
+    {
+      return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
+    }
+     
     if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
       return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
     if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
@@ -311,7 +316,7 @@ const clipboardCopy = text => {
       margin: '0 auto',
     };
 
-    if (collection == 'ugdkf-taaaa-aaaak-acoia-cai' || collection == 'bzsui-sqaaa-aaaah-qce2a-cai')
+    if (collection == 'ugdkf-taaaa-aaaak-acoia-cai' || collection == 'bzsui-sqaaa-aaaah-qce2a-cai' || collection == '4ggk4-mqaaa-aaaae-qad6q-cai')
       avatarImgStyle.objectFit = 'contain';
     if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
     if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai')
