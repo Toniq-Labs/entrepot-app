@@ -199,7 +199,9 @@ const clipboardCopy = text => {
     else ref = '?' + ref;
     if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false)
     {
-      return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
+      // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
+      
+      return 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' + extjs.encodeTokenId("dexpm-6aaaa-aaaal-qbgrq-cai", index ) + ref;
     }
      
     if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
@@ -223,6 +225,7 @@ const clipboardCopy = text => {
         return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
       } else {
         return 'https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/' + id;
+
       }
     }
     if (collection === 'skjpp-haaaa-aaaae-qac7q-cai') {
