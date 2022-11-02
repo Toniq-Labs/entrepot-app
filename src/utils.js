@@ -316,7 +316,7 @@ const clipboardCopy = text => {
       margin: '0 auto',
     };
 
-    if (collection == 'ugdkf-taaaa-aaaak-acoia-cai' || collection == 'bzsui-sqaaa-aaaah-qce2a-cai')
+    if (collection == 'ugdkf-taaaa-aaaak-acoia-cai' || collection == 'bzsui-sqaaa-aaaah-qce2a-cai' || collection == '4ggk4-mqaaa-aaaae-qad6q-cai')
       avatarImgStyle.objectFit = 'contain';
     if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
     if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai')
