@@ -6,35 +6,22 @@ import CachedIcon from '@material-ui/icons/Cached';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Box from '@material-ui/core/Box';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Drawer from '@material-ui/core/Drawer';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Collapse from '@material-ui/core/Collapse';
 import Slider from '@material-ui/core/Slider';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Alert from '@material-ui/lab/Alert';
-import TableContainer from '@material-ui/core/TableContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ListIcon from '@material-ui/icons/List';
 import CloseIcon from '@material-ui/icons/Close';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableBody from '@material-ui/core/TableBody';
 import InputLabel from '@material-ui/core/InputLabel';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -47,14 +34,12 @@ import extjs from '../ic/extjs.js';
 import getNri from '../ic/nftv.js';
 import {useTheme} from '@material-ui/core/styles';
 import NFT from './NFT';
-import BuyForm from './BuyForm';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
-import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
+import {EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
@@ -398,9 +383,6 @@ export default function Listings(props) {
     if (!collection.market) return updateListings([]);
 
     setSize(await api.token(collection.canister).size());
-    EntrepotUpdateStats().then(() => {
-      setStats(EntrepotCollectionStats(collection.canister));
-    });
     try {
       var listings = await api.token(c).listings();
       if (collection?.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
@@ -587,7 +569,7 @@ export default function Listings(props) {
     wearableFilter,
   ]);
 
-  useInterval(_updates, 10 * 1000);
+  useInterval(_updates, 60 * 1000);
   React.useEffect(() => {
     if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
     loadFilterData().then(r => {
