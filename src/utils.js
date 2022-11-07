@@ -245,20 +245,20 @@ const clipboardCopy = text => {
     } else {
       //add collections with wearables or other dynamic traits here
       //these images will not be cached
-      if (collection === 'rxrsz-5aaaa-aaaam-qaysa-cai')
-        return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-      if (collection === 'sbcwr-3qaaa-aaaam-qamoa-cai')
-        return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+//       if (collection === 'rxrsz-5aaaa-aaaam-qaysa-cai')
+//         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+//       if (collection === 'sbcwr-3qaaa-aaaam-qamoa-cai')
+//         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === 'yrdz3-2yaaa-aaaah-qcvpa-cai')
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === 'rw7qm-eiaaa-aaaak-aaiqq-cai')
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === '5movr-diaaa-aaaak-aaftq-cai')
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-      if (collection === 'dhyds-jaaaa-aaaao-aaiia-cai')
-        return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-      if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
-        return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+//       if (collection === 'dhyds-jaaaa-aaaao-aaiia-cai')
+//         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+//       if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
+//         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === 'e3izy-jiaaa-aaaah-qacbq-cai')
         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
       if (collection === 'xjjax-uqaaa-aaaal-qbfgq-cai')
