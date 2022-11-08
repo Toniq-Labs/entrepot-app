@@ -46,7 +46,7 @@ export function AngelInvestorDialog(props) {
       aria-labelledby="angel-investor-title"
       aria-describedby="angel-investor-description"
     >
-      <DialogTitle id="alert-dialog-title">Entrepot Angel Investment</DialogTitle>
+      <DialogTitle id="alert-dialog-title">Toniq Investment Opportunity</DialogTitle>
       <DialogContent>
         <DialogContentText id="angel-investor-description">
           Hey! It's <a href="https://twitter.com/bobbodily">Bob, CEO of Toniq</a>. I ran the numbers
