@@ -15,7 +15,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "@toniq-labs/design-system": "0.0.22",
+    "@toniq-labs/design-system": "^0.0.22",
     "@toruslabs/openlogin": "^1.4.0",
     "assert": "^2.0.0",
     "axios": "^0.25.0",
@@ -52,7 +52,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "start:clean": "rm -rf node_modules/.cache && react-app-rewired start",
+    "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
     "build": "node scripts/build.js pre; react-app-rewired build; node scripts/build.js post",
     "test": "react-app-rewired test",
     "serve": "react-app-rewired build && serve -s build",
