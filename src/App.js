@@ -28,6 +28,7 @@ import Contact from './views/Contact';
 import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
+import VoltTransferForm from './components/VoltTransferForm';
 import PawnForm from './components/PawnForm';
 import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
 import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
@@ -184,6 +185,10 @@ export default function App() {
   const [
     openListingForm,
     setOpenListingForm,
+  ] = React.useState(false);
+  const [
+    openVoltTransferForm,
+    setOpenVoltTransferForm,
   ] = React.useState(false);
   const [
     openTransferForm,
@@ -691,6 +696,11 @@ export default function App() {
     refresher = refresh;
     setOpenPawnForm(true);
   };
+  const voltTransfer = async (loader, refresh) => {
+    buttonLoader = loader;
+    refresher = refresh;
+    setOpenVoltTransferForm(true);
+  };
   const transferNft = async (token, loader, refresh) => {
     setTokenNFT(token);
     buttonLoader = loader;
@@ -700,6 +710,9 @@ export default function App() {
   const closeListingForm = () => {
     setOpenListingForm(false);
     setTimeout(() => setTokenNFT(''), 300);
+  };
+  const closeVoltTransferForm = () => {
+    setOpenVoltTransferForm(false);
   };
   const closeTransferForm = () => {
     setOpenTransferForm(false);
@@ -819,6 +832,100 @@ export default function App() {
       if (loader) loader(false);
       return error(e);
     }
+  };
+  const _voltCreate = async (showAlert) => {
+    loader(true, "Creating Volt wallet...");
+    try {
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
+      var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
+      if (volt.length){
+        loader(false);
+        throw "Volt wallet already exists...";
+      };
+      var promo = await voltFactoryAPI.hasFreeCanister(identity.getPrincipal());
+      if (promo) {
+        var volt = await voltFactoryAPI.create();
+        if (!volt.length) throw "This was an issue creating your Volt...";
+        loader(false);
+        if (showAlert) alert("Volt Created", "Congratulations, you were eligible for a free Volt! This is now ready to go!");
+        return volt;
+      } else {
+        loader(false);
+        if (await confirm('Please confirm', 'To create a Volt wallet you must pay a 0.25ICP setup fee. Do you want to continue?')){
+          loader(true, "Transferring ICP...");
+          var address = await voltFactoryAPI.getPaymentAddress(identity.getPrincipal());
+          await extjs.connect('https://ic0.app/', identity).token().transfer(identity.getPrincipal(), currentAccount, address, 25000000, 10000);
+          loader(true, "Creating Volt wallet...");
+          var volt = await voltFactoryAPI.create();
+          if (!volt.length) throw "This was an issue creating your Volt...";
+          loader(false);
+          if (showAlert) alert("Volt Created", "Congratulations, your Volt is now ready to go!");
+          return volt;
+        } else return false;
+      };
+    } catch(e) {
+      loader(false);
+      if (showAlert) error(e);
+      return false;
+    };
+  };
+  const _voltTransfer = async (deposit, amount, loader, refresh) => {
+      if (loader) {
+      if (deposit) {
+        loader(true, 'Transferring ICP to Volt');
+      } else {
+        loader(true, 'Withdrawing ICP from Volt');
+      }
+    }
+    try {
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
+      var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
+      if (volt.length){
+      } else throw 'There was a problem finding your Volt!';
+      var voltAPI = extjs.connect('https://ic0.app/', identity).canister(volt[0].toText(), "volt");
+      
+      if (deposit) {
+        loader(true, 'Transferring ICP to Volt');
+        var address = await voltAPI.getAddress();
+        var r2 = await extjs.connect('https://ic0.app/', identity).token().transfer(identity.getPrincipal(), currentAccount, address, amount, 10000);
+        if (refresh) {
+          loader(true, 'Updating Balances');          
+          await refresh();
+        }
+        if (loader) loader(false);
+        return alert('Deposit complete', 'Your transfer was successful!');
+      } else {
+        loader(true, 'Withdrawing ICP from Volt');
+        var resp = await voltAPI.transfer({
+          standard : "icpledger",
+          canister : "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          to : accounts[currentAccount].address,
+          amount : amount,
+          id : [],
+          memo : [],
+          notify : [],
+          other : [],
+        });
+        if (resp.hasOwnProperty("ok")){
+          if (resp.ok.success){
+            if (refresh) {
+              loader(true, 'Updating Balances');          
+              await refresh();
+            }
+            if (loader) loader(false);
+            return alert('Withdraw complete', 'Your transfer was successful!');
+          } else {
+            throw "Transfer failed."
+          };
+        } else {
+          throw resp.err;
+        };
+      }
+    } catch(e) {
+      if (loader) loader(false);
+      return error(e);
+    };
+    
   };
   const transfer = async (id, address, loader, refresh) => {
     if (loader) loader(true, 'Transferring NFT...');
@@ -1025,10 +1132,15 @@ export default function App() {
           <Navbar
             view={rootPage}
             processPayments={processPayments}
+            voltCreate={_voltCreate}
             setBalance={setBalance}
+            voltTransfer={voltTransfer}
             identity={identity}
             account={accounts.length > 0 ? accounts[currentAccount] : false}
             loader={loader}
+            alert={alert}
+            error={error}
+            confirm={confirm}
             logout={logout}
             login={login}
             collections={collections}
@@ -1050,6 +1162,7 @@ export default function App() {
                       alert={alert}
                       confirm={confirm}
                       loggedIn={loggedIn}
+                      voltCreate={_voltCreate}
                       list={list}
                       unpackNft={unpackNft}
                       listNft={listNft}
@@ -1811,6 +1924,16 @@ export default function App() {
                 loader={loader}
                 error={error}
                 nft={tokenNFT}
+              />
+              <VoltTransferForm
+                refresher={refresher}
+                buttonLoader={buttonLoader}
+                voltTransfer={_voltTransfer}
+                alert={alert}
+                open={openVoltTransferForm}
+                close={closeVoltTransferForm}
+                loader={loader}
+                error={error}
               />
               <ListingForm
                 refresher={refresher}

@@ -248,11 +248,16 @@ export default function Navbar(props) {
 
       <Wallet
         processPayments={props.processPayments}
+        voltCreate={props.voltCreate}
+        voltTransfer={props.voltTransfer}
         view={props.view}
         setBalance={props.setBalance}
         identity={props.identity}
         account={props.account}
         loader={props.loader}
+        alert={props.alert}
+        error={props.error}
+        confirm={props.confirm}
         logout={props.logout}
         login={props.login}
         collection={props.collection}

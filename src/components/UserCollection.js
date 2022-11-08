@@ -389,7 +389,7 @@ export default function UserCollection(props) {
       case 'offers-made':
         var r = await extjs
           .connect('https://ic0.app/', props.identity)
-          .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+          .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
           .offered();
         data = r.filter((a, i) => r.indexOf(a) == i);
         data = data.map(a => ({
@@ -409,7 +409,7 @@ export default function UserCollection(props) {
             ),
             extjs
               .connect('https://ic0.app/', props.identity)
-              .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+              .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
               .allOffers(),
           ].map(p => p.catch(e => e)),
         );

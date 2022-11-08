@@ -139,18 +139,13 @@ const Detail = props => {
 
   const classes = useStyles();
   const reloadOffers = async () => {
-    await api
-      .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-      .offers(tokenid)
-      .then(r => {
-        setOffers(
-          r
-            .map(a => {
-              return {buyer: a[0], amount: a[1], time: a[2]};
-            })
-            .sort((a, b) => Number(b.amount) - Number(a.amount)),
-        );
-      });
+    var os = await api
+    .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
+    .offers(tokenid);
+    console.log(os);
+    setOffers(
+      os.sort((a, b) => Number(b.amount) - Number(a.amount)),
+    );
   };
   const cancelListing = () => {
     props.list(tokenid, 0, props.loader, _afterList);
@@ -219,10 +214,19 @@ const Detail = props => {
   const cancelOffer = async () => {
     props.loader(true, 'Cancelling offer...');
     const _api = extjs.connect('https://ic0.app/', props.identity);
-    await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').cancelOffer(tokenid);
+    await _api.canister('3lidg-pyaaa-aaaag-qa2kq-cai').cancelOffer(tokenid);
     await reloadOffers();
     props.loader(false);
     props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
+  };
+  const acceptOffer = async () => {
+    if(await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')){
+      props.loader(true, 'Accepting offer...');
+      //TODO
+      await reloadOffers();
+      props.loader(false);
+      props.alert('Offer accepted', 'You have accepted this offer. Your ICP will be transferred to you shortly!');
+    };
   };
 
   const getImageDetailsUrl = async (url, regExp) => {
@@ -798,7 +802,7 @@ const Detail = props => {
                                     <TableCell align="center">
                                       {props.identity &&
                                       props.identity.getPrincipal().toText() ==
-                                        offer.buyer.toText() ? (
+                                        offer.offerer.toText() ? (
                                         <Button
                                           onClick={cancelOffer}
                                           size={'small'}
@@ -808,12 +812,23 @@ const Detail = props => {
                                           Cancel
                                         </Button>
                                       ) : (
-                                        <a
-                                          href={'https://icscan.io/account/' + offer.buyer.toText()}
-                                          target="_blank"
-                                        >
-                                          {shorten(offer.buyer.toText())}
-                                        </a>
+                                        <>{owner && props.account && props.account.address == owner ? (
+                                          <Button
+                                            onClick={acceptOffer}
+                                            size={'small'}
+                                            style={{color: 'white', backgroundColor: '#c32626'}}
+                                            variant={'contained'}
+                                          >
+                                            Accept
+                                          </Button>
+                                        ) : (
+                                          <a
+                                            href={'https://icscan.io/account/' + offer.offerer.toText()}
+                                            target="_blank"
+                                          >
+                                            {shorten(offer.offerer.toText())}
+                                          </a>
+                                        )}</>
                                       )}
                                     </TableCell>
                                   </TableRow>
@@ -953,8 +968,10 @@ const Detail = props => {
         floor={floor}
         address={props.account.address}
         balance={props.balance}
+        voltCreate={props.voltCreate}
         complete={reloadOffers}
         identity={props.identity}
+        confirm={props.confirm}
         alert={props.alert}
         open={openOfferForm}
         close={closeOfferForm}

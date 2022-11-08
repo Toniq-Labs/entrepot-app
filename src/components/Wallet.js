@@ -14,9 +14,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import GavelIcon from '@material-ui/icons/Gavel';
+import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Avatar from '@material-ui/core/Avatar';
@@ -32,6 +34,7 @@ import Blockie from '../components/Blockie';
 import LockIcon from '@material-ui/icons/Lock';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PriceICP from '../components/PriceICP';
+import PriceVolt from '../components/PriceVolt';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
@@ -89,6 +92,18 @@ export default function Wallet(props) {
   const theme = useTheme();
   const container = window !== undefined ? () => window.document.body : undefined;
   const [
+    voltAddress,
+    setVoltAddress,
+  ] = React.useState(false);
+  const [
+    voltBalances,
+    setVoltBalances,
+  ] = React.useState(false);
+  const [
+    voltPrincipal,
+    setVoltPrincipal,
+  ] = React.useState(false);
+  const [
     balance,
     setBalance,
   ] = React.useState(false);
@@ -107,6 +122,7 @@ export default function Wallet(props) {
   const refreshClick = async () => {
     setLoading(true);
     setBalance(false);
+    setVoltBalances(false);
     await refresh();
   };
   const selectAccount = t => {
@@ -120,6 +136,14 @@ export default function Wallet(props) {
     props.login(t);
     setAnchorElAccounts(null);
   };
+  const createVolt = async () => {
+    handleClose();
+    await props.voltCreate(true);
+  };
+  const voltTransfer = async () => {
+    handleClose();
+    await props.voltTransfer(props.loader, refreshClick);
+  };
   const processPayments = async () => {
     handleClose();
     await props.processPayments();
@@ -128,11 +152,29 @@ export default function Wallet(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const refresh = async () => {
+  const refresh = async (refreshVolt) => {
     if (props.account) {
       var b = await api.token().getBalance(props.account.address);
       var thisacc = loadedAccount;
       setBalance(b);
+      //Volt
+      var newVoltPrincipal = false;
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
+      if (voltPrincipal == false || refreshVolt) {
+        var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
+        if (volt.length){
+          newVoltPrincipal = volt[0].toText();
+          setVoltPrincipal(newVoltPrincipal);
+          setVoltAddress(extjs.toAddress(newVoltPrincipal, 0));
+        };
+      };
+      if (newVoltPrincipal || voltPrincipal) {
+        var voltAPI = extjs.connect('https://ic0.app/', props.identity).canister((newVoltPrincipal ? newVoltPrincipal : voltPrincipal), "volt");
+        var resp = await voltAPI.getBalances("icpledger", "ryjl3-tyaaa-aaaaa-aaaba-cai", []);
+        if (resp.hasOwnProperty("ok")) {
+          setVoltBalances([Number(resp.ok[0]), Number(resp.ok[1]), Number(resp.ok[2])]);
+        };
+      };
       setLoading(false);
     }
   };
@@ -143,7 +185,7 @@ export default function Wallet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
-    refresh();
+    refresh(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
   React.useEffect(() => {
@@ -231,6 +273,34 @@ export default function Wallet(props) {
               <ListItemText primary="Check Payments" />
             </MenuItem>
 
+            {loading == false ?
+            ([<Divider light />
+              ,<>{voltPrincipal == false ?
+                <MenuItem
+                  onClick={() => {
+                    createVolt();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <AddCircleOutlineIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Create Volt" />
+                </MenuItem>
+              :
+                <MenuItem
+                  onClick={() => {
+                    voltTransfer();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <SyncAltIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Volt Transfer" />
+                </MenuItem>
+              }</>
+            ]) : ""}
             <Divider light />
             <MenuItem
               onClick={() => {
@@ -247,6 +317,13 @@ export default function Wallet(props) {
           <ListItem>
             <Typography style={{width: '100%', textAlign: 'center', fontWeight: 'bold'}}>
               {balance !== false ? <PriceICP size={24} price={balance} /> : 'Loading...'}
+              {balance !== false && voltBalances == false && loading ? <><br /><span style={{fontSize:12}}>Loading...</span></> : ""}
+              {voltBalances !== false ?
+                <><br /><span style={{fontSize:12}}>Volt:</span> <PriceVolt size={12} price={voltBalances[0]} /></>
+              : ""}
+              {voltBalances !== false && voltBalances[2] > 0 ?
+                <>&nbsp;<span style={{fontSize:12}}>Locked:</span> <PriceVolt size={12} price={voltBalances[2]} /></>
+              : ""}
             </Typography>
           </ListItem>
           {props.accounts.length > 1 ? (

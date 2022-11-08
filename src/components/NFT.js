@@ -203,16 +203,12 @@ export default function NFT(props) {
   };
   const getOffer = async () => {
     await api
-      .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+      .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
       .offers(getEXTID(tokenid))
       .then(r => {
         setOfferCount(r.length);
         setOffer(
-          r
-            .map(a => {
-              return {buyer: a[0], amount: a[1], time: a[2]};
-            })
-            .sort((a, b) => Number(b.amount) - Number(a.amount))[0],
+          r.sort((a, b) => Number(b.amount) - Number(a.amount))[0],
         );
       });
   };
