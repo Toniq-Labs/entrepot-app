@@ -281,7 +281,7 @@ const clipboardCopy = text => {
         );
       if (collection === 'kss7i-hqaaa-aaaah-qbvmq-cai')
         return 'https://' + collection + '.raw.ic0.app/?type=thumbnail&tokenid=' + id;
-      return 'https://images.entrepot.app/t/' + collection + '/' + id;
+      return 'https://images.entrepot.app/t/' + collection + '/' + id + '&cache=' + cachePriority;
       //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
     }
   },
