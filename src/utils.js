@@ -194,14 +194,17 @@ const clipboardCopy = text => {
     }
     return '';
   },
-  EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
+  EntrepotNFTImage = (collection, index, id, fullSize, ref, cachePriority) => {
     if (typeof ref == 'undefined') ref = '';
     else ref = '?' + ref;
+
+    if (typeof cachePriority == 'undefined') cachePriority = "10";
+
     if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false)
     {
       // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
       
-      return 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' + extjs.encodeTokenId("dexpm-6aaaa-aaaal-qbgrq-cai", index ) + ref;
+      return 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' + extjs.encodeTokenId("dexpm-6aaaa-aaaal-qbgrq-cai", index ) + ref + "&cache=" + cachePriority;
     }
      
     if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
