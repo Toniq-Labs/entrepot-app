@@ -22,9 +22,7 @@ import Marketplace from './views/Marketplace';
 import Mint from './views/Mint';
 import Create from './views/Create';
 import Home from './views/Home';
-import CardTest from './views/CardTest';
 import Typography from '@material-ui/core/Typography';
-import Iconic from './views/Iconic';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
 import Opener from './components/Opener';
@@ -44,6 +42,8 @@ import {
 import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
+import {AngelInvestorDialog} from './components/AngelInvestorDialog';
+
 const api = extjs.connect('https://ic0.app/');
 
 const txfee = 10000;
@@ -1019,6 +1019,7 @@ export default function App() {
 
   return (
     <>
+      <AngelInvestorDialog address={address || undefined} />
       {appLoaded ? (
         <>
           <Navbar
