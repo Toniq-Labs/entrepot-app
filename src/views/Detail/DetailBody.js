@@ -49,6 +49,7 @@ const DetailBody = props => {
         offers,
         reloadOffers,
         setOfferPage,
+        setOpenOfferForm,
     } = props;
 
     const navigate = useNavigate();
@@ -60,10 +61,7 @@ const DetailBody = props => {
         transactions,
         setTransactions,
     ] = useState(false);
-    const [
-        activity,
-        setActivity,
-    ] = useState(false);
+
     const [
         activityPage,
         setActivityPage,
@@ -89,7 +87,7 @@ const DetailBody = props => {
     redirectIfBlockedFromEarnFeatures(navigate, collection, props);
 
     const classes = useStyles();
-
+    const activity = transactions[activityPage];
     const _refresh = async () => {
         reloadOffers();
         await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
@@ -103,9 +101,6 @@ const DetailBody = props => {
                 setOwner(r.owner);
                 if (r.transactions.length) {
                     setTransactions(chunk(r.transactions, 9));
-                    setActivity(transactions[activityPage]);
-                } else {
-                    setActivity([]);
                 }
             });
 
@@ -355,6 +350,7 @@ const DetailBody = props => {
                     _afterList={_afterList}
                     _afterBuy={_afterBuy}
                     displayImage={displayImage}
+                    setOpenOfferForm={setOpenOfferForm}
                     {...props}
                 />
                 <DetailSectionDetails />
@@ -370,7 +366,6 @@ const DetailBody = props => {
                     setOfferListing={setOfferListing}
                     attributes={attributes}
                     activity={activity}
-                    setActivity={setActivity}
                     activityPage={activityPage}
                     setActivityPage={setActivityPage}
                     transactions={transactions}

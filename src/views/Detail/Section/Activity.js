@@ -15,10 +15,105 @@ import {
     ToniqMiddleEllipsis,
     ToniqPagination,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {icpToString} from '../../../components/PriceICP';
+import PriceICP, {icpToString} from '../../../components/PriceICP';
 import {Accordion} from '../../../components/Accordion';
+import {NftCard} from '../../../shared/NftCard';
+import moment from 'moment';
+import {EntrepotGetICPUSD, EntrepotNFTImage} from '../../../utils';
+import PriceUSD from '../../../components/PriceUSD';
+import {getEXTCanister} from '../../../utilities/load-tokens';
 
-const DetailSectionActivity = props => {
+function ListRow({items, classes, style}) {
+    return (
+        <div
+            className="profile-list-view-nft-details-row"
+            style={{
+                display: 'flex',
+                gap: '16px',
+                maxHeight: '64px',
+                alignItems: 'center',
+                flexGrow: 1,
+                ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                ...style,
+            }}
+        >
+            {items[0] ? (
+                <div
+                    style={{
+                        flexBasis: '48px',
+                        flexShrink: 0,
+                    }}
+                >
+                    &nbsp;
+                </div>
+            ) : (
+                ''
+            )}
+            <div style={{display: 'flex', justifyContent: 'space-between', flexGrow: 1, gap: 16}}>
+                <div className={classes.activityInfoContainer} style={{...style}}>
+                    <div
+                        style={{
+                            flexBasis: 0,
+                            marginLeft: '32px',
+                            flexGrow: 1,
+                            minWidth: 100,
+                        }}
+                    >
+                        {items[1]}
+                    </div>
+                    <div
+                        style={{
+                            flexBasis: 0,
+                            flexGrow: 1,
+                            minWidth: 150,
+                        }}
+                        className={classes.hideWhenMobile}
+                    >
+                        {items[2]}
+                    </div>
+                    <div
+                        style={{
+                            flexGrow: 1,
+                            flexBasis: 0,
+                            minWidth: 150,
+                        }}
+                        className={classes.hideWhenMobile}
+                    >
+                        {items[3]}
+                    </div>
+                    <div
+                        style={{
+                            flexGrow: 1,
+                            flexBasis: 0,
+                            minWidth: 250,
+                        }}
+                        className={classes.hideWhenMobile}
+                    >
+                        {items[4]}
+                    </div>
+                    <div
+                        style={{
+                            flexGrow: 1,
+                            flexBasis: 0,
+                            marginLeft: '32px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
+                            }}
+                        >
+                            {items[5]}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function DetailSectionActivity(props) {
     const {
         tokenid,
         offerListing,
@@ -31,7 +126,6 @@ const DetailSectionActivity = props => {
         setOfferListing,
         attributes,
         activity,
-        setActivity,
         activityPage,
         setActivityPage,
         transactions,
@@ -65,465 +159,121 @@ const DetailSectionActivity = props => {
 
     return (
         <Box style={{display: 'grid', gap: '16px', padding: '16px 0'}}>
-            <Accordion title="Offers" open={true} center={true}>
-                {offerListing ? (
-                    <>
-                        {offerListing.length > 0 ? (
-                            <Grid container className={classes.accordionWrapper}>
-                                <Grid container className={classes.tableHeader}>
-                                    <Grid
-                                        item
-                                        xs={8}
-                                        sm={6}
-                                        md={4}
-                                        className={classes.tableHeaderName}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        Time
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={1}
-                                        sm={2}
-                                        md={2}
-                                        className={classes.tableHeaderName}
-                                    >
-                                        Floor Delta
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={1}
-                                        sm={2}
-                                        md={3}
-                                        className={classes.tableHeaderName}
-                                    >
-                                        Buyer
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={2}
-                                        md={3}
-                                        className={classes.tableHeaderName}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'right',
-                                        }}
-                                    >
-                                        Price
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={2} className={classes.ntfCardContainer}>
-                                    {offerListing.slice().map((offer, index) => (
-                                        <Grid item key={index} xs={12}>
-                                            <DropShadowCard enableHover>
-                                                <Grid
-                                                    container
-                                                    className={classes.tableCard}
-                                                    alignItems="center"
-                                                    spacing={4}
-                                                >
-                                                    <Grid item xs={10} md={4}>
-                                                        <Grid
-                                                            container
-                                                            alignItems="center"
-                                                            spacing={4}
-                                                        >
-                                                            <Grid
-                                                                item
-                                                                xs={4}
-                                                                sm={2}
-                                                                md={4}
-                                                                className={
-                                                                    classes.imageWrapperActivity
-                                                                }
-                                                            >
-                                                                {displayImage(tokenid)}
-                                                            </Grid>
-                                                            <Grid item xs={8} sm={10} md={8}>
-                                                                <div>
-                                                                    <span>
-                                                                        <Timestamp
-                                                                            relative
-                                                                            autoUpdate
-                                                                            date={Number(
-                                                                                offer.time /
-                                                                                    1000000000n,
-                                                                            )}
-                                                                        />
-                                                                    </span>
-                                                                    <span
-                                                                        className={
-                                                                            classes.buyerMobile
-                                                                        }
-                                                                    >
-                                                                        {props.identity &&
-                                                                        props.identity
-                                                                            .getPrincipal()
-                                                                            .toText() ===
-                                                                            offer.buyer.toText() ? (
-                                                                            <ToniqButton
-                                                                                text="Cancel"
-                                                                                onClick={
-                                                                                    cancelOffer
-                                                                                }
-                                                                            />
-                                                                        ) : (
-                                                                            <ToniqMiddleEllipsis
-                                                                                externalLink={`https://icscan.io/account/${offer.buyer}`}
-                                                                                letterCount={5}
-                                                                                text={offer.buyer.toText()}
-                                                                            />
-                                                                        )}
-                                                                    </span>
-                                                                </div>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={1}
-                                                        sm={2}
-                                                        md={2}
-                                                        className={classes.buyerDesktop}
-                                                        style={{
-                                                            marginLeft: '-16px',
-                                                        }}
-                                                    >
-                                                        {floor ? (
-                                                            getFloorDelta(offer.amount)
-                                                        ) : (
-                                                            <ToniqIcon
-                                                                style={{
-                                                                    color: String(
-                                                                        toniqColors.pagePrimary
-                                                                            .foregroundColor,
-                                                                    ),
-                                                                    alignSelf: 'center',
-                                                                }}
-                                                                icon={LoaderAnimated24Icon}
-                                                            />
-                                                        )}
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={1}
-                                                        sm={2}
-                                                        md={3}
-                                                        className={classes.buyerDesktop}
-                                                    >
-                                                        {props.identity &&
-                                                        props.identity.getPrincipal().toText() ===
-                                                            offer.buyer.toText() ? (
-                                                            <ToniqButton
-                                                                text="Cancel"
-                                                                onClick={cancelOffer}
-                                                            />
-                                                        ) : (
-                                                            <ToniqMiddleEllipsis
-                                                                externalLink={`https://icscan.io/account/${offer.buyer}`}
-                                                                letterCount={5}
-                                                                text={offer.buyer.toText()}
-                                                            />
-                                                        )}
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={2}
-                                                        md={3}
-                                                        style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'right',
-                                                            fontWeight: '700',
-                                                            color: toniqColors.pageInteraction
-                                                                .foregroundColor,
-                                                        }}
-                                                    >
-                                                        +{icpToString(offer.amount, true, true)}
-                                                    </Grid>
-                                                </Grid>
-                                            </DropShadowCard>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <div className={classes.pagination}>
-                                    <ToniqPagination
-                                        currentPage={offerPage + 1}
-                                        pageCount={offers.length}
-                                        pagesShown={6}
-                                        onPageChange={event => {
-                                            setOfferPage(event.detail - 1);
-                                            setOfferListing(false);
-                                        }}
-                                    />
-                                </div>
-                            </Grid>
-                        ) : (
-                            <Grid className={classes.accordionWrapper}>
-                                <span className={classes.offerDesc}>
-                                    There are currently no offers!
-                                </span>
-                            </Grid>
-                        )}
-                    </>
-                ) : (
-                    <Grid className={classes.accordionWrapper}>{reloadIcon()}</Grid>
-                )}
-            </Accordion>
-            <Accordion title="Attributes" open={true} center={true}>
-                {attributes ? (
-                    <>
-                        {attributes.length > 0 ? (
-                            <Grid container className={classes.accordionWrapper}>
-                                <Grid container className={classes.attributeWrapper} spacing={2}>
-                                    {attributes.map((attribute, attributeIndex) => (
-                                        <Grid item key={attributeIndex} xs={12} md={3}>
-                                            <DropShadowCard
-                                                enableHover
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    padding: '0',
-                                                    minHeight: 132,
-                                                }}
-                                            >
-                                                <span className={classes.attributeHeader}>
-                                                    <span
-                                                        style={cssToReactStyleObject(
-                                                            toniqFontStyles.paragraphFont,
-                                                        )}
-                                                    >
-                                                        {attribute.category}
-                                                    </span>
-                                                </span>
-                                                <Grid
-                                                    container
+            {activity && (
+                <div className={classes.detailSectionContainer} style={{minHeight: 350}}>
+                    <span>Activity</span>
+                    <div container className={classes.listRowContainer}>
+                        <div className={classes.listRowHeader}>
+                            <ListRow
+                                items={[
+                                    true,
+                                    'PRICE',
+                                    'FROM',
+                                    'TO',
+                                    'DATE',
+                                    'TIME',
+                                ]}
+                                classes={classes}
+                                style={{
+                                    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                                    height: '32px',
+                                }}
+                            />
+                        </div>
+                        {activity.slice().map((transaction, index) => {
+                            return (
+                                <NftCard
+                                    listStyle={true}
+                                    imageUrl={EntrepotNFTImage(
+                                        getEXTCanister(transaction.canister),
+                                        index,
+                                        transaction.token,
+                                        false,
+                                        0,
+                                    )}
+                                    key={index}
+                                >
+                                    <>
+                                        <ListRow
+                                            items={[
+                                                '',
+                                                <div
                                                     style={{
                                                         display: 'flex',
-                                                        flexDirection: 'column',
-                                                        justifyContent: 'center',
+                                                        alignContent: 'center',
+                                                        justifyContent: 'left',
                                                         alignItems: 'center',
-                                                        textAlign: 'center',
-                                                        padding: '8px 8px 16px 8px',
-                                                        flexGrow: 1,
                                                     }}
                                                 >
-                                                    <span
-                                                        style={{
-                                                            ...cssToReactStyleObject(
-                                                                toniqFontStyles.h3Font,
-                                                            ),
-                                                            ...cssToReactStyleObject(
-                                                                toniqFontStyles.boldFont,
-                                                            ),
-                                                            display: '-webkit-box',
-                                                            overflow: 'hidden',
-                                                            WebkitLineClamp: 2,
-                                                            WebkitBoxOrient: 'vertical',
-                                                        }}
-                                                    >
-                                                        {attribute.value}
-                                                    </span>
-                                                    {/* <Grid item>
-					  <ToniqChip className="toniq-chip-secondary" text={''}></ToniqChip>
-					</Grid> */}
-                                                </Grid>
-                                            </DropShadowCard>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Grid>
-                        ) : (
-                            <Grid className={classes.accordionWrapper}>
-                                <span className={classes.offerDesc}>No Attributes</span>
-                            </Grid>
-                        )}
-                    </>
-                ) : (
-                    <Grid className={classes.accordionWrapper}>{reloadIcon()}</Grid>
-                )}
-            </Accordion>
-            <Accordion title="Activity" open={true} center={true}>
-                {activity ? (
-                    <>
-                        {activity.length > 0 ? (
-                            <Grid container className={classes.accordionWrapper}>
-                                <Grid container className={classes.tableHeader}>
-                                    <Grid
-                                        item
-                                        xs={8}
-                                        sm={6}
-                                        md={4}
-                                        className={classes.tableHeaderName}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        Date
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={1}
-                                        sm={2}
-                                        md={2}
-                                        className={classes.tableHeaderName}
-                                    >
-                                        Activity
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={1}
-                                        sm={2}
-                                        md={3}
-                                        className={classes.tableHeaderName}
-                                    >
-                                        Details
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={2}
-                                        md={3}
-                                        className={classes.tableHeaderName}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'right',
-                                        }}
-                                    >
-                                        Cost
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={2} className={classes.ntfCardContainer}>
-                                    {activity.slice().map((transaction, index) => (
-                                        <Grid item key={index} xs={12}>
-                                            <DropShadowCard enableHover>
-                                                <Grid
-                                                    container
-                                                    className={classes.tableCard}
-                                                    alignItems="center"
-                                                    spacing={4}
-                                                >
-                                                    <Grid item xs={10} md={4}>
-                                                        <Grid
-                                                            container
-                                                            alignItems="center"
-                                                            spacing={4}
-                                                        >
-                                                            <Grid
-                                                                item
-                                                                xs={4}
-                                                                sm={2}
-                                                                md={4}
-                                                                className={
-                                                                    classes.imageWrapperActivity
-                                                                }
-                                                            >
-                                                                {displayImage(tokenid)}
-                                                            </Grid>
-                                                            <Grid item xs={8} sm={10} md={8}>
-                                                                <div>
-                                                                    <span>
-                                                                        <Timestamp
-                                                                            relative
-                                                                            autoUpdate
-                                                                            date={Number(
-                                                                                BigInt(
-                                                                                    transaction.time,
-                                                                                ) / 1000000000n,
-                                                                            )}
-                                                                        />
-                                                                    </span>
-                                                                    <span
-                                                                        className={
-                                                                            classes.buyerMobile
-                                                                        }
-                                                                    >
-                                                                        TO: &nbsp;
-                                                                        <ToniqMiddleEllipsis
-                                                                            externalLink={`https://icscan.io/account/${transaction.buyer}`}
-                                                                            letterCount={5}
-                                                                            text={transaction.buyer}
-                                                                        />
-                                                                    </span>
-                                                                </div>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={1}
-                                                        sm={2}
-                                                        md={2}
-                                                        className={classes.buyerDesktop}
-                                                        style={{
-                                                            marginLeft: '-16px',
-                                                        }}
-                                                    >
-                                                        Sale
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={1}
-                                                        sm={2}
-                                                        md={3}
-                                                        className={classes.buyerDesktop}
-                                                    >
-                                                        TO: &nbsp;
-                                                        <ToniqMiddleEllipsis
-                                                            externalLink={`https://icscan.io/account/${transaction.buyer}`}
-                                                            letterCount={5}
-                                                            text={transaction.buyer}
-                                                        />
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={2}
-                                                        md={3}
-                                                        style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'right',
-                                                            fontWeight: '700',
-                                                            color: toniqColors.pageInteraction
-                                                                .foregroundColor,
-                                                        }}
-                                                    >
-                                                        +
-                                                        {icpToString(transaction.price, true, true)}
-                                                    </Grid>
-                                                </Grid>
-                                            </DropShadowCard>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <div className={classes.pagination}>
-                                    <ToniqPagination
-                                        currentPage={activityPage + 1}
-                                        pageCount={transactions.length}
-                                        pagesShown={6}
-                                        onPageChange={event => {
-                                            setActivityPage(event.detail - 1);
-                                            setActivity(false);
-                                        }}
-                                    />
-                                </div>
-                            </Grid>
-                        ) : (
-                            <Grid className={classes.accordionWrapper}>
-                                <span className={classes.offerDesc}>No Activity</span>
-                            </Grid>
-                        )}
-                    </>
-                ) : (
-                    <Grid className={classes.accordionWrapper}>{reloadIcon()}</Grid>
-                )}
-            </Accordion>
+                                                    <PriceICP
+                                                        large={false}
+                                                        volume={true}
+                                                        clean={false}
+                                                        price={transaction.price}
+                                                    />
+                                                    &nbsp; (
+                                                    <PriceUSD
+                                                        price={EntrepotGetICPUSD(transaction.price)}
+                                                    />
+                                                    )
+                                                </div>,
+                                                transaction.seller ? (
+                                                    <ToniqMiddleEllipsis
+                                                        externalLink={`https://icscan.io/account/${transaction.seller}`}
+                                                        letterCount={5}
+                                                        text={transaction.seller}
+                                                        className={classes.hoverText}
+                                                    />
+                                                ) : (
+                                                    '-'
+                                                ),
+                                                transaction.buyer ? (
+                                                    <ToniqMiddleEllipsis
+                                                        externalLink={`https://icscan.io/account/${transaction.buyer}`}
+                                                        letterCount={5}
+                                                        text={transaction.buyer}
+                                                        className={classes.hoverText}
+                                                    />
+                                                ) : (
+                                                    '-'
+                                                ),
+                                                moment
+                                                    .unix(Number(transaction.time / 1000000000))
+                                                    .format('MMMM D, YYYY (h:mm a)'),
+                                                <Timestamp
+                                                    relative
+                                                    autoUpdate
+                                                    date={Number(transaction.time / 1000000000)}
+                                                    style={{
+                                                        ...cssToReactStyleObject(
+                                                            toniqFontStyles.boldParagraphFont,
+                                                        ),
+                                                    }}
+                                                />,
+                                            ]}
+                                            classes={classes}
+                                        />
+                                    </>
+                                </NftCard>
+                            );
+                        })}
+
+                        <div className={classes.pagination}>
+                            <ToniqPagination
+                                currentPage={activityPage + 1}
+                                pageCount={transactions.length}
+                                pagesShown={6}
+                                onPageChange={event => {
+                                    setActivityPage(event.detail - 1);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </Box>
     );
-};
-export default DetailSectionActivity;
+}
 
 const useStyles = makeStyles(theme => ({
     btn: {
@@ -727,5 +477,73 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
+    },
+    activityInfoContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '16px',
+        maxHeight: '64px',
+        alignItems: 'center',
+        flexGrow: 1,
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+            alignItems: 'start',
+            ...cssToReactStyleObject(toniqFontStyles.labelFont),
+        },
+    },
+    hideWhenMobile: {
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    hideWhenTablet: {
+        [theme.breakpoints.down('md')]: {
+            display: 'none',
+        },
+    },
+    showWhenMobile: {
+        display: 'none',
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+    },
+    listRowHeader: {
+        display: 'flex',
+        backgroundColor: toniqColors.accentSecondary.backgroundColor,
+        borderRadius: '8px',
+        padding: '0 16px',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    listRowContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        gap: '16px',
+        justifyContent: 'center',
+        maxWidth: '100%',
+        backgroundColor: 'white',
+        paddingBottom: '32px',
+        marginTop: '32px',
+        [theme.breakpoints.down('sm')]: {
+            marginTop: '16px',
+            paddingBottom: '16px',
+        },
+    },
+    detailSectionContainer: {
+        borderRadius: 16,
+        border: '1px solid rgba(0,0,0, 0.08)',
+        padding: 24,
+        [theme.breakpoints.down('md')]: {
+            padding: '16px 14px',
+        },
+    },
+    hoverText: {
+        '&:hover': {
+            color: toniqColors.pageInteraction.foregroundColor,
+        },
     },
 }));

@@ -26,6 +26,7 @@ const DetailSectionHeader = props => {
         tokenid,
         index,
         canister,
+        setOpenOfferForm,
     } = props;
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
@@ -57,7 +58,7 @@ const DetailSectionHeader = props => {
     };
 
     const makeOffer = async () => {
-        props.setOpenOfferForm(true);
+        setOpenOfferForm(true);
     };
 
     React.useEffect(() => {
@@ -68,12 +69,7 @@ const DetailSectionHeader = props => {
 
     return (
         <Box className={classes.detailHeader}>
-            <div
-                style={{
-                    display: 'flex',
-                    gap: 32,
-                }}
-            >
+            <div className={classes.detailSectionHeader}>
                 <Grid item xs={12} sm={5}>
                     <DropShadowCard
                         className={classes.imageWrapperContainer}
@@ -83,7 +79,7 @@ const DetailSectionHeader = props => {
                     </DropShadowCard>
                 </Grid>
                 <Grid item xs={12} sm={7} className={classes.headerContent}>
-                    <Grid container>
+                    <Grid container style={{height: '100%'}}>
                         <Grid item xs={12} className={classes.namePriceContainer}>
                             <div className={classes.nameContent}>
                                 <Grid container justifyContent="space-between" alignItems="center">
@@ -310,9 +306,7 @@ const DetailSectionHeader = props => {
 								*/}
                             </div>
                         </Grid>
-                        <Grid item xs={12}>
-                            Test
-                        </Grid>
+                        <Grid item xs={12} className={classes.benefitsWrapper}></Grid>
                     </Grid>
                 </Grid>
             </div>
@@ -325,6 +319,13 @@ const useStyles = makeStyles(theme => ({
     detailHeader: {
         [theme.breakpoints.up('md')]: {
             margin: '16px 0',
+        },
+    },
+    detailSectionHeader: {
+        display: 'flex',
+        gap: 32,
+        [theme.breakpoints.down('md')]: {
+            flexDirection: 'column',
         },
     },
     removeNativeButtonStyles: {
@@ -476,5 +477,8 @@ const useStyles = makeStyles(theme => ({
                 color: toniqColors.pageInteraction.foregroundColor,
             },
         },
+    },
+    benefitsWrapper: {
+        borderTop: '1px solid rgba(0,0,0, 0.08)',
     },
 }));

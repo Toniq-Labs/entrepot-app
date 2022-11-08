@@ -15,49 +15,11 @@ export function Accordion(props) {
         setOpen,
     ] = useState(props.open);
 
-    const useStyles = makeStyles(theme => ({
-        accordion: {
-            borderRadius: '16px',
-            backgroundColor: toniqColors.pagePrimary.backgroundColor,
-        },
-        header: {
-            display: 'flex',
-            position: 'relative',
-            justifyContent: props.center ? 'center' : 'left',
-            cursor: 'pointer',
-            borderRadius: '8px',
-            ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-        },
-        detail: {
-            maxHeight: '0',
-            transition: 'max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)',
-            overflow: 'hidden',
-        },
-        icon: {
-            position: 'absolute',
-            right: '0',
-            color: '#000000',
-            transition: 'all .4s',
-        },
-        checkbox: {
-            display: 'none',
-            '&:checked~.detail': {
-                maxHeight: 'max-content',
-                overflow: 'visible',
-                paddingBottom: '0',
-            },
-            '&:checked~.header .icon': {
-                transform: 'rotate(180deg)',
-            },
-        },
-    }));
-
-    const classes = useStyles();
-    const id = randomString();
+    const classes = useStyles(props);
     return (
         <div className={classes.accordion}>
             <input
-                id={id}
+                id={props.title}
                 className={classes.checkbox}
                 type="checkbox"
                 checked={open}
@@ -66,7 +28,7 @@ export function Accordion(props) {
                     if (props.onOpenAccordionChange) props.onOpenAccordionChange(!open);
                 }}
             />
-            <label htmlFor={id} className={`${classes.header} header`}>
+            <label htmlFor={props.title} className={`${classes.header} header`}>
                 {props.title}
                 <ToniqIcon icon={ChevronDown24Icon} className={`${classes.icon} icon`} />
             </label>
@@ -74,3 +36,40 @@ export function Accordion(props) {
         </div>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    accordion: {
+        borderRadius: '16px',
+        backgroundColor: toniqColors.pagePrimary.backgroundColor,
+    },
+    header: props => ({
+        display: 'flex',
+        position: 'relative',
+        justifyContent: props.center ? 'center' : 'left',
+        cursor: 'pointer',
+        borderRadius: '8px',
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    }),
+    detail: {
+        maxHeight: '0',
+        transition: 'max-height 0.4s cubic-bezier(0.29, -0.01, 0, 0.94)',
+        overflow: 'hidden',
+    },
+    icon: {
+        position: 'absolute',
+        right: '0',
+        color: '#000000',
+        transition: 'all .4s',
+    },
+    checkbox: {
+        display: 'none',
+        '&:checked~.detail': {
+            maxHeight: 'max-content',
+            overflow: 'visible',
+            paddingBottom: '0',
+        },
+        '&:checked~.header .icon': {
+            transform: 'rotate(180deg)',
+        },
+    },
+}));
