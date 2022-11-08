@@ -425,8 +425,9 @@ export default function NFT(props) {
   const mintNumber = () => {
     return EntrepotNFTMintNumber(canister, index);
   };
+  var collection = getCollection(canister);
   const nftImg = () => {
-    return EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, ref);
+    return EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, ref, collection.priority);
   };
   const nftLink = () => {
     return EntrepotNFTLink(getEXTCanister(canister), index, tokenid);
