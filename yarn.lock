@@ -2026,7 +2026,7 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@toniq-labs/design-system@0.0.22":
+"@toniq-labs/design-system@^0.0.22":
   "integrity" "sha512-pb1y0QtGJZ+chRIuhsanJuJL2dgOkTZtPJyWA4lPwc2TXgS1Hwz9E9nRvKYV/hj6cPmgv7uuKGo68fdp1vNPYA=="
   "resolved" "https://registry.npmjs.org/@toniq-labs/design-system/-/design-system-0.0.22.tgz"
   "version" "0.0.22"

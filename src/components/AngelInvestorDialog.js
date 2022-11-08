@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import {ToniqButton} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import React, {useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -17,8 +18,14 @@ function hasBeenSeen() {
 }
 
 export function AngelInvestorDialog(props) {
-  console.log({address: props.address});
-  const canOpen = topTwoPercentAddresses.includes(props.address) && !hasBeenSeen();
+  const [canOpen, setCanOpen] = useState(
+    topTwoPercentAddresses.includes(props.address) && !hasBeenSeen(),
+  );
+
+  useEffect(() => {
+    setCanOpen(topTwoPercentAddresses.includes(props.address) && !hasBeenSeen());
+  }, [props.address]);
+
   if (canOpen) {
     setTimeout(() => {
       setOpen(true);
@@ -27,6 +34,7 @@ export function AngelInvestorDialog(props) {
   const [open, setOpen] = useState(false);
 
   function close() {
+    setCanOpen(false);
     setOpen(false);
     setAsSeen();
   }
@@ -58,12 +66,18 @@ export function AngelInvestorDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={close}>
-          Close
+          Ignore
         </Button>
-        <a href="https://bit.ly/3t8S3wp" style={{textDecoration: 'none'}}>
-          <Button color="primary" onClick={close}>
+        <a
+          href="https://bit.ly/3t8S3wp"
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={close}
+          style={{textDecoration: 'none'}}
+        >
+          <ToniqButton style={{margin: '8px'}} onClick={close}>
             Learn More
-          </Button>
+          </ToniqButton>
         </a>
       </DialogActions>
     </Dialog>
