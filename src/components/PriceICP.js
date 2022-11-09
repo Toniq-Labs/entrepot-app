@@ -30,7 +30,7 @@ export function icpToString(priceE8s /* BigInt */, convertToIcp, truncate) {
 export default function PriceICP(props) {
   return (
     <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
-      <ToniqIcon icon={Icp16Icon} />
+      {props.text ? "" : <ToniqIcon icon={Icp16Icon} /> }
       <span
         style={{
           display: 'inline-flex',
@@ -42,10 +42,14 @@ export default function PriceICP(props) {
           ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
         }}
       >
-        {props.text
-          ? props.text
-          : icpToString(props.price, !props.clean, props.volume, props.fillAllSpots)}
-        &nbsp;{props.children}
+        {props.text ? 
+          props.text
+          : 
+          <>
+            {icpToString(props.price, !props.clean, props.volume, props.fillAllSpots)}
+            &nbsp;{props.children}
+          </>
+        }
       </span>
     </span>
   );

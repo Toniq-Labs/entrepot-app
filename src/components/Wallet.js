@@ -164,6 +164,7 @@ export default function Wallet(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
+    setLoading(true);
     refresh(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
@@ -172,6 +173,8 @@ export default function Wallet(props) {
   }, [balance]);
   React.useEffect(() => {
     loadedAccount = props.currentAccount;
+    setLoading(true);
+    refresh(true);
   }, [props.currentAccount]);
   const accountsList = (
     <div style={{marginTop: 73, marginBottom: 100}}>
@@ -261,11 +264,11 @@ export default function Wallet(props) {
             </MenuItem>
           </Menu>
           <ListItem style={{display: 'flex', justifyContent: 'center'}}>
-            <Typography style={{display: 'inline-flex', flexDirection: 'column', gap: '4px'}}>
+            <Typography style={{width:"100%",textAlign:"center"}}>
               <PriceICP
                 volume={true}
                 text={
-                  balance === false || loadedAccount == 0 || voltBalances === false ? (
+                  balance === false || (loadedAccount == 0 && voltBalances === false) ? (
                     <ToniqIcon
                       className="toniq-icon-fit-icon"
                       style={{height: '14px', width: '14px'}}
@@ -276,41 +279,26 @@ export default function Wallet(props) {
                 price={Number(balance) + voltBalances[0] + voltBalances[2]}
               >
                 Total
-              </PriceICP>
-              <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
-              <PriceICP
-                bold={false}
-                volume={true}
-                text={
-                  balance === false ? (
-                    <ToniqIcon
-                      className="toniq-icon-fit-icon"
-                      style={{height: '14px', width: '14px'}}
-                      icon={LoaderAnimated24Icon}
-                    />
-                  ) : undefined
-                }
-                price={balance}
-              >
-                Default
-              </PriceICP>
-              <PriceICP
-                bold={false}
-                volume={true}
-                text={
-                  loadedAccount != 0 || voltBalances === false ? (
-                    <ToniqIcon
-                      className="toniq-icon-fit-icon"
-                      style={{height: '14px', width: '14px'}}
-                      icon={LoaderAnimated24Icon}
-                    />
-                  ) : undefined
-                }
-                price={voltBalances[0]}
-              >
-                Volt
-              </PriceICP>
-              {voltBalances && voltBalances[2] > 0 ? (
+              </PriceICP><br />
+              {loading == false && loadedAccount === 0 ?
+                <>
+                <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
+                <PriceICP
+                  bold={false}
+                  volume={true}
+                  text={
+                    balance === false ? (
+                      <ToniqIcon
+                        className="toniq-icon-fit-icon"
+                        style={{height: '14px', width: '14px'}}
+                        icon={LoaderAnimated24Icon}
+                      />
+                    ) : undefined
+                  }
+                  price={balance}
+                >
+                  Default
+                </PriceICP><br />
                 <PriceICP
                   bold={false}
                   volume={true}
@@ -323,15 +311,35 @@ export default function Wallet(props) {
                       />
                     ) : undefined
                   }
-                  price={voltBalances[2]}
+                  price={voltBalances[0]-voltBalances[2]}
                 >
-                  Locked
-                </PriceICP>
-              ) : (
-                ''
-              )}
+                  Volt
+                </PriceICP><br />
+                {voltBalances && voltBalances[2] > 0 ? (
+                  <><PriceICP
+                    bold={false}
+                    volume={true}
+                    text={
+                      loadedAccount != 0 || voltBalances === false ? (
+                        <ToniqIcon
+                          className="toniq-icon-fit-icon"
+                          style={{height: '14px', width: '14px'}}
+                          icon={LoaderAnimated24Icon}
+                        />
+                      ) : undefined
+                    }
+                    price={voltBalances[2]}
+                  >
+                    Locked
+                  </PriceICP><br /></>
+                ) : (
+                  ''
+                )}
+                </> 
+              : ""}
             </Typography>
           </ListItem>
+          {loading == false && loadedAccount === 0 ?
           <ListItem>
             <Button
               onClick={e => {
@@ -348,7 +356,7 @@ export default function Wallet(props) {
             >
               {voltPrincipal ? 'Volt Transfer' : 'Link Volt'}
             </Button>
-          </ListItem>
+          </ListItem> : ""}
           {props.accounts.length > 1 ? (
             <ListItem>
               <Button
