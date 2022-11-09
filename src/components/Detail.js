@@ -45,6 +45,7 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import Alert from '@material-ui/lab/Alert';
 import OfferForm from './OfferForm';
+import AuctionForm from './AuctionForm';
 import {useNavigate} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
 import {
@@ -122,12 +123,20 @@ const Detail = props => {
     setOwner,
   ] = React.useState(false);
   const [
+    auction,
+    setAuction,
+  ] = React.useState(false);
+  const [
     offers,
     setOffers,
   ] = React.useState(false);
   const [
     openOfferForm,
     setOpenOfferForm,
+  ] = React.useState(false);
+  const [
+    openAuctionForm,
+    setOpenAuctionForm,
   ] = React.useState(false);
   const collection = props.collections.find(e => e.canister === canister);
   const [
@@ -139,24 +148,25 @@ const Detail = props => {
 
   const classes = useStyles();
   const reloadOffers = async () => {
-    await api
-      .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-      .offers(tokenid)
-      .then(r => {
-        setOffers(
-          r
-            .map(a => {
-              return {buyer: a[0], amount: a[1], time: a[2]};
-            })
-            .sort((a, b) => Number(b.amount) - Number(a.amount)),
-        );
-      });
+    var os = await api
+    .canister('fcwhh-piaaa-aaaak-qazba-cai')
+    .offers(tokenid);
+    setOffers(
+      os.sort((a, b) => Number(b.amount) - Number(a.amount)),
+    );
+  };
+  const reloadAuction = async () => {
+    var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(tokenid);
+    if (resp.length) setAuction(resp[0]);
+    else setAuction(false);
   };
   const cancelListing = () => {
     props.list(tokenid, 0, props.loader, _afterList);
   };
   const _refresh = async () => {
     reloadOffers();
+    reloadAuction();
+    try{
     await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
       .then(r => r.json())
       .then(r => {
@@ -167,6 +177,9 @@ const Detail = props => {
         setOwner(r.owner);
         setTransactions(r.transactions);
       });
+    }catch(e){
+      //console.log(e);
+    };
     // let {index, canister} = extjs.decodeTokenId(tokenid);
     // if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
     //   await fetch(
@@ -189,12 +202,15 @@ const Detail = props => {
     await _refresh();
   };
   const _afterBuy = async () => {
-    await reloadOffers();
     await _refresh();
   };
   const closeOfferForm = () => {
-    reloadOffers();
+    _refresh();
     setOpenOfferForm(false);
+  };
+  const closeAuctionForm = () => {
+    _refresh();
+    setOpenAuctionForm(false);
   };
   const getFloorDelta = amount => {
     if (!floor) return '-';
@@ -206,11 +222,15 @@ const Detail = props => {
       return ((1 - ne / fe) * 100).toFixed(2) + '% below';
     } else return '-';
   };
+  const placeBid = async () => {
+    //TODO
+    setOpenAuctionForm(true);
+  };
   const makeOffer = async () => {
     setOpenOfferForm(true);
   };
 
-  useInterval(_refresh, 2 * 1000);
+  useInterval(_refresh, 10 * 1000);
   useInterval(() => {
     var nf = EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '';
     setFloor(nf);
@@ -219,10 +239,29 @@ const Detail = props => {
   const cancelOffer = async () => {
     props.loader(true, 'Cancelling offer...');
     const _api = extjs.connect('https://ic0.app/', props.identity);
-    await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').cancelOffer(tokenid);
+    await _api.canister('fcwhh-piaaa-aaaak-qazba-cai').cancelOffer(tokenid);
     await reloadOffers();
     props.loader(false);
     props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
+  };
+  const acceptOffer = async (offer) => {
+    if(await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')){
+      props.loader(true, 'Accepting offer...');
+      var offersAPI = extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
+      var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
+      var r2 = await extjs.connect('https://ic0.app/', props.identity).token(tokenid).transfer(
+        props.identity.getPrincipal().toText(),
+        props.currentAccount,
+        'fcwhh-piaaa-aaaak-qazba-cai',
+        BigInt(1),
+        BigInt(0),
+        memo,
+        true,
+      );
+      await _refresh();
+      props.loader(false);
+      props.alert('Offer accepted', 'You have accepted this offer. Your ICP will be transferred to you shortly!');
+    };
   };
 
   const getImageDetailsUrl = async (url, regExp) => {
@@ -527,32 +566,72 @@ const Detail = props => {
                     </>
                   ) : (
                     <>
-                      {offers && offers.length > 0 ? (
-                        <>
+                      {auction !== false ? (
+                        <div style={{marginBottom:20}}>
                           <Typography variant="h6">
-                            <strong>Best Offer Price</strong>
+                            <strong>On Auction</strong>
                           </Typography>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              padding: '10px 0px',
-                            }}
-                          >
-                            <Typography variant="h5" style={{fontWeight: 'bold'}}>
-                              <PriceICP size={30} price={offers[0].amount} />
-                            </Typography>
-                            <Typography variant="body2" style={{marginLeft: '10px'}}>
-                              (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
-                            </Typography>
-                          </div>
-                        </>
+                          {auction.bids.length === 0 ?
+                          <>
+                            <span style={{fontSize:'12px'}}>No Bids - Reserve:</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '0px 0px 10px',
+                              }}
+                            >
+                              <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                <PriceICP size={30} price={auction.reserve} />
+                              </Typography>
+                              <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                (<PriceUSD price={EntrepotGetICPUSD(auction.reserve)} />)
+                              </Typography>
+                            </div>
+                          </> : 
+                          <>
+                            <span style={{fontSize:'12px'}}>{auction.bids.length} Bid{auction.bids.length === 1 ? "" : "s"} - Leading Bid:</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '10px 0px',
+                              }}
+                            >
+                              <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                <PriceICP size={30} price={auction.bids[auction.bids.length-1].amount} />
+                              </Typography>
+                              <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                (<PriceUSD price={EntrepotGetICPUSD(auction.bids[auction.bids.length-1].amount)} />)
+                              </Typography>
+                            </div>
+                          </>}
+                          {Number(auction.end / 1000000n) >= Date.now() ?
+                            <>
+                              <div style={{marginBottom:10}}><span style={{fontSize:'14px'}}>Auction ends <Timestamp date={Number(auction.end / 1000000000n)}/> (<Timestamp relative autoUpdate date={Number(auction.end / 1000000000n)}/>)</span></div>
+                              <Button
+                                onClick={ev => {
+                                  placeBid();
+                                }}
+                                variant="contained"
+                                color="primary"
+                                style={{fontWeight: 'bold', marginRight: '10px', marginBottom: 10}}
+                              >
+                                Place Bid
+                              </Button>
+                            </>
+                            :
+                            <>
+                              <span style={{fontSize:'14px'}}>Auction ending...</span>
+                            </>
+                          }
+                        </div>
                       ) : (
                         <>
-                          {transactions && transactions.length > 0 ? (
+                          {offers && offers.length > 0 ? (
                             <>
                               <Typography variant="h6">
-                                <strong>Last Price</strong>
+                                <strong>Best Offer Price</strong>
                               </Typography>
                               <div
                                 style={{
@@ -562,25 +641,49 @@ const Detail = props => {
                                 }}
                               >
                                 <Typography variant="h5" style={{fontWeight: 'bold'}}>
-                                  <PriceICP size={30} price={transactions[0].price} />
+                                  <PriceICP size={30} price={offers[0].amount} />
                                 </Typography>
                                 <Typography variant="body2" style={{marginLeft: '10px'}}>
-                                  (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
+                                  (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
                                 </Typography>
                               </div>
                             </>
                           ) : (
                             <>
-                              <Typography variant="h6">
-                                <strong>Unlisted</strong>
-                              </Typography>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: '10px 0px',
-                                }}
-                              ></div>
+                              {transactions && transactions.length > 0 ? (
+                                <>
+                                  <Typography variant="h6">
+                                    <strong>Last Price</strong>
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      padding: '10px 0px',
+                                    }}
+                                  >
+                                    <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                      <PriceICP size={30} price={transactions[0].price} />
+                                    </Typography>
+                                    <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                      (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
+                                    </Typography>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <Typography variant="h6">
+                                    <strong>Unlisted</strong>
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      padding: '10px 0px',
+                                    }}
+                                  ></div>
+                                </>
+                              )}
                             </>
                           )}
                         </>
@@ -740,7 +843,7 @@ const Detail = props => {
                         </>
                       ) : (
                         <>
-                          <Alert severity="info">Offers are non-binding and indicative only.</Alert>
+                          <Alert severity="info">Offers are binding.</Alert>
                           <Table
                             sx={{minWidth: 1500, fontWeight: 'bold'}}
                             aria-label="a dense table"
@@ -795,25 +898,34 @@ const Detail = props => {
                                         date={Number(offer.time / 1000000000n)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center">
-                                      {props.identity &&
-                                      props.identity.getPrincipal().toText() ==
-                                        offer.buyer.toText() ? (
+                                    <TableCell align="center"> 
+                                      {owner && props.account && props.account.address == owner ? (
                                         <Button
-                                          onClick={cancelOffer}
+                                          onClick={() => acceptOffer(offer)}
                                           size={'small'}
                                           style={{color: 'white', backgroundColor: '#c32626'}}
                                           variant={'contained'}
                                         >
-                                          Cancel
+                                          Accept
                                         </Button>
                                       ) : (
-                                        <a
-                                          href={'https://icscan.io/account/' + offer.buyer.toText()}
-                                          target="_blank"
-                                        >
-                                          {shorten(offer.buyer.toText())}
-                                        </a>
+                                        <>{props.identity && props.identity.getPrincipal().toText() == offer.offerer.toText() ? (
+                                          <Button
+                                            onClick={cancelOffer}
+                                            size={'small'}
+                                            style={{color: 'white', backgroundColor: '#c32626'}}
+                                            variant={'contained'}
+                                          >
+                                            Cancel
+                                          </Button>
+                                        ) : (
+                                          <a
+                                            href={'https://icscan.io/account/' + offer.offerer.toText()}
+                                            target="_blank"
+                                          >
+                                            {shorten(offer.offerer.toText())}
+                                          </a>
+                                        )}</>
                                       )}
                                     </TableCell>
                                   </TableRow>
@@ -953,11 +1065,28 @@ const Detail = props => {
         floor={floor}
         address={props.account.address}
         balance={props.balance}
+        voltCreate={props.voltCreate}
         complete={reloadOffers}
         identity={props.identity}
+        confirm={props.confirm}
         alert={props.alert}
         open={openOfferForm}
         close={closeOfferForm}
+        loader={props.loader}
+        error={props.error}
+        tokenid={tokenid}
+      />
+      <AuctionForm
+        auction={auction}
+        address={props.account.address}
+        balance={props.balance}
+        voltCreate={props.voltCreate}
+        complete={reloadAuction}
+        identity={props.identity}
+        confirm={props.confirm}
+        alert={props.alert}
+        open={openAuctionForm}
+        close={closeAuctionForm}
         loader={props.loader}
         error={props.error}
         tokenid={tokenid}

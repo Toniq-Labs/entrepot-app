@@ -43,6 +43,10 @@ import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
 import entrepotIDL from './candid/entrepot.did.js';
 import treasureIDL from './candid/treasure.did.js';
+import voltfactoryIDL from './candid/voltfactory.did.js';
+import voltoffersIDL from './candid/voltoffers.did.js';
+import voltauctionsIDL from './candid/voltauctions.did.js';
+import voltIDL from './candid/volt.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = u => {
@@ -90,6 +94,7 @@ const _preloadedIdls = {
   nft: nftIDL,
   sale: saleIDL,
   treasure: treasureIDL,
+  volt: voltIDL,
   default: extIDL,
 };
 
@@ -201,7 +206,10 @@ class ExtConnection {
     'fl5nr-xiaaa-aaaai-qbjmq-cai': departureIDL,
     '33uhc-liaaa-aaaah-qcbra-cai': mintregister,
     '6z5wo-yqaaa-aaaah-qcsfa-cai': entrepotIDL,
+    'fcwhh-piaaa-aaaak-qazba-cai': voltoffersIDL,
+    'ffxbt-cqaaa-aaaak-qazbq-cai': voltauctionsIDL,
     'yigae-jqaaa-aaaah-qczbq-cai': treasureIDL,
+    'flvm3-zaaaa-aaaak-qazaq-cai': voltfactoryIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID]: {
@@ -687,7 +695,7 @@ class ExtConnection {
                 to: constructUser(to_user),
                 amount: amount,
                 fee: fee,
-                memo: fromHexString(memo),
+                memo: (typeof memo == "string" ? fromHexString(memo) : memo),
                 notify: notify,
               };
               api

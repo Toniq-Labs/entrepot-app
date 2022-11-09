@@ -11,12 +11,12 @@ import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {Principal} from '@dfinity/principal';
 
-export default function OfferForm(props) {
+export default function AuctionForm(props) {
   const [
     amount,
     setAmount,
-  ] = React.useState(props.floor);
-
+  ] = React.useState((props.auction ? Number(props.auction.bids.length ? props.auction.bids[props.auction.bids.length-1].amount : props.auction.reserve)/100000000 : 0));
+  
   const _showDecimal = bal => {
     var bb = bal/100000000;
     var decs = 2;
@@ -29,24 +29,24 @@ export default function OfferForm(props) {
     return bb.toFixed(decs);
   };
   const _submit = async () => {
-    if (props.floor && Number(amount) < Number(props.floor) * 0.8)
-      return props.error(
-        'Offer must be above 80% of the current floor price (~' +
-          (Number(props.floor) * 0.8).toFixed(2) +
-          ' ICP)',
-      );
-    if (Number(amount) < 0.01) return props.error('Min offer amount is 0.01 ICP');
+    if (Number(amount) < 0.01) return props.error('Min bid amount is 0.01 ICP');
+    var auctionAmountIcp = BigInt(Math.floor(amount * 10 ** 8));
+    if (props.auction.bids.length) {
+      if (auctionAmountIcp <= props.auction.bids[props.auction.bids.length-1].amount) return props.error('You need to beat the winning bid!');
+    } else {
+      if (auctionAmountIcp < props.auction.reserve) return props.error('You need to bid at least the reserve!');
+      
+    };
     handleClose();
     
     //Submit
-    var offerAmountIcp = BigInt(Math.floor(amount * 10 ** 8));
     props.loader(true, 'Loading Volt...');
     try{
       var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("flvm3-zaaaa-aaaak-qazaq-cai");      
       var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
       if (!volt.length){
         props.loader(false);
-        if(await props.confirm('Please confirm', 'You need to create a Volt to make offers. Do you want to proceed?')){
+        if(await props.confirm('Please confirm', 'You need to create a Volt to make auction bids. Do you want to proceed?')){
           volt = await props.voltCreate(false);
           if (!volt || !volt.length) throw "Error creating Volt...";
         } else return;
@@ -57,8 +57,8 @@ export default function OfferForm(props) {
       var resp = await voltAPI.getBalances("icpledger", "ryjl3-tyaaa-aaaaa-aaaba-cai", []);
       if (resp.hasOwnProperty("ok")) {
         var available = Number(resp.ok[0]) - Number(resp.ok[2]);
-        if ((Number(offerAmountIcp) + 10000) > available) {
-          var bal = Math.floor(Number(offerAmountIcp) + 10000) - available;
+        if ((Number(auctionAmountIcp) + 10000) > available) {
+          var bal = Math.floor(Number(auctionAmountIcp) + 10000) - available;
           props.loader(false);
           if(await props.confirm('Please confirm', 'You need to deposit ~'+_showDecimal(bal)+'ICP into your Volt. Do you want to proceed?')){
             props.loader(true, 'Topping up Volt...');
@@ -70,25 +70,25 @@ export default function OfferForm(props) {
         throw resp.err;
       };
       
-      props.loader(true, 'Submitting offer...');
-      var offersAPI = await extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
-      var memo = await offersAPI.createMemo(props.tokenid, props.address);
+      props.loader(true, 'Submitting auction bid...');
+      var auctionsAPI = await extjs.connect('https://ic0.app/', props.identity).canister('ffxbt-cqaaa-aaaak-qazbq-cai');   
+      var memo = await auctionsAPI.createMemo(props.tokenid, props.address);
       var resp1 = await voltAPI.authorize({
         standard : "icpledger",
         canister : "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        to : extjs.toAddress('fcwhh-piaaa-aaaak-qazba-cai', 0),
-        amount : offerAmountIcp,
+        to : extjs.toAddress('ffxbt-cqaaa-aaaak-qazbq-cai', 0),
+        amount : auctionAmountIcp,
         id : [],
-        memo : [memo],//await offersAPI.createMemo(props.tokenid, props.address)],
+        memo : [memo],
         notify : [true],
         other : [],
-      }, false, Principal.fromText('fcwhh-piaaa-aaaak-qazba-cai'));
+      }, true, Principal.fromText('ffxbt-cqaaa-aaaak-qazbq-cai'));
       if (resp1.hasOwnProperty('ok')){
-        var resp2 = await offersAPI.offer(props.tokenid, offerAmountIcp, props.address, Number(resp1.ok), voltPrincipal);
+        var resp2 = await auctionsAPI.bid(props.tokenid, auctionAmountIcp, props.address, Number(resp1.ok), voltPrincipal);
         if (resp2.hasOwnProperty('ok')){
           await props.complete();
           props.loader(false);
-          return props.alert('Offer submitted', 'Your offer was submitted successfully!');      
+          return props.alert('Auction Bid submitted', 'Your bid was submitted successfully!');      
         } else {
           throw resp2.err;
         };
@@ -107,18 +107,18 @@ export default function OfferForm(props) {
   return (
     <>
       <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth>
-        <DialogTitle style={{textAlign: 'center'}}>Submit Offer</DialogTitle>
+        <DialogTitle style={{textAlign: 'center'}}>Submit Auction Bid</DialogTitle>
         <DialogContent>
           <DialogContentText style={{textAlign: 'center', fontWeight: 'bold'}}>
-            Please enter the amount in ICP that you would like to purchase this NFT for.
+            Please enter the amount in ICP that you would like to bid on this auction.
           </DialogContentText>
           <Alert severity="info">
-            Offers are binding. Sellers can accept your offer, and ICP will be taken from your account to purchase the NFT
+            Auctions are binding and ICP is locked until you are outbid or have won the auction
           </Alert>
           <TextField
             style={{width: '100%'}}
             margin="dense"
-            label={'Amount to offer'}
+            label={'Amount to bid'}
             value={amount}
             onChange={e => setAmount(e.target.value)}
             type="text"
@@ -133,7 +133,7 @@ export default function OfferForm(props) {
             Back
           </Button>
           <Button onClick={_submit} color="primary">
-            Offer
+            Submit Bid
           </Button>
         </DialogActions>
       </Dialog>
