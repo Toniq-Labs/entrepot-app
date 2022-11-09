@@ -226,7 +226,7 @@ const Detail = props => {
     setOpenOfferForm(true);
   };
 
-  useInterval(_refresh, 2 * 1000);
+  useInterval(_refresh, 10 * 1000);
   useInterval(() => {
     var nf = EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '';
     setFloor(nf);

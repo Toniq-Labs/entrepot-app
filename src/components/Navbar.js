@@ -32,6 +32,7 @@ import {
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
+import {loadVoltBalance} from '../volt';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -56,28 +57,38 @@ const api = extjs.connect('https://ic0.app/');
 
 export default function Navbar(props) {
   const navigate = useNavigate();
-  const [
-    open,
-    setOpen,
-  ] = useState(false);
-  const [
-    walletOpen,
-    setWalletOpen,
-  ] = React.useState(false);
-  const [
-    balance,
-    setBalance,
-  ] = React.useState(undefined);
+  const [open, setOpen] = useState(false);
+  const [walletOpen, setWalletOpen] = React.useState(false);
+  const [balance, setBalance] = React.useState(undefined);
+  const [voltAddress, setVoltAddress] = React.useState(undefined);
+  const [voltBalances, setVoltBalances] = React.useState(undefined);
+  const [voltPrincipal, setVoltPrincipal] = React.useState(undefined);
   const classes = useStyles();
   const [searchParams] = useSearchParams();
+  const [totalBalance, setTotalBalance] = React.useState(undefined);
+
+  React.useEffect(() => {
+    if (voltBalances != undefined && balance != undefined) {
+      setTotalBalance(Number(balance) + voltBalances[0] + voltBalances[2]);
+    }
+  }, [props.account, props.identity, balance, voltBalances]);
 
   const query = searchParams.get('search') || '';
 
   const refresh = async () => {
-    console.log('refreshing');
+    console.log('refreshing nav bar');
     if (props.account) {
       var b = await api.token().getBalance(props.account.address);
       setBalance(b);
+      await loadVoltBalance({
+        account: props.account,
+        identity: props.identity,
+        voltPrincipal,
+        refreshVolt: true,
+        setVoltPrincipal,
+        setVoltAddress,
+        setVoltBalances,
+      });
     } else {
       setBalance(undefined);
     }
@@ -228,13 +239,13 @@ export default function Navbar(props) {
               }}
               onClick={handleDrawerToggle}
               icon={
-                balance === undefined
+                totalBalance === undefined
                   ? props.account
                     ? LoaderAnimated24Icon
                     : Wallet24Icon
                   : Icp24Icon
               }
-              text={balance === undefined ? '' : icpToString(balance, true, true)}
+              text={totalBalance === undefined ? '' : icpToString(totalBalance, true, true)}
             ></ToniqButton>
             {open && (
               <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>

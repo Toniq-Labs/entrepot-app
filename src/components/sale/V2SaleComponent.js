@@ -252,7 +252,7 @@ export default function V2SaleComponent(props) {
     _updates();
   };
   const getCurrentGroup = () => groups.find(a => Number(a.id) == currentPriceGroup);
-  useInterval(_updates, 5 * 1000);
+  useInterval(_updates, 10 * 1000);
   React.useEffect(() => {
     _updates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
