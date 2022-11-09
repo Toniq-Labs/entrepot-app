@@ -320,12 +320,11 @@ export default function V2SaleComponent(props) {
         ) : (
           ''
         )}
+        </div>
         <br />
         <br />
         </>
-      </div>
-    </>
-  );
+    );
 }
 
 const useStyles = makeStyles(theme => ({
