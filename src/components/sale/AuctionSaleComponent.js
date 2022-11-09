@@ -38,7 +38,7 @@ import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import CollectionDetails from './CollectionDetails';
+import CollectionDetails from '../CollectionDetails';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 const api = extjs.connect('https://ic0.app/');
