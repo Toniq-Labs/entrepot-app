@@ -1,7 +1,16 @@
 export default ({ IDL }) => {
   const TokenIdentifier = IDL.Text;
-  const Time = IDL.Int;
+  const SubAccount = IDL.Vec(IDL.Nat8);
   const AccountIdentifier = IDL.Text;
+  const Settlement = IDL.Record({
+    'tokenid' : TokenIdentifier,
+    'subaccount' : SubAccount,
+    'seller' : AccountIdentifier,
+    'buyer' : AccountIdentifier,
+    'offerer' : IDL.Principal,
+    'amount' : IDL.Nat64,
+  });
+  const Time = IDL.Int;
   const Offer = IDL.Record({
     'time' : Time,
     'volt' : IDL.Principal,
@@ -17,6 +26,7 @@ export default ({ IDL }) => {
   });
   return IDL.Service({
     'allOffers' : IDL.Func([], [IDL.Vec(TokenIdentifier)], ['query']),
+    'allSettlements' : IDL.Func([], [IDL.Vec(Settlement)], ['query']),
     'backupAllOffers' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(TokenIdentifier, IDL.Vec(Offer)))],
@@ -25,6 +35,11 @@ export default ({ IDL }) => {
     'cancelOffer' : IDL.Func([TokenIdentifier], [], []),
     'createMemo' : IDL.Func(
         [TokenIdentifier, AccountIdentifier],
+        [IDL.Vec(IDL.Nat8)],
+        ['query'],
+      ),
+    'createMemo2' : IDL.Func(
+        [TokenIdentifier, IDL.Principal, IDL.Nat64],
         [IDL.Vec(IDL.Nat8)],
         ['query'],
       ),

@@ -693,7 +693,7 @@ class ExtConnection {
                 to: constructUser(to_user),
                 amount: amount,
                 fee: fee,
-                memo: fromHexString(memo),
+                memo: (typeof memo == "string" ? fromHexString(memo) : memo),
                 notify: notify,
               };
               api

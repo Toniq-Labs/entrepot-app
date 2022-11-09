@@ -219,11 +219,23 @@ const Detail = props => {
     props.loader(false);
     props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
   };
-  const acceptOffer = async () => {
+  const acceptOffer = async (offer) => {
     if(await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')){
       props.loader(true, 'Accepting offer...');
-      //TODO
-      await reloadOffers();
+      var offersAPI = extjs.connect('https://ic0.app/', props.identity).canister('3lidg-pyaaa-aaaag-qa2kq-cai');   
+      var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
+      console.log(memo);
+      var r2 = await extjs.connect('https://ic0.app/', props.identity).token(tokenid).transfer(
+        props.identity.getPrincipal().toText(),
+        props.currentAccount,
+        '3lidg-pyaaa-aaaag-qa2kq-cai',
+        BigInt(1),
+        BigInt(0),
+        memo,
+        true,
+      );
+      console.log(r2);
+      await _refresh();
       props.loader(false);
       props.alert('Offer accepted', 'You have accepted this offer. Your ICP will be transferred to you shortly!');
     };
@@ -799,27 +811,25 @@ const Detail = props => {
                                         date={Number(offer.time / 1000000000n)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center">
-                                      {props.identity &&
-                                      props.identity.getPrincipal().toText() ==
-                                        offer.offerer.toText() ? (
+                                    <TableCell align="center"> 
+                                      {owner && props.account && props.account.address == owner ? (
                                         <Button
-                                          onClick={cancelOffer}
+                                          onClick={() => acceptOffer(offer)}
                                           size={'small'}
                                           style={{color: 'white', backgroundColor: '#c32626'}}
                                           variant={'contained'}
                                         >
-                                          Cancel
+                                          Accept
                                         </Button>
                                       ) : (
-                                        <>{owner && props.account && props.account.address == owner ? (
+                                        <>{props.identity && props.identity.getPrincipal().toText() == offer.offerer.toText() ? (
                                           <Button
-                                            onClick={acceptOffer}
+                                            onClick={cancelOffer}
                                             size={'small'}
                                             style={{color: 'white', backgroundColor: '#c32626'}}
                                             variant={'contained'}
                                           >
-                                            Accept
+                                            Cancel
                                           </Button>
                                         ) : (
                                           <a
