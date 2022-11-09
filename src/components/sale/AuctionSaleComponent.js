@@ -598,6 +598,9 @@ export default function Listings(props) {
             <CollectionDetails classes={classes} stats={stats} collection={collection} />
           </div>
         </div>
+        <br />
+        <br />
+        <br />
         {_isCanister(collection.canister) && collection.market ? (
           <div
             id="mainListings"
