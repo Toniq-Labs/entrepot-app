@@ -71,7 +71,7 @@ export default function OfferForm(props) {
       };
       
       props.loader(true, 'Submitting offer...');
-      var offersAPI = await extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
+      var offersAPI = extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
       var memo = await offersAPI.createMemo(props.tokenid, props.address);
       var resp1 = await voltAPI.authorize({
         standard : "icpledger",

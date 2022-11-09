@@ -423,7 +423,7 @@ export default function Listings(props) {
       }
       var auctions = [];
       if (_showing == "auction") {
-        var auctionsAPI = await extjs.connect('https://ic0.app/').canister('ffxbt-cqaaa-aaaak-qazbq-cai');
+        var auctionsAPI = extjs.connect('https://ic0.app/').canister('ffxbt-cqaaa-aaaak-qazbq-cai');
         auctions = (await auctionsAPI.allAuctions()).map(a => extjs.decodeTokenId(a)).filter(a => a.canister == collection.canister).map(a => a.index);
       };
       _displayListings = _displayListings.filter(a => {

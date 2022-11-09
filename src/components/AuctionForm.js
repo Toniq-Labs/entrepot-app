@@ -71,7 +71,7 @@ export default function AuctionForm(props) {
       };
       
       props.loader(true, 'Submitting auction bid...');
-      var auctionsAPI = await extjs.connect('https://ic0.app/', props.identity).canister('ffxbt-cqaaa-aaaak-qazbq-cai');   
+      var auctionsAPI = extjs.connect('https://ic0.app/', props.identity).canister('ffxbt-cqaaa-aaaak-qazbq-cai');   
       var memo = await auctionsAPI.createMemo(props.tokenid, props.address);
       var resp1 = await voltAPI.authorize({
         standard : "icpledger",

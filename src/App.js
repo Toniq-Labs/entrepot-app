@@ -145,6 +145,7 @@ var otherPrincipalsForPlug = [
   '6z5wo-yqaaa-aaaah-qcsfa-cai',
   'flvm3-zaaaa-aaaak-qazaq-cai',
   'fcwhh-piaaa-aaaak-qazba-cai',
+  'ffxbt-cqaaa-aaaak-qazbq-cai',
 ];
 const isDevEnv = () => {
   if (window.location.hostname == 'localhost') return true;
