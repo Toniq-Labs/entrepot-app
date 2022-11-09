@@ -289,7 +289,7 @@ export default function Wallet(props) {
               <ListItemText primary="Check Payments" />
             </MenuItem>
 
-            {loading == false ?
+            {voltBalances !== false && loadedAccount == 0  ?
             ([<Divider light />
               ,<>{voltPrincipal == false ?
                 <MenuItem
