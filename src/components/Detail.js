@@ -15,6 +15,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons//Dashboard';
+import ArtTrackIcon from '@material-ui/icons/ArtTrack';
+import GavelIcon from '@material-ui/icons/Gavel';
 import PeopleIcon from '@material-ui/icons/People';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -107,6 +109,14 @@ const Detail = props => {
     EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '',
   );
   const [
+    expandLicense,
+    setExpandLicense,
+  ] = React.useState(false);
+  const [
+    license,
+    setLicense,
+  ] = React.useState(false);
+  const [
     listing,
     setListing,
   ] = React.useState(false);
@@ -166,6 +176,7 @@ const Detail = props => {
   const _refresh = async () => {
     reloadOffers();
     reloadAuction();
+    getLicense();
     try{
     await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
       .then(r => r.json())
@@ -207,6 +218,18 @@ const Detail = props => {
   const closeOfferForm = () => {
     _refresh();
     setOpenOfferForm(false);
+  };
+  const getLicense = async () => {
+    if (!license || license == "Coming soon!"){
+      try {
+        var resp = await extjs.connect('https://ic0.app/').canister(extjs.decodeTokenId(tokenid).canister, "license").license(tokenid);
+        if (resp.hasOwnProperty('ok')) {
+          setLicense(resp.ok);
+        } else throw "";
+      } catch (e) {
+        setLicense("Coming soon!");
+      };
+    }
   };
   const closeAuctionForm = () => {
     _refresh();
@@ -431,6 +454,7 @@ const Detail = props => {
   };
 
   React.useEffect(() => {
+    getLicense();
     props.loader(true);
     _refresh().then(() => props.loader(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -462,9 +486,20 @@ const Detail = props => {
               </AccordionDetails>
             </Accordion>
 
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}>
+                <GavelIcon style={{marginTop: 3}} />
+                <Typography className={classes.heading}>License</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div className={classes.div}>
+                  <p>{license === false ? "Loading" : license}</p>
+                </div>
+              </AccordionDetails>
+            </Accordion>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}>
-                <ListIcon style={{marginTop: 3}} />
+                <ArtTrackIcon style={{marginTop: 3}} />
                 <Typography className={classes.heading}>Properties</Typography>
               </AccordionSummary>
               <AccordionDetails>

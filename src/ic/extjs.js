@@ -47,6 +47,7 @@ import voltfactoryIDL from './candid/voltfactory.did.js';
 import voltoffersIDL from './candid/voltoffers.did.js';
 import voltauctionsIDL from './candid/voltauctions.did.js';
 import voltIDL from './candid/volt.did.js';
+import licenseIDL from './candid/license.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = u => {
@@ -95,6 +96,7 @@ const _preloadedIdls = {
   sale: saleIDL,
   treasure: treasureIDL,
   volt: voltIDL,
+  license: licenseIDL,
   default: extIDL,
 };
 
