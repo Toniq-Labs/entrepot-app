@@ -94,6 +94,8 @@ export default function CollectionDetails(props) {
       </div>
       <div style={{width: '100%', maxWidth: '760px', margin: '0 auto'}}>
         <h1>Welcome to the {collection.name} auction</h1>
+        <br>
+        <br>
         <Grid className={classes.stats} container direction="row" alignItems="center" spacing={2}>
           <Grid item md={4} xs={12}></Grid>
           <Grid item md={4} xs={12} style={{textAlign: 'center'}}>
