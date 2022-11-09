@@ -45,6 +45,7 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import Alert from '@material-ui/lab/Alert';
 import OfferForm from './OfferForm';
+import AuctionForm from './AuctionForm';
 import {useNavigate} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
 import {
@@ -122,12 +123,20 @@ const Detail = props => {
     setOwner,
   ] = React.useState(false);
   const [
+    auction,
+    setAuction,
+  ] = React.useState(false);
+  const [
     offers,
     setOffers,
   ] = React.useState(false);
   const [
     openOfferForm,
     setOpenOfferForm,
+  ] = React.useState(false);
+  const [
+    openAuctionForm,
+    setOpenAuctionForm,
   ] = React.useState(false);
   const collection = props.collections.find(e => e.canister === canister);
   const [
@@ -146,11 +155,17 @@ const Detail = props => {
       os.sort((a, b) => Number(b.amount) - Number(a.amount)),
     );
   };
+  const reloadAuction = async () => {
+    var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(tokenid);
+    if (resp.length) setAuction(resp[0]);
+    else setAuction(false);
+  };
   const cancelListing = () => {
     props.list(tokenid, 0, props.loader, _afterList);
   };
   const _refresh = async () => {
     reloadOffers();
+    reloadAuction();
     await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
       .then(r => r.json())
       .then(r => {
@@ -183,12 +198,15 @@ const Detail = props => {
     await _refresh();
   };
   const _afterBuy = async () => {
-    await reloadOffers();
     await _refresh();
   };
   const closeOfferForm = () => {
-    reloadOffers();
+    _refresh();
     setOpenOfferForm(false);
+  };
+  const closeAuctionForm = () => {
+    _refresh();
+    setOpenAuctionForm(false);
   };
   const getFloorDelta = amount => {
     if (!floor) return '-';
@@ -199,6 +217,10 @@ const Detail = props => {
     } else if (ne < fe) {
       return ((1 - ne / fe) * 100).toFixed(2) + '% below';
     } else return '-';
+  };
+  const placeBid = async () => {
+    //TODO
+    setOpenAuctionForm(true);
   };
   const makeOffer = async () => {
     setOpenOfferForm(true);
@@ -540,32 +562,72 @@ const Detail = props => {
                     </>
                   ) : (
                     <>
-                      {offers && offers.length > 0 ? (
-                        <>
+                      {auction !== false ? (
+                        <div style={{marginBottom:20}}>
                           <Typography variant="h6">
-                            <strong>Best Offer Price</strong>
+                            <strong>On Auction</strong>
                           </Typography>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              padding: '10px 0px',
-                            }}
-                          >
-                            <Typography variant="h5" style={{fontWeight: 'bold'}}>
-                              <PriceICP size={30} price={offers[0].amount} />
-                            </Typography>
-                            <Typography variant="body2" style={{marginLeft: '10px'}}>
-                              (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
-                            </Typography>
-                          </div>
-                        </>
+                          {auction.bids.length === 0 ?
+                          <>
+                            <span style={{fontSize:'12px'}}>No Bids - Reserve:</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '0px 0px 10px',
+                              }}
+                            >
+                              <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                <PriceICP size={30} price={auction.reserve} />
+                              </Typography>
+                              <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                (<PriceUSD price={EntrepotGetICPUSD(auction.reserve)} />)
+                              </Typography>
+                            </div>
+                          </> : 
+                          <>
+                            <span style={{fontSize:'12px'}}>{auction.bids.length} Bid{auction.bids.length === 1 ? "" : "s"} - Leading Bid:</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '10px 0px',
+                              }}
+                            >
+                              <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                <PriceICP size={30} price={auction.bids[auction.bids.length-1].amount} />
+                              </Typography>
+                              <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                (<PriceUSD price={EntrepotGetICPUSD(auction.bids[auction.bids.length-1].amount)} />)
+                              </Typography>
+                            </div>
+                          </>}
+                          {Number(auction.end / 1000000n) >= Date.now() ?
+                            <>
+                              <div style={{marginBottom:10}}><span style={{fontSize:'14px'}}>Auction ends <Timestamp date={Number(auction.end / 1000000000n)}/> (<Timestamp relative autoUpdate date={Number(auction.end / 1000000000n)}/>)</span></div>
+                              <Button
+                                onClick={ev => {
+                                  placeBid();
+                                }}
+                                variant="contained"
+                                color="primary"
+                                style={{fontWeight: 'bold', marginRight: '10px', marginBottom: 10}}
+                              >
+                                Place Bid
+                              </Button>
+                            </>
+                            :
+                            <>
+                              <span style={{fontSize:'14px'}}>Auction ending...</span>
+                            </>
+                          }
+                        </div>
                       ) : (
                         <>
-                          {transactions && transactions.length > 0 ? (
+                          {offers && offers.length > 0 ? (
                             <>
                               <Typography variant="h6">
-                                <strong>Last Price</strong>
+                                <strong>Best Offer Price</strong>
                               </Typography>
                               <div
                                 style={{
@@ -575,25 +637,49 @@ const Detail = props => {
                                 }}
                               >
                                 <Typography variant="h5" style={{fontWeight: 'bold'}}>
-                                  <PriceICP size={30} price={transactions[0].price} />
+                                  <PriceICP size={30} price={offers[0].amount} />
                                 </Typography>
                                 <Typography variant="body2" style={{marginLeft: '10px'}}>
-                                  (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
+                                  (<PriceUSD price={EntrepotGetICPUSD(offers[0].amount)} />)
                                 </Typography>
                               </div>
                             </>
                           ) : (
                             <>
-                              <Typography variant="h6">
-                                <strong>Unlisted</strong>
-                              </Typography>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: '10px 0px',
-                                }}
-                              ></div>
+                              {transactions && transactions.length > 0 ? (
+                                <>
+                                  <Typography variant="h6">
+                                    <strong>Last Price</strong>
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      padding: '10px 0px',
+                                    }}
+                                  >
+                                    <Typography variant="h5" style={{fontWeight: 'bold'}}>
+                                      <PriceICP size={30} price={transactions[0].price} />
+                                    </Typography>
+                                    <Typography variant="body2" style={{marginLeft: '10px'}}>
+                                      (<PriceUSD price={EntrepotGetICPUSD(transactions[0].price)} />)
+                                    </Typography>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <Typography variant="h6">
+                                    <strong>Unlisted</strong>
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      padding: '10px 0px',
+                                    }}
+                                  ></div>
+                                </>
+                              )}
                             </>
                           )}
                         </>
@@ -982,6 +1068,21 @@ const Detail = props => {
         alert={props.alert}
         open={openOfferForm}
         close={closeOfferForm}
+        loader={props.loader}
+        error={props.error}
+        tokenid={tokenid}
+      />
+      <AuctionForm
+        auction={auction}
+        address={props.account.address}
+        balance={props.balance}
+        voltCreate={props.voltCreate}
+        complete={reloadAuction}
+        identity={props.identity}
+        confirm={props.confirm}
+        alert={props.alert}
+        open={openAuctionForm}
+        close={closeAuctionForm}
         loader={props.loader}
         error={props.error}
         tokenid={tokenid}

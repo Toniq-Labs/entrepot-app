@@ -45,6 +45,7 @@ import entrepotIDL from './candid/entrepot.did.js';
 import treasureIDL from './candid/treasure.did.js';
 import voltfactoryIDL from './candid/voltfactory.did.js';
 import voltoffersIDL from './candid/voltoffers.did.js';
+import voltauctionsIDL from './candid/voltauctions.did.js';
 import voltIDL from './candid/volt.did.js';
 //import cronicsIDL from './candid/cronics.did.js';
 
@@ -206,6 +207,7 @@ class ExtConnection {
     '33uhc-liaaa-aaaah-qcbra-cai': mintregister,
     '6z5wo-yqaaa-aaaah-qcsfa-cai': entrepotIDL,
     'fcwhh-piaaa-aaaak-qazba-cai': voltoffersIDL,
+    'ffxbt-cqaaa-aaaak-qazbq-cai': voltauctionsIDL,
     'yigae-jqaaa-aaaah-qczbq-cai': treasureIDL,
     'flvm3-zaaaa-aaaak-qazaq-cai': voltfactoryIDL,
   };
