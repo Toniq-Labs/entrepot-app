@@ -353,18 +353,13 @@ const DetailBody = props => {
                     setOpenOfferForm={setOpenOfferForm}
                     {...props}
                 />
-                <DetailSectionDetails />
-                <DetailSectionActivity
-                    tokenid={tokenid}
+                <DetailSectionDetails
                     offerListing={offerListing}
-                    displayImage={displayImage}
-                    cancelOffer={cancelOffer}
                     floor={floor}
-                    setOfferPage={setOfferPage}
-                    offerPage={offerPage}
-                    offers={offers}
-                    setOfferListing={setOfferListing}
-                    attributes={attributes}
+                    canister={canister}
+                    tokenid={tokenid}
+                />
+                <DetailSectionActivity
                     activity={activity}
                     activityPage={activityPage}
                     setActivityPage={setActivityPage}
