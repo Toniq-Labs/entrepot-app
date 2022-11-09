@@ -596,36 +596,6 @@ export default function Listings(props) {
         <div style={{maxWidth: 1200, margin: '0 auto 0'}}>
           <div style={{textAlign: 'center'}}>
             <CollectionDetails classes={classes} stats={stats} collection={collection} />
-            <Tabs
-              value={'all'}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-              onChange={(e, nv) => {
-                if (nv === 'sold') navigate(`/marketplace/${collection?.route}/activity`);
-              }}
-            >
-              <Tab
-                style={{fontWeight: 'bold'}}
-                value="all"
-                label={
-                  <span style={{padding: '0 50px'}}>
-                    <ArtTrackIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                    <span style={{}}>Items</span>
-                  </span>
-                }
-              />
-              <Tab
-                style={{fontWeight: 'bold'}}
-                value="sold"
-                label={
-                  <span style={{padding: '0 50px'}}>
-                    <ShowChartIcon style={{position: 'absolute', marginLeft: '-30px'}} />
-                    <span style={{}}>Activity</span>
-                  </span>
-                }
-              />
-            </Tabs>
           </div>
         </div>
         {_isCanister(collection.canister) && collection.market ? (
