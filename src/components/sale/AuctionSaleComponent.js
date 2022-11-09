@@ -1,23 +1,3 @@
-/* global BigInt */
-import React, {useEffect, useState} from 'react';
-import extjs from '../../ic/extjs.js';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import SaleListing from '../SaleListing';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Timestamp from 'react-timestamp';
-import Pagination from '@material-ui/lab/Pagination';
-import {StoicIdentity} from 'ic-stoic-identity';
-import Sidebar from '../Sidebar';
-import {useParams} from 'react-router';
-import {useNavigate} from 'react-router';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Chip from '@material-ui/core/Chip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import React, {useEffect, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -607,354 +587,48 @@ export default function Listings(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterData]);
 
-/////////////
-
-const api = extjs.connect('https://ic0.app/');
-const perPage = 60;
-function useInterval(callback, delay) {
-  const savedCallback = React.useRef();
-  // Remember the latest callback.
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
-const _showListingPrice = n => {
-  n = Number(n) / 100000000;
-  return n.toFixed(8).replace(/0{1,6}$/, '');
-};
-export default function V2SaleComponent(props) {
-  const getCollectionFromRoute = r => {
-    return props.collections.find(e => e.route === r);
-  };
-  const params = useParams();
-  const navigate = useNavigate();
-  var collection = getCollectionFromRoute(params?.route);
-  if (
-    typeof collection == 'undefined' ||
-    typeof collection.sale == 'undefined' ||
-    collection.sale == false
-  ) {
-    navigate(`/marketplace/${collection?.route}`);
-  }
-
-  const [
-    currentPriceGroup,
-    setCurrentPriceGroup,
-  ] = React.useState(false);
-  const [
-    groups,
-    setGroups,
-  ] = React.useState([]);
-  const [
-    currentGroup,
-    setCurrentGroup,
-  ] = React.useState(false);
-  const [
-    remaining,
-    setRemaining,
-  ] = React.useState(false);
-  const [
-    sold,
-    setSold,
-  ] = React.useState(false);
-  const [
-    startTime,
-    setStartTime,
-  ] = React.useState(false);
-  const [
-    endTime,
-    setEndTime,
-  ] = React.useState(false);
-  const [
-    totalToSell,
-    setTotalToSell,
-  ] = React.useState(false);
-  const [
-    blurbElement,
-    setBlurbElement,
-  ] = useState(false);
-  const [
-    collapseBlurb,
-    setCollapseBlurb,
-  ] = useState(false);
-  const [
-    isBlurbOpen,
-    setIsBlurbOpen,
-  ] = useState(false);
-
-  React.useEffect(() => {
-    if (blurbElement.clientHeight > 110) {
-      setCollapseBlurb(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blurbElement]);
-
-  const _updates = async () => {
-    var resp = await api
-      .canister(collection.canister, 'ext2')
-      .ext_saleSettings(props.account ? props.account.address : '');
-    if (!resp.length) return;
-    var salesSettings = resp[0];
-    console.log(salesSettings);
-    setStartTime(Number(salesSettings.start / 1000000n));
-    setEndTime(Number(salesSettings.end / 1000000n));
-    setRemaining(Number(salesSettings.remaining));
-    setTotalToSell(Number(salesSettings.quantity));
-    setSold(Number(salesSettings.quantity - salesSettings.remaining));
-    var ended = [];
-    var unavailable = [];
-    var live = [];
-    var soon = [];
-    for (var i = 0; i < salesSettings.groups.length; i++) {
-      var g = salesSettings.groups[i];
-      if (Number(g.end / 1000000n) < Date.now()) {
-        ended.push(g);
-      } else if (!g.available) {
-        unavailable.push(g);
-      } else if (Number(g.start / 1000000n) > Date.now()) {
-        soon.push(g);
-      } else {
-        live.push(g);
-      }
-    }
-    //Sort ended, available and soon by start date
-    ended = ended.sort((a, b) => {
-      if (Number(a.start / 1000000n) < Number(b.start / 1000000n)) return -1;
-      if (Number(a.start / 1000000n) > Number(b.start / 1000000n)) return 1;
-      return 0;
-    });
-    unavailable = unavailable.sort((a, b) => {
-      if (Number(a.start / 1000000n) < Number(b.start / 1000000n)) return -1;
-      if (Number(a.start / 1000000n) > Number(b.start / 1000000n)) return 1;
-      return 0;
-    });
-    soon = soon.sort((a, b) => {
-      if (Number(a.start / 1000000n) < Number(b.start / 1000000n)) return -1;
-      if (Number(a.start / 1000000n) > Number(b.start / 1000000n)) return 1;
-      return 0;
-    });
-    //Sort live by price
-    if (live.length) {
-      live = live.sort((a, b) => {
-        if (Number(a.pricing[0][1]) < Number(b.pricing[0][1])) return -1;
-        if (Number(a.pricing[0][1]) > Number(b.pricing[0][1])) return 1;
-        return 0;
-      });
-      if (currentPriceGroup === false) setCurrentPriceGroup(Number(live[0].id));
-      var g = ended.concat(unavailable).concat(live).concat(soon);
-      setGroups(g);
-    } else {
-      var g = ended.concat(unavailable).concat(live).concat(soon);
-      setGroups(g);
-      if (g.length && currentPriceGroup === false) setCurrentPriceGroup(Number(g[0].id));
-    }
-    setCurrentGroup(groups.find(a => Number(a.id) == currentPriceGroup));
-  };
-  const theme = useTheme();
-  const classes = useStyles();
-  const styles = {
-    main: {
-      maxWidth: 1200,
-      margin: '0 auto',
-      textAlign: 'center',
-      minHeight: 'calc(100vh - 221px)',
-    },
-  };
-  const buyFromSale = async (id, qty, price) => {
-    if (props.balance < price + 10000n) {
-      return props.alert(
-        'There was an error',
-        'Your balance is insufficient to complete this transaction',
-      );
-    }
-    var v = await props.confirm(
-      'Please confirm',
-      'Are you sure you want to continue with this purchase of ' +
-        qty +
-        ' NFT' +
-        (qty === 1 ? '' : 's') +
-        ' for the total price of ' +
-        _showListingPrice(price) +
-        " ICP. All transactions are final on confirmation and can't be reversed.",
-    );
-    if (!v) return;
-    try {
-      if (qty === 1) {
-        props.loader(true, 'Reserving NFT...');
-      } else {
-        props.loader(true, 'Reserving NFTs..');
-      }
-      const api = extjs.connect('https://ic0.app/', props.identity);
-      var r = await api
-        .canister(collection.canister, 'ext2')
-        .ext_salePurchase(id, price, qty, props.account.address);
-      if (r.hasOwnProperty('err')) {
-        throw r.err;
-      }
-      var paytoaddress = r.ok[0];
-      var pricetopay = r.ok[1];
-      props.loader(true, 'Transferring ICP...');
-      await api
-        .token()
-        .transfer(
-          props.identity.getPrincipal(),
-          props.currentAccount,
-          paytoaddress,
-          pricetopay,
-          10000,
-        );
-      var r3;
-      while (true) {
-        try {
-          props.loader(true, 'Completing purchase...');
-          r3 = await api.canister(collection.canister, 'ext2').ext_saleSettle(paytoaddress);
-        } catch (e) {
-          continue;
-        }
-        if (r3.hasOwnProperty('ok')) break;
-        if (r3.hasOwnProperty('err'))
-          throw 'Your purchase failed! If ICP was sent and the sale ran out, you will be refunded shortly!';
-      }
-      props.loader(false);
-      props.alert(
-        'Transaction complete',
-        'Your purchase was made successfully - your NFT will be sent to your address shortly',
-      );
-    } catch (e) {
-      props.loader(false);
-      props.alert(
-        'There was an error',
-        e.Other ??
-          (typeof e == 'string' ? e : 'You may need to enable cookies or try a different browser'),
-      );
-    }
-    _updates();
-  };
-  const getCurrentGroup = () => groups.find(a => Number(a.id) == currentPriceGroup);
-  useInterval(_updates, 5 * 1000);
-  React.useEffect(() => {
-    _updates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
-    <>
-      <div style={styles.main}>
-        <div className={classes.banner}>
-          <div
-            style={{
-              width: '100%',
-              height: 200,
-              borderRadius: 10,
-              backgroundPosition: 'top',
-              backgroundSize: 'cover',
-              backgroundImage: "url('" + collection.banner + "')",
-            }}
-          ></div>
-          <h1>Welcome to the official {collection.name} auction</h1>
-        </div>
-        <div>
-          <a href={'https://icscan.io/nft/collection/' + collection.canister} target="_blank">
-            <img alt="create" style={{width: 32}} src={'/icon/icscan.png'} />
-          </a>
-          {[
-            'telegram',
-            'twitter',
-            'medium',
-            'discord',
-            'dscvr',
-            'distrikt',
-          ]
-            .filter(a => collection.hasOwnProperty(a) && collection[a])
-            .map(a => {
-              return (
-                <a href={collection[a]} target="_blank">
-                  <img alt="create" style={{width: 32}} src={'/icon/' + a + '.png'} />
-                </a>
-              );
-            })}
-        </div>
-        <div
-          ref={e => {
-            setBlurbElement(e);
-          }}
-          style={{
-            ...(collapseBlurb && !isBlurbOpen
-              ? {
-                  maxHeight: 110,
-                  wordBreak: 'break-word',
-                  WebkitMask: 'linear-gradient(rgb(255, 255, 255) 45%, transparent)',
-                }
-              : {}),
-            overflow: 'hidden',
-            fontSize: '1.2em',
-          }}
-          dangerouslySetInnerHTML={{__html: collection?.blurb}}
-        ></div>
-        {collapseBlurb ? (
-          <Button
-            fullWidth
-            endIcon={!isBlurbOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-            onClick={() => setIsBlurbOpen(!isBlurbOpen)}
-          ></Button>
-        ) : (
-          ''
-        )}
-        </div>
-        <br />
-        <br />
-        </>
-    // maxWidth:1200, margin:"0 auto",
-    <div style={{ minHeight: 'calc(100vh - 221px)', marginBottom: -75 }}>
-      {/* <Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
-      </Drawer> */}
+    //maxWidth:1200, margin:"0 auto",
+    <div style={{minHeight: 'calc(100vh - 221px)', marginBottom: -75}}>
+      {/*<Drawer classes={{paper: classes.drawerPaper}} variant="permanent" open>
+      </Drawer>*/}
       <div style={{}}>
-        <div style={{ maxWidth: 1200, margin: '0 auto 0' }}>
-          <div style={{ textAlign: 'center' }}>
+        <div style={{maxWidth: 1200, margin: '0 auto 0'}}>
+          <div style={{textAlign: 'center'}}>
             <CollectionDetails classes={classes} stats={stats} collection={collection} />
             <Tabs
-              value="all"
+              value={'all'}
               indicatorColor="primary"
               textColor="primary"
               centered
               onChange={(e, nv) => {
-                if (nv === 'sold') navigate('/marketplace/${collection?.route}/activity');
+                if (nv === 'sold') navigate(`/marketplace/${collection?.route}/activity`);
               }}
             >
               <Tab
-                style={{ fontWeight: 'bold' }}
+                style={{fontWeight: 'bold'}}
                 value="all"
-                label={(
-                  <span style={{ padding: '0 50px' }}>
-                    <ArtTrackIcon style={{ position: 'absolute', marginLeft: '-30px' }} />
+                label={
+                  <span style={{padding: '0 50px'}}>
+                    <ArtTrackIcon style={{position: 'absolute', marginLeft: '-30px'}} />
                     <span style={{}}>Items</span>
                   </span>
-                )}
+                }
               />
               <Tab
-                style={{ fontWeight: 'bold' }}
+                style={{fontWeight: 'bold'}}
                 value="sold"
-                label={(
-                  <span style={{ padding: '0 50px' }}>
-                    <ShowChartIcon style={{ position: 'absolute', marginLeft: '-30px' }} />
+                label={
+                  <span style={{padding: '0 50px'}}>
+                    <ShowChartIcon style={{position: 'absolute', marginLeft: '-30px'}} />
                     <span style={{}}>Activity</span>
                   </span>
-                )}
+                }
               />
             </Tabs>
           </div>
         </div>
-        {_isCanister(collection.canister) && collection.sale ? (
+        {_isCanister(collection.canister) && collection.market ? (
           <div
             id="mainListings"
             style={{
@@ -967,26 +641,231 @@ export default function V2SaleComponent(props) {
               display: 'flex',
             }}
           >
+            <div className={toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed}>
+              <List>
+                <ListItem style={{paddingRight: 0}} button onClick={changeToggleFilter}>
+                  <ListItemIcon style={{minWidth: 40}}>
+                    <FilterListIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{noWrap: true}}
+                    secondaryTypographyProps={{noWrap: true}}
+                    primary={<strong>Filter</strong>}
+                  />
+                  <ListItemIcon>
+                    {toggleFilter ? <CloseIcon fontSize={'large'} /> : ''}
+                  </ListItemIcon>
+                </ListItem>
+                {toggleFilter ? (
+                  <>
+                    <ListItem style={{paddingRight: 0}}>
+                      <ListItemIcon style={{minWidth: 40}}>
+                        <AllInclusiveIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primaryTypographyProps={{noWrap: true}}
+                        secondaryTypographyProps={{noWrap: true}}
+                        primary={<strong>Price</strong>}
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <div style={{width: '100%'}}>
+                        <TextField
+                          value={minPrice}
+                          onChange={minPriceChange}
+                          style={{width: '100%', marginBottom: 20}}
+                          label="Min. Price"
+                        />
+                        <TextField
+                          value={maxPrice}
+                          onChange={maxPriceChange}
+                          style={{width: '100%', marginBottom: 20}}
+                          label="Max. Price"
+                        />
+                      </div>
+                    </ListItem>
+                    {filterData &&
+                      filterData[0].map(a => {
+                        return (
+                          <div key={a[0]}>
+                            <ListItem
+                              style={{paddingRight: 0}}
+                              button
+                              onClick={() => handleToggleFilter(a[0])}
+                            >
+                              <ListItemIcon style={{minWidth: 40}}>
+                                <ListIcon />
+                              </ListItemIcon>
+                              <ListItemText
+                                primaryTypographyProps={{noWrap: true}}
+                                secondaryTypographyProps={{noWrap: true}}
+                                primary={<strong>{a[1]}</strong>}
+                              />
+                              <ListItemIcon>
+                                {isOpenFilter(a[0]) ? (
+                                  <ExpandLessIcon fontSize={'large'} />
+                                ) : (
+                                  <ExpandMoreIcon fontSize={'large'} />
+                                )}
+                              </ListItemIcon>
+                            </ListItem>
+                            {isOpenFilter(a[0]) ? (
+                              <ListItem>
+                                <div style={{width: '100%'}}>
+                                  {a[2]
+                                    .filter(b => filterGetCount(a[0], b[0]) > 0)
+                                    .map(b => {
+                                      return (
+                                        <div key={a[0] + '_' + b[0]} style={{width: '100%'}}>
+                                          <FormControlLabel
+                                            style={{maxWidth: '80%'}}
+                                            control={
+                                              <Checkbox
+                                                checked={
+                                                  selectedFilters.find(
+                                                    c => c[0] == a[0] && c[1] == b[0],
+                                                  )
+                                                    ? true
+                                                    : false
+                                                }
+                                                onChange={() => {
+                                                  handleToggleFilterTrait(a[0], b[0]);
+                                                }}
+                                              />
+                                            }
+                                            label={b[1]}
+                                          />
+                                          <Chip
+                                            style={{float: 'right'}}
+                                            label={filterGetCount(a[0], b[0])}
+                                            variant="outlined"
+                                          />
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+                              </ListItem>
+                            ) : (
+                              ''
+                            )}
+                          </div>
+                        );
+                      })}
+                  </>
+                ) : (
+                  ''
+                )}
+
+                {toggleFilter ? (
+                  <>
+                    {collection?.route == 'cronics' ? (
+                      <>
+                        {cronicFilterTraits.map(filterName => {
+                          return (
+                            <div key={'cronicFilterTraits' + filterName}>
+                              <ListItem
+                                style={{paddingRight: 0}}
+                                button
+                                onClick={() => handleToggleFilter('_cronicFilter' + filterName)}
+                              >
+                                <ListItemIcon style={{minWidth: 40}}>
+                                  <ListIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primaryTypographyProps={{noWrap: true}}
+                                  secondaryTypographyProps={{noWrap: true}}
+                                  primary={<strong>{capitalize(filterName)}</strong>}
+                                />
+                                <ListItemIcon>
+                                  {isOpenFilter('_cronicFilter' + filterName) ? (
+                                    <ExpandLessIcon fontSize={'large'} />
+                                  ) : (
+                                    <ExpandMoreIcon fontSize={'large'} />
+                                  )}
+                                </ListItemIcon>
+                              </ListItem>
+                              {isOpenFilter('_cronicFilter' + filterName) ? (
+                                <ListItem>
+                                  <div style={{width: '100%', padding: '0 20px'}}>
+                                    <InputLabel>Dominant:</InputLabel>
+                                    <Box sx={{width: 150}}>
+                                      <Slider
+                                        value={legacyFilterState[filterName + 'Dom']}
+                                        onChange={(ev, nv) =>
+                                          cronicSetFilterTrait(filterName + 'Dom', nv)
+                                        }
+                                        min={0}
+                                        step={1}
+                                        max={63}
+                                        valueLabelDisplay="auto"
+                                      />
+                                    </Box>
+                                    <InputLabel>Recessive:</InputLabel>
+                                    <Box sx={{width: '100%'}}>
+                                      <Slider
+                                        value={legacyFilterState[filterName + 'Rec']}
+                                        onChange={(ev, nv) =>
+                                          cronicSetFilterTrait(filterName + 'Rec', nv)
+                                        }
+                                        min={0}
+                                        step={1}
+                                        max={63}
+                                        valueLabelDisplay="auto"
+                                      />
+                                    </Box>
+                                  </div>
+                                </ListItem>
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                    ) : (
+                      ''
+                    )}
+
+                    {/*["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
+                  <FormControl style={{ marginRight : 20, minWidth: 120 }}>
+                    <InputLabel>Wearable Type</InputLabel>
+                    <Select value={wearableFilter} onChange={changeWearableFilter}>
+                      <MenuItem value={"all"}>All Wearables</MenuItem>
+                      <MenuItem value={"pets"}>Pets</MenuItem>
+                      <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
+                      <MenuItem value={"hats"}>Hats/Hair</MenuItem>
+                      <MenuItem value={"eyewear"}>Eyewear</MenuItem>
+                    </Select>
+                  </FormControl>
+                ) : (
+                  ""
+                )*/}
+                  </>
+                ) : (
+                  ''
+                )}
+              </List>
+            </div>
             <div
               className={classes.listingsView}
-              style={{ flexGrow: 1, padding: '10px 16px 50px 16px' }}
+              style={{flexGrow: 1, padding: '10px 16px 50px 16px'}}
             >
               <div style={{}}>
                 <div className={classes.filters} style={{}}>
-                  <Grid container style={{ minHeight: 66 }}>
-                    <Grid item xs={12} sm="auto" style={{ marginBottom: 10 }}>
+                  <Grid container style={{minHeight: 66}}>
+                    <Grid item xs={12} sm={'auto'} style={{marginBottom: 10}}>
                       <ToggleButtonGroup
                         className={classes.hideDesktop}
-                        style={{ marginTop: 5, marginRight: 10 }}
+                        style={{marginTop: 5, marginRight: 10}}
                         size="small"
                       >
-                        <ToggleButton value="" onClick={changeToggleFilter}>
+                        <ToggleButton value={''} onClick={changeToggleFilter}>
                           <FilterListIcon />
                         </ToggleButton>
                       </ToggleButtonGroup>
-                      <ToggleButtonGroup style={{ marginTop: 5, marginRight: 10 }} size="small">
+                      <ToggleButtonGroup style={{marginTop: 5, marginRight: 10}} size="small">
                         <ToggleButton
-                          value=""
+                          value={''}
                           onClick={async () => {
                             setDisplayListings(false);
                             await _updates();
@@ -997,38 +876,38 @@ export default function V2SaleComponent(props) {
                         </ToggleButton>
                       </ToggleButtonGroup>
                       <ToggleButtonGroup
-                        style={{ marginTop: 5, marginRight: 10 }}
+                        style={{marginTop: 5, marginRight: 10}}
                         size="small"
                         value={gridSize}
                         exclusive
                         onChange={changeGrid}
                       >
-                        <ToggleButton value="small">
+                        <ToggleButton value={'small'}>
                           <ViewModuleIcon />
                         </ToggleButton>
-                        <ToggleButton value="large">
+                        <ToggleButton value={'large'}>
                           <ViewComfyIcon />
                         </ToggleButton>
                       </ToggleButtonGroup>
                     </Grid>
-                    <Grid item xs={12} sm="auto">
-                      <FormControl style={{ marginRight: 20 }}>
+                    <Grid item xs={12} sm={'auto'}>
+                      <FormControl style={{marginRight: 20}}>
                         <InputLabel>Showing</InputLabel>
                         <Select value={showing} onChange={changeShowing}>
-                          <MenuItem value="all">Entire Collection</MenuItem>
-                          <MenuItem value="listed">Listed Only</MenuItem>
+                          <MenuItem value={'all'}>Entire Collection</MenuItem>
+                          <MenuItem value={'listed'}>Listed Only</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm="auto">
-                      <FormControl style={{ marginRight: 20 }}>
+                    <Grid item xs={12} sm={'auto'}>
+                      <FormControl style={{marginRight: 20}}>
                         <InputLabel>Sort by</InputLabel>
                         <Select value={sort} onChange={changeSort}>
-                          <MenuItem value="price_asc">Price: Low to High</MenuItem>
-                          <MenuItem value="price_desc">Price: High to Low</MenuItem>
-                          <MenuItem value="mint_number">Minting #</MenuItem>
+                          <MenuItem value={'price_asc'}>Price: Low to High</MenuItem>
+                          <MenuItem value={'price_desc'}>Price: High to Low</MenuItem>
+                          <MenuItem value={'mint_number'}>Minting #</MenuItem>
                           {collection?.nftv ? (
-                            <MenuItem value="gri">NFT Rarity Index</MenuItem>
+                            <MenuItem value={'gri'}>NFT Rarity Index</MenuItem>
                           ) : (
                             ''
                           )}
@@ -1036,7 +915,7 @@ export default function V2SaleComponent(props) {
                       </FormControl>
                     </Grid>
                     {displayListings && displayListings.length > perPage ? (
-                      <Grid xs={12} md="auto" item style={{ marginLeft: 'auto' }}>
+                      <Grid xs={12} md={'auto'} item style={{marginLeft: 'auto'}}>
                         <Pagination
                           className={classes.pagi}
                           size="small"
@@ -1050,25 +929,23 @@ export default function V2SaleComponent(props) {
                     )}
                   </Grid>
                 </div>
-                <div style={{ minHeight: 500 }}>
+                <div style={{minHeight: 500}}>
                   <div style={{}}>
                     {displayListings === false ? (
                       <>
-                        <Typography paragraph style={{ fontWeight: 'bold' }} align="left">
+                        <Typography paragraph style={{fontWeight: 'bold'}} align="left">
                           Loading...
                         </Typography>
                       </>
                     ) : (
                       <>
                         {displayListings.length === 0 ? (
-                          <Typography paragraph style={{ fontWeight: 'bold' }} align="left">
+                          <Typography paragraph style={{fontWeight: 'bold'}} align="left">
                             We found no results
                           </Typography>
                         ) : (
-                          <Typography paragraph style={{ fontWeight: 'bold' }} align="left">
-                            {displayListings.length}
-                            {' '}
-                            items
+                          <Typography paragraph style={{fontWeight: 'bold'}} align="left">
+                            {displayListings.length} items
                           </Typography>
                         )}
                       </>
@@ -1076,11 +953,11 @@ export default function V2SaleComponent(props) {
                   </div>
                   {selectedFilters.length > 0 || minPrice || maxPrice ? (
                     <div>
-                      <Typography paragraph style={{ fontWeight: 'bold' }} align="left">
+                      <Typography paragraph style={{fontWeight: 'bold'}} align="left">
                         {minPrice ? (
                           <Chip
-                            style={{ marginRight: 10, marginBottom: 10 }}
-                            label={`Min. Price:${minPrice}`}
+                            style={{marginRight: 10, marginBottom: 10}}
+                            label={'Min. Price:' + minPrice}
                             onDelete={() => setMinPrice('')}
                             color="primary"
                           />
@@ -1089,8 +966,8 @@ export default function V2SaleComponent(props) {
                         )}
                         {maxPrice ? (
                           <Chip
-                            style={{ marginRight: 10, marginBottom: 10 }}
-                            label={`Max. Price:${maxPrice}`}
+                            style={{marginRight: 10, marginBottom: 10}}
+                            label={'Max. Price:' + maxPrice}
                             onDelete={() => setMaxPrice('')}
                             color="primary"
                           />
@@ -1099,22 +976,24 @@ export default function V2SaleComponent(props) {
                         )}
                         {selectedFilters.length > 0 ? (
                           <>
-                            {showSelectedFilters().map((a, i) => (
-                              <Chip
-                                key={`${a[1][0]}_${a[1][1]}`}
-                                style={{ marginRight: 10, marginBottom: 10 }}
-                                label={a[0]}
-                                onDelete={() => handleToggleFilterTrait(a[1][0], a[1][1])}
-                                color="primary"
-                              />
-                            ))}
+                            {showSelectedFilters().map((a, i) => {
+                              return (
+                                <Chip
+                                  key={a[1][0] + '_' + a[1][1]}
+                                  style={{marginRight: 10, marginBottom: 10}}
+                                  label={a[0]}
+                                  onDelete={() => handleToggleFilterTrait(a[1][0], a[1][1])}
+                                  color="primary"
+                                />
+                              );
+                            })}
                           </>
                         ) : (
                           ''
                         )}
                         <Chip
-                          style={{ marginRight: 10, marginBottom: 10 }}
-                          label="Reset"
+                          style={{marginRight: 10, marginBottom: 10}}
+                          label={'Reset'}
                           onClick={() => {
                             setSelectedFilters([]);
                             setMinPrice('');
@@ -1145,22 +1024,24 @@ export default function V2SaleComponent(props) {
                       >
                         {displayListings
                           .filter((token, i) => i >= (page - 1) * perPage && i < page * perPage)
-                          .map((listing, i) => (
-                            <NFT
-                              collections={props.collections}
-                              gridSize={gridSize}
-                              loggedIn={props.loggedIn}
-                              identity={props.identity}
-                              tokenid={extjs.encodeTokenId(collection?.canister, listing[0])}
-                              key={extjs.encodeTokenId(collection?.canister, listing[0])}
-                              floor={stats.floor}
-                              buy={props.buyNft}
-                              afterBuy={_updates}
-                              view="marketplace"
-                              listing={listing[1]}
-                              metadata={listing[2]}
-                            />
-                          ))}
+                          .map((listing, i) => {
+                            return (
+                              <NFT
+                                collections={props.collections}
+                                gridSize={gridSize}
+                                loggedIn={props.loggedIn}
+                                identity={props.identity}
+                                tokenid={extjs.encodeTokenId(collection?.canister, listing[0])}
+                                key={extjs.encodeTokenId(collection?.canister, listing[0])}
+                                floor={stats.floor}
+                                buy={props.buyNft}
+                                afterBuy={_updates}
+                                view="marketplace"
+                                listing={listing[1]}
+                                metadata={listing[2]}
+                              />
+                            );
+                          })}
                       </Grid>
                     </div>
                   ) : (
@@ -1187,10 +1068,10 @@ export default function V2SaleComponent(props) {
         )}
       </div>
     </div>
-    );
+  );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   listingsView: {
     [theme.breakpoints.down('xs')]: {
       '& .MuiGrid-container.MuiGrid-spacing-xs-2': {
@@ -1214,7 +1095,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     paddingBottom: 50,
     [theme.breakpoints.down('xs')]: {
-      // display:"none",
+      //display:"none",
       position: 'fixed',
       backgroundColor: 'white',
       zIndex: 100,
@@ -1262,34 +1143,4 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'center',
     },
   },
-  walletBtn: {
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  stat: {
-    span: {
-      fontSize: '2em',
-    },
-  },
-  tabsViewTab: {
-    fontWeight: 'bold',
-    [theme.breakpoints.down('xs')]: {
-      '&>span>span>svg': {
-        display: 'none',
-      },
-      '&>span>span': {
-        padding: '0 5px!important',
-      },
-    },
-  },
-  content: {
-    flexGrow: 1,
-    marginTop: 73,
-    marginLeft: 0,
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: 300,
-    },
-  },
 }));
-
