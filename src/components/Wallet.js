@@ -37,7 +37,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
-import {loadVoltBalance} from '../volt';
+import {loadVolt, loadVoltBalance} from '../volt';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -79,7 +79,6 @@ export default function Wallet(props) {
   const classes = useStyles();
   const theme = useTheme();
   const container = window !== undefined ? () => window.document.body : undefined;
-  const [voltAddress, setVoltAddress] = React.useState(false);
   const [voltBalances, setVoltBalances] = React.useState(false);
   const [voltPrincipal, setVoltPrincipal] = React.useState(false);
   const [balance, setBalance] = React.useState(false);
@@ -87,19 +86,17 @@ export default function Wallet(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElAccounts, setAnchorElAccounts] = React.useState(null);
   const logout = () => {
-    setLoading(true);
+    setLoading(false);
     setBalance(false);
-    setVoltAddress(false);
     setVoltPrincipal(false);
     setVoltBalances(false);
     handleClose();
     props.logout();
   };
   const refreshClick = async () => {
-    setLoading(true);
     setBalance(false);
     setVoltBalances(false);
-    await refresh();
+    await refresh(true);
   };
   const selectAccount = t => {
     setBalance(false);
@@ -127,55 +124,48 @@ export default function Wallet(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const refresh = async refreshVolt => {
+  const refreshBalance = async showLoader => {
     if (props.account) {
       try {
-        var b = await api.token().getBalance(props.account.address);
-        var thisacc = loadedAccount;
-        setBalance(b);
-        //Volt
-        await loadVoltBalance({
-          account: props.account,
-          identity: props.identity,
-          voltPrincipal,
-          refreshVolt,
-          setVoltPrincipal,
-          setVoltAddress,
-          setVoltBalances,
-        });
-        setLoading(false);
+        setBalance(await api.token().getBalance(props.account.address));
       } catch (e) {
-        if (
-          e ==
-          'Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active'
-        ) {
-          props.error(
-            'Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active',
-          );
+        if (e == 'Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active') {
+          props.error('Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active');
           logout();
         }
       }
     }
   };
+  const refreshVolt = async showLoader => {
+    if (props.account && props.identity) {
+      if (showLoader) setLoading(true);
+      setVoltPrincipal(await loadVolt(props.identity));
+      setVoltBalances(await loadVoltBalance(props.identity));
+      if (showLoader || loading) setLoading(false);
+    }
+  };
+  const refresh = async showLoader => {
+    refreshBalance(showLoader);
+    refreshVolt(showLoader);
+  };
   useInterval(refresh, 30 * 1000);
   React.useEffect(() => {
-    setLoading(true);
-    refresh();
+    refresh(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
-    setLoading(true);
-    refresh(true);
+    refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.account]);
   React.useEffect(() => {
+    loadedAccount = props.currentAccount;
+    refresh();
+  }, [props.currentAccount]);
+  
+  React.useEffect(() => {
     props.setBalance(balance);
   }, [balance]);
-  React.useEffect(() => {
-    loadedAccount = props.currentAccount;
-    setLoading(true);
-    refresh(true);
-  }, [props.currentAccount]);
+  
   const accountsList = (
     <div style={{marginTop: 73, marginBottom: 100}}>
       {props.account !== false ? (
@@ -267,20 +257,10 @@ export default function Wallet(props) {
             <Typography style={{width:"100%",textAlign:"center"}}>
               <PriceICP
                 volume={true}
-                text={
-                  balance === false || (loadedAccount == 0 && voltBalances === false) ? (
-                    <ToniqIcon
-                      className="toniq-icon-fit-icon"
-                      style={{height: '14px', width: '14px'}}
-                      icon={LoaderAnimated24Icon}
-                    />
-                  ) : undefined
-                }
-                price={Number(balance) + voltBalances[0] + voltBalances[2]}
-              >
-                Total
-              </PriceICP><br />
-              {loading == false && loadedAccount === 0 ?
+                loader={balance === false || (loadedAccount == 0 && loading === true)}
+                price={balance === false ? false : Number(balance) + (voltBalances && loadedAccount == 0 ? voltBalances[0] : 0)}
+              ></PriceICP><br />
+              {loadedAccount === 0 && balance !== false && loading == false && voltPrincipal ?
                 <>
                 <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
                 <PriceICP
@@ -297,20 +277,12 @@ export default function Wallet(props) {
                   }
                   price={balance}
                 >
-                  Default
+                  Wallet
                 </PriceICP><br />
                 <PriceICP
                   bold={false}
                   volume={true}
-                  text={
-                    loadedAccount != 0 || voltBalances === false ? (
-                      <ToniqIcon
-                        className="toniq-icon-fit-icon"
-                        style={{height: '14px', width: '14px'}}
-                        icon={LoaderAnimated24Icon}
-                      />
-                    ) : undefined
-                  }
+                  loader={voltBalances === false}
                   price={voltBalances[0]-voltBalances[2]}
                 >
                   Volt
@@ -319,15 +291,6 @@ export default function Wallet(props) {
                   <><PriceICP
                     bold={false}
                     volume={true}
-                    text={
-                      loadedAccount != 0 || voltBalances === false ? (
-                        <ToniqIcon
-                          className="toniq-icon-fit-icon"
-                          style={{height: '14px', width: '14px'}}
-                          icon={LoaderAnimated24Icon}
-                        />
-                      ) : undefined
-                    }
                     price={voltBalances[2]}
                   >
                     Locked
@@ -339,6 +302,7 @@ export default function Wallet(props) {
               : ""}
             </Typography>
           </ListItem>
+          
           {loading == false && loadedAccount === 0 ?
           <ListItem>
             <Button
@@ -357,6 +321,7 @@ export default function Wallet(props) {
               {voltPrincipal ? 'Volt Transfer' : 'Link Volt'}
             </Button>
           </ListItem> : ""}
+          
           {props.accounts.length > 1 ? (
             <ListItem>
               <Button

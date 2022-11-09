@@ -1,4 +1,5 @@
 import {truncateNumber} from '../truncation';
+import {LoaderAnimated24Icon} from '@toniq-labs/design-system';
 import {
   cssToReactStyleObject,
   toniqFontStyles,
@@ -30,7 +31,7 @@ export function icpToString(priceE8s /* BigInt */, convertToIcp, truncate) {
 export default function PriceICP(props) {
   return (
     <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
-      {props.text ? "" : <ToniqIcon icon={Icp16Icon} /> }
+      {props.price || props.price === 0 ? <ToniqIcon icon={Icp16Icon} /> : "" }
       <span
         style={{
           display: 'inline-flex',
@@ -42,14 +43,18 @@ export default function PriceICP(props) {
           ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
         }}
       >
-        {props.text ? 
-          props.text
-          : 
+        {props.text ? props.text : ""}
+        {props.price || props.price === 0 ?
           <>
             {icpToString(props.price, !props.clean, props.volume, props.fillAllSpots)}
             &nbsp;{props.children}
-          </>
-        }
+        </> : ""}
+        {props.loader?
+        <ToniqIcon
+          className="toniq-icon-fit-icon"
+          style={{height: '14px', width: '14px'}}
+          icon={LoaderAnimated24Icon}
+        /> : ""}
       </span>
     </span>
   );

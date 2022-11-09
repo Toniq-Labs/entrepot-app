@@ -32,7 +32,7 @@ import {
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
-import {loadVoltBalance} from '../volt';
+import {loadVolt, loadVoltBalance} from '../volt';
 function useInterval(callback, delay) {
   const savedCallback = React.useRef();
 
@@ -60,48 +60,43 @@ export default function Navbar(props) {
   const [open, setOpen] = useState(false);
   const [walletOpen, setWalletOpen] = React.useState(false);
   const [balance, setBalance] = React.useState(undefined);
-  const [voltAddress, setVoltAddress] = React.useState(undefined);
   const [voltBalances, setVoltBalances] = React.useState(undefined);
-  const [voltPrincipal, setVoltPrincipal] = React.useState(undefined);
   const classes = useStyles();
   const [searchParams] = useSearchParams();
   const [totalBalance, setTotalBalance] = React.useState(undefined);
 
   React.useEffect(() => {
-    if (voltBalances != undefined && balance != undefined) {
-      setTotalBalance(Number(balance) + voltBalances[0] + voltBalances[2]);
-    }
+    var totalBalance = 0;
+    if (balance) totalBalance += Number(balance);
+    if (voltBalances && props.currentAccount === 0) totalBalance += voltBalances[0];
+    if (totalBalance > 0) setTotalBalance(totalBalance);
   }, [props.account, props.identity, balance, voltBalances]);
 
   const query = searchParams.get('search') || '';
 
   const refresh = async () => {
-    console.log('refreshing nav bar');
     if (props.account) {
       var b = await api.token().getBalance(props.account.address);
       setBalance(b);
-      await loadVoltBalance({
-        account: props.account,
-        identity: props.identity,
-        voltPrincipal,
-        refreshVolt: true,
-        setVoltPrincipal,
-        setVoltAddress,
-        setVoltBalances,
-      });
+      if (props.currentAccount === 0) setVoltBalances(await loadVoltBalance(props.identity));
     } else {
       setBalance(undefined);
     }
   };
-  useInterval(refresh, 30 * 1000);
+  useInterval(refresh, 5 * 1000);
 
   useEffect(() => {
     refresh();
   }, []);
   useEffect(() => {
+    setTotalBalance(undefined);
     refresh();
   }, [props.account]);
 
+  const logout = () => {
+    setTotalBalance(undefined);
+    props.logout();
+  };
   const handleClick = () => {
     setWalletOpen(false);
   };
@@ -269,7 +264,7 @@ export default function Navbar(props) {
         alert={props.alert}
         error={props.error}
         confirm={props.confirm}
-        logout={props.logout}
+        logout={logout}
         login={props.login}
         collection={props.collection}
         collections={props.collections}
