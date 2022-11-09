@@ -396,7 +396,7 @@ export default function Listings(props) {
       updateListings(listings);
     } catch (e) {}
   };
-  const updateListings = (l, s, so, sf) => {
+  const updateListings = async (l, s, so, sf) => {
     if (canUpdateListings) {
       canUpdateListings = false;
       var _listings = l ?? listings;
@@ -421,10 +421,18 @@ export default function Listings(props) {
           return Number(a[1].price) / 100000000 <= Number(maxPrice);
         });
       }
+      var auctions = [];
+      if (_showing == "auction") {
+        var auctionsAPI = await extjs.connect('https://ic0.app/').canister('ffxbt-cqaaa-aaaak-qazbq-cai');
+        auctions = (await auctionsAPI.allAuctions()).map(a => extjs.decodeTokenId(a)).filter(a => a.canister == collection.canister).map(a => a.index);
+      };
       _displayListings = _displayListings.filter(a => {
         switch (_showing) {
           case 'all':
             return true;
+            break;
+          case 'auction':
+            return (auctions.indexOf(a[0]) >= 0)
             break;
           case 'listed':
             return a[1];
@@ -895,6 +903,7 @@ export default function Listings(props) {
                         <InputLabel>Showing</InputLabel>
                         <Select value={showing} onChange={changeShowing}>
                           <MenuItem value={'all'}>Entire Collection</MenuItem>
+                          <MenuItem value={'auction'}>On Auction</MenuItem>
                           <MenuItem value={'listed'}>Listed Only</MenuItem>
                         </Select>
                       </FormControl>

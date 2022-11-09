@@ -155,6 +155,10 @@ export default function NFT(props) {
     setOffer,
   ] = React.useState(false);
   const [
+    auction,
+    setAuction,
+  ] = React.useState(false);
+  const [
     showOfferCount,
     setShowOfferCount,
   ] = React.useState(false);
@@ -201,6 +205,13 @@ export default function NFT(props) {
       setMetadata(md.metadata[0]);
     }
   };
+  const getAuction = async () => {
+    var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getEXTID(tokenid));
+    console.log(resp);
+    console.log(getEXTID(tokenid));
+    if (resp.length) setAuction(resp[0]);
+    else setAuction(false);
+  };
   const getOffer = async () => {
     await api
       .canister('fcwhh-piaaa-aaaak-qazba-cai')
@@ -221,6 +232,7 @@ export default function NFT(props) {
       getListing();
     }
     getOffer();
+    getAuction();
     getMetadata();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -265,6 +277,7 @@ export default function NFT(props) {
 
   const refresh = async () => {
     await getOffer();
+    await getAuction();
     await getMetadata();
     if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai') {
       console.log('updated');
@@ -587,7 +600,7 @@ export default function NFT(props) {
                   </MuiTooltip>
                 </Typography>
               </Grid>
-              {listing ? (
+              {auction ? (
                 <>
                   <Grid item md={6} sm={6} xs={6}>
                     <Typography
@@ -599,7 +612,7 @@ export default function NFT(props) {
                       color={'inherit'}
                       gutterBottom
                     >
-                      Price
+                      {auction.bids.length === 0 ? "Auction Reserve" : "Leading Bid"}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
@@ -612,7 +625,7 @@ export default function NFT(props) {
                       color={'inherit'}
                       gutterBottom
                     >
-                      <PriceICP price={listing.price} />
+                      <PriceICP price={auction.bids.length === 0 ? auction.reserve : auction.bids[auction.bids.length-1].amount} />
                     </Typography>
                   </Grid>
                   {offer ? (
@@ -625,7 +638,7 @@ export default function NFT(props) {
                 </>
               ) : (
                 <>
-                  {offer ? (
+                  {listing ? (
                     <>
                       <Grid item md={6} sm={6} xs={6}>
                         <Typography
@@ -637,7 +650,7 @@ export default function NFT(props) {
                           color={'inherit'}
                           gutterBottom
                         >
-                          Best Offer
+                          Price
                         </Typography>
                       </Grid>
                       <Grid item xs={12}>
@@ -650,38 +663,78 @@ export default function NFT(props) {
                           color={'inherit'}
                           gutterBottom
                         >
-                          <PriceICP price={offer.amount} />
+                          <PriceICP price={listing.price} />
                         </Typography>
                       </Grid>
+                      {offer ? (
+                        <div style={{width: '100%', fontSize: '.8em', textAlign: 'right', color: '#'}}>
+                          Best <PriceICP size={13} price={offer.amount} />
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </>
                   ) : (
                     <>
-                      <Grid item md={6} sm={6} xs={6}>
-                        <Typography
-                          style={{
-                            fontSize: 13,
-                            textAlign: 'right',
-                            fontWeight: 'bold',
-                          }}
-                          color={'inherit'}
-                          gutterBottom
-                        >
-                          Unlisted
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          style={{
-                            fontSize: 13,
-                            textAlign: 'right',
-                            fontWeight: 'bold',
-                          }}
-                          color={'inherit'}
-                          gutterBottom
-                        >
-                          -
-                        </Typography>
-                      </Grid>
+                      {offer ? (
+                        <>
+                          <Grid item md={6} sm={6} xs={6}>
+                            <Typography
+                              style={{
+                                fontSize: 13,
+                                textAlign: 'right',
+                                fontWeight: 'bold',
+                              }}
+                              color={'inherit'}
+                              gutterBottom
+                            >
+                              Best Offer
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Typography
+                              style={{
+                                fontSize: 13,
+                                textAlign: 'right',
+                                fontWeight: 'bold',
+                              }}
+                              color={'inherit'}
+                              gutterBottom
+                            >
+                              <PriceICP price={offer.amount} />
+                            </Typography>
+                          </Grid>
+                        </>
+                      ) : (
+                        <>
+                          <Grid item md={6} sm={6} xs={6}>
+                            <Typography
+                              style={{
+                                fontSize: 13,
+                                textAlign: 'right',
+                                fontWeight: 'bold',
+                              }}
+                              color={'inherit'}
+                              gutterBottom
+                            >
+                              Unlisted
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Typography
+                              style={{
+                                fontSize: 13,
+                                textAlign: 'right',
+                                fontWeight: 'bold',
+                              }}
+                              color={'inherit'}
+                              gutterBottom
+                            >
+                              -
+                            </Typography>
+                          </Grid>
+                        </>
+                      )}
                     </>
                   )}
                 </>
@@ -837,7 +890,13 @@ export default function NFT(props) {
                 )}
               </>
             ) : (
-              ''
+              <>
+                {auction ? (
+                  <span style={{display: 'block'}}>
+                    Auction ends <Timestamp relative autoUpdate date={Number(auction.end / 1000000000n)} />
+                  </span>
+                ) : ""}
+              </>
             )}
             <Favourite
               refresher={props.faveRefresher}
