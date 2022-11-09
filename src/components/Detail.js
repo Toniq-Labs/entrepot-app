@@ -843,7 +843,7 @@ const Detail = props => {
                         </>
                       ) : (
                         <>
-                          <Alert severity="info">Offers are non-binding and indicative only.</Alert>
+                          <Alert severity="info">Offers are binding.</Alert>
                           <Table
                             sx={{minWidth: 1500, fontWeight: 'bold'}}
                             aria-label="a dense table"

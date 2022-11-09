@@ -42,6 +42,7 @@ export default function VoltTransferForm(props) {
           <DialogContentText style={{textAlign: 'center'}}>
             Please select a transfer option and enter an amount below
             <br />
+            <br />
             <Select
               defaultValue={true}
               onChange={event => {
@@ -49,8 +50,9 @@ export default function VoltTransferForm(props) {
                 setDeposit(newValue);
               }}
             >
-              <MenuItem value={true}>From Default Wallet to Volt</MenuItem>
-              <MenuItem value={false}>From Volt to Default Wallet</MenuItem>
+            <br />
+              <MenuItem value={true}>Send to Volt</MenuItem>
+              <MenuItem value={false}>Withdraw from Volt</MenuItem>
             </Select>
           </DialogContentText>
           <TextField
