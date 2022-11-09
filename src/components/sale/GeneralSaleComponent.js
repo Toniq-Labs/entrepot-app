@@ -10,7 +10,7 @@ export default function GeneralSaleComponent(props) {
   var collection = getCollectionFromRoute(params?.route);
 	if (collection.saletype == "v1") {
 		return (<><OldSaleComponent {...props} /></>);
-	} else if (collection.saletype == "auction" {
+	} else if (collection.saletype == "auction") {
 		return (<><AuctionSaleComponent {...props} /></>);
 	} else {
 		return (<><V2SaleComponent {...props} /></>);
