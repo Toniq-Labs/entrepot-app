@@ -166,6 +166,7 @@ const Detail = props => {
   const _refresh = async () => {
     reloadOffers();
     reloadAuction();
+    try{
     await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
       .then(r => r.json())
       .then(r => {
@@ -176,6 +177,9 @@ const Detail = props => {
         setOwner(r.owner);
         setTransactions(r.transactions);
       });
+    }catch(e){
+      //console.log(e);
+    };
     // let {index, canister} = extjs.decodeTokenId(tokenid);
     // if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
     //   await fetch(
