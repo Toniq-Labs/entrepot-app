@@ -205,9 +205,9 @@ class ExtConnection {
     'fl5nr-xiaaa-aaaai-qbjmq-cai': departureIDL,
     '33uhc-liaaa-aaaah-qcbra-cai': mintregister,
     '6z5wo-yqaaa-aaaah-qcsfa-cai': entrepotIDL,
-    '3lidg-pyaaa-aaaag-qa2kq-cai': voltoffersIDL,
+    'fcwhh-piaaa-aaaak-qazba-cai': voltoffersIDL,
     'yigae-jqaaa-aaaah-qczbq-cai': treasureIDL,
-    'olyit-kaaaa-aaaag-qaz2a-cai': voltfactoryIDL,
+    'flvm3-zaaaa-aaaak-qazaq-cai': voltfactoryIDL,
   };
   _metadata = {
     [LEDGER_CANISTER_ID]: {

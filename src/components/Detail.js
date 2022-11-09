@@ -140,9 +140,8 @@ const Detail = props => {
   const classes = useStyles();
   const reloadOffers = async () => {
     var os = await api
-    .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
+    .canister('fcwhh-piaaa-aaaak-qazba-cai')
     .offers(tokenid);
-    console.log(os);
     setOffers(
       os.sort((a, b) => Number(b.amount) - Number(a.amount)),
     );
@@ -214,7 +213,7 @@ const Detail = props => {
   const cancelOffer = async () => {
     props.loader(true, 'Cancelling offer...');
     const _api = extjs.connect('https://ic0.app/', props.identity);
-    await _api.canister('3lidg-pyaaa-aaaag-qa2kq-cai').cancelOffer(tokenid);
+    await _api.canister('fcwhh-piaaa-aaaak-qazba-cai').cancelOffer(tokenid);
     await reloadOffers();
     props.loader(false);
     props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
@@ -222,19 +221,17 @@ const Detail = props => {
   const acceptOffer = async (offer) => {
     if(await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')){
       props.loader(true, 'Accepting offer...');
-      var offersAPI = extjs.connect('https://ic0.app/', props.identity).canister('3lidg-pyaaa-aaaag-qa2kq-cai');   
+      var offersAPI = extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
       var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
-      console.log(memo);
       var r2 = await extjs.connect('https://ic0.app/', props.identity).token(tokenid).transfer(
         props.identity.getPrincipal().toText(),
         props.currentAccount,
-        '3lidg-pyaaa-aaaag-qa2kq-cai',
+        'fcwhh-piaaa-aaaak-qazba-cai',
         BigInt(1),
         BigInt(0),
         memo,
         true,
       );
-      console.log(r2);
       await _refresh();
       props.loader(false);
       props.alert('Offer accepted', 'You have accepted this offer. Your ICP will be transferred to you shortly!');

@@ -116,7 +116,7 @@ export default function Wallet(props) {
       var b = await api.token().getBalance(props.account.address);
       var thisacc = loadedAccount;
       setBalance(b);
-      var volt = await api.canister("olyit-kaaaa-aaaag-qaz2a-cai").hasOwnerCanister(props.identity.getPrincipal());
+      var volt = await api.canister("flvm3-zaaaa-aaaak-qazaq-cai").hasOwnerCanister(props.identity.getPrincipal());
       console.log(test, volt);
       //setVoltBalances(b);
       var collection,

@@ -143,6 +143,8 @@ var otherPrincipalsForPlug = [
   'ryjl3-tyaaa-aaaaa-aaaba-cai',
   'qgsqp-byaaa-aaaah-qbi4q-cai',
   '6z5wo-yqaaa-aaaah-qcsfa-cai',
+  'flvm3-zaaaa-aaaak-qazaq-cai',
+  'fcwhh-piaaa-aaaak-qazba-cai',
 ];
 const isDevEnv = () => {
   if (window.location.hostname == 'localhost') return true;
@@ -836,7 +838,7 @@ export default function App() {
   const _voltCreate = async (showAlert) => {
     loader(true, "Creating Volt wallet...");
     try {
-      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("flvm3-zaaaa-aaaak-qazaq-cai");
       var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
       if (volt.length){
         loader(false);
@@ -878,7 +880,7 @@ export default function App() {
       }
     }
     try {
-      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', identity).canister("flvm3-zaaaa-aaaak-qazaq-cai");
       var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
       if (volt.length){
       } else throw 'There was a problem finding your Volt!';

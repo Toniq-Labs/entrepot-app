@@ -119,6 +119,15 @@ export default function Wallet(props) {
     anchorElAccounts,
     setAnchorElAccounts,
   ] = React.useState(null);
+  const logout = () => {
+    setLoading(true);
+    setBalance(false);
+    setVoltAddress(false);
+    setVoltPrincipal(false);
+    setVoltBalances(false);
+    handleClose();
+    props.logout();
+  };
   const refreshClick = async () => {
     setLoading(true);
     setBalance(false);
@@ -154,28 +163,35 @@ export default function Wallet(props) {
   };
   const refresh = async (refreshVolt) => {
     if (props.account) {
-      var b = await api.token().getBalance(props.account.address);
-      var thisacc = loadedAccount;
-      setBalance(b);
-      //Volt
-      var newVoltPrincipal = false;
-      var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");
-      if (voltPrincipal == false || refreshVolt) {
-        var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
-        if (volt.length){
-          newVoltPrincipal = volt[0].toText();
-          setVoltPrincipal(newVoltPrincipal);
-          setVoltAddress(extjs.toAddress(newVoltPrincipal, 0));
+      try{
+          var b = await api.token().getBalance(props.account.address);
+          var thisacc = loadedAccount;
+          setBalance(b);
+          //Volt
+          var newVoltPrincipal = false;
+          var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("flvm3-zaaaa-aaaak-qazaq-cai");
+          if (voltPrincipal == false || refreshVolt) {
+            var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
+            if (volt.length){
+              newVoltPrincipal = volt[0].toText();
+              setVoltPrincipal(newVoltPrincipal);
+              setVoltAddress(extjs.toAddress(newVoltPrincipal, 0));
+            };
+          };
+          if (newVoltPrincipal || voltPrincipal) {
+            var voltAPI = extjs.connect('https://ic0.app/', props.identity).canister((newVoltPrincipal ? newVoltPrincipal : voltPrincipal), "volt");
+            var resp = await voltAPI.getBalances("icpledger", "ryjl3-tyaaa-aaaaa-aaaba-cai", []);
+            if (resp.hasOwnProperty("ok")) {
+              setVoltBalances([Number(resp.ok[0]), Number(resp.ok[1]), Number(resp.ok[2])]);
+            };
+          };
+          setLoading(false);
+      } catch(e){
+        if (e == "Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active") {
+          props.error("Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active");
+          logout();
         };
       };
-      if (newVoltPrincipal || voltPrincipal) {
-        var voltAPI = extjs.connect('https://ic0.app/', props.identity).canister((newVoltPrincipal ? newVoltPrincipal : voltPrincipal), "volt");
-        var resp = await voltAPI.getBalances("icpledger", "ryjl3-tyaaa-aaaaa-aaaba-cai", []);
-        if (resp.hasOwnProperty("ok")) {
-          setVoltBalances([Number(resp.ok[0]), Number(resp.ok[1]), Number(resp.ok[2])]);
-        };
-      };
-      setLoading(false);
     }
   };
   useInterval(refresh, 30 * 1000);
@@ -303,10 +319,7 @@ export default function Wallet(props) {
             ]) : ""}
             <Divider light />
             <MenuItem
-              onClick={() => {
-                props.logout();
-                handleClose();
-              }}
+              onClick={logout}
             >
               <ListItemIcon>
                 <LockIcon fontSize="small" />
@@ -318,10 +331,10 @@ export default function Wallet(props) {
             <Typography style={{width: '100%', textAlign: 'center', fontWeight: 'bold'}}>
               {balance !== false ? <PriceICP size={24} price={balance} /> : 'Loading...'}
               {balance !== false && voltBalances == false && loading ? <><br /><span style={{fontSize:12}}>Loading...</span></> : ""}
-              {voltBalances !== false ?
+              {loadedAccount == 0 && voltBalances !== false ?
                 <><br /><span style={{fontSize:12}}>Volt:</span> <PriceVolt size={12} price={voltBalances[0]} /></>
               : ""}
-              {voltBalances !== false && voltBalances[2] > 0 ?
+              {loadedAccount == 0 && voltBalances !== false && voltBalances[2] > 0 ?
                 <>&nbsp;<span style={{fontSize:12}}>Locked:</span> <PriceVolt size={12} price={voltBalances[2]} /></>
               : ""}
             </Typography>

@@ -31,7 +31,7 @@ export default function OfferForm(props) {
     var offerAmountIcp = BigInt(Math.floor(amount * 10 ** 8));
     props.loader(true, 'Loading Volt...');
     try{
-      var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("olyit-kaaaa-aaaag-qaz2a-cai");      
+      var voltFactoryAPI = extjs.connect('https://ic0.app/', props.identity).canister("flvm3-zaaaa-aaaak-qazaq-cai");      
       var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
       if (!volt.length){
         props.loader(false);
@@ -60,18 +60,18 @@ export default function OfferForm(props) {
       };
       
       props.loader(true, 'Submitting offer...');
-      var offersAPI = await extjs.connect('https://ic0.app/', props.identity).canister('3lidg-pyaaa-aaaag-qa2kq-cai');   
+      var offersAPI = await extjs.connect('https://ic0.app/', props.identity).canister('fcwhh-piaaa-aaaak-qazba-cai');   
       var memo = await offersAPI.createMemo(props.tokenid, props.address);
       var resp1 = await voltAPI.authorize({
         standard : "icpledger",
         canister : "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        to : extjs.toAddress('3lidg-pyaaa-aaaag-qa2kq-cai', 0),
+        to : extjs.toAddress('fcwhh-piaaa-aaaak-qazba-cai', 0),
         amount : offerAmountIcp,
         id : [],
         memo : [memo],//await offersAPI.createMemo(props.tokenid, props.address)],
         notify : [true],
         other : [],
-      }, false, Principal.fromText('3lidg-pyaaa-aaaag-qa2kq-cai'));
+      }, false, Principal.fromText('fcwhh-piaaa-aaaak-qazba-cai'));
       if (resp1.hasOwnProperty('ok')){
         var resp2 = await offersAPI.offer(props.tokenid, offerAmountIcp, props.address, Number(resp1.ok), voltPrincipal);
         if (resp2.hasOwnProperty('ok')){

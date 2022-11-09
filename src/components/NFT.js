@@ -203,7 +203,7 @@ export default function NFT(props) {
   };
   const getOffer = async () => {
     await api
-      .canister('3lidg-pyaaa-aaaag-qa2kq-cai')
+      .canister('fcwhh-piaaa-aaaak-qazba-cai')
       .offers(getEXTID(tokenid))
       .then(r => {
         setOfferCount(r.length);
