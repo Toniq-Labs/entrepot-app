@@ -5,17 +5,18 @@ import {
     toniqColors,
     toniqFontStyles,
 } from '@toniq-labs/design-system';
-import React from 'react';
+import React, {createRef, useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
 import PriceUSD from '../../../components/PriceUSD';
 import {NftCard} from '../../../shared/NftCard';
 import {getEXTCanister} from '../../../utilities/load-tokens';
-import {EntrepotGetICPUSD, EntrepotNFTImage} from '../../../utils';
+import {EntrepotGetICPUSD, EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
 import Timestamp from 'react-timestamp';
 import {
     ToniqIcon,
     ToniqMiddleEllipsis,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {isEllipsisActive} from '../../../utilities/element-utils';
 
 function ListRow({items, classes, style}) {
     return (
@@ -50,7 +51,7 @@ function ListRow({items, classes, style}) {
                             flexBasis: 0,
                             marginLeft: '8px',
                             flexGrow: 1,
-                            minWidth: 120,
+                            minWidth: 110,
                         }}
                     >
                         {items[1]}
@@ -59,7 +60,7 @@ function ListRow({items, classes, style}) {
                         style={{
                             flexBasis: 0,
                             flexGrow: 1,
-                            minWidth: 100,
+                            minWidth: 115,
                         }}
                         className={classes.hideWhenMobile}
                     >
@@ -70,6 +71,7 @@ function ListRow({items, classes, style}) {
                             flexGrow: 1,
                             flexBasis: 0,
                             marginLeft: '8px',
+                            minWidth: 80,
                         }}
                     >
                         {items[3]}
@@ -97,8 +99,18 @@ function ListRow({items, classes, style}) {
 }
 
 export default function DetailSectionDetails(props) {
-    const {offerListing, floor, canister, tokenid} = props;
+    const {offerListing, floor, index, canister, tokenid, owner} = props;
+    const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
+    const blurbRef = createRef();
+    const [
+        isBlurbOpen,
+        setIsBlurbOpen,
+    ] = useState(false);
+    const [
+        showReadMore,
+        setShowReadMore,
+    ] = useState(false);
 
     const getFloorDelta = amount => {
         if (!floor) return reloadIcon();
@@ -124,11 +136,95 @@ export default function DetailSectionDetails(props) {
             </div>
         );
     };
+
+    const shorten = a => {
+        return a.substring(0, 12) + '...';
+    };
+
+    React.useEffect(() => {
+        props.loader(true);
+        setShowReadMore(isEllipsisActive(blurbRef.current));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <div className={classes.detailSectionWrapper}>
-            <div className={classes.detailSectionContainer}>1</div>
             <div className={classes.detailSectionContainer}>
-                <span>Offers</span>
+                <div className={classes.detailSectionTitleContainer}>
+                    <span className={classes.detailSectionTitle}>Details</span>
+                    <Link
+                        href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                        target="_blank"
+                        rel="noreferrer"
+                        underline="none"
+                        className={classes.ownerAddress}
+                    >
+                        View On-Chain
+                    </Link>
+                    {owner && (
+                        <>
+                            {props.account.address === owner ? (
+                                <span className={classes.ownerWrapper}>Owned by you</span>
+                            ) : (
+                                <span className={classes.ownerWrapper}>
+                                    {`Owner : `}
+                                    &nbsp;
+                                    <Link
+                                        href={`https://dashboard.internetcomputer.org/account/${owner}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        underline="none"
+                                    >
+                                        <span className={classes.ownerAddress}>
+                                            {shorten(owner)}
+                                        </span>
+                                    </Link>
+                                </span>
+                            )}
+                        </>
+                    )}
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        maxHeight: 560,
+                        overflowY: 'scroll',
+                        paddingBottom: '32px',
+                    }}
+                >
+                    {collection.blurb && (
+                        <div className={classes.blurbWrapper}>
+                            <div
+                                ref={blurbRef}
+                                className={`${classes.blurb} ${
+                                    !isBlurbOpen ? classes.blurbCollapsed : ''
+                                }`}
+                                dangerouslySetInnerHTML={{
+                                    __html: collection.blurb,
+                                }}
+                            />
+                            {showReadMore && (
+                                <button
+                                    style={{
+                                        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+                                        border: 'none',
+                                        background: 'none',
+                                        cursor: 'pointer',
+                                        color: toniqColors.pageInteraction.foregroundColor,
+                                    }}
+                                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                >
+                                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className={classes.detailSectionContainer}>
+                <span className={classes.detailSectionTitle}>Offers</span>
                 {offerListing && (
                     <div container className={classes.listRowContainer}>
                         <div className={classes.listRowHeader}>
@@ -136,7 +232,7 @@ export default function DetailSectionDetails(props) {
                                 items={[
                                     true,
                                     'PRICE',
-                                    'FLOOR',
+                                    'FLOOR DIFFERENCE',
                                     'EXPIRATION',
                                     'FROM',
                                 ]}
@@ -169,7 +265,7 @@ export default function DetailSectionDetails(props) {
                                             0,
                                         )}
                                         key={index}
-                                        style={{marginRight: 14}}
+                                        style={{marginRight: 8}}
                                     >
                                         <>
                                             <ListRow
@@ -208,7 +304,12 @@ export default function DetailSectionDetails(props) {
                                                             )
                                                         </span>
                                                     </div>,
-                                                    <div>
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
                                                         {floor ? (
                                                             getFloorDelta(offer.amount)
                                                         ) : (
@@ -288,6 +389,19 @@ const useStyles = makeStyles(theme => ({
             padding: '16px 14px',
         },
     },
+    detailSectionTitle: {
+        ...cssToReactStyleObject(toniqFontStyles.h3Font),
+    },
+    detailSectionTitleContainer: {
+        display: 'flex',
+        gap: 24,
+        alignItems: 'center',
+        [theme.breakpoints.down('md')]: {
+            gap: 14,
+            flexDirection: 'column',
+            alignItems: 'start',
+        },
+    },
     activityInfoContainer: {
         display: 'flex',
         flexDirection: 'row',
@@ -326,5 +440,35 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
+    },
+    blurbWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    blurb: {
+        textAlign: 'left',
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '& > a': {
+            color: `${toniqColors.pagePrimary.foregroundColor}`,
+            '&:hover': {
+                color: toniqColors.pageInteractionHover.foregroundColor,
+            },
+        },
+    },
+    blurbCollapsed: {
+        '-webkit-line-clamp': 3,
+        overflow: 'hidden',
+    },
+    ownerWrapper: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        wordBreak: 'break-all',
+    },
+    ownerAddress: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        cursor: 'pointer',
+        color: toniqColors.pageInteraction.foregroundColor,
     },
 }));

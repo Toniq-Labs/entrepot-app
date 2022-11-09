@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React from 'react';
 import {Box, Grid, makeStyles} from '@material-ui/core';
 import {
     CircleWavyCheck24Icon,
@@ -10,7 +10,6 @@ import {EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import Favourite from '../../../components/Favourite';
-import {isEllipsisActive} from '../../../utilities/element-utils';
 import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 
@@ -31,15 +30,6 @@ const DetailSectionHeader = props => {
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
     const navigate = useNavigate();
-    const blurbRef = createRef();
-    const [
-        isBlurbOpen,
-        setIsBlurbOpen,
-    ] = useState(false);
-    const [
-        showReadMore,
-        setShowReadMore,
-    ] = useState(false);
 
     const getPriceData = () => {
         if (listing.price > 0n) {
@@ -60,12 +50,6 @@ const DetailSectionHeader = props => {
     const makeOffer = async () => {
         setOpenOfferForm(true);
     };
-
-    React.useEffect(() => {
-        props.loader(true);
-        setShowReadMore(isEllipsisActive(blurbRef.current));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <Box className={classes.detailHeader}>
@@ -106,18 +90,6 @@ const DetailSectionHeader = props => {
                                         />
                                     </Grid>
                                 </Grid>
-                                {/* <Box style={{cursor: 'pointer'}}>
-									<div style={{display: 'flex', gap: 32}}>
-										<Link
-											href={EntrepotNFTLink(collection.canister, index, tokenid)}
-											target="_blank"
-											rel="noreferrer"
-											underline="none"
-										>
-											<ToniqChip text="View NFT OnChain" />
-										</Link>
-									</div>
-								</Box> */}
                             </div>
                             <div className={classes.priceContent}>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
@@ -250,60 +222,6 @@ const DetailSectionHeader = props => {
                                         )}
                                     </div>
                                 </div>
-                                {/*
-								{owner ? (
-									<>
-										{props.account.address === owner ? (
-											<span className={classes.ownerWrapper}>Owned by you</span>
-										) : (
-											<span className={classes.ownerWrapper}>
-												{`Owner `}
-												&nbsp;
-												<Link
-													href={`https://dashboard.internetcomputer.org/account/${owner}`}
-													target="_blank"
-													rel="noreferrer"
-													underline="none"
-												>
-													<span className={classes.ownerAddress}>
-														{shorten(owner)}
-													</span>
-												</Link>
-											</span>
-										)}
-									</>
-								) : (
-									<></>
-								)}
-								{collection.blurb && (
-									<div className={classes.blurbWrapper}>
-										<div
-											ref={blurbRef}
-											className={`${classes.blurb} ${
-												!isBlurbOpen ? classes.blurbCollapsed : ''
-											}`}
-											dangerouslySetInnerHTML={{
-												__html: collection.blurb,
-											}}
-										/>
-										{showReadMore && (
-											<button
-												style={{
-													...cssToReactStyleObject(
-														toniqFontStyles.boldParagraphFont,
-													),
-													border: 'none',
-													background: 'none',
-													cursor: 'pointer',
-												}}
-												onClick={() => setIsBlurbOpen(!isBlurbOpen)}
-											>
-												{!isBlurbOpen ? 'Read More' : 'Read Less'}
-											</button>
-										)}
-									</div>
-								)}
-								*/}
                             </div>
                         </Grid>
                         <Grid item xs={12} className={classes.benefitsWrapper}></Grid>
@@ -389,21 +307,6 @@ const useStyles = makeStyles(theme => ({
             display: 'grid',
         },
     },
-    ownerWrapper: {
-        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        wordBreak: 'break-all',
-    },
-    ownerName: {
-        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-        color: toniqColors.pageInteraction.foregroundColor,
-    },
-    ownerAddress: {
-        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        cursor: 'pointer',
-        '&:hover': {
-            color: toniqColors.pageInteraction.foregroundColor,
-        },
-    },
     hoverText: {
         '&:hover': {
             color: toniqColors.pageInteraction.foregroundColor,
@@ -446,27 +349,6 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: {
             margin: '16px 0',
         },
-    },
-    blurbWrapper: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-    blurb: {
-        textAlign: 'center',
-        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
-        '& > a': {
-            color: `${toniqColors.pagePrimary.foregroundColor}`,
-            '&:hover': {
-                color: toniqColors.pageInteractionHover.foregroundColor,
-            },
-        },
-    },
-    blurbCollapsed: {
-        '-webkit-line-clamp': 3,
-        overflow: 'hidden',
     },
     favourite: {
         color: toniqColors.pagePrimary.foregroundColor,

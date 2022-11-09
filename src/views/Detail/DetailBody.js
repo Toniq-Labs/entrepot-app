@@ -356,8 +356,11 @@ const DetailBody = props => {
                 <DetailSectionDetails
                     offerListing={offerListing}
                     floor={floor}
+                    index={index}
                     canister={canister}
                     tokenid={tokenid}
+                    owner={owner}
+                    {...props}
                 />
                 <DetailSectionActivity
                     activity={activity}

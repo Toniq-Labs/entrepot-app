@@ -111,7 +111,9 @@ export default function DetailSectionActivity(props) {
         <Box style={{display: 'grid', gap: '16px', padding: '16px 0'}}>
             {activity && (
                 <div className={classes.detailSectionContainer}>
-                    <span>Activity</span>
+                    <div>
+                        <span className={classes.detailSectionTitle}>Activity</span>
+                    </div>
                     <div container className={classes.listRowContainer}>
                         <div className={classes.listRowHeader}>
                             <ListRow
@@ -312,5 +314,8 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: {
             padding: '16px 14px',
         },
+    },
+    detailSectionTitle: {
+        ...cssToReactStyleObject(toniqFontStyles.h3Font),
     },
 }));
