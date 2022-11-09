@@ -142,7 +142,7 @@ export default function Listings(props) {
   const [
     showing,
     setShowing,
-  ] = useState(_ss.showing);
+  ] = useState("auction");
   const [
     selectedFilters,
     setSelectedFilters,
@@ -396,7 +396,7 @@ export default function Listings(props) {
       updateListings(listings);
     } catch (e) {}
   };
-  const updateListings = (l, s, so, sf) => {
+  const updateListings = async (l, s, so, sf) => {
     if (canUpdateListings) {
       canUpdateListings = false;
       var _listings = l ?? listings;
@@ -421,10 +421,18 @@ export default function Listings(props) {
           return Number(a[1].price) / 100000000 <= Number(maxPrice);
         });
       }
+      var auctions = [];
+      if (_showing == "auction") {
+        var auctionsAPI = await extjs.connect('https://ic0.app/').canister('ffxbt-cqaaa-aaaak-qazbq-cai');
+        auctions = (await auctionsAPI.allAuctions()).map(a => extjs.decodeTokenId(a)).filter(a => a.canister == collection.canister).map(a => a.index);
+      };
       _displayListings = _displayListings.filter(a => {
         switch (_showing) {
           case 'all':
             return true;
+            break;
+          case 'auction':
+            return (auctions.indexOf(a[0]) >= 0)
             break;
           case 'listed':
             return a[1];
@@ -614,214 +622,10 @@ export default function Listings(props) {
               display: 'flex',
             }}
           >
-            <div className={toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed}>
-              <List>
-                <ListItem style={{paddingRight: 0}} button onClick={changeToggleFilter}>
-                  <ListItemIcon style={{minWidth: 40}}>
-                    <FilterListIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{noWrap: true}}
-                    secondaryTypographyProps={{noWrap: true}}
-                    primary={<strong>Filter</strong>}
-                  />
-                  <ListItemIcon>
-                    {toggleFilter ? <CloseIcon fontSize={'large'} /> : ''}
-                  </ListItemIcon>
-                </ListItem>
-                {toggleFilter ? (
-                  <>
-                    <ListItem style={{paddingRight: 0}}>
-                      <ListItemIcon style={{minWidth: 40}}>
-                        <AllInclusiveIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primaryTypographyProps={{noWrap: true}}
-                        secondaryTypographyProps={{noWrap: true}}
-                        primary={<strong>Price</strong>}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <div style={{width: '100%'}}>
-                        <TextField
-                          value={minPrice}
-                          onChange={minPriceChange}
-                          style={{width: '100%', marginBottom: 20}}
-                          label="Min. Price"
-                        />
-                        <TextField
-                          value={maxPrice}
-                          onChange={maxPriceChange}
-                          style={{width: '100%', marginBottom: 20}}
-                          label="Max. Price"
-                        />
-                      </div>
-                    </ListItem>
-                    {filterData &&
-                      filterData[0].map(a => {
-                        return (
-                          <div key={a[0]}>
-                            <ListItem
-                              style={{paddingRight: 0}}
-                              button
-                              onClick={() => handleToggleFilter(a[0])}
-                            >
-                              <ListItemIcon style={{minWidth: 40}}>
-                                <ListIcon />
-                              </ListItemIcon>
-                              <ListItemText
-                                primaryTypographyProps={{noWrap: true}}
-                                secondaryTypographyProps={{noWrap: true}}
-                                primary={<strong>{a[1]}</strong>}
-                              />
-                              <ListItemIcon>
-                                {isOpenFilter(a[0]) ? (
-                                  <ExpandLessIcon fontSize={'large'} />
-                                ) : (
-                                  <ExpandMoreIcon fontSize={'large'} />
-                                )}
-                              </ListItemIcon>
-                            </ListItem>
-                            {isOpenFilter(a[0]) ? (
-                              <ListItem>
-                                <div style={{width: '100%'}}>
-                                  {a[2]
-                                    .filter(b => filterGetCount(a[0], b[0]) > 0)
-                                    .map(b => {
-                                      return (
-                                        <div key={a[0] + '_' + b[0]} style={{width: '100%'}}>
-                                          <FormControlLabel
-                                            style={{maxWidth: '80%'}}
-                                            control={
-                                              <Checkbox
-                                                checked={
-                                                  selectedFilters.find(
-                                                    c => c[0] == a[0] && c[1] == b[0],
-                                                  )
-                                                    ? true
-                                                    : false
-                                                }
-                                                onChange={() => {
-                                                  handleToggleFilterTrait(a[0], b[0]);
-                                                }}
-                                              />
-                                            }
-                                            label={b[1]}
-                                          />
-                                          <Chip
-                                            style={{float: 'right'}}
-                                            label={filterGetCount(a[0], b[0])}
-                                            variant="outlined"
-                                          />
-                                        </div>
-                                      );
-                                    })}
-                                </div>
-                              </ListItem>
-                            ) : (
-                              ''
-                            )}
-                          </div>
-                        );
-                      })}
-                  </>
-                ) : (
-                  ''
-                )}
-
-                {toggleFilter ? (
-                  <>
-                    {collection?.route == 'cronics' ? (
-                      <>
-                        {cronicFilterTraits.map(filterName => {
-                          return (
-                            <div key={'cronicFilterTraits' + filterName}>
-                              <ListItem
-                                style={{paddingRight: 0}}
-                                button
-                                onClick={() => handleToggleFilter('_cronicFilter' + filterName)}
-                              >
-                                <ListItemIcon style={{minWidth: 40}}>
-                                  <ListIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primaryTypographyProps={{noWrap: true}}
-                                  secondaryTypographyProps={{noWrap: true}}
-                                  primary={<strong>{capitalize(filterName)}</strong>}
-                                />
-                                <ListItemIcon>
-                                  {isOpenFilter('_cronicFilter' + filterName) ? (
-                                    <ExpandLessIcon fontSize={'large'} />
-                                  ) : (
-                                    <ExpandMoreIcon fontSize={'large'} />
-                                  )}
-                                </ListItemIcon>
-                              </ListItem>
-                              {isOpenFilter('_cronicFilter' + filterName) ? (
-                                <ListItem>
-                                  <div style={{width: '100%', padding: '0 20px'}}>
-                                    <InputLabel>Dominant:</InputLabel>
-                                    <Box sx={{width: 150}}>
-                                      <Slider
-                                        value={legacyFilterState[filterName + 'Dom']}
-                                        onChange={(ev, nv) =>
-                                          cronicSetFilterTrait(filterName + 'Dom', nv)
-                                        }
-                                        min={0}
-                                        step={1}
-                                        max={63}
-                                        valueLabelDisplay="auto"
-                                      />
-                                    </Box>
-                                    <InputLabel>Recessive:</InputLabel>
-                                    <Box sx={{width: '100%'}}>
-                                      <Slider
-                                        value={legacyFilterState[filterName + 'Rec']}
-                                        onChange={(ev, nv) =>
-                                          cronicSetFilterTrait(filterName + 'Rec', nv)
-                                        }
-                                        min={0}
-                                        step={1}
-                                        max={63}
-                                        valueLabelDisplay="auto"
-                                      />
-                                    </Box>
-                                  </div>
-                                </ListItem>
-                              ) : (
-                                ''
-                              )}
-                            </div>
-                          );
-                        })}
-                      </>
-                    ) : (
-                      ''
-                    )}
-
-                    {/*["tde7l-3qaaa-aaaah-qansa-cai"].indexOf(collection?.canister) >= 0 ? (
-                  <FormControl style={{ marginRight : 20, minWidth: 120 }}>
-                    <InputLabel>Wearable Type</InputLabel>
-                    <Select value={wearableFilter} onChange={changeWearableFilter}>
-                      <MenuItem value={"all"}>All Wearables</MenuItem>
-                      <MenuItem value={"pets"}>Pets</MenuItem>
-                      <MenuItem value={"accessories"}>Accessories/Flags</MenuItem>
-                      <MenuItem value={"hats"}>Hats/Hair</MenuItem>
-                      <MenuItem value={"eyewear"}>Eyewear</MenuItem>
-                    </Select>
-                  </FormControl>
-                ) : (
-                  ""
-                )*/}
-                  </>
-                ) : (
-                  ''
-                )}
-              </List>
-            </div>
+            
             <div
               className={classes.listingsView}
-              style={{flexGrow: 1, padding: '10px 16px 50px 16px'}}
+              style={{flexGrow: 1, padding: '10px 100px 50px 100px'}}
             >
               <div style={{}}>
                 <div className={classes.filters} style={{}}>
@@ -863,11 +667,13 @@ export default function Listings(props) {
                         </ToggleButton>
                       </ToggleButtonGroup>
                     </Grid>
+                    {/*
                     <Grid item xs={12} sm={'auto'}>
                       <FormControl style={{marginRight: 20}}>
                         <InputLabel>Showing</InputLabel>
                         <Select value={showing} onChange={changeShowing}>
                           <MenuItem value={'all'}>Entire Collection</MenuItem>
+                          <MenuItem value={'auction'}>On Auction</MenuItem>
                           <MenuItem value={'listed'}>Listed Only</MenuItem>
                         </Select>
                       </FormControl>
@@ -886,7 +692,7 @@ export default function Listings(props) {
                           )}
                         </Select>
                       </FormControl>
-                    </Grid>
+                    </Grid>*/}
                     {displayListings && displayListings.length > perPage ? (
                       <Grid xs={12} md={'auto'} item style={{marginLeft: 'auto'}}>
                         <Pagination

@@ -207,8 +207,6 @@ export default function NFT(props) {
   };
   const getAuction = async () => {
     var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getEXTID(tokenid));
-    console.log(resp);
-    console.log(getEXTID(tokenid));
     if (resp.length) setAuction(resp[0]);
     else setAuction(false);
   };
