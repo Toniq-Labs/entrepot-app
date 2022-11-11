@@ -25,7 +25,6 @@ const Detail = props => {
     ] = useState(false);
     const [
         offerPage,
-        setOfferPage,
     ] = useState(0);
     const [
         openOfferForm,
@@ -63,14 +62,11 @@ const Detail = props => {
                 canister={canister}
                 tokenid={tokenid}
                 setOpenOfferForm={setOpenOfferForm}
-                offerPage={offerPage}
                 offerListing={offerListing}
-                setOfferListing={setOfferListing}
                 floor={floor}
                 setFloor={setFloor}
                 offers={offers}
                 reloadOffers={reloadOffers}
-                setOfferPage={setOfferPage}
                 collections={props.collections}
                 {...props}
             />

@@ -41,14 +41,11 @@ const DetailBody = props => {
         index,
         canister,
         tokenid,
-        offerPage,
         offerListing,
-        setOfferListing,
         floor,
         setFloor,
         offers,
         reloadOffers,
-        setOfferPage,
         setOpenOfferForm,
     } = props;
 
@@ -360,6 +357,8 @@ const DetailBody = props => {
                     canister={canister}
                     tokenid={tokenid}
                     owner={owner}
+                    attributes={attributes}
+                    cancelOffer={cancelOffer}
                     {...props}
                 />
                 <DetailSectionActivity

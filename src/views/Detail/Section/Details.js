@@ -1,4 +1,4 @@
-import {Link, makeStyles} from '@material-ui/core';
+import {Grid, Link, makeStyles} from '@material-ui/core';
 import {
     cssToReactStyleObject,
     LoaderAnimated24Icon,
@@ -13,10 +13,12 @@ import {getEXTCanister} from '../../../utilities/load-tokens';
 import {EntrepotGetICPUSD, EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
 import Timestamp from 'react-timestamp';
 import {
+    ToniqButton,
     ToniqIcon,
     ToniqMiddleEllipsis,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {isEllipsisActive} from '../../../utilities/element-utils';
+import {DropShadowCard} from '../../../shared/DropShadowCard';
 
 function ListRow({items, classes, style}) {
     return (
@@ -71,7 +73,7 @@ function ListRow({items, classes, style}) {
                             flexGrow: 1,
                             flexBasis: 0,
                             marginLeft: '8px',
-                            minWidth: 80,
+                            minWidth: 70,
                         }}
                     >
                         {items[3]}
@@ -99,7 +101,7 @@ function ListRow({items, classes, style}) {
 }
 
 export default function DetailSectionDetails(props) {
-    const {offerListing, floor, index, canister, tokenid, owner} = props;
+    const {offerListing, floor, index, canister, tokenid, owner, attributes, cancelOffer} = props;
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
     const blurbRef = createRef();
@@ -141,6 +143,13 @@ export default function DetailSectionDetails(props) {
         return a.substring(0, 12) + '...';
     };
 
+    const isScrollableY = id => {
+        const scrollableEl = document.querySelector(`#${id}`);
+        if (scrollableEl) {
+            return scrollableEl.scrollHeight > scrollableEl.clientHeight;
+        } else return false;
+    };
+
     React.useEffect(() => {
         props.loader(true);
         setShowReadMore(isEllipsisActive(blurbRef.current));
@@ -157,7 +166,7 @@ export default function DetailSectionDetails(props) {
                         target="_blank"
                         rel="noreferrer"
                         underline="none"
-                        className={classes.ownerAddress}
+                        className={classes.linkText}
                     >
                         View On-Chain
                     </Link>
@@ -175,24 +184,27 @@ export default function DetailSectionDetails(props) {
                                         rel="noreferrer"
                                         underline="none"
                                     >
-                                        <span className={classes.ownerAddress}>
-                                            {shorten(owner)}
-                                        </span>
+                                        <span className={classes.linkText}>{shorten(owner)}</span>
                                     </Link>
                                 </span>
                             )}
                         </>
                     )}
+                    <Link
+                        href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                        target="_blank"
+                        rel="noreferrer"
+                        underline="none"
+                        className={classes.linkText}
+                    >
+                        License
+                    </Link>
                 </div>
                 <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                        maxHeight: 560,
-                        overflowY: 'scroll',
-                        paddingBottom: '32px',
-                    }}
+                    id="detailsContent"
+                    className={`${classes.detailSectionContent} ${
+                        isScrollableY('detailsContent') ? '' : classes.hideScrollbar
+                    }`}
                 >
                     {collection.blurb && (
                         <div className={classes.blurbWrapper}>
@@ -221,6 +233,58 @@ export default function DetailSectionDetails(props) {
                             )}
                         </div>
                     )}
+                    {attributes && (
+                        <div className={classes.attributeWrapper}>
+                            {attributes.map((attribute, attributeIndex) => (
+                                <DropShadowCard
+                                    enableHover
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        padding: '0',
+                                        minHeight: 132,
+                                    }}
+                                    key={attributeIndex}
+                                >
+                                    <span className={classes.attributeHeader}>
+                                        <span
+                                            style={cssToReactStyleObject(toniqFontStyles.labelFont)}
+                                        >
+                                            {attribute.category}
+                                        </span>
+                                    </span>
+                                    <Grid
+                                        container
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            textAlign: 'center',
+                                            padding: '8px 8px 16px 8px',
+                                            flexGrow: 1,
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                ...cssToReactStyleObject(
+                                                    toniqFontStyles.paragraphFont,
+                                                ),
+                                                ...cssToReactStyleObject(toniqFontStyles.boldFont),
+                                                display: '-webkit-box',
+                                                overflow: 'hidden',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                            }}
+                                        >
+                                            {attribute.value}
+                                        </span>
+                                    </Grid>
+                                </DropShadowCard>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
             <div className={classes.detailSectionContainer}>
@@ -244,14 +308,11 @@ export default function DetailSectionDetails(props) {
                             />
                         </div>
                         <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '16px',
-                                maxHeight: 560,
-                                overflowY: 'scroll',
-                                paddingBottom: '32px',
-                            }}
+                            id="offersContent"
+                            className={`${classes.detailSectionContent} ${
+                                isScrollableY('offersContent') ? '' : classes.hideScrollbar
+                            }`}
+                            style={{paddingBottom: 32}}
                         >
                             {offerListing.slice().map((offer, index) => {
                                 return (
@@ -338,22 +399,31 @@ export default function DetailSectionDetails(props) {
                                                         }}
                                                     />,
                                                     <div>
-                                                        <Link
-                                                            href={`https://icscan.io/account/${offer.buyer}`}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            underline="none"
-                                                        >
-                                                            <ToniqMiddleEllipsis
-                                                                letterCount={4}
-                                                                text={offer.buyer.toText()}
-                                                                style={{
-                                                                    color: toniqColors
-                                                                        .pageInteraction
-                                                                        .foregroundColor,
-                                                                }}
+                                                        {props.identity &&
+                                                        props.identity.getPrincipal().toText() ===
+                                                            offer.buyer.toText() ? (
+                                                            <ToniqButton
+                                                                text="Cancel"
+                                                                onClick={cancelOffer}
                                                             />
-                                                        </Link>
+                                                        ) : (
+                                                            <Link
+                                                                href={`https://icscan.io/account/${offer.buyer}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                underline="none"
+                                                            >
+                                                                <ToniqMiddleEllipsis
+                                                                    letterCount={4}
+                                                                    text={offer.buyer.toText()}
+                                                                    style={{
+                                                                        color: toniqColors
+                                                                            .pageInteraction
+                                                                            .foregroundColor,
+                                                                    }}
+                                                                />
+                                                            </Link>
+                                                        )}
                                                     </div>,
                                                 ]}
                                                 classes={classes}
@@ -384,9 +454,37 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(0,0,0, 0.08)',
         padding: 24,
         width: '50%',
+        maxHeight: 560,
+        overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
             width: '100%',
             padding: '16px 14px',
+        },
+    },
+    hideScrollbar: {
+        '&::-webkit-scrollbar': {
+            display: 'none',
+        },
+    },
+    detailSectionContent: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        maxHeight: 448,
+        overflowY: 'scroll',
+        '&::-webkit-scrollbar': {
+            width: 8,
+        },
+        '&::-webkit-scrollbar-track': {
+            width: 8,
+            borderRadius: 20,
+            backgroundColor: '#F0F0F0',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            width: 6,
+            height: 120,
+            borderRadius: 20,
+            backgroundColor: '#00D093',
         },
     },
     detailSectionTitle: {
@@ -466,9 +564,33 @@ const useStyles = makeStyles(theme => ({
         ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
         wordBreak: 'break-all',
     },
-    ownerAddress: {
+    linkText: {
         ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
         cursor: 'pointer',
         color: toniqColors.pageInteraction.foregroundColor,
+    },
+    attributeWrapper: {
+        display: 'grid',
+        gap: 16,
+        margin: 8,
+        gridTemplateColumns: '1fr 1fr 1fr',
+        [theme.breakpoints.up('md')]: {
+            marginTop: '16px',
+            marginBottom: '16px',
+        },
+        [theme.breakpoints.down('md')]: {
+            gridTemplateColumns: '1fr 1fr',
+            marginTop: '8px',
+            marginBottom: '8px',
+        },
+    },
+    attributeHeader: {
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: '#F1F3F6',
+        width: '100%',
+        padding: '4px 0',
+        borderTopLeftRadius: '16px',
+        borderTopRightRadius: '16px',
     },
 }));
