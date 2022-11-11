@@ -245,6 +245,12 @@ const Detail = props => {
       return ((1 - ne / fe) * 100).toFixed(2) + '% below';
     } else return '-';
   };
+  const gmtOffset = () => {
+    var offset = new Date().getTimezoneOffset();
+    var sign = offset < 0? '+' : '-';
+    offset = Math.abs(offset);
+    return "GMT"+sign + (offset/60 | 0) + (offset%60 != 0 ? offset%60 : '');
+  }
   const placeBid = async () => {
     //TODO
     setOpenAuctionForm(true);
@@ -452,7 +458,7 @@ const Detail = props => {
         break;
     }
   };
-
+  
   React.useEffect(() => {
     getLicense();
     props.loader(true);
@@ -640,10 +646,14 @@ const Detail = props => {
                                 (<PriceUSD price={EntrepotGetICPUSD(auction.bids[auction.bids.length-1].amount)} />)
                               </Typography>
                             </div>
+                            {props.account && auction.bids[auction.bids.length-1].address == props.account.address ? <strong>You are leading</strong> : "" }
                           </>}
                           {Number(auction.end / 1000000n) >= Date.now() ?
                             <>
-                              <div style={{marginBottom:10}}><span style={{fontSize:'14px'}}>Auction ends <Timestamp date={Number(auction.end / 1000000000n)}/> (<Timestamp relative autoUpdate date={Number(auction.end / 1000000000n)}/>)</span></div>
+                              <div style={{marginBottom:10}}>
+                                <span style={{fontSize:'14px'}}>Auction ends <Timestamp date={Number(auction.end / 1000000000n)}/> {gmtOffset()} (<Timestamp relative autoUpdate date={Number(auction.end / 1000000000n)}/>)</span><br />
+                                <small>This auction may auto-extend</small>
+                              </div>
                               <Button
                                 onClick={ev => {
                                   placeBid();
@@ -845,6 +855,82 @@ const Detail = props => {
                 ''
               )}
             </div>
+            {auction && auction.bids.length ?
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}>
+                <GavelIcon style={{marginTop: 3}} />
+                <Typography className={classes.heading}>Latest Bids</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer>
+                  <Table
+                    sx={{minWidth: 1500, fontWeight: 'bold'}}
+                    aria-label="a dense table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left"></TableCell>
+                        <TableCell align="right">
+                          <strong>Price</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Time</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Bidder</strong>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {auction.bids.slice().reverse().slice(0, 5).map((a, i) => {
+                        return (
+                          <TableRow key={i}>
+                            <TableCell>
+                              <GavelIcon
+                                style={{fontSize: 18, verticalAlign: 'middle'}}
+                              />{' '}
+                              <strong>Bid</strong>
+                            </TableCell>
+                            <TableCell align="right">
+                              <strong>
+                                <PriceICP price={a.amount} />
+                              </strong>
+                              <br />
+                              {EntrepotGetICPUSD(a.amount) ? (
+                                <small>
+                                  <PriceUSD price={EntrepotGetICPUSD(a.amount)} />
+                                </small>
+                              ) : (
+                                ''
+                              )}
+                            </TableCell>
+                            <TableCell align="center">
+                              <Timestamp
+                                relative
+                                autoUpdate
+                                date={Number(a.time / 1000000000n)}
+                              />
+                            </TableCell>
+                            <TableCell align="center"> 
+                              {props.account && props.account.address == a.address ? (
+                                <><strong>You</strong></>
+                              ) : (
+                                <a
+                                  href={'https://icscan.io/account/' + a.address}
+                                  target="_blank"
+                                >
+                                  {shorten(a.address)}
+                                </a>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion> : "" }
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}>
                 <LocalOfferIcon style={{marginTop: 3}} />

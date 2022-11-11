@@ -626,13 +626,6 @@ export default function NFT(props) {
                       <PriceICP price={auction.bids.length === 0 ? auction.reserve : auction.bids[auction.bids.length-1].amount} />
                     </Typography>
                   </Grid>
-                  {offer ? (
-                    <div style={{width: '100%', fontSize: '.8em', textAlign: 'right', color: '#'}}>
-                      Best <PriceICP size={13} price={offer.amount} />
-                    </div>
-                  ) : (
-                    ''
-                  )}
                 </>
               ) : (
                 <>
