@@ -108,7 +108,7 @@ export default function DetailSectionActivity(props) {
     const classes = useStyles();
 
     return (
-        <Box style={{display: 'grid', gap: '16px', padding: '16px 0'}}>
+        <Box className={classes.activityWrapper}>
             {activity && (
                 <div className={classes.detailSectionContainer}>
                     <div>
@@ -145,98 +145,88 @@ export default function DetailSectionActivity(props) {
                                     )}
                                     key={index}
                                 >
-                                    <>
-                                        <ListRow
-                                            items={[
-                                                '',
-                                                <div
+                                    <ListRow
+                                        items={[
+                                            '',
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    alignContent: 'center',
+                                                    justifyContent: 'left',
+                                                    alignItems: 'center',
+                                                    ...cssToReactStyleObject(
+                                                        toniqFontStyles.paragraphFont,
+                                                    ),
+                                                }}
+                                            >
+                                                <PriceICP
+                                                    large={false}
+                                                    volume={true}
+                                                    clean={false}
+                                                    price={transaction.price}
+                                                />
+                                                &nbsp;
+                                                <span
                                                     style={{
-                                                        display: 'flex',
-                                                        alignContent: 'center',
-                                                        justifyContent: 'left',
+                                                        display: 'inline-flex',
                                                         alignItems: 'center',
-                                                        ...cssToReactStyleObject(
-                                                            toniqFontStyles.paragraphFont,
-                                                        ),
                                                     }}
                                                 >
-                                                    <PriceICP
-                                                        large={false}
-                                                        volume={true}
-                                                        clean={false}
-                                                        price={transaction.price}
+                                                    (
+                                                    <PriceUSD
+                                                        price={EntrepotGetICPUSD(transaction.price)}
                                                     />
-                                                    &nbsp;
-                                                    <span
-                                                        style={{
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                        }}
-                                                    >
-                                                        (
-                                                        <PriceUSD
-                                                            price={EntrepotGetICPUSD(
-                                                                transaction.price,
-                                                            )}
-                                                        />
-                                                        )
-                                                    </span>
-                                                </div>,
-                                                transaction.seller ? (
-                                                    <Link
-                                                        href={`https://icscan.io/account/${transaction.seller}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        underline="none"
-                                                    >
-                                                        <ToniqMiddleEllipsis
-                                                            letterCount={4}
-                                                            text={transaction.seller}
-                                                            style={{
-                                                                color: toniqColors.pageInteraction
-                                                                    .foregroundColor,
-                                                            }}
-                                                        />
-                                                    </Link>
-                                                ) : (
-                                                    '-'
-                                                ),
-                                                transaction.buyer ? (
-                                                    <Link
-                                                        href={`https://icscan.io/account/${transaction.buyer}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        underline="none"
-                                                    >
-                                                        <ToniqMiddleEllipsis
-                                                            letterCount={4}
-                                                            text={transaction.buyer}
-                                                            style={{
-                                                                color: toniqColors.pageInteraction
-                                                                    .foregroundColor,
-                                                            }}
-                                                        />
-                                                    </Link>
-                                                ) : (
-                                                    '-'
-                                                ),
-                                                moment
-                                                    .unix(Number(transaction.time / 1000000000))
-                                                    .format('MMMM D, YYYY (h:mm a)'),
-                                                <Timestamp
-                                                    relative
-                                                    autoUpdate
-                                                    date={Number(transaction.time / 1000000000)}
-                                                    style={{
-                                                        ...cssToReactStyleObject(
-                                                            toniqFontStyles.paragraphFont,
-                                                        ),
-                                                    }}
-                                                />,
-                                            ]}
-                                            classes={classes}
-                                        />
-                                    </>
+                                                    )
+                                                </span>
+                                            </div>,
+                                            transaction.seller ? (
+                                                <Link
+                                                    href={`https://icscan.io/account/${transaction.seller}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    underline="none"
+                                                >
+                                                    <ToniqMiddleEllipsis
+                                                        letterCount={4}
+                                                        text={transaction.seller}
+                                                        className={classes.linkText}
+                                                    />
+                                                </Link>
+                                            ) : (
+                                                '-'
+                                            ),
+                                            transaction.buyer ? (
+                                                <Link
+                                                    href={`https://icscan.io/account/${transaction.buyer}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    underline="none"
+                                                >
+                                                    <ToniqMiddleEllipsis
+                                                        letterCount={4}
+                                                        text={transaction.buyer}
+                                                        className={classes.linkText}
+                                                    />
+                                                </Link>
+                                            ) : (
+                                                '-'
+                                            ),
+                                            moment
+                                                .unix(Number(transaction.time / 1000000000))
+                                                .format('MMMM D, YYYY (h:mm a)'),
+                                            <Timestamp
+                                                relative
+                                                autoUpdate
+                                                date={Number(transaction.time / 1000000000)}
+                                                style={{
+                                                    ...cssToReactStyleObject(
+                                                        toniqFontStyles.paragraphFont,
+                                                    ),
+                                                }}
+                                            />,
+                                        ]}
+                                        classes={classes}
+                                    />
                                 </NftCard>
                             );
                         })}
@@ -259,6 +249,14 @@ export default function DetailSectionActivity(props) {
 }
 
 const useStyles = makeStyles(theme => ({
+    activityWrapper: {
+        display: 'grid',
+        gap: '16px',
+        padding: '56px 0',
+        [theme.breakpoints.down('sm')]: {
+            padding: '32px 0',
+        },
+    },
     pagination: {
         display: 'flex',
         justifyContent: 'center',
@@ -317,5 +315,12 @@ const useStyles = makeStyles(theme => ({
     },
     detailSectionTitle: {
         ...cssToReactStyleObject(toniqFontStyles.h3Font),
+    },
+    linkText: {
+        cursor: 'pointer',
+        color: toniqColors.pageInteraction.foregroundColor,
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
     },
 }));

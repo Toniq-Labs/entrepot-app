@@ -166,7 +166,7 @@ export default function DetailSectionDetails(props) {
                         target="_blank"
                         rel="noreferrer"
                         underline="none"
-                        className={classes.linkText}
+                        className={classes.linkTextBold}
                     >
                         View On-Chain
                     </Link>
@@ -184,7 +184,9 @@ export default function DetailSectionDetails(props) {
                                         rel="noreferrer"
                                         underline="none"
                                     >
-                                        <span className={classes.linkText}>{shorten(owner)}</span>
+                                        <span className={classes.linkTextBold}>
+                                            {shorten(owner)}
+                                        </span>
                                     </Link>
                                 </span>
                             )}
@@ -195,7 +197,7 @@ export default function DetailSectionDetails(props) {
                         target="_blank"
                         rel="noreferrer"
                         underline="none"
-                        className={classes.linkText}
+                        className={classes.linkTextBold}
                     >
                         License
                     </Link>
@@ -219,13 +221,7 @@ export default function DetailSectionDetails(props) {
                             />
                             {showReadMore && (
                                 <button
-                                    style={{
-                                        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
-                                        border: 'none',
-                                        background: 'none',
-                                        cursor: 'pointer',
-                                        color: toniqColors.pageInteraction.foregroundColor,
-                                    }}
+                                    className={classes.readMoreBtn}
                                     onClick={() => setIsBlurbOpen(!isBlurbOpen)}
                                 >
                                     {!isBlurbOpen ? 'Read More' : 'Read Less'}
@@ -233,7 +229,7 @@ export default function DetailSectionDetails(props) {
                             )}
                         </div>
                     )}
-                    {attributes && (
+                    {attributes && attributes.length ? (
                         <div className={classes.attributeWrapper}>
                             {attributes.map((attribute, attributeIndex) => (
                                 <DropShadowCard
@@ -284,29 +280,33 @@ export default function DetailSectionDetails(props) {
                                 </DropShadowCard>
                             ))}
                         </div>
+                    ) : (
+                        <span className={classes.noDataText} style={{flexGrow: 1}}>
+                            NO META DATA AVAILABLE
+                        </span>
                     )}
                 </div>
             </div>
             <div className={classes.detailSectionContainer}>
                 <span className={classes.detailSectionTitle}>Offers</span>
-                {offerListing && (
-                    <div container className={classes.listRowContainer}>
-                        <div className={classes.listRowHeader}>
-                            <ListRow
-                                items={[
-                                    true,
-                                    'PRICE',
-                                    'FLOOR DIFFERENCE',
-                                    'EXPIRATION',
-                                    'FROM',
-                                ]}
-                                classes={classes}
-                                style={{
-                                    ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                    height: '32px',
-                                }}
-                            />
-                        </div>
+                <div container className={classes.listRowContainer}>
+                    <div className={classes.listRowHeader}>
+                        <ListRow
+                            items={[
+                                true,
+                                'PRICE',
+                                'FLOOR DIFFERENCE',
+                                'EXPIRATION',
+                                'FROM',
+                            ]}
+                            classes={classes}
+                            style={{
+                                ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                                height: '32px',
+                            }}
+                        />
+                    </div>
+                    {offerListing && offerListing.length ? (
                         <div
                             id="offersContent"
                             className={`${classes.detailSectionContent} ${
@@ -328,113 +328,116 @@ export default function DetailSectionDetails(props) {
                                         key={index}
                                         style={{marginRight: 8}}
                                     >
-                                        <>
-                                            <ListRow
-                                                items={[
-                                                    '',
-                                                    <div
+                                        <ListRow
+                                            items={[
+                                                '',
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignContent: 'center',
+                                                        justifyContent: 'left',
+                                                        alignItems: 'center',
+                                                        ...cssToReactStyleObject(
+                                                            toniqFontStyles.paragraphFont,
+                                                        ),
+                                                    }}
+                                                >
+                                                    <PriceICP
+                                                        large={false}
+                                                        volume={true}
+                                                        clean={false}
+                                                        price={offer.amount}
+                                                    />
+                                                    &nbsp;
+                                                    <span
                                                         style={{
-                                                            display: 'flex',
-                                                            alignContent: 'center',
-                                                            justifyContent: 'left',
+                                                            display: 'inline-flex',
                                                             alignItems: 'center',
-                                                            ...cssToReactStyleObject(
-                                                                toniqFontStyles.paragraphFont,
-                                                            ),
                                                         }}
                                                     >
-                                                        <PriceICP
-                                                            large={false}
-                                                            volume={true}
-                                                            clean={false}
-                                                            price={offer.amount}
+                                                        (
+                                                        <PriceUSD
+                                                            price={EntrepotGetICPUSD(offer.amount)}
                                                         />
-                                                        &nbsp;
-                                                        <span
+                                                        )
+                                                    </span>
+                                                </div>,
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                    }}
+                                                >
+                                                    {floor ? (
+                                                        getFloorDelta(offer.amount)
+                                                    ) : (
+                                                        <ToniqIcon
                                                             style={{
-                                                                display: 'inline-flex',
-                                                                alignItems: 'center',
+                                                                color: String(
+                                                                    toniqColors.pagePrimary
+                                                                        .foregroundColor,
+                                                                ),
+                                                                alignSelf: 'center',
                                                             }}
+                                                            icon={LoaderAnimated24Icon}
+                                                        />
+                                                    )}
+                                                </div>,
+                                                <Timestamp
+                                                    relative
+                                                    autoUpdate
+                                                    relativeTo={Number(offer.time / 1000000000n)}
+                                                    style={{
+                                                        ...cssToReactStyleObject(
+                                                            toniqFontStyles.boldParagraphFont,
+                                                        ),
+                                                    }}
+                                                />,
+                                                <div>
+                                                    {props.identity &&
+                                                    props.identity.getPrincipal().toText() ===
+                                                        offer.buyer.toText() ? (
+                                                        <ToniqButton
+                                                            text="Cancel"
+                                                            onClick={cancelOffer}
+                                                        />
+                                                    ) : (
+                                                        <Link
+                                                            href={`https://icscan.io/account/${offer.buyer}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            underline="none"
                                                         >
-                                                            (
-                                                            <PriceUSD
-                                                                price={EntrepotGetICPUSD(
-                                                                    offer.amount,
-                                                                )}
+                                                            <ToniqMiddleEllipsis
+                                                                letterCount={4}
+                                                                text={offer.buyer.toText()}
+                                                                className={classes.linkText}
                                                             />
-                                                            )
-                                                        </span>
-                                                    </div>,
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'center',
-                                                        }}
-                                                    >
-                                                        {floor ? (
-                                                            getFloorDelta(offer.amount)
-                                                        ) : (
-                                                            <ToniqIcon
-                                                                style={{
-                                                                    color: String(
-                                                                        toniqColors.pagePrimary
-                                                                            .foregroundColor,
-                                                                    ),
-                                                                    alignSelf: 'center',
-                                                                }}
-                                                                icon={LoaderAnimated24Icon}
-                                                            />
-                                                        )}
-                                                    </div>,
-                                                    <Timestamp
-                                                        relative
-                                                        autoUpdate
-                                                        relativeTo={Number(
-                                                            offer.time / 1000000000n,
-                                                        )}
-                                                        style={{
-                                                            ...cssToReactStyleObject(
-                                                                toniqFontStyles.boldParagraphFont,
-                                                            ),
-                                                        }}
-                                                    />,
-                                                    <div>
-                                                        {props.identity &&
-                                                        props.identity.getPrincipal().toText() ===
-                                                            offer.buyer.toText() ? (
-                                                            <ToniqButton
-                                                                text="Cancel"
-                                                                onClick={cancelOffer}
-                                                            />
-                                                        ) : (
-                                                            <Link
-                                                                href={`https://icscan.io/account/${offer.buyer}`}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                underline="none"
-                                                            >
-                                                                <ToniqMiddleEllipsis
-                                                                    letterCount={4}
-                                                                    text={offer.buyer.toText()}
-                                                                    style={{
-                                                                        color: toniqColors
-                                                                            .pageInteraction
-                                                                            .foregroundColor,
-                                                                    }}
-                                                                />
-                                                            </Link>
-                                                        )}
-                                                    </div>,
-                                                ]}
-                                                classes={classes}
-                                            />
-                                        </>
+                                                        </Link>
+                                                    )}
+                                                </div>,
+                                            ]}
+                                            classes={classes}
+                                        />
                                     </NftCard>
                                 );
                             })}
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexGrow: 1,
+                            }}
+                        >
+                            <span className={classes.noDataText}>THERE ARE NO OPEN OFFERS</span>
+                            <ToniqButton className={'toniq-button-outline'} text="Make an Offer" />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -442,11 +445,15 @@ export default function DetailSectionDetails(props) {
 
 const useStyles = makeStyles(theme => ({
     detailSectionWrapper: {
+        padding: '56px 0',
         display: 'flex',
         justifyContent: 'center',
         gap: 28,
         [theme.breakpoints.down('md')]: {
             flexDirection: 'column-reverse',
+        },
+        [theme.breakpoints.down('sm')]: {
+            padding: '32px 0',
         },
     },
     detailSectionContainer: {
@@ -454,7 +461,7 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(0,0,0, 0.08)',
         padding: 24,
         width: '50%',
-        maxHeight: 560,
+        height: 560,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
             width: '100%',
@@ -471,6 +478,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         gap: '16px',
         maxHeight: 448,
+        height: '100%',
         overflowY: 'scroll',
         '&::-webkit-scrollbar': {
             width: 8,
@@ -485,6 +493,12 @@ const useStyles = makeStyles(theme => ({
             height: 120,
             borderRadius: 20,
             backgroundColor: '#00D093',
+        },
+        [theme.breakpoints.down('sm')]: {
+            overflowY: 'hidden',
+            '&::-webkit-scrollbar': {
+                display: 'none',
+            },
         },
     },
     detailSectionTitle: {
@@ -529,6 +543,7 @@ const useStyles = makeStyles(theme => ({
         gap: '16px',
         backgroundColor: 'white',
         marginTop: '32px',
+        height: '100%',
         [theme.breakpoints.down('sm')]: {
             marginTop: '16px',
             paddingBottom: '16px',
@@ -543,6 +558,10 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        marginTop: 32,
+        [theme.breakpoints.down('sm')]: {
+            marginTop: 16,
+        },
     },
     blurb: {
         textAlign: 'left',
@@ -555,6 +574,9 @@ const useStyles = makeStyles(theme => ({
                 color: toniqColors.pageInteractionHover.foregroundColor,
             },
         },
+        '& > p': {
+            margin: 0,
+        },
     },
     blurbCollapsed: {
         '-webkit-line-clamp': 3,
@@ -565,9 +587,19 @@ const useStyles = makeStyles(theme => ({
         wordBreak: 'break-all',
     },
     linkText: {
+        cursor: 'pointer',
+        color: toniqColors.pageInteraction.foregroundColor,
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
+    linkTextBold: {
         ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
         cursor: 'pointer',
         color: toniqColors.pageInteraction.foregroundColor,
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
     },
     attributeWrapper: {
         display: 'grid',
@@ -592,5 +624,22 @@ const useStyles = makeStyles(theme => ({
         padding: '4px 0',
         borderTopLeftRadius: '16px',
         borderTopRightRadius: '16px',
+    },
+    readMoreBtn: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
+        color: toniqColors.pageInteraction.foregroundColor,
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
+    noDataText: {
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
     },
 }));

@@ -224,7 +224,26 @@ const DetailSectionHeader = props => {
                                 </div>
                             </div>
                         </Grid>
-                        <Grid item xs={12} className={classes.benefitsWrapper}></Grid>
+                        <Grid item xs={12} className={classes.benefitsWrapper}>
+                            <div>
+                                <span className={classes.detailSectionTitle}>Benefits</span>
+                            </div>
+                            <div>
+                                {/* <NftCard
+                                listStyle={true}
+                                imageUrl={EntrepotNFTImage(
+                                    getEXTCanister(transaction.canister),
+                                    index,
+                                    transaction.token,
+                                    false,
+                                    0,
+                                )}
+                                key={index}
+                            >
+                                
+                            </NftCard> */}
+                            </div>
+                        </Grid>
                     </Grid>
                 </Grid>
             </div>
@@ -236,7 +255,10 @@ export default DetailSectionHeader;
 const useStyles = makeStyles(theme => ({
     detailHeader: {
         [theme.breakpoints.up('md')]: {
-            margin: '16px 0',
+            paddingBottom: 56,
+        },
+        [theme.breakpoints.down('sm')]: {
+            paddingBottom: 32,
         },
     },
     detailSectionHeader: {
@@ -327,6 +349,10 @@ const useStyles = makeStyles(theme => ({
         },
     },
     imageWrapper: {
+        borderRadius: '16px',
+        padding: 16,
+        height: '100%',
+        backgroundColor: 'white',
         [theme.breakpoints.up('md')]: {
             display: 'grid',
         },
@@ -337,10 +363,6 @@ const useStyles = makeStyles(theme => ({
         '& div': {
             borderRadius: '16px',
         },
-        borderRadius: '16px',
-        padding: 16,
-        height: '100%',
-        backgroundColor: 'white',
     },
     accordionWrapper: {
         [theme.breakpoints.up('md')]: {
@@ -362,5 +384,9 @@ const useStyles = makeStyles(theme => ({
     },
     benefitsWrapper: {
         borderTop: '1px solid rgba(0,0,0, 0.08)',
+        paddingTop: 24,
+    },
+    detailSectionTitle: {
+        ...cssToReactStyleObject(toniqFontStyles.h3Font),
     },
 }));
