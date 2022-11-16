@@ -51,80 +51,81 @@ const DetailSectionHeader = props => {
     const benefitsContentWrapperRef = createRef();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const mockBenefits = [
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-        {
-            name: 'Portal',
-            provider: 'DSCVR',
-            benefit:
-                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-        },
-    ];
+    const mockBenefits = [];
+    // const mockBenefits = [
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    //     {
+    //         name: 'Portal',
+    //         provider: 'DSCVR',
+    //         benefit:
+    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    //     },
+    // ];
     const [
         isOpenBenefitDialog,
         setIsOpenBenefitDialog,
@@ -339,72 +340,91 @@ const DetailSectionHeader = props => {
                                 }}
                             >
                                 <span className={classes.detailSectionTitle}>Benefits</span>
-                                <div>
-                                    <div className={classes.viewListWrapper}>
-                                        <button
-                                            className={`${classes.viewList} ${classes.removeNativeButtonStyles}`}
-                                            onClick={() => {
-                                                setIsOpenBenefitDialog(true);
-                                            }}
-                                        >
-                                            View List
-                                        </button>
-                                        <ToniqIcon
-                                            icon={ListDetails24Icon}
-                                            style={{
-                                                color: toniqColors.pageInteraction.foregroundColor,
-                                            }}
-                                        />
-                                        <span
-                                            className={`${classes.verticalDivider} ${classes.hideWhenMobile}`}
-                                        ></span>
-                                        <div
-                                            className={`${classes.benefitsControlsWrapper} ${classes.hideWhenMobile}`}
-                                        >
+                                {mockBenefits.length ? (
+                                    <div>
+                                        <div className={classes.viewListWrapper}>
                                             <button
-                                                className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
-                                                onClick={onScrollLeft}
+                                                className={`${classes.viewList} ${classes.removeNativeButtonStyles}`}
+                                                onClick={() => {
+                                                    setIsOpenBenefitDialog(true);
+                                                }}
                                             >
-                                                <ToniqIcon icon={ChevronDown24Icon} />
+                                                View List
                                             </button>
-                                            <button
-                                                className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
-                                                onClick={onScrollRight}
+                                            <ToniqIcon
+                                                icon={ListDetails24Icon}
+                                                style={{
+                                                    color: toniqColors.pageInteraction
+                                                        .foregroundColor,
+                                                }}
+                                            />
+                                            <span
+                                                className={`${classes.verticalDivider} ${classes.hideWhenMobile}`}
+                                            ></span>
+                                            <div
+                                                className={`${classes.benefitsControlsWrapper} ${classes.hideWhenMobile}`}
                                             >
-                                                <ToniqIcon icon={ChevronUp24Icon} />
-                                            </button>
+                                                <button
+                                                    className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
+                                                    onClick={onScrollLeft}
+                                                >
+                                                    <ToniqIcon icon={ChevronDown24Icon} />
+                                                </button>
+                                                <button
+                                                    className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
+                                                    onClick={onScrollRight}
+                                                >
+                                                    <ToniqIcon icon={ChevronUp24Icon} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                ) : (
+                                    ''
+                                )}
+                            </div>
+                            {mockBenefits.length ? (
+                                <div
+                                    ref={benefitsContentWrapperRef}
+                                    className={classes.benefitsContentWrapper}
+                                >
+                                    {mockBenefits.map((benefit, index) => {
+                                        return (
+                                            <NftCard
+                                                listStyle={true}
+                                                imageUrl={EntrepotNFTImage(
+                                                    getEXTCanister(canister),
+                                                    index,
+                                                    tokenid,
+                                                    false,
+                                                    0,
+                                                )}
+                                                key={index}
+                                                className={classes.benefitCard}
+                                            >
+                                                <span className={classes.benefitName}>
+                                                    {benefit.name}
+                                                </span>
+                                                <span className={classes.benefitProvider}>
+                                                    by {benefit.provider}
+                                                </span>
+                                            </NftCard>
+                                        );
+                                    })}
                                 </div>
-                            </div>
-                            <div
-                                ref={benefitsContentWrapperRef}
-                                className={classes.benefitsContentWrapper}
-                            >
-                                {mockBenefits.map((benefit, index) => {
-                                    return (
-                                        <NftCard
-                                            listStyle={true}
-                                            imageUrl={EntrepotNFTImage(
-                                                getEXTCanister(canister),
-                                                index,
-                                                tokenid,
-                                                false,
-                                                0,
-                                            )}
-                                            key={index}
-                                            className={classes.benefitCard}
-                                        >
-                                            <span className={classes.benefitName}>
-                                                {benefit.name}
-                                            </span>
-                                            <span className={classes.benefitProvider}>
-                                                by {benefit.provider}
-                                            </span>
-                                        </NftCard>
-                                    );
-                                })}
-                            </div>
+                            ) : (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        height: '100%',
+                                    }}
+                                >
+                                    <span className={classes.noDataText}>COMING SOON</span>
+                                </div>
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
@@ -755,5 +775,12 @@ const useStyles = makeStyles(theme => ({
             borderRadius: 20,
             backgroundColor: '#00D093',
         },
+    },
+    noDataText: {
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
     },
 }));
