@@ -421,9 +421,10 @@ const DetailSectionHeader = props => {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
+                            marginBottom: 16,
                         }}
                     >
-                        <div style={{display: 'flex', gap: 34, marginLeft: 12, marginBottom: 16}}>
+                        <div style={{display: 'flex', gap: 34, marginLeft: 12}}>
                             <span className={`${classes.benefitName} ${classes.hideWhenDesktop}`}>
                                 List of Benefits
                             </span>

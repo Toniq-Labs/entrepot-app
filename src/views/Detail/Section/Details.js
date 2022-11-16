@@ -464,6 +464,7 @@ const useStyles = makeStyles(theme => ({
         height: 560,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
+            height: 'unset',
             width: '100%',
             padding: '16px 14px',
         },
@@ -495,10 +496,10 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: '#00D093',
         },
         [theme.breakpoints.down('sm')]: {
-            overflowY: 'hidden',
-            '&::-webkit-scrollbar': {
-                display: 'none',
-            },
+            // overflowY: 'hidden',
+            // '&::-webkit-scrollbar': {
+            //     display: 'none',
+            // },
         },
     },
     detailSectionTitle: {
