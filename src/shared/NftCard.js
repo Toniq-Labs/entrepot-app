@@ -6,7 +6,7 @@ import {DropShadowCard} from './DropShadowCard';
 
 export function NftCard(props) {
     const imageSize = props.small ? css`160px` : css`272px`;
-    const listImageSize = css`64px`;
+    const listImageSize = props.listImageSize ? unsafeCSS(props.listImageSize) : css`64px`;
     const imageSizeInUse = props.listStyle ? listImageSize : imageSize;
 
     const styles = cssToReactStyleObject(css`

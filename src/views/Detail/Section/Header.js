@@ -20,7 +20,11 @@ import {
 } from '@toniq-labs/design-system';
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
-import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {
+    ToniqButton,
+    ToniqChip,
+    ToniqIcon,
+} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import Favourite from '../../../components/Favourite';
 import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
@@ -48,6 +52,30 @@ const DetailSectionHeader = props => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const mockBenefits = [
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
         {
             name: 'Portal',
             provider: 'DSCVR',
@@ -381,8 +409,13 @@ const DetailSectionHeader = props => {
                     </Grid>
                 </Grid>
             </div>
-            <Dialog open={isOpenBenefitDialog} fullWidth fullScreen={fullScreen} scroll="paper">
-                <DialogContent>
+            <Dialog
+                open={isOpenBenefitDialog}
+                fullWidth
+                fullScreen={fullScreen}
+                style={{paddingTop: 70}}
+            >
+                <DialogContent style={{overflow: 'hidden'}}>
                     <div
                         style={{
                             display: 'flex',
@@ -390,9 +423,16 @@ const DetailSectionHeader = props => {
                             alignItems: 'center',
                         }}
                     >
-                        <div style={{display: 'flex', gap: 34}}>
-                            <span className={classes.benefitName}>Provider</span>
-                            <span className={classes.benefitName}>Benefit</span>
+                        <div style={{display: 'flex', gap: 34, marginLeft: 12, marginBottom: 16}}>
+                            <span className={`${classes.benefitName} ${classes.hideWhenDesktop}`}>
+                                List of Benefits
+                            </span>
+                            <span className={`${classes.benefitName} ${classes.hideWhenMobile}`}>
+                                Provider
+                            </span>
+                            <span className={`${classes.benefitName} ${classes.hideWhenMobile}`}>
+                                Benefit
+                            </span>
                         </div>
                         <button
                             className={classes.removeNativeButtonStyles}
@@ -403,14 +443,12 @@ const DetailSectionHeader = props => {
                             <ToniqIcon icon={X24Icon} />
                         </button>
                     </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 16,
-                            margin: '24px 0',
-                        }}
-                    >
+                    <ToniqChip
+                        text="Tap on a Provider below to view more information"
+                        className={classes.hideWhenDesktop}
+                        style={{width: '100%', padding: 10, marginBottom: 16}}
+                    />
+                    <div className={classes.dialogBenefitWrapper}>
                         {mockBenefits.map((benefit, index) => {
                             return (
                                 <NftCard
@@ -423,25 +461,20 @@ const DetailSectionHeader = props => {
                                         0,
                                     )}
                                     key={index}
+                                    listImageSize={fullScreen ? '80px' : '96px'}
                                     className={classes.benefitCard}
                                 >
-                                    <span>{benefit.benefit}</span>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            position: 'absolute',
-                                            top: 0,
-                                            right: 0,
-                                            height: '100%',
-                                            width: 36,
-                                            borderTopRightRadius: 8,
-                                            borderBottomRightRadius: 8,
-                                            backgroundColor:
-                                                toniqColors.pageInteraction.foregroundColor,
-                                        }}
+                                    <span
+                                        className={`${classes.benefitName} ${classes.hideWhenDesktop} ${classes.benefitNameWhenMobile}`}
                                     >
+                                        {benefit.name}
+                                    </span>
+                                    <span
+                                        className={`${classes.benefitDesc} ${classes.benefitNameWhenMobile}`}
+                                    >
+                                        {benefit.benefit}
+                                    </span>
+                                    <div className={classes.viewMoreBenefit}>
                                         <ToniqIcon
                                             icon={ChevronUp24Icon}
                                             style={{color: 'white', transform: 'rotate(90deg)'}}
@@ -657,12 +690,69 @@ const useStyles = makeStyles(theme => ({
             ...cssToReactStyleObject(toniqFontStyles.labelFont),
         },
     },
+    benefitDesc: {
+        [theme.breakpoints.down('sm')]: {
+            display: '-webkit-box',
+            '-webkit-box-orient': 'vertical',
+            '-webkit-line-clamp': 3,
+            overflow: 'hidden',
+        },
+    },
     hideWhenMobile: {
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
     },
-    'MuiDialogContent-root': {
-        maxHeight: 'calc(100vh-170px)',
+    hideWhenDesktop: {
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    viewMoreBenefit: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        height: '100%',
+        width: 36,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8,
+        backgroundColor: toniqColors.pageInteraction.foregroundColor,
+        '&:hover': {
+            backgroundColor: toniqColors.pageInteractionHover.foregroundColor,
+        },
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    benefitNameWhenMobile: {
+        marginRight: 36,
+        [theme.breakpoints.down('sm')]: {
+            marginRight: 'unset',
+        },
+    },
+    dialogBenefitWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        maxHeight: 500,
+        overflow: 'auto',
+        padding: '20px 16px 20px 0',
+        '&::-webkit-scrollbar': {
+            width: 8,
+        },
+        '&::-webkit-scrollbar-track': {
+            width: 8,
+            borderRadius: 20,
+            backgroundColor: '#F0F0F0',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            width: 6,
+            height: 120,
+            borderRadius: 20,
+            backgroundColor: '#00D093',
+        },
     },
 }));
