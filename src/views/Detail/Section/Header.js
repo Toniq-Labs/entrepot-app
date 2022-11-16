@@ -1,17 +1,31 @@
-import React from 'react';
-import {Box, Grid, makeStyles} from '@material-ui/core';
+import React, {createRef, useState} from 'react';
 import {
+    Box,
+    Dialog,
+    DialogContent,
+    Grid,
+    makeStyles,
+    useMediaQuery,
+    useTheme,
+} from '@material-ui/core';
+import {
+    ChevronDown24Icon,
+    ChevronUp24Icon,
     CircleWavyCheck24Icon,
     cssToReactStyleObject,
+    ListDetails24Icon,
     toniqColors,
     toniqFontStyles,
+    X24Icon,
 } from '@toniq-labs/design-system';
-import {EntrepotNFTMintNumber} from '../../../utils';
+import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import Favourite from '../../../components/Favourite';
 import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
+import {NftCard} from '../../../shared/NftCard';
+import {getEXTCanister} from '../../../utilities/load-tokens';
 
 const DetailSectionHeader = props => {
     const {
@@ -30,6 +44,63 @@ const DetailSectionHeader = props => {
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
     const navigate = useNavigate();
+    const benefitsContentWrapperRef = createRef();
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const mockBenefits = [
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+        {
+            name: 'Portal',
+            provider: 'DSCVR',
+            benefit:
+                'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+        },
+    ];
+    const [
+        isOpenBenefitDialog,
+        setIsOpenBenefitDialog,
+    ] = useState(false);
 
     const getPriceData = () => {
         if (listing.price > 0n) {
@@ -49,6 +120,14 @@ const DetailSectionHeader = props => {
 
     const makeOffer = async () => {
         setOpenOfferForm(true);
+    };
+
+    const onScrollLeft = () => {
+        benefitsContentWrapperRef.current.scrollBy(-100, 0);
+    };
+
+    const onScrollRight = () => {
+        benefitsContentWrapperRef.current.scrollBy(100, 0);
     };
 
     return (
@@ -225,28 +304,155 @@ const DetailSectionHeader = props => {
                             </div>
                         </Grid>
                         <Grid item xs={12} className={classes.benefitsWrapper}>
-                            <div>
-                                <span className={classes.detailSectionTitle}>Benefits</span>
-                            </div>
-                            <div>
-                                {/* <NftCard
-                                listStyle={true}
-                                imageUrl={EntrepotNFTImage(
-                                    getEXTCanister(transaction.canister),
-                                    index,
-                                    transaction.token,
-                                    false,
-                                    0,
-                                )}
-                                key={index}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                }}
                             >
-                                
-                            </NftCard> */}
+                                <span className={classes.detailSectionTitle}>Benefits</span>
+                                <div>
+                                    <div className={classes.viewListWrapper}>
+                                        <button
+                                            className={`${classes.viewList} ${classes.removeNativeButtonStyles}`}
+                                            onClick={() => {
+                                                setIsOpenBenefitDialog(true);
+                                            }}
+                                        >
+                                            View List
+                                        </button>
+                                        <ToniqIcon
+                                            icon={ListDetails24Icon}
+                                            style={{
+                                                color: toniqColors.pageInteraction.foregroundColor,
+                                            }}
+                                        />
+                                        <span
+                                            className={`${classes.verticalDivider} ${classes.hideWhenMobile}`}
+                                        ></span>
+                                        <div
+                                            className={`${classes.benefitsControlsWrapper} ${classes.hideWhenMobile}`}
+                                        >
+                                            <button
+                                                className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
+                                                onClick={onScrollLeft}
+                                            >
+                                                <ToniqIcon icon={ChevronDown24Icon} />
+                                            </button>
+                                            <button
+                                                className={`${classes.removeNativeButtonStyles} ${classes.benefitsControls}`}
+                                                onClick={onScrollRight}
+                                            >
+                                                <ToniqIcon icon={ChevronUp24Icon} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                ref={benefitsContentWrapperRef}
+                                className={classes.benefitsContentWrapper}
+                            >
+                                {mockBenefits.map((benefit, index) => {
+                                    return (
+                                        <NftCard
+                                            listStyle={true}
+                                            imageUrl={EntrepotNFTImage(
+                                                getEXTCanister(canister),
+                                                index,
+                                                tokenid,
+                                                false,
+                                                0,
+                                            )}
+                                            key={index}
+                                            className={classes.benefitCard}
+                                        >
+                                            <span className={classes.benefitName}>
+                                                {benefit.name}
+                                            </span>
+                                            <span className={classes.benefitProvider}>
+                                                by {benefit.provider}
+                                            </span>
+                                        </NftCard>
+                                    );
+                                })}
                             </div>
                         </Grid>
                     </Grid>
                 </Grid>
             </div>
+            <Dialog open={isOpenBenefitDialog} fullWidth fullScreen={fullScreen} scroll="paper">
+                <DialogContent>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <div style={{display: 'flex', gap: 34}}>
+                            <span className={classes.benefitName}>Provider</span>
+                            <span className={classes.benefitName}>Benefit</span>
+                        </div>
+                        <button
+                            className={classes.removeNativeButtonStyles}
+                            onClick={() => {
+                                setIsOpenBenefitDialog(false);
+                            }}
+                        >
+                            <ToniqIcon icon={X24Icon} />
+                        </button>
+                    </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 16,
+                            margin: '24px 0',
+                        }}
+                    >
+                        {mockBenefits.map((benefit, index) => {
+                            return (
+                                <NftCard
+                                    listStyle={true}
+                                    imageUrl={EntrepotNFTImage(
+                                        getEXTCanister(canister),
+                                        index,
+                                        tokenid,
+                                        false,
+                                        0,
+                                    )}
+                                    key={index}
+                                    className={classes.benefitCard}
+                                >
+                                    <span>{benefit.benefit}</span>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            height: '100%',
+                                            width: 36,
+                                            borderTopRightRadius: 8,
+                                            borderBottomRightRadius: 8,
+                                            backgroundColor:
+                                                toniqColors.pageInteraction.foregroundColor,
+                                        }}
+                                    >
+                                        <ToniqIcon
+                                            icon={ChevronUp24Icon}
+                                            style={{color: 'white', transform: 'rotate(90deg)'}}
+                                        />
+                                    </div>
+                                </NftCard>
+                            );
+                        })}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Box>
     );
 };
@@ -296,6 +502,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         flexGrow: 1,
+        marginBottom: 20,
     },
     nameContent: {
         display: 'flex',
@@ -388,5 +595,74 @@ const useStyles = makeStyles(theme => ({
     },
     detailSectionTitle: {
         ...cssToReactStyleObject(toniqFontStyles.h3Font),
+    },
+    viewListWrapper: {
+        display: 'flex',
+        gap: 6,
+        alignItems: 'center',
+    },
+    viewList: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        color: toniqColors.pageInteraction.foregroundColor,
+    },
+    verticalDivider: {
+        width: 1,
+        height: 28,
+        backgroundColor: 'rgba(0, 0, 0, 0.16)',
+        margin: '0 20px',
+    },
+    benefitsControlsWrapper: {
+        display: 'flex',
+    },
+    benefitsControls: {
+        transform: 'rotate(90deg)',
+        padding: 4,
+        backgroundColor: 'white',
+        borderRadius: 24,
+        '&:hover': {
+            boxShadow: '0px 0px 4px rgba(0, 208, 147, 0.5)',
+            '& > toniq-icon': {
+                color: toniqColors.pageInteraction.foregroundColor,
+            },
+        },
+        '& > toniq-icon': {
+            color: 'rgba(0, 0, 0, 0.4)',
+        },
+    },
+    benefitsContentWrapper: {
+        display: 'grid',
+        gridTemplate: '1fr 1fr / repeat(auto-fill, 200px)',
+        gridAutoFlow: 'column',
+        gap: 20,
+        overflowY: 'scroll',
+        padding: '16px 0',
+    },
+    benefitCard: {
+        gap: 12,
+        minWidth: 200,
+        position: 'relative',
+        [theme.breakpoints.down('sm')]: {
+            minWidth: 140,
+        },
+    },
+    benefitName: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        [theme.breakpoints.up('sm')]: {
+            fontSize: 20,
+        },
+    },
+    benefitProvider: {
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        [theme.breakpoints.down('sm')]: {
+            ...cssToReactStyleObject(toniqFontStyles.labelFont),
+        },
+    },
+    hideWhenMobile: {
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    'MuiDialogContent-root': {
+        maxHeight: 'calc(100vh-170px)',
     },
 }));

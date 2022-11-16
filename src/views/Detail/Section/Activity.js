@@ -220,7 +220,7 @@ export default function DetailSectionActivity(props) {
                                                 date={Number(transaction.time / 1000000000)}
                                                 style={{
                                                     ...cssToReactStyleObject(
-                                                        toniqFontStyles.paragraphFont,
+                                                        toniqFontStyles.boldParagraphFont,
                                                     ),
                                                 }}
                                             />,
