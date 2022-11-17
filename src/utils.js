@@ -31,6 +31,7 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
+// watch this
 var _stats = [],
     _rate = false,
     _liked = [],

@@ -18,10 +18,9 @@ import ListingsActivity from './views/Listings/ListingsActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
-import Marketplace from './views/Marketplace';
+import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace/toniq-entrepot-marketplace.element';
 import Mint from './views/Mint';
 import Create from './views/Create';
-import Typography from '@material-ui/core/Typography';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
 import Opener from './components/Opener';
@@ -45,6 +44,7 @@ import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
 import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
+import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {isProd} from './typescript/environment/environment-by-url';
 
@@ -56,9 +56,6 @@ const singleSecond = 1000;
 const singleMinute = 60 * singleSecond;
 const PURCHASE_TIME_LIMIT = 1.85 * singleMinute;
 
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
 const useStyles = makeStyles(theme => ({
     backdrop: {
         zIndex: 1600,
@@ -260,8 +257,16 @@ export default function App() {
     ] = React.useState(0);
 
     const _updates = async () => {
-        EntrepotUpdateUSD();
-        EntrepotUpdateStats();
+        try {
+            EntrepotUpdateUSD();
+        } catch (error) {
+            console.error(error);
+        }
+        try {
+            await EntrepotUpdateStats();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const _buyForm = (tokenid, price) => {
@@ -872,34 +877,8 @@ export default function App() {
         }
     };
     const updateCollections = async () => {
-        var response;
-        //Remove dev marked canisters
-        if (isDevEnv() == false) {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collections',
-            );
-        } else {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collectionsDev',
-            );
-        }
-        var r2 = await response.json();
-        r2 = r2.map(a => ({...a, canister: a.id})).filter(a => _isCanister(a.canister));
-        if (collections.length == 0) {
-            setCollections(r2);
-            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-        } else {
-            for (var i = 0; i < r2.length; i++) {
-                var n = r2[i];
-                var o = collections.find(a => a.canister == n.id);
-                if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
-                    setCollections(r2);
-                    r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-                    console.log('UPDATED');
-                    break;
-                }
-            }
-        }
+        setCollections(Object.values(await getAllCollectionsWithCaching()));
+
         if (isToniqEarnAllowed === undefined) {
             setToniqEarnAllowed(await checkIfToniqEarnAllowed());
         }
@@ -931,8 +910,7 @@ export default function App() {
 
     React.useEffect(() => {
         updateCollections();
-        EntrepotUpdateUSD();
-        EntrepotUpdateStats();
+        _updates();
         window.document.addEventListener(
             'scroll',
             throttle(250, () => {
@@ -1197,7 +1175,7 @@ export default function App() {
                                     path="/marketplace"
                                     exact
                                     element={
-                                        <Marketplace
+                                        <EntrepotMarketplace
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             error={error}
                                             view={'collections'}
@@ -1214,7 +1192,6 @@ export default function App() {
                                             logout={logout}
                                             login={login}
                                             collections={collections}
-                                            collection={false}
                                             currentAccount={currentAccount}
                                             changeAccount={setCurrentAccount}
                                             accounts={accounts}

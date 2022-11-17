@@ -262,6 +262,7 @@ function doesCollectionPassFilters(collectionStats, currentFilters) {
 }
 
 export default function Marketplace(props) {
+    console.log({props});
     const classes = useStyles();
     const [
         sort,

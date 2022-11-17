@@ -416,7 +416,8 @@ const useStyles = makeStyles(theme => {
         },
         bigScreenNavButtons: {
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'stretch',
+            padding: '16px 0',
             [maxHamburgerMenuBreakpoint]: {
                 display: 'none',
             },

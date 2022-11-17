@@ -10,7 +10,8 @@
         "serve": "react-app-rewired build && serve -s build",
         "start": "react-app-rewired start",
         "start:clean": "rm -rf node_modules/.cache && react-app-rewired start",
-        "test": "react-app-rewired test"
+        "test": "react-app-rewired test",
+        "test:types": "tsc --noEmit"
     },
     "browserslist": {
         "production": [
@@ -45,17 +46,17 @@
         "@testing-library/jest-dom": "^5.16.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
-        "@toniq-labs/design-system": "0.1.10",
+        "@toniq-labs/design-system": "0.1.16",
         "@toruslabs/openlogin": "^1.4.0",
         "assert": "^2.0.0",
-        "augment-vir": "^2.5.1",
+        "augment-vir": "^3.1.0",
         "axios": "^0.25.0",
         "bigint-conversion": "^2.2.1",
         "bip39": "^3.0.4",
         "buffer": "^6.0.3",
         "crypto-browserify": "^3.12.0",
         "dexie": "^3.2.2",
-        "element-vir": "^6.2.0",
+        "element-vir": "^6.3.1",
         "ethereum-blockies-base64": "^1.0.2",
         "https-browserify": "^1.0.0",
         "ic-stoic-identity": "^2.0.0",
