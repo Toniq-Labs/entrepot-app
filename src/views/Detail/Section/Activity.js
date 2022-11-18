@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Link, makeStyles} from '@material-ui/core';
 import {cssToReactStyleObject, toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
 import Timestamp from 'react-timestamp';
 import {
+    ToniqDropdown,
     ToniqMiddleEllipsis,
     ToniqPagination,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
@@ -12,6 +13,7 @@ import moment from 'moment';
 import {EntrepotGetICPUSD, EntrepotNFTImage} from '../../../utils';
 import PriceUSD from '../../../components/PriceUSD';
 import {getEXTCanister} from '../../../utilities/load-tokens';
+import orderBy from 'lodash.orderby';
 
 function ListRow({items, classes, style}) {
     return (
@@ -103,16 +105,61 @@ function ListRow({items, classes, style}) {
     );
 }
 
+const defaultSortOption = {
+    value: {
+        type: 'date',
+    },
+    label: 'Date',
+};
+const sortOptions = [
+    defaultSortOption,
+    {
+        value: {
+            type: 'price',
+        },
+        label: 'Price',
+    },
+];
+const defaultSortType = 'asc';
+
 export default function DetailSectionActivity(props) {
     const {activity, activityPage, setActivityPage, transactions} = props;
     const classes = useStyles();
+    const [
+        sort,
+        setSort,
+    ] = useState(defaultSortOption);
+
+    const sortedActivity = orderBy(activity, [sort.value.type], [defaultSortType]);
 
     return (
         <Box className={classes.activityWrapper}>
-            {activity && (
+            {sortedActivity && sortedActivity.length && (
                 <div className={classes.detailSectionContainer}>
-                    <div>
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <span className={classes.detailSectionTitle}>Activity</span>
+                        <div style={{display: 'flex', alignItems: 'center', gap: 24}}>
+                            <span
+                                style={{
+                                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                                    opacity: 0.64,
+                                }}
+                            >
+                                Result ({sortedActivity.length})
+                            </span>
+                            <ToniqDropdown
+                                style={{
+                                    '--toniq-accent-secondary-background-color': 'transparent',
+                                    width: 200,
+                                }}
+                                selectedLabelPrefix="Sort By:"
+                                selected={sort}
+                                onSelectChange={event => {
+                                    setSort(event.detail);
+                                }}
+                                options={sortOptions}
+                            />
+                        </div>
                     </div>
                     <div container className={classes.listRowContainer}>
                         <div className={classes.listRowHeader}>
@@ -132,7 +179,7 @@ export default function DetailSectionActivity(props) {
                                 }}
                             />
                         </div>
-                        {activity.slice().map((transaction, index) => {
+                        {sortedActivity.slice().map((transaction, index) => {
                             return (
                                 <NftCard
                                     listStyle={true}
