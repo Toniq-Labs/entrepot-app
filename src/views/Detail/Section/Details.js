@@ -1,9 +1,12 @@
 import {Grid, Link, makeStyles} from '@material-ui/core';
 import {
+    Chain24Icon,
     cssToReactStyleObject,
     LoaderAnimated24Icon,
+    Paper24Icon,
     toniqColors,
     toniqFontStyles,
+    User24Icon,
 } from '@toniq-labs/design-system';
 import React, {createRef, useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
@@ -139,10 +142,6 @@ export default function DetailSectionDetails(props) {
         );
     };
 
-    const shorten = a => {
-        return a.substring(0, 12) + '...';
-    };
-
     const isScrollableY = id => {
         const scrollableEl = document.querySelector(`#${id}`);
         if (scrollableEl) {
@@ -161,17 +160,21 @@ export default function DetailSectionDetails(props) {
             <div className={classes.detailSectionContainer}>
                 <div className={classes.detailSectionTitleContainer}>
                     <span className={classes.detailSectionTitle}>Details</span>
-                    <Link
-                        href={EntrepotNFTLink(collection.canister, index, tokenid)}
-                        target="_blank"
-                        rel="noreferrer"
-                        underline="none"
-                        className={classes.linkTextBold}
-                    >
-                        View On-Chain
-                    </Link>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                        <ToniqIcon icon={Chain24Icon} />
+                        <Link
+                            href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                            target="_blank"
+                            rel="noreferrer"
+                            underline="none"
+                            className={classes.linkTextBold}
+                        >
+                            View On-Chain
+                        </Link>
+                    </div>
                     {owner && (
-                        <>
+                        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                            <ToniqIcon icon={User24Icon} />
                             {props.account.address === owner ? (
                                 <span className={classes.ownerWrapper}>Owned by you</span>
                             ) : (
@@ -185,22 +188,25 @@ export default function DetailSectionDetails(props) {
                                         underline="none"
                                     >
                                         <span className={classes.linkTextBold}>
-                                            {shorten(owner)}
+                                            {owner.substring(0, 6) + '...'}
                                         </span>
                                     </Link>
                                 </span>
                             )}
-                        </>
+                        </div>
                     )}
-                    <Link
-                        href={EntrepotNFTLink(collection.canister, index, tokenid)}
-                        target="_blank"
-                        rel="noreferrer"
-                        underline="none"
-                        className={classes.linkTextBold}
-                    >
-                        License
-                    </Link>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                        <ToniqIcon icon={Paper24Icon} />
+                        <Link
+                            href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                            target="_blank"
+                            rel="noreferrer"
+                            underline="none"
+                            className={classes.linkTextBold}
+                        >
+                            License
+                        </Link>
+                    </div>
                 </div>
                 <div
                     id="detailsContent"
@@ -507,7 +513,7 @@ const useStyles = makeStyles(theme => ({
     },
     detailSectionTitleContainer: {
         display: 'flex',
-        gap: 24,
+        gap: 16,
         alignItems: 'center',
         [theme.breakpoints.down('md')]: {
             gap: 14,

@@ -324,7 +324,11 @@ export default function CollectionDetails(props) {
                                 className={`toniq-chip-secondary ${classes.stats}`}
                                 style={cssToReactStyleObject(toniqFontStyles.boldFont)}
                                 icon={Icp16Icon}
-                                text={icpToString(stats.total, false, true)}
+                                text={icpToString(
+                                    isNaN(stats.total) ? '0.00' : stats.total,
+                                    false,
+                                    true,
+                                )}
                             ></ToniqChip>
                         </Grid>
                         <Grid
@@ -353,7 +357,11 @@ export default function CollectionDetails(props) {
                                 className={`toniq-chip-secondary ${classes.stats}`}
                                 style={cssToReactStyleObject(toniqFontStyles.boldFont)}
                                 icon={Icp16Icon}
-                                text={icpToString(stats.average, false, true)}
+                                text={icpToString(
+                                    isNaN(stats.average) ? '0.00' : stats.average,
+                                    false,
+                                    true,
+                                )}
                             ></ToniqChip>
                         </Grid>
                         <Grid
