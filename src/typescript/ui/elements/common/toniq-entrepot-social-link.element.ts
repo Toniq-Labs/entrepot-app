@@ -1,6 +1,6 @@
 import {
-    BrandDiscord32Icon,
-    BrandTwitter32Icon,
+    BrandDiscord24Icon,
+    BrandTwitter24Icon,
     ToniqIcon,
     ToniqSvg,
 } from '@toniq-labs/design-system';
@@ -12,8 +12,8 @@ export enum SocialLinkTypeEnum {
 }
 
 const socialImageUrls: Readonly<Record<SocialLinkTypeEnum, ToniqSvg>> = {
-    [SocialLinkTypeEnum.Twitter]: BrandTwitter32Icon,
-    [SocialLinkTypeEnum.Discord]: BrandDiscord32Icon,
+    [SocialLinkTypeEnum.Twitter]: BrandTwitter24Icon,
+    [SocialLinkTypeEnum.Discord]: BrandDiscord24Icon,
 };
 
 export type SocialLinkDetails = Readonly<{
@@ -21,7 +21,7 @@ export type SocialLinkDetails = Readonly<{
     type: SocialLinkTypeEnum;
 }>;
 
-export const entrepotSocialLinkElement = defineElement<{
+export const EntrepotSocialLinkElement = defineElement<{
     socialLinkDetails: SocialLinkDetails;
 }>()({
     tagName: 'toniq-entrepot-social-link',

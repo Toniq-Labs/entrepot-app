@@ -1,16 +1,16 @@
 import {defineElement, html, css, assign, listen} from 'element-vir';
 import {
-    entrepotSocialLinkElement,
+    EntrepotSocialLinkElement,
     SocialLinkDetails,
 } from '../../../common/toniq-entrepot-social-link.element';
-import {entrepotFlipCardElement} from '../../../common/toniq-entrepot-flip-card.element';
+import {EntrepotFlipCardElement} from '../../../common/toniq-entrepot-flip-card.element';
 import {ToniqButton, toniqFontStyles} from '@toniq-labs/design-system';
 
 export type FeaturedCollectionInputs = Readonly<
-    typeof entrepotFeaturedCollectionCardElement['inputsType']
+    typeof EntrepotFeaturedCollectionCardElement['inputsType']
 >;
 
-export const entrepotFeaturedCollectionCardElement = defineElement<{
+export const EntrepotFeaturedCollectionCardElement = defineElement<{
     collectionName: string;
     imageUrls: ReadonlyArray<string>;
     longDescription: string;
@@ -102,12 +102,12 @@ export const entrepotFeaturedCollectionCardElement = defineElement<{
             <div class="card-footer">
                 <div class="social-links">
                     ${inputs.socialLinks.map(socialLink => {
-                        return html`<${entrepotSocialLinkElement} ${assign(
-                            entrepotSocialLinkElement,
+                        return html`<${EntrepotSocialLinkElement} ${assign(
+                            EntrepotSocialLinkElement,
                             {
                                 socialLinkDetails: socialLink,
                             },
-                        )}></${entrepotSocialLinkElement}>`;
+                        )}></${EntrepotSocialLinkElement}>`;
                     })}
                 </div>
                 <${ToniqButton}
@@ -124,8 +124,8 @@ export const entrepotFeaturedCollectionCardElement = defineElement<{
         `;
 
         return html`
-            <${entrepotFlipCardElement}
-                ${assign(entrepotFlipCardElement, {flipped: state.flipped})}
+            <${EntrepotFlipCardElement}
+                ${assign(EntrepotFlipCardElement, {flipped: state.flipped})}
             >
                 <div class="card-face" slot="front">
                     ${cardHeaderTemplate}
@@ -143,7 +143,7 @@ export const entrepotFeaturedCollectionCardElement = defineElement<{
                     <p>${inputs.longDescription}</p>
                     ${cardFooterTemplate}
                 </div>
-            </${entrepotFlipCardElement}>
+            </${EntrepotFlipCardElement}>
         `;
     },
 });

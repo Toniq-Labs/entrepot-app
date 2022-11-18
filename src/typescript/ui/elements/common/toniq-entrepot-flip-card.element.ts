@@ -3,7 +3,7 @@ import {makeDropShadowCardStyles} from '../styles/drop-shadow-card.style';
 import {classMap} from 'lit/directives/class-map.js';
 import {toniqColors} from '@toniq-labs/design-system';
 
-export const entrepotFlipCardElement = defineElement<{flipped: boolean}>()({
+export const EntrepotFlipCardElement = defineElement<{flipped: boolean}>()({
     tagName: 'toniq-entrepot-flip-card',
     events: {
         flipChange: defineElementEvent<boolean>(),

@@ -3,6 +3,8 @@ import {EnvironmentEnum} from './environments';
 const devHosts = [
     'localhost',
     '127.0.0.1',
+    'deploy-preview',
+    'friendly-raman-30db7b',
 ];
 
 function getEnvironmentByUrl(): EnvironmentEnum {
