@@ -136,9 +136,9 @@ export default function DetailSectionActivity(props) {
         <Box className={classes.activityWrapper}>
             {sortedActivity && sortedActivity.length && (
                 <div className={classes.detailSectionContainer}>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div className={classes.detailSectionTitleWrapper}>
                         <span className={classes.detailSectionTitle}>Activity</span>
-                        <div style={{display: 'flex', alignItems: 'center', gap: 24}}>
+                        <div className={classes.filterWrapper}>
                             <span
                                 style={{
                                     ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
@@ -148,10 +148,7 @@ export default function DetailSectionActivity(props) {
                                 Result ({sortedActivity.length})
                             </span>
                             <ToniqDropdown
-                                style={{
-                                    '--toniq-accent-secondary-background-color': 'transparent',
-                                    width: 200,
-                                }}
+                                className={classes.filterDropdown}
                                 selectedLabelPrefix="Sort By:"
                                 selected={sort}
                                 onSelectChange={event => {
@@ -362,6 +359,32 @@ const useStyles = makeStyles(theme => ({
     },
     detailSectionTitle: {
         ...cssToReactStyleObject(toniqFontStyles.h3Font),
+    },
+    detailSectionTitleWrapper: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: 24,
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+        },
+    },
+    filterWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 24,
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column-reverse',
+            alignItems: 'start',
+        },
+    },
+    filterDropdown: {
+        '--toniq-accent-secondary-background-color': 'transparent',
+        border: '1px solid rgba(0, 0, 0, 0.1)',
+        borderRadius: 8,
+        width: 260,
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+        },
     },
     linkText: {
         cursor: 'pointer',
