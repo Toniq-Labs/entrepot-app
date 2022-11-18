@@ -18,7 +18,7 @@ export type CarouselItem = {
 
 const carouselImageWidth = 340;
 
-export const entrepotCarouselElement = defineElement<{
+export const EntrepotCarouselElement = defineElement<{
     items: ReadonlyArray<CarouselItem>;
     automaticRotation?: boolean;
 }>()({
@@ -318,7 +318,7 @@ const throttledUpdateScrollPosition = throttle(
     250,
     (
         element: HTMLElement,
-        updateState: (newState: Partial<typeof entrepotCarouselElement['stateType']>) => void,
+        updateState: (newState: Partial<typeof EntrepotCarouselElement['stateType']>) => void,
     ) => {
         updateState({
             scrollPosition: {

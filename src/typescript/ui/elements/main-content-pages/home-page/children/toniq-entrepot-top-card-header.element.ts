@@ -5,9 +5,8 @@ import {
     toniqFontStyles,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css} from 'element-vir';
-import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 
-export const entrepotHomePageTopCardHeaderElement = defineElement<{
+export const EntrepotHomePageTopCardHeaderElement = defineElement<{
     hasIndex: boolean;
     hasImage: boolean;
 }>()({

@@ -1,20 +1,20 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {defineElement, html, css, assign, listen} from 'element-vir';
-import {entrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
+import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {
     FeaturedCollectionInputs,
-    entrepotFeaturedCollectionCardElement,
+    EntrepotFeaturedCollectionCardElement,
 } from './children/toniq-entrepot-featured-collection-card.element';
 import {
     TopCardInputs,
-    entrepotHomePageTopCardElement,
+    EntrepotHomePageTopCardElement,
 } from './children/toniq-entrepot-top-card.element';
-import {CarouselItem, entrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
+import {CarouselItem, EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
 import {isTruthy} from 'augment-vir';
 import {toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
-import {entrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
+import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
 
-export const entrepotHomePageElement = defineElement<{
+export const EntrepotHomePageElement = defineElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
     topCollections: Readonly<Record<'top' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
     carouselItems: ReadonlyArray<CarouselItem>;
@@ -33,7 +33,7 @@ export const entrepotHomePageElement = defineElement<{
             padding-bottom: 32px;
         }
 
-        ${entrepotTopTabsElement} {
+        ${EntrepotTopTabsElement} {
             margin: 0 64px;
         }
 
@@ -82,14 +82,14 @@ export const entrepotHomePageElement = defineElement<{
             padding-bottom: 12px;
         }
 
-        ${entrepotFeaturedCollectionCardElement} {
+        ${EntrepotFeaturedCollectionCardElement} {
             max-width: 100%;
         }
 
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
             .top-cards-header,
             .top-cards,
-            ${entrepotTopTabsElement}, h2 {
+            ${EntrepotTopTabsElement}, h2 {
                 margin-right: 0;
                 margin-left: 0;
             }
@@ -130,28 +130,28 @@ export const entrepotHomePageElement = defineElement<{
         const headerCount = topCardsToShow.length > 5 ? 2 : 1;
 
         return html`
-            <${entrepotCarouselElement}
-                ${assign(entrepotCarouselElement, {
+            <${EntrepotCarouselElement}
+                ${assign(EntrepotCarouselElement, {
                     items: inputs.carouselItems,
                     automaticRotation: true,
                 })}
-            ></${entrepotCarouselElement}>
+            ></${EntrepotCarouselElement}>
             
             ${
                 selectedTopTab
                     ? html`
-                        <${entrepotTopTabsElement}
-                            ${assign(entrepotTopTabsElement, {
+                        <${EntrepotTopTabsElement}
+                            ${assign(EntrepotTopTabsElement, {
                                 tabs,
                                 selected: selectedTopTab,
                             })}
-                            ${listen(entrepotTopTabsElement.events.tabChange, event => {
+                            ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                                 const selectedTab = event.detail as TopTab<
                                     ReadonlyArray<TopCardInputs>
                                 >;
                                 updateState({topCollectionsSelectedTab: selectedTab});
                             })}
-                        ></${entrepotTopTabsElement}>`
+                        ></${EntrepotTopTabsElement}>`
                     : ''
             }
             <div class="top-cards-header">
@@ -159,20 +159,20 @@ export const entrepotHomePageElement = defineElement<{
                     .fill(0)
                     .map(() => {
                         return html`
-                            <${entrepotHomePageTopCardHeaderElement}
-                                ${assign(entrepotHomePageTopCardHeaderElement, {
+                            <${EntrepotHomePageTopCardHeaderElement}
+                                ${assign(EntrepotHomePageTopCardHeaderElement, {
                                     hasImage: true,
                                     hasIndex: true,
                                 })}
-                            ></${entrepotHomePageTopCardHeaderElement}>`;
+                            ></${EntrepotHomePageTopCardHeaderElement}>`;
                     })}
             </div>
             <div class="top-cards">
                 ${topCardsToShow.map(topCard => {
                     return html`
-                        <${entrepotHomePageTopCardElement}
-                            ${assign(entrepotHomePageTopCardElement, topCard)}
-                        ></${entrepotHomePageTopCardElement}>
+                        <${EntrepotHomePageTopCardElement}
+                            ${assign(EntrepotHomePageTopCardElement, topCard)}
+                        ></${EntrepotHomePageTopCardElement}>
                     `;
                 })}
             </div>
@@ -183,9 +183,9 @@ export const entrepotHomePageElement = defineElement<{
             <div class="featured-collections">
                 ${inputs.featuredCollections.map(featuredCollection => {
                     return html`
-                        <${entrepotFeaturedCollectionCardElement}
-                            ${assign(entrepotFeaturedCollectionCardElement, featuredCollection)}
-                        ></${entrepotFeaturedCollectionCardElement}>
+                        <${EntrepotFeaturedCollectionCardElement}
+                            ${assign(EntrepotFeaturedCollectionCardElement, featuredCollection)}
+                        ></${EntrepotFeaturedCollectionCardElement}>
                         `;
                 })}
             </div>
@@ -193,4 +193,4 @@ export const entrepotHomePageElement = defineElement<{
     },
 });
 
-export const EntrepotHomePage = wrapInReactComponent(entrepotHomePageElement);
+export const EntrepotHomePage = wrapInReactComponent(EntrepotHomePageElement);
