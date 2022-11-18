@@ -19,12 +19,25 @@ export const EntrepotMarketplaceElement = defineElement<{
         :host {
             display: block;
             min-height: 100vh;
+            padding: 32px;
         }
+
         h1 {
             ${toniqFontStyles.h1Font}
             ${toniqFontStyles.extraBoldFont}
             margin: 0;
             margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            :host {
+                padding: 16px;
+            }
+
+            h1 {
+                ${toniqFontStyles.h2Font}
+                ${toniqFontStyles.extraBoldFont}
+            }
         }
     `,
     events: {

@@ -45,15 +45,11 @@ export const EntrepotFilterElement = defineElement<{
         .numeric-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 8px;
         }
 
         .numeric-row ${ToniqInput} {
-            width: 127px;
-        }
-
-        .numeric-row span {
-            ${toniqFontStyles.boldParagraphFont}
+            flex-grow: 1;
         }
 
         .expanding-entries {
@@ -187,7 +183,6 @@ function createFilterInternals(
                     propName: 'currentMin',
                     changeCallback,
                 })}
-                <span>to</span>
                 ${createNumericRangeInputTemplate({
                     filter,
                     propName: 'currentMax',

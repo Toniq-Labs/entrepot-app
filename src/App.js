@@ -64,10 +64,7 @@ const useStyles = makeStyles(theme => ({
     },
     inner: {
         flexGrow: 1,
-        padding: '32px 64px',
-        [theme.breakpoints.down('sm')]: {
-            padding: '16px 18px',
-        },
+        padding: '32px',
     },
     content: {
         flexGrow: 1,
@@ -1179,6 +1176,9 @@ export default function App() {
                                     exact
                                     element={
                                         <EntrepotMarketplace
+                                            style={{
+                                                margin: '-32px',
+                                            }}
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             onCollectionSelected={event => {
                                                 console.log({collection: +event.detail});

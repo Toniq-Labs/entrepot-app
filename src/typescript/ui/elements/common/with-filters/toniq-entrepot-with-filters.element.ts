@@ -54,7 +54,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
     cssVars: {
         filterPanelWidth: '333px',
     },
-    styles: ({cssVarValues}) => css`
+    styles: ({cssVarValues, cssVarNames}) => css`
         :host {
             display: flex;
             flex-direction: column;
@@ -111,6 +111,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         }
 
         .filters-panel-wrapper {
+            display: flex;
             width: 0;
             overflow: hidden;
             position: relative;
@@ -124,7 +125,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
 
         .filters-panel {
             box-sizing: border-box;
-            padding-right: 32px;
+            padding-right: 8px;
             /* sufficient padding for selection outlines */
             padding-left: 8px;
             padding-bottom: 16px;
@@ -177,7 +178,59 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
             color: ${toniqColors.pageInteraction.foregroundColor};
         }
 
-        @media (max-width: 975px) {
+        .filter-tokens-and-count .sort-combo {
+            display: none;
+        }
+
+        @media (max-width: 1200px) {
+            :host {
+                ${cssVarNames.filterPanelWidth}: 200px;
+            }
+        }
+
+        @media (max-width: 950px) {
+            :host {
+                ${cssVarNames.filterPanelWidth}: 500px;
+            }
+
+            .search-sort-header .sort-combo {
+                display: none;
+            }
+
+            .filter-tokens-and-count {
+                justify-content: space-between;
+                padding: 0;
+            }
+
+            .filter-tokens-and-count .sort-combo {
+                display: flex;
+            }
+
+            .filter-tokens {
+                display: none;
+            }
+
+            .bottom-half {
+                flex-direction: column;
+            }
+
+            .filters-panel-wrapper {
+                max-width: 100%;
+                width: unset;
+                justify-content: center;
+                height: 0;
+            }
+
+            .filters-panel-wrapper.show-filters-panel {
+                width: unset;
+                height: unset;
+            }
+
+            .filters-panel {
+                max-width: 100%;
+                top: unset;
+                right: unset;
+            }
         }
     `,
     stateInit: {
@@ -227,31 +280,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
             `;
         });
 
-        const searchTemplate: HTMLTemplateResult = html`
-            <${ToniqToggleButton}
-                class="${ToniqToggleButton.hostClasses.textOnly}"
-                ${assign(ToniqToggleButton, {
-                    toggled: inputs.showFilters,
-                    text: 'Filters',
-                    icon: Filter24Icon,
-                })}
-                ${listen('click', () => {
-                    dispatch(new events.showFiltersChange(!inputs.showFilters));
-                })}
-            ></${ToniqToggleButton}>
-            <${ToniqInput}
-                class="${ToniqInput.hostClasses.outline}"
-                ${assign(ToniqInput, {
-                    value: state.searchValue,
-                    placeholder: inputs.searchPlaceholder,
-                    icon: Search24Icon,
-                })}
-                ${listen(ToniqInput.events.valueChange, event => {
-                    updateState({
-                        searchValue: event.detail,
-                    });
-                })}
-            ></${ToniqInput}>
+        const sortTemplate = html`
             <div class="sort-combo">
                 <${ToniqIcon}
                     ${assign(ToniqIcon, {
@@ -292,6 +321,34 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
                     })}
                 ></${ToniqDropdown}>
             </div>
+        `;
+
+        const searchTemplate: HTMLTemplateResult = html`
+            <${ToniqToggleButton}
+                class="${ToniqToggleButton.hostClasses.textOnly}"
+                ${assign(ToniqToggleButton, {
+                    toggled: inputs.showFilters,
+                    text: 'Filters',
+                    icon: Filter24Icon,
+                })}
+                ${listen('click', () => {
+                    dispatch(new events.showFiltersChange(!inputs.showFilters));
+                })}
+            ></${ToniqToggleButton}>
+            <${ToniqInput}
+                class="${ToniqInput.hostClasses.outline}"
+                ${assign(ToniqInput, {
+                    value: state.searchValue,
+                    placeholder: inputs.searchPlaceholder,
+                    icon: Search24Icon,
+                })}
+                ${listen(ToniqInput.events.valueChange, event => {
+                    updateState({
+                        searchValue: event.detail,
+                    });
+                })}
+            ></${ToniqInput}>
+            ${sortTemplate}
         `;
 
         const nonDefaultFilterCount = countFiltersNotAtDefaults({
@@ -350,6 +407,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
                         <span class="count">
                             ${sortedFilteredEntries.length} ${inputs.countName}
                         </span>
+                        ${sortTemplate}
                     </div>
                     <div class="content-entries">
                         ${sortedFilteredEntries.map(entry => {

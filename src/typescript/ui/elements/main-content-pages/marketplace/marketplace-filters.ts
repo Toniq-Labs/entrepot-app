@@ -30,6 +30,73 @@ export const defaultMarketplaceFilters = wrapNarrowTypeWithTypeCheck<
             'total',
         ],
     },
+    // Dev: {
+    //     filterType: FilterTypeEnum.Checkboxes,
+    //     checkboxes: [
+    //         {
+    //             label: 'dev',
+    //             checked: false,
+    //             filterType: BooleanFilterTypeEnum.Exclusive,
+    //         },
+    //     ],
+    //     filterField: ['dev'],
+    // },
+    // Bonus: {
+    //     filterType: FilterTypeEnum.ExpandingList,
+    //     expanded: false,
+    //     entries: [
+    //         {
+    //             expanded: false,
+    //             name: 'Keywords',
+    //             key: 'keywords',
+    //             checkboxes: [
+    //                 {
+    //                     checked: false,
+    //                     label: 'meme',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //                 {
+    //                     checked: false,
+    //                     label: 'fun',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //                 {
+    //                     checked: false,
+    //                     label: 'collection',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             expanded: false,
+    //             name: 'Brief',
+    //             key: 'brief',
+    //             checkboxes: [
+    //                 {
+    //                     checked: false,
+    //                     label: 'the ',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //                 {
+    //                     checked: false,
+    //                     label: 'an ',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //                 {
+    //                     checked: false,
+    //                     label: 'and ',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //                 {
+    //                     checked: false,
+    //                     label: 'of ',
+    //                     filterType: BooleanFilterTypeEnum.Contains,
+    //                 },
+    //             ],
+    //         },
+    //     ],
+    //     filterField: [],
+    // },
 });
 
 export const sortDefinitions = wrapNarrowTypeWithTypeCheck<

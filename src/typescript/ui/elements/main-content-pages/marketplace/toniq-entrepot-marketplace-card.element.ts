@@ -28,7 +28,7 @@ export const EntrepotMarketplaceCardElement = defineElement<{
             flex-direction: column;
             border-radius: 16px;
             will-change: filter;
-            margin: 16px;
+            margin: 16px 4px;
             width: 304px;
             max-width: 100%;
             border: 1px solid transparent;
