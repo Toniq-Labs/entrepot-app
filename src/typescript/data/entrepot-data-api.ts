@@ -1,3 +1,4 @@
+// @ts-ignore: this file has no types
 import extjs from '../../ic/extjs';
 import {CollectionStats} from './models/collection';
 
