@@ -1,81 +1,15 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {ensureType, getEnumTypedValues, wrapNarrowTypeWithTypeCheck} from 'augment-vir';
-import {assign, css, defineElement, html, listen} from 'element-vir';
+import {ensureType} from 'augment-vir';
+import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {
     EntrepotWithFiltersElement,
     createWithFiltersInputs,
 } from '../../common/with-filters/toniq-entrepot-with-filters.element';
-import {
-    FilterTypeEnum,
-    FilterDefinitions,
-    SortDefinition,
-    CurrentSort,
-} from '../../common/with-filters/with-filters-types';
-import {VolumeDurationEnum} from '../../../../data/models/volume-data';
+import {CurrentSort} from '../../common/with-filters/filters-types';
 import {toniqFontStyles} from '@toniq-labs/design-system';
 import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.element';
-
-const defaultMarketplaceFilters = wrapNarrowTypeWithTypeCheck<FilterDefinitions<Collection>>()({
-    Price: {
-        filterType: FilterTypeEnum.NumericRange,
-        currentMin: undefined,
-        currentMax: undefined,
-        filterField: [
-            'stats',
-            'floor',
-        ],
-    },
-    Volume: {
-        filterType: FilterTypeEnum.NumericRange,
-        currentMin: undefined,
-        currentMax: undefined,
-        // selectedType: VolumeDurationEnum.days7,
-        // types: getEnumTypedValues(VolumeDurationEnum),
-        filterField: [
-            'stats',
-            'total',
-        ],
-    },
-    Dev: {
-        filterType: FilterTypeEnum.Checkboxes,
-        checkboxes: [
-            {
-                label: 'dev',
-                checked: false,
-            },
-        ],
-        filterField: ['dev'],
-    },
-});
-
-const sortDefinitions = wrapNarrowTypeWithTypeCheck<ReadonlyArray<SortDefinition<Collection>>>()([
-    {
-        sortName: 'Volume',
-        sortField: [
-            'stats',
-            'total',
-        ],
-    },
-    {
-        sortName: 'Listings',
-        sortField: [
-            'stats',
-            'listings',
-        ],
-    },
-    {
-        sortName: 'Price',
-        sortField: [
-            'stats',
-            'floor',
-        ],
-    },
-    {
-        sortName: 'Name',
-        sortField: ['name'],
-    },
-] as const);
+import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 
 export const EntrepotMarketplaceElement = defineElement<{
     collections: ReadonlyArray<Collection>;
@@ -93,6 +27,9 @@ export const EntrepotMarketplaceElement = defineElement<{
             margin-bottom: 32px;
         }
     `,
+    events: {
+        collectionSelected: defineElementEvent<Collection>(),
+    },
     stateInit: {
         showFilters: false,
         filters: defaultMarketplaceFilters,
@@ -101,7 +38,7 @@ export const EntrepotMarketplaceElement = defineElement<{
             name: sortDefinitions[0].sortName,
         }),
     },
-    renderCallback: ({inputs, state, updateState}) => {
+    renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         console.log({collections: inputs.collections});
         return html`
             <h1>All Collections</h1>
@@ -128,7 +65,9 @@ export const EntrepotMarketplaceElement = defineElement<{
                                         collectionName: collection.name,
                                         descriptionText: collection.brief,
                                         stats: collection.stats,
-                                        collectionRoute: collection.route,
+                                    })}
+                                    ${listen('click', () => {
+                                        dispatch(new events.collectionSelected(collection));
                                     })}
                                 ></${EntrepotMarketplaceCardElement}>
                             `;

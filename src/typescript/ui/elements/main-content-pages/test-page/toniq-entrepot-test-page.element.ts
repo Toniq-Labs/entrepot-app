@@ -98,7 +98,6 @@ const EntrepotTestElement = defineElementNoInputs({
         }
     `,
     renderCallback: () => {
-        console.log({homepageInputs});
         return html`
             <${EntrepotHomePageElement}
                 ${assign(EntrepotHomePageElement, homepageInputs)}

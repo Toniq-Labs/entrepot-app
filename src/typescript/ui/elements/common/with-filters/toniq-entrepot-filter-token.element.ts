@@ -1,5 +1,5 @@
 import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
-import {SingleFilterDefinition, FilterTypeEnum} from './with-filters-types';
+import {SingleFilterDefinition, FilterTypeEnum} from './filters-types';
 import {
     applyBackgroundAndForeground,
     toniqColors,
@@ -7,7 +7,7 @@ import {
     ToniqIcon,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {isTruthy, truncateNumber} from 'augment-vir';
+import {areJsonEqual, isTruthy, truncateNumber} from 'augment-vir';
 import {isStillAtDefaults} from './is-still-default';
 
 type FilterTokenInputs = {
@@ -21,7 +21,7 @@ export const EntrepotFilterTokenElement = defineElement<FilterTokenInputs>()({
     events: {
         resetFilter: defineElementEvent<SingleFilterDefinition<any>>(),
     },
-    styles: ({hostClassSelectors}) => css`
+    styles: css`
         :host {
             display: flex;
         }
@@ -46,7 +46,7 @@ export const EntrepotFilterTokenElement = defineElement<FilterTokenInputs>()({
             return html``;
         }
 
-        const tokens = createFilterTokenText(inputs);
+        const tokens = createTokens(inputs);
 
         return html`
             ${tokens.map(token => {
@@ -71,7 +71,7 @@ type FilterToken = {
     resetValue: SingleFilterDefinition<any>;
 };
 
-function createFilterTokenText({
+function createTokens({
     filter,
     filterName,
     defaultFilter,
@@ -108,7 +108,42 @@ function createFilterTokenText({
         filter.filterType === FilterTypeEnum.ExpandingList &&
         defaultFilter.filterType === FilterTypeEnum.ExpandingList
     ) {
-        return [{text: filterName, resetValue: defaultFilter}];
+        return filter.entries
+            .map((entry, entryIndex) => {
+                if (
+                    areJsonEqual(entry.checkboxes, defaultFilter.entries[entryIndex]?.checkboxes!)
+                ) {
+                    return undefined;
+                }
+
+                const resetFilter = {
+                    ...filter,
+                    entries: filter.entries.map((innerEntry, innerEntryIndex) => {
+                        if (innerEntryIndex === entryIndex) {
+                            return {
+                                ...innerEntry,
+                                checkboxes: innerEntry.checkboxes.map((checkbox, checkboxIndex) => {
+                                    return {
+                                        ...checkbox,
+                                        checked:
+                                            defaultFilter.entries[innerEntryIndex]!.checkboxes[
+                                                checkboxIndex
+                                            ]!.checked,
+                                    };
+                                }),
+                            };
+                        } else {
+                            return innerEntry;
+                        }
+                    }),
+                };
+
+                return {
+                    resetValue: resetFilter,
+                    text: `${filterName}: ${entry.name}`,
+                };
+            })
+            .filter(isTruthy);
     } else if (
         filter.filterType === FilterTypeEnum.NumericRange &&
         defaultFilter.filterType === FilterTypeEnum.NumericRange

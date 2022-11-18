@@ -4,7 +4,7 @@ import {
     SingleFilterDefinition,
     ExpandingListFilterEntry,
     FilterDefinitions,
-} from './with-filters-types';
+} from './filters-types';
 
 export function countFiltersNotAtDefaults({
     filters,
@@ -73,15 +73,7 @@ function compareExpandingListEntries(
     a: ExpandingListFilterEntry,
     b: ExpandingListFilterEntry,
 ): boolean {
-    if (a.children) {
-        return a.children.every((aChild, index) => {
-            const bChild = b.children![index]!;
-
-            return compareExpandingListEntries(aChild, bChild);
-        });
-    } else {
-        return a.checkboxes.every((checkbox, index) => {
-            return checkbox.checked === b.checkboxes![index]!.checked;
-        });
-    }
+    return a.checkboxes.every((checkbox, index) => {
+        return checkbox.checked === b.checkboxes![index]!.checked;
+    });
 }

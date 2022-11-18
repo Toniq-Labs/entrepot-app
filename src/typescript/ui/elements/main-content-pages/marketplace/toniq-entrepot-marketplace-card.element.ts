@@ -10,6 +10,7 @@ import {
     ToniqIcon,
     toniqShadows,
     applyBackgroundAndForeground,
+    removeNativeFormStyles,
 } from '@toniq-labs/design-system';
 import {truncateNumber} from 'augment-vir';
 
@@ -18,7 +19,6 @@ export const EntrepotMarketplaceCardElement = defineElement<{
     collectionImageUrl: string;
     // this should eventually be the collection's creator
     descriptionText: string;
-    collectionRoute: string;
     stats: Pick<CollectionStats, 'total' | 'floor' | 'listings'> | undefined;
 }>()({
     tagName: 'toniq-entrepot-marketplace-card',
@@ -27,6 +27,7 @@ export const EntrepotMarketplaceCardElement = defineElement<{
             display: inline-flex;
             flex-direction: column;
             border-radius: 16px;
+            will-change: filter;
             margin: 16px;
             width: 304px;
             max-width: 100%;
@@ -36,7 +37,8 @@ export const EntrepotMarketplaceCardElement = defineElement<{
             ${toniqShadows.popupShadow}
         }
 
-        a {
+        .card-button {
+            ${removeNativeFormStyles}
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -111,10 +113,8 @@ export const EntrepotMarketplaceCardElement = defineElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        const url = `/marketplace/${inputs.collectionRoute}`;
-
         return html`
-            <a href=${url}>
+            <button class="card-button">
                 <div
                     class="image-holder"
                     style="background-image: url('${inputs.collectionImageUrl}')"
@@ -124,7 +124,7 @@ export const EntrepotMarketplaceCardElement = defineElement<{
                     <p class="description">${inputs.descriptionText}</p>
                     <div class="stats">${createStatsTemplate(inputs.stats)}</div>
                 </div>
-            </a>
+            </button>
         `;
     },
 });

@@ -47,6 +47,7 @@ import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {isProd} from './typescript/environment/environment-by-url';
+import {useNavigate} from 'react-router';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -268,6 +269,8 @@ export default function App() {
             console.error(error);
         }
     };
+
+    const navigate = useNavigate();
 
     const _buyForm = (tokenid, price) => {
         return new Promise(async (resolve, reject) => {
@@ -1177,6 +1180,12 @@ export default function App() {
                                     element={
                                         <EntrepotMarketplace
                                             isToniqEarnAllowed={isToniqEarnAllowed}
+                                            onCollectionSelected={event => {
+                                                console.log({collection: +event.detail});
+                                                navigate({
+                                                    pathname: '/marketplace/' + event.detail.route,
+                                                });
+                                            }}
                                             error={error}
                                             view={'collections'}
                                             alert={alert}

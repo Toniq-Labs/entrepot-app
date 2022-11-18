@@ -1,4 +1,10 @@
-import {FilterDefinitions, FilterTypeEnum, SingleFilterDefinition} from './with-filters-types';
+import {
+    FilterDefinitions,
+    FilterTypeEnum,
+    SingleFilterDefinition,
+    BooleanFilterEntry,
+    BooleanFilterTypeEnum,
+} from './filters-types';
 import {getValueFromNestedKeys, NestedKeys} from '../../../../augments/object';
 
 export function applyAllFilters<
@@ -30,17 +36,21 @@ function applyExpandingListFilter<EntryData extends object>(
     filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.ExpandingList}>,
 ): boolean {
     return filter.entries.every(filterEntry => {
-        return filterEntry.checkboxes
-            ? applyCheckboxFilter(dataEntry, {
-                  filterType: FilterTypeEnum.Checkboxes,
-                  checkboxes: filterEntry.checkboxes,
-                  filterField: filter.filterField,
-              })
-            : applyExpandingListFilter(dataEntry, {
-                  filterType: FilterTypeEnum.ExpandingList,
-                  entries: filterEntry.children,
-                  filterField: filter.filterField,
-              });
+        return filterEntry.checkboxes.every(checkbox => {
+            // don't filter on unchecked boxes
+            if (!checkbox.checked) {
+                return true;
+            }
+
+            return matchSingleCheckboxFilter({
+                dataEntry,
+                fieldKeys: [
+                    ...(filter.filterField as string[]),
+                    filterEntry.key,
+                ],
+                checkbox,
+            });
+        });
     });
 }
 
@@ -77,42 +87,62 @@ function applyCheckboxFilter<EntryData extends object>(
     dataEntry: EntryData,
     filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.Checkboxes}>,
 ): boolean {
+    return filter.checkboxes.every(checkbox => {
+        return matchSingleCheckboxFilter({
+            dataEntry,
+            fieldKeys: filter.filterField as string[],
+            checkbox,
+        });
+    });
+}
+
+function matchSingleCheckboxFilter<EntryData extends object>({
+    dataEntry,
+    fieldKeys,
+    checkbox,
+}: {
+    dataEntry: EntryData;
+    fieldKeys: string[];
+    checkbox: BooleanFilterEntry;
+}) {
     const matchThisData: unknown = getValueFromNestedKeys(
         dataEntry,
-        filter.filterField as NestedKeys<EntryData>,
+        fieldKeys as NestedKeys<EntryData>,
     );
     if (matchThisData == undefined) {
         return false;
     }
 
-    const matchesData: ((label: string, checked: boolean) => boolean) | undefined = Array.isArray(
-        matchThisData,
-    )
-        ? (label, checked) => {
-              return matchThisData.includes(label);
+    const checkboxValue = checkbox.value ?? checkbox.label;
+
+    const matchesData: ((value: string) => boolean) | undefined = Array.isArray(matchThisData)
+        ? value => {
+              return matchThisData.includes(value);
           }
         : typeof matchThisData === 'string'
-        ? label => {
-              return label === matchThisData;
+        ? value => {
+              if (checkbox.filterType === BooleanFilterTypeEnum.Contains) {
+                  return matchThisData.includes(value);
+              } else {
+                  return value === matchThisData;
+              }
           }
         : typeof matchThisData === 'boolean'
-        ? (label, checked) => {
+        ? () => {
               return matchThisData;
           }
         : undefined;
 
     if (matchesData == undefined) {
-        console.error({filter, dataEntry});
+        console.error({fields: fieldKeys, dataEntry});
         throw new Error(
             `Failed to figure out what to match data against for a checkbox filter. See logged filter and dataEntry above.`,
         );
     }
 
-    return filter.checkboxes.every(checkbox => {
-        if (checkbox.checked) {
-            return matchesData(checkbox.label, checkbox.checked);
-        } else {
-            return !matchesData(checkbox.label, checkbox.checked);
-        }
-    });
+    if (checkbox.checked) {
+        return matchesData(checkboxValue);
+    } else {
+        return !matchesData(checkboxValue);
+    }
 }

@@ -1,8 +1,18 @@
 import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
-import {SingleFilterDefinition, FilterTypeEnum, FilterDefinitions} from './with-filters-types';
+import {classMap} from 'lit/directives/class-map.js';
+import {SingleFilterDefinition, FilterTypeEnum, FilterDefinitions} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
-import {ToniqCheckbox, toniqFontStyles, ToniqInput} from '@toniq-labs/design-system';
+import {
+    ToniqCheckbox,
+    toniqFontStyles,
+    ToniqInput,
+    ChevronDown24Icon,
+    ChevronUp24Icon,
+    ToniqIcon,
+    removeNativeFormStyles,
+} from '@toniq-labs/design-system';
 import {removeCommasFromNumberString} from 'augment-vir';
+import {EntrepotExpandingListFilterElement} from './toniq-entrepot-expanding-list-filter.element';
 
 export const EntrepotFilterElement = defineElement<{
     filterName: string;
@@ -18,9 +28,18 @@ export const EntrepotFilterElement = defineElement<{
             flex-direction: column;
         }
 
-        .title {
+        .title-row {
             margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            ${removeNativeFormStyles}
             ${toniqFontStyles.boldParagraphFont}
+            margin-bottom: 16px;
+            cursor: default;
+        }
+
+        .clickable {
+            cursor: pointer;
         }
 
         .numeric-row {
@@ -36,11 +55,23 @@ export const EntrepotFilterElement = defineElement<{
         .numeric-row span {
             ${toniqFontStyles.boldParagraphFont}
         }
+
+        .expanding-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        ${EntrepotExpandingListFilterElement} {
+            margin-left: 4px;
+        }
     `,
     renderCallback: ({inputs, events, dispatch}) => {
-        const filterInternalsTemplate = createFilterInternals(inputs.filter, newFilter => {
+        function changeCallback(newFilter: typeof inputs.filter) {
             dispatch(new events.filterChange({[inputs.filterName]: newFilter}));
-        });
+        }
+
+        const filterInternalsTemplate = createFilterInternals(inputs.filter, changeCallback);
 
         if (!filterInternalsTemplate) {
             console.error(
@@ -51,12 +82,70 @@ export const EntrepotFilterElement = defineElement<{
             return html``;
         }
 
+        const filterCountString = createFilterCountString(inputs.filter);
+        const expandingIconTemplate = createExpandingIconTemplate(inputs.filter);
+        const clickCallback = createFilterTitleRowClickCallback(inputs.filter, changeCallback);
+
         return html`
-            <p class="title">${inputs.filterName}</p>
-            ${filterInternalsTemplate}
+            <button
+                class="title-row ${classMap({clickable: !!clickCallback})}"
+                ${listen('click', () => {
+                    clickCallback?.();
+                })}
+            >
+                <span>${inputs.filterName}${filterCountString}</span>
+                ${expandingIconTemplate}
+            </button>
+            ${'expanded' in inputs.filter
+                ? inputs.filter.expanded
+                    ? filterInternalsTemplate
+                    : ''
+                : filterInternalsTemplate}
         `;
     },
 });
+
+function createFilterTitleRowClickCallback(
+    filter: SingleFilterDefinition<any>,
+    changeCallback: (newFilter: SingleFilterDefinition<any>) => void,
+) {
+    if ('expanded' in filter) {
+        return () =>
+            changeCallback({
+                ...filter,
+                expanded: !filter.expanded,
+            });
+    } else {
+        return undefined;
+    }
+}
+
+function createFilterCountString(filter: SingleFilterDefinition<any>): string {
+    let count: undefined | number;
+    if (filter.filterType === FilterTypeEnum.ExpandingList) {
+        count = filter.entries.length;
+    }
+
+    if (count) {
+        return ` (${count})`;
+    } else {
+        return '';
+    }
+}
+
+function createExpandingIconTemplate(filter: SingleFilterDefinition<any>): HTMLTemplateResult {
+    if (filter.filterType === FilterTypeEnum.ExpandingList) {
+        return html`
+            <${ToniqIcon}
+                ${assign(ToniqIcon, {
+                    icon: filter.expanded ? ChevronUp24Icon : ChevronDown24Icon,
+                })}
+            ></${ToniqIcon}>
+        `;
+    } else {
+        return html``;
+    }
+}
 
 function createFilterInternals(
     filter: SingleFilterDefinition<any>,
@@ -89,10 +178,8 @@ function createFilterInternals(
             `;
         });
     } else if (filter.filterType === FilterTypeEnum.ExpandingList) {
-        return html``;
+        return createExpandingListTemplate(filter, changeCallback);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
-        const min = filter.currentMin == undefined ? '' : String(filter.currentMin);
-        const max = filter.currentMax == undefined ? '' : String(filter.currentMax);
         return html`
             <div class="numeric-row">
                 ${createNumericRangeInputTemplate({
@@ -111,6 +198,34 @@ function createFilterInternals(
     } else {
         return undefined;
     }
+}
+
+function createExpandingListTemplate<
+    FilterGeneric extends Extract<
+        SingleFilterDefinition<any>,
+        {filterType: FilterTypeEnum.ExpandingList}
+    >,
+>(filter: FilterGeneric, changeCallback: (newFilter: FilterGeneric) => void): HTMLTemplateResult {
+    return html`
+        <div class="expanding-entries">
+            ${filter.entries.map((entry, entryIndex) => {
+                return html`
+                    <${EntrepotExpandingListFilterElement}
+                        ${assign(EntrepotExpandingListFilterElement, {
+                            expandingListEntry: entry,
+                        })}
+                        ${listen(EntrepotExpandingListFilterElement.events.entryChange, event => {
+                            const entries = [...filter.entries];
+                            entries[entryIndex] = event.detail;
+                            changeCallback({
+                                ...filter,
+                                entries,
+                            });
+                        })}
+                    ></${EntrepotExpandingListFilterElement}>`;
+            })}
+        </div>
+    `;
 }
 
 function createNumericRangeInputTemplate<

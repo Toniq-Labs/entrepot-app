@@ -1,4 +1,4 @@
-import {CurrentSort, SortDefinition} from './with-filters-types';
+import {CurrentSort, SortDefinition} from './filters-types';
 import {getValueFromNestedKeys, NestedKeys} from '../../../../augments/object';
 
 export function applySort<EntryGeneric extends object>({
