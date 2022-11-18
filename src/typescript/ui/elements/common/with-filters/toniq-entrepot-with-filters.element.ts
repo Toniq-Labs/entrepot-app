@@ -328,7 +328,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
                 class="${ToniqToggleButton.hostClasses.textOnly}"
                 ${assign(ToniqToggleButton, {
                     toggled: inputs.showFilters,
-                    text: 'Filters',
+                    text: state.searchValue ? '' : 'Filters',
                     icon: Filter24Icon,
                 })}
                 ${listen('click', () => {
