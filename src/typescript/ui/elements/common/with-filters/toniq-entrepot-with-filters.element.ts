@@ -4,6 +4,7 @@ import {CurrentSort, FilterDefinitions, SortDefinition} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
 import {applyAllFilters} from './apply-filters';
 import {
+    applyBackgroundAndForeground,
     ArrowsSortAscending24Icon,
     ArrowsSortDescending24Icon,
     Filter24Icon,
@@ -58,22 +59,35 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         :host {
             display: flex;
             flex-direction: column;
-            gap: 32px;
             ${toniqFontStyles.paragraphFont};
         }
 
         .search-sort-header {
+            padding-top: 16px;
+            margin-bottom: 24px;
+            position: sticky;
+            top: 70px;
+            z-index: 10;
+            ${applyBackgroundAndForeground(toniqColors.pagePrimary)}
+        }
+
+        .shadow-wrapper {
             display: flex;
             gap: 24px;
             height: 40px;
+            padding: 16px 32px 8px;
+            ${applyBackgroundAndForeground(toniqColors.pagePrimary)}
+
+            box-shadow: 0 0 10px 15px white;
         }
 
-        .search-sort-header ${ToniqInput} {
+        .shadow-wrapper ${ToniqInput} {
             flex-grow: 1;
         }
 
         .bottom-half {
             display: flex;
+            padding: 0 32px;
         }
 
         .filter-tokens-and-count {
@@ -102,6 +116,8 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
             display: flex;
             flex-grow: 1;
             flex-direction: column;
+            z-index: 5;
+            ${applyBackgroundAndForeground(toniqColors.pagePrimary)}
         }
 
         .content-entries {
@@ -113,10 +129,9 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         .filters-panel-wrapper {
             display: flex;
             width: 0;
-            overflow: hidden;
-            position: relative;
             transition: 200ms;
             flex-shrink: 0;
+            align-items: flex-start;
         }
 
         .filters-panel-wrapper.show-filters-panel {
@@ -124,14 +139,14 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         }
 
         .filters-panel {
+            position: sticky;
             box-sizing: border-box;
             padding-right: 8px;
             /* sufficient padding for selection outlines */
             padding-left: 8px;
             padding-bottom: 16px;
-            position: relative;
             right: 0;
-            top: 0;
+            top: 174px;
             width: ${cssVarValues.filterPanelWidth};
             flex-shrink: 0;
             display: flex;
@@ -180,6 +195,15 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
 
         .filter-tokens-and-count .sort-combo {
             display: none;
+        }
+
+        .shadow-footer {
+            position: sticky;
+            bottom: 0;
+            width: 100vw;
+            z-index: 10;
+            margin-top: 64px;
+            box-shadow: 0 0 10px 15px white;
         }
 
         @media (max-width: 1200px) {
@@ -380,7 +404,9 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         });
 
         return html`
-            <div class="search-sort-header">${searchTemplate}</div>
+            <div class="search-sort-header">
+                <div class="shadow-wrapper">${searchTemplate}</div>
+            </div>
             <div class="bottom-half">
                 <div
                     class="filters-panel-wrapper ${classMap({
@@ -416,6 +442,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
                     </div>
                 </div>
             </div>
+            <div class="shadow-footer"></div>
         `;
     },
 });

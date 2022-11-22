@@ -41,6 +41,8 @@ export const EntrepotMarketplaceCardElement = defineElement<{
             ${removeNativeFormStyles}
             text-decoration: none;
             display: flex;
+            align-items: stretch;
+            text-align: left;
             flex-direction: column;
             flex-grow: 1;
             color: inherit;

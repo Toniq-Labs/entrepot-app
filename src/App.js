@@ -71,8 +71,8 @@ const useStyles = makeStyles(theme => ({
     content: {
         flexGrow: 1,
         marginTop: 73,
-        paddingBottom: 50,
         background: '#FFF',
+        zIndex: 90,
     },
 }));
 const emptyAlert = {
@@ -1996,7 +1996,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter />
+                    <EntrepotFooter style={{zIndex: 100}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />
