@@ -26,71 +26,105 @@ const footerSocialIcons: ReadonlyArray<{
 }> = [
     {
         icon: BrandDiscord24Icon,
-        link: '',
+        link: 'https://discord.gg/toniqlabs',
     },
-    {
-        icon: BrandTiktokFlat24Icon,
-        link: '',
-    },
+    // {
+    //     icon: BrandTiktokFlat24Icon,
+    //     link: '',
+    // },
     {
         icon: BrandTelegram24Icon,
-        link: '',
+        link: 'https://t.me/ICNFTNews',
     },
     {
         icon: BrandTwitter24Icon,
-        link: '',
+        link: 'https://twitter.com/EntrepotApp',
     },
-    {
-        icon: BrandTwitch24Icon,
-        link: '',
-    },
-    {
-        icon: BrandInstagramFlat24Icon,
-        link: '',
-    },
+    // {
+    //     icon: BrandTwitch24Icon,
+    //     link: '',
+    // },
+    // {
+    //     icon: BrandInstagramFlat24Icon,
+    //     link: '',
+    // },
+    // https://toniqlabs.medium.com/
+    // https://www.youtube.com/channel/UC9bN51qCCbbz4A1kftZlBPw
+    // https://www.linkedin.com/company/toniq-labs/
+    // https://dscvr.one/p/toniq-talks
 ];
 
-type FooterLink = {name: string; url: string};
+type FooterLink = {
+    name: string;
+    url: string;
+};
 type FooterLinkSection = {title: string; links: ReadonlyArray<FooterLink>};
 
 const footerLinkSections: ReadonlyArray<FooterLinkSection> = [
     {
         title: 'My Account',
         links: [
-            {name: 'Profile', url: ''},
-            {name: 'Favorites', url: ''},
-            {name: 'Watchlist', url: ''},
-            {name: 'My Collections', url: ''},
-            {name: 'Settings', url: ''},
+            {
+                name: 'Collected',
+                url: '/profile',
+            },
+            {
+                name: 'Favorites',
+                url: '/profile/favorites',
+            },
+            {
+                name: 'Activity',
+                url: '/profile/activity',
+            },
+            {
+                name: 'Offers',
+                url: '/profile/offers',
+            },
         ],
     },
-    {
-        title: 'Stats',
-        links: [
-            {name: 'Rankings', url: ''},
-            {name: 'Activity', url: ''},
-        ],
-    },
+    // {
+    //     title: 'Stats',
+    //     links: [
+    //         {name: 'Rankings', pathName: ''},
+    //         {name: 'Activity', pathName: ''},
+    //     ],
+    // },
     {
         title: 'Resources',
         links: [
-            {name: 'Learn', url: ''},
-            {name: 'Help Center', url: ''},
-            {name: 'Platform Status', url: ''},
-            {name: 'Partners', url: ''},
-            {name: 'Taxes', url: ''},
-            {name: 'Blog', url: ''},
-            {name: 'Docs', url: ''},
-            {name: 'Newsletter', url: ''},
+            {
+                name: 'Creator Docs',
+                url: 'https://toniq-labs.gitbook.io/toniq-mint/',
+            },
+            {
+                name: 'Help Center',
+                url: 'https://toniqlabs-help.freshdesk.com/support/home',
+            },
+            {
+                name: 'Open Ticket',
+                url: 'https://toniqlabs-help.freshdesk.com/support/tickets/new',
+            },
+            {
+                name: 'Blog',
+                url: 'https://toniqlabs.medium.com/',
+            },
         ],
     },
     {
         title: 'Company',
         links: [
-            {name: 'About', url: ''},
-            {name: 'Careers', url: ''},
-            {name: 'Ventures', url: ''},
-            {name: 'Grants', url: ''},
+            {
+                name: 'About',
+                url: 'https://toniqlabs.com/',
+            },
+            {
+                name: 'Team',
+                url: 'https://toniqlabs.com/#about',
+            },
+            {
+                name: 'Careers',
+                url: 'https://jobs.vivahr.com/7514-toniq-labs/jobs',
+            },
         ],
     },
 ];
@@ -223,6 +257,7 @@ const EntrepotFooterElement = defineElementNoInputs({
         }
 
         ${ToniqInput} {
+            width: 100%;
             ${toniqColorCssVarNames.accentTertiary.backgroundColor}: ${toniqColors.pageDarkPrimary
                 .foregroundColor};
         }
@@ -245,7 +280,7 @@ const EntrepotFooterElement = defineElementNoInputs({
 
         .social-icons {
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
             ${unsafeCSS(toniqIconColorCssVarNames.color)}: ${toniqColors.pageInteraction
                 .foregroundColor};
         }
@@ -292,7 +327,7 @@ const EntrepotFooterElement = defineElementNoInputs({
                     ></${ToniqIcon}>
                     Entrepot
                 </div>
-                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomized words.</p>
+                <p>Entrepot is a digital trading post where users create, store, and trade digital assets in a decentralized and non-custodial way. Entrepot is home to the most collections, users, and volume across the Internet Computer blockchain.</p>
             </div>
         `;
         const linksSection = html`
@@ -315,9 +350,9 @@ const EntrepotFooterElement = defineElementNoInputs({
             <div class="community-section">
                 <div class="subscribe-section">
                     <h3>Subscribe To Our Newsletter</h3>
-                    <p>
+                    <!-- <p>
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    </p>
+                    </p> -->
                     <${ToniqInput}
                         ${assign(ToniqInput, {
                             value: state.subscriptionInput,
