@@ -10,6 +10,7 @@ import {CurrentSort} from '../../common/with-filters/filters-types';
 import {toniqFontStyles} from '@toniq-labs/design-system';
 import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.element';
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
+import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 
 export const EntrepotMarketplacePageElement = defineElement<{
     collections: ReadonlyArray<Collection>;
@@ -20,21 +21,9 @@ export const EntrepotMarketplacePageElement = defineElement<{
             display: block;
             min-height: 100vh;
         }
-
-        h1 {
-            ${toniqFontStyles.h1Font}
-            ${toniqFontStyles.extraBoldFont}
-            margin: 0 32px;
-        }
-
         @media (max-width: 1200px) {
             :host {
                 padding: 16px;
-            }
-
-            h1 {
-                ${toniqFontStyles.h2Font}
-                ${toniqFontStyles.extraBoldFont}
             }
         }
     `,
@@ -52,7 +41,11 @@ export const EntrepotMarketplacePageElement = defineElement<{
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         console.log({collections: inputs.collections});
         return html`
-            <h1>All Collections</h1>
+            <${EntrepotPageHeaderElement}
+                ${assign(EntrepotPageHeaderElement, {
+                    headerText: 'All Collections',
+                })}
+            ></${EntrepotPageHeaderElement}>
             <${EntrepotWithFiltersElement}
                 ${assign(
                     EntrepotWithFiltersElement,
