@@ -46,6 +46,7 @@ import {Profile} from './views/Profile/Profile';
 import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
+import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
 import {isProd} from './typescript/environment/environment-by-url';
 import {useNavigate} from 'react-router';
 
@@ -1888,6 +1889,7 @@ export default function App() {
                                         />
                                     }
                                 />
+                                <Route path="/tos" exact element={<EntrepotTermsOfService />} />
                                 <Route
                                     path="/contact"
                                     exact
