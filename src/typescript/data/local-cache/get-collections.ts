@@ -34,7 +34,7 @@ export async function getAllCollectionsWithCaching(): Promise<
     Readonly<Record<string, Collection>>
 > {
     try {
-        const baseCollections = (await getBaseCollections()).filter(collection => !!collection);
+        const baseCollections = (await getBaseCollections()).filter(collection => !collection.dev);
 
         const collectionStats: ReadonlyArray<CollectionStats | undefined> =
             await getCollectionsStats(baseCollections);
