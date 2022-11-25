@@ -11,10 +11,10 @@ import {toniqFontStyles} from '@toniq-labs/design-system';
 import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.element';
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 
-export const EntrepotMarketplaceElement = defineElement<{
+export const EntrepotMarketplacePageElement = defineElement<{
     collections: ReadonlyArray<Collection>;
 }>()({
-    tagName: 'toniq-entrepot-marketplace',
+    tagName: 'toniq-entrepot-page-marketplace',
     styles: css`
         :host {
             display: block;
@@ -100,4 +100,4 @@ export const EntrepotMarketplaceElement = defineElement<{
     },
 });
 
-export const EntrepotMarketplace = wrapInReactComponent(EntrepotMarketplaceElement);
+export const EntrepotMarketplace = wrapInReactComponent(EntrepotMarketplacePageElement);
