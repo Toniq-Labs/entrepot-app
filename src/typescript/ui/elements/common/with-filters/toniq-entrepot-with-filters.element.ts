@@ -127,6 +127,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         }
 
         .filters-panel-wrapper {
+            opacity: 0;
             display: flex;
             width: 0;
             transition: 200ms;
@@ -135,6 +136,7 @@ export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs
         }
 
         .filters-panel-wrapper.show-filters-panel {
+            opacity: 1;
             width: ${cssVarValues.filterPanelWidth};
         }
 

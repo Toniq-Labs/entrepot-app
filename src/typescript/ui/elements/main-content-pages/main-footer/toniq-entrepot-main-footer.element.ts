@@ -391,7 +391,7 @@ const EntrepotFooterElement = defineElementNoInputs({
                 <a href="https://toniqlabs.com">© 2022 Toniq Labs</a>
                 <span>
                     <a href="">Privacy Policy</a>
-                    <a href="">Terms of Service</a>
+                    <a href="/tos">Terms of Service</a>
                 </span>
             </div>
         `;
