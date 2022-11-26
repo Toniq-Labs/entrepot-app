@@ -20,7 +20,6 @@ import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
 import Mint from './views/Mint';
-import Create from './views/Create';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
 import Opener from './components/Opener';
@@ -47,6 +46,7 @@ import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
+import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
 import {isProd} from './typescript/environment/environment-by-url';
 import {useNavigate} from 'react-router';
 
@@ -1863,32 +1863,7 @@ export default function App() {
                                         />
                                     }
                                 />
-                                <Route
-                                    path="/create"
-                                    exact
-                                    element={
-                                        <Create
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
+                                <Route path="/create" exact element={<EntrepotCreate />} />
                                 <Route path="/tos" exact element={<EntrepotTermsOfService />} />
                                 <Route
                                     path="/contact"
