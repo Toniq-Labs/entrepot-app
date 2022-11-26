@@ -15,7 +15,7 @@ import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header
 export const EntrepotMarketplacePageElement = defineElement<{
     collections: ReadonlyArray<Collection>;
 }>()({
-    tagName: 'toniq-entrepot-page-marketplace',
+    tagName: 'toniq-entrepot-marketplace-page',
     styles: css`
         :host {
             display: block;
