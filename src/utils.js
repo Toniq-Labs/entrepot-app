@@ -209,7 +209,7 @@ const clipboardCopy = text => {
     if (collection === 'zadth-pqaaa-aaaal-abjgq-cai')
     {
       let cacheParam = (Math.random() + 1).toString(36).substring(7);
-      return 'https://images.entrepot.app/t/zadth-pqaaa-aaaal-abjgq-cai/'+id + '&cache=' + cachePriority + '&cachebuster='+cacheParam;
+      return 'https://images.entrepot.app/t/zadth-pqaaa-aaaal-abjgq-cai/'+id + '?cache=' + cachePriority + '&cachebuster='+cacheParam;
     }
      
     if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
@@ -286,7 +286,7 @@ const clipboardCopy = text => {
         );
       if (collection === 'kss7i-hqaaa-aaaah-qbvmq-cai')
         return 'https://' + collection + '.raw.ic0.app/?type=thumbnail&tokenid=' + id;
-      return 'https://images.entrepot.app/t/' + collection + '/' + id + '&cache=' + cachePriority;
+      return 'https://images.entrepot.app/t/' + collection + '/' + id + '?cache=' + cachePriority;
       //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
     }
   },
