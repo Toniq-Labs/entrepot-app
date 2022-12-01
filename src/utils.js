@@ -206,6 +206,11 @@ const clipboardCopy = text => {
       
       return 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' + extjs.encodeTokenId("dexpm-6aaaa-aaaal-qbgrq-cai", index ) + ref + "&cache=" + cachePriority;
     }
+    if (collection === 'zadth-pqaaa-aaaal-abjgq-cai')
+    {
+      let cacheParam = (Math.random() + 1).toString(36).substring(7);
+      return 'https://images.entrepot.app/t/zadth-pqaaa-aaaal-abjgq-cai/'+id + '&cache=' + cachePriority + '&cachebuster='+cacheParam;
+    }
      
     if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
       return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
