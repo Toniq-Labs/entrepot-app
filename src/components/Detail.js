@@ -371,6 +371,8 @@ const Detail = props => {
 
     if (index == 99 && canister == 'kss7i-hqaaa-aaaah-qbvmq-cai')
       detailPage = 'interactive_nfts_or_videos';
+    if (canister == 'zadth-pqaaa-aaaal-abjgq-cai')
+      detailPage = 'interactive_nfts_or_videos';
 
     switch (detailPage) {
       // for generative collections where assets are all stored on the same canister
