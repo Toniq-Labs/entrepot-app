@@ -1,12 +1,13 @@
-import {GridDots24Icon, LayoutGrid24Icon, Search24Icon} from '@toniq-labs/design-system';
-import {ToniqIcon, ToniqInput} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {StyledTab, StyledTabs} from '../../components/shared/PageTab';
-import {forceCheck} from 'react-lazyload';
 import {useNavigate} from 'react-router-dom';
+import {GridDots24Icon, LayoutGrid24Icon} from '@toniq-labs/design-system';
+import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {makeStyles} from '@material-ui/core';
 
 export function ListingsTabs(props) {
-    const {collection, gridSize, setGridSize, query, setSearchParams, storeUserPreferences} = props;
+    const {collection, gridSize, setGridSize, storeUserPreferences, forceCheck} = props;
     const navigate = useNavigate();
+    const classes = useStyles();
 
     return (
         <>
@@ -20,29 +21,7 @@ export function ListingsTabs(props) {
             >
                 <StyledTab value="nfts" label="NFTs" />
                 <StyledTab value="activity" label="Activity" />
-            </StyledTabs>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <ToniqInput
-                    value={query}
-                    style={{
-                        '--toniq-accent-tertiary-background-color': 'transparent',
-                        maxWidth: '300px',
-                        boxSizing: 'border-box',
-                        flexGrow: '1',
-                        marginLeft: '-16px',
-                    }}
-                    placeholder="Search for mint # or token ID"
-                    icon={Search24Icon}
-                    onValueChange={event => {
-                        const search = event.detail;
-                        if (search) {
-                            setSearchParams({search});
-                        } else {
-                            setSearchParams({});
-                        }
-                    }}
-                />
-                <div style={{display: 'flex', gap: '8px'}}>
+                <div className={classes.viewControllerWrapper}>
                     <ToniqIcon
                         icon={LayoutGrid24Icon}
                         onClick={() => {
@@ -68,7 +47,20 @@ export function ListingsTabs(props) {
                         }}
                     />
                 </div>
-            </div>
+            </StyledTabs>
         </>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    viewControllerWrapper: {
+        alignItems: 'center',
+        gap: '8px',
+        display: 'none',
+        justifyContent: 'end',
+        width: '100%',
+        [theme.breakpoints.down('sm')]: {
+            display: 'flex',
+        },
+    },
+}));

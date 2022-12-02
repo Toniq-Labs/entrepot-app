@@ -100,28 +100,28 @@ function doesCollectionPassFilters(listing, currentFilters, traitsData, collecti
     if (!listing) {
         return false;
     }
-    if (currentFilters.price.range) {
+    if (currentFilters.price.min && currentFilters.price.max) {
         if (
-            Number(listing.price) / 100000000 > currentFilters.price.range.max ||
-            Number(listing.price) / 100000000 < currentFilters.price.range.min
+            Number(listing.price) / 100000000 > currentFilters.price.max ||
+            Number(listing.price) / 100000000 < currentFilters.price.min
         ) {
             return false;
         }
     }
 
-    if (currentFilters.rarity.range) {
+    if (currentFilters.rarity.min && currentFilters.rarity.max) {
         if (
-            listing.rarity > currentFilters.rarity.range.max ||
-            listing.rarity < currentFilters.rarity.range.min
+            listing.rarity > currentFilters.rarity.max ||
+            listing.rarity < currentFilters.rarity.min
         ) {
             return false;
         }
     }
 
-    if (currentFilters.mintNumber.range) {
+    if (currentFilters.mintNumber.min && currentFilters.mintNumber.max) {
         if (
-            Number(listing.mintNumber) > currentFilters.mintNumber.range.max ||
-            Number(listing.mintNumber) < currentFilters.mintNumber.range.min
+            Number(listing.mintNumber) > currentFilters.mintNumber.max ||
+            Number(listing.mintNumber) < currentFilters.mintNumber.min
         ) {
             return false;
         }
@@ -230,15 +230,18 @@ export function ListingsBody(props) {
             type: 'listed',
         },
         price: {
-            range: undefined,
+            min: undefined,
+            max: undefined,
             type: 'price',
         },
         rarity: {
-            range: undefined,
+            min: undefined,
+            max: undefined,
             type: 'rarity',
         },
         mintNumber: {
-            range: undefined,
+            min: undefined,
+            max: undefined,
             type: 'mintNumber',
         },
         traits: {
@@ -514,9 +517,8 @@ export function ListingsBody(props) {
                 collection={collection}
                 gridSize={gridSize}
                 setGridSize={setGridSize}
-                query={query}
-                setSearchParams={setSearchParams}
                 storeUserPreferences={storeUserPreferences}
+                forceCheck={forceCheck}
             />
             <WithFilterPanel
                 showFilters={showFilters}
@@ -549,8 +551,6 @@ export function ListingsBody(props) {
                 }
                 otherControlsChildren={
                     <ListingsOtherControls
-                        listings={listings}
-                        filteredAndSortedListings={filteredAndSortedListings}
                         setSort={setSort}
                         storeUserPreferences={storeUserPreferences}
                         pageListing={pageListing}
@@ -560,6 +560,12 @@ export function ListingsBody(props) {
                         sortOptions={sortOptions}
                         sortType={sortType}
                         setSortType={setSortType}
+                        gridSize={gridSize}
+                        setGridSize={setGridSize}
+                        query={query}
+                        setSearchParams={setSearchParams}
+                        showFilters={showFilters}
+                        setShowFilters={setShowFilters}
                     />
                 }
             >
@@ -575,6 +581,7 @@ export function ListingsBody(props) {
                     faveRefresher={faveRefresher}
                     identity={identity}
                     loggedIn={loggedIn}
+                    showFilters={showFilters}
                 />
             </WithFilterPanel>
         </div>

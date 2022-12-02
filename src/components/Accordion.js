@@ -7,7 +7,6 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {makeStyles} from '@material-ui/core';
-import {randomString} from 'augment-vir';
 
 export function Accordion(props) {
     const [
@@ -23,6 +22,7 @@ export function Accordion(props) {
                 className={classes.checkbox}
                 type="checkbox"
                 checked={open}
+                disabled={props.disabled}
                 onChange={() => {
                     setOpen(!open);
                     if (props.onOpenAccordionChange) props.onOpenAccordionChange(!open);
@@ -30,7 +30,9 @@ export function Accordion(props) {
             />
             <label htmlFor={props.title} className={`${classes.header} header`}>
                 {props.title}
-                <ToniqIcon icon={ChevronDown24Icon} className={`${classes.icon} icon`} />
+                {!props.disabled && (
+                    <ToniqIcon icon={ChevronDown24Icon} className={`${classes.icon} icon`} />
+                )}
             </label>
             <div className={`${classes.detail} detail`}>{props.children}</div>
         </div>

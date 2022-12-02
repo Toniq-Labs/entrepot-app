@@ -9,7 +9,6 @@ import {
     ToniqCheckbox,
     ToniqInput,
     ToniqSlider,
-    ToniqToggleButton,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {Accordion} from '../../components/Accordion';
 import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';
@@ -195,9 +194,54 @@ export function ListingsFilters(props) {
                     onOpenAccordionChange={() => {
                         toggleAccordion(filterTypes.status.type);
                     }}
+                    disabled={true}
                 >
                     <div className={classes.filterAccordionWrapper}>
-                        <ToniqToggleButton
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                marginLeft: 8,
+                                gap: 24,
+                            }}
+                        >
+                            <ToniqCheckbox
+                                checked={currentFilters.status.type === filterTypes.status.listed}
+                                onCheckedChange={event => {
+                                    var filterOptions = {
+                                        ...currentFilters,
+                                        status: {
+                                            ...currentFilters.status,
+                                            type: filterTypes.status.listed,
+                                        },
+                                    };
+                                    setCurrentFilters(filterOptions);
+                                    storeUserPreferences('filterOptions', filterOptions);
+                                }}
+                            >
+                                Listed
+                            </ToniqCheckbox>
+                            <ToniqCheckbox
+                                checked={
+                                    currentFilters.status.type ===
+                                    filterTypes.status.entireCollection
+                                }
+                                onCheckedChange={event => {
+                                    var filterOptions = {
+                                        ...currentFilters,
+                                        status: {
+                                            ...currentFilters.status,
+                                            type: filterTypes.status.entireCollection,
+                                        },
+                                    };
+                                    setCurrentFilters(filterOptions);
+                                    storeUserPreferences('filterOptions', filterOptions);
+                                }}
+                            >
+                                Unlisted
+                            </ToniqCheckbox>
+                        </div>
+                        {/* <ToniqToggleButton
                             text="Listed"
                             toggled={currentFilters.status.type === filterTypes.status.listed}
                             onClick={() => {
@@ -228,7 +272,7 @@ export function ListingsFilters(props) {
                                 setCurrentFilters(filterOptions);
                                 storeUserPreferences('filterOptions', filterOptions);
                             }}
-                        />
+                        /> */}
                     </div>
                 </Accordion>
             </div>
@@ -241,35 +285,69 @@ export function ListingsFilters(props) {
                             onOpenAccordionChange={() => {
                                 toggleAccordion(filterTypes.price);
                             }}
+                            disabled={true}
                         >
                             <div className={classes.filterAccordionWrapper}>
-                                <ToniqSlider
-                                    logScale={
-                                        filterRanges[currentFilters.price.type].max -
-                                            filterRanges[currentFilters.price.type].min >
-                                        10000
-                                    }
-                                    min={filterRanges[currentFilters.price.type].min}
-                                    max={filterRanges[currentFilters.price.type].max}
-                                    suffix="ICP"
-                                    double={true}
-                                    value={
-                                        currentFilters.price.range ||
-                                        filterRanges[currentFilters.price]
-                                    }
-                                    onValueChange={event => {
-                                        const values = event.detail;
-                                        var filterOptions = {
-                                            ...currentFilters,
-                                            price: {
-                                                ...currentFilters.price,
-                                                range: values,
-                                            },
-                                        };
-                                        setCurrentFilters(filterOptions);
-                                        storeUserPreferences('filterOptions', filterOptions);
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        padding: '0 8px',
+                                        gap: 8,
                                     }}
-                                />
+                                >
+                                    <ToniqInput
+                                        className="toniq-input-outline"
+                                        placeholder="Min"
+                                        value={
+                                            currentFilters.price.min === undefined
+                                                ? ''
+                                                : currentFilters.price.min.toString()
+                                        }
+                                        onValueChange={event => {
+                                            const values = Number(event.detail);
+                                            if (!isNaN(values)) {
+                                                var filterOptions = {
+                                                    ...currentFilters,
+                                                    price: {
+                                                        ...currentFilters.price,
+                                                        min: values,
+                                                    },
+                                                };
+                                                setCurrentFilters(filterOptions);
+                                                storeUserPreferences(
+                                                    'filterOptions',
+                                                    filterOptions,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                    <ToniqInput
+                                        className="toniq-input-outline"
+                                        placeholder="Max"
+                                        value={
+                                            currentFilters.price.max === undefined
+                                                ? ''
+                                                : currentFilters.price.max.toString()
+                                        }
+                                        onValueChange={event => {
+                                            const values = Number(event.detail);
+                                            if (!isNaN(values)) {
+                                                var filterOptions = {
+                                                    ...currentFilters,
+                                                    price: {
+                                                        ...currentFilters.price,
+                                                        max: values,
+                                                    },
+                                                };
+                                                setCurrentFilters(filterOptions);
+                                                storeUserPreferences(
+                                                    'filterOptions',
+                                                    filterOptions,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </Accordion>
                     </div>
@@ -282,30 +360,63 @@ export function ListingsFilters(props) {
                         onOpenAccordionChange={() => {
                             toggleAccordion(filterTypes.rarity);
                         }}
+                        disabled={true}
                     >
                         <div className={classes.filterAccordionWrapper}>
-                            <ToniqSlider
-                                min={filterRanges[currentFilters.rarity.type].min}
-                                max={filterRanges[currentFilters.rarity.type].max}
-                                suffix="%"
-                                double={true}
-                                value={
-                                    currentFilters.rarity.range ||
-                                    filterRanges[currentFilters.rarity.type]
-                                }
-                                onValueChange={event => {
-                                    const values = event.detail;
-                                    var filterOptions = {
-                                        ...currentFilters,
-                                        rarity: {
-                                            ...currentFilters.rarity,
-                                            range: values,
-                                        },
-                                    };
-                                    setCurrentFilters(filterOptions);
-                                    storeUserPreferences('filterOptions', filterOptions);
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    padding: '0 8px',
+                                    gap: 8,
                                 }}
-                            />
+                            >
+                                <ToniqInput
+                                    className="toniq-input-outline"
+                                    placeholder="Min"
+                                    value={
+                                        currentFilters.rarity.min === undefined
+                                            ? ''
+                                            : currentFilters.rarity.min.toString()
+                                    }
+                                    onValueChange={event => {
+                                        const values = Number(event.detail);
+                                        if (!isNaN(values)) {
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                rarity: {
+                                                    ...currentFilters.rarity,
+                                                    min: values,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
+                                        }
+                                    }}
+                                />
+                                <ToniqInput
+                                    className="toniq-input-outline"
+                                    placeholder="Max"
+                                    value={
+                                        currentFilters.rarity.max === undefined
+                                            ? ''
+                                            : currentFilters.rarity.max.toString()
+                                    }
+                                    onValueChange={event => {
+                                        const values = Number(event.detail);
+                                        if (!isNaN(values)) {
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                rarity: {
+                                                    ...currentFilters.rarity,
+                                                    max: values,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
+                                        }
+                                    }}
+                                />
+                            </div>
                         </div>
                     </Accordion>
                 </div>
@@ -319,29 +430,69 @@ export function ListingsFilters(props) {
                             onOpenAccordionChange={() => {
                                 toggleAccordion(filterTypes.mintNumber);
                             }}
+                            disabled={true}
                         >
                             <div className={classes.filterAccordionWrapper}>
-                                <ToniqSlider
-                                    min={filterRanges[currentFilters.mintNumber.type].min}
-                                    max={filterRanges[currentFilters.mintNumber.type].max}
-                                    double={true}
-                                    value={
-                                        currentFilters.mintNumber.range ||
-                                        filterRanges[currentFilters.mintNumber.type]
-                                    }
-                                    onValueChange={event => {
-                                        const values = event.detail;
-                                        var filterOptions = {
-                                            ...currentFilters,
-                                            mintNumber: {
-                                                ...currentFilters.mintNumber,
-                                                range: values,
-                                            },
-                                        };
-                                        setCurrentFilters(filterOptions);
-                                        storeUserPreferences('filterOptions', filterOptions);
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        padding: '0 8px',
+                                        gap: 8,
                                     }}
-                                />
+                                >
+                                    <ToniqInput
+                                        className="toniq-input-outline"
+                                        placeholder="Min"
+                                        value={
+                                            currentFilters.mintNumber.min === undefined
+                                                ? ''
+                                                : currentFilters.mintNumber.min.toString()
+                                        }
+                                        onValueChange={event => {
+                                            const values = Number(event.detail);
+                                            if (!isNaN(values)) {
+                                                var filterOptions = {
+                                                    ...currentFilters,
+                                                    mintNumber: {
+                                                        ...currentFilters.mintNumber,
+                                                        min: values,
+                                                    },
+                                                };
+                                                setCurrentFilters(filterOptions);
+                                                storeUserPreferences(
+                                                    'filterOptions',
+                                                    filterOptions,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                    <ToniqInput
+                                        className="toniq-input-outline"
+                                        placeholder="Max"
+                                        value={
+                                            currentFilters.mintNumber.max === undefined
+                                                ? ''
+                                                : currentFilters.mintNumber.max.toString()
+                                        }
+                                        onValueChange={event => {
+                                            const values = Number(event.detail);
+                                            if (!isNaN(values)) {
+                                                var filterOptions = {
+                                                    ...currentFilters,
+                                                    mintNumber: {
+                                                        ...currentFilters.mintNumber,
+                                                        max: values,
+                                                    },
+                                                };
+                                                setCurrentFilters(filterOptions);
+                                                storeUserPreferences(
+                                                    'filterOptions',
+                                                    filterOptions,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </Accordion>
                     </div>

@@ -1,6 +1,21 @@
 import {makeStyles} from '@material-ui/core';
-import {cssToReactStyleObject, toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
-import {ToniqDropdown} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {
+    ArrowsSortAscending24Icon,
+    ArrowsSortDescending24Icon,
+    cssToReactStyleObject,
+    Filter24Icon,
+    GridDots24Icon,
+    LayoutGrid24Icon,
+    Search24Icon,
+    toniqColors,
+    toniqFontStyles,
+} from '@toniq-labs/design-system';
+import {
+    ToniqDropdown,
+    ToniqIcon,
+    ToniqInput,
+    ToniqToggleButton,
+} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 
 const useStyles = makeStyles(theme => ({
     toggleSort: {
@@ -18,12 +33,42 @@ const useStyles = makeStyles(theme => ({
             color: toniqColors.pageInteractionHover.foregroundColor,
         },
     },
+    filterTextAndIcon: {
+        display: 'flex',
+        gap: 8,
+        flexShrink: 0,
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    },
+    shadowWrapper: {
+        display: 'flex',
+        width: '100%',
+        gap: 24,
+        height: 40,
+        [theme.breakpoints.down('sm')]: {
+            gap: 12,
+        },
+    },
+    sortWrapper: {
+        display: 'flex',
+        gap: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    viewControllerWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
 }));
 
 export function ListingsOtherControls(props) {
     const {
-        listings,
-        filteredAndSortedListings,
         setSort,
         storeUserPreferences,
         pageListing,
@@ -33,20 +78,43 @@ export function ListingsOtherControls(props) {
         sortOptions,
         sortType,
         setSortType,
+        gridSize,
+        setGridSize,
+        query,
+        setSearchParams,
+        showFilters,
+        setShowFilters,
     } = props;
     const classes = useStyles();
     return (
-        <>
-            <span
-                style={{
-                    display: 'flex',
-                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-                    color: toniqColors.pageSecondary.foregroundColor,
+        <div className={classes.shadowWrapper}>
+            <ToniqToggleButton
+                className="toniq-toggle-button-text-only"
+                toggled={showFilters}
+                text={'Filters'}
+                icon={Filter24Icon}
+                onClick={() => {
+                    setShowFilters(!showFilters);
                 }}
-            >
-                NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
-            </span>
-            <div style={{display: 'flex', gap: 4}}>
+            ></ToniqToggleButton>
+            <ToniqInput
+                value={query}
+                style={{
+                    flexGrow: '1',
+                }}
+                className="toniq-input-outline"
+                placeholder="Search for mint # or token ID..."
+                icon={Search24Icon}
+                onValueChange={event => {
+                    const search = event.detail;
+                    if (search) {
+                        setSearchParams({search});
+                    } else {
+                        setSearchParams({});
+                    }
+                }}
+            />
+            <div className={classes.sortWrapper}>
                 <button
                     className={classes.toggleSort}
                     onClick={() => {
@@ -54,18 +122,17 @@ export function ListingsOtherControls(props) {
                         storeUserPreferences('sortType', sortType);
                     }}
                 >
-                    <img
-                        alt="sort"
-                        src="/icon/svg/sort.svg"
-                        style={{transform: sortType === 'asc' ? 'scaleY(1)' : 'scaleY(-1)'}}
-                    />
+                    {sortType === 'asc' ? (
+                        <ToniqIcon icon={ArrowsSortAscending24Icon} />
+                    ) : (
+                        <ToniqIcon icon={ArrowsSortDescending24Icon} />
+                    )}
                 </button>
                 <ToniqDropdown
                     style={{
                         '--toniq-accent-secondary-background-color': 'transparent',
-                        width: 200,
+                        width: 'unset',
                     }}
-                    selectedLabelPrefix="Sort By:"
                     selected={sort}
                     onSelectChange={event => {
                         setSort(event.detail);
@@ -78,6 +145,32 @@ export function ListingsOtherControls(props) {
                     })}
                 />
             </div>
-        </>
+            <div className={classes.viewControllerWrapper}>
+                <ToniqIcon
+                    icon={LayoutGrid24Icon}
+                    onClick={() => {
+                        setGridSize('large');
+                        storeUserPreferences('gridSize', 'large');
+                        forceCheck();
+                    }}
+                    style={{
+                        color: gridSize === 'large' ? '#000000' : 'gray',
+                        cursor: 'pointer',
+                    }}
+                />
+                <ToniqIcon
+                    icon={GridDots24Icon}
+                    onClick={() => {
+                        setGridSize('small');
+                        storeUserPreferences('gridSize', 'small');
+                        forceCheck();
+                    }}
+                    style={{
+                        color: gridSize !== 'large' ? '#000000' : 'gray',
+                        cursor: 'pointer',
+                    }}
+                />
+            </div>
+        </div>
     );
 }

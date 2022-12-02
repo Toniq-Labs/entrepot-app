@@ -448,7 +448,7 @@ export default function ListingsActivity(props) {
                             flexGrow: '1',
                             marginLeft: '-16px',
                         }}
-                        placeholder="Search for mint # or token ID"
+                        placeholder="Search for mint # or token ID..."
                         icon={Search24Icon}
                         onValueChange={event => {
                             const search = event.detail;

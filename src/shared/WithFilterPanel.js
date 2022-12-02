@@ -1,17 +1,9 @@
 import React from 'react';
 import {css} from 'element-vir';
-import {
-    Filter24Icon,
-    toniqFontStyles,
-    X24Icon,
-    ToniqToggleButton,
-    ToniqSlider,
-    toniqColors,
-} from '@toniq-labs/design-system';
-import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {toniqFontStyles, ToniqToggleButton, ToniqSlider} from '@toniq-labs/design-system';
 
 const filterPanelWidth = css`304px`;
-const filterPanelStickyHeight = css`102px`;
+const filterPanelStickyHeight = css`174px`;
 
 export function WithFilterPanel(props) {
     return (
@@ -44,7 +36,6 @@ export function WithFilterPanel(props) {
 
                             flex-basis: 0;
                             padding: 0;
-                            margin-top: 12px;
                             gap: 16px;
                             scrollbar-width: none;
                         }
@@ -67,6 +58,7 @@ export function WithFilterPanel(props) {
                         }
 
                         .with-filter-panel .right-section {
+                            margin-top: 16px;
                             flex-grow: 1;
                         }
 
@@ -79,24 +71,6 @@ export function WithFilterPanel(props) {
 
                         .with-filter-panel .close-filter-panel-icon {
                             cursor: pointer;
-                        }
-
-                        .reset-filter-panel-icon {
-                            background: none;
-                            padding: 0;
-                            margin: 0;
-                            border: none;
-                            font: inherit;
-                            cursor: pointer;
-                            text-transform: inherit;
-                            text-decoration: inherit;
-                            -webkit-tap-highlight-color: transparent;
-                            ${toniqFontStyles.paragraphFont};
-                            color: ${toniqColors.pageInteraction.foregroundColor};
-                        }
-
-                        .reset-filter-panel-icon:hover {
-                            color: ${toniqColors.pageInteractionHover.foregroundColor};
                         }
 
                         .with-filter-panel .filter-controls-wrapper {
@@ -131,33 +105,20 @@ export function WithFilterPanel(props) {
                             margin-top: var(--filter-element-padding);
                         }
 
-                        .with-filter-panel .controls-row-header {
-                            margin-bottom: 32px;
+                        .controls {
+                            position: sticky;
+                            top: 70px;
+                            z-index: 10;
                         }
 
-                        .with-filter-panel .filter-sort-row {
-                            display: flex;
-                            align-items: center;
-                            gap: 16px;
-                            ${toniqFontStyles.boldParagraphFont};
-                        }
-
-                        .with-filter-panel .filters-trigger {
-                            display: flex;
-                            gap: 16px;
-                        }
-
-                        .with-filter-panel .filter-and-icon {
-                            cursor: pointer;
-                            gap: 8px;
-                            flex-shrink: 0;
-                        }
-
-                        .with-filter-panel .other-controls {
+                        .other-controls {
                             display: flex;
                             align-items: center;
                             justify-content: space-between;
                             flex-grow: 1;
+                            padding: 32px 0;
+                            background-color: white;
+                            box-shadow: white 0 10px 8px -1px;
                         }
 
                         @media (max-width: 800px) {
@@ -186,10 +147,6 @@ export function WithFilterPanel(props) {
                             .with-filter-panel {
                                 --filter-element-padding: 16px;
                             }
-                            .with-filter-panel .filter-sort-row {
-                                flex-direction: column;
-                                align-items: unset;
-                            }
                             .with-filter-panel .filters-dot-thing {
                                 opacity: 0;
                             }
@@ -200,69 +157,24 @@ export function WithFilterPanel(props) {
                     `),
                 }}
             ></style>
-
-            <div className={`${props.className ?? ''} with-filter-panel`} style={{...props.style}}>
-                <div className={`${props.showFilters ? 'show-left-panel' : ''} left-filter-panel`}>
-                    <div className="left-filter-panel-header">
-                        <div className="filter-text-and-icon">
-                            <ToniqIcon icon={Filter24Icon} />
-                            <span>Filters</span>
-                        </div>
-                        <div className="filter-text-and-icon">
-                            {props.onClearFiltersChange && (
-                                <button
-                                    className="reset-filter-panel-icon"
-                                    onClick={() => {
-                                        if (props.onClearFiltersChange)
-                                            props.onClearFiltersChange();
-                                    }}
-                                >
-                                    Clear
-                                </button>
-                            )}
-                            <ToniqIcon
-                                className="close-filter-panel-icon"
-                                onClick={() => {
-                                    if (props.onShowFiltersChange) props.onShowFiltersChange(false);
-                                }}
-                                icon={X24Icon}
-                            />
-                        </div>
-                    </div>
-                    <div className="filter-controls-wrapper">{props.filterControlChildren}</div>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div className="controls">
+                    <div className="other-controls">{props.otherControlsChildren}</div>
                 </div>
-                <div className="right-section">
-                    <div className="controls">
-                        <div className="filter-sort-row">
-                            {!props.noFilters && (
-                                <div className="filters-trigger">
-                                    <div
-                                        className="filter-and-icon"
-                                        style={{
-                                            display: props.showFilters ? 'none' : 'flex',
-                                        }}
-                                        onClick={() => {
-                                            if (props.onShowFiltersChange)
-                                                props.onShowFiltersChange(true);
-                                        }}
-                                    >
-                                        <ToniqIcon icon={Filter24Icon} />
-                                        <span>Filters</span>
-                                    </div>
-                                    <span
-                                        className="filters-dot-thing"
-                                        style={{
-                                            display: props.showFilters ? 'none' : 'flex',
-                                        }}
-                                    >
-                                        •
-                                    </span>
-                                </div>
-                            )}
-                            <div className="other-controls">{props.otherControlsChildren}</div>
-                        </div>
+                <div
+                    className={`${props.className ?? ''} with-filter-panel`}
+                    style={{...props.style}}
+                >
+                    <div
+                        className={`${
+                            props.showFilters ? 'show-left-panel' : ''
+                        } left-filter-panel`}
+                    >
+                        <div className="filter-controls-wrapper">{props.filterControlChildren}</div>
                     </div>
-                    <div>{props.children}</div>
+                    <div className="right-section">
+                        <div>{props.children}</div>
+                    </div>
                 </div>
             </div>
         </>
