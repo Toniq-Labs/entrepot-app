@@ -206,13 +206,18 @@ export function ListingsFilters(props) {
                             }}
                         >
                             <ToniqCheckbox
-                                checked={currentFilters.status.type === filterTypes.status.listed}
+                                checked={currentFilters.status[filterTypes.status.listed] === true}
                                 onCheckedChange={event => {
+                                    if (
+                                        event.detail === false &&
+                                        currentFilters.status[filterTypes.status.unlisted] === false
+                                    )
+                                        return;
                                     var filterOptions = {
                                         ...currentFilters,
                                         status: {
                                             ...currentFilters.status,
-                                            type: filterTypes.status.listed,
+                                            [filterTypes.status.listed]: event.detail,
                                         },
                                     };
                                     setCurrentFilters(filterOptions);
@@ -223,15 +228,19 @@ export function ListingsFilters(props) {
                             </ToniqCheckbox>
                             <ToniqCheckbox
                                 checked={
-                                    currentFilters.status.type ===
-                                    filterTypes.status.entireCollection
+                                    currentFilters.status[filterTypes.status.unlisted] === true
                                 }
                                 onCheckedChange={event => {
+                                    if (
+                                        event.detail === false &&
+                                        currentFilters.status[filterTypes.status.listed] === false
+                                    )
+                                        return;
                                     var filterOptions = {
                                         ...currentFilters,
                                         status: {
                                             ...currentFilters.status,
-                                            type: filterTypes.status.entireCollection,
+                                            [filterTypes.status.unlisted]: event.detail,
                                         },
                                     };
                                     setCurrentFilters(filterOptions);
@@ -241,38 +250,6 @@ export function ListingsFilters(props) {
                                 Unlisted
                             </ToniqCheckbox>
                         </div>
-                        {/* <ToniqToggleButton
-                            text="Listed"
-                            toggled={currentFilters.status.type === filterTypes.status.listed}
-                            onClick={() => {
-                                var filterOptions = {
-                                    ...currentFilters,
-                                    status: {
-                                        ...currentFilters.status,
-                                        type: filterTypes.status.listed,
-                                    },
-                                };
-                                setCurrentFilters(filterOptions);
-                                storeUserPreferences('filterOptions', filterOptions);
-                            }}
-                        />
-                        <ToniqToggleButton
-                            text="Entire Collection"
-                            toggled={
-                                currentFilters.status.type === filterTypes.status.entireCollection
-                            }
-                            onClick={() => {
-                                var filterOptions = {
-                                    ...currentFilters,
-                                    status: {
-                                        ...currentFilters.status,
-                                        type: filterTypes.status.entireCollection,
-                                    },
-                                };
-                                setCurrentFilters(filterOptions);
-                                storeUserPreferences('filterOptions', filterOptions);
-                            }}
-                        /> */}
                     </div>
                 </Accordion>
             </div>

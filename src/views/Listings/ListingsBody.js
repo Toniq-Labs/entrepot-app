@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef, createRef} from 'react';
+import {makeStyles} from '@material-ui/core';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
@@ -87,7 +88,7 @@ const sortOptions = [
 const filterTypes = {
     status: {
         listed: 'listed',
-        entireCollection: 'entireCollection',
+        unlisted: 'unlisted',
         type: 'status',
     },
     price: 'price',
@@ -185,6 +186,7 @@ function useForceUpdate() {
 export function ListingsBody(props) {
     const {collection, getCollectionFromRoute, buyNft, faveRefresher, identity, loggedIn} = props;
     const params = useParams();
+    const classes = useStyles();
     const location = useLocation();
     const componentMounted = useRef(true);
     const pageListing = useRef(0);
@@ -227,6 +229,8 @@ export function ListingsBody(props) {
 
     const defaultFilter = {
         status: {
+            listed: true,
+            unlisted: false,
             type: 'listed',
         },
         price: {
@@ -427,9 +431,11 @@ export function ListingsBody(props) {
                   return true;
               })
               .filter(listing => {
-                  return currentFilters.status.type === filterTypes.status.listed
-                      ? listing[1]
-                      : true;
+                  return currentFilters.status.listed && currentFilters.status.unlisted
+                      ? true
+                      : currentFilters.status.unlisted
+                      ? listing[1] === false
+                      : listing[1];
               })
         : [];
 
@@ -512,7 +518,7 @@ export function ListingsBody(props) {
     }, [traitsData]);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+        <div className={classes.contentWrapper}>
             <ListingsTabs
                 collection={collection}
                 gridSize={gridSize}
@@ -582,8 +588,25 @@ export function ListingsBody(props) {
                     identity={identity}
                     loggedIn={loggedIn}
                     showFilters={showFilters}
+                    sort={sort}
+                    setSort={setSort}
+                    storeUserPreferences={storeUserPreferences}
+                    forceCheck={forceCheck}
+                    sortOptions={sortOptions}
+                    hasRarity={hasRarity}
+                    sortType={sortType}
+                    setSortType={setSortType}
                 />
             </WithFilterPanel>
         </div>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    contentWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        marginTop: 32,
+    },
+}));

@@ -9,21 +9,27 @@ import {NftCardPlaceholder} from '../../shared/NftCardPlaceholder';
 import LazyLoad from 'react-lazyload';
 import {makeStyles} from '@material-ui/core';
 import {
+    ArrowsSortAscending24Icon,
+    ArrowsSortDescending24Icon,
     cssToReactStyleObject,
     LoaderAnimated24Icon,
     toniqColors,
     toniqFontStyles,
+    X24Icon,
 } from '@toniq-labs/design-system';
 import {getEXTCanister, getEXTID} from '../../utilities/load-tokens';
 import {Link} from 'react-router-dom';
 import {NftCard} from '../../shared/NftCard';
 import {EntrepotNFTImage} from '../../utils';
 import PriceICP from '../../components/PriceICP';
-import {ToniqButton, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {
+    ToniqButton,
+    ToniqDropdown,
+    ToniqIcon,
+} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {MinimumOffer} from '../../components/shared/MinimumOffer';
 import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
-import {useEffect} from 'react';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
@@ -53,6 +59,84 @@ const useStyles = makeStyles(theme => ({
             gridTemplateColumns: `repeat(auto-fill, ${gridSmallMaxWidth})`,
         },
     },
+    toggleSort: {
+        background: 'none',
+        padding: 0,
+        margin: 0,
+        border: 'none',
+        font: 'inherit',
+        cursor: 'pointer',
+        textTransform: 'inherit',
+        textDecoration: 'inherit',
+        '-webkit-tap-highlight-color': 'transparent',
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
+    sortWrapper: {
+        display: 'flex',
+        gap: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    mobileControlWrapper: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    desktopControlWrapper: {
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        fontWeight: 500,
+    },
+    tokenWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+    },
+    token: {
+        display: 'flex',
+        borderRadius: 8,
+        padding: '10px 12px',
+        gap: 12,
+        ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+        fontWeight: 500,
+        background: toniqColors.accentSecondary.backgroundColor,
+        color: toniqColors.accentSecondary.foregroundColor,
+    },
+    tokenCloseIcon: {
+        cursor: 'pointer',
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
+    clearToken: {
+        background: 'none',
+        padding: 0,
+        margin: 0,
+        border: 'none',
+        font: 'inherit',
+        cursor: 'pointer',
+        textTransform: 'inherit',
+        textDecoration: 'inherit',
+        '-webkit-tap-highlight-color': 'transparent',
+        '&:hover': {
+            color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
 }));
 
 export function ListingsNftCard(props) {
@@ -66,6 +150,14 @@ export function ListingsNftCard(props) {
         listings,
         loadingRef,
         showFilters,
+        sort,
+        setSort,
+        storeUserPreferences,
+        forceCheck,
+        sortOptions,
+        hasRarity,
+        sortType,
+        setSortType,
     } = props;
     const classes = useStyles();
     const preloaderItemColor = '#f1f1f1';
@@ -108,6 +200,36 @@ export function ListingsNftCard(props) {
         <div style={{position: 'relative'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: 32}}>
                 {showFilters && (
+                    <div className={classes.desktopControlWrapper}>
+                        <span
+                            style={{
+                                display: 'flex',
+                                ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                                color: toniqColors.pageSecondary.foregroundColor,
+                            }}
+                        >
+                            NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
+                        </span>
+                        <div className={classes.tokenWrapper}>
+                            <div className={classes.tokenWrapper}>
+                                <div className={classes.token}>
+                                    <span>Test 1</span>
+                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
+                                </div>
+                                <div className={classes.token}>
+                                    <span>Test 2</span>
+                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
+                                </div>
+                                <div className={classes.token}>
+                                    <span>Test 3</span>
+                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
+                                </div>
+                            </div>
+                            <button className={classes.clearToken}>Clear All</button>
+                        </div>
+                    </div>
+                )}
+                <div className={classes.mobileControlWrapper}>
                     <span
                         style={{
                             display: 'flex',
@@ -117,7 +239,43 @@ export function ListingsNftCard(props) {
                     >
                         NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
                     </span>
-                )}
+                    <div className={classes.sortWrapper}>
+                        <button
+                            className={classes.toggleSort}
+                            onClick={() => {
+                                sortType === 'asc' ? setSortType('desc') : setSortType('asc');
+                                storeUserPreferences(
+                                    'sortType',
+                                    sortType === 'asc' ? 'desc' : 'asc',
+                                );
+                            }}
+                        >
+                            {sortType === 'asc' ? (
+                                <ToniqIcon icon={ArrowsSortAscending24Icon} />
+                            ) : (
+                                <ToniqIcon icon={ArrowsSortDescending24Icon} />
+                            )}
+                        </button>
+                        <ToniqDropdown
+                            style={{
+                                '--toniq-accent-secondary-background-color': 'transparent',
+                                width: 'unset',
+                            }}
+                            selected={sort}
+                            onSelectChange={event => {
+                                setSort(event.detail);
+                                storeUserPreferences('sortOption', event.detail);
+                                pageListing.current = 0;
+                                forceCheck();
+                            }}
+                            options={sortOptions.filter(sortOption => {
+                                return sortOption.value.type === 'rarity' && !hasRarity()
+                                    ? false
+                                    : true;
+                            })}
+                        />
+                    </div>
+                </div>
                 {getShowListings(chunkedAndFilteredAndSortedListings).length ? (
                     <div
                         className={`${gridSize === 'small' ? 'small' : ''} ${

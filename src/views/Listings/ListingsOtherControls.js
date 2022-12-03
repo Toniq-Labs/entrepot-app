@@ -119,7 +119,7 @@ export function ListingsOtherControls(props) {
                     className={classes.toggleSort}
                     onClick={() => {
                         sortType === 'asc' ? setSortType('desc') : setSortType('asc');
-                        storeUserPreferences('sortType', sortType);
+                        storeUserPreferences('sortType', sortType === 'asc' ? 'desc' : 'asc');
                     }}
                 >
                     {sortType === 'asc' ? (
