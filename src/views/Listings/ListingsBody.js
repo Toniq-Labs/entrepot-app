@@ -596,6 +596,9 @@ export function ListingsBody(props) {
                     hasRarity={hasRarity}
                     sortType={sortType}
                     setSortType={setSortType}
+                    currentFilters={currentFilters}
+                    setCurrentFilters={setCurrentFilters}
+                    defaultFilter={defaultFilter}
                 />
             </WithFilterPanel>
         </div>

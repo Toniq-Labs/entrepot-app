@@ -567,7 +567,7 @@ export default function CollectionDetails(props) {
                                                 </Grid>
                                             );
                                         })}
-                                    {true && (
+                                    {collection.web && (
                                         <Link
                                             href={collection.web}
                                             target="_blank"

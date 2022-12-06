@@ -20,6 +20,8 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {useLocation, useSearchParams} from 'react-router-dom';
 import {
+    ArrowsSortAscending24Icon,
+    ArrowsSortDescending24Icon,
     cssToReactStyleObject,
     LoaderAnimated24Icon,
     Search24Icon,
@@ -68,9 +70,7 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '100%',
         backgroundColor: 'white',
         paddingBottom: '32px',
-        marginTop: '32px',
         [theme.breakpoints.down('sm')]: {
-            marginTop: '16px',
             paddingBottom: '16px',
         },
     },
@@ -104,12 +104,12 @@ const useStyles = makeStyles(theme => ({
     },
     hideWhenMobile: {
         [theme.breakpoints.down('sm')]: {
-            display: 'none',
+            display: 'none !important',
         },
     },
     hideWhenTablet: {
         [theme.breakpoints.down('md')]: {
-            display: 'none',
+            display: 'none !important',
         },
     },
     showWhenMobile: {
@@ -132,6 +132,35 @@ const useStyles = makeStyles(theme => ({
         ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
         '&:hover': {
             color: toniqColors.pageInteractionHover.foregroundColor,
+        },
+    },
+    shadowWrapper: {
+        display: 'flex',
+        width: '100%',
+        gap: 24,
+        height: 40,
+        [theme.breakpoints.down('sm')]: {
+            gap: 12,
+        },
+    },
+    sortWrapper: {
+        display: 'flex',
+        gap: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    mobileControlWrapper: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    contentWrapper: {
+        marginTop: 16,
+        [theme.breakpoints.down('sm')]: {
+            marginTop: 8,
         },
     },
 }));
@@ -400,7 +429,9 @@ export default function ListingsActivity(props) {
         [
             value => {
                 if (sort.value.type === 'time') {
-                    return new Date(Number(value[sort.value.type] / 1000000000));
+                    return new moment.unix(Number(value[sort.value.type] / 1000000000)).format(
+                        'YYYYMMDD',
+                    );
                 }
 
                 return value[sort.value.type];
@@ -436,179 +467,227 @@ export default function ListingsActivity(props) {
                     <StyledTab value="nfts" label="NFTs" />
                     <StyledTab value="activity" label="Activity" />
                 </StyledTabs>
-                <div
-                    style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
-                >
-                    <ToniqInput
-                        value={query}
-                        style={{
-                            '--toniq-accent-tertiary-background-color': 'transparent',
-                            maxWidth: '300px',
-                            boxSizing: 'border-box',
-                            flexGrow: '1',
-                            marginLeft: '-16px',
-                        }}
-                        placeholder="Search for mint # or token ID..."
-                        icon={Search24Icon}
-                        onValueChange={event => {
-                            const search = event.detail;
-                            if (search) {
-                                setSearchParams({search});
-                            } else {
-                                setSearchParams({});
-                            }
-                        }}
-                    />
-                    <div style={{display: 'flex', gap: 4}}>
-                        <button
-                            className={classes.toggleSort}
-                            onClick={() => {
-                                sortType === 'asc' ? setSortType('desc') : setSortType('asc');
-                                storeUserPreferences('sortType', sortType);
-                            }}
-                        >
-                            <img
-                                alt="sort"
-                                src="/icon/svg/sort.svg"
+                <WithFilterPanel
+                    noFilters={true}
+                    otherControlsChildren={
+                        <div className={classes.shadowWrapper}>
+                            <ToniqInput
+                                value={query}
                                 style={{
-                                    transform: sortType === 'asc' ? 'scaleY(1)' : 'scaleY(-1)',
+                                    flexGrow: '1',
+                                }}
+                                className="toniq-input-outline"
+                                placeholder="Search for mint # or token ID..."
+                                icon={Search24Icon}
+                                onValueChange={event => {
+                                    const search = event.detail;
+                                    if (search) {
+                                        setSearchParams({search});
+                                    } else {
+                                        setSearchParams({});
+                                    }
                                 }}
                             />
-                        </button>
-                        <ToniqDropdown
-                            style={{
-                                '--toniq-accent-secondary-background-color': 'transparent',
-                                width: 200,
-                            }}
-                            selectedLabelPrefix="Sort By:"
-                            selected={sort}
-                            onSelectChange={event => {
-                                setSort(event.detail);
-                                storeUserPreferences('sortOption', event.detail);
-                            }}
-                            options={sortOptions}
-                        />
-                    </div>
-                </div>
-                <WithFilterPanel noFilters={true}>
-                    {filteredAndSortedListings.length ? (
-                        <div className={classes.listRowContainer}>
-                            <div className={classes.listRowHeader}>
-                                <ListRow
-                                    items={[
-                                        true,
-                                        'MINT #',
-                                        'NRI',
-                                        'PRICE',
-                                        'FROM',
-                                        'TO',
-                                        'DATE',
-                                        'TIME',
-                                    ]}
-                                    style={{
-                                        ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                        maxHeight: '32px',
+                            <div className={`${classes.hideWhenMobile} ${classes.sortWrapper}`}>
+                                <button
+                                    className={classes.toggleSort}
+                                    onClick={() => {
+                                        sortType === 'asc'
+                                            ? setSortType('desc')
+                                            : setSortType('asc');
+                                        storeUserPreferences(
+                                            'sortType',
+                                            sortType === 'asc' ? 'desc' : 'asc',
+                                        );
                                     }}
+                                >
+                                    {sortType === 'asc' ? (
+                                        <ToniqIcon icon={ArrowsSortAscending24Icon} />
+                                    ) : (
+                                        <ToniqIcon icon={ArrowsSortDescending24Icon} />
+                                    )}
+                                </button>
+                                <ToniqDropdown
+                                    style={{
+                                        '--toniq-accent-secondary-background-color': 'transparent',
+                                        width: 'unset',
+                                    }}
+                                    selected={sort}
+                                    onSelectChange={event => {
+                                        setSort(event.detail);
+                                        storeUserPreferences('sortOption', event.detail);
+                                    }}
+                                    options={sortOptions}
                                 />
                             </div>
-                            {activityListing.map(listing => {
-                                return (
-                                    <NftCard
-                                        listStyle={true}
-                                        onClick={() => {
-                                            navigate(`/marketplace/asset/${listing.token}`);
-                                        }}
-                                        imageUrl={listing.image}
-                                        key={listing.id}
-                                    >
-                                        <>
-                                            <ListRow
-                                                items={[
-                                                    '',
-                                                    `#${listing.mintNumber}`,
-                                                    `${listing.rarity}%`,
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            alignContent: 'center',
-                                                            justifyContent: 'left',
-                                                        }}
-                                                    >
-                                                        <PriceICP
-                                                            large={false}
-                                                            volume={true}
-                                                            clean={false}
-                                                            price={listing.price}
-                                                        />
-                                                        &nbsp; (
-                                                        <PriceUSD
-                                                            price={EntrepotGetICPUSD(listing.price)}
-                                                        />
-                                                        )
-                                                    </div>,
-                                                    listing.seller ? (
-                                                        <ToniqMiddleEllipsis
-                                                            externalLink={`https://icscan.io/account/${listing.seller}`}
-                                                            letterCount={5}
-                                                            text={listing.seller}
-                                                        />
-                                                    ) : (
-                                                        '-'
-                                                    ),
-                                                    listing.buyer ? (
-                                                        <ToniqMiddleEllipsis
-                                                            externalLink={`https://icscan.io/account/${listing.buyer}`}
-                                                            letterCount={5}
-                                                            text={listing.buyer}
-                                                        />
-                                                    ) : (
-                                                        '-'
-                                                    ),
-                                                    moment
-                                                        .unix(Number(listing.time / 1000000000))
-                                                        .format('MMMM D, YYYY (h:mm a)'),
-                                                    <Timestamp
-                                                        relative
-                                                        autoUpdate
-                                                        date={Number(listing.time / 1000000000)}
-                                                        style={{
-                                                            ...cssToReactStyleObject(
-                                                                toniqFontStyles.boldParagraphFont,
-                                                            ),
-                                                        }}
-                                                    />,
-                                                ]}
-                                            />
-                                        </>
-                                    </NftCard>
-                                );
-                            })}
                         </div>
-                    ) : (
-                        ''
-                    )}
-                    <StateContainer show={listings && !filteredAndSortedListings.length}>
-                        No Result
-                    </StateContainer>
-                    <StateContainer show={!listings}>
-                        <ToniqIcon icon={LoaderAnimated24Icon} />
-                        &nbsp;Loading...
-                    </StateContainer>
-                    <div className={classes.pagination}>
-                        <ToniqPagination
-                            currentPage={activityPage + 1}
-                            pageCount={activity.length}
-                            pagesShown={6}
-                            onPageChange={event => {
-                                setActivityPage(event.detail - 1);
-                            }}
-                            onNext={event => {
-                                setActivityPage(event.detail - 1);
-                            }}
-                            onPrevious={event => {
-                                setActivityPage(event.detail - 1);
-                            }}
-                        />
+                    }
+                >
+                    <div className={classes.contentWrapper}>
+                        <div className={classes.mobileControlWrapper}>
+                            <span
+                                style={{
+                                    display: 'flex',
+                                    ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
+                                    color: toniqColors.pageSecondary.foregroundColor,
+                                }}
+                            >
+                                NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
+                            </span>
+                            <div className={classes.sortWrapper}>
+                                <button
+                                    className={classes.toggleSort}
+                                    onClick={() => {
+                                        sortType === 'asc'
+                                            ? setSortType('desc')
+                                            : setSortType('asc');
+                                        storeUserPreferences(
+                                            'sortType',
+                                            sortType === 'asc' ? 'desc' : 'asc',
+                                        );
+                                    }}
+                                >
+                                    {sortType === 'asc' ? (
+                                        <ToniqIcon icon={ArrowsSortAscending24Icon} />
+                                    ) : (
+                                        <ToniqIcon icon={ArrowsSortDescending24Icon} />
+                                    )}
+                                </button>
+                                <ToniqDropdown
+                                    style={{
+                                        '--toniq-accent-secondary-background-color': 'transparent',
+                                        width: 'unset',
+                                    }}
+                                    selected={sort}
+                                    onSelectChange={event => {
+                                        setSort(event.detail);
+                                        storeUserPreferences('sortOption', event.detail);
+                                    }}
+                                    options={sortOptions}
+                                />
+                            </div>
+                        </div>
+                        {filteredAndSortedListings.length ? (
+                            <div className={classes.listRowContainer}>
+                                <div className={classes.listRowHeader}>
+                                    <ListRow
+                                        items={[
+                                            true,
+                                            'MINT #',
+                                            'NRI',
+                                            'PRICE',
+                                            'FROM',
+                                            'TO',
+                                            'DATE',
+                                            'TIME',
+                                        ]}
+                                        style={{
+                                            ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                                            maxHeight: '32px',
+                                        }}
+                                    />
+                                </div>
+                                {activityListing.map(listing => {
+                                    return (
+                                        <NftCard
+                                            listStyle={true}
+                                            onClick={() => {
+                                                navigate(`/marketplace/asset/${listing.token}`);
+                                            }}
+                                            imageUrl={listing.image}
+                                            key={listing.id}
+                                        >
+                                            <>
+                                                <ListRow
+                                                    items={[
+                                                        '',
+                                                        `#${listing.mintNumber}`,
+                                                        `${listing.rarity}%`,
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                alignContent: 'center',
+                                                                justifyContent: 'left',
+                                                            }}
+                                                        >
+                                                            <PriceICP
+                                                                large={false}
+                                                                volume={true}
+                                                                clean={false}
+                                                                price={listing.price}
+                                                            />
+                                                            &nbsp; (
+                                                            <PriceUSD
+                                                                price={EntrepotGetICPUSD(
+                                                                    listing.price,
+                                                                )}
+                                                            />
+                                                            )
+                                                        </div>,
+                                                        listing.seller ? (
+                                                            <ToniqMiddleEllipsis
+                                                                externalLink={`https://icscan.io/account/${listing.seller}`}
+                                                                letterCount={5}
+                                                                text={listing.seller}
+                                                            />
+                                                        ) : (
+                                                            '-'
+                                                        ),
+                                                        listing.buyer ? (
+                                                            <ToniqMiddleEllipsis
+                                                                externalLink={`https://icscan.io/account/${listing.buyer}`}
+                                                                letterCount={5}
+                                                                text={listing.buyer}
+                                                            />
+                                                        ) : (
+                                                            '-'
+                                                        ),
+                                                        moment
+                                                            .unix(Number(listing.time / 1000000000))
+                                                            .format('MMMM D, YYYY (h:mm a)'),
+                                                        <Timestamp
+                                                            relative
+                                                            autoUpdate
+                                                            date={Number(listing.time / 1000000000)}
+                                                            style={{
+                                                                ...cssToReactStyleObject(
+                                                                    toniqFontStyles.boldParagraphFont,
+                                                                ),
+                                                            }}
+                                                        />,
+                                                    ]}
+                                                />
+                                            </>
+                                        </NftCard>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        <StateContainer show={listings && !filteredAndSortedListings.length}>
+                            No Result
+                        </StateContainer>
+                        <StateContainer show={!listings}>
+                            <ToniqIcon icon={LoaderAnimated24Icon} />
+                            &nbsp;Loading...
+                        </StateContainer>
+                        <div className={classes.pagination}>
+                            <ToniqPagination
+                                currentPage={activityPage + 1}
+                                pageCount={activity.length}
+                                pagesShown={6}
+                                onPageChange={event => {
+                                    setActivityPage(event.detail - 1);
+                                }}
+                                onNext={event => {
+                                    setActivityPage(event.detail - 1);
+                                }}
+                                onPrevious={event => {
+                                    setActivityPage(event.detail - 1);
+                                }}
+                            />
+                        </div>
                     </div>
                 </WithFilterPanel>
             </div>

@@ -247,6 +247,7 @@ function createNumericRangeInputTemplate<
                 placeholder: propName.replace(/^current/, ''),
             })}
             ${listen(ToniqInput.events.valueChange, event => {
+                console.log(event);
                 const numericCast = Number(removeCommasFromNumberString(event.detail));
                 const newValue =
                     isNaN(numericCast) || event.detail === '' ? undefined : numericCast;

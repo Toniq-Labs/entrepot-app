@@ -58,7 +58,6 @@ export function WithFilterPanel(props) {
                         }
 
                         .with-filter-panel .right-section {
-                            margin-top: 16px;
                             flex-grow: 1;
                         }
 
@@ -116,9 +115,14 @@ export function WithFilterPanel(props) {
                             align-items: center;
                             justify-content: space-between;
                             flex-grow: 1;
-                            padding: 32px 0;
                             background-color: white;
                             box-shadow: white 0 10px 8px -1px;
+                            width: 100vw;
+                            margin-left: -32px;
+                        }
+
+                        .other-controls:not(:empty) {
+                            padding: 32px;
                         }
 
                         @media (max-width: 800px) {

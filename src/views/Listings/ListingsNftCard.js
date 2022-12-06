@@ -30,6 +30,8 @@ import {
 import {MinimumOffer} from '../../components/shared/MinimumOffer';
 import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
+import {camelCaseToTitleCase} from '../../utilities/string-utils';
+import {truncateNumber} from 'augment-vir';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
@@ -96,6 +98,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'row-reverse',
         justifyContent: 'space-between',
         alignItems: 'center',
+        gap: 32,
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
@@ -106,6 +109,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         gap: 12,
+        flexWrap: 'wrap',
     },
     token: {
         display: 'flex',
@@ -158,9 +162,13 @@ export function ListingsNftCard(props) {
         hasRarity,
         sortType,
         setSortType,
+        currentFilters,
+        setCurrentFilters,
+        defaultFilter,
     } = props;
     const classes = useStyles();
     const preloaderItemColor = '#f1f1f1';
+    const {status, ...appliedFilters} = currentFilters;
 
     const chunkedAndFilteredAndSortedListings = chunk(
         filteredAndSortedListings,
@@ -196,8 +204,31 @@ export function ListingsNftCard(props) {
 
         return listings.length ? showListings : [];
     };
+
+    const findCurrentFilterTraitIndex = category => {
+        return currentFilters.traits.values.findIndex(trait => {
+            return trait.category === category;
+        });
+    };
+
+    const tokenFilters = Object.values(appliedFilters)
+        .map(value => {
+            if (value.min === undefined && value.max === undefined) {
+                return value;
+            }
+            return {
+                tokenText: `${value.min !== undefined ? truncateNumber(value.min) : ''} ${
+                    value.min !== undefined ? '<' : ''
+                } ${camelCaseToTitleCase(value.type)} ${value.max !== undefined ? '<' : ''} ${
+                    value.max !== undefined ? truncateNumber(value.max) : ''
+                }`,
+                ...value,
+            };
+        })
+        .filter(tokenFilter => tokenFilter.tokenText || tokenFilter.type === 'traits');
+
     return (
-        <div style={{position: 'relative'}}>
+        <div style={{position: 'relative', marginTop: 16}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: 32}}>
                 {showFilters && (
                     <div className={classes.desktopControlWrapper}>
@@ -212,20 +243,109 @@ export function ListingsNftCard(props) {
                         </span>
                         <div className={classes.tokenWrapper}>
                             <div className={classes.tokenWrapper}>
-                                <div className={classes.token}>
-                                    <span>Test 1</span>
-                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
-                                </div>
-                                <div className={classes.token}>
-                                    <span>Test 2</span>
-                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
-                                </div>
-                                <div className={classes.token}>
-                                    <span>Test 3</span>
-                                    <ToniqIcon className={classes.tokenCloseIcon} icon={X24Icon} />
-                                </div>
+                                {tokenFilters.map(token => {
+                                    return token.type !== 'traits' ? (
+                                        <div className={classes.token}>
+                                            <span>{token.tokenText}</span>
+                                            <ToniqIcon
+                                                className={classes.tokenCloseIcon}
+                                                icon={X24Icon}
+                                                onClick={() => {
+                                                    var filterOptions = {
+                                                        ...currentFilters,
+                                                        [token.type]: {
+                                                            ...currentFilters[token.type],
+                                                            min: undefined,
+                                                            max: undefined,
+                                                        },
+                                                    };
+                                                    setCurrentFilters(filterOptions);
+                                                    storeUserPreferences(
+                                                        'filterOptions',
+                                                        filterOptions,
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        token.values.map(traitCategoryToken => {
+                                            return traitCategoryToken.values.map(traitToken => {
+                                                return (
+                                                    <div className={classes.token}>
+                                                        <span>
+                                                            {`${traitCategoryToken.category}: ${traitToken}`}
+                                                        </span>
+                                                        <ToniqIcon
+                                                            className={classes.tokenCloseIcon}
+                                                            icon={X24Icon}
+                                                            onClick={() => {
+                                                                const traitCategoryIndex =
+                                                                    findCurrentFilterTraitIndex(
+                                                                        traitCategoryToken.category,
+                                                                    );
+
+                                                                const traitIndex =
+                                                                    currentFilters.traits.values[
+                                                                        traitCategoryIndex
+                                                                    ].values.findIndex(trait => {
+                                                                        return trait === traitToken;
+                                                                    });
+
+                                                                if (traitCategoryIndex !== -1) {
+                                                                    currentFilters.traits.values[
+                                                                        traitCategoryIndex
+                                                                    ].values.splice(traitIndex, 1);
+                                                                }
+
+                                                                if (
+                                                                    traitIndex !== -1 &&
+                                                                    currentFilters.traits.values[
+                                                                        traitCategoryIndex
+                                                                    ].values &&
+                                                                    !currentFilters.traits.values[
+                                                                        traitCategoryIndex
+                                                                    ].values.length
+                                                                ) {
+                                                                    currentFilters.traits.values.splice(
+                                                                        traitCategoryIndex,
+                                                                        1,
+                                                                    );
+                                                                }
+
+                                                                var filterOptions = {
+                                                                    ...currentFilters,
+                                                                    traits: {
+                                                                        ...currentFilters.traits,
+                                                                        values: currentFilters
+                                                                            .traits.values,
+                                                                    },
+                                                                };
+
+                                                                setCurrentFilters(filterOptions);
+                                                                storeUserPreferences(
+                                                                    'filterOptions',
+                                                                    filterOptions,
+                                                                );
+                                                            }}
+                                                        />
+                                                    </div>
+                                                );
+                                            });
+                                        })
+                                    );
+                                })}
                             </div>
-                            <button className={classes.clearToken}>Clear All</button>
+                            {tokenFilters.length > 1 && (
+                                <button
+                                    className={classes.clearToken}
+                                    onClick={() => {
+                                        setCurrentFilters(defaultFilter);
+                                        storeUserPreferences('filterOptions', defaultFilter);
+                                    }}
+                                >
+                                    Clear All
+                                </button>
+                            )}
                         </div>
                     </div>
                 )}

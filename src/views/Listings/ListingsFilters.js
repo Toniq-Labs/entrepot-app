@@ -278,24 +278,22 @@ export function ListingsFilters(props) {
                                         value={
                                             currentFilters.price.min === undefined
                                                 ? ''
-                                                : currentFilters.price.min.toString()
+                                                : String(currentFilters.price.min)
                                         }
                                         onValueChange={event => {
-                                            const values = Number(event.detail);
-                                            if (!isNaN(values)) {
-                                                var filterOptions = {
-                                                    ...currentFilters,
-                                                    price: {
-                                                        ...currentFilters.price,
-                                                        min: values,
-                                                    },
-                                                };
-                                                setCurrentFilters(filterOptions);
-                                                storeUserPreferences(
-                                                    'filterOptions',
-                                                    filterOptions,
-                                                );
-                                            }
+                                            const value =
+                                                isNaN(event.detail) || event.detail === ''
+                                                    ? undefined
+                                                    : event.detail;
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                price: {
+                                                    ...currentFilters.price,
+                                                    min: value,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                         }}
                                     />
                                     <ToniqInput
@@ -304,24 +302,22 @@ export function ListingsFilters(props) {
                                         value={
                                             currentFilters.price.max === undefined
                                                 ? ''
-                                                : currentFilters.price.max.toString()
+                                                : String(currentFilters.price.max)
                                         }
                                         onValueChange={event => {
-                                            const values = Number(event.detail);
-                                            if (!isNaN(values)) {
-                                                var filterOptions = {
-                                                    ...currentFilters,
-                                                    price: {
-                                                        ...currentFilters.price,
-                                                        max: values,
-                                                    },
-                                                };
-                                                setCurrentFilters(filterOptions);
-                                                storeUserPreferences(
-                                                    'filterOptions',
-                                                    filterOptions,
-                                                );
-                                            }
+                                            const value =
+                                                isNaN(event.detail) || event.detail === ''
+                                                    ? undefined
+                                                    : event.detail;
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                price: {
+                                                    ...currentFilters.price,
+                                                    max: value,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                         }}
                                     />
                                 </div>
@@ -353,21 +349,22 @@ export function ListingsFilters(props) {
                                     value={
                                         currentFilters.rarity.min === undefined
                                             ? ''
-                                            : currentFilters.rarity.min.toString()
+                                            : String(currentFilters.rarity.min)
                                     }
                                     onValueChange={event => {
-                                        const values = Number(event.detail);
-                                        if (!isNaN(values)) {
-                                            var filterOptions = {
-                                                ...currentFilters,
-                                                rarity: {
-                                                    ...currentFilters.rarity,
-                                                    min: values,
-                                                },
-                                            };
-                                            setCurrentFilters(filterOptions);
-                                            storeUserPreferences('filterOptions', filterOptions);
-                                        }
+                                        const value =
+                                            isNaN(event.detail) || event.detail === ''
+                                                ? undefined
+                                                : event.detail;
+                                        var filterOptions = {
+                                            ...currentFilters,
+                                            rarity: {
+                                                ...currentFilters.rarity,
+                                                min: value,
+                                            },
+                                        };
+                                        setCurrentFilters(filterOptions);
+                                        storeUserPreferences('filterOptions', filterOptions);
                                     }}
                                 />
                                 <ToniqInput
@@ -376,21 +373,22 @@ export function ListingsFilters(props) {
                                     value={
                                         currentFilters.rarity.max === undefined
                                             ? ''
-                                            : currentFilters.rarity.max.toString()
+                                            : String(currentFilters.rarity.max)
                                     }
                                     onValueChange={event => {
-                                        const values = Number(event.detail);
-                                        if (!isNaN(values)) {
-                                            var filterOptions = {
-                                                ...currentFilters,
-                                                rarity: {
-                                                    ...currentFilters.rarity,
-                                                    max: values,
-                                                },
-                                            };
-                                            setCurrentFilters(filterOptions);
-                                            storeUserPreferences('filterOptions', filterOptions);
-                                        }
+                                        const value =
+                                            isNaN(event.detail) || event.detail === ''
+                                                ? undefined
+                                                : event.detail;
+                                        var filterOptions = {
+                                            ...currentFilters,
+                                            rarity: {
+                                                ...currentFilters.rarity,
+                                                max: value,
+                                            },
+                                        };
+                                        setCurrentFilters(filterOptions);
+                                        storeUserPreferences('filterOptions', filterOptions);
                                     }}
                                 />
                             </div>
@@ -423,24 +421,22 @@ export function ListingsFilters(props) {
                                         value={
                                             currentFilters.mintNumber.min === undefined
                                                 ? ''
-                                                : currentFilters.mintNumber.min.toString()
+                                                : String(currentFilters.mintNumber.min)
                                         }
                                         onValueChange={event => {
-                                            const values = Number(event.detail);
-                                            if (!isNaN(values)) {
-                                                var filterOptions = {
-                                                    ...currentFilters,
-                                                    mintNumber: {
-                                                        ...currentFilters.mintNumber,
-                                                        min: values,
-                                                    },
-                                                };
-                                                setCurrentFilters(filterOptions);
-                                                storeUserPreferences(
-                                                    'filterOptions',
-                                                    filterOptions,
-                                                );
-                                            }
+                                            const value =
+                                                isNaN(event.detail) || event.detail === ''
+                                                    ? undefined
+                                                    : event.detail;
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                mintNumber: {
+                                                    ...currentFilters.mintNumber,
+                                                    min: value,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                         }}
                                     />
                                     <ToniqInput
@@ -449,24 +445,22 @@ export function ListingsFilters(props) {
                                         value={
                                             currentFilters.mintNumber.max === undefined
                                                 ? ''
-                                                : currentFilters.mintNumber.max.toString()
+                                                : String(currentFilters.mintNumber.max)
                                         }
                                         onValueChange={event => {
-                                            const values = Number(event.detail);
-                                            if (!isNaN(values)) {
-                                                var filterOptions = {
-                                                    ...currentFilters,
-                                                    mintNumber: {
-                                                        ...currentFilters.mintNumber,
-                                                        max: values,
-                                                    },
-                                                };
-                                                setCurrentFilters(filterOptions);
-                                                storeUserPreferences(
-                                                    'filterOptions',
-                                                    filterOptions,
-                                                );
-                                            }
+                                            const value =
+                                                isNaN(event.detail) || event.detail === ''
+                                                    ? undefined
+                                                    : event.detail;
+                                            var filterOptions = {
+                                                ...currentFilters,
+                                                mintNumber: {
+                                                    ...currentFilters.mintNumber,
+                                                    max: value,
+                                                },
+                                            };
+                                            setCurrentFilters(filterOptions);
+                                            storeUserPreferences('filterOptions', filterOptions);
                                         }}
                                     />
                                 </div>
