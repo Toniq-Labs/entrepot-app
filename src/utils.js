@@ -200,6 +200,8 @@ const clipboardCopy = text => {
 
     if (typeof cachePriority == 'undefined') cachePriority = "10";
 
+ 
+
     if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false)
     {
       // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
@@ -326,7 +328,7 @@ const clipboardCopy = text => {
     if (collection == 'ugdkf-taaaa-aaaak-acoia-cai' || collection == 'bzsui-sqaaa-aaaah-qce2a-cai' || collection == '4ggk4-mqaaa-aaaae-qad6q-cai')
       avatarImgStyle.objectFit = 'contain';
     if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
-    if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai')
+    if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai' || collection == 't555s-uyaaa-aaaal-qbjsa-cai')
       return <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />;
     if (collection === TREASURECANISTER) {
       var nftimg = false;
