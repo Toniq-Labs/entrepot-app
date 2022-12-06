@@ -134,7 +134,7 @@ export default function DetailSectionActivity(props) {
 
     return (
         <Box className={classes.activityWrapper}>
-            {sortedActivity && sortedActivity.length && (
+            {sortedActivity && sortedActivity.length > 0 && (
                 <div className={classes.detailSectionContainer}>
                     <div className={classes.detailSectionTitleWrapper}>
                         <span className={classes.detailSectionTitle}>Activity</span>
