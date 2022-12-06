@@ -153,6 +153,7 @@ const Detail = props => {
     motokoContent,
     setMotokoContent,
   ] = useState('');
+  const [overrideDetailPage, setOverrideDetailPage] = React.useState(false) 
 
   redirectIfBlockedFromEarnFeatures(navigate, collection, props);
 
@@ -191,6 +192,23 @@ const Detail = props => {
     }catch(e){
       //console.log(e);
     };
+    let {index, canister} = extjs.decodeTokenId(tokenid);
+    if (canister === 'zadth-pqaaa-aaaal-abjgq-cai') 
+    try {
+      let x = await fetch(EntrepotNFTImage(canister, index, tokenid, true))
+      let contentType = (x.headers.get('Content-Type'));
+      if (contentType === 'image/svg+xml')
+      {
+        setOverrideDetailPage('asset_canisters')
+      }
+      else 
+      {
+        setOverrideDetailPage('videos_that_dont_fit_in_frame')
+      }
+    }
+    catch(e){
+
+    }
     // let {index, canister} = extjs.decodeTokenId(tokenid);
     // if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
     //   await fetch(
@@ -357,7 +375,7 @@ const Detail = props => {
     } else {
       var detailPage = 'Missing';
     }
-
+    if (overrideDetailPage) detailPage = overrideDetailPage;
     // Motoko Mechs specific
     // if (canister === 'ugdkf-taaaa-aaaak-acoia-cai') {
     //   return (
@@ -366,8 +384,6 @@ const Detail = props => {
     //     </div>
     //   );
     // }
-
-    // console.log(detailPage)
 
     if (index == 99 && canister == 'kss7i-hqaaa-aaaah-qbvmq-cai')
       detailPage = 'interactive_nfts_or_videos';
