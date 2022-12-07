@@ -53,6 +53,8 @@
   "scripts": {
     "start": "react-app-rewired start",
     "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
+    "format": "prettier --color --list-different --write \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
+    "test:format": "prettier --color --check \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
     "build": "node scripts/build.js pre; react-app-rewired build; node scripts/build.js post",
     "test": "react-app-rewired test",
     "serve": "react-app-rewired build && serve -s build",
@@ -80,6 +82,12 @@
   },
   "devDependencies": {
     "@toniq-labs/fleek-iterative-deploy": "1.2.11",
+    "prettier": "^2.8.0",
+    "prettier-plugin-jsdoc": "^0.4.2",
+    "prettier-plugin-multiline-arrays": "^1.1.1",
+    "prettier-plugin-packagejson": "^2.3.0",
+    "prettier-plugin-sort-json": "^0.0.3",
+    "prettier-plugin-toml": "^0.3.1",
     "react-app-rewired": "^2.1.11",
     "redux": "^4.1.2",
     "serve": "^13.0.2",
