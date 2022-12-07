@@ -45,86 +45,86 @@ import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
 const _isCanister = c => {
-  return c.length == 27 && c.split('-').length == 5;
+    return c.length == 27 && c.split('-').length == 5;
 };
 function useInterval(callback, delay) {
-  const savedCallback = React.useRef();
+    const savedCallback = React.useRef();
 
-  // Remember the latest callback.
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
+    // Remember the latest callback.
+    React.useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
 
-  // Set up the interval.
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
+    // Set up the interval.
+    React.useEffect(() => {
+        function tick() {
+            savedCallback.current();
+        }
+        if (delay !== null) {
+            let id = setInterval(tick, delay);
+            return () => clearInterval(id);
+        }
+    }, [delay]);
 }
 var fromWrappedMap = {
-  'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
-  'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
-  '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
-  'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
-  'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
+    'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
+    'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
+    '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
+    'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
+    'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
 };
 var toWrappedMap = {
-  'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-  '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-  'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-  'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-  'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
+    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
+    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
+    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
+    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
+    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
 };
 const getEXTCanister = c => {
-  if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
-  else return c;
+    if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
+    else return c;
 };
 const loadAllTokens = async (address, principal) => {
-  var response = await Promise.all(
-    [
-      axios(
-        'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-      ).then(r => r.data.map(a => ({...a, token: a.id}))),
-    ]
-      .concat(
+    var response = await Promise.all(
         [
-          '4nvhy-3qaaa-aaaah-qcnoq-cai',
-          'qcg3w-tyaaa-aaaah-qakea-cai',
-          //"jzg5e-giaaa-aaaah-qaqda-cai",
-          'd3ttm-qaaaa-aaaai-qam4a-cai',
-          'xkbqi-2qaaa-aaaah-qbpqq-cai',
-          //"fl5nr-xiaaa-aaaai-qbjmq-cai",
+            axios(
+                'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
+            ).then(r => r.data.map(a => ({...a, token: a.id}))),
         ]
-          .map(a => {
-            try {
-              return api
-                .token(a)
-                .getTokens(address, principal)
-                .then(r =>
-                  r.map(b => ({
-                    canister: toWrappedMap[a],
-                    id: b.id,
-                    token: b.id,
-                    price: 0,
-                    time: 0,
-                    owner: address,
-                  })),
-                );
-            } catch (e) {
-              return false;
-            }
-          })
-          .filter(b => b !== false),
-      )
-      .map(p => p.catch(e => e)),
-  );
-  var tokens = response.filter(result => !(result instanceof Error)).flat();
-  return tokens;
+            .concat(
+                [
+                    '4nvhy-3qaaa-aaaah-qcnoq-cai',
+                    'qcg3w-tyaaa-aaaah-qakea-cai',
+                    //"jzg5e-giaaa-aaaah-qaqda-cai",
+                    'd3ttm-qaaaa-aaaai-qam4a-cai',
+                    'xkbqi-2qaaa-aaaah-qbpqq-cai',
+                    //"fl5nr-xiaaa-aaaai-qbjmq-cai",
+                ]
+                    .map(a => {
+                        try {
+                            return api
+                                .token(a)
+                                .getTokens(address, principal)
+                                .then(r =>
+                                    r.map(b => ({
+                                        canister: toWrappedMap[a],
+                                        id: b.id,
+                                        token: b.id,
+                                        price: 0,
+                                        time: 0,
+                                        owner: address,
+                                    })),
+                                );
+                        } catch (e) {
+                            return false;
+                        }
+                    })
+                    .filter(b => b !== false),
+            )
+            .map(p => p.catch(e => e)),
+    );
+    var tokens = response.filter(result => !(result instanceof Error)).flat();
+    return tokens;
 };
 // const loadAllListings = async (address, principal) => {
 // var response = await Promise.all(props.collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
@@ -140,701 +140,750 @@ const loadAllTokens = async (address, principal) => {
 // };
 var canUpdateNfts = true;
 const useStyles = makeStyles(theme => ({
-  tabsViewBig: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
+    tabsViewBig: {
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
     },
-  },
-  tabsViewSmall: {
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
+    tabsViewSmall: {
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
     },
-  },
-  listingsView: {
-    [theme.breakpoints.down('xs')]: {
-      '& .MuiGrid-container.MuiGrid-spacing-xs-2': {
-        gridTemplateColumns: 'repeat(auto-fill, 50%)!important',
-      },
+    listingsView: {
+        [theme.breakpoints.down('xs')]: {
+            '& .MuiGrid-container.MuiGrid-spacing-xs-2': {
+                gridTemplateColumns: 'repeat(auto-fill, 50%)!important',
+            },
+        },
     },
-  },
-  hideDesktop: {
-    display: 'none',
-    [theme.breakpoints.down('xs')]: {
-      display: 'inline-flex',
-    },
-  },
-  topUi: {
-    '& .MuiFormControl-root': {
-      [theme.breakpoints.down('xs')]: {
-        width: '100%',
-      },
-      minWidth: '150px',
-    },
-  },
-  tabsViewTab: {
-    fontWeight: 'bold',
-    [theme.breakpoints.down('xs')]: {
-      '&>span>span>svg': {
+    hideDesktop: {
         display: 'none',
-      },
-      '&>span>span': {
-        padding: '0 5px!important',
-      },
+        [theme.breakpoints.down('xs')]: {
+            display: 'inline-flex',
+        },
     },
-  },
-  filtersViewOpen: {
-    position: 'sticky',
-    top: 72,
-    width: 330,
-    height: 'calc(100vh - 72px)',
-    borderRight: '1px solid #aaa',
-    overflowY: 'scroll',
-    overflowX: 'hidden',
-    paddingBottom: 50,
-    [theme.breakpoints.down('xs')]: {
-      //display:"none",
-      position: 'fixed',
-      backgroundColor: 'white',
-      zIndex: 100,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '80%',
+    topUi: {
+        '& .MuiFormControl-root': {
+            [theme.breakpoints.down('xs')]: {
+                width: '100%',
+            },
+            minWidth: '150px',
+        },
     },
-  },
-  filtersViewClosed: {
-    position: 'sticky',
-    top: 72,
-    width: 60,
-    height: 'calc(100vh - 72px)',
-    borderRight: '1px solid #aaa',
-    overflowY: 'hidden',
-    overflowX: 'hidden',
-    paddingBottom: 50,
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
+    tabsViewTab: {
+        fontWeight: 'bold',
+        [theme.breakpoints.down('xs')]: {
+            '&>span>span>svg': {
+                display: 'none',
+            },
+            '&>span>span': {
+                padding: '0 5px!important',
+            },
+        },
     },
-  },
-  pagi: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginTop: '20px',
-    marginBottom: '20px',
-    [theme.breakpoints.down('xs')]: {
-      justifyContent: 'center',
+    filtersViewOpen: {
+        position: 'sticky',
+        top: 72,
+        width: 330,
+        height: 'calc(100vh - 72px)',
+        borderRight: '1px solid #aaa',
+        overflowY: 'scroll',
+        overflowX: 'hidden',
+        paddingBottom: 50,
+        [theme.breakpoints.down('xs')]: {
+            //display:"none",
+            position: 'fixed',
+            backgroundColor: 'white',
+            zIndex: 100,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '80%',
+        },
     },
-  },
+    filtersViewClosed: {
+        position: 'sticky',
+        top: 72,
+        width: 60,
+        height: 'calc(100vh - 72px)',
+        borderRight: '1px solid #aaa',
+        overflowY: 'hidden',
+        overflowX: 'hidden',
+        paddingBottom: 50,
+        [theme.breakpoints.down('xs')]: {
+            display: 'none',
+        },
+    },
+    pagi: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: '20px',
+        marginBottom: '20px',
+        [theme.breakpoints.down('xs')]: {
+            justifyContent: 'center',
+        },
+    },
 }));
 export default function UserCollection(props) {
-  const params = useParams();
-  const classes = useStyles();
-  const navigate = useNavigate();
-  const [
-    displayedResults,
-    setDisplayedResults,
-  ] = React.useState([]);
-  const [
-    results,
-    setResults,
-  ] = React.useState(false);
+    const params = useParams();
+    const classes = useStyles();
+    const navigate = useNavigate();
+    const [
+        displayedResults,
+        setDisplayedResults,
+    ] = React.useState([]);
+    const [
+        results,
+        setResults,
+    ] = React.useState(false);
 
-  const getCollection = c => {
-    if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
-    return props.collections.find(e => e.canister === c);
-  };
-  const [
-    nfts,
-    setNfts,
-  ] = React.useState([]);
-  const [
-    whitelistedPawnCanisters,
-    setWhitelistedPawnCanisters,
-  ] = React.useState(false);
-  const [
-    tokenCanisters,
-    setTokenCanisters,
-  ] = React.useState([]);
-  const [
-    displayNfts,
-    setDisplayNfts,
-  ] = React.useState(false);
-  const [
-    collectionFilter,
-    setCollectionFilter,
-  ] = React.useState('all');
-  const [
-    page,
-    setPage,
-  ] = React.useState(1);
-  var myPage = params?.address ? false : true;
-  const [
-    address,
-    setAddress,
-  ] = React.useState(params?.address ?? props.account.address ?? '');
-  const [
-    sort,
-    setSort,
-  ] = React.useState('mint_number');
-  const [
-    listingPrices,
-    setListingPrices,
-  ] = React.useState([]);
-  const [
-    toggleFilter,
-    setToggleFilter,
-  ] = React.useState(
-    window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem('_toggleFilter')) ?? true,
-  );
-  const [
-    hideCollectionFilter,
-    setHideCollectionFilter,
-  ] = React.useState(true);
-  const [
-    gridSize,
-    setGridSize,
-  ] = React.useState(localStorage.getItem('_gridSize') ?? 'small');
-  const [
-    earnCollections,
-    setEarnCollections,
-  ] = React.useState(props.collections.filter(a => a.earn == true).map(a => a.id));
-  var hiddenNfts = [];
-  const changeGrid = (e, a) => {
-    localStorage.setItem('_gridSize', a);
-    setGridSize(a);
-  };
-  const changeToggleFilter = () => {
-    localStorage.setItem('_toggleFilter', !toggleFilter);
-    setToggleFilter(!toggleFilter);
-  };
-  const changeSort = event => {
-    setPage(1);
-    setSort(event.target.value);
-  };
-
-  const filterBefore = r => {
-    var rf = r;
-    return rf;
-  };
-  const filterAfter = r => {
-    var rf = r;
-    if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
-    return rf;
-  };
-  const tabLink = p => {
-    return myPage ? p : '/' + address + p;
-  };
-
-  const hideNft = async token => {
-    hiddenNfts.push(token);
-  };
-  const refresh = async v => {
-    if (v) {
-      navigate(v);
-      return;
-    }
-    if (!address) return;
-    var data = [];
-    console.log('Refreshing', props.view);
-    // eslint-disable-next-line default-case
-    switch (props.view) {
-      case 'collected':
-        //TODO
-        var response = await axios(
-          'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-        );
-        data = response.data;
-        data = data.map(a => ({...a, token: a.id}));
-        break;
-      case 'new-request':
-        //if (whitelistedPawnCanisters === false) return;
-        var response = await axios(
-          'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-        );
-        data = response.data;
-        data = data.filter(a => !a.price && earnCollections.indexOf(a.canister) >= 0);
-        data = data.map(a => ({...a, token: a.id}));
-        break;
-      case 'earn-nfts':
-        var response = await axios(
-          'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-            address +
-            '/yigae-jqaaa-aaaah-qczbq-cai/all',
-        );
-        data = response.data;
-        data = data.map(a => ({...a, token: a.id}));
-        break;
-      case 'selling':
-        var response = await axios(
-          'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/listed',
-        );
-        data = response.data.filter(a => a.price > 0);
-        data = data.map(a => ({...a, token: a.id}));
-        break;
-      case 'favorites':
-        var r = await extjs
-          .connect('https://ic0.app/', props.identity)
-          .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-          .liked();
-        data = r.filter((a, i) => r.indexOf(a) == i);
-        data = data.map(a => ({
-          id: a,
-          token: a,
-          price: 0,
-          time: 0,
-          owner: false,
-          canister: extjs.decodeTokenId(a).canister,
-          listing: null,
-        }));
-        break;
-      case 'offers-made':
-        var r = await extjs
-          .connect('https://ic0.app/', props.identity)
-          .canister('fcwhh-piaaa-aaaak-qazba-cai')
-          .offered();
-        data = r.filter((a, i) => r.indexOf(a) == i);
-        data = data.map(a => ({
-          id: a,
-          token: a,
-          price: 0,
-          time: 0,
-          owner: false,
-          canister: extjs.decodeTokenId(a).canister,
-        }));
-        break;
-      case 'offers-received':
-        var r = await Promise.all(
-          [
-            axios(
-              'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-            ),
-            extjs
-              .connect('https://ic0.app/', props.identity)
-              .canister('fcwhh-piaaa-aaaak-qazba-cai')
-              .allOffers(),
-          ].map(p => p.catch(e => e)),
-        );
-        var r2 = r.filter(result => !(result instanceof Error));
-        var r3 = r2[0].data
-          .map(a => ({...a, token: a.id}))
-          .filter(a => r2[1].indexOf(a.token) >= 0);
-        data = r3;
-        break;
-    }
-    console.log('fetched');
-    data = data.map(a =>
-      a.hasOwnProperty('price') &&
-      a.hasOwnProperty('time') &&
-      !a.hasOwnProperty('listing') &&
-      a.price > 0
-        ? {...a, listing: {price: BigInt(a.price), locked: a.time > 0 ? [BigInt(a.time)] : []}}
-        : a,
+    const getCollection = c => {
+        if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
+        return props.collections.find(e => e.canister === c);
+    };
+    const [
+        nfts,
+        setNfts,
+    ] = React.useState([]);
+    const [
+        whitelistedPawnCanisters,
+        setWhitelistedPawnCanisters,
+    ] = React.useState(false);
+    const [
+        tokenCanisters,
+        setTokenCanisters,
+    ] = React.useState([]);
+    const [
+        displayNfts,
+        setDisplayNfts,
+    ] = React.useState(false);
+    const [
+        collectionFilter,
+        setCollectionFilter,
+    ] = React.useState('all');
+    const [
+        page,
+        setPage,
+    ] = React.useState(1);
+    var myPage = params?.address ? false : true;
+    const [
+        address,
+        setAddress,
+    ] = React.useState(params?.address ?? props.account.address ?? '');
+    const [
+        sort,
+        setSort,
+    ] = React.useState('mint_number');
+    const [
+        listingPrices,
+        setListingPrices,
+    ] = React.useState([]);
+    const [
+        toggleFilter,
+        setToggleFilter,
+    ] = React.useState(
+        window.innerWidth < 600 ? false : JSON.parse(localStorage.getItem('_toggleFilter')) ?? true,
     );
-    hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
-    data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
-    console.log('mapped');
-    data = filterBefore(data);
-    console.log('filtered');
-    setTokenCanisters(data.map(d => d.canister));
-    setResults(data);
-    console.log('set');
-  };
+    const [
+        hideCollectionFilter,
+        setHideCollectionFilter,
+    ] = React.useState(true);
+    const [
+        gridSize,
+        setGridSize,
+    ] = React.useState(localStorage.getItem('_gridSize') ?? 'small');
+    const [
+        earnCollections,
+        setEarnCollections,
+    ] = React.useState(props.collections.filter(a => a.earn == true).map(a => a.id));
+    var hiddenNfts = [];
+    const changeGrid = (e, a) => {
+        localStorage.setItem('_gridSize', a);
+        setGridSize(a);
+    };
+    const changeToggleFilter = () => {
+        localStorage.setItem('_toggleFilter', !toggleFilter);
+        setToggleFilter(!toggleFilter);
+    };
+    const changeSort = event => {
+        setPage(1);
+        setSort(event.target.value);
+    };
 
-  const theme = useTheme();
-  const styles = {
-    empty: {
-      maxWidth: 1200,
-      margin: '0 auto',
-      textAlign: 'center',
-    },
-    grid: {
-      flexGrow: 1,
-      padding: theme.spacing(2),
-    },
-  };
-  useInterval(refresh, 10 * 60 * 1000);
+    const filterBefore = r => {
+        var rf = r;
+        return rf;
+    };
+    const filterAfter = r => {
+        var rf = r;
+        if (collectionFilter != 'all') rf = rf.filter(a => a.canister == collectionFilter);
+        return rf;
+    };
+    const tabLink = p => {
+        return myPage ? p : '/' + address + p;
+    };
 
-  const updateNfts = (l, s, cf) => {
-    if (canUpdateNfts) {
-      canUpdateNfts = false;
-      var _nfts = l ?? nfts;
-      var _sort = s ?? sort;
-      var _collectionFilter = cf ?? collectionFilter;
-      if (!_nfts) return;
-      if (l) setNfts(l);
-      var _displayNfts = _nfts;
-      _displayNfts = _displayNfts.filter(
-        (token, i) =>
-          _collectionFilter == 'all' ||
-          getEXTCanister(extjs.decodeTokenId(token).canister) == _collectionFilter,
-      );
-      _displayNfts = _displayNfts.sort((a, b) => {
-        switch (sort) {
-          case 'price_asc':
-            var ap = a.price === 0 ? false : a.price;
-            var bp = b.price === 0 ? false : b.price;
-            if (ap === false && bp === false) return 0;
-            if (ap === false) return -1;
-            if (bp === false) return 1;
-            return ap - bp;
-          case 'price_desc':
-            var ap = a.price === 0 ? false : a.price;
-            var bp = b.price === 0 ? false : b.price;
-            if (ap === false && bp === false) return 0;
-            if (ap === false) return 1;
-            if (bp === false) return -1;
-            return bp - ap;
-          case 'mint_number':
-            return extjs.decodeTokenId(a).index - extjs.decodeTokenId(b).index;
-          case 'nri':
-            var aa = extjs.decodeTokenId(a);
-            var bb = extjs.decodeTokenId(b);
-            var nria = getNri(aa.canister, aa.index);
-            var nrib = getNri(bb.canister, bb.index);
-            if (nria === false && nrib === false) return 0;
-            if (nria === false) return 1;
-            if (nrib === false) return -1;
-            return Number(nrib) - Number(nria);
-          default:
-            return 0;
+    const hideNft = async token => {
+        hiddenNfts.push(token);
+    };
+    const refresh = async v => {
+        if (v) {
+            navigate(v);
+            return;
         }
-      });
-      setDisplayNfts(_displayNfts);
-      setHideCollectionFilter(false);
-      setTokenCanisters(
-        _nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister)),
-      );
-      canUpdateNfts = true;
-    }
-  };
+        if (!address) return;
+        var data = [];
+        console.log('Refreshing', props.view);
+        // eslint-disable-next-line default-case
+        switch (props.view) {
+            case 'collected':
+                //TODO
+                var response = await axios(
+                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
+                        address +
+                        '/all',
+                );
+                data = response.data;
+                data = data.map(a => ({...a, token: a.id}));
+                break;
+            case 'new-request':
+                //if (whitelistedPawnCanisters === false) return;
+                var response = await axios(
+                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
+                        address +
+                        '/all',
+                );
+                data = response.data;
+                data = data.filter(a => !a.price && earnCollections.indexOf(a.canister) >= 0);
+                data = data.map(a => ({...a, token: a.id}));
+                break;
+            case 'earn-nfts':
+                var response = await axios(
+                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
+                        address +
+                        '/yigae-jqaaa-aaaah-qczbq-cai/all',
+                );
+                data = response.data;
+                data = data.map(a => ({...a, token: a.id}));
+                break;
+            case 'selling':
+                var response = await axios(
+                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
+                        address +
+                        '/listed',
+                );
+                data = response.data.filter(a => a.price > 0);
+                data = data.map(a => ({...a, token: a.id}));
+                break;
+            case 'favorites':
+                var r = await extjs
+                    .connect('https://ic0.app/', props.identity)
+                    .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                    .liked();
+                data = r.filter((a, i) => r.indexOf(a) == i);
+                data = data.map(a => ({
+                    id: a,
+                    token: a,
+                    price: 0,
+                    time: 0,
+                    owner: false,
+                    canister: extjs.decodeTokenId(a).canister,
+                    listing: null,
+                }));
+                break;
+            case 'offers-made':
+                var r = await extjs
+                    .connect('https://ic0.app/', props.identity)
+                    .canister('fcwhh-piaaa-aaaak-qazba-cai')
+                    .offered();
+                data = r.filter((a, i) => r.indexOf(a) == i);
+                data = data.map(a => ({
+                    id: a,
+                    token: a,
+                    price: 0,
+                    time: 0,
+                    owner: false,
+                    canister: extjs.decodeTokenId(a).canister,
+                }));
+                break;
+            case 'offers-received':
+                var r = await Promise.all(
+                    [
+                        axios(
+                            'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
+                                address +
+                                '/all',
+                        ),
+                        extjs
+                            .connect('https://ic0.app/', props.identity)
+                            .canister('fcwhh-piaaa-aaaak-qazba-cai')
+                            .allOffers(),
+                    ].map(p => p.catch(e => e)),
+                );
+                var r2 = r.filter(result => !(result instanceof Error));
+                var r3 = r2[0].data
+                    .map(a => ({...a, token: a.id}))
+                    .filter(a => r2[1].indexOf(a.token) >= 0);
+                data = r3;
+                break;
+        }
+        console.log('fetched');
+        data = data.map(a =>
+            a.hasOwnProperty('price') &&
+            a.hasOwnProperty('time') &&
+            !a.hasOwnProperty('listing') &&
+            a.price > 0
+                ? {
+                      ...a,
+                      listing: {price: BigInt(a.price), locked: a.time > 0 ? [BigInt(a.time)] : []},
+                  }
+                : a,
+        );
+        hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
+        data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
+        console.log('mapped');
+        data = filterBefore(data);
+        console.log('filtered');
+        setTokenCanisters(data.map(d => d.canister));
+        setResults(data);
+        console.log('set');
+    };
 
-  useInterval(refresh, 10 * 60 * 1000);
-  React.useEffect(() => {
-    setPage(1);
-    //if (displayedResults) setDisplayedResults(false);
-    //else refresh();
-  }, [sort]);
-  React.useEffect(() => {
-    console.log('Hook: collectionFilter');
-    setPage(1);
-    if (displayedResults) setDisplayedResults(false);
-    else refresh();
-  }, [collectionFilter]);
-  React.useEffect(() => {
-    console.log('Hook: displayedResults');
-    if (displayedResults === false) refresh();
-  }, [displayedResults]);
-  React.useEffect(() => {
-    console.log('Hook: results');
-    setHideCollectionFilter(false);
-    if (results.length) setDisplayedResults(filterAfter(results));
-    else setDisplayedResults([]);
-  }, [results]);
-  React.useEffect(() => {
-    console.log('Hook: start');
-    setDisplayedResults(false);
-    extjs
-      .connect('https://ic0.app/')
-      .canister('yigae-jqaaa-aaaah-qczbq-cai')
-      .tp_whitelisted()
-      .then(r => {
-        setWhitelistedPawnCanisters(r);
-      });
-  }, []);
+    const theme = useTheme();
+    const styles = {
+        empty: {
+            maxWidth: 1200,
+            margin: '0 auto',
+            textAlign: 'center',
+        },
+        grid: {
+            flexGrow: 1,
+            padding: theme.spacing(2),
+        },
+    };
+    useInterval(refresh, 10 * 60 * 1000);
 
-  React.useEffect(() => {
-    console.log('Hook: account');
-    if (address) {
-      setHideCollectionFilter(true);
-      if (collectionFilter != 'all') setCollectionFilter('all');
-      else {
+    const updateNfts = (l, s, cf) => {
+        if (canUpdateNfts) {
+            canUpdateNfts = false;
+            var _nfts = l ?? nfts;
+            var _sort = s ?? sort;
+            var _collectionFilter = cf ?? collectionFilter;
+            if (!_nfts) return;
+            if (l) setNfts(l);
+            var _displayNfts = _nfts;
+            _displayNfts = _displayNfts.filter(
+                (token, i) =>
+                    _collectionFilter == 'all' ||
+                    getEXTCanister(extjs.decodeTokenId(token).canister) == _collectionFilter,
+            );
+            _displayNfts = _displayNfts.sort((a, b) => {
+                switch (sort) {
+                    case 'price_asc':
+                        var ap = a.price === 0 ? false : a.price;
+                        var bp = b.price === 0 ? false : b.price;
+                        if (ap === false && bp === false) return 0;
+                        if (ap === false) return -1;
+                        if (bp === false) return 1;
+                        return ap - bp;
+                    case 'price_desc':
+                        var ap = a.price === 0 ? false : a.price;
+                        var bp = b.price === 0 ? false : b.price;
+                        if (ap === false && bp === false) return 0;
+                        if (ap === false) return 1;
+                        if (bp === false) return -1;
+                        return bp - ap;
+                    case 'mint_number':
+                        return extjs.decodeTokenId(a).index - extjs.decodeTokenId(b).index;
+                    case 'nri':
+                        var aa = extjs.decodeTokenId(a);
+                        var bb = extjs.decodeTokenId(b);
+                        var nria = getNri(aa.canister, aa.index);
+                        var nrib = getNri(bb.canister, bb.index);
+                        if (nria === false && nrib === false) return 0;
+                        if (nria === false) return 1;
+                        if (nrib === false) return -1;
+                        return Number(nrib) - Number(nria);
+                    default:
+                        return 0;
+                }
+            });
+            setDisplayNfts(_displayNfts);
+            setHideCollectionFilter(false);
+            setTokenCanisters(
+                _nfts.map(tokenid => getEXTCanister(extjs.decodeTokenId(tokenid).canister)),
+            );
+            canUpdateNfts = true;
+        }
+    };
+
+    useInterval(refresh, 10 * 60 * 1000);
+    React.useEffect(() => {
+        setPage(1);
+        //if (displayedResults) setDisplayedResults(false);
+        //else refresh();
+    }, [sort]);
+    React.useEffect(() => {
+        console.log('Hook: collectionFilter');
+        setPage(1);
         if (displayedResults) setDisplayedResults(false);
         else refresh();
-      }
-    }
-  }, [
-    address,
-    props.view,
-    whitelistedPawnCanisters,
-  ]);
-  React.useEffect(() => {
-    if (myPage) setAddress(props.account.address);
-  }, [props.account.address]);
+    }, [collectionFilter]);
+    React.useEffect(() => {
+        console.log('Hook: displayedResults');
+        if (displayedResults === false) refresh();
+    }, [displayedResults]);
+    React.useEffect(() => {
+        console.log('Hook: results');
+        setHideCollectionFilter(false);
+        if (results.length) setDisplayedResults(filterAfter(results));
+        else setDisplayedResults([]);
+    }, [results]);
+    React.useEffect(() => {
+        console.log('Hook: start');
+        setDisplayedResults(false);
+        extjs
+            .connect('https://ic0.app/')
+            .canister('yigae-jqaaa-aaaah-qczbq-cai')
+            .tp_whitelisted()
+            .then(r => {
+                setWhitelistedPawnCanisters(r);
+            });
+    }, []);
 
-  return (
-    <div style={{minHeight: 'calc(100vh - 221px)', marginBottom: -75}}>
-      <UserDetail
-        view={props.view}
-        navigate={v => navigate(tabLink(v))}
-        classes={classes}
-        address={address}
-        title={myPage ? 'My Collection' : ''}
-      />
-      <div
-        id="mainNfts"
-        style={{
-          position: 'relative',
-          marginLeft: -24,
-          marginRight: -24,
-          marginBottom: -24,
-          borderTop: '1px solid #aaa',
-          borderBottom: '1px solid #aaa',
-          display: 'flex',
-        }}
-      >
-        <div className={toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed}>
-          <List>
-            <ListItem style={{paddingRight: 0}} button onClick={changeToggleFilter}>
-              <ListItemIcon style={{minWidth: 40}}>
-                <FilterListIcon />
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{noWrap: true}}
-                secondaryTypographyProps={{noWrap: true}}
-                primary={<strong>Collections</strong>}
-              />
-              <ListItemIcon>{toggleFilter ? <CloseIcon fontSize={'large'} /> : ''}</ListItemIcon>
-            </ListItem>
-            {toggleFilter && (tokenCanisters.length > 0 || hideCollectionFilter) ? (
-              <>
-                {hideCollectionFilter ? (
-                  <ListItem>
-                    <ListItemText>
-                      <strong>Loading...</strong>
-                    </ListItemText>
-                  </ListItem>
-                ) : (
-                  <>
-                    <ListItem
-                      selected={collectionFilter === 'all'}
-                      button
-                      onClick={() => {
-                        setCollectionFilter('all');
-                      }}
-                    >
-                      <ListItemText>
-                        <strong>View All Collections</strong>
-                      </ListItemText>
-                      <ListItemSecondaryAction>
-                        <Chip label={tokenCanisters.length} variant="outlined" />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                    {tokenCanisters
-                      .filter(
-                        (a, i) =>
-                          tokenCanisters.indexOf(a) == i && typeof getCollection(a) != 'undefined',
-                      ) //filter unique
-                      .map(canister => {
-                        var _collection = getCollection(canister);
-                        return (
-                          <ListItem
-                            key={canister}
-                            selected={collectionFilter === canister}
-                            button
-                            onClick={() => {
-                              setCollectionFilter(canister);
-                            }}
-                          >
-                            <ListItemAvatar>
-                              <Avatar>
-                                <img
-                                  alt={_collection.name}
-                                  src={_collection.avatar ?? '/collections/' + canister + '.jpg'}
-                                  style={{height: 64}}
-                                />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText>{_collection.name}</ListItemText>
-                            <ListItemSecondaryAction>
-                              <Chip
-                                label={tokenCanisters.filter(a => a === canister).length}
-                                variant="outlined"
-                              />
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        );
-                      })}
-                  </>
-                )}
-              </>
-            ) : (
-              ''
-            )}
-          </List>
-        </div>
-        <div className={classes.listingsView} style={{flexGrow: 1, padding: '10px 16px 50px 16px'}}>
-          <div style={{}}>
-            <Grid className={classes.topUi} container style={{minHeight: 66}}>
-              <Grid item xs={12} sm={'auto'} style={{marginBottom: 10}}>
-                <ToggleButtonGroup
-                  className={classes.hideDesktop}
-                  style={{marginTop: 5, marginRight: 10}}
-                  size="small"
+    React.useEffect(() => {
+        console.log('Hook: account');
+        if (address) {
+            setHideCollectionFilter(true);
+            if (collectionFilter != 'all') setCollectionFilter('all');
+            else {
+                if (displayedResults) setDisplayedResults(false);
+                else refresh();
+            }
+        }
+    }, [
+        address,
+        props.view,
+        whitelistedPawnCanisters,
+    ]);
+    React.useEffect(() => {
+        if (myPage) setAddress(props.account.address);
+    }, [props.account.address]);
+
+    return (
+        <div style={{minHeight: 'calc(100vh - 221px)', marginBottom: -75}}>
+            <UserDetail
+                view={props.view}
+                navigate={v => navigate(tabLink(v))}
+                classes={classes}
+                address={address}
+                title={myPage ? 'My Collection' : ''}
+            />
+            <div
+                id="mainNfts"
+                style={{
+                    position: 'relative',
+                    marginLeft: -24,
+                    marginRight: -24,
+                    marginBottom: -24,
+                    borderTop: '1px solid #aaa',
+                    borderBottom: '1px solid #aaa',
+                    display: 'flex',
+                }}
+            >
+                <div className={toggleFilter ? classes.filtersViewOpen : classes.filtersViewClosed}>
+                    <List>
+                        <ListItem style={{paddingRight: 0}} button onClick={changeToggleFilter}>
+                            <ListItemIcon style={{minWidth: 40}}>
+                                <FilterListIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primaryTypographyProps={{noWrap: true}}
+                                secondaryTypographyProps={{noWrap: true}}
+                                primary={<strong>Collections</strong>}
+                            />
+                            <ListItemIcon>
+                                {toggleFilter ? <CloseIcon fontSize={'large'} /> : ''}
+                            </ListItemIcon>
+                        </ListItem>
+                        {toggleFilter && (tokenCanisters.length > 0 || hideCollectionFilter) ? (
+                            <>
+                                {hideCollectionFilter ? (
+                                    <ListItem>
+                                        <ListItemText>
+                                            <strong>Loading...</strong>
+                                        </ListItemText>
+                                    </ListItem>
+                                ) : (
+                                    <>
+                                        <ListItem
+                                            selected={collectionFilter === 'all'}
+                                            button
+                                            onClick={() => {
+                                                setCollectionFilter('all');
+                                            }}
+                                        >
+                                            <ListItemText>
+                                                <strong>View All Collections</strong>
+                                            </ListItemText>
+                                            <ListItemSecondaryAction>
+                                                <Chip
+                                                    label={tokenCanisters.length}
+                                                    variant="outlined"
+                                                />
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                        {tokenCanisters
+                                            .filter(
+                                                (a, i) =>
+                                                    tokenCanisters.indexOf(a) == i &&
+                                                    typeof getCollection(a) != 'undefined',
+                                            ) //filter unique
+                                            .map(canister => {
+                                                var _collection = getCollection(canister);
+                                                return (
+                                                    <ListItem
+                                                        key={canister}
+                                                        selected={collectionFilter === canister}
+                                                        button
+                                                        onClick={() => {
+                                                            setCollectionFilter(canister);
+                                                        }}
+                                                    >
+                                                        <ListItemAvatar>
+                                                            <Avatar>
+                                                                <img
+                                                                    alt={_collection.name}
+                                                                    src={
+                                                                        _collection.avatar ??
+                                                                        '/collections/' +
+                                                                            canister +
+                                                                            '.jpg'
+                                                                    }
+                                                                    style={{height: 64}}
+                                                                />
+                                                            </Avatar>
+                                                        </ListItemAvatar>
+                                                        <ListItemText>
+                                                            {_collection.name}
+                                                        </ListItemText>
+                                                        <ListItemSecondaryAction>
+                                                            <Chip
+                                                                label={
+                                                                    tokenCanisters.filter(
+                                                                        a => a === canister,
+                                                                    ).length
+                                                                }
+                                                                variant="outlined"
+                                                            />
+                                                        </ListItemSecondaryAction>
+                                                    </ListItem>
+                                                );
+                                            })}
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            ''
+                        )}
+                    </List>
+                </div>
+                <div
+                    className={classes.listingsView}
+                    style={{flexGrow: 1, padding: '10px 16px 50px 16px'}}
                 >
-                  <ToggleButton value="" onClick={changeToggleFilter}>
-                    <FilterListIcon />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                <ToggleButtonGroup style={{marginTop: 5, marginRight: 10}} size="small">
-                  <ToggleButton value="" onClick={() => setDisplayedResults(false)}>
-                    <CachedIcon />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                <ToggleButtonGroup
-                  style={{marginTop: 5, marginRight: 20}}
-                  size="small"
-                  value={gridSize}
-                  exclusive
-                  onChange={changeGrid}
-                >
-                  <ToggleButton value={'small'}>
-                    <ViewModuleIcon />
-                  </ToggleButton>
-                  <ToggleButton value={'large'}>
-                    <ViewComfyIcon />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
-              <Grid item xs={12} sm={'auto'}>
-                <FormControl style={{marginRight: 20}}>
-                  <InputLabel>Sort by</InputLabel>
-                  <Select value={sort} onChange={changeSort}>
-                    <MenuItem value={'mint_number'}>Minting #</MenuItem>
-                    <MenuItem value={'nri'}>NFT Rarity Index</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              {displayedResults && displayedResults.length > perPage ? (
-                <Grid item style={{marginLeft: 'auto'}}>
-                  <Pagination
-                    className={classes.pagi}
-                    size="small"
-                    count={Math.ceil(displayedResults.length / perPage)}
-                    page={page}
-                    onChange={(e, v) => setPage(v)}
-                  />
-                </Grid>
-              ) : (
-                ''
-              )}
-            </Grid>
-          </div>
-          <div style={{minHeight: 500}}>
-            <div style={{}}>
-              {displayedResults === false ? (
-                <>
-                  <Typography paragraph style={{fontWeight: 'bold'}} align="left">
-                    Loading...
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  {displayedResults.length === 0 ? (
-                    <Typography paragraph style={{fontWeight: 'bold'}} align="left">
-                      We found no results
-                    </Typography>
-                  ) : (
-                    <Typography paragraph style={{fontWeight: 'bold'}} align="left">
-                      {displayedResults.length} items
-                    </Typography>
-                  )}
-                </>
-              )}
+                    <div style={{}}>
+                        <Grid className={classes.topUi} container style={{minHeight: 66}}>
+                            <Grid item xs={12} sm={'auto'} style={{marginBottom: 10}}>
+                                <ToggleButtonGroup
+                                    className={classes.hideDesktop}
+                                    style={{marginTop: 5, marginRight: 10}}
+                                    size="small"
+                                >
+                                    <ToggleButton value="" onClick={changeToggleFilter}>
+                                        <FilterListIcon />
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                                <ToggleButtonGroup
+                                    style={{marginTop: 5, marginRight: 10}}
+                                    size="small"
+                                >
+                                    <ToggleButton
+                                        value=""
+                                        onClick={() => setDisplayedResults(false)}
+                                    >
+                                        <CachedIcon />
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                                <ToggleButtonGroup
+                                    style={{marginTop: 5, marginRight: 20}}
+                                    size="small"
+                                    value={gridSize}
+                                    exclusive
+                                    onChange={changeGrid}
+                                >
+                                    <ToggleButton value={'small'}>
+                                        <ViewModuleIcon />
+                                    </ToggleButton>
+                                    <ToggleButton value={'large'}>
+                                        <ViewComfyIcon />
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            </Grid>
+                            <Grid item xs={12} sm={'auto'}>
+                                <FormControl style={{marginRight: 20}}>
+                                    <InputLabel>Sort by</InputLabel>
+                                    <Select value={sort} onChange={changeSort}>
+                                        <MenuItem value={'mint_number'}>Minting #</MenuItem>
+                                        <MenuItem value={'nri'}>NFT Rarity Index</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            {displayedResults && displayedResults.length > perPage ? (
+                                <Grid item style={{marginLeft: 'auto'}}>
+                                    <Pagination
+                                        className={classes.pagi}
+                                        size="small"
+                                        count={Math.ceil(displayedResults.length / perPage)}
+                                        page={page}
+                                        onChange={(e, v) => setPage(v)}
+                                    />
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                        </Grid>
+                    </div>
+                    <div style={{minHeight: 500}}>
+                        <div style={{}}>
+                            {displayedResults === false ? (
+                                <>
+                                    <Typography paragraph style={{fontWeight: 'bold'}} align="left">
+                                        Loading...
+                                    </Typography>
+                                </>
+                            ) : (
+                                <>
+                                    {displayedResults.length === 0 ? (
+                                        <Typography
+                                            paragraph
+                                            style={{fontWeight: 'bold'}}
+                                            align="left"
+                                        >
+                                            We found no results
+                                        </Typography>
+                                    ) : (
+                                        <Typography
+                                            paragraph
+                                            style={{fontWeight: 'bold'}}
+                                            align="left"
+                                        >
+                                            {displayedResults.length} items
+                                        </Typography>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                        {displayedResults && displayedResults.length ? (
+                            <div>
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    direction="row"
+                                    alignItems="stretch"
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns:
+                                            gridSize === 'small'
+                                                ? 'repeat(auto-fill, 300px)'
+                                                : 'repeat(auto-fill, 200px)',
+                                        justifyContent: 'space-between',
+                                    }}
+                                >
+                                    {displayedResults
+                                        .sort((a, b) => {
+                                            switch (sort) {
+                                                case 'price_asc':
+                                                    var ap = a.price === 0 ? false : a.price;
+                                                    var bp = b.price === 0 ? false : b.price;
+                                                    if (ap === false && bp === false) return 0;
+                                                    if (ap === false) return -1;
+                                                    if (bp === false) return 1;
+                                                    return ap - bp;
+                                                case 'price_desc':
+                                                    var ap = a.price === 0 ? false : a.price;
+                                                    var bp = b.price === 0 ? false : b.price;
+                                                    if (ap === false && bp === false) return 0;
+                                                    if (ap === false) return 1;
+                                                    if (bp === false) return -1;
+                                                    return bp - ap;
+                                                case 'mint_number':
+                                                    return (
+                                                        extjs.decodeTokenId(a.token).index -
+                                                        extjs.decodeTokenId(b.token).index
+                                                    );
+                                                case 'nri':
+                                                    var aa = extjs.decodeTokenId(a.token);
+                                                    var bb = extjs.decodeTokenId(b.token);
+                                                    var nria = getNri(aa.canister, aa.index);
+                                                    var nrib = getNri(bb.canister, bb.index);
+                                                    if (nria === false && nrib === false) return 0;
+                                                    if (nria === false) return 1;
+                                                    if (nrib === false) return -1;
+                                                    return Number(nrib) - Number(nria);
+                                                default:
+                                                    return 0;
+                                            }
+                                        })
+                                        .filter(
+                                            (token, i) =>
+                                                i >= (page - 1) * perPage && i < page * perPage,
+                                        )
+                                        .map((token, i) => {
+                                            return (
+                                                <NFT
+                                                    collections={props.collections}
+                                                    gridSize={gridSize}
+                                                    view={props.view}
+                                                    //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)}
+                                                    loggedIn={props.loggedIn}
+                                                    identity={props.identity}
+                                                    tokenid={token.token}
+                                                    hideNft={hideNft}
+                                                    key={token.token}
+                                                    listing={token?.listing}
+                                                    unpackNft={props.unpackNft}
+                                                    listNft={props.listNft}
+                                                    cancelNft={props.cancelNft}
+                                                    wrapAndlistNft={props.wrapAndlistNft}
+                                                    unwrapNft={props.unwrapNft}
+                                                    transferNft={props.transferNft}
+                                                    pawnNft={props.pawnNft}
+                                                    loader={props.loader}
+                                                    refresh={refresh}
+                                                />
+                                            );
+                                        })}
+                                </Grid>
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        {displayedResults && displayedResults.length > perPage ? (
+                            <Pagination
+                                className={classes.pagi}
+                                size="small"
+                                count={Math.ceil(displayedResults.length / perPage)}
+                                page={page}
+                                onChange={(e, v) => setPage(v)}
+                            />
+                        ) : (
+                            ''
+                        )}
+                    </div>
+                </div>
             </div>
-            {displayedResults && displayedResults.length ? (
-              <div>
-                <Grid
-                  container
-                  spacing={2}
-                  direction="row"
-                  alignItems="stretch"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                      gridSize === 'small'
-                        ? 'repeat(auto-fill, 300px)'
-                        : 'repeat(auto-fill, 200px)',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  {displayedResults
-                    .sort((a, b) => {
-                      switch (sort) {
-                        case 'price_asc':
-                          var ap = a.price === 0 ? false : a.price;
-                          var bp = b.price === 0 ? false : b.price;
-                          if (ap === false && bp === false) return 0;
-                          if (ap === false) return -1;
-                          if (bp === false) return 1;
-                          return ap - bp;
-                        case 'price_desc':
-                          var ap = a.price === 0 ? false : a.price;
-                          var bp = b.price === 0 ? false : b.price;
-                          if (ap === false && bp === false) return 0;
-                          if (ap === false) return 1;
-                          if (bp === false) return -1;
-                          return bp - ap;
-                        case 'mint_number':
-                          return (
-                            extjs.decodeTokenId(a.token).index - extjs.decodeTokenId(b.token).index
-                          );
-                        case 'nri':
-                          var aa = extjs.decodeTokenId(a.token);
-                          var bb = extjs.decodeTokenId(b.token);
-                          var nria = getNri(aa.canister, aa.index);
-                          var nrib = getNri(bb.canister, bb.index);
-                          if (nria === false && nrib === false) return 0;
-                          if (nria === false) return 1;
-                          if (nrib === false) return -1;
-                          return Number(nrib) - Number(nria);
-                        default:
-                          return 0;
-                      }
-                    })
-                    .filter((token, i) => i >= (page - 1) * perPage && i < page * perPage)
-                    .map((token, i) => {
-                      return (
-                        <NFT
-                          collections={props.collections}
-                          gridSize={gridSize}
-                          view={props.view}
-                          //faveRefresher={(props.view == 'favorites' ? updateFavorites : false)}
-                          loggedIn={props.loggedIn}
-                          identity={props.identity}
-                          tokenid={token.token}
-                          hideNft={hideNft}
-                          key={token.token}
-                          listing={token?.listing}
-                          unpackNft={props.unpackNft}
-                          listNft={props.listNft}
-                          cancelNft={props.cancelNft}
-                          wrapAndlistNft={props.wrapAndlistNft}
-                          unwrapNft={props.unwrapNft}
-                          transferNft={props.transferNft}
-                          pawnNft={props.pawnNft}
-                          loader={props.loader}
-                          refresh={refresh}
-                        />
-                      );
-                    })}
-                </Grid>
-              </div>
-            ) : (
-              ''
-            )}
-            {displayedResults && displayedResults.length > perPage ? (
-              <Pagination
-                className={classes.pagi}
-                size="small"
-                count={Math.ceil(displayedResults.length / perPage)}
-                page={page}
-                onChange={(e, v) => setPage(v)}
-              />
-            ) : (
-              ''
-            )}
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
