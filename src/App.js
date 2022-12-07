@@ -42,7 +42,6 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Profile} from './views/Profile/Profile';
-import {EntrepotHomePage} from './typescript/ui/elements/main-content-pages/home-page/toniq-entrepot-home-page.element';
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';

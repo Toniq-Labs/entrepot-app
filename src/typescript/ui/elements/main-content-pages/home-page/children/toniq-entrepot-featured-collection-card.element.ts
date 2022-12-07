@@ -1,4 +1,4 @@
-import {defineElement, html, css, assign, listen} from 'element-vir';
+import {defineElement, html, css, assign, listen, defineElementEvent} from 'element-vir';
 import {
     EntrepotSocialLinkElement,
     SocialLinkDetails,
@@ -6,25 +6,35 @@ import {
 import {EntrepotFlipCardElement} from '../../../common/toniq-entrepot-flip-card.element';
 import {ToniqButton, toniqFontStyles} from '@toniq-labs/design-system';
 
-export type FeaturedCollectionInputs = Readonly<
-    typeof EntrepotFeaturedCollectionCardElement['inputsType']
->;
-
-export const EntrepotFeaturedCollectionCardElement = defineElement<{
+export type FeaturedCollectionInputs = {
     collectionName: string;
     imageUrls: ReadonlyArray<string>;
     longDescription: string;
     socialLinks: ReadonlyArray<SocialLinkDetails>;
-}>()({
+    collectionRoute: string;
+};
+
+export const EntrepotFeaturedCollectionCardElement = defineElement<FeaturedCollectionInputs>()({
     tagName: 'toniq-entrepot-featured-collection-card',
     stateInit: {
         flipped: false,
+    },
+    events: {
+        collectionRouteClicked: defineElementEvent<string>(),
     },
     styles: css`
         :host {
             display: inline-block;
             position: relative;
             flex-direction: column;
+            --big-pic-size: 360px;
+            --pic-gap: 8px;
+            --small-pic-size: calc(calc(var(--big-pic-size) - var(--pic-gap)) / 2);
+        }
+
+        /* so that the card flip always happens in front of other elements */
+        :host(:hover) {
+            z-index: 10;
         }
 
         h3 {
@@ -42,42 +52,94 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<{
         }
 
         .pics {
-            display: inline-grid;
+            display: flex;
+            flex-wrap: wrap;
+            max-height: var(--big-pic-size);
+            overflow: hidden;
+            justify-content: space-evenly;
+            gap: 2px;
+        }
+
+        .secondary-pics {
+            flex-basis: var(--small-pic-size);
+            justify-content: space-evenly;
+            row-gap: var(--pic-gap);
+            column-gap: 2px;
+            flex-grow: 1;
+            max-height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        ${EntrepotFlipCardElement} {
+            width: 100%;
+        }
+
+        .big-pic-wrapper {
+            max-width: 100%;
+            flex-shrink: 0;
+            width: var(--big-pic-size);
+            height: var(--big-pic-size);
+        }
+
+        .pic-wrapper {
+            width: var(--small-pic-size);
+            height: var(--small-pic-size);
+        }
+
+        .big-pic-wrapper,
+        .pic-wrapper {
+            display: flex;
+            justify-content: center;
             align-items: center;
-            justify-items: center;
-            gap: 16px;
-            grid-template-columns: repeat(3, 180px);
-            grid-template-rows: repeat(3, 180px);
+            position: relative;
         }
 
         img {
-            max-width: 180px;
-            max-height: 180px;
+            max-width: 100%;
+            max-height: 100%;
             border-radius: 16px;
-        }
-
-        img:first-of-type {
-            max-width: 360px;
-            max-height: 360px;
-            grid-column: 1 / 3;
-            grid-row: 1 / 3;
         }
 
         .card-footer {
             display: inline-flex;
+            flex-direction: row-reverse;
+            flex-wrap: wrap;
             align-items: center;
+            max-height: 48px;
+            overflow: hidden;
             justify-content: space-between;
             margin-top: 24px;
+            gap: 16px;
         }
 
         .social-links {
             display: flex;
+            flex-wrap: wrap;
+            flex-basis: 24px;
             align-items: center;
-            gap: 32px;
+            max-height: 24px;
+            overflow: hidden;
+            gap: 16px;
+            flex-grow: 1;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            flex-grow: 1;
+            justify-content: flex-end;
         }
 
         ${ToniqButton} {
-            width: 378px;
+            flex-grow: 2;
+            white-space: nowrap;
+            max-width: calc(var(--small-pic-size) * 2);
+        }
+
+        .explore-button {
+            flex-grow: 1;
+            max-width: var(--small-pic-size);
         }
 
         p {
@@ -97,9 +159,26 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<{
             overflow-y: auto;
         }
     `,
-    renderCallback: ({inputs, state, updateState}) => {
+    renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         const cardFooterTemplate = html`
             <div class="card-footer">
+                <!-- the card-footer children are reversed in order so that when it wraps, the social links get wrapped, not the buttons -->
+                <div class="buttons">
+                    <${ToniqButton}
+                        class="toniq-button-outline"
+                        ${assign(ToniqButton, {text: 'View Collection'})}
+                        ${listen('click', () => {
+                            dispatch(new events.collectionRouteClicked(inputs.collectionRoute));
+                        })}
+                    ></${ToniqButton}>
+                    <${ToniqButton}
+                        class="explore-button"
+                        ${assign(ToniqButton, {text: 'Explore'})}
+                        ${listen('click', () => {
+                            updateState({flipped: !state.flipped});
+                        })}
+                    ></${ToniqButton}>
+                </div>
                 <div class="social-links">
                     ${inputs.socialLinks.map(socialLink => {
                         return html`<${EntrepotSocialLinkElement} ${assign(
@@ -110,13 +189,6 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<{
                         )}></${EntrepotSocialLinkElement}>`;
                     })}
                 </div>
-                <${ToniqButton}
-                    ${assign(ToniqButton, {text: 'Explore'})}
-                    ${listen('click', () => {
-                        updateState({flipped: !state.flipped});
-                    })}
-                    class="toniq-button-outline"
-                ></${ToniqButton}>
             </div>
         `;
         const cardHeaderTemplate = html`
@@ -130,11 +202,18 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<{
                 <div class="card-face" slot="front">
                     ${cardHeaderTemplate}
                     <div class="pics">
-                        ${inputs.imageUrls.slice(0, 6).map(imageUrl => {
-                            return html`
-                                <img src=${imageUrl} />
-                            `;
-                        })}
+                        <div class="big-pic-wrapper">
+                            <img class="big-pic" src=${inputs.imageUrls[0]} />
+                        </div>
+                        <div class="secondary-pics">
+                            ${inputs.imageUrls.slice(1).map(imageUrl => {
+                                return html`
+                                    <div class="pic-wrapper">
+                                        <img src=${imageUrl} />
+                                    </div>
+                                `;
+                            })}
+                        </div>
                     </div>
                     ${cardFooterTemplate}
                 </div>

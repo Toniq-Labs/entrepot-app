@@ -19,6 +19,8 @@ export const EntrepotHomePageTopCardHeaderElement = defineElement<{
             border-radius: 16px;
             align-items: stretch;
             padding: 0;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .index-number {

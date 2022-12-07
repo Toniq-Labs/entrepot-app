@@ -29,7 +29,6 @@ export const EntrepotHomePageElement = defineElement<{
             display: flex;
             max-width: 100%;
             flex-direction: column;
-            overflow: hidden;
             padding-bottom: 32px;
         }
 
@@ -38,12 +37,8 @@ export const EntrepotHomePageElement = defineElement<{
         }
 
         .featured-collections {
-            align-self: center;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 32px;
-            width: 1500px;
+            column-count: 2;
+            column-gap: 32px;
             max-width: 100%;
         }
 
@@ -84,6 +79,7 @@ export const EntrepotHomePageElement = defineElement<{
 
         ${EntrepotFeaturedCollectionCardElement} {
             max-width: 100%;
+            margin-bottom: 32px;
         }
 
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
@@ -97,7 +93,8 @@ export const EntrepotHomePageElement = defineElement<{
 
         @media (max-width: 900px) {
             .top-cards-header,
-            .top-cards {
+            .top-cards,
+            .featured-collections {
                 column-count: 1;
             }
 

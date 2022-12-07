@@ -9,12 +9,18 @@ import {shuffle} from '../../../../augments/array';
 
 const images = [
     'https://ixk4q-oiaaa-aaaaj-qap3q-cai.raw.ic0.app/?index=60',
+    'https://mtohu-naaaa-aaaaj-qaqfq-cai.raw.ic0.app/?index=90',
+    'https://mtohu-naaaa-aaaaj-qaqfq-cai.raw.ic0.app/?index=95',
     'https://oeee4-qaaaa-aaaak-qaaeq-cai.raw.ic0.app/?tokenid=wbxnk-kikor-uwiaa-aaaaa-cuaab-eaqca-aaaaa-a',
     'https://images.entrepot.app/t/oeee4-qaaaa-aaaak-qaaeq-cai/l7ymd-vykor-uwiaa-aaaaa-cuaab-eaqca-aaeuc-a',
     'https://images.entrepot.app/t/oeee4-qaaaa-aaaak-qaaeq-cai/bdnmm-2qkor-uwiaa-aaaaa-cuaab-eaqca-aabqo-a',
     'https://images.entrepot.app/t/oeee4-qaaaa-aaaak-qaaeq-cai/5jigi-eqkor-uwiaa-aaaaa-cuaab-eaqca-aaea3-a',
     'https://images.entrepot.app/t/oeee4-qaaaa-aaaak-qaaeq-cai/lnty5-uqkor-uwiaa-aaaaa-cuaab-eaqca-aaato-a',
     'https://images.entrepot.app/t/oeee4-qaaaa-aaaak-qaaeq-cai/6h6x3-eakor-uwiaa-aaaaa-cuaab-eaqca-aabmr-q',
+    'https://3mttv-dqaaa-aaaah-qcn6q-cai.raw.ic0.app/?tokenid=bpyc6-4ikor-uwiaa-aaaaa-b4atp-uaqca-aaalj-a',
+    'https://3mttv-dqaaa-aaaah-qcn6q-cai.raw.ic0.app/?tokenid=uw3jp-yqkor-uwiaa-aaaaa-b4atp-uaqca-aabgz-a',
+    'https://5movr-diaaa-aaaak-aaftq-cai.raw.ic0.app/?tokenid=ulllm-aakor-uwiaa-aaaaa-cqabm-4aqca-aab3v-q',
+    'https://5movr-diaaa-aaaak-aaftq-cai.raw.ic0.app/?tokenid=mijgx-uikor-uwiaa-aaaaa-cqabm-4aqca-aaamu-q',
 ] as const;
 
 const doubleImages = shuffle([
@@ -55,6 +61,7 @@ const homepageInputs: typeof EntrepotHomePageElement['inputsType'] = {
                 collectionName: 'Motoko Ghosts',
                 imageUrls: shuffle(images),
                 longDescription: randomWords({min: 25, max: 500, join: ' '}),
+                collectionRoute: '',
                 socialLinks: [
                     {
                         link: '',
