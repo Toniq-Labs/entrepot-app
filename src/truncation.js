@@ -10,11 +10,7 @@ const truncationSuffixes = [
     'Y', // yotta- septillion
 ];
 
-function recursiveTruncation(
-    value,
-    recursionDepth = 0,
-    decimalValues = '',
-) {
+function recursiveTruncation(value, recursionDepth = 0, decimalValues = '') {
     if (value.includes('e+')) {
         throw new Error(`Number is too large, it cannot be truncated: ${value}`);
     } else if (value.includes('e-')) {

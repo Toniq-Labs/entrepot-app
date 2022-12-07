@@ -1,0 +1,8 @@
+/Icon?
+/dist/
+/build/
+node_modules/
+package-lock.json
+/public/filter/
+/public/nri/
+/src/components/SaleListingGigantoDataSet.js

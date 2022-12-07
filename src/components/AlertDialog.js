@@ -7,24 +7,24 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function AlertDialog(props) {
-  const handleClick = () => {
-    if (typeof props.handler != 'undefined') props.handler();
-  };
-  return (
-    <Dialog
-      open={props.open}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">{props.message}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-      <Button onClick={handleClick} color="primary">
-        {props.buttonLabel ?? "OK" }
-      </Button>
-      </DialogActions>
-    </Dialog>
-  );
+    const handleClick = () => {
+        if (typeof props.handler != 'undefined') props.handler();
+    };
+    return (
+        <Dialog
+            open={props.open}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">{props.message}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClick} color="primary">
+                    {props.buttonLabel ?? 'OK'}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }

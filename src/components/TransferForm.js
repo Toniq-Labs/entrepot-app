@@ -9,44 +9,53 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 
 export default function TransferForm(props) {
-  const [address, setAddress] = React.useState("");
-        
-  const _submit = () => {
-    //Validate address
-    handleClose();
-    props.transfer(props.nft.id, address, props.buttonLoader, props.refresher);
-  };
-  const handleClose = () => {
-    setAddress("");
-    props.close()
-  };
-  return (
-    <>
-      <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth >
-        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Transfer NFT</DialogTitle>
-        <DialogContent>
-        <DialogContentText style={{textAlign:'center',fontWeight:'bold'}}>Please enter the address or Principal you want to send the NFT to.</DialogContentText>
-        <Alert severity="error">Beware, not all wallets support all tokens.</Alert>
-          <TextField
-            style={{width:'100%'}}
-            margin="dense"
-            label={"Address or Principal to send to"}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            type="text"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </DialogContent>
-        
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Back
-          </Button>
-          <Button onClick={_submit} color="primary">Transfer</Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
+    const [
+        address,
+        setAddress,
+    ] = React.useState('');
+
+    const _submit = () => {
+        //Validate address
+        handleClose();
+        props.transfer(props.nft.id, address, props.buttonLoader, props.refresher);
+    };
+    const handleClose = () => {
+        setAddress('');
+        props.close();
+    };
+    return (
+        <>
+            <Dialog open={props.open} onClose={handleClose} maxWidth={'xs'} fullWidth>
+                <DialogTitle id="form-dialog-title" style={{textAlign: 'center'}}>
+                    Transfer NFT
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText style={{textAlign: 'center', fontWeight: 'bold'}}>
+                        Please enter the address or Principal you want to send the NFT to.
+                    </DialogContentText>
+                    <Alert severity="error">Beware, not all wallets support all tokens.</Alert>
+                    <TextField
+                        style={{width: '100%'}}
+                        margin="dense"
+                        label={'Address or Principal to send to'}
+                        value={address}
+                        onChange={e => setAddress(e.target.value)}
+                        type="text"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Back
+                    </Button>
+                    <Button onClick={_submit} color="primary">
+                        Transfer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
 }
