@@ -19,6 +19,7 @@ import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
+import {EntrepotAllLaunches} from './typescript/ui/elements/main-content-pages/launches-page/toniq-entrepot-all-launches-page.element';
 import Mint from './views/Mint';
 import Sale from './views/Sale';
 import Contact from './views/Contact';
@@ -1896,7 +1897,8 @@ export default function App() {
                                     <Route path="/test" exact element={<EntrepotTestPage />} />
                                 )}
                                 <Route path="/" exact element={<EntrepotTestPage />} />
-                                <Route
+                                <Route path="/sale" element={<EntrepotAllLaunches />} />
+                                {/* <Route
                                     path="/sale"
                                     exact
                                     element={
@@ -1922,7 +1924,7 @@ export default function App() {
                                             accounts={accounts}
                                         />
                                     }
-                                />
+                                /> */}
                                 <Route path="*" element={<MissingPage404 />} />
                             </Routes>
                             <BuyForm open={showBuyForm} {...buyFormData} />
