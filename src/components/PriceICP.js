@@ -1,4 +1,4 @@
-import {truncateNumber} from 'augment-vir';
+import {truncateNumber} from '@augment-vir/common';
 import {
     cssToReactStyleObject,
     toniqFontStyles,

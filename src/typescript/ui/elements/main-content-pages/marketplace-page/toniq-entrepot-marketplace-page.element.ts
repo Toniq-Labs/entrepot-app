@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {ensureType} from 'augment-vir';
+import {ensureType} from '@augment-vir/common';
 import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {

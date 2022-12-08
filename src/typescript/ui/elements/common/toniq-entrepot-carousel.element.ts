@@ -1,4 +1,4 @@
-import {RequiredAndNotNullBy} from 'augment-vir';
+import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {scrollSnapToNext, ScrollDirection, getScrollSnapPositions} from 'scroll-snap-api';
 import {classMap} from 'lit/directives/class-map.js';
 import {

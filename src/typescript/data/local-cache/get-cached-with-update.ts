@@ -1,9 +1,8 @@
-import {extractErrorMessage} from 'augment-vir';
 import {
-    entrepotCacheDatabase,
     EntrepotCacheTableName,
     EntrepotCacheTableCacheItem,
     EntrepotCacheTableData,
+    getEntrepotCacheDatabase,
 } from './cache-database';
 
 const inProgressFetches = new Map<
@@ -36,7 +35,7 @@ export async function getCachedWithUpdate<TableNameGeneric extends EntrepotCache
 
     let cached: EntrepotCacheTableCacheItem<TableNameGeneric> | undefined = undefined;
     try {
-        cached = await entrepotCacheDatabase[databaseTableName].get(rowKey);
+        cached = await (await getEntrepotCacheDatabase())[databaseTableName].get(rowKey);
     } catch (error) {}
     if (cached) {
         // update later in the background
@@ -75,7 +74,9 @@ async function updateDatabase<TableNameGeneric extends EntrepotCacheTableName>({
 }): Promise<EntrepotCacheTableData<TableNameGeneric>> {
     const data: EntrepotCacheTableCacheItem<EntrepotCacheTableName>['data'] =
         await fetchValueCallback(rowKey);
-    await entrepotCacheDatabase[databaseTableName].put({
+    await (
+        await getEntrepotCacheDatabase()
+    )[databaseTableName].put({
         rowKey,
         // as cast here because the database table types are not sufficiently typed
         data: data as EntrepotCacheTableCacheItem<EntrepotCacheTableName>['data'] as any,

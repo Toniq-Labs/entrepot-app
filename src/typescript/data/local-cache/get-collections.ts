@@ -4,7 +4,7 @@ import {entrepotDataApi} from '../entrepot-data-api';
 import {removeUnknownKeys} from './cache-cleanup';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {isProd} from '../../environment/environment-by-url';
-import {extractErrorMessage} from 'augment-vir';
+import {extractErrorMessage} from '@augment-vir/common';
 
 const cloudFunctionsApiEndpoint = `https://us-central1-entrepot-api.cloudfunctions.net/api`;
 const collectionsEndpoint = isProd

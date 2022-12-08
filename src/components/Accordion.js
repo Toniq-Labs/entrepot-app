@@ -7,7 +7,7 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {makeStyles} from '@material-ui/core';
-import {randomString} from 'augment-vir';
+import {randomString} from '@augment-vir/browser';
 
 export function Accordion(props) {
     const [

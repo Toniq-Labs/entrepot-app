@@ -5,7 +5,7 @@ import {loadAllUserTokens, getEXTCanister, getEXTID, nftIdToNft} from '../../uti
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
-import {wait} from 'augment-vir';
+import {wait} from '@augment-vir/common';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 

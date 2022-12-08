@@ -1,4 +1,4 @@
-import {extractErrorMessage, ObjectValueType, typedHasProperty} from 'augment-vir';
+import {extractErrorMessage, ObjectValueType, typedHasProperty} from '@augment-vir/common';
 
 export type NestedKeys<ObjectGeneric extends object> = ObjectValueType<{
     [Prop in keyof ObjectGeneric]: NonNullable<ObjectGeneric[Prop]> extends object

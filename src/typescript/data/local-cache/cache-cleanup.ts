@@ -1,12 +1,13 @@
-import {extractErrorMessage, isTruthy} from 'augment-vir';
-import {EntrepotCacheTableName, entrepotCacheDatabase} from './cache-database';
+import {extractErrorMessage, isTruthy} from '@augment-vir/common';
+import {EntrepotCacheTableName, getEntrepotCacheDatabase} from './cache-database';
 
 export async function removeUnknownKeys<TableNameGeneric extends EntrepotCacheTableName>(
     databaseTableName: TableNameGeneric,
     knownKeys: ReadonlyArray<string>,
 ): Promise<void> {
+    const database = await getEntrepotCacheDatabase();
     try {
-        const allValues: ReadonlyArray<{rowKey: string}> = await entrepotCacheDatabase[
+        const allValues: ReadonlyArray<{rowKey: string}> = await database[
             databaseTableName
         ].toArray();
 
@@ -17,7 +18,7 @@ export async function removeUnknownKeys<TableNameGeneric extends EntrepotCacheTa
             .filter(isTruthy);
 
         if (toBeRemovedValues.length) {
-            entrepotCacheDatabase[databaseTableName].bulkDelete(toBeRemovedValues);
+            database[databaseTableName].bulkDelete(toBeRemovedValues);
         }
     } catch (error) {
         throw new Error(

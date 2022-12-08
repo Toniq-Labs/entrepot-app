@@ -1,4 +1,4 @@
-import {wrapNarrowTypeWithTypeCheck} from 'augment-vir';
+import {wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
 import {Collection} from '../../../../data/models/collection';
 import {
     FilterTypeEnum,

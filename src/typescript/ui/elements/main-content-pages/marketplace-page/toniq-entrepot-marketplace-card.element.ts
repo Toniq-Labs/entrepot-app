@@ -12,7 +12,7 @@ import {
     applyBackgroundAndForeground,
     removeNativeFormStyles,
 } from '@toniq-labs/design-system';
-import {truncateNumber} from 'augment-vir';
+import {truncateNumber} from '@augment-vir/common';
 
 export const EntrepotMarketplaceCardElement = defineElement<{
     collectionName: string;

@@ -1,4 +1,4 @@
-import {isTruthy} from 'augment-vir';
+import {isTruthy} from '@augment-vir/common';
 import {
     FilterTypeEnum,
     SingleFilterDefinition,

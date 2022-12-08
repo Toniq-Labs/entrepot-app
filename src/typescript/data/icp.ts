@@ -1,4 +1,4 @@
-import {truncateNumber} from 'augment-vir';
+import {truncateNumber} from '@augment-vir/common';
 import {BigNumber} from 'bignumber.js';
 
 export type ValidIcp = BigNumber | number | BigInt;

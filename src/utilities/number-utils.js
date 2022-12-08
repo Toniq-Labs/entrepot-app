@@ -1,4 +1,4 @@
-import {truncateNumber} from 'augment-vir';
+import {truncateNumber} from '@augment-vir/common';
 
 export function isInRange(value, min, max) {
     return value >= min && value <= max;

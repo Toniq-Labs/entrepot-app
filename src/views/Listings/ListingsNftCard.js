@@ -31,7 +31,7 @@ import {MinimumOffer} from '../../components/shared/MinimumOffer';
 import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
 import {camelCaseToTitleCase} from '../../utilities/string-utils';
-import {truncateNumber} from 'augment-vir';
+import {truncateNumber} from '@augment-vir/common';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {

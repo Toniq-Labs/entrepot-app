@@ -7,7 +7,7 @@ import {
     ToniqIcon,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {areJsonEqual, isTruthy, truncateNumber} from 'augment-vir';
+import {areJsonEqual, isTruthy, truncateNumber} from '@augment-vir/common';
 import {isStillAtDefaults} from './is-still-default';
 
 type FilterTokenInputs = {

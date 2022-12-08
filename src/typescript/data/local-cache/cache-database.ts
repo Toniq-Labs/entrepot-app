@@ -1,4 +1,4 @@
-import {ObjectValueType} from 'augment-vir';
+import {ObjectValueType} from '@augment-vir/common';
 import Dexie, {Table} from 'dexie';
 import {BaseCollection, Collection} from '../models/collection';
 import {NriData} from '../models/nri-data';
@@ -21,14 +21,16 @@ export type AllBaseCollectionsCacheItem = {
     data: ReadonlyArray<BaseCollection>;
 };
 
+const databaseName = 'EntrepotDatabase';
+
 class InternalEntrepotDatabaseClass extends Dexie {
     public nriCache!: Table<NriCacheItem, string>;
     public collectionsStatsCache!: Table<CollectionStatsCacheItem, string>;
     public allBaseCollectionsCache!: Table<AllBaseCollectionsCacheItem, string>;
 
     public constructor() {
-        super('EntrepotDatabase');
-        this.version(2).stores({
+        super(databaseName);
+        this.version(3).stores({
             /** & designates the unique key: https://dexie.org/docs/Version/Version.stores() */
             nriCache: '&rowKey',
             collectionsStatsCache: '&rowKey',
@@ -52,4 +54,19 @@ export type EntrepotCacheTableCacheItem<TableNameGeneric extends EntrepotCacheTa
 export type EntrepotCacheTableData<TableNameGeneric extends EntrepotCacheTableName> =
     EntrepotCacheTableCacheItem<TableNameGeneric>['data'];
 
-export const entrepotCacheDatabase = new InternalEntrepotDatabaseClass();
+async function createDatabase(): Promise<InternalEntrepotDatabaseClass> {
+    try {
+        return new InternalEntrepotDatabaseClass();
+    } catch (error) {
+        /** If there was an error for some reason, just reset the database. */
+        console.error({error});
+        await Dexie.delete(databaseName);
+        return new InternalEntrepotDatabaseClass();
+    }
+}
+
+const entrepotCacheDatabase = createDatabase();
+
+export async function getEntrepotCacheDatabase() {
+    return await entrepotCacheDatabase;
+}

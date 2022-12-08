@@ -11,7 +11,7 @@ import {
     ToniqIcon,
     removeNativeFormStyles,
 } from '@toniq-labs/design-system';
-import {removeCommasFromNumberString} from 'augment-vir';
+import {removeCommasFromNumberString} from '@augment-vir/common';
 import {EntrepotExpandingListFilterElement} from './toniq-entrepot-expanding-list-filter.element';
 
 export const EntrepotFilterElement = defineElement<{

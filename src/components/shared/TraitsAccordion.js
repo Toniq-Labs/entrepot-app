@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {toniqColors, cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
 import {makeStyles} from '@material-ui/core';
-import {randomString} from 'augment-vir';
+import {randomString} from '@augment-vir/browser';
 
 export function TraitsAccordion(props) {
     const [

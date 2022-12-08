@@ -10,7 +10,7 @@ import {
     EntrepotHomePageTopCardElement,
 } from './children/toniq-entrepot-top-card.element';
 import {CarouselItem, EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
-import {isTruthy} from 'augment-vir';
+import {isTruthy} from '@augment-vir/common';
 import {toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
 import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
 
