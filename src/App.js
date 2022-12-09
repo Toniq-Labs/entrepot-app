@@ -47,7 +47,7 @@ import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
 import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
 import {isProd} from './typescript/environment/environment-by-url';
-import {useNavigate} from 'react-router';
+import {useNavigate, matchPath} from 'react-router';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -66,7 +66,10 @@ const useStyles = makeStyles(theme => ({
     },
     inner: {
         flexGrow: 1,
-        padding: '32px',
+        padding: 32,
+        [theme.breakpoints.down('xs')]: {
+            padding: 16,
+        },
     },
     content: {
         flexGrow: 1,
@@ -910,6 +913,11 @@ export default function App() {
             if (loader) loader(false);
             return error(e);
         }
+    };
+
+    const showFooter = () => {
+        const match = matchPath({path: '/marketplace/:route'}, pathname);
+        return match ? 'none' : 'flex';
     };
 
     React.useEffect(() => {
@@ -1972,7 +1980,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter style={{zIndex: 100}} />
+                    <EntrepotFooter style={{zIndex: 100, display: showFooter()}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />

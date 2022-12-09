@@ -44,9 +44,14 @@ const useStyles = makeStyles(theme => ({
         },
     },
     favourite: {
+        position: 'absolute',
+        top: 24,
+        left: 24,
         display: 'none',
         [theme.breakpoints.down('xs')]: {
             display: 'block',
+            top: 12,
+            left: 12,
         },
     },
     listingContainer: {
@@ -55,7 +60,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
         gap: 32,
         [theme.breakpoints.down('xs')]: {
-            gap: 16,
+            gap: 7,
         },
         '&.small': {
             gridTemplateColumns: `repeat(auto-fill, ${gridSmallMaxWidth})`,
@@ -611,8 +616,11 @@ export function ListingsNftCard(props) {
                                                             flexDirection: 'column',
                                                         }}
                                                     >
-                                                        <span
+                                                        <div
                                                             style={{
+                                                                display: 'flex',
+                                                                justifyContent: 'space-between',
+                                                                alignItems: 'center',
                                                                 marginBottom: '12px',
                                                                 marginTop: '16px',
                                                             }}
@@ -633,7 +641,18 @@ export function ListingsNftCard(props) {
                                                                     'Unlisted'
                                                                 )}
                                                             </span>
-                                                        </span>
+                                                            <span
+                                                                style={{
+                                                                    ...cssToReactStyleObject(
+                                                                        toniqFontStyles.labelFont,
+                                                                    ),
+                                                                    fontWeight: 500,
+                                                                    opacity: 0.64,
+                                                                }}
+                                                            >
+                                                                #{listing.mintNumber || ''}
+                                                            </span>
+                                                        </div>
                                                         {listing.price ? (
                                                             <ToniqButton
                                                                 text="Buy Now"
@@ -647,7 +666,7 @@ export function ListingsNftCard(props) {
                                                                     );
                                                                 }}
                                                                 style={{
-                                                                    height: '35px',
+                                                                    height: 32,
                                                                     ...cssToReactStyleObject(
                                                                         toniqFontStyles.boldFont,
                                                                     ),
@@ -665,11 +684,6 @@ export function ListingsNftCard(props) {
                                                 />
                                                 <div
                                                     className={classes.favourite}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: '24px',
-                                                        left: '24px',
-                                                    }}
                                                     onClick={e => {
                                                         e.preventDefault();
                                                     }}

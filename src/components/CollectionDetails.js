@@ -46,11 +46,7 @@ const useStyles = makeStyles(theme => ({
         backgroundRepeat: 'no-repeat',
         height: 256,
         [theme.breakpoints.down('xs')]: {
-            height: 296,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            width: '100%',
+            display: 'none',
         },
     },
     avatarWrapper: {
@@ -67,7 +63,7 @@ const useStyles = makeStyles(theme => ({
         gap: 24,
         ...cssToReactStyleObject(toniqShadows.popupShadow),
         [theme.breakpoints.down('sm')]: {
-            top: -80,
+            top: 'unset',
             gap: 12,
             margin: '0 auto',
         },
@@ -116,7 +112,7 @@ const useStyles = makeStyles(theme => ({
         margin: '0 auto',
         textAlign: 'center',
         [theme.breakpoints.down('sm')]: {
-            gap: 0,
+            gap: 16,
             flexDirection: 'column',
             marginBottom: 16,
         },
@@ -127,9 +123,6 @@ const useStyles = makeStyles(theme => ({
         gap: 24,
         [theme.breakpoints.down('sm')]: {
             gap: 16,
-        },
-        [theme.breakpoints.down('sm')]: {
-            marginTop: -50,
         },
     },
     socialsContainer: {
@@ -517,13 +510,7 @@ export default function CollectionDetails(props) {
                         <hr className={classes.divider} />
                         <div style={{display: 'flex', flexDirection: 'column', gap: 36}}>
                             <div className={classes.socialsContainer}>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    direction="row"
-                                >
+                                <Grid container spacing={2} alignItems="center" direction="row">
                                     <Link
                                         href={
                                             'https://icscan.io/nft/collection/' +

@@ -12,7 +12,7 @@ export function NftCard(props) {
     const styles = cssToReactStyleObject(css`
         border-radius: 16px;
         background-color: ${toniqColors.pagePrimary.backgroundColor};
-        padding: 16px;
+        padding: ${unsafeCSS(props.small ? '8px' : '16px')};
         cursor: pointer;
         display: flex;
         flex-direction: ${props.listStyle ? css`row` : css`column`};
