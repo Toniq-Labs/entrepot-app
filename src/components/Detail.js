@@ -192,7 +192,7 @@ const Detail = props => {
             //console.log(e);
         }
         let {index, canister} = extjs.decodeTokenId(tokenid);
-        if (canister === 'zadth-pqaaa-aaaal-abjgq-cai')
+        if (canister === '7i54s-nyaaa-aaaal-abomq-cai ')
             try {
                 let x = await fetch(EntrepotNFTImage(canister, index, tokenid, true));
                 let contentType = x.headers.get('Content-Type');

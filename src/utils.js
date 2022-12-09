@@ -256,10 +256,10 @@ const clipboardCopy = text => {
         } else {
             //add collections with wearables or other dynamic traits here
             //these images will not be cached
-            if (collection === 'zadth-pqaaa-aaaal-abjgq-cai') {
+            if (collection === '7i54s-nyaaa-aaaal-abomq-cai ') {
                 let cacheParam = (Math.random() + 1).toString(36).substring(7);
                 return (
-                    'https://images.entrepot.app/t/zadth-pqaaa-aaaal-abjgq-cai/' +
+                    'https://images.entrepot.app/t/7i54s-nyaaa-aaaal-abomq-cai /' +
                     id +
                     '?cache=' +
                     cachePriority +
