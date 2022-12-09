@@ -44,14 +44,9 @@ const useStyles = makeStyles(theme => ({
         },
     },
     favourite: {
-        position: 'absolute',
-        top: 24,
-        left: 24,
         display: 'none',
         [theme.breakpoints.down('xs')]: {
             display: 'block',
-            top: 12,
-            left: 12,
         },
     },
     listingContainer: {
@@ -684,6 +679,11 @@ export function ListingsNftCard(props) {
                                                 />
                                                 <div
                                                     className={classes.favourite}
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: gridSize === 'small' ? 12 : 24,
+                                                        left: gridSize === 'small' ? 12 : 24,
+                                                    }}
                                                     onClick={e => {
                                                         e.preventDefault();
                                                     }}

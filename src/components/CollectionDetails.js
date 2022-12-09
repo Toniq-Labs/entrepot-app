@@ -289,19 +289,17 @@ export default function CollectionDetails(props) {
                         >
                             <ToniqIcon icon={BrandIcScan24Icon} />
                         </Link>
-                        {collection.web && (
-                            <Link
-                                href={collection.web}
-                                target="_blank"
-                                rel="noreferrer"
-                                underline="none"
-                            >
-                                <ToniqIcon
-                                    icon={Code24Icon}
-                                    style={{color: toniqColors.pagePrimary.foregroundColor}}
-                                />
-                            </Link>
-                        )}
+                        <Link
+                            href={
+                                'https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/collection/' +
+                                collection.canister
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            underline="none"
+                        >
+                            <img alt="create" style={{width: 24}} src={'/icon/svg/nftgeek.svg'} />
+                        </Link>
                     </div>
                 </Avatar>
                 <div className={classes.detailsWrapper}>
