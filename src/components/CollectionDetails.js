@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Grid, Link, Avatar, makeStyles} from '@material-ui/core';
 import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {

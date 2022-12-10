@@ -351,10 +351,12 @@ const useStyles = makeStyles(theme => ({
     },
     detailSectionContainer: {
         borderRadius: 16,
+        gap: 24,
         border: '1px solid rgba(0,0,0, 0.08)',
-        padding: 24,
+        padding: '24px 24px 0px 24px',
         [theme.breakpoints.down('md')]: {
             padding: '16px 14px',
+            gap: 12,
         },
     },
     detailSectionTitle: {
@@ -363,6 +365,7 @@ const useStyles = makeStyles(theme => ({
     detailSectionTitleWrapper: {
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
         gap: 24,
         [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
