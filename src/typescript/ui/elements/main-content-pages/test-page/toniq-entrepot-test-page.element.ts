@@ -60,7 +60,7 @@ const homepageInputs: typeof EntrepotHomePageElement['inputsType'] = {
             return {
                 collectionName: 'Motoko Ghosts',
                 imageUrls: shuffle(images),
-                longDescription: randomWords({min: 25, max: 500, join: ' '}),
+                longDescription: randomWords({min: 50, max: 2000, join: ' '}),
                 collectionRoute: '',
                 socialLinks: [
                     {
