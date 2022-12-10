@@ -56,7 +56,12 @@ export type EntrepotCacheTableData<TableNameGeneric extends EntrepotCacheTableNa
 
 async function createDatabase(): Promise<InternalEntrepotDatabaseClass> {
     try {
-        return new InternalEntrepotDatabaseClass();
+        const database = new InternalEntrepotDatabaseClass();
+        // query all the tables to make sure they work
+        database.nriCache.toArray();
+        database.collectionsStatsCache.toArray();
+        database.allBaseCollectionsCache.toArray();
+        return database;
     } catch (error) {
         /** If there was an error for some reason, just reset the database. */
         console.error({error});
