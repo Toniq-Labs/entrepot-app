@@ -13,8 +13,9 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqChip, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from './PriceICP.js';
-import {isEllipsisActive} from '../utilities/element-utils.js';
 import {formatNumber} from '../utilities/number-utils.js';
+import TruncateMarkup from 'react-truncate-markup';
+import parse from 'html-react-parser';
 import extjs from '../ic/extjs.js';
 
 const api = extjs.connect('https://boundary.ic0.app/');
@@ -151,18 +152,23 @@ const useStyles = makeStyles(theme => ({
     blurb: {
         textAlign: 'left',
         ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
         '& > a': {
             color: `${toniqColors.pagePrimary.foregroundColor}`,
             '&:hover': {
                 color: toniqColors.pageInteractionHover.foregroundColor,
             },
         },
+        '& > p': {
+            display: 'inline !important',
+            margin: 0,
+        },
     },
-    blurbCollapsed: {
-        '-webkit-line-clamp': 3,
-        overflow: 'hidden',
+    readMoreEllipsis: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        color: toniqColors.pageInteraction.foregroundColor,
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
     },
     statsContainer: {
         justifyContent: 'space-between',
@@ -226,14 +232,9 @@ export default function CollectionDetails(props) {
         setSize,
     ] = useState(false);
     const [
-        showReadMore,
-        setShowReadMore,
-    ] = useState(false);
-    const [
         stats,
         setStats,
     ] = useState(false);
-    const blurbRef = createRef();
     var collection = props.collection;
 
     React.useEffect(() => {
@@ -245,7 +246,6 @@ export default function CollectionDetails(props) {
                 setSize(s);
             });
         _updates();
-        setShowReadMore(isEllipsisActive(blurbRef.current));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -253,6 +253,20 @@ export default function CollectionDetails(props) {
         EntrepotUpdateStats().then(() => {
             setStats(EntrepotCollectionStats(collection.canister));
         });
+    };
+
+    const readMoreEllipsisBtn = () => {
+        return (
+            <span>
+                ...
+                <button
+                    className={classes.readMoreEllipsis}
+                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                >
+                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                </button>
+            </span>
+        );
     };
 
     useInterval(_updates, 10 * 1000);
@@ -384,27 +398,31 @@ export default function CollectionDetails(props) {
                             </div>
                             {collection.blurb && (
                                 <div className={classes.blurbWrapper}>
-                                    <div
-                                        ref={blurbRef}
-                                        className={`${classes.blurb} ${
-                                            !isBlurbOpen ? classes.blurbCollapsed : ''
-                                        }`}
-                                        dangerouslySetInnerHTML={{__html: collection.blurb}}
-                                    />
-                                    {showReadMore && (
-                                        <button
-                                            style={{
-                                                ...cssToReactStyleObject(
-                                                    toniqFontStyles.boldParagraphFont,
-                                                ),
-                                                border: 'none',
-                                                background: 'none',
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                    {isBlurbOpen ? (
+                                        <span style={{textAlign: 'left'}}>
+                                            <span
+                                                className={classes.blurb}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: collection.blurb,
+                                                }}
+                                            />
+                                            <button
+                                                className={classes.readMoreEllipsis}
+                                                onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                            >
+                                                {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                            </button>
+                                        </span>
+                                    ) : (
+                                        <TruncateMarkup
+                                            lines={3}
+                                            ellipsis={readMoreEllipsisBtn()}
+                                            tokenize="words"
                                         >
-                                            {!isBlurbOpen ? 'Read More' : 'Read Less'}
-                                        </button>
+                                            <div className={classes.blurb}>
+                                                {parse(collection.blurb)}
+                                            </div>
+                                        </TruncateMarkup>
                                     )}
                                 </div>
                             )}

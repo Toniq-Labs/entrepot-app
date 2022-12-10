@@ -22,6 +22,8 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {isEllipsisActive} from '../../../utilities/element-utils';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
+import TruncateMarkup from 'react-truncate-markup';
+import parse from 'html-react-parser';
 
 function ListRow({items, classes, style}) {
     return (
@@ -107,14 +109,9 @@ export default function DetailSectionDetails(props) {
     const {offerListing, floor, index, canister, tokenid, owner, attributes, cancelOffer} = props;
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
-    const blurbRef = createRef();
     const [
         isBlurbOpen,
         setIsBlurbOpen,
-    ] = useState(false);
-    const [
-        showReadMore,
-        setShowReadMore,
     ] = useState(false);
 
     const getFloorDelta = amount => {
@@ -149,9 +146,22 @@ export default function DetailSectionDetails(props) {
         } else return false;
     };
 
+    const readMoreEllipsisBtn = () => {
+        return (
+            <span>
+                ...
+                <button
+                    className={classes.readMoreEllipsis}
+                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                >
+                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                </button>
+            </span>
+        );
+    };
+
     React.useEffect(() => {
         props.loader(true);
-        setShowReadMore(isEllipsisActive(blurbRef.current));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -216,22 +226,29 @@ export default function DetailSectionDetails(props) {
                 >
                     {collection.blurb && (
                         <div className={classes.blurbWrapper}>
-                            <div
-                                ref={blurbRef}
-                                className={`${classes.blurb} ${
-                                    !isBlurbOpen ? classes.blurbCollapsed : ''
-                                }`}
-                                dangerouslySetInnerHTML={{
-                                    __html: collection.blurb,
-                                }}
-                            />
-                            {showReadMore && (
-                                <button
-                                    className={classes.readMoreBtn}
-                                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                            {isBlurbOpen ? (
+                                <span style={{textAlign: 'left'}}>
+                                    <span
+                                        className={classes.blurb}
+                                        dangerouslySetInnerHTML={{
+                                            __html: collection.blurb,
+                                        }}
+                                    />
+                                    <button
+                                        className={classes.readMoreEllipsis}
+                                        onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                    >
+                                        {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                    </button>
+                                </span>
+                            ) : (
+                                <TruncateMarkup
+                                    lines={3}
+                                    ellipsis={readMoreEllipsisBtn()}
+                                    tokenize="words"
                                 >
-                                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
-                                </button>
+                                    <div className={classes.blurb}>{parse(collection.blurb)}</div>
+                                </TruncateMarkup>
                             )}
                         </div>
                     )}
@@ -501,12 +518,6 @@ const useStyles = makeStyles(theme => ({
             borderRadius: 20,
             backgroundColor: '#00D093',
         },
-        [theme.breakpoints.down('sm')]: {
-            // overflowY: 'hidden',
-            // '&::-webkit-scrollbar': {
-            //     display: 'none',
-            // },
-        },
     },
     detailSectionTitle: {
         ...cssToReactStyleObject(toniqFontStyles.h3Font),
@@ -573,8 +584,6 @@ const useStyles = makeStyles(theme => ({
     blurb: {
         textAlign: 'left',
         ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
         '& > a': {
             color: `${toniqColors.pagePrimary.foregroundColor}`,
             '&:hover': {
@@ -582,12 +591,16 @@ const useStyles = makeStyles(theme => ({
             },
         },
         '& > p': {
+            display: 'inline !important',
             margin: 0,
         },
     },
-    blurbCollapsed: {
-        '-webkit-line-clamp': 3,
-        overflow: 'hidden',
+    readMoreEllipsis: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        color: toniqColors.pageInteraction.foregroundColor,
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
     },
     ownerWrapper: {
         ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
