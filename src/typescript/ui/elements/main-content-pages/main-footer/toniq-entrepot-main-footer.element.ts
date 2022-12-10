@@ -140,6 +140,7 @@ const EntrepotFooterElement = defineElementNoInputs({
             display: flex;
             flex-direction: column;
             position: relative;
+            align-items: center;
             ${applyBackgroundAndForeground(toniqColors.pageDarkPrimary)};
         }
 
@@ -153,6 +154,7 @@ const EntrepotFooterElement = defineElementNoInputs({
             padding: 64px;
             padding-bottom: 0;
             gap: 32px;
+            max-width: 1600px;
         }
 
         h1,
@@ -165,10 +167,6 @@ const EntrepotFooterElement = defineElementNoInputs({
         h3 {
             ${toniqFontStyles.h3Font};
             color: inherit;
-        }
-
-        .logo-section {
-            max-width: 340px;
         }
 
         .logo {
@@ -198,7 +196,32 @@ const EntrepotFooterElement = defineElementNoInputs({
 
         .main-footer-content > * {
             flex-grow: 1;
-            flex-basis: min-content;
+            flex-basis: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-footer-content > * > * {
+            max-width: 360px;
+            flex-grow: 1;
+        }
+
+        .middle-section-wrapper {
+            flex-grow: 0;
+        }
+
+        .left-section-wrapper {
+            justify-content: flex-start;
+        }
+
+        .right-section-wrapper {
+            justify-content: flex-end;
+        }
+
+        .email-input {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
         }
 
         .links-section {
@@ -232,7 +255,6 @@ const EntrepotFooterElement = defineElementNoInputs({
         }
 
         .community-section {
-            max-width: 340px;
             gap: 64px;
             display: flex;
             flex-direction: column;
@@ -243,11 +265,7 @@ const EntrepotFooterElement = defineElementNoInputs({
         }
 
         .community-section h3 {
-            margin-bottom: 16px;
-        }
-
-        .community-section ${ToniqInput} {
-            margin-top: 16px;
+            margin-bottom: 32px;
         }
 
         .subscribe-section {
@@ -280,7 +298,7 @@ const EntrepotFooterElement = defineElementNoInputs({
 
         .social-icons {
             display: flex;
-            gap: 8px;
+            gap: 16px;
             ${unsafeCSS(toniqIconColorCssVarNames.color)}: ${toniqColors.pageInteraction
                 .foregroundColor};
         }
@@ -289,29 +307,93 @@ const EntrepotFooterElement = defineElementNoInputs({
             color: inherit;
         }
 
-        @media (max-width: 1250px) {
-            .links-section {
-                column-count: 2;
+        @media (max-width: 1300px) and (min-width: 701px) {
+            .right-section-wrapper {
+                order: -1;
+                flex-basis: 100%;
+            }
+
+            .community-section {
+                max-width: unset;
+                align-items: center;
+            }
+
+            .subscribe-section {
+                align-self: stretch;
+            }
+
+            .community-section h3 {
+                text-align: center;
+            }
+
+            .social-icons {
+                justify-content: center;
+            }
+
+            .main-footer-content {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .email-input {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .email-input ${ToniqButton} {
+                flex-shrink: 0;
+                width: 120px;
+            }
+
+            .email-input ${ToniqInput} {
+                width: unset;
+                flex-grow: 1;
             }
         }
 
-        @media (max-width: 1000px) {
-            .community-section {
+        @media (max-width: 800px) {
+            .links-section {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .middle-section-wrapper {
+                flex-grow: 1;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .right-section-wrapper {
                 order: -1;
                 padding-bottom: 40px;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             }
+
             .main-footer-content {
                 flex-direction: column;
             }
+
+            .main-footer-content > * > * {
+                max-width: unset;
+            }
+
             .main-footer-content > * {
                 max-width: unset;
             }
+
             .individual-link-section {
                 display: flex;
             }
             .copyright-line {
                 justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 400px) {
+            footer {
+                padding: 16px;
+                padding-bottom: 0;
             }
         }
     `,
@@ -353,20 +435,22 @@ const EntrepotFooterElement = defineElementNoInputs({
                     <!-- <p>
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                     </p> -->
-                    <${ToniqInput}
-                        ${assign(ToniqInput, {
-                            value: state.subscriptionInput,
-                            placeholder: 'Your email address',
-                        })}
-                        ${listen(ToniqInput.events.valueChange, event => {
-                            updateState({subscriptionInput: event.detail});
-                        })}
-                    ></${ToniqInput}>
-                    <${ToniqButton}
-                        ${assign(ToniqButton, {
-                            text: 'Sign Up',
-                        })}
-                    ></${ToniqButton}>
+                    <div class="email-input">
+                        <${ToniqInput}
+                            ${assign(ToniqInput, {
+                                value: state.subscriptionInput,
+                                placeholder: 'Your email address',
+                            })}
+                            ${listen(ToniqInput.events.valueChange, event => {
+                                updateState({subscriptionInput: event.detail});
+                            })}
+                        ></${ToniqInput}>
+                        <${ToniqButton}
+                            ${assign(ToniqButton, {
+                                text: 'Sign Up',
+                            })}
+                        ></${ToniqButton}>
+                    </div>
                 </div>
                 <div class="social-links-section">
                     <h3>Join The Community</h3>
@@ -399,7 +483,9 @@ const EntrepotFooterElement = defineElementNoInputs({
         return html`
             <footer>
                 <div class="main-footer-content">
-                    ${logoSection} ${linksSection} ${communitySection}
+                    <div class="left-section-wrapper">${logoSection}</div>
+                    <div class="middle-section-wrapper">${linksSection}</div>
+                    <div class="right-section-wrapper">${communitySection}</div>
                 </div>
                 ${copyRightLine}
             </footer>
