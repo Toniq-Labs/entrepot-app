@@ -441,7 +441,7 @@ export default function V2SaleComponent(props) {
                                         indicatorColor="primary"
                                         textColor="primary"
                                         centered={window.innerWidth < 960 ? false : true}
-                                        scrollButtons={window.innerWidth < 960 ? 'on' : 'auto'}
+                                        scrollButtons=true
                                         variant={
                                             window.innerWidth < 960 ? 'scrollable' : 'standard'
                                         }
