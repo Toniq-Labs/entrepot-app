@@ -378,7 +378,7 @@ export default function V2SaleComponent(props) {
                         <strong>SOLD</strong>
                         <br />
                         <span style={{fontWeight: 'bold', color: 'rgb(189 1 1)', fontSize: '2em'}}>
-                            {sold !== false ? sold : 'Loading...'}
+                            {sold !== false ? (collection.canister==="7i54s-nyaaa-aaaal-abomq-cai" ? (sold+362) : sold) : 'Loading...'}
                         </span>
                     </Grid>
                     <Grid className={classes.stat} item xs={10}>
