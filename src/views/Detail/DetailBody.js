@@ -359,6 +359,7 @@ const DetailBody = props => {
                     owner={owner}
                     attributes={attributes}
                     cancelOffer={cancelOffer}
+                    setOpenOfferForm={setOpenOfferForm}
                     {...props}
                 />
                 <DetailSectionActivity
@@ -377,6 +378,7 @@ export default DetailBody;
 const useStyles = makeStyles(theme => ({
     container: {
         maxWidth: 1312,
+        padding: 0,
         [theme.breakpoints.up('md')]: {
             marginTop: '32px',
         },
@@ -415,11 +417,5 @@ const useStyles = makeStyles(theme => ({
     },
     nftDescWrapper: {
         maxWidth: 1312,
-        [theme.breakpoints.up('sm')]: {
-            padding: '0px 16px',
-        },
-        [theme.breakpoints.down('xs')]: {
-            padding: '0',
-        },
     },
 }));

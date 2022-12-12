@@ -1,4 +1,4 @@
-import React, {createRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Grid, Link, Avatar, makeStyles} from '@material-ui/core';
 import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {
@@ -13,8 +13,9 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqChip, ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from './PriceICP.js';
-import {isEllipsisActive} from '../utilities/element-utils.js';
 import {formatNumber} from '../utilities/number-utils.js';
+import TruncateMarkup from 'react-truncate-markup';
+import parse from 'html-react-parser';
 import extjs from '../ic/extjs.js';
 
 const api = extjs.connect('https://boundary.ic0.app/');
@@ -46,11 +47,7 @@ const useStyles = makeStyles(theme => ({
         backgroundRepeat: 'no-repeat',
         height: 256,
         [theme.breakpoints.down('xs')]: {
-            height: 296,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            width: '100%',
+            display: 'none',
         },
     },
     avatarWrapper: {
@@ -67,7 +64,7 @@ const useStyles = makeStyles(theme => ({
         gap: 24,
         ...cssToReactStyleObject(toniqShadows.popupShadow),
         [theme.breakpoints.down('sm')]: {
-            top: -80,
+            top: 'unset',
             gap: 12,
             margin: '0 auto',
         },
@@ -116,7 +113,7 @@ const useStyles = makeStyles(theme => ({
         margin: '0 auto',
         textAlign: 'center',
         [theme.breakpoints.down('sm')]: {
-            gap: 0,
+            gap: 16,
             flexDirection: 'column',
             marginBottom: 16,
         },
@@ -127,9 +124,6 @@ const useStyles = makeStyles(theme => ({
         gap: 24,
         [theme.breakpoints.down('sm')]: {
             gap: 16,
-        },
-        [theme.breakpoints.down('sm')]: {
-            marginTop: -50,
         },
     },
     socialsContainer: {
@@ -158,18 +152,23 @@ const useStyles = makeStyles(theme => ({
     blurb: {
         textAlign: 'left',
         ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
         '& > a': {
             color: `${toniqColors.pagePrimary.foregroundColor}`,
             '&:hover': {
                 color: toniqColors.pageInteractionHover.foregroundColor,
             },
         },
+        '& > p': {
+            display: 'inline !important',
+            margin: 0,
+        },
     },
-    blurbCollapsed: {
-        '-webkit-line-clamp': 3,
-        overflow: 'hidden',
+    readMoreEllipsis: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        color: toniqColors.pageInteraction.foregroundColor,
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
     },
     statsContainer: {
         justifyContent: 'space-between',
@@ -233,14 +232,9 @@ export default function CollectionDetails(props) {
         setSize,
     ] = useState(false);
     const [
-        showReadMore,
-        setShowReadMore,
-    ] = useState(false);
-    const [
         stats,
         setStats,
     ] = useState(false);
-    const blurbRef = createRef();
     var collection = props.collection;
 
     React.useEffect(() => {
@@ -252,7 +246,6 @@ export default function CollectionDetails(props) {
                 setSize(s);
             });
         _updates();
-        setShowReadMore(isEllipsisActive(blurbRef.current));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -260,6 +253,20 @@ export default function CollectionDetails(props) {
         EntrepotUpdateStats().then(() => {
             setStats(EntrepotCollectionStats(collection.canister));
         });
+    };
+
+    const readMoreEllipsisBtn = () => {
+        return (
+            <span>
+                ...
+                <button
+                    className={classes.readMoreEllipsis}
+                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                >
+                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                </button>
+            </span>
+        );
     };
 
     useInterval(_updates, 10 * 1000);
@@ -296,19 +303,17 @@ export default function CollectionDetails(props) {
                         >
                             <ToniqIcon icon={BrandIcScan24Icon} />
                         </Link>
-                        {collection.web && (
-                            <Link
-                                href={collection.web}
-                                target="_blank"
-                                rel="noreferrer"
-                                underline="none"
-                            >
-                                <ToniqIcon
-                                    icon={Code24Icon}
-                                    style={{color: toniqColors.pagePrimary.foregroundColor}}
-                                />
-                            </Link>
-                        )}
+                        <Link
+                            href={
+                                'https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/collection/' +
+                                collection.canister
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            underline="none"
+                        >
+                            <img alt="create" style={{width: 24}} src={'/icon/svg/nftgeek.svg'} />
+                        </Link>
                     </div>
                 </Avatar>
                 <div className={classes.detailsWrapper}>
@@ -393,27 +398,31 @@ export default function CollectionDetails(props) {
                             </div>
                             {collection.blurb && (
                                 <div className={classes.blurbWrapper}>
-                                    <div
-                                        ref={blurbRef}
-                                        className={`${classes.blurb} ${
-                                            !isBlurbOpen ? classes.blurbCollapsed : ''
-                                        }`}
-                                        dangerouslySetInnerHTML={{__html: collection.blurb}}
-                                    />
-                                    {showReadMore && (
-                                        <button
-                                            style={{
-                                                ...cssToReactStyleObject(
-                                                    toniqFontStyles.boldParagraphFont,
-                                                ),
-                                                border: 'none',
-                                                background: 'none',
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                    {isBlurbOpen ? (
+                                        <span style={{textAlign: 'left'}}>
+                                            <span
+                                                className={classes.blurb}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: collection.blurb,
+                                                }}
+                                            />
+                                            <button
+                                                className={classes.readMoreEllipsis}
+                                                onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                            >
+                                                {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                            </button>
+                                        </span>
+                                    ) : (
+                                        <TruncateMarkup
+                                            lines={3}
+                                            ellipsis={readMoreEllipsisBtn()}
+                                            tokenize="words"
                                         >
-                                            {!isBlurbOpen ? 'Read More' : 'Read Less'}
-                                        </button>
+                                            <div className={classes.blurb}>
+                                                {parse(collection.blurb)}
+                                            </div>
+                                        </TruncateMarkup>
                                     )}
                                 </div>
                             )}
@@ -517,13 +526,7 @@ export default function CollectionDetails(props) {
                         <hr className={classes.divider} />
                         <div style={{display: 'flex', flexDirection: 'column', gap: 36}}>
                             <div className={classes.socialsContainer}>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    direction="row"
-                                >
+                                <Grid container spacing={2} alignItems="center" direction="row">
                                     <Link
                                         href={
                                             'https://icscan.io/nft/collection/' +

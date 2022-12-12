@@ -576,6 +576,7 @@ export function ListingsBody(props) {
                 }
             >
                 <ListingsNftCard
+                    collection={collection}
                     gridSize={gridSize}
                     filteredAndSortedListings={filteredAndSortedListings}
                     hasListing={hasListing}

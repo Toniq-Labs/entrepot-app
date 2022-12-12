@@ -8,20 +8,19 @@ import {
     toniqFontStyles,
     User24Icon,
 } from '@toniq-labs/design-system';
-import React, {createRef, useState} from 'react';
+import React, {useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
-import PriceUSD from '../../../components/PriceUSD';
 import {NftCard} from '../../../shared/NftCard';
 import {getEXTCanister} from '../../../utilities/load-tokens';
-import {EntrepotGetICPUSD, EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
-import Timestamp from 'react-timestamp';
+import {EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
 import {
     ToniqButton,
     ToniqIcon,
     ToniqMiddleEllipsis,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {isEllipsisActive} from '../../../utilities/element-utils';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
+import TruncateMarkup from 'react-truncate-markup';
+import parse from 'html-react-parser';
 
 function ListRow({items, classes, style}) {
     return (
@@ -75,18 +74,8 @@ function ListRow({items, classes, style}) {
                         style={{
                             flexGrow: 1,
                             flexBasis: 0,
-                            marginLeft: '8px',
-                            minWidth: 70,
+                            marginLeft: '32px',
                         }}
-                    >
-                        {items[3]}
-                    </div>
-                    <div
-                        style={{
-                            flexGrow: 1,
-                            flexBasis: 0,
-                        }}
-                        className={classes.hideWhenMobile}
                     >
                         <div
                             style={{
@@ -94,7 +83,7 @@ function ListRow({items, classes, style}) {
                                 flexDirection: 'row-reverse',
                             }}
                         >
-                            {items[4]}
+                            {items[3]}
                         </div>
                     </div>
                 </div>
@@ -104,17 +93,22 @@ function ListRow({items, classes, style}) {
 }
 
 export default function DetailSectionDetails(props) {
-    const {offerListing, floor, index, canister, tokenid, owner, attributes, cancelOffer} = props;
+    const {
+        offerListing,
+        floor,
+        index,
+        canister,
+        tokenid,
+        owner,
+        attributes,
+        cancelOffer,
+        setOpenOfferForm,
+    } = props;
     const collection = props.collections.find(e => e.canister === canister);
     const classes = useStyles();
-    const blurbRef = createRef();
     const [
         isBlurbOpen,
         setIsBlurbOpen,
-    ] = useState(false);
-    const [
-        showReadMore,
-        setShowReadMore,
     ] = useState(false);
 
     const getFloorDelta = amount => {
@@ -149,9 +143,26 @@ export default function DetailSectionDetails(props) {
         } else return false;
     };
 
+    const readMoreEllipsisBtn = () => {
+        return (
+            <span>
+                ...
+                <button
+                    className={classes.readMoreEllipsis}
+                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                >
+                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                </button>
+            </span>
+        );
+    };
+
+    const makeOffer = async () => {
+        setOpenOfferForm(true);
+    };
+
     React.useEffect(() => {
         props.loader(true);
-        setShowReadMore(isEllipsisActive(blurbRef.current));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -213,25 +224,33 @@ export default function DetailSectionDetails(props) {
                     className={`${classes.detailSectionContent} ${
                         isScrollableY('detailsContent') ? '' : classes.hideScrollbar
                     }`}
+                    style={{paddingRight: 18}}
                 >
                     {collection.blurb && (
                         <div className={classes.blurbWrapper}>
-                            <div
-                                ref={blurbRef}
-                                className={`${classes.blurb} ${
-                                    !isBlurbOpen ? classes.blurbCollapsed : ''
-                                }`}
-                                dangerouslySetInnerHTML={{
-                                    __html: collection.blurb,
-                                }}
-                            />
-                            {showReadMore && (
-                                <button
-                                    className={classes.readMoreBtn}
-                                    onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                            {isBlurbOpen ? (
+                                <span style={{textAlign: 'left'}}>
+                                    <span
+                                        className={classes.blurb}
+                                        dangerouslySetInnerHTML={{
+                                            __html: collection.blurb,
+                                        }}
+                                    />
+                                    <button
+                                        className={classes.readMoreEllipsis}
+                                        onClick={() => setIsBlurbOpen(!isBlurbOpen)}
+                                    >
+                                        {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                    </button>
+                                </span>
+                            ) : (
+                                <TruncateMarkup
+                                    lines={3}
+                                    ellipsis={readMoreEllipsisBtn()}
+                                    tokenize="words"
                                 >
-                                    {!isBlurbOpen ? 'Read More' : 'Read Less'}
-                                </button>
+                                    <div className={classes.blurb}>{parse(collection.blurb)}</div>
+                                </TruncateMarkup>
                             )}
                         </div>
                     )}
@@ -264,7 +283,7 @@ export default function DetailSectionDetails(props) {
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                             textAlign: 'center',
-                                            padding: '8px 8px 16px 8px',
+                                            padding: '16px 20px',
                                             flexGrow: 1,
                                         }}
                                     >
@@ -302,7 +321,6 @@ export default function DetailSectionDetails(props) {
                                 true,
                                 'PRICE',
                                 'FLOOR DIFFERENCE',
-                                'EXPIRATION',
                                 'FROM',
                             ]}
                             classes={classes}
@@ -318,7 +336,6 @@ export default function DetailSectionDetails(props) {
                             className={`${classes.detailSectionContent} ${
                                 isScrollableY('offersContent') ? '' : classes.hideScrollbar
                             }`}
-                            style={{paddingBottom: 32}}
                         >
                             {offerListing.slice().map((offer, index) => {
                                 return (
@@ -332,7 +349,7 @@ export default function DetailSectionDetails(props) {
                                             0,
                                         )}
                                         key={index}
-                                        style={{marginRight: 8}}
+                                        style={{margin: '0 8px', padding: 12}}
                                     >
                                         <ListRow
                                             items={[
@@ -354,19 +371,6 @@ export default function DetailSectionDetails(props) {
                                                         clean={false}
                                                         price={offer.amount}
                                                     />
-                                                    &nbsp;
-                                                    <span
-                                                        style={{
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                        }}
-                                                    >
-                                                        (
-                                                        <PriceUSD
-                                                            price={EntrepotGetICPUSD(offer.amount)}
-                                                        />
-                                                        )
-                                                    </span>
                                                 </div>,
                                                 <div
                                                     style={{
@@ -389,16 +393,6 @@ export default function DetailSectionDetails(props) {
                                                         />
                                                     )}
                                                 </div>,
-                                                <Timestamp
-                                                    relative
-                                                    autoUpdate
-                                                    relativeTo={Number(offer.time / 1000000000n)}
-                                                    style={{
-                                                        ...cssToReactStyleObject(
-                                                            toniqFontStyles.boldParagraphFont,
-                                                        ),
-                                                    }}
-                                                />,
                                                 <div>
                                                     {props.identity &&
                                                     props.identity.getPrincipal().toText() ===
@@ -440,7 +434,13 @@ export default function DetailSectionDetails(props) {
                             }}
                         >
                             <span className={classes.noDataText}>THERE ARE NO OPEN OFFERS</span>
-                            <ToniqButton className={'toniq-button-outline'} text="Make an Offer" />
+                            <ToniqButton
+                                className={'toniq-button-outline'}
+                                text="Make an Offer"
+                                onClick={() => {
+                                    makeOffer();
+                                }}
+                            />
                         </div>
                     )}
                 </div>
@@ -463,9 +463,12 @@ const useStyles = makeStyles(theme => ({
         },
     },
     detailSectionContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
         borderRadius: 16,
         border: '1px solid rgba(0,0,0, 0.08)',
-        padding: 24,
+        padding: '24px 24px 0px 24px',
         width: '50%',
         height: 560,
         overflow: 'hidden',
@@ -473,6 +476,7 @@ const useStyles = makeStyles(theme => ({
             height: 'unset',
             width: '100%',
             padding: '16px 14px',
+            gap: 12,
         },
     },
     hideScrollbar: {
@@ -483,10 +487,11 @@ const useStyles = makeStyles(theme => ({
     detailSectionContent: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        gap: 12,
         maxHeight: 448,
         height: '100%',
         overflowY: 'scroll',
+        paddingBottom: 32,
         '&::-webkit-scrollbar': {
             width: 8,
         },
@@ -501,11 +506,8 @@ const useStyles = makeStyles(theme => ({
             borderRadius: 20,
             backgroundColor: '#00D093',
         },
-        [theme.breakpoints.down('sm')]: {
-            // overflowY: 'hidden',
-            // '&::-webkit-scrollbar': {
-            //     display: 'none',
-            // },
+        [theme.breakpoints.down('md')]: {
+            paddingBottom: 16,
         },
     },
     detailSectionTitle: {
@@ -540,6 +542,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: toniqColors.accentSecondary.backgroundColor,
         borderRadius: '8px',
         padding: '0 16px',
+        margin: '0 8px',
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
@@ -549,12 +552,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         gap: '16px',
         backgroundColor: 'white',
-        marginTop: '32px',
         height: '100%',
-        [theme.breakpoints.down('sm')]: {
-            marginTop: '16px',
-            paddingBottom: '16px',
-        },
     },
     hideWhenMobile: {
         [theme.breakpoints.down('sm')]: {
@@ -565,16 +563,10 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginTop: 32,
-        [theme.breakpoints.down('sm')]: {
-            marginTop: 16,
-        },
     },
     blurb: {
         textAlign: 'left',
         ...cssToReactStyleObject(toniqFontStyles.paragraphFont),
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
         '& > a': {
             color: `${toniqColors.pagePrimary.foregroundColor}`,
             '&:hover': {
@@ -582,12 +574,16 @@ const useStyles = makeStyles(theme => ({
             },
         },
         '& > p': {
+            display: 'inline !important',
             margin: 0,
         },
     },
-    blurbCollapsed: {
-        '-webkit-line-clamp': 3,
-        overflow: 'hidden',
+    readMoreEllipsis: {
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        color: toniqColors.pageInteraction.foregroundColor,
+        border: 'none',
+        background: 'none',
+        cursor: 'pointer',
     },
     ownerWrapper: {
         ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),

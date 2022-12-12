@@ -12,5 +12,5 @@ export const cronicFilterTraits = [
 ];
 export const gridLargeMaxWidth = '304px';
 export const gridLargeMaxHeight = '416px';
-export const gridSmallMaxWidth = '192px';
-export const gridSmallMaxHeight = '192px';
+export const gridSmallMaxWidth = '168px';
+export const gridSmallMaxHeight = '252px';
