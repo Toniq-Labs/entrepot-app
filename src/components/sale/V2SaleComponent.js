@@ -441,18 +441,12 @@ export default function V2SaleComponent(props) {
                                         indicatorColor="primary"
                                         textColor="primary"
                                         centered={window.innerWidth < 960 ? false : true}
-                                        scrollButtons={window.innerWidth < 960 ? 'on' : 'auto'}
+                                        scrollButtons='on'
                                         variant={
                                             window.innerWidth < 960 ? 'scrollable' : 'standard'
                                         }
                                         onChange={(e, nv) => {
                                             setCurrentPriceGroup(nv);
-                                        }}
-                                        TabIndicatorProps={{ sx: { display: 'none' } }}
-                                        sx={{
-                                          '& .MuiTabs-flexContainer': {
-                                            flexWrap: 'wrap',
-                                          },
                                         }}
                                     >
                                         {groups.map((group, index) => {
