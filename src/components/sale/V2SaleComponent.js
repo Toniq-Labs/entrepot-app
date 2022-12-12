@@ -448,6 +448,13 @@ export default function V2SaleComponent(props) {
                                         onChange={(e, nv) => {
                                             setCurrentPriceGroup(nv);
                                         }}
+                                        TabIndicatorProps={{ sx: { display: 'none' } }}
+                                          sx={{
+                                            '& .MuiTabs-flexContainer': {
+                                              flexWrap: 'wrap',
+                                            },
+                                          }}
+                                          {...}
                                     >
                                         {groups.map((group, index) => {
                                             var badge, badgeColor;
