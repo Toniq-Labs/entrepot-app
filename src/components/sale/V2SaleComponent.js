@@ -445,10 +445,9 @@ export default function V2SaleComponent(props) {
                                         indicatorColor="primary"
                                         textColor="primary"
                                         centered={false}
-                                        scrollButtons={window.innerWidth < 960 ? 'on' : 'auto'}
-                                        variant={
-                                            window.innerWidth < 960 ? 'scrollable' : 'standard'
-                                        }
+                                        scrollButtons="on"
+                                        allowScrollButtonsMobile
+                                        variant="scrollable"
                                         onChange={(e, nv) => {
                                             setCurrentPriceGroup(nv);
                                         }}
