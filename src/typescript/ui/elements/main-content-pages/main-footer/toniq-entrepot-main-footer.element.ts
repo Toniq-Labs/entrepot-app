@@ -307,9 +307,16 @@ const EntrepotFooterElement = defineElementNoInputs({
             color: inherit;
         }
 
-        @media (max-width: 1300px) and (min-width: 701px) {
+        @media (max-width: 1300px) {
             .right-section-wrapper {
                 order: -1;
+                padding-bottom: 40px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @media (max-width: 1300px) and (min-width: 701px) {
+            .right-section-wrapper {
                 flex-basis: 100%;
             }
 
@@ -363,12 +370,6 @@ const EntrepotFooterElement = defineElementNoInputs({
         }
 
         @media (max-width: 700px) {
-            .right-section-wrapper {
-                order: -1;
-                padding-bottom: 40px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
-
             .main-footer-content {
                 flex-direction: column;
             }
