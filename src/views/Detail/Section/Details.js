@@ -136,13 +136,6 @@ export default function DetailSectionDetails(props) {
         );
     };
 
-    const isScrollableY = id => {
-        const scrollableEl = document.querySelector(`#${id}`);
-        if (scrollableEl) {
-            return scrollableEl.scrollHeight > scrollableEl.clientHeight;
-        } else return false;
-    };
-
     const readMoreEllipsisBtn = () => {
         return (
             <span>
@@ -221,100 +214,106 @@ export default function DetailSectionDetails(props) {
                 </div>
                 <div
                     id="detailsContent"
-                    className={`${classes.detailSectionContent} ${
-                        isScrollableY('detailsContent') ? '' : classes.hideScrollbar
-                    }`}
-                    style={{paddingRight: 18}}
+                    className={classes.detailSectionContent}
+                    style={{minHeight: 550}}
                 >
-                    {collection.blurb && (
-                        <div className={classes.blurbWrapper}>
-                            {isBlurbOpen ? (
-                                <span style={{textAlign: 'left'}}>
-                                    <span
-                                        className={classes.blurb}
-                                        dangerouslySetInnerHTML={{
-                                            __html: collection.blurb,
-                                        }}
-                                    />
-                                    <button
-                                        className={classes.readMoreEllipsis}
-                                        onClick={() => setIsBlurbOpen(!isBlurbOpen)}
-                                    >
-                                        {!isBlurbOpen ? 'Read More' : 'Read Less'}
-                                    </button>
-                                </span>
-                            ) : (
-                                <TruncateMarkup
-                                    lines={3}
-                                    ellipsis={readMoreEllipsisBtn()}
-                                    tokenize="words"
-                                >
-                                    <div className={classes.blurb}>{parse(collection.blurb)}</div>
-                                </TruncateMarkup>
-                            )}
-                        </div>
-                    )}
-                    {attributes && attributes.length ? (
-                        <div className={classes.attributeWrapper}>
-                            {attributes.map((attribute, attributeIndex) => (
-                                <DropShadowCard
-                                    enableHover
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        padding: '0',
-                                        minHeight: 132,
-                                    }}
-                                    key={attributeIndex}
-                                >
-                                    <span className={classes.attributeHeader}>
+                    <div className={classes.listRowContainer}>
+                        {collection.blurb && (
+                            <div className={classes.blurbWrapper} style={{marginRight: 8}}>
+                                {isBlurbOpen ? (
+                                    <span style={{textAlign: 'left'}}>
                                         <span
-                                            style={cssToReactStyleObject(toniqFontStyles.labelFont)}
+                                            className={classes.blurb}
+                                            dangerouslySetInnerHTML={{
+                                                __html: collection.blurb,
+                                            }}
+                                        />
+                                        <button
+                                            className={classes.readMoreEllipsis}
+                                            onClick={() => setIsBlurbOpen(!isBlurbOpen)}
                                         >
-                                            {attribute.category}
-                                        </span>
+                                            {!isBlurbOpen ? 'Read More' : 'Read Less'}
+                                        </button>
                                     </span>
-                                    <Grid
-                                        container
+                                ) : (
+                                    <TruncateMarkup
+                                        lines={3}
+                                        ellipsis={readMoreEllipsisBtn()}
+                                        tokenize="words"
+                                    >
+                                        <div className={classes.blurb}>
+                                            {parse(collection.blurb)}
+                                        </div>
+                                    </TruncateMarkup>
+                                )}
+                            </div>
+                        )}
+                        {attributes && attributes.length ? (
+                            <div className={classes.attributeWrapper}>
+                                {attributes.map((attribute, attributeIndex) => (
+                                    <DropShadowCard
+                                        enableHover
                                         style={{
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            justifyContent: 'center',
                                             alignItems: 'center',
-                                            textAlign: 'center',
-                                            padding: '16px 20px',
-                                            flexGrow: 1,
+                                            padding: '0',
+                                            minHeight: 132,
                                         }}
+                                        key={attributeIndex}
                                     >
-                                        <span
+                                        <span className={classes.attributeHeader}>
+                                            <span
+                                                style={cssToReactStyleObject(
+                                                    toniqFontStyles.labelFont,
+                                                )}
+                                            >
+                                                {attribute.category}
+                                            </span>
+                                        </span>
+                                        <Grid
+                                            container
                                             style={{
-                                                ...cssToReactStyleObject(
-                                                    toniqFontStyles.paragraphFont,
-                                                ),
-                                                ...cssToReactStyleObject(toniqFontStyles.boldFont),
-                                                display: '-webkit-box',
-                                                overflow: 'hidden',
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: 'vertical',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                textAlign: 'center',
+                                                padding: '16px 20px',
+                                                flexGrow: 1,
                                             }}
                                         >
-                                            {attribute.value}
-                                        </span>
-                                    </Grid>
-                                </DropShadowCard>
-                            ))}
-                        </div>
-                    ) : (
-                        <span className={classes.noDataText} style={{flexGrow: 1}}>
-                            NO META DATA AVAILABLE
-                        </span>
-                    )}
+                                            <span
+                                                style={{
+                                                    ...cssToReactStyleObject(
+                                                        toniqFontStyles.paragraphFont,
+                                                    ),
+                                                    ...cssToReactStyleObject(
+                                                        toniqFontStyles.boldFont,
+                                                    ),
+                                                    display: '-webkit-box',
+                                                    overflow: 'hidden',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                }}
+                                            >
+                                                {attribute.value}
+                                            </span>
+                                        </Grid>
+                                    </DropShadowCard>
+                                ))}
+                            </div>
+                        ) : (
+                            <span className={classes.noDataText} style={{flexGrow: 1}}>
+                                NO META DATA AVAILABLE
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className={classes.detailSectionContainer}>
                 <span className={classes.detailSectionTitle}>Offers</span>
-                <div container className={classes.listRowContainer}>
+                <div className={classes.listRowContainer}>
                     <div className={classes.listRowHeader}>
                         <ListRow
                             items={[
@@ -333,9 +332,8 @@ export default function DetailSectionDetails(props) {
                     {offerListing && offerListing.length ? (
                         <div
                             id="offersContent"
-                            className={`${classes.detailSectionContent} ${
-                                isScrollableY('offersContent') ? '' : classes.hideScrollbar
-                            }`}
+                            className={classes.detailSectionContent}
+                            style={{paddingBottom: 24}}
                         >
                             {offerListing.slice().map((offer, index) => {
                                 return (
@@ -468,12 +466,12 @@ const useStyles = makeStyles(theme => ({
         gap: 24,
         borderRadius: 16,
         border: '1px solid rgba(0,0,0, 0.08)',
-        padding: '24px 24px 0px 24px',
+        padding: '24px',
         width: '50%',
-        height: 560,
+        minHeight: 560,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
-            height: 'unset',
+            minHeight: 'unset',
             width: '100%',
             padding: '16px 14px',
             gap: 12,
@@ -490,8 +488,9 @@ const useStyles = makeStyles(theme => ({
         gap: 12,
         maxHeight: 448,
         height: '100%',
-        overflowY: 'scroll',
-        paddingBottom: 32,
+        overflowY: 'overlay',
+        paddingRight: 18,
+        paddingBottom: 6,
         '&::-webkit-scrollbar': {
             width: 8,
         },
@@ -542,7 +541,6 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: toniqColors.accentSecondary.backgroundColor,
         borderRadius: '8px',
         padding: '0 16px',
-        margin: '0 8px',
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
@@ -550,9 +548,12 @@ const useStyles = makeStyles(theme => ({
     listRowContainer: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        gap: 32,
         backgroundColor: 'white',
         height: '100%',
+        [theme.breakpoints.down('sm')]: {
+            gap: 24,
+        },
     },
     hideWhenMobile: {
         [theme.breakpoints.down('sm')]: {
@@ -611,12 +612,12 @@ const useStyles = makeStyles(theme => ({
         gridTemplateColumns: '1fr 1fr 1fr',
         [theme.breakpoints.up('md')]: {
             marginTop: '16px',
-            marginBottom: '16px',
+            marginBottom: '24px',
         },
         [theme.breakpoints.down('md')]: {
             gridTemplateColumns: '1fr 1fr',
             marginTop: '8px',
-            marginBottom: '8px',
+            marginBottom: '16px',
         },
     },
     attributeHeader: {
