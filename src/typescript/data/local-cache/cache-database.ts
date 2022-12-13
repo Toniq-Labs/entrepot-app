@@ -1,7 +1,8 @@
-import {ObjectValueType} from '@augment-vir/common';
+import {extractErrorMessage, ObjectValueType} from '@augment-vir/common';
 import Dexie, {Table} from 'dexie';
 import {BaseCollection, Collection} from '../models/collection';
 import {NriData} from '../models/nri-data';
+import {deleteDatabase} from './delete-database';
 
 export type NriCacheItem = {
     /** CanisterId */
@@ -54,18 +55,35 @@ export type EntrepotCacheTableCacheItem<TableNameGeneric extends EntrepotCacheTa
 export type EntrepotCacheTableData<TableNameGeneric extends EntrepotCacheTableName> =
     EntrepotCacheTableCacheItem<TableNameGeneric>['data'];
 
+const putTestKey = `dummy-entrepot-row-entry-testing-data` as const;
 async function createDatabase(): Promise<InternalEntrepotDatabaseClass> {
     try {
         const database = new InternalEntrepotDatabaseClass();
         // query all the tables to make sure they work
         database.nriCache.toArray();
+        await database.nriCache.put({
+            data: undefined,
+            rowKey: putTestKey,
+        });
         database.collectionsStatsCache.toArray();
+        await database.collectionsStatsCache.put({
+            data: undefined,
+            rowKey: putTestKey,
+        });
         database.allBaseCollectionsCache.toArray();
+        await database.allBaseCollectionsCache.put({
+            data: [],
+            rowKey: putTestKey,
+        });
         return database;
     } catch (error) {
         /** If there was an error for some reason, just reset the database. */
-        console.error({error});
-        await Dexie.delete(databaseName);
+        console.warn(
+            `Resetting cache database due to error from creating database: ${extractErrorMessage(
+                error,
+            )}`,
+        );
+        await deleteDatabase(databaseName);
         return new InternalEntrepotDatabaseClass();
     }
 }
