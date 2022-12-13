@@ -378,7 +378,11 @@ export default function V2SaleComponent(props) {
                         <strong>SOLD</strong>
                         <br />
                         <span style={{fontWeight: 'bold', color: 'rgb(189 1 1)', fontSize: '2em'}}>
-                            {sold !== false ? (collection.canister==="7i54s-nyaaa-aaaal-abomq-cai" ? (sold+362) : sold) : 'Loading...'}
+                            {sold !== false
+                                ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
+                                    ? sold + 362
+                                    : sold
+                                : 'Loading...'}
                         </span>
                     </Grid>
                     <Grid className={classes.stat} item xs={10}>
@@ -440,7 +444,7 @@ export default function V2SaleComponent(props) {
                                         value={currentPriceGroup}
                                         indicatorColor="primary"
                                         textColor="primary"
-                                        centered={window.innerWidth < 960 ? false : true}
+                                        centered={false}
                                         scrollButtons={window.innerWidth < 960 ? 'on' : 'auto'}
                                         variant={
                                             window.innerWidth < 960 ? 'scrollable' : 'standard'
