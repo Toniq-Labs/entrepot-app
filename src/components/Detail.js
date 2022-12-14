@@ -197,7 +197,7 @@ const Detail = props => {
                 let x = await fetch(EntrepotNFTImage(canister, index, tokenid, true));
                 let contentType = x.headers.get('Content-Type');
                 if (contentType === 'image/svg+xml') {
-                    setOverrideDetailPage('asset_canisters');
+                    setOverrideDetailPage('dfinity_deck');
                 } else {
                     setOverrideDetailPage('videos_that_dont_fit_in_frame');
                 }
@@ -459,6 +459,18 @@ const Detail = props => {
                     EntrepotNFTImage(canister, index, tokenid, true),
                     classes,
                 );
+            case 'dfinity_deck':
+                {
+                    let x = extractEmbeddedImage(
+                        EntrepotNFTImage(canister, index, tokenid, true),
+                        classes,
+                    );
+                    x.props.style.maxWidth = 1000;
+                    return x;
+                }
+
+
+            
 
             // default case is to just use the thumbnail on the detail page
             default:
