@@ -31,7 +31,10 @@
         "extends": [
             "react-app",
             "react-app/jest"
-        ]
+        ],
+        "globals": {
+            "globalThis": false
+        }
     },
     "dependencies": {
         "@augment-vir/browser": "^6.1.5",
