@@ -106,6 +106,7 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<FeaturedColle
             flex-direction: row-reverse;
             flex-wrap: wrap;
             align-items: center;
+            flex-shrink: 0;
             max-height: 48px;
             overflow: hidden;
             justify-content: space-between;

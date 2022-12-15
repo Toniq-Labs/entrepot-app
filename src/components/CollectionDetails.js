@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
         border: '12px solid rgb(255, 255, 255)',
         borderWidth: '12px 12px 20px 12px',
         gap: 24,
+        overflow: 'visible',
         ...cssToReactStyleObject(toniqShadows.popupShadow),
         [theme.breakpoints.down('sm')]: {
             top: 'unset',

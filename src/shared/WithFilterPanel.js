@@ -46,6 +46,12 @@ export function WithFilterPanel(props) {
 
                         .with-filter-panel .left-filter-panel.show-left-panel {
                             flex-basis: ${filterPanelWidth};
+                            -ms-overflow-style: none;
+                            scrollbar-width: none;
+                        }
+
+                        .with-filter-panel .left-filter-panel.show-left-panel::-webkit-scrollbar {
+                            display: none;
                         }
 
                         .with-filter-panel .left-filter-panel-header {

@@ -37,6 +37,7 @@ export const EntrepotHomePageElement = defineElement<{
         }
 
         .featured-collections {
+            margin: 0 64px;
             column-count: 2;
             column-gap: 32px;
             max-width: 100%;
@@ -85,6 +86,7 @@ export const EntrepotHomePageElement = defineElement<{
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
             .top-cards-header,
             .top-cards,
+            .featured-collections,
             ${EntrepotTopTabsElement}, h2 {
                 margin-right: 0;
                 margin-left: 0;

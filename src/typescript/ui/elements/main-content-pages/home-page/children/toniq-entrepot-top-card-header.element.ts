@@ -14,7 +14,7 @@ export const EntrepotHomePageTopCardHeaderElement = defineElement<{
     styles: css`
         :host {
             ${toniqFontStyles.paragraphFont};
-            ${applyBackgroundAndForeground(toniqColors.pageTertiary)};
+            ${applyBackgroundAndForeground(toniqColors.pagePrimary)};
             display: inline-flex;
             border-radius: 16px;
             align-items: stretch;
