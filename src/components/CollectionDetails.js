@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Link, Avatar, makeStyles} from '@material-ui/core';
+import {Grid, Link, Avatar, makeStyles, Tooltip} from '@material-ui/core';
 import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {
     cssToReactStyleObject,
@@ -17,6 +17,7 @@ import {formatNumber} from '../utilities/number-utils.js';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
 import extjs from '../ic/extjs.js';
+import {CopyButton} from './shared/CopyButton';
 
 const api = extjs.connect('https://boundary.ic0.app/');
 
@@ -220,6 +221,23 @@ const useStyles = makeStyles(theme => ({
     socialLinkIcon: {
         display: 'flex',
     },
+    cardActionsWrapper: {
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        gap: 16,
+        [theme.breakpoints.down('sm')]: {
+            gap: 8,
+        },
+    },
+    cardActionsExplorers: {
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 24,
+        [theme.breakpoints.down('sm')]: {
+            gap: 20,
+        },
+    },
 }));
 
 export default function CollectionDetails(props) {
@@ -293,28 +311,34 @@ export default function CollectionDetails(props) {
                                 : '/collections/' + collection.canister + '.jpg'
                         }
                     />
-                    <div
-                        style={{display: 'flex', justifyContent: 'center', width: '100%', gap: 24}}
-                    >
-                        <Link
-                            href={'https://icscan.io/nft/collection/' + collection.canister}
-                            target="_blank"
-                            rel="noreferrer"
-                            underline="none"
-                        >
-                            <ToniqIcon icon={BrandIcScan24Icon} />
-                        </Link>
-                        <Link
-                            href={
-                                'https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/collection/' +
-                                collection.canister
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                            underline="none"
-                        >
-                            <img alt="create" style={{width: 24}} src={'/icon/svg/nftgeek.svg'} />
-                        </Link>
+                    <div className={classes.cardActionsWrapper}>
+                        <div className={classes.cardActionsExplorers}>
+                            <Link
+                                href={'https://icscan.io/nft/collection/' + collection.canister}
+                                target="_blank"
+                                rel="noreferrer"
+                                underline="none"
+                            >
+                                <ToniqIcon icon={BrandIcScan24Icon} />
+                            </Link>
+                            <Link
+                                href={
+                                    'https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/collection/' +
+                                    collection.canister
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                underline="none"
+                            >
+                                <img
+                                    alt="create"
+                                    style={{width: 24}}
+                                    src={'/icon/svg/nftgeek.svg'}
+                                />
+                            </Link>
+                        </div>
+                        <hr className={classes.divider} style={{margin: 0}} />
+                        <CopyButton text={collection.canister} />
                     </div>
                 </Avatar>
                 <div className={classes.detailsWrapper}>
