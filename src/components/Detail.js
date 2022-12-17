@@ -459,18 +459,14 @@ const Detail = props => {
                     EntrepotNFTImage(canister, index, tokenid, true),
                     classes,
                 );
-            case 'dfinity_deck':
-                {
-                    let x = extractEmbeddedImage(
-                        EntrepotNFTImage(canister, index, tokenid, true),
-                        classes,
-                    );
-                    x.props.style.maxWidth = 1000;
-                    return x;
-                }
-
-
-            
+            case 'dfinity_deck': {
+                let x = extractEmbeddedImage(
+                    EntrepotNFTImage(canister, index, tokenid, true),
+                    classes,
+                );
+                x.props.style.maxWidth = 1000;
+                return x;
+            }
 
             // default case is to just use the thumbnail on the detail page
             default:
