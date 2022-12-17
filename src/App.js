@@ -1109,11 +1109,12 @@ export default function App() {
                         });
                         break;
                     case 'plug':
-                    case 'infinityWallet':
                         (async () => {
                             const connected = await window.ic[t].isConnected();
                             if (connected) {
-                                if (!window.ic[t].agent) {
+                                const {agent, principalId} =
+                                    window.ic[t].sessionManager.sessionData;
+                                if (!agent) {
                                     await window.ic[t].requestConnect({
                                         whitelist: whitelistedCanisters(),
                                     });
@@ -1127,10 +1128,32 @@ export default function App() {
                                 setAccounts([
                                     {
                                         name: capitalize(t),
-                                        address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                                        address: extjs.toAddress(principalId, 0),
                                     },
                                 ]);
                             }
+                        })();
+                        break;
+                    case 'infinityWallet':
+                        (async () => {
+                            const connected = await window.ic[t].isConnected();
+                            if (!connected) {
+                                await window.ic[t].requestConnect({
+                                    whitelist: whitelistedCanisters(),
+                                });
+                            }
+                            var p = await window.ic[t].getPrincipal();
+                            var id = {
+                                type: t,
+                                getPrincipal: () => p,
+                            };
+                            setIdentity(id);
+                            setAccounts([
+                                {
+                                    name: capitalize(t),
+                                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                                },
+                            ]);
                         })();
                         break;
                     default:
