@@ -89,16 +89,22 @@ export const EntrepotMarketplaceCardElement = defineElement<{
 
         .stats {
             display: flex;
+            flex-wrap: wrap;
             gap: 16px;
         }
 
         .stat-entry {
-            flex-basis: 0;
+            /* This weird flex-basis value allows the stat-entry elements to snap between 
+             * horizontal and vertical. See https://codepen.io/heydon/pen/JwwZaX
+             */
+            flex-basis: calc(calc(256px - 100%) * 999);
+            flex-shrink: 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             gap: 8px;
             align-items: stretch;
+            max-width: 100%;
         }
 
         .stat-entry ${ToniqChip} {

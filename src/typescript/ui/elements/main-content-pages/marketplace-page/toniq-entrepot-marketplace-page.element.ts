@@ -57,9 +57,14 @@ export const EntrepotMarketplacePageElement = defineElement<{
                         defaultFilters: defaultMarketplaceFilters,
                         currentFilters: state.filters,
                         allEntries: inputs.collections,
-                        searchPlaceholder: 'Search for collection name...',
+                        searchPlaceholder: 'Search: Collection Name or Keywords',
                         searchCallback: (searchTerm, collection) => {
-                            return collection.name.toLowerCase().includes(searchTerm.toLowerCase());
+                            const allSearchAreas = [
+                                collection.name,
+                                collection.keywords,
+                                collection.route,
+                            ].join(' ');
+                            return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
                         },
                         createEntryTemplateCallback: collection => {
                             return html`

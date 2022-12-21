@@ -10,7 +10,7 @@ import {
 export const defaultMarketplaceFilters = wrapNarrowTypeWithTypeCheck<
     FilterDefinitions<Collection>
 >()({
-    Price: {
+    'Floor Price': {
         filterType: FilterTypeEnum.NumericRange,
         currentMin: undefined,
         currentMax: undefined,
@@ -19,7 +19,7 @@ export const defaultMarketplaceFilters = wrapNarrowTypeWithTypeCheck<
             'floor',
         ],
     },
-    Volume: {
+    'Total Volume': {
         filterType: FilterTypeEnum.NumericRange,
         currentMin: undefined,
         currentMax: undefined,
