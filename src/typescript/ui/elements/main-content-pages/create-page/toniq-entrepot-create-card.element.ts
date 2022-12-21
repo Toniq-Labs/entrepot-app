@@ -67,6 +67,8 @@ export const EntrepotCreateCardElement = defineElement<CreateCardInputs>()({
 
         ${ToniqCheckbox} {
             pointer-events: none;
+            ${ToniqCheckbox.cssVarNames.checkedLabelColor}: ${toniqColors.pagePrimary
+                .foregroundColor};
         }
     `,
     renderCallback: ({inputs}) => {

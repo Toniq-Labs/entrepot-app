@@ -80,20 +80,31 @@ export const EntrepotCreatePageElement = defineElementNoInputs({
     tagName: 'toniq-entrepot-create-page',
     styles: css`
         :host {
-            display: block;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
         }
 
         ${EntrepotCreateCardElement} {
-            width: 444px;
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 444px;
+            min-width: 320px;
+        }
+
+        .cards-wrapper {
+            display: flex;
+            justify-content: center;
         }
 
         .cards {
             display: flex;
-            gap: 24px;
+            gap: 16px;
+            flex-grow: 1;
+            max-width: 1600px;
             flex-wrap: wrap;
             justify-content: space-evenly;
-            margin: 0 32px;
+            margin: 32px 0;
         }
 
         p {
@@ -114,15 +125,20 @@ export const EntrepotCreatePageElement = defineElementNoInputs({
                     headerText: 'Toniq Create',
                 })}
             ></${EntrepotPageHeaderElement}>
-            <p>We offer a variety of tools for developers and non-developers to help build, launch and grow your business with NFTs.</p>
-            <div class="cards">
-                ${createCards.map(createCard => {
-                    return html`
+            <p>
+                We offer a variety of tools for developers and non-developers to help build, launch
+                and grow your business with NFTs.
+            </p>
+            <div class="cards-wrapper">
+                <div class="cards">
+                    ${createCards.map(createCard => {
+                        return html`
                         <${EntrepotCreateCardElement}
                             ${assign(EntrepotCreateCardElement, {...createCard})}
                         ></${EntrepotCreateCardElement}>
                     `;
-                })}
+                    })}
+                </div>
             </div>
         `;
     },
