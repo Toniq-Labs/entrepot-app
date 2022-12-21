@@ -1,14 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react';
+import {dispatch} from '../events/events';
 import {EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes} from '../utils';
+import {makeStyles} from '@material-ui/core';
+import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     cssToReactStyleObject,
     HeartFill24Icon,
     HeartOutline24Icon,
     toniqFontStyles,
 } from '@toniq-labs/design-system';
-import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {dispatch} from '../events/events';
-import {makeStyles} from '@material-ui/core';
 
 function useInterval(callback, delay) {
     const savedCallback = useRef();

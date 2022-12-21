@@ -2,7 +2,6 @@
 import React from 'react';
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -12,38 +11,29 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
-import {useNavigate} from 'react-router';
-import {useParams} from 'react-router';
-import ListIcon from '@material-ui/icons/List';
+import {useNavigate, useParams} from 'react-router';
 import Pagination from '@material-ui/lab/Pagination';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
-import {EntrepotGetAllLiked} from '../utils';
 import {useTheme} from '@material-ui/core/styles';
 import NFT from './NFT';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import getNri from '../ic/nftv.js';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import {makeStyles} from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import CloseIcon from '@material-ui/icons/Close';
-const api = extjs.connect('https://boundary.ic0.app/');
+
+const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
+
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
@@ -377,7 +367,7 @@ export default function UserCollection(props) {
                 break;
             case 'favorites':
                 var r = await extjs
-                    .connect('https://boundary.ic0.app/', props.identity)
+                    .connect('https://ic0.app/', props.identity)
                     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                     .liked();
                 data = r.filter((a, i) => r.indexOf(a) == i);
@@ -393,8 +383,8 @@ export default function UserCollection(props) {
                 break;
             case 'offers-made':
                 var r = await extjs
-                    .connect('https://boundary.ic0.app/', props.identity)
-                    .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                    .connect('https://ic0.app/', props.identity)
+                    .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
                 data = r.filter((a, i) => r.indexOf(a) == i);
                 data = data.map(a => ({
@@ -415,8 +405,8 @@ export default function UserCollection(props) {
                                 '/all',
                         ),
                         extjs
-                            .connect('https://boundary.ic0.app/', props.identity)
-                            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                            .connect('https://ic0.app/', props.identity)
+                            .canister('fcwhh-piaaa-aaaak-qazba-cai')
                             .allOffers(),
                     ].map(p => p.catch(e => e)),
                 );
@@ -543,7 +533,7 @@ export default function UserCollection(props) {
         console.log('Hook: start');
         setDisplayedResults(false);
         extjs
-            .connect('https://boundary.ic0.app/')
+            .connect('https://ic0.app/')
             .canister('yigae-jqaaa-aaaah-qczbq-cai')
             .tp_whitelisted()
             .then(r => {

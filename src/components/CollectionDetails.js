@@ -19,7 +19,7 @@ import parse from 'html-react-parser';
 import extjs from '../ic/extjs.js';
 import {CopyButton} from './shared/CopyButton';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

@@ -1,50 +1,44 @@
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
-import CallMadeIcon from '@material-ui/icons/CallMade';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import GavelIcon from '@material-ui/icons/Gavel';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import CachedIcon from '@material-ui/icons/Cached';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import SnackbarButton from '../components/SnackbarButton';
-import Blockie from '../components/Blockie';
-import LockIcon from '@material-ui/icons/Lock';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import PriceICP from '../components/PriceICP';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import SearchIcon from '@material-ui/icons/Search';
-import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
-import {useNavigate} from 'react-router';
 import {createSearchParams, useSearchParams} from 'react-router-dom';
+import {LoaderAnimated24Icon} from '@toniq-labs/design-system';
+import {loadVolt, loadVoltBalance} from '../volt';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {nftStatusesByTab, ProfileTabs, ProfileViewType} from '../views/Profile/ProfileTabs';
 import {spreadableSearchParams} from '../utilities/search-params';
+import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {useNavigate} from 'react-router';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import Avatar from '@material-ui/core/Avatar';
+import Blockie from '../components/Blockie';
+import Button from '@material-ui/core/Button';
+import CachedIcon from '@material-ui/icons/Cached';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import CollectionsIcon from '@material-ui/icons/Collections';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import extjs from '../ic/extjs.js';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import GavelIcon from '@material-ui/icons/Gavel';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import LockIcon from '@material-ui/icons/Lock';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import PriceICP from '../components/PriceICP';
+import React from 'react';
+import SearchIcon from '@material-ui/icons/Search';
+import Typography from '@material-ui/core/Typography';
+
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -64,7 +58,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 const drawerWidth = 300;
 
 const useStyles = makeStyles(theme => ({
@@ -88,8 +82,15 @@ export default function Wallet(props) {
     const theme = useTheme();
 
     const [searchParams] = useSearchParams();
-
     const container = window !== undefined ? () => window.document.body : undefined;
+    const [
+        voltBalances,
+        setVoltBalances,
+    ] = React.useState(false);
+    const [
+        voltPrincipal,
+        setVoltPrincipal,
+    ] = React.useState(false);
     const [
         balance,
         setBalance,
@@ -106,10 +107,19 @@ export default function Wallet(props) {
         anchorElAccounts,
         setAnchorElAccounts,
     ] = React.useState(null);
+    const logout = () => {
+        setLoading(false);
+        setBalance(false);
+        setVoltPrincipal(false);
+        setVoltBalances(false);
+        handleClose();
+        props.logout();
+    };
     const refreshClick = async () => {
         setLoading(true);
         setBalance(false);
-        await refresh();
+        setVoltBalances(false);
+        await refresh(true);
     };
     const selectAccount = t => {
         setBalance(false);
@@ -122,6 +132,13 @@ export default function Wallet(props) {
         props.login(t);
         setAnchorElAccounts(null);
     };
+    const createVolt = async () => {
+        handleClose();
+        await props.voltCreate(true);
+    };
+    const voltTransfer = async () => {
+        await props.voltTransfer(props.loader, refreshClick);
+    };
     const processPayments = async () => {
         handleClose();
         await props.processPayments();
@@ -130,18 +147,38 @@ export default function Wallet(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const refresh = async () => {
+    const refreshBalance = async showLoader => {
         if (props.account) {
-            var b = await api.token().getBalance(props.account.address);
-            var thisacc = loadedAccount;
-            setBalance(b);
-            setLoading(false);
+            try {
+                setBalance(await api.token().getBalance(props.account.address));
+            } catch (e) {
+                if (
+                    e ==
+                    'Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active'
+                ) {
+                    props.error(
+                        'Incorrect Principal is logged in, please go to StoicWallet and ensure the correct Principal is active',
+                    );
+                    logout();
+                }
+            }
         }
+    };
+    const refreshVolt = async showLoader => {
+        if (props.account && props.identity) {
+            if (showLoader) setLoading(true);
+            setVoltPrincipal(await loadVolt(props.identity));
+            setVoltBalances(await loadVoltBalance(props.identity));
+            if (showLoader || loading) setLoading(false);
+        }
+    };
+    const refresh = async showLoader => {
+        refreshBalance(showLoader);
+        refreshVolt(showLoader);
     };
     useInterval(refresh, 30 * 1000);
     React.useEffect(() => {
-        setLoading(true);
-        refresh();
+        refresh(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
@@ -149,11 +186,14 @@ export default function Wallet(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.account]);
     React.useEffect(() => {
+        loadedAccount = props.currentAccount;
+        refresh();
+    }, [props.currentAccount]);
+
+    React.useEffect(() => {
         props.setBalance(balance);
     }, [balance]);
-    React.useEffect(() => {
-        loadedAccount = props.currentAccount;
-    }, [props.currentAccount]);
+
     const accountsList = (
         <div style={{marginTop: 73, marginBottom: 100}}>
             {props.account !== false ? (
@@ -234,25 +274,103 @@ export default function Wallet(props) {
                         </MenuItem>
 
                         <Divider light />
-                        <MenuItem
-                            onClick={() => {
-                                props.logout();
-                                handleClose();
-                            }}
-                        >
+                        <MenuItem onClick={logout}>
                             <ListItemIcon>
                                 <LockIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText primary="Logout" />
                         </MenuItem>
                     </Menu>
-                    <ListItem>
-                        <Typography
-                            style={{width: '100%', textAlign: 'center', fontWeight: 'bold'}}
-                        >
-                            {balance !== false ? <PriceICP price={balance} /> : 'Loading...'}
+                    <ListItem style={{display: 'flex', justifyContent: 'center'}}>
+                        <Typography style={{width: '100%', textAlign: 'center'}}>
+                            <PriceICP
+                                volume={true}
+                                loader={
+                                    balance === false || (loadedAccount == 0 && loading === true)
+                                }
+                                price={
+                                    balance === false
+                                        ? false
+                                        : Number(balance) +
+                                          (voltBalances && loadedAccount == 0 ? voltBalances[0] : 0)
+                                }
+                            ></PriceICP>
+                            <br />
+                            {loadedAccount === 0 &&
+                            balance !== false &&
+                            loading == false &&
+                            voltPrincipal ? (
+                                <>
+                                    <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
+                                    <PriceICP
+                                        bold={false}
+                                        volume={true}
+                                        text={
+                                            balance === false ? (
+                                                <ToniqIcon
+                                                    className="toniq-icon-fit-icon"
+                                                    style={{height: '14px', width: '14px'}}
+                                                    icon={LoaderAnimated24Icon}
+                                                />
+                                            ) : undefined
+                                        }
+                                        price={balance}
+                                    >
+                                        Wallet
+                                    </PriceICP>
+                                    <br />
+                                    <PriceICP
+                                        bold={false}
+                                        volume={true}
+                                        loader={voltBalances === false}
+                                        price={voltBalances[0] - voltBalances[2]}
+                                    >
+                                        Volt
+                                    </PriceICP>
+                                    <br />
+                                    {voltBalances && voltBalances[2] > 0 ? (
+                                        <>
+                                            <PriceICP
+                                                bold={false}
+                                                volume={true}
+                                                price={voltBalances[2]}
+                                            >
+                                                Locked
+                                            </PriceICP>
+                                            <br />
+                                        </>
+                                    ) : (
+                                        ''
+                                    )}
+                                </>
+                            ) : (
+                                ''
+                            )}
                         </Typography>
                     </ListItem>
+
+                    {loading == false && loadedAccount === 0 ? (
+                        <ListItem>
+                            <Button
+                                onClick={e => {
+                                    if (voltPrincipal) {
+                                        voltTransfer();
+                                    } else {
+                                        createVolt();
+                                    }
+                                }}
+                                fullWidth
+                                variant="outlined"
+                                color="primary"
+                                style={{fontWeight: 'bold'}}
+                            >
+                                {voltPrincipal ? 'Volt Transfer' : 'Link Volt'}
+                            </Button>
+                        </ListItem>
+                    ) : (
+                        ''
+                    )}
+
                     {props.accounts.length > 1 ? (
                         <ListItem>
                             <Button

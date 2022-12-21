@@ -1,53 +1,20 @@
 import React from 'react';
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-} from 'recharts';
-import PropTypes from 'prop-types';
-import {styled, withStyles} from '@material-ui/styles';
 import Chip from '@material-ui/core/Chip';
+import {getEXTCanister, getEXTID} from '../utilities/load-tokens';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import MuiTooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import getGenes from './CronicStats.js';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import Timestamp from 'react-timestamp';
 import extjs from '../ic/extjs.js';
 import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
-import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import MuiTableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from '../ic/nftv.js';
@@ -58,10 +25,9 @@ import {
     EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
-    EntrepotGetICPUSD,
 } from '../utils';
-import {getEXTCanister, getEXTID} from '../utilities/load-tokens';
-const api = extjs.connect('https://boundary.ic0.app/');
+
+const api = extjs.connect('https://ic0.app/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
@@ -104,13 +70,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-var fromWrappedMap = {
-    'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
-    'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
-    '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
-    'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
-    'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
-};
+
 var toWrappedMap = {
     'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
     '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
@@ -148,6 +108,10 @@ export default function NFT(props) {
         setOffer,
     ] = React.useState(false);
     const [
+        auction,
+        setAuction,
+    ] = React.useState(false);
+    const [
         showOfferCount,
         setShowOfferCount,
     ] = React.useState(false);
@@ -183,10 +147,8 @@ export default function NFT(props) {
             .listings()
             .then(r => {
                 var f = r.find(a => a[0] == index);
-                if (f[1]) {
-                    setListing(f[1]);
-                    console.log({nftListingStuff: f});
-                } else setListing(false);
+                if (f[1]) setListing(f[1]);
+                else setListing(false);
             });
     };
     const getMetadata = async () => {
@@ -195,19 +157,18 @@ export default function NFT(props) {
             setMetadata(md.metadata[0]);
         }
     };
+    const getAuction = async () => {
+        var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getEXTID(tokenid));
+        if (resp.length) setAuction(resp[0]);
+        else setAuction(false);
+    };
     const getOffer = async () => {
         await api
-            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+            .canister('fcwhh-piaaa-aaaak-qazba-cai')
             .offers(getEXTID(tokenid))
             .then(r => {
                 setOfferCount(r.length);
-                setOffer(
-                    r
-                        .map(a => {
-                            return {buyer: a[0], amount: a[1], time: a[2]};
-                        })
-                        .sort((a, b) => Number(b.amount) - Number(a.amount))[0],
-                );
+                setOffer(r.sort((a, b) => Number(b.amount) - Number(a.amount))[0]);
             });
     };
     useInterval(() => {
@@ -219,6 +180,7 @@ export default function NFT(props) {
             getListing();
         }
         getOffer();
+        getAuction();
         getMetadata();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -263,6 +225,7 @@ export default function NFT(props) {
 
     const refresh = async () => {
         await getOffer();
+        await getAuction();
         await getMetadata();
         if (canister == 'yrdz3-2yaaa-aaaah-qcvpa-cai') {
             console.log('updated');
@@ -455,8 +418,16 @@ export default function NFT(props) {
     const mintNumber = () => {
         return EntrepotNFTMintNumber(canister, index);
     };
+    var collection = getCollection(canister);
     const nftImg = () => {
-        return EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, ref);
+        return EntrepotNFTImage(
+            getEXTCanister(canister),
+            index,
+            tokenid,
+            false,
+            ref,
+            collection.priority,
+        );
     };
     const nftLink = () => {
         return EntrepotNFTLink(getEXTCanister(canister), index, tokenid);
@@ -631,7 +602,7 @@ export default function NFT(props) {
                                     </MuiTooltip>
                                 </Typography>
                             </Grid>
-                            {listing ? (
+                            {auction ? (
                                 <>
                                     <Grid item md={6} sm={6} xs={6}>
                                         <Typography
@@ -643,7 +614,9 @@ export default function NFT(props) {
                                             color={'inherit'}
                                             gutterBottom
                                         >
-                                            Price
+                                            {auction.bids.length === 0
+                                                ? 'Auction Reserve'
+                                                : 'Leading Bid'}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -656,27 +629,20 @@ export default function NFT(props) {
                                             color={'inherit'}
                                             gutterBottom
                                         >
-                                            <PriceICP price={listing.price} />
+                                            <PriceICP
+                                                price={
+                                                    auction.bids.length === 0
+                                                        ? auction.reserve
+                                                        : auction.bids[auction.bids.length - 1]
+                                                              .amount
+                                                }
+                                            />
                                         </Typography>
                                     </Grid>
-                                    {offer ? (
-                                        <div
-                                            style={{
-                                                width: '100%',
-                                                fontSize: '.8em',
-                                                textAlign: 'right',
-                                                color: '#',
-                                            }}
-                                        >
-                                            Best <PriceICP price={offer.amount} />
-                                        </div>
-                                    ) : (
-                                        ''
-                                    )}
                                 </>
                             ) : (
                                 <>
-                                    {offer ? (
+                                    {listing ? (
                                         <>
                                             <Grid item md={6} sm={6} xs={6}>
                                                 <Typography
@@ -688,7 +654,7 @@ export default function NFT(props) {
                                                     color={'inherit'}
                                                     gutterBottom
                                                 >
-                                                    Best Offer
+                                                    Price
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12}>
@@ -701,38 +667,85 @@ export default function NFT(props) {
                                                     color={'inherit'}
                                                     gutterBottom
                                                 >
-                                                    <PriceICP price={offer.amount} />
+                                                    <PriceICP price={listing.price} />
                                                 </Typography>
                                             </Grid>
+                                            {offer ? (
+                                                <div
+                                                    style={{
+                                                        width: '100%',
+                                                        fontSize: '.8em',
+                                                        textAlign: 'right',
+                                                        color: '#',
+                                                    }}
+                                                >
+                                                    Best <PriceICP size={13} price={offer.amount} />
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )}
                                         </>
                                     ) : (
                                         <>
-                                            <Grid item md={6} sm={6} xs={6}>
-                                                <Typography
-                                                    style={{
-                                                        fontSize: 13,
-                                                        textAlign: 'right',
-                                                        fontWeight: 'bold',
-                                                    }}
-                                                    color={'inherit'}
-                                                    gutterBottom
-                                                >
-                                                    Unlisted
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <Typography
-                                                    style={{
-                                                        fontSize: 13,
-                                                        textAlign: 'right',
-                                                        fontWeight: 'bold',
-                                                    }}
-                                                    color={'inherit'}
-                                                    gutterBottom
-                                                >
-                                                    -
-                                                </Typography>
-                                            </Grid>
+                                            {offer ? (
+                                                <>
+                                                    <Grid item md={6} sm={6} xs={6}>
+                                                        <Typography
+                                                            style={{
+                                                                fontSize: 13,
+                                                                textAlign: 'right',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                            color={'inherit'}
+                                                            gutterBottom
+                                                        >
+                                                            Best Offer
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <Typography
+                                                            style={{
+                                                                fontSize: 13,
+                                                                textAlign: 'right',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                            color={'inherit'}
+                                                            gutterBottom
+                                                        >
+                                                            <PriceICP price={offer.amount} />
+                                                        </Typography>
+                                                    </Grid>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Grid item md={6} sm={6} xs={6}>
+                                                        <Typography
+                                                            style={{
+                                                                fontSize: 13,
+                                                                textAlign: 'right',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                            color={'inherit'}
+                                                            gutterBottom
+                                                        >
+                                                            Unlisted
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <Typography
+                                                            style={{
+                                                                fontSize: 13,
+                                                                textAlign: 'right',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                            color={'inherit'}
+                                                            gutterBottom
+                                                        >
+                                                            -
+                                                        </Typography>
+                                                    </Grid>
+                                                </>
+                                            )}
                                         </>
                                     )}
                                 </>
@@ -907,7 +920,20 @@ export default function NFT(props) {
                                 )}
                             </>
                         ) : (
-                            ''
+                            <>
+                                {auction ? (
+                                    <span style={{display: 'block'}}>
+                                        Auction ends{' '}
+                                        <Timestamp
+                                            relative
+                                            autoUpdate
+                                            date={Number(auction.end / 1000000000n)}
+                                        />
+                                    </span>
+                                ) : (
+                                    ''
+                                )}
+                            </>
                         )}
                         <Favourite
                             refresher={props.faveRefresher}

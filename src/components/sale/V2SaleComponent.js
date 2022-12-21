@@ -19,7 +19,7 @@ import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -205,7 +205,7 @@ export default function V2SaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://boundary.ic0.app/', props.identity);
+            const api = extjs.connect('https://ic0.app/', props.identity);
             var r = await api
                 .canister(collection.canister, 'ext2')
                 .ext_salePurchase(id, price, qty, props.account.address);
@@ -256,7 +256,7 @@ export default function V2SaleComponent(props) {
         _updates();
     };
     const getCurrentGroup = () => groups.find(a => Number(a.id) == currentPriceGroup);
-    useInterval(_updates, 5 * 1000);
+    useInterval(_updates, 10 * 1000);
     React.useEffect(() => {
         _updates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -378,7 +378,11 @@ export default function V2SaleComponent(props) {
                         <strong>SOLD</strong>
                         <br />
                         <span style={{fontWeight: 'bold', color: 'rgb(189 1 1)', fontSize: '2em'}}>
-                            {sold !== false ? sold : 'Loading...'}
+                            {sold !== false
+                                ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
+                                    ? sold + 362
+                                    : sold
+                                : 'Loading...'}
                         </span>
                     </Grid>
                     <Grid className={classes.stat} item xs={10}>
@@ -440,11 +444,10 @@ export default function V2SaleComponent(props) {
                                         value={currentPriceGroup}
                                         indicatorColor="primary"
                                         textColor="primary"
-                                        centered={window.innerWidth < 960 ? false : true}
-                                        scrollButtons={window.innerWidth < 960 ? 'on' : 'auto'}
-                                        variant={
-                                            window.innerWidth < 960 ? 'scrollable' : 'standard'
-                                        }
+                                        centered={false}
+                                        scrollButtons="on"
+                                        allowScrollButtonsMobile
+                                        variant="scrollable"
                                         onChange={(e, nv) => {
                                             setCurrentPriceGroup(nv);
                                         }}

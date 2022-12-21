@@ -24,4 +24,4 @@ type EntrepotApi = {
     token(tokenId?: string, idl?: any): EntrepotTokenApi;
 };
 
-export const entrepotDataApi = extjs.connect('https://boundary.ic0.app/') as EntrepotApi;
+export const entrepotDataApi = extjs.connect('https://ic0.app/') as EntrepotApi;

@@ -1,20 +1,16 @@
 /* global BigInt */
-import React, {useEffect} from 'react';
+import React from 'react';
 import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import SaleListing from '../SaleListing';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Timestamp from 'react-timestamp';
-import Pagination from '@material-ui/lab/Pagination';
-import {StoicIdentity} from 'ic-stoic-identity';
-import Sidebar from '../Sidebar';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
-const api = extjs.connect('https://boundary.ic0.app/');
-const perPage = 60;
+
+const api = extjs.connect('https://ic0.app/');
+
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
     // Remember the latest callback.
@@ -152,7 +148,7 @@ export default function DfinityDeckSaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://boundary.ic0.app/', props.identity);
+            const api = extjs.connect('https://ic0.app/', props.identity);
             var r = await api
                 .canister(collection.canister, 'sale')
                 .reserve(price, qty, props.account.address, _getRandomBytes());
@@ -196,7 +192,7 @@ export default function DfinityDeckSaleComponent(props) {
             );
         }
     };
-    useInterval(_updates, 5 * 1000);
+    useInterval(_updates, 10 * 1000);
     React.useEffect(() => {
         _updates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
