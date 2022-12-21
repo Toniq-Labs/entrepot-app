@@ -211,7 +211,11 @@ export default function Navbar(props) {
                         </Typography>
                         <ToniqInput
                             className={classes.bigScreenInput}
-                            style={{alignSelf: 'center', marginLeft: '16px'}}
+                            style={{
+                                alignSelf: 'center',
+                                marginLeft: '16px',
+                                flexGrow: 1,
+                            }}
                             icon={Search24Icon}
                             placeholder="Search for NFTs..."
                             value={query.current}
@@ -235,7 +239,6 @@ export default function Navbar(props) {
                                 }
                             }}
                         />
-                        <div className={classes.grow} />
                         <div className={classes.bigScreenNavButtons}>{navBarButtons}</div>
 
                         <ToniqToggleButton
@@ -418,6 +421,8 @@ const useStyles = makeStyles(theme => {
             display: 'flex',
             alignItems: 'stretch',
             padding: '16px 0',
+            gap: '8px',
+            paddingLeft: '16px',
             [maxHamburgerMenuBreakpoint]: {
                 display: 'none',
             },
