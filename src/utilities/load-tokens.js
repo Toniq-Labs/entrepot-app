@@ -1,7 +1,7 @@
 import axios from 'axios';
 import extjs from '../ic/extjs.js';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 const toWrappedMap = {
     'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',

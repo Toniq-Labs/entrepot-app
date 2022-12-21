@@ -32,7 +32,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 
@@ -232,7 +232,7 @@ const DetailBody = props => {
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');
-        const _api = extjs.connect('https://boundary.ic0.app/', props.identity);
+        const _api = extjs.connect('https://ic0.app/', props.identity);
         await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').cancelOffer(tokenid);
         await reloadOffers();
         props.loader(false);

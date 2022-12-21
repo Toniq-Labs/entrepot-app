@@ -17,7 +17,7 @@ import {isInRange} from '../../utilities/number-utils.js';
 import getGenes from '../../components/CronicStats.js';
 import extjs from '../../ic/extjs';
 import {ListingsOtherControls} from './ListingsOtherControls';
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

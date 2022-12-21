@@ -15,7 +15,14 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import GavelIcon from '@material-ui/icons/Gavel';
-import {EntrepotAllStats} from '../utils';
+import CollectionsIcon from '@material-ui/icons/Collections';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+
 export default function UserDetail(props) {
     const [
         anchorEl,
@@ -151,6 +158,45 @@ export default function UserDetail(props) {
                 >
                     <Tab
                         className={props.classes.tabsViewTab}
+                        value="collected"
+                        label={
+                            <span style={{padding: '0 50px'}}>
+                                <CollectionsIcon
+                                    style={{position: 'absolute', marginLeft: '-30px'}}
+                                />
+                                <span style={{}}>Collected</span>
+                            </span>
+                        }
+                    />
+                    <Tab
+                        className={props.classes.tabsViewTab}
+                        value="selling"
+                        label={
+                            <span style={{padding: '0 50px'}}>
+                                <AddShoppingCartIcon
+                                    style={{position: 'absolute', marginLeft: '-30px'}}
+                                />
+                                <span style={{}}>Selling</span>
+                            </span>
+                        }
+                    />
+                    <Tab
+                        className={props.classes.tabsViewTab}
+                        value="offers"
+                        label={
+                            <span style={{padding: '0 50px'}}>
+                                <LocalOfferIcon
+                                    style={{position: 'absolute', marginLeft: '-30px'}}
+                                />
+                                <span style={{}}>Offers</span>
+                                <ExpandMoreIcon
+                                    style={{position: 'absolute', marginLeft: '30px'}}
+                                />
+                            </span>
+                        }
+                    />
+                    <Tab
+                        className={props.classes.tabsViewTab}
                         value="earning"
                         label={
                             <span style={{padding: '0 50px'}}>
@@ -161,6 +207,28 @@ export default function UserDetail(props) {
                                 <ExpandMoreIcon
                                     style={{position: 'absolute', marginLeft: '30px'}}
                                 />
+                            </span>
+                        }
+                    />
+                    <Tab
+                        className={props.classes.tabsViewTab}
+                        value="favorites"
+                        label={
+                            <span style={{padding: '0 50px'}}>
+                                <FavoriteIcon style={{position: 'absolute', marginLeft: '-30px'}} />
+                                <span style={{}}>Favorites</span>
+                            </span>
+                        }
+                    />
+                    <Tab
+                        className={props.classes.tabsViewTab}
+                        value="activity"
+                        label={
+                            <span style={{padding: '0 50px'}}>
+                                <ImportExportIcon
+                                    style={{position: 'absolute', marginLeft: '-30px'}}
+                                />
+                                <span style={{}}>Activity</span>
                             </span>
                         }
                     />
@@ -181,6 +249,44 @@ export default function UserDetail(props) {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
+                    {menuType == 'offers' ? (
+                        <>
+                            <MenuItem onClick={() => goTo('offers-received')}>
+                                <ListItemIcon style={{minWidth: 30}}>
+                                    <CallReceivedIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>
+                                    <span
+                                        style={{
+                                            fontSize: '0.9rem',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase',
+                                        }}
+                                    >
+                                        Offers Received
+                                    </span>
+                                </ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={() => goTo('offers-made')}>
+                                <ListItemIcon style={{minWidth: 30}}>
+                                    <CallMadeIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>
+                                    <span
+                                        style={{
+                                            fontSize: '0.9rem',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase',
+                                        }}
+                                    >
+                                        Offers Made
+                                    </span>
+                                </ListItemText>
+                            </MenuItem>
+                        </>
+                    ) : (
+                        ''
+                    )}
                     {menuType == 'earning' ? (
                         <>
                             <MenuItem onClick={() => goTo('earn-requests')}>

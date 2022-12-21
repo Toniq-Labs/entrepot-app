@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 import AppBar from '@material-ui/core/AppBar';
-import {createSearchParams} from 'react-router-dom';
+import {createSearchParams, useSearchParams} from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -31,8 +31,8 @@ import {
 } from '@toniq-labs/design-system';
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
-import {useSearchParams} from 'react-router-dom';
 import {subscribe, unsubscribe} from '../events/events';
+import {loadVolt, loadVoltBalance} from '../volt';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -54,7 +54,7 @@ function useInterval(callback, delay) {
     }, [delay]);
 }
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 export default function Navbar(props) {
     const navigate = useNavigate();
@@ -78,16 +78,36 @@ export default function Navbar(props) {
         location.pathname !== '/marketplace' ? searchParams.get('search') || '' : '',
     );
 
+    const [
+        voltBalances,
+        setVoltBalances,
+    ] = React.useState(undefined);
+    const [
+        totalBalance,
+        setTotalBalance,
+    ] = React.useState(undefined);
+
+    React.useEffect(() => {
+        var totalBalance = 0;
+        if (balance) totalBalance += Number(balance);
+        if (voltBalances && props.currentAccount === 0) totalBalance += voltBalances[0];
+        if (totalBalance > 0) setTotalBalance(totalBalance);
+    }, [
+        props.account,
+        props.identity,
+        balance,
+        voltBalances,
+    ]);
+
     const refresh = async () => {
         if (props.account) {
             var b = await api.token().getBalance(props.account.address);
             setBalance(b);
+            if (props.currentAccount === 0) setVoltBalances(await loadVoltBalance(props.identity));
         } else {
             setBalance(undefined);
         }
     };
-
-    useInterval(refresh, 30 * 1000);
 
     useEffect(() => {
         refresh();
@@ -98,12 +118,17 @@ export default function Navbar(props) {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    useInterval(refresh, 5 * 1000);
 
     useEffect(() => {
+        setTotalBalance(undefined);
         refresh();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.account]);
 
+    const logout = () => {
+        setTotalBalance(undefined);
+        props.logout();
+    };
     const handleClick = () => {
         setWalletOpen(false);
     };
@@ -211,7 +236,11 @@ export default function Navbar(props) {
                         </Typography>
                         <ToniqInput
                             className={classes.bigScreenInput}
-                            style={{alignSelf: 'center', marginLeft: '16px'}}
+                            style={{
+                                alignSelf: 'center',
+                                marginLeft: '16px',
+                                flexGrow: 1,
+                            }}
                             icon={Search24Icon}
                             placeholder="Search for NFTs..."
                             value={query.current}
@@ -235,7 +264,6 @@ export default function Navbar(props) {
                                 }
                             }}
                         />
-                        <div className={classes.grow} />
                         <div className={classes.bigScreenNavButtons}>{navBarButtons}</div>
 
                         <ToniqToggleButton
@@ -267,13 +295,17 @@ export default function Navbar(props) {
                             }}
                             onClick={handleDrawerToggle}
                             icon={
-                                balance === undefined
+                                totalBalance === undefined
                                     ? props.account
                                         ? LoaderAnimated24Icon
                                         : Wallet24Icon
                                     : Icp24Icon
                             }
-                            text={balance === undefined ? '' : icpToString(balance, true, true)}
+                            text={
+                                totalBalance === undefined
+                                    ? ''
+                                    : icpToString(totalBalance, true, true)
+                            }
                         ></ToniqButton>
                         {open && (
                             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
@@ -287,12 +319,17 @@ export default function Navbar(props) {
 
             <Wallet
                 processPayments={props.processPayments}
+                voltCreate={props.voltCreate}
+                voltTransfer={props.voltTransfer}
                 view={props.view}
                 setBalance={props.setBalance}
                 identity={props.identity}
                 account={props.account}
                 loader={props.loader}
-                logout={props.logout}
+                alert={props.alert}
+                error={props.error}
+                confirm={props.confirm}
+                logout={logout}
                 login={props.login}
                 collection={props.collection}
                 collections={props.collections}
@@ -418,6 +455,8 @@ const useStyles = makeStyles(theme => {
             display: 'flex',
             alignItems: 'stretch',
             padding: '16px 0',
+            gap: '8px',
+            paddingLeft: '16px',
             [maxHamburgerMenuBreakpoint]: {
                 display: 'none',
             },

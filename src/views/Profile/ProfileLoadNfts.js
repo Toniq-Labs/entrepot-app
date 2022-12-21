@@ -7,7 +7,7 @@ import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from '@augment-vir/common';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {
@@ -131,7 +131,7 @@ async function getOwnedNfts(address, identity, collections) {
 
 async function getOffersMadeNfts(address, identity, collections) {
     const offersMadeNftIds = await extjs
-        .connect('https://boundary.ic0.app/', identity)
+        .connect('https://ic0.app/', identity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .offered();
     const offersMadeNfts = await Promise.all(
@@ -153,7 +153,7 @@ async function getOffersMadeNfts(address, identity, collections) {
 
 async function getFavoritesNfts(address, identity, collections) {
     const favoriteNftIds = await extjs
-        .connect('https://boundary.ic0.app/', identity)
+        .connect('https://ic0.app/', identity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .liked();
     const favoriteNfts = await Promise.all(

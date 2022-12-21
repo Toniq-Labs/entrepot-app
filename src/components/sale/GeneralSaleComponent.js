@@ -1,6 +1,8 @@
 import OldSaleComponent from './OldSaleComponent';
 import V2SaleComponent from './V2SaleComponent';
+import AuctionSaleComponent from './AuctionSaleComponent';
 import {useParams} from 'react-router';
+
 export default function GeneralSaleComponent(props) {
     const getCollectionFromRoute = r => {
         return props.collections.find(e => e.route === r);
@@ -11,6 +13,12 @@ export default function GeneralSaleComponent(props) {
         return (
             <>
                 <OldSaleComponent {...props} />
+            </>
+        );
+    } else if (collection.saletype == 'auction') {
+        return (
+            <>
+                <AuctionSaleComponent {...props} />
             </>
         );
     } else {

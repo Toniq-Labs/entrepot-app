@@ -1,16 +1,16 @@
 {
-    "name": "Entrepot",
+    "name": "entrepot",
     "version": "0.1.0",
     "private": true,
     "scripts": {
         "build": "tsc && node scripts/build.js pre; react-app-rewired build; node scripts/build.js post",
         "eject": "react-app-rewired eject",
         "format": "prettier --color --list-different --write \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
-        "format:check": "prettier --color --check \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
         "serve": "react-app-rewired build && serve -s build",
         "start": "react-app-rewired start",
-        "start:clean": "rm -rf node_modules/.cache && react-app-rewired start",
+        "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
         "test": "react-app-rewired test",
+        "test:format": "prettier --color --check \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
         "test:types": "tsc --noEmit"
     },
     "browserslist": {
@@ -31,11 +31,14 @@
         "extends": [
             "react-app",
             "react-app/jest"
-        ]
+        ],
+        "globals": {
+            "globalThis": false
+        }
     },
     "dependencies": {
-        "@augment-vir/browser": "^6.1.5",
-        "@augment-vir/common": "^6.1.5",
+        "@augment-vir/browser": "^6.1.6",
+        "@augment-vir/common": "^6.1.6",
         "@dfinity/agent": "^0.10.2",
         "@dfinity/auth-client": "^0.10.2",
         "@dfinity/candid": "^0.10.2",
@@ -48,7 +51,7 @@
         "@testing-library/jest-dom": "^5.16.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
-        "@toniq-labs/design-system": "0.1.20",
+        "@toniq-labs/design-system": "0.2.0",
         "@toruslabs/openlogin": "^1.4.0",
         "assert": "^2.0.0",
         "axios": "^0.25.0",
@@ -57,7 +60,7 @@
         "buffer": "^6.0.3",
         "crypto-browserify": "^3.12.0",
         "dexie": "^3.2.2",
-        "element-vir": "^6.3.3",
+        "element-vir": "^6.3.4",
         "ethereum-blockies-base64": "^1.0.2",
         "html-react-parser": "3.0.4",
         "https-browserify": "^1.0.0",

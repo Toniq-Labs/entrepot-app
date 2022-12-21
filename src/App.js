@@ -1,19 +1,35 @@
 /* global BigInt */
-import React from 'react';
-import extjs from './ic/extjs.js';
-import Navbar from './components/Navbar';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import {makeStyles} from '@material-ui/core/styles';
-import AlertDialog from './components/AlertDialog';
-import ConfirmDialog from './components/ConfirmDialog';
-import {StoicIdentity} from 'ic-stoic-identity';
+import {checkIfToniqEarnAllowed} from './location/geo-ip';
+import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
-import OpenLogin from '@toruslabs/openlogin';
+import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
+import {EntrepotFooter} from './typescript/ui/elements/main-content-pages/main-footer/toniq-entrepot-main-footer.element';
+import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
+import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
+import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
+import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
+import {isProd} from './typescript/environment/environment-by-url';
+import {makeStyles} from '@material-ui/core/styles';
+import {MissingPage404} from './views/MissingPage404';
+import {Profile} from './views/Profile/Profile';
 import {Route, Routes, useLocation} from 'react-router-dom';
-import Detail from './views/Detail/Detail.js';
-import Listings from './views/Listings/Listings.js';
+import {StoicIdentity} from 'ic-stoic-identity';
+import {throttle} from './typescript/augments/function';
+import {useNavigate} from 'react-router';
+import AlertDialog from './components/AlertDialog';
+import Backdrop from '@material-ui/core/Backdrop';
 import BuyForm from './components/BuyForm';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ConfirmDialog from './components/ConfirmDialog';
+import Contact from './views/Contact';
+import Detail from './views/Detail/Detail.js';
+import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
+import extjs from './ic/extjs.js';
+import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
+import getNri from './ic/nftv.js';
+import legacyPrincipalPayouts from './payments.json';
+import ListingForm from './components/ListingForm';
+import Listings from './views/Listings/Listings.js';
 import ListingsActivity from './views/Listings/ListingsActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
@@ -21,36 +37,25 @@ import UserActivity from './components/UserActivity';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
 import {EntrepotAllLaunches} from './typescript/ui/elements/main-content-pages/launches-page/toniq-entrepot-all-launches-page.element';
 import Mint from './views/Mint';
-import Sale from './views/Sale';
-import Contact from './views/Contact';
+import Navbar from './components/Navbar';
 import Opener from './components/Opener';
-import ListingForm from './components/ListingForm';
-import TransferForm from './components/TransferForm';
+import OpenLogin from '@toruslabs/openlogin';
 import PawnForm from './components/PawnForm';
-import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
-import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
-import legacyPrincipalPayouts from './payments.json';
-import getNri from './ic/nftv.js';
-import {throttle} from './typescript/augments/function';
-import {EntrepotFooter} from './typescript/ui/elements/main-content-pages/main-footer/toniq-entrepot-main-footer.element';
+import React from 'react';
+import Sale from './views/Sale';
+import TransferForm from './components/TransferForm';
+import UserActivity from './components/UserActivity';
+import UserCollection from './components/UserCollection';
+import UserLoan from './components/UserLoan';
+import VoltTransferForm from './components/VoltTransferForm';
 import {
     EntrepotUpdateUSD,
     EntrepotUpdateLiked,
     EntrepotClearLiked,
     EntrepotUpdateStats,
 } from './utils';
-import {MissingPage404} from './views/MissingPage404';
-import {checkIfToniqEarnAllowed} from './location/geo-ip';
-import {EarnFeaturesBlocked} from './views/EarnBlocked';
-import {Profile} from './views/Profile/Profile';
-import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
-import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
-import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
-import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
-import {isProd} from './typescript/environment/environment-by-url';
-import {useNavigate, matchPath} from 'react-router';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 const txfee = 10000;
 const txmin = 100000;
@@ -140,6 +145,9 @@ var otherPrincipalsForPlug = [
     'ryjl3-tyaaa-aaaaa-aaaba-cai',
     'qgsqp-byaaa-aaaah-qbi4q-cai',
     '6z5wo-yqaaa-aaaah-qcsfa-cai',
+    'flvm3-zaaaa-aaaak-qazaq-cai',
+    'fcwhh-piaaa-aaaak-qazba-cai',
+    'ffxbt-cqaaa-aaaak-qazbq-cai',
 ];
 const isDevEnv = () => {
     if (window.location.hostname == 'localhost') return true;
@@ -182,6 +190,10 @@ export default function App() {
     const [
         openListingForm,
         setOpenListingForm,
+    ] = React.useState(false);
+    const [
+        openVoltTransferForm,
+        setOpenVoltTransferForm,
     ] = React.useState(false);
     const [
         openTransferForm,
@@ -306,7 +318,7 @@ export default function App() {
                 }
                 loader(true, 'Transferring ICP...');
                 await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .token()
                     .transfer(
                         identity.getPrincipal(),
@@ -318,7 +330,7 @@ export default function App() {
             }
             loader(true, 'Closing contract...');
             var r2 = await extjs
-                .connect('https://boundary.ic0.app/', identity)
+                .connect('https://ic0.app/', identity)
                 .canister(TREASURECANISTER)
                 .tp_close(token);
             if (r2.hasOwnProperty('err')) throw r2.err;
@@ -342,7 +354,7 @@ export default function App() {
             try {
                 loader(true, 'Cancelling request...');
                 var r = await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .canister(TREASURECANISTER)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -369,7 +381,7 @@ export default function App() {
             try {
                 loader(true, 'Accepting request...');
                 var r = await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .canister(TREASURECANISTER)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -377,12 +389,12 @@ export default function App() {
                 var paytoaddress = r.ok;
                 loader(true, 'Transferring ICP...');
                 await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, paytoaddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
                 var r2 = await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .canister(TREASURECANISTER)
                     .tp_settle(paytoaddress);
                 loader(true, 'Reloading requests...');
@@ -413,7 +425,7 @@ export default function App() {
                 return false;
             }
             loader(true, 'Locking NFT...');
-            const _api = extjs.connect('https://boundary.ic0.app/', identity);
+            const _api = extjs.connect('https://ic0.app/', identity);
             var r = await _api
                 .canister(canisterId)
                 .lock(tokenid, listing.price, accounts[currentAccount].address, _getRandomBytes());
@@ -501,7 +513,7 @@ export default function App() {
             !_collection.legacy
         )
             return true;
-        const _api = extjs.connect('https://boundary.ic0.app/', identity);
+        const _api = extjs.connect('https://ic0.app/', identity);
         var payments = await _api.canister(_collection.canister).payments();
         if (payments.length === 0) return true;
         if (payments[0].length === 0) return true;
@@ -721,6 +733,11 @@ export default function App() {
         refresher = refresh;
         setOpenPawnForm(true);
     };
+    const voltTransfer = async (loader, refresh) => {
+        buttonLoader = loader;
+        refresher = refresh;
+        setOpenVoltTransferForm(true);
+    };
     const transferNft = async (token, loader, refresh) => {
         setTokenNFT(token);
         buttonLoader = loader;
@@ -730,6 +747,9 @@ export default function App() {
     const closeListingForm = () => {
         setOpenListingForm(false);
         setTimeout(() => setTokenNFT(''), 300);
+    };
+    const closeVoltTransferForm = () => {
+        setOpenVoltTransferForm(false);
     };
     const closeTransferForm = () => {
         setOpenTransferForm(false);
@@ -744,7 +764,7 @@ export default function App() {
         loader(true, 'Unwrapping NFT...');
         var canister = extjs.decodeTokenId(token.id).canister;
         var r = await extjs
-            .connect('https://boundary.ic0.app/', identity)
+            .connect('https://ic0.app/', identity)
             .canister(canister)
             .unwrap(token.id, [extjs.toSubaccount(currentAccount ?? 0)]);
         if (!r) {
@@ -767,13 +787,13 @@ export default function App() {
             if (loader) loader(true, 'Creating wrapper...this may take a few minutes');
             try {
                 var r = await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .canister(canister)
                     .wrap(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Sending NFT to wrapper...');
                 var r2 = await extjs
-                    .connect('https://boundary.ic0.app/', identity)
+                    .connect('https://ic0.app/', identity)
                     .token(token.id)
                     .transfer(
                         identity.getPrincipal().toText(),
@@ -786,10 +806,7 @@ export default function App() {
                     );
                 if (!r2) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Wrapping NFT...');
-                await extjs
-                    .connect('https://boundary.ic0.app/', identity)
-                    .canister(canister)
-                    .mint(token.id);
+                await extjs.connect('https://ic0.app/', identity).canister(canister).mint(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Loading NFTs...');
                 if (refresh) await refresh();
@@ -806,6 +823,70 @@ export default function App() {
             }
         }
     };
+    const updateCollections = async () => {
+        const allCollectionsWithCaching = Object.values(await getAllCollectionsWithCaching());
+        setCollections(allCollectionsWithCaching);
+        allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
+
+        if (isToniqEarnAllowed === undefined) {
+            setToniqEarnAllowed(await checkIfToniqEarnAllowed());
+        }
+        if (!appLoaded) {
+            setAppLoaded(true);
+        }
+    };
+
+    React.useEffect(() => {
+        updateCollections();
+        _updates();
+        EntrepotUpdateUSD();
+        EntrepotUpdateStats();
+        window.document.addEventListener(
+            'scroll',
+            throttle(250, () => {
+                if (window.document.body.parentElement.scrollTop <= 10) {
+                    setShowHeaderShadow(false);
+                } else {
+                    setShowHeaderShadow(true);
+                }
+            }),
+        );
+        if (identity) EntrepotUpdateLiked(identity);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const profileRoutes = (
+        <>
+            <Route
+                path=":tab"
+                exact
+                element={
+                    <Profile
+                        onSellClick={listNft}
+                        onTransferClick={transferNft}
+                        loader={loader}
+                        identity={identity}
+                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        collections={collections}
+                    />
+                }
+            />
+            <Route
+                path=""
+                exact
+                element={
+                    <Profile
+                        onSellClick={listNft}
+                        onTransferClick={transferNft}
+                        loader={loader}
+                        identity={identity}
+                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        collections={collections}
+                    />
+                }
+            />
+        </>
+    );
 
     const restrictedEarnAccess = allowedAccessElement => {
         if (isToniqEarnAllowed) {
@@ -820,7 +901,7 @@ export default function App() {
         if (loader) loader(true, 'Creating Earn Request...');
         try {
             var r = await extjs
-                .connect('https://boundary.ic0.app/', identity)
+                .connect('https://ic0.app/', identity)
                 .canister('yigae-jqaaa-aaaah-qczbq-cai')
                 .tp_create(
                     id,
@@ -835,7 +916,7 @@ export default function App() {
             if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
             if (loader) loader(true, 'Sending NFT to canister...');
             var r2 = await extjs
-                .connect('https://boundary.ic0.app/', identity)
+                .connect('https://ic0.app/', identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -856,11 +937,132 @@ export default function App() {
             return error(e);
         }
     };
+    const _voltCreate = async showAlert => {
+        loader(true, 'Creating Volt wallet...');
+        try {
+            var voltFactoryAPI = extjs
+                .connect('https://ic0.app/', identity)
+                .canister('flvm3-zaaaa-aaaak-qazaq-cai');
+            var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
+            if (volt.length) {
+                loader(false);
+                throw 'Volt wallet already exists...';
+            }
+            var promo = await voltFactoryAPI.hasFreeCanister(identity.getPrincipal());
+            if (promo) {
+                var volt = await voltFactoryAPI.create();
+                if (!volt.length) throw 'This was an issue creating your Volt...';
+                loader(false);
+                if (showAlert)
+                    alert(
+                        'Volt Created',
+                        'Congratulations, you were eligible for a free Volt! This is now ready to go!',
+                    );
+                return volt;
+            } else {
+                loader(false);
+                if (
+                    await confirm(
+                        'Please confirm',
+                        'To create a Volt wallet you must pay a 0.25ICP setup fee. Do you want to continue?',
+                    )
+                ) {
+                    loader(true, 'Transferring ICP...');
+                    var address = await voltFactoryAPI.getPaymentAddress(identity.getPrincipal());
+                    await extjs
+                        .connect('https://ic0.app/', identity)
+                        .token()
+                        .transfer(
+                            identity.getPrincipal(),
+                            currentAccount,
+                            address,
+                            25000000,
+                            10000,
+                        );
+                    loader(true, 'Creating Volt wallet...');
+                    var volt = await voltFactoryAPI.create();
+                    if (!volt.length) throw 'This was an issue creating your Volt...';
+                    loader(false);
+                    if (showAlert)
+                        alert('Volt Created', 'Congratulations, your Volt is now ready to go!');
+                    return volt;
+                } else return false;
+            }
+        } catch (e) {
+            loader(false);
+            if (showAlert) error(e);
+            return false;
+        }
+    };
+    const _voltTransfer = async (deposit, amount, loader, refresh) => {
+        if (loader) {
+            if (deposit) {
+                loader(true, 'Transferring ICP to Volt');
+            } else {
+                loader(true, 'Withdrawing ICP from Volt');
+            }
+        }
+        try {
+            var voltFactoryAPI = extjs
+                .connect('https://ic0.app/', identity)
+                .canister('flvm3-zaaaa-aaaak-qazaq-cai');
+            var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
+            if (volt.length) {
+            } else throw 'There was a problem finding your Volt!';
+            var voltAPI = extjs
+                .connect('https://ic0.app/', identity)
+                .canister(volt[0].toText(), 'volt');
+
+            if (deposit) {
+                loader(true, 'Transferring ICP to Volt');
+                var address = await voltAPI.getAddress();
+                var r2 = await extjs
+                    .connect('https://ic0.app/', identity)
+                    .token()
+                    .transfer(identity.getPrincipal(), currentAccount, address, amount, 10000);
+                if (refresh) {
+                    loader(true, 'Updating Balances');
+                    await refresh();
+                }
+                if (loader) loader(false);
+                return alert('Deposit complete', 'Your transfer was successful!');
+            } else {
+                loader(true, 'Withdrawing ICP from Volt');
+                var resp = await voltAPI.transfer({
+                    standard: 'icpledger',
+                    canister: 'ryjl3-tyaaa-aaaaa-aaaba-cai',
+                    to: accounts[currentAccount].address,
+                    amount: amount,
+                    id: [],
+                    memo: [],
+                    notify: [],
+                    other: [],
+                });
+                if (resp.hasOwnProperty('ok')) {
+                    if (resp.ok.success) {
+                        if (refresh) {
+                            loader(true, 'Updating Balances');
+                            await refresh();
+                        }
+                        if (loader) loader(false);
+                        return alert('Withdraw complete', 'Your transfer was successful!');
+                    } else {
+                        throw 'Transfer failed.';
+                    }
+                } else {
+                    throw resp.err;
+                }
+            }
+        } catch (e) {
+            if (loader) loader(false);
+            return error(e);
+        }
+    };
     const transfer = async (id, address, loader, refresh) => {
         if (loader) loader(true, 'Transferring NFT...');
         try {
             var r2 = await extjs
-                .connect('https://boundary.ic0.app/', identity)
+                .connect('https://ic0.app/', identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -882,23 +1084,11 @@ export default function App() {
             return error(e);
         }
     };
-    const updateCollections = async () => {
-        const allCollectionsWithCaching = Object.values(await getAllCollectionsWithCaching());
-        setCollections(allCollectionsWithCaching);
-        allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
-
-        if (isToniqEarnAllowed === undefined) {
-            setToniqEarnAllowed(await checkIfToniqEarnAllowed());
-        }
-        if (!appLoaded) {
-            setAppLoaded(true);
-        }
-    };
     const list = async (id, price, loader, refresh) => {
         if (loader) loader(true);
         try {
             var r = await extjs
-                .connect('https://boundary.ic0.app/', identity)
+                .connect('https://ic0.app/', identity)
                 .token(id)
                 .list(currentAccount, price);
             console.log(r);
@@ -916,27 +1106,6 @@ export default function App() {
         }
     };
 
-    const showFooter = () => {
-        const match = matchPath({path: '/marketplace/:route'}, pathname);
-        return match ? 'none' : 'flex';
-    };
-
-    React.useEffect(() => {
-        updateCollections();
-        _updates();
-        window.document.addEventListener(
-            'scroll',
-            throttle(250, () => {
-                if (window.document.body.parentElement.scrollTop <= 10) {
-                    setShowHeaderShadow(false);
-                } else {
-                    setShowHeaderShadow(true);
-                }
-            }),
-        );
-        if (identity) EntrepotUpdateLiked(identity);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     React.useEffect(() => {
         if (appLoaded) {
             var t = localStorage.getItem('_loginType');
@@ -977,11 +1146,12 @@ export default function App() {
                         });
                         break;
                     case 'plug':
-                    case 'infinityWallet':
                         (async () => {
                             const connected = await window.ic[t].isConnected();
                             if (connected) {
-                                if (!window.ic[t].agent) {
+                                const {agent, principalId} =
+                                    window.ic[t].sessionManager.sessionData;
+                                if (!agent) {
                                     await window.ic[t].requestConnect({
                                         whitelist: whitelistedCanisters(),
                                     });
@@ -995,10 +1165,32 @@ export default function App() {
                                 setAccounts([
                                     {
                                         name: capitalize(t),
-                                        address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                                        address: extjs.toAddress(principalId, 0),
                                     },
                                 ]);
                             }
+                        })();
+                        break;
+                    case 'infinityWallet':
+                        (async () => {
+                            const connected = await window.ic[t].isConnected();
+                            if (!connected) {
+                                await window.ic[t].requestConnect({
+                                    whitelist: whitelistedCanisters(),
+                                });
+                            }
+                            var p = await window.ic[t].getPrincipal();
+                            var id = {
+                                type: t,
+                                getPrincipal: () => p,
+                            };
+                            setIdentity(id);
+                            setAccounts([
+                                {
+                                    name: capitalize(t),
+                                    address: extjs.toAddress(id.getPrincipal().toText(), 0),
+                                },
+                            ]);
                         })();
                         break;
                     default:
@@ -1031,39 +1223,6 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [identity]);
 
-    const profileRoutes = (
-        <>
-            <Route
-                path=":tab"
-                exact
-                element={
-                    <Profile
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
-                        loader={loader}
-                        identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
-                        collections={collections}
-                    />
-                }
-            />
-            <Route
-                path=""
-                exact
-                element={
-                    <Profile
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
-                        loader={loader}
-                        identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
-                        collections={collections}
-                    />
-                }
-            />
-        </>
-    );
-
     return (
         <>
             {appLoaded ? (
@@ -1072,10 +1231,15 @@ export default function App() {
                         showHeaderShadow={showHeaderShadow}
                         view={rootPage}
                         processPayments={processPayments}
+                        voltCreate={_voltCreate}
                         setBalance={setBalance}
+                        voltTransfer={voltTransfer}
                         identity={identity}
                         account={accounts.length > 0 ? accounts[currentAccount] : false}
                         loader={loader}
+                        alert={alert}
+                        error={error}
+                        confirm={confirm}
                         logout={logout}
                         login={login}
                         collections={collections}
@@ -1099,6 +1263,7 @@ export default function App() {
                                             alert={alert}
                                             confirm={confirm}
                                             loggedIn={loggedIn}
+                                            voltCreate={_voltCreate}
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
@@ -1947,6 +2112,16 @@ export default function App() {
                                 error={error}
                                 nft={tokenNFT}
                             />
+                            <VoltTransferForm
+                                refresher={refresher}
+                                buttonLoader={buttonLoader}
+                                voltTransfer={_voltTransfer}
+                                alert={alert}
+                                open={openVoltTransferForm}
+                                close={closeVoltTransferForm}
+                                loader={loader}
+                                error={error}
+                            />
                             <ListingForm
                                 refresher={refresher}
                                 buttonLoader={buttonLoader}
@@ -1982,7 +2157,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter style={{zIndex: 100, display: showFooter()}} />
+                    <EntrepotFooter style={{zIndex: 100}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />

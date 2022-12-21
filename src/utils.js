@@ -3,7 +3,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -31,7 +31,6 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
-// watch this
 var _stats = [],
     _rate = false,
     _liked = [],
@@ -199,9 +198,24 @@ const clipboardCopy = text => {
         }
         return '';
     },
-    EntrepotNFTImage = (collection, index, id, fullSize, ref) => {
+    EntrepotNFTImage = (collection, index, id, fullSize, ref, cachePriority) => {
         if (typeof ref == 'undefined') ref = '';
         else ref = '?' + ref;
+
+        if (typeof cachePriority == 'undefined') cachePriority = '10';
+
+        if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false) {
+            // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
+
+            return (
+                'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' +
+                extjs.encodeTokenId('dexpm-6aaaa-aaaal-qbgrq-cai', index) +
+                ref +
+                '&cache=' +
+                cachePriority
+            );
+        }
+
         if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
             return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
         if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
@@ -242,21 +256,34 @@ const clipboardCopy = text => {
         } else {
             //add collections with wearables or other dynamic traits here
             //these images will not be cached
-            if (collection === 'rxrsz-5aaaa-aaaam-qaysa-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'sbcwr-3qaaa-aaaam-qamoa-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            if (collection === '7i54s-nyaaa-aaaal-abomq-cai ') {
+                let cacheParam = (Math.random() + 1).toString(36).substring(7);
+                return (
+                    'https://images.entrepot.app/t/7i54s-nyaaa-aaaal-abomq-cai /' +
+                    id +
+                    '?cache=' +
+                    cachePriority +
+                    '&cachebuster=' +
+                    cacheParam
+                );
+            }
+            //       if (collection === 'rxrsz-5aaaa-aaaam-qaysa-cai')
+            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            //       if (collection === 'sbcwr-3qaaa-aaaam-qamoa-cai')
+            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
             if (collection === 'yrdz3-2yaaa-aaaah-qcvpa-cai')
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
             if (collection === 'rw7qm-eiaaa-aaaak-aaiqq-cai')
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
             if (collection === '5movr-diaaa-aaaak-aaftq-cai')
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'dhyds-jaaaa-aaaao-aaiia-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            //       if (collection === 'dhyds-jaaaa-aaaao-aaiia-cai')
+            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            //       if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
+            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
             if (collection === 'e3izy-jiaaa-aaaah-qacbq-cai')
+                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
+            if (collection === 'xjjax-uqaaa-aaaal-qbfgq-cai')
                 return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
 
             //end of section
@@ -273,7 +300,9 @@ const clipboardCopy = text => {
                 );
             if (collection === 'kss7i-hqaaa-aaaah-qbvmq-cai')
                 return 'https://' + collection + '.raw.ic0.app/?type=thumbnail&tokenid=' + id;
-            return 'https://images.entrepot.app/t/' + collection + '/' + id;
+            return (
+                'https://images.entrepot.app/t/' + collection + '/' + id + '?cache=' + cachePriority
+            );
             //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
         }
     },
@@ -311,7 +340,8 @@ const clipboardCopy = text => {
 
         if (
             collection == 'ugdkf-taaaa-aaaak-acoia-cai' ||
-            collection == 'bzsui-sqaaa-aaaah-qce2a-cai'
+            collection == 'bzsui-sqaaa-aaaah-qce2a-cai' ||
+            collection == '4ggk4-mqaaa-aaaae-qad6q-cai'
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
@@ -447,13 +477,13 @@ const clipboardCopy = text => {
     },
     EntrepotUpdateLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://boundary.ic0.app/', identity);
+            const _api = extjs.connect('https://ic0.app/', identity);
             _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
         } else _liked = [];
     },
     EntrepotSaveLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://boundary.ic0.app/', identity);
+            const _api = extjs.connect('https://ic0.app/', identity);
             await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').saveLiked(_liked);
         }
     },

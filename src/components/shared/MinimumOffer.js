@@ -10,7 +10,7 @@ import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-compo
 import extjs from '../../ic/extjs';
 import {icpToString} from '../PriceICP';
 
-const api = extjs.connect('https://boundary.ic0.app/');
+const api = extjs.connect('https://ic0.app/');
 
 const useStyles = makeStyles(theme => ({
     hoverCard: {
