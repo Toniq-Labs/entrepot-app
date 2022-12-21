@@ -33,8 +33,6 @@ import Listings from './views/Listings/Listings.js';
 import ListingsActivity from './views/Listings/ListingsActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
-import UserActivity from './components/UserActivity';
-import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
 import {EntrepotAllLaunches} from './typescript/ui/elements/main-content-pages/launches-page/toniq-entrepot-all-launches-page.element';
 import Mint from './views/Mint';
 import Navbar from './components/Navbar';
@@ -42,11 +40,8 @@ import Opener from './components/Opener';
 import OpenLogin from '@toruslabs/openlogin';
 import PawnForm from './components/PawnForm';
 import React from 'react';
-import Sale from './views/Sale';
 import TransferForm from './components/TransferForm';
 import UserActivity from './components/UserActivity';
-import UserCollection from './components/UserCollection';
-import UserLoan from './components/UserLoan';
 import VoltTransferForm from './components/VoltTransferForm';
 import {
     EntrepotUpdateUSD,
