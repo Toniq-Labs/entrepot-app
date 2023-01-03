@@ -381,8 +381,11 @@ export default function V2SaleComponent(props) {
                             {sold !== false
                                 ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
                                     ? sold + 362
+                                    : collection.canister === 'tfpyv-wyaaa-aaaal-qbonq-cai' 
+                                    ? sold + 68
                                     : sold
-                                : 'Loading...'}
+                                : 'Loading...'
+                            }
                         </span>
                     </Grid>
                     <Grid className={classes.stat} item xs={10}>
