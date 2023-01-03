@@ -20,5 +20,5 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
       - name: install
         run: npm ci
-      - name: Check formatting
-        run: npm run test:format
+      - name: run tests
+        run: npm run test:all
