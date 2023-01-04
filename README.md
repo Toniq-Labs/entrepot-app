@@ -10,4 +10,4 @@ Frontend code for https://entrepot.app.
 
 That's it!
 
-Before pushing changes, run `npm run format` first to ensure all code is formatted.
+Before pushing changes, make sure to first run `npm run test:all` to ensure all testing passes.
