@@ -1,8 +1,6 @@
 const webpack = require('webpack');
 
 module.exports = function override(config) {
-    //do stuff with the webpack config...
-
     config.resolve.fallback = {
         url: require.resolve('url'),
         assert: require.resolve('assert'),
