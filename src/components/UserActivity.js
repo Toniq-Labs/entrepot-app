@@ -1,29 +1,23 @@
 /* global BigInt */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
 import {useNavigate} from 'react-router';
 import {useParams} from 'react-router';
-import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
 import extjs from '../ic/extjs.js';
-import {EntrepotGetAllLiked} from '../utils';
 import {useTheme} from '@material-ui/core/styles';
 import Event from './Event';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import getNri from '../ic/nftv.js';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -40,11 +34,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 
-const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -140,7 +130,7 @@ const useStyles = makeStyles(theme => ({
             display: 'none',
         },
     },
-    pagi: {
+    pagination: {
         display: 'flex',
         justifyContent: 'flex-end',
         marginTop: '20px',
@@ -230,7 +220,7 @@ export default function UserActivity(props) {
     const tabLink = p => {
         return myPage ? p : '/' + address + p;
     };
-    const refresh = async clearcache => {
+    const refresh = async () => {
         if (!address) return;
         var data = await fetch(
             'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
@@ -466,7 +456,7 @@ export default function UserActivity(props) {
                             {displayedResults && displayedResults.length > perPage ? (
                                 <Grid item style={{marginLeft: 'auto'}}>
                                     <Pagination
-                                        className={classes.pagi}
+                                        className={classes.pagination}
                                         size="small"
                                         count={Math.ceil(displayedResults.length / perPage)}
                                         page={page}
@@ -558,7 +548,7 @@ export default function UserActivity(props) {
                         )}
                         {displayedResults && displayedResults.length > perPage ? (
                             <Pagination
-                                className={classes.pagi}
+                                className={classes.pagination}
                                 size="small"
                                 count={Math.ceil(displayedResults.length / perPage)}
                                 page={page}

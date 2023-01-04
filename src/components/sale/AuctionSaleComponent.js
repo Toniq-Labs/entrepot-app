@@ -1,32 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
 import CachedIcon from '@material-ui/icons/Cached';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Box from '@material-ui/core/Box';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Slider from '@material-ui/core/Slider';
-import TextField from '@material-ui/core/TextField';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import ListIcon from '@material-ui/icons/List';
-import CloseIcon from '@material-ui/icons/Close';
-import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import Checkbox from '@material-ui/core/Checkbox';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import InputLabel from '@material-ui/core/InputLabel';
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import {Grid, makeStyles} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import getGenes from '../CronicStats.js';
@@ -699,32 +677,6 @@ export default function Listings(props) {
                                                 </ToggleButton>
                                             </ToggleButtonGroup>
                                         </Grid>
-                                        {/*
-                    <Grid item xs={12} sm={'auto'}>
-                      <FormControl style={{marginRight: 20}}>
-                        <InputLabel>Showing</InputLabel>
-                        <Select value={showing} onChange={changeShowing}>
-                          <MenuItem value={'all'}>Entire Collection</MenuItem>
-                          <MenuItem value={'auction'}>On Auction</MenuItem>
-                          <MenuItem value={'listed'}>Listed Only</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={'auto'}>
-                      <FormControl style={{marginRight: 20}}>
-                        <InputLabel>Sort by</InputLabel>
-                        <Select value={sort} onChange={changeSort}>
-                          <MenuItem value={'price_asc'}>Price: Low to High</MenuItem>
-                          <MenuItem value={'price_desc'}>Price: High to Low</MenuItem>
-                          <MenuItem value={'mint_number'}>Minting #</MenuItem>
-                          {collection?.nftv ? (
-                            <MenuItem value={'gri'}>NFT Rarity Index</MenuItem>
-                          ) : (
-                            ''
-                          )}
-                        </Select>
-                      </FormControl>
-                    </Grid>*/}
                                         {displayListings && displayListings.length > perPage ? (
                                             <Grid
                                                 xs={12}
@@ -733,7 +685,7 @@ export default function Listings(props) {
                                                 style={{marginLeft: 'auto'}}
                                             >
                                                 <Pagination
-                                                    className={classes.pagi}
+                                                    className={classes.pagination}
                                                     size="small"
                                                     count={Math.ceil(
                                                         displayListings.length / perPage,
@@ -902,7 +854,7 @@ export default function Listings(props) {
 
                                     {displayListings && displayListings.length > perPage ? (
                                         <Pagination
-                                            className={classes.pagi}
+                                            className={classes.pagination}
                                             size="small"
                                             count={Math.ceil(displayListings.length / perPage)}
                                             page={page}
@@ -986,7 +938,7 @@ const useStyles = makeStyles(theme => ({
             textAlign: 'center',
         },
     },
-    pagi: {
+    pagination: {
         display: 'flex',
         justifyContent: 'flex-end',
         marginTop: '20px',

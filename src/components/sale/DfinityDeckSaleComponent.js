@@ -155,23 +155,23 @@ export default function DfinityDeckSaleComponent(props) {
             if (r.hasOwnProperty('err')) {
                 throw r.err;
             }
-            var paytoaddress = r.ok[0];
-            var pricetopay = r.ok[1];
+            var payToAddress = r.ok[0];
+            var priceToPay = r.ok[1];
             props.loader(true, 'Transferring ICP...');
             await api
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
                     props.currentAccount,
-                    paytoaddress,
-                    pricetopay,
+                    payToAddress,
+                    priceToPay,
                     10000,
                 );
             var r3;
             while (true) {
                 try {
                     props.loader(true, 'Completing purchase...');
-                    r3 = await api.canister(collection.canister, 'sale').retreive(paytoaddress);
+                    r3 = await api.canister(collection.canister, 'sale').retrieve(payToAddress);
                     if (r3.hasOwnProperty('ok')) break;
                 } catch (e) {}
             }

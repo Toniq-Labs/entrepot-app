@@ -3,8 +3,9 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
+import {TREASURE_CANISTER} from './utilities/treasure-canister';
+
 const api = extjs.connect('https://ic0.app/');
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
@@ -86,8 +87,8 @@ const _getStats = async () => {
     // });
     // })(collections[i].canister);
 };
-const icpbunnyimg = i => {
-    const icbstorage = [
+const icpBunnyImage = i => {
+    const icbStorage = [
         'efqhu-yqaaa-aaaaf-qaeda-cai',
         'ecrba-viaaa-aaaaf-qaedq-cai',
         'fp7fo-2aaaa-aaaaf-qaeea-cai',
@@ -100,7 +101,7 @@ const icpbunnyimg = i => {
         'f2yud-3iaaa-aaaaf-qaehq-cai',
     ];
 
-    return 'https://' + icbstorage[i % 10] + '.raw.ic0.app/Token/' + i;
+    return 'https://' + icbStorage[i % 10] + '.raw.ic0.app/Token/' + i;
 };
 const clipboardCopy = text => {
         if (!navigator.clipboard) {
@@ -146,7 +147,7 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetailsData = id => {
         if (!earnData.hasOwnProperty(id)) {
-            api.canister(TREASURECANISTER)
+            api.canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -159,7 +160,7 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetails = (id, nft_price) => {
         if (!earnData.hasOwnProperty(id)) {
-            api.canister(TREASURECANISTER)
+            api.canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -224,7 +225,7 @@ const clipboardCopy = text => {
             return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
         if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
             return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
-        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpbunnyimg(index);
+        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpBunnyImage(index);
         if (collection === 'pk6rk-6aaaa-aaaae-qaazq-cai') {
             if (fullSize) {
                 return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
@@ -246,7 +247,7 @@ const clipboardCopy = text => {
                 return 'https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/' + id;
             }
         }
-        if (collection === TREASURECANISTER) {
+        if (collection === TREASURE_CANISTER) {
             if (!fullSize) {
                 return '/earn/loading.png';
             }
@@ -315,7 +316,7 @@ const clipboardCopy = text => {
             return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
         if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
             return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
-        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpbunnyimg(index);
+        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpBunnyImage(index);
         return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
     },
     EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
@@ -349,17 +350,17 @@ const clipboardCopy = text => {
             return (
                 <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
             );
-        if (collection === TREASURECANISTER) {
-            var nftimg = false;
+        if (collection === TREASURE_CANISTER) {
+            var nftImage = false;
             if (!earnData.hasOwnProperty(tokenid)) {
-                api.canister(TREASURECANISTER)
+                api.canister(TREASURE_CANISTER)
                     .tp_loanDetails(tokenid)
                     .then(r => {
                         if (!earnData.hasOwnProperty(tokenid)) earnData[tokenid] = r[0];
                     });
             } else {
                 let {index, canister} = extjs.decodeTokenId(earnData[tokenid].tokenid);
-                nftimg = EntrepotNFTImage(canister, index, earnData[tokenid].tokenid, false);
+                nftImage = EntrepotNFTImage(canister, index, earnData[tokenid].tokenid, false);
             }
             return (
                 <>
@@ -381,7 +382,7 @@ const clipboardCopy = text => {
                                 bottom: '5%',
                                 display: imgLoaded ? 'block' : 'none',
                             }}
-                            src={nftimg}
+                            src={nftImage}
                         />
                     ) : (
                         ''
@@ -465,7 +466,7 @@ const clipboardCopy = text => {
         }
         return _rate;
     },
-    EntrepotGetICPUSD = n => {
+    EntrepotGetIcpUsd = n => {
         if (_rate) return (_rate * (Number(n) / 100000000)).toFixed(2);
         else return false;
     },
@@ -497,7 +498,7 @@ const clipboardCopy = text => {
         tokenLikes[tokenid]++;
         await EntrepotSaveLiked(id);
     },
-    EntrepotUnike = async (tokenid, id) => {
+    EntrepotUnlike = async (tokenid, id) => {
         if (!id) return;
         _liked = _liked.filter(a => a != tokenid);
         if (!tokenLikes.hasOwnProperty(tokenid)) tokenLikes[tokenid] = 0;
@@ -510,17 +511,11 @@ const clipboardCopy = text => {
             tokenLikes[tokenid] = Number(likes);
         }
         return tokenLikes[tokenid] < 0 ? 0 : tokenLikes[tokenid];
-    },
-    numf = (n, d) => {
-        if (n === 'N/A') return n;
-        d = d ?? 2;
-        return n.toFixed(d).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     };
 export {
     clipboardCopy,
     compressAddress,
     displayDate,
-    numf,
     EntrepotUpdateStats,
     EntrepotNFTImage,
     EntrepotNFTLink,
@@ -529,11 +524,11 @@ export {
     EntrepotAllStats,
     EntrepotCollectionStats,
     EntrepotUpdateUSD,
-    EntrepotGetICPUSD,
+    EntrepotGetIcpUsd,
     EntrepotUpdateLiked,
     EntrepotIsLiked,
     EntrepotLike,
-    EntrepotUnike,
+    EntrepotUnlike,
     EntrepotGetLikes,
     EntrepotClearLiked,
     EntrepotGetAllLiked,

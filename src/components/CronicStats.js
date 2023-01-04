@@ -1,5 +1,3 @@
-import React, {useEffect} from 'react';
-
 export default function getGenes(genes) {
     var geneSegments = [
         decodeToSegment([
@@ -54,12 +52,12 @@ export default function getGenes(genes) {
         ]),
     ];
     return {
-        //Temp mapping for old mouth/accessory trait
+        // Temp mapping for old mouth/accessory trait
         legacy: {
             mouth: getGeneOptions(10, geneSegments[3][0], geneSegments[3][1]).dominant,
             accessory: getGeneOptions(7, geneSegments[4][0], geneSegments[4][1]).dominant,
         },
-        //Visutal traits
+        // Visual traits
         visual: {
             background: getGeneOptions(6, geneSegments[0][0], geneSegments[0][1]),
             pattern: getGeneOptions(10, geneSegments[1][0], geneSegments[1][1]),
@@ -68,17 +66,17 @@ export default function getGenes(genes) {
             hair: getGeneOptions(7, geneSegments[4][0], geneSegments[4][1]),
         },
         color: {
-            //Colors
+            // Colors
             background: getGeneOptions(24, geneSegments[6][0], geneSegments[6][1]),
             pattern: getGeneOptions(24, geneSegments[7][0], geneSegments[7][1]),
             face: getGeneOptions(24, geneSegments[8][0], geneSegments[8][1]),
             eyes: getGeneOptions(24, geneSegments[9][0], geneSegments[9][1]),
             hair: getGeneOptions(24, geneSegments[3][0], geneSegments[3][1]),
         },
-        //Animation: 0 = pulse, 1 & 2 = spin
+        // Animation: 0 = pulse, 1 & 2 = spin
         animation: genes[30] % 41,
 
-        //Battle stats TBC, 0-63 representing relative strengths but not end values
+        // Battle stats TBC, 0-63 representing relative strengths but not end values
         battle: {
             health: getGene(geneSegments[0][2], geneSegments[0][3]),
             speed: getGene(geneSegments[1][2], geneSegments[1][3]),

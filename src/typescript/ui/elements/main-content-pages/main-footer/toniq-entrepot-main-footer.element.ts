@@ -1,10 +1,7 @@
 import {
     applyBackgroundAndForeground,
     BrandDiscord24Icon,
-    BrandInstagramFlat24Icon,
     BrandTelegram24Icon,
-    BrandTiktokFlat24Icon,
-    BrandTwitch24Icon,
     BrandTwitter24Icon,
     EntrepotLogo144Icon,
     ToniqButton,
@@ -28,10 +25,6 @@ const footerSocialIcons: ReadonlyArray<{
         icon: BrandDiscord24Icon,
         link: 'https://discord.gg/toniqlabs',
     },
-    // {
-    //     icon: BrandTiktokFlat24Icon,
-    //     link: '',
-    // },
     {
         icon: BrandTelegram24Icon,
         link: 'https://t.me/ICNFTNews',

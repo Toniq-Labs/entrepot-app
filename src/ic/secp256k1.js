@@ -7,10 +7,10 @@ import {
 } from '@dfinity/agent';
 import {Buffer} from 'buffer/';
 import * as bigintConversion from 'bigint-conversion';
-const ellipticcurve = require('starkbank-ecdsa');
-const Ecdsa = ellipticcurve.Ecdsa;
-const PrivateKey = ellipticcurve.PrivateKey;
-const PublicKey = ellipticcurve.PublicKey;
+const ellipticCurve = require('starkbank-ecdsa');
+const Ecdsa = ellipticCurve.Ecdsa;
+const PrivateKey = ellipticCurve.PrivateKey;
+const PublicKey = ellipticCurve.PublicKey;
 function stringToBytes(str) {
     var ch,
         st,

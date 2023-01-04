@@ -189,7 +189,7 @@ const DetailSectionHeader = props => {
                                     <Grid item>
                                         <Favourite
                                             className={classes.favourite}
-                                            showcount={true}
+                                            showCount={true}
                                             count={2}
                                             refresher={props.faveRefresher}
                                             identity={props.identity}

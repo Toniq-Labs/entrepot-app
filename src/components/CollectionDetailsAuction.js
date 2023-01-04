@@ -141,7 +141,6 @@ export default function CollectionDetails(props) {
                         </ul>
                     </Grid>
                 </Grid>
-                {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
                 <div
                     ref={e => {
                         setBlurbElement(e);

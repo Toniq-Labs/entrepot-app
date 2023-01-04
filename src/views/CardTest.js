@@ -29,10 +29,6 @@ const useStyles = makeStyles(theme => ({
     banner: {
         position: 'relative',
     },
-    bannerimg: {
-        maxWidth: '100%',
-        borderRadius: '30px',
-    },
     anchor: {
         position: 'absolute',
         bottom: '-15px',
@@ -88,7 +84,7 @@ export default function CardTest(props) {
     const showPack = () => {
         setPlayOpen(false);
     };
-    const rnum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     return (
         <>
             {playOpen ? (
@@ -166,8 +162,8 @@ export default function CardTest(props) {
                                             <Grid key={a} item md={2}>
                                                 <Flip
                                                     card={[
-                                                        rnum(1, 50),
-                                                        rnum(0, 5),
+                                                        randomNumber(1, 50),
+                                                        randomNumber(0, 5),
                                                     ]}
                                                 />
                                             </Grid>

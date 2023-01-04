@@ -18,7 +18,7 @@ import {
     ToniqInput,
     ToniqToggleButton,
 } from '@toniq-labs/design-system';
-import {EntrepotFilterElement} from './toniq-entrpot-filter.element';
+import {EntrepotFilterElement} from './toniq-entrepot-filter.element';
 import {applySort} from './apply-sort';
 import {EntrepotFilterTokenElement} from './toniq-entrepot-filter-token.element';
 import {countFiltersNotAtDefaults} from './is-still-default';

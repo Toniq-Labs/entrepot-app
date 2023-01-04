@@ -13,13 +13,13 @@ const sjcl = require('sjcl');
 const bip39 = require('bip39');
 const pbkdf2 = require('pbkdf2');
 
-const getCyclesTopupAddress = canisterId => {
+const getCyclesTopUpAddress = canisterId => {
     return principalToAccountIdentifier(
         CYCLES_MINTING_CANISTER_ID,
-        getCyclesTopupSubAccount(canisterId),
+        getCyclesTopUpSubAccount(canisterId),
     );
 };
-const getCyclesTopupSubAccount = canisterId => {
+const getCyclesTopUpSubAccount = canisterId => {
     var pb = Array.from(Principal.fromText(canisterId).toUint8Array());
     return [
         pb.length,
@@ -128,8 +128,8 @@ export {
     GOVERNANCE_CANISTER_ID,
     NNS_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID,
-    getCyclesTopupAddress,
-    getCyclesTopupSubAccount,
+    getCyclesTopUpAddress,
+    getCyclesTopUpSubAccount,
     amountToBigInt,
     rosettaApi,
     Principal,

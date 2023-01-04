@@ -7,7 +7,7 @@ import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import PriceICP from '../../components/PriceICP';
 import CollectionDetails from '../../components/CollectionDetails';
-import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetICPUSD} from '../../utils';
+import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import {StyledTab, StyledTabs} from '../../components/shared/PageTab.js';
 import {WithFilterPanel} from '../../shared/WithFilterPanel.js';
@@ -618,7 +618,7 @@ export default function ListingsActivity(props) {
                                                             />
                                                             &nbsp; (
                                                             <PriceUSD
-                                                                price={EntrepotGetICPUSD(
+                                                                price={EntrepotGetIcpUsd(
                                                                     listing.price,
                                                                 )}
                                                             />

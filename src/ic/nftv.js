@@ -3,12 +3,12 @@ export default function getNri(canister, index) {
         return loadNri(canister);
         // Easy load without extra import
     } else {
-        if (gridata.hasOwnProperty(canister)) return gridata[canister][index];
+        if (nriData.hasOwnProperty(canister)) return nriData[canister][index];
         else return false;
     }
 }
 async function loadNri(canister) {
-    if (gridata.hasOwnProperty(canister)) return true;
+    if (nriData.hasOwnProperty(canister)) return true;
     try {
         var fd = await fetch('/nri/' + canister + '.json').then(response => {
             const contentType = response.headers.get('content-type');
@@ -23,7 +23,7 @@ async function loadNri(canister) {
             }
         });
         if (fd) {
-            gridata[canister] = fd;
+            nriData[canister] = fd;
         }
     } catch (error) {
         console.error(canister, error);
@@ -31,4 +31,4 @@ async function loadNri(canister) {
     }
     return true;
 }
-var gridata = {};
+var nriData = {};

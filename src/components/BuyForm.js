@@ -10,14 +10,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Alert from '@material-ui/lab/Alert';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
-import extjs from '../ic/extjs.js';
-import {
-    EntrepotNFTImage,
-    EntrepotDisplayNFT,
-    EntrepotGetICPUSD,
-    EntrepotEarnDetailsData,
-} from '../utils.js';
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
+import {EntrepotNFTImage, EntrepotGetIcpUsd, EntrepotEarnDetailsData} from '../utils.js';
+import {TREASURE_CANISTER} from '../utilities/treasure-canister';
 
 export default function BuyForm(props) {
     const [
@@ -53,7 +47,7 @@ export default function BuyForm(props) {
                     }}
                     variant="rect"
                 />
-                {props.canister == TREASURECANISTER ? (
+                {props.canister == TREASURE_CANISTER ? (
                     <Alert severity="warning">
                         <strong>
                             This is a Toniq Earn contract; do not confuse for actual NFTs
@@ -114,7 +108,7 @@ export default function BuyForm(props) {
                             <br />
                             {props.price ? (
                                 <>
-                                    ~<PriceUSD price={EntrepotGetICPUSD(props.price)} />
+                                    ~<PriceUSD price={EntrepotGetIcpUsd(props.price)} />
                                 </>
                             ) : (
                                 ''

@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     box: {
         position: 'relative',
         transform: 'rotate3d(0, 0, 0, 0)',
@@ -68,30 +68,6 @@ const useStyles = makeStyles(theme => ({
         transform: 'rotateY(180deg)',
     },
 }));
-var tmap = [
-    'C',
-    'U',
-    'R',
-    'E',
-    'L',
-    'M',
-];
-var tmap2 = [
-    'Common',
-    'Uncommon',
-    'Rare',
-    'Epic',
-    'Legendary',
-    'Mythic',
-];
-var tmap3 = [
-    '52%',
-    '25%',
-    '12.6%',
-    '6.4%',
-    '3.2%',
-    '0.8%',
-];
 export default function Flip2(props) {
     const classes = useStyles();
     const [

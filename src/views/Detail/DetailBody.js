@@ -12,6 +12,7 @@ import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';
 import DetailSectionHeader from './Section/Header';
 import DetailSectionDetails from './Section/Details';
 import DetailSectionActivity from './Section/Activity';
+import {TREASURE_CANISTER} from '../../utilities/treasure-canister';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -33,8 +34,6 @@ function useInterval(callback, delay) {
     }, [delay]);
 }
 const api = extjs.connect('https://ic0.app/');
-
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 
 const DetailBody = props => {
     const {
@@ -184,7 +183,7 @@ const DetailBody = props => {
 
             // for interactive NFTs or videos
             case 'interactive_nfts_or_videos':
-            case TREASURECANISTER:
+            case TREASURE_CANISTER:
                 return (
                     <iframe
                         frameBorder="0"

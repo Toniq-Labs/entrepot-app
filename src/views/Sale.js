@@ -43,10 +43,6 @@ const useStyles = makeStyles(theme => ({
     banner: {
         position: 'relative',
     },
-    bannerimg: {
-        maxWidth: '100%',
-        borderRadius: '30px',
-    },
     anchor: {
         position: 'absolute',
         bottom: '-15px',

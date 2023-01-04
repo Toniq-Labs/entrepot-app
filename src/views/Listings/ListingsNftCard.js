@@ -17,7 +17,7 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {getEXTCanister, getEXTID} from '../../utilities/load-tokens';
+import {getEXTCanister, getExtId} from '../../utilities/load-tokens';
 import {Link} from 'react-router-dom';
 import {NftCard} from '../../shared/NftCard';
 import {EntrepotNFTImage} from '../../utils';
@@ -531,7 +531,7 @@ export function ListingsNftCard(props) {
                                         }
                                     >
                                         <Link
-                                            to={`/marketplace/asset/` + getEXTID(listing.tokenid)}
+                                            to={`/marketplace/asset/` + getExtId(listing.tokenid)}
                                             style={{textDecoration: 'none'}}
                                             rel="noopener noreferrer"
                                             onClick={() => {

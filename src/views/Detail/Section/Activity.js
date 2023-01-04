@@ -10,7 +10,7 @@ import {
 import PriceICP from '../../../components/PriceICP';
 import {NftCard} from '../../../shared/NftCard';
 import moment from 'moment';
-import {EntrepotGetICPUSD, EntrepotNFTImage} from '../../../utils';
+import {EntrepotGetIcpUsd, EntrepotNFTImage} from '../../../utils';
 import PriceUSD from '../../../components/PriceUSD';
 import {getEXTCanister} from '../../../utilities/load-tokens';
 import orderBy from 'lodash.orderby';
@@ -218,7 +218,7 @@ export default function DetailSectionActivity(props) {
                                                 >
                                                     (
                                                     <PriceUSD
-                                                        price={EntrepotGetICPUSD(transaction.price)}
+                                                        price={EntrepotGetIcpUsd(transaction.price)}
                                                     />
                                                     )
                                                 </span>

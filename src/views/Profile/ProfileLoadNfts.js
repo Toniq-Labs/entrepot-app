@@ -1,7 +1,7 @@
 /* global BigInt */
 import getNri from '../../ic/nftv.js';
 import extjs from '../../ic/extjs.js';
-import {loadAllUserTokens, getEXTCanister, getEXTID, nftIdToNft} from '../../utilities/load-tokens';
+import {loadAllUserTokens, getEXTCanister, getExtId, nftIdToNft} from '../../utilities/load-tokens';
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
@@ -179,7 +179,7 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
 
     const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
     const offers = loadListing
-        ? await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getEXTID(rawNft.token))
+        ? await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getExtId(rawNft.token))
         : [];
     const rawListing = loadListing
         ? await (
