@@ -1,7 +1,8 @@
-/Icon?
-/dist/
 /build/
-node_modules/
-package-lock.json
+/dist/
+/Icon?
 /public/filter/
 /public/nri/
+coverage/
+node_modules/
+package-lock.json
