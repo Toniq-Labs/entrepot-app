@@ -4,8 +4,7 @@ module.exports = {
     ...baseConfig,
     ignorePaths: [
         ...baseConfig.ignorePaths,
-        'public/filter',
-        'public/gifshot.js',
+        'public/',
         'src/ic/candid',
     ],
     patterns: [
