@@ -10,4 +10,4 @@ Frontend code for https://entrepot.app.
 
 That's it!
 
-Before pushing changes, make sure to first run `npm run test:all` to ensure all testing passes.
+Before pushing changes, make sure to first run `npm run test:all` to ensure all tests pass.

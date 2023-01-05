@@ -7,7 +7,11 @@ on:
 
 jobs:
   ci-checks:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -19,6 +23,8 @@ jobs:
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
       - name: install
-        run: npm ci
+        run: |
+          npm ci
+          npx playwright install --with-deps
       - name: run tests
         run: npm run test:all
