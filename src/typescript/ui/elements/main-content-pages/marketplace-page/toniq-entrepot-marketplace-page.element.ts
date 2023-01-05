@@ -7,7 +7,6 @@ import {
     createWithFiltersInputs,
 } from '../../common/with-filters/toniq-entrepot-with-filters.element';
 import {CurrentSort} from '../../common/with-filters/filters-types';
-import {toniqFontStyles} from '@toniq-labs/design-system';
 import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.element';
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';

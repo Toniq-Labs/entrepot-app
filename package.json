@@ -20,9 +20,9 @@
         "start": "react-app-rewired start",
         "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
         "test": "virmator test-web",
-        "test:all": "npm run test:format && npm run test:spelling && npm run test:types && npm run test",
+        "test:all": "npm run test:format && npm run test:spelling && npm run test:types && npm run test:lint && npm run test",
         "test:format": "prettier --color --check \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
-        "test:lint": "eslint \"src/**/*.ts\"",
+        "test:lint": "eslint --config ./.eslintrc.cjs \"src/**/*.ts\"",
         "test:spelling": "virmator spellcheck",
         "test:types": "tsc --noEmit"
     },
@@ -39,14 +39,6 @@
             "last 2 safari version",
             "last 2 edge version"
         ]
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app"
-        ],
-        "globals": {
-            "globalThis": false
-        }
     },
     "dependencies": {
         "@augment-vir/browser": "^6.4.0",
@@ -110,6 +102,7 @@
         "@augment-vir/browser-testing": "^6.4.0",
         "@open-wc/testing": "^3.1.7",
         "@toniq-labs/fleek-iterative-deploy": "1.2.11",
+        "@types/eslint": "^8.4.10",
         "@types/mocha": "^10.0.1",
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.2",
@@ -119,12 +112,13 @@
         "@web/test-runner-playwright": "^0.9.0",
         "browserslist": "^4.21.4",
         "cspell": "^6.18.1",
+        "eslint": "^8.31.0",
         "istanbul-smart-text-reporter": "^1.1.1",
         "prettier": "2.8.1",
         "prettier-plugin-jsdoc": "0.4.2",
         "prettier-plugin-multiline-arrays": "1.1.2",
         "prettier-plugin-packagejson": "2.3.0",
-        "prettier-plugin-sort-json": "0.0.3",
+        "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "0.3.1",
         "react-app-rewired": "^2.1.11",
         "redux": "^4.1.2",

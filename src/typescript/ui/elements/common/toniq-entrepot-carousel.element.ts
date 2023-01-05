@@ -1,5 +1,5 @@
 import {RequiredAndNotNullBy} from '@augment-vir/common';
-import {scrollSnapToNext, ScrollDirection, getScrollSnapPositions} from 'scroll-snap-api';
+import {scrollSnapToNext, getScrollSnapPositions} from 'scroll-snap-api';
 import {classMap} from 'lit/directives/class-map.js';
 import {
     applyBackgroundAndForeground,
