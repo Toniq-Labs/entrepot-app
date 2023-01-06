@@ -2,14 +2,6 @@
     "name": "entrepot",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://github.com/electrovir/entrepot-app",
-    "bugs": {
-        "url": "https://github.com/electrovir/entrepot-app/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/electrovir/entrepot-app"
-    },
     "license": "MIT",
     "author": "Toniq Labs",
     "scripts": {
