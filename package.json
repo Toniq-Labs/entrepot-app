@@ -17,7 +17,7 @@
         "eject": "react-app-rewired eject",
         "format": "prettier --color --list-different --write \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
         "postinstall": "ts-node scripts/build.ts install",
-        "serve": "react-app-rewired build && serve -s build",
+        "preview": "npm run build && serve -s build",
         "start": "react-app-rewired start",
         "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
         "test": "virmator test-web",
