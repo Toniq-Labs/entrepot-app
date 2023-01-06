@@ -1,9 +1,16 @@
 import {join} from 'path';
 import {createSymLink} from '@augment-vir/node-js';
-import {cp, rename, rm, stat, unlink} from 'fs/promises';
+import {cp, rename, rm, stat} from 'fs/promises';
 import {awaitedForEach, getObjectTypedKeys} from '@augment-vir/common';
 import {dirname} from 'path';
 import {existsSync} from 'fs';
+
+/**
+ * The complex interactions of files, scripts, and environments in this file are a result of all the
+ * different packages not playing nicely with each other. In particular, the sym link complexity is
+ * because tests fail on windows machines when they encounter symlinks, so we must make sure they do
+ * not exist at test time in the CI pipeline.
+ */
 
 const suffix = '-temp-copy.txt';
 const rootRepoDirPath = dirname(__dirname);
