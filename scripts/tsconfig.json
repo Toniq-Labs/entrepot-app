@@ -18,18 +18,13 @@
         "noUncheckedIndexedAccess": true,
         "pretty": true,
         "resolveJsonModule": true,
-        "rootDir": "./src",
+        "rootDir": "./",
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
         "strict": true,
         "target": "ES2019",
         "useUnknownInCatchVariables": true
     },
-    "include": [
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
-    ],
-    "exclude": ["scripts"],
     "ts-node": {
         "transpileOnly": true,
         "compilerOptions": {
