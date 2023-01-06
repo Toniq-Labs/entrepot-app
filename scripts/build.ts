@@ -34,8 +34,6 @@ const symLinks: Record<keyof typeof publicFiles, string> = {
 
 const renamedFiles = [
     '.eslintignore',
-    publicFiles.fontsCssFilePath,
-    publicFiles.fontsDirPath,
 ];
 
 async function preBuild() {
@@ -47,12 +45,13 @@ async function preBuild() {
         const publicFile = publicFiles[publicFileKey];
         const symLinkPath = symLinks[publicFileKey];
         const isDir = (await stat(symLinkPath)).isDirectory();
+        await rm(publicFile, {recursive: isDir, force: true});
 
         await cp(symLinkPath, publicFile, isDir ? {recursive: true} : undefined);
     });
 }
 
-async function postInstall() {
+async function addFontSymlinks() {
     await awaitedForEach(getObjectTypedKeys(publicFiles), async publicFileKey => {
         const publicFile = publicFiles[publicFileKey];
         const symLinkPath = symLinks[publicFileKey];
@@ -63,13 +62,27 @@ async function postInstall() {
     });
 }
 
+async function postInstall() {
+    if (!process.env.CI) {
+        await addFontSymlinks();
+    }
+}
+
 async function postBuild() {
-    await rm(publicFiles.fontsDirPath, {recursive: true, force: true});
-    await unlink(publicFiles.fontsCssFilePath);
+    await awaitedForEach(getObjectTypedKeys(publicFiles), async publicFileKey => {
+        const publicFile = publicFiles[publicFileKey];
+        const symLinkPath = symLinks[publicFileKey];
+        const isDir = (await stat(symLinkPath)).isDirectory();
+        await rm(publicFile, {recursive: isDir, force: true});
+    });
 
     await awaitedForEach(renamedFiles, async fileToRename => {
         await rename(`${fileToRename}${suffix}`, fileToRename);
     });
+
+    if (!process.env.CI) {
+        await addFontSymlinks();
+    }
 }
 
 async function main() {
