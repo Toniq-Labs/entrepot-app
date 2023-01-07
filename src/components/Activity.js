@@ -1,20 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
-import Chip from '@material-ui/core/Chip';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import Drawer from '@material-ui/core/Drawer';
-import Collapse from '@material-ui/core/Collapse';
-import Slider from '@material-ui/core/Slider';
-import Button from '@material-ui/core/Button';
-import Alert from '@material-ui/lab/Alert';
 import TableContainer from '@material-ui/core/TableContainer';
-import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
@@ -23,26 +13,17 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import InputLabel from '@material-ui/core/InputLabel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import {Grid, makeStyles} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
-import getGenes from './CronicStats.js';
 import extjs from '../ic/extjs.js';
 import getNri from '../ic/nftv.js';
 import {useTheme} from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
 import Sold from './Sold';
-import BuyForm from './BuyForm';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import PriceICP from './PriceICP';
 import CollectionDetails from './CollectionDetails';
-import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 
 const api = extjs.connect('https://ic0.app/');
@@ -100,9 +81,35 @@ export default function Activity(props) {
     const params = useParams();
     const classes = useStyles();
     const [
+        collection,
+        setCollection,
+    ] = useState(getCollectionFromRoute(params?.route, props.collections));
+
+    React.useEffect(() => {
+        setCollection(getCollectionFromRoute(params?.route, props.collections));
+    }, [
+        params,
+        props.collections,
+    ]);
+    const [
         stats,
         setStats,
     ] = React.useState(false);
+
+    React.useEffect(() => {
+        if (collection?.canister && props.stats) {
+            const currentStats = props.stats.filter(
+                statWrapper => statWrapper.canister === collection?.canister,
+            )[0];
+            if (currentStats) {
+                setStats(currentStats);
+            }
+        }
+    }, [
+        props.stats,
+        collection,
+    ]);
+
     const [
         transactions,
         setTransactions,
@@ -115,37 +122,11 @@ export default function Activity(props) {
         sort,
         setSort,
     ] = useState('recent');
-    const [
-        collapseBlurb,
-        setCollapseBlurb,
-    ] = useState(false);
-    const [
-        isBlurbOpen,
-        setIsBlurbOpen,
-    ] = useState(false);
-    const [
-        blurbElement,
-        setBlurbElement,
-    ] = useState(false);
-    const [
-        collapseOpen,
-        setCollapseOpen,
-    ] = useState(false);
-    const [
-        collection,
-        setCollection,
-    ] = useState(getCollectionFromRoute(params?.route, props.collections));
 
     const navigate = useNavigate();
 
     redirectIfBlockedFromEarnFeatures(navigate, collection, props);
 
-    const _changeCollection = async c => {
-        setCollection(c);
-        setTransactions(false);
-        setPage(1);
-        await refresh(c.canister);
-    };
     const changeSort = event => {
         setPage(1);
         setSort(event.target.value);
@@ -156,9 +137,6 @@ export default function Activity(props) {
     };
     const refresh = async c => {
         c = c ?? collection?.canister;
-        EntrepotUpdateStats().then(() => {
-            setStats(EntrepotCollectionStats(collection.canister));
-        });
         var txs = await fetch(
             'https://us-central1-entrepot-api.cloudfunctions.net/api/canister/' +
                 c +
@@ -188,17 +166,9 @@ export default function Activity(props) {
 
     useInterval(_updates, 60 * 1000);
     React.useEffect(() => {
-        if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
         _updates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    React.useEffect(() => {
-        if (blurbElement.clientHeight > 110) {
-            setCollapseBlurb(true);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [blurbElement]);
 
     return (
         <div style={{minHeight: 'calc(100vh - 221px)'}}>

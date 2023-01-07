@@ -1,11 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
 import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
-import Wallet from '../components/Wallet';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import Card from '@material-ui/core/Card';
@@ -16,28 +14,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField';
 import PriceICP from '../components/PriceICP';
-import {EntrepotUpdateStats, EntrepotAllStats} from '../utils';
 import {isToniqEarnCollection} from '../location/toniq-earn-collections';
 import {cssToReactStyleObject, toniqFontStyles} from '@toniq-labs/design-system';
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
 
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const useStyles = makeStyles(theme => ({
     breakpoints: {
         values: {
@@ -75,8 +54,8 @@ const useStyles = makeStyles(theme => ({
         paddingTop: '56.25%', // 16:9
     },
 }));
-var _stats = [];
 export default function Marketplace(props) {
+    const stats = props.stats;
     const navigate = useNavigate();
     const classes = useStyles();
     const theme = useTheme();
@@ -90,10 +69,6 @@ export default function Marketplace(props) {
     ] = useSearchParams();
 
     const query = searchParams.get('search') || '';
-    const [
-        stats,
-        setStats,
-    ] = React.useState([]);
 
     const styles = {
         root: {
@@ -105,21 +80,9 @@ export default function Marketplace(props) {
             marginLeft: 0,
         },
     };
-    const _updates = () => {
-        EntrepotUpdateStats().then(setStats);
-    };
     const changeSort = event => {
         setSort(event.target.value);
     };
-    React.useEffect(() => {
-        if (EntrepotAllStats().length == 0) {
-            _updates();
-        } else {
-            setStats(EntrepotAllStats());
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    useInterval(_updates, 60 * 1000);
     const handleClick = a => {
         navigate(a);
     };
