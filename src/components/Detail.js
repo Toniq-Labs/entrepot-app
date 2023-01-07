@@ -12,30 +12,12 @@ import {
     TableCell,
     TableRow,
     TableHead,
-    IconButton,
 } from '@material-ui/core';
-import DashboardIcon from '@material-ui/icons//Dashboard';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 import GavelIcon from '@material-ui/icons/Gavel';
-import PeopleIcon from '@material-ui/icons/People';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ShareIcon from '@material-ui/icons/Share';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import ShopIcon from '@material-ui/icons/Shop';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
-import ListIcon from '@material-ui/icons/List';
-import AcUnitIcon from '@material-ui/icons/AcUnit';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
-import DetailsIcon from '@material-ui/icons/Details';
-import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -54,13 +36,12 @@ import {
     EntrepotNFTImage,
     EntrepotNFTLink,
     EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
     EntrepotGetICPUSD,
-    EntrepotGetOffers,
     EntrepotCollectionStats,
 } from '../utils';
 import {useParams} from 'react-router-dom';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
+
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -82,21 +63,8 @@ function useInterval(callback, delay) {
 }
 const api = extjs.connect('https://ic0.app/');
 
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const shorten = a => {
     return a.substring(0, 12) + '...';
-};
-const emptyListing = {
-    pricing: '',
-    img: '',
-};
-
-const _getRandomBytes = () => {
-    var bs = [];
-    for (var i = 0; i < 32; i++) {
-        bs.push(Math.floor(Math.random() * 256));
-    }
-    return bs;
 };
 const Detail = props => {
     let {tokenid} = useParams();
@@ -108,10 +76,6 @@ const Detail = props => {
     ] = React.useState(
         EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '',
     );
-    const [
-        expandLicense,
-        setExpandLicense,
-    ] = React.useState(false);
     const [
         license,
         setLicense,
@@ -149,10 +113,6 @@ const Detail = props => {
         setOpenAuctionForm,
     ] = React.useState(false);
     const collection = props.collections.find(e => e.canister === canister);
-    const [
-        motokoContent,
-        setMotokoContent,
-    ] = useState('');
     const [
         overrideDetailPage,
         setOverrideDetailPage,
@@ -929,7 +889,7 @@ const Detail = props => {
                                                 <Button
                                                     onClick={ev => {
                                                         props.listNft(
-                                                            {id: tokenid, listing: listing},
+                                                            {id: tokenid, listing, collection},
                                                             props.loader,
                                                             _afterList,
                                                         );
@@ -965,7 +925,7 @@ const Detail = props => {
                                             <Button
                                                 onClick={ev => {
                                                     props.listNft(
-                                                        {id: tokenid, listing: listing},
+                                                        {id: tokenid, listing, collection},
                                                         props.loader,
                                                         _afterList,
                                                     );

@@ -15,6 +15,31 @@ export default function ListingForm(props) {
         price,
         setPrice,
     ] = React.useState(props.nft.listing?.price ? Number(props.nft.listing.price) / 100000000 : 0);
+
+    const [
+        pricePercentBelowFloor,
+        setPricePercentBelowFloor,
+    ] = React.useState(1);
+
+    React.useEffect(() => {
+        const currentCollectionFloorPrice = Number(
+            props.stats.find(collection => collection?.canister === props.nft?.collection?.id)
+                ?.stats?.floor,
+        );
+        if (!currentCollectionFloorPrice) {
+            return;
+        }
+        const priceNumber = Number(price);
+        const currentPercentOfFloorPrice = priceNumber
+            ? priceNumber / currentCollectionFloorPrice
+            : 1;
+        setPricePercentBelowFloor(Math.round(100 - Math.trunc(currentPercentOfFloorPrice * 100)));
+    }, [
+        price,
+        props.stats,
+        props.nft,
+    ]);
+
     var collection;
     if (props.nft.id) {
         const {index, canister} = extjs.decodeTokenId(props.nft.id);
@@ -95,6 +120,14 @@ export default function ListingForm(props) {
                             shrink: true,
                         }}
                     />
+                    {pricePercentBelowFloor > 10 ? (
+                        <p style={{color: 'red'}}>
+                            Warning: this price is <b>{pricePercentBelowFloor}% below</b> the
+                            collection's current floor price.
+                        </p>
+                    ) : (
+                        ''
+                    )}
                 </DialogContent>
 
                 <DialogActions>
