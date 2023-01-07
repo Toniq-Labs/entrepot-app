@@ -10,30 +10,20 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import {useNavigate} from 'react-router';
 import {useParams} from 'react-router';
-import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
-import {EntrepotGetAllLiked} from '../utils';
 import {useTheme} from '@material-ui/core/styles';
 import Pawn from './Pawn';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import getNri from '../ic/nftv.js';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import CachedIcon from '@material-ui/icons/Cached';
@@ -41,10 +31,6 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import GavelIcon from '@material-ui/icons/Gavel';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
 import {makeStyles} from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
@@ -83,60 +69,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-var fromWrappedMap = {
-    'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
-    'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
-    '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
-    'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
-    'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
-};
-var toWrappedMap = {
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-};
-const getEXTCanister = c => {
-    if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
-    else return c;
-};
-const loadAllTokens = async (address, principal) => {
-    var response = await Promise.all(
-        [
-            axios(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-            ).then(r => r.data.map(a => ({...a, token: a.id}))),
-        ]
-            .concat(
-                [
-                    '4nvhy-3qaaa-aaaah-qcnoq-cai',
-                    'qcg3w-tyaaa-aaaah-qakea-cai',
-                    //"jzg5e-giaaa-aaaah-qaqda-cai",
-                    'd3ttm-qaaaa-aaaai-qam4a-cai',
-                    'xkbqi-2qaaa-aaaah-qbpqq-cai',
-                    'fl5nr-xiaaa-aaaai-qbjmq-cai',
-                ].map(a =>
-                    api
-                        .token(a)
-                        .getTokens(address, principal)
-                        .then(r =>
-                            r.map(b => ({
-                                canister: toWrappedMap[a],
-                                id: b.id,
-                                token: b.id,
-                                price: 0,
-                                time: 0,
-                                owner: address,
-                            })),
-                        ),
-                ),
-            )
-            .map(p => p.catch(e => e)),
-    );
-    var tokens = response.filter(result => !(result instanceof Error)).flat();
-    return tokens;
-};
+
 // const loadAllListings = async (address, principal) => {
 // var response = await Promise.all(props.collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
 // var tokens = response.filter(result => !(result instanceof Error)).flat();

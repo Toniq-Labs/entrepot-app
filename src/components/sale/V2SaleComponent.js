@@ -1,15 +1,10 @@
 /* global BigInt */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import SaleListing from '../SaleListing';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Timestamp from 'react-timestamp';
-import Pagination from '@material-ui/lab/Pagination';
-import {StoicIdentity} from 'ic-stoic-identity';
-import Sidebar from '../Sidebar';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -381,11 +376,10 @@ export default function V2SaleComponent(props) {
                             {sold !== false
                                 ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
                                     ? sold + 362
-                                    : collection.canister === 'tfpyv-wyaaa-aaaal-qbonq-cai' 
+                                    : collection.canister === 'tfpyv-wyaaa-aaaal-qbonq-cai'
                                     ? sold + 68
                                     : sold
-                                : 'Loading...'
-                            }
+                                : 'Loading...'}
                         </span>
                     </Grid>
                     <Grid className={classes.stat} item xs={10}>

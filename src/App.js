@@ -187,6 +187,10 @@ export default function App() {
         setShowBuyForm,
     ] = React.useState(false);
     const [
+        stats,
+        setStats,
+    ] = React.useState([]);
+    const [
         openListingForm,
         setOpenListingForm,
     ] = React.useState(false);
@@ -268,7 +272,7 @@ export default function App() {
 
     const _updates = async () => {
         EntrepotUpdateUSD();
-        EntrepotUpdateStats();
+        setStats(await EntrepotUpdateStats());
     };
 
     const _buyForm = (tokenid, price) => {
@@ -651,7 +655,7 @@ export default function App() {
 
     useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
     useInterval(() => updateCollections(), 5 * 60 * 1000);
-    useInterval(_updates, 10 * 60 * 1000);
+    useInterval(_updates, 2 * 60 * 1000);
     const alert = (title, message, buttonLabel) => {
         return new Promise(async (resolve, reject) => {
             setAlertData({
@@ -1065,7 +1069,7 @@ export default function App() {
     React.useEffect(() => {
         updateCollections();
         EntrepotUpdateUSD();
-        EntrepotUpdateStats();
+        EntrepotUpdateStats().then(setStats);
         if (identity) EntrepotUpdateLiked(identity);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -1272,6 +1276,7 @@ export default function App() {
                                         <Activity
                                             error={error}
                                             view={'listings'}
+                                            stats={stats}
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             alert={alert}
                                             confirm={confirm}
@@ -1335,6 +1340,7 @@ export default function App() {
                                             alert={alert}
                                             confirm={confirm}
                                             loader={loader}
+                                            stats={stats}
                                             balance={balance}
                                             identity={identity}
                                             account={
@@ -2127,6 +2133,7 @@ export default function App() {
                                 alert={alert}
                                 open={openListingForm}
                                 close={closeListingForm}
+                                stats={stats}
                                 loader={loader}
                                 confirm={confirm}
                                 error={error}
@@ -2135,6 +2142,7 @@ export default function App() {
                             <PawnForm
                                 refresher={refresher}
                                 buttonLoader={buttonLoader}
+                                stats={stats}
                                 collections={collections}
                                 pawn={pawn}
                                 alert={alert}

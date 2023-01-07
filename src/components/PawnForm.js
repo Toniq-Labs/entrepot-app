@@ -10,12 +10,10 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {EntrepotNFTImage} from '../utils.js';
-import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 
 export default function PawnForm(props) {
     const [
@@ -56,22 +54,23 @@ export default function PawnForm(props) {
             let {canister, index} = extjs.decodeTokenId(props.nft.id);
             setIndex(index);
             setCanister(canister);
-            var s = EntrepotCollectionStats(canister);
-            if (!isNaN(Number(s.floor))) {
-                setFloor(Number(s.floor));
-            } else {
-                EntrepotUpdateStats().then(r => {
-                    var s = EntrepotCollectionStats(canister);
-                    if (!isNaN(Number(s.floor))) {
-                        setFloor(Number(s.floor));
-                    }
-                });
+            if (props.stats) {
+                const canisterStats = props.stats.filter(
+                    statWrapper => statWrapper.canister === canister,
+                )[0]?.stats;
+                const floor = Number(canisterStats?.floor);
+                if (!isNaN(floor)) {
+                    setFloor(floor);
+                }
             }
         }
-    }, [props.nft.id]);
+    }, [
+        props.nft,
+        props.stats,
+    ]);
 
     const _submit = () => {
-        if (!floor) return props.error('Trying to retreive floor, please try again shortly.');
+        if (!floor) return props.error('Trying to retrieve floor, please try again shortly.');
         if (amount > floor)
             return props.error(
                 'The amount requested can not be more than the current floor for this collection (' +

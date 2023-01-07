@@ -1,53 +1,20 @@
 import React from 'react';
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-} from 'recharts';
-import PropTypes from 'prop-types';
-import {styled, withStyles} from '@material-ui/styles';
+
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import MuiTooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import getGenes from './CronicStats.js';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import Timestamp from 'react-timestamp';
 import extjs from '../ic/extjs.js';
 import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
-import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import MuiTableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from '../ic/nftv.js';
@@ -55,17 +22,15 @@ import {makeStyles} from '@material-ui/core';
 import {
     EntrepotEarnDetails,
     EntrepotNFTImage,
-    EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
-    EntrepotGetICPUSD,
+    getEXTCanister,
+    toWrappedMap,
 } from '../utils';
+
 const api = extjs.connect('https://ic0.app/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
-const _showListingPrice = n => {
-    n = Number(n) / 100000000;
-    return n.toFixed(8).replace(/0{1,6}$/, '');
-};
+
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -103,24 +68,6 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-var fromWrappedMap = {
-    'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
-    'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
-    '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
-    'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
-    'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
-};
-var toWrappedMap = {
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-};
-const getEXTCanister = c => {
-    if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
-    else return c;
-};
 const getEXTID = tokenid => {
     const {index, canister} = extjs.decodeTokenId(tokenid);
     return extjs.encodeTokenId(getEXTCanister(canister), index);
@@ -305,6 +252,15 @@ export default function NFT(props) {
         await props.refresh('/earn-requests');
     };
     var buttonLoadingText = <CircularProgress size={20.77} style={{color: 'white', margin: 1}} />;
+    const collection = getCollection(canister);
+    const nftImage = EntrepotDisplayNFT(
+        getEXTCanister(canister),
+        tokenid,
+        imgLoaded,
+        EntrepotNFTImage(getEXTCanister(canister), index, tokenid, false, ref, collection.priority),
+        () => setImgLoaded(true),
+    );
+
     const getButtons = () => {
         var buttons = [];
         if (props.view == 'new-request') {
@@ -313,7 +269,7 @@ export default function NFT(props) {
                     'Select',
                     () =>
                         props.pawnNft(
-                            {id: tokenid, canister: canister, listing: listing},
+                            {id: tokenid, canister, listing},
                             props.loader,
                             transferRefreshEarn,
                         ),
@@ -325,29 +281,32 @@ export default function NFT(props) {
                 //Contains a listing, must be EXT
                 buttons.push([
                     currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Update',
-                    () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
+                    () => {
+                        props.listNft({id: tokenid, listing, collection}, buttonLoader, refresh);
+                    },
                 ]);
                 buttons.push([
                     currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
-                    () =>
-                        props.transferNft(
-                            {id: tokenid, listing: listing},
-                            props.loader,
-                            transferRefresh,
-                        ),
+                    () => props.transferNft({id: tokenid, listing}, props.loader, transferRefresh),
                 ]);
             } else {
                 if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
                     //EXT only no wrapper
                     buttons.push([
                         currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                        () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
+                        () => {
+                            props.listNft(
+                                {id: tokenid, listing, collection},
+                                buttonLoader,
+                                refresh,
+                            );
+                        },
                     ]);
                     buttons.push([
                         currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
                         () =>
                             props.transferNft(
-                                {id: tokenid, listing: listing},
+                                {id: tokenid, listing, collection},
                                 props.loader,
                                 transferRefresh,
                             ),
@@ -357,18 +316,19 @@ export default function NFT(props) {
                         //Non EXT
                         buttons.push([
                             currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                            () =>
+                            () => {
                                 props.wrapAndlistNft(
-                                    {id: tokenid, listing: listing},
+                                    {id: tokenid, listing, collection},
                                     props.loader,
                                     props.refresh,
-                                ),
+                                );
+                            },
                         ]);
                         buttons.push([
                             currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
                             () =>
                                 props.transferNft(
-                                    {id: tokenid, listing: listing},
+                                    {id: tokenid, listing},
                                     props.loader,
                                     transferRefresh,
                                 ),
@@ -377,18 +337,19 @@ export default function NFT(props) {
                         //EXT Wrapper
                         buttons.push([
                             currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                            () =>
+                            () => {
                                 props.listNft(
-                                    {id: tokenid, listing: listing},
+                                    {id: tokenid, listing, collection},
                                     buttonLoader,
                                     refresh,
-                                ),
+                                );
+                            },
                         ]);
                         buttons.push([
                             'Transfer',
                             () =>
                                 props.transferNft(
-                                    {id: tokenid, listing: listing},
+                                    {id: tokenid, listing},
                                     props.loader,
                                     transferRefresh,
                                 ),
@@ -397,7 +358,7 @@ export default function NFT(props) {
                             'Unwrap',
                             () =>
                                 props.unwrapNft(
-                                    {id: tokenid, listing: listing},
+                                    {id: tokenid, listing},
                                     props.loader,
                                     transferRefresh,
                                 ),
@@ -410,7 +371,7 @@ export default function NFT(props) {
                         'Open',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 props.loader,
                                 transferRefresh,
                             ),
@@ -426,7 +387,7 @@ export default function NFT(props) {
                         'Hatch',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 props.loader,
                                 refresh,
                             ),
@@ -437,7 +398,7 @@ export default function NFT(props) {
                         'Toniq Earn',
                         () =>
                             props.pawnNft(
-                                {id: tokenid, canister: canister, listing: listing},
+                                {id: tokenid, canister, listing},
                                 props.loader,
                                 transferRefreshEarn,
                             ),
@@ -452,7 +413,7 @@ export default function NFT(props) {
                         'Cash Out',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 buttonLoader,
                                 refresh,
                             ),
@@ -464,37 +425,6 @@ export default function NFT(props) {
     };
     const mintNumber = () => {
         return EntrepotNFTMintNumber(canister, index);
-    };
-    var collection = getCollection(canister);
-    const nftImg = () => {
-        return EntrepotNFTImage(
-            getEXTCanister(canister),
-            index,
-            tokenid,
-            false,
-            ref,
-            collection.priority,
-        );
-    };
-    const nftLink = () => {
-        return EntrepotNFTLink(getEXTCanister(canister), index, tokenid);
-    };
-
-    const nriLink = () => {
-        if (canister === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=' + index
-            );
-        if (canister === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=' + index
-            );
-        if (canister === 'q6hjz-kyaaa-aaaah-qcama-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=' +
-                index
-            );
-        return 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=' + tokenid;
     };
     const wrappedCanisters = [
         'jeghr-iaaaa-aaaah-qco7q-cai',
@@ -587,15 +517,7 @@ export default function NFT(props) {
                     style={{textDecoration: 'none', color: 'inherit'}}
                     to={`/marketplace/asset/` + getEXTID(tokenid)}
                 >
-                    <div style={{...styles.avatarSkeletonContainer}}>
-                        {EntrepotDisplayNFT(
-                            getEXTCanister(canister),
-                            tokenid,
-                            imgLoaded,
-                            nftImg(),
-                            () => setImgLoaded(true),
-                        )}
-                    </div>
+                    <div style={{...styles.avatarSkeletonContainer}}>{nftImage}</div>
                     {offerCount > 0 ? (
                         <Chip
                             style={{
