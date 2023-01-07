@@ -57,7 +57,7 @@ export default function PawnForm(props) {
             if (props.stats) {
                 const canisterStats = props.stats.filter(
                     statWrapper => statWrapper.canister === canister,
-                )[0];
+                )[0]?.stats;
                 const floor = Number(canisterStats?.floor);
                 if (!isNaN(floor)) {
                     setFloor(floor);
@@ -65,7 +65,7 @@ export default function PawnForm(props) {
             }
         }
     }, [
-        props.nft.id,
+        props.nft,
         props.stats,
     ]);
 
