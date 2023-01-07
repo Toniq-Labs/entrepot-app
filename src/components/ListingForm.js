@@ -9,6 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
+import {EntrepotNFTImage, EntrepotDisplayNFT, getEXTCanister} from '../utils';
 
 export default function ListingForm(props) {
     const [
@@ -40,11 +41,10 @@ export default function ListingForm(props) {
         props.nft,
     ]);
 
-    var collection;
-    if (props.nft.id) {
-        const {index, canister} = extjs.decodeTokenId(props.nft.id);
-        collection = props.collections.find(e => e.canister === canister);
-    }
+    const {index, canister} = props.nft.id
+        ? extjs.decodeTokenId(props.nft.id)
+        : {index: undefined, canister: undefined};
+    const collection = props.collections.find(e => e.canister === canister);
     const error = e => {
         props.error(e);
     };
@@ -68,6 +68,29 @@ export default function ListingForm(props) {
             return;
         props.list(props.nft.id, p, props.buttonLoader, props.refresher);
     };
+
+    const [
+        nftImageLoaded,
+        setNftImageLoaded,
+    ] = React.useState(false);
+
+    const nftImage = props?.nft?.collection?.id
+        ? EntrepotDisplayNFT(
+              getEXTCanister(props.nft.collection.id),
+              props.nft.id,
+              nftImageLoaded,
+              EntrepotNFTImage(
+                  getEXTCanister(props.nft.collection.id),
+                  index,
+                  props.nft.id,
+                  false,
+                  0,
+                  collection.priority,
+              ),
+              () => setNftImageLoaded(true),
+          )
+        : undefined;
+
     const handleClose = () => {
         setPrice(0);
         props.close();
@@ -109,17 +132,33 @@ export default function ListingForm(props) {
                         </strong>{' '}
                         for the Creators, and a <strong>1% Marketplace fee</strong>
                     </Alert>
-                    <TextField
-                        style={{width: '100%'}}
-                        margin="dense"
-                        label={'Listing price in ICP'}
-                        value={price}
-                        onChange={e => setPrice(e.target.value)}
-                        type="text"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    <div style={{display: 'flex', gap: '16px', marginTop: '16px'}}>
+                        {nftImage ? (
+                            <div
+                                style={{
+                                    position: 'relative',
+                                    flexShrink: 0,
+                                    width: '75px',
+                                    height: '75px',
+                                }}
+                            >
+                                {nftImage}
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        <TextField
+                            style={{width: '100%'}}
+                            margin="dense"
+                            label={'Listing price in ICP'}
+                            value={price}
+                            onChange={e => setPrice(e.target.value)}
+                            type="text"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </div>
                     {pricePercentBelowFloor > 10 ? (
                         <p style={{color: 'red'}}>
                             Warning: this price is <b>{pricePercentBelowFloor}% below</b> the
