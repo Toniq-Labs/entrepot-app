@@ -15,7 +15,7 @@ import {Profile} from './views/Profile/Profile';
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {StoicIdentity} from 'ic-stoic-identity';
 import {throttle} from './typescript/augments/function';
-import {useNavigate} from 'react-router';
+import {useNavigate, matchPath} from 'react-router';
 import AlertDialog from './components/AlertDialog';
 import Backdrop from '@material-ui/core/Backdrop';
 import BuyForm from './components/BuyForm';
@@ -817,6 +817,11 @@ export default function App() {
         if (!appLoaded) {
             setAppLoaded(true);
         }
+    };
+
+    const showFooter = () => {
+        const match = matchPath({path: '/marketplace/:route'}, pathname);
+        return match ? 'none' : 'flex';
     };
 
     React.useEffect(() => {
@@ -2139,7 +2144,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter style={{zIndex: 100}} />
+                    <EntrepotFooter style={{zIndex: 100, display: showFooter()}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />

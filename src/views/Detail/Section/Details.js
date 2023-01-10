@@ -212,11 +212,7 @@ export default function DetailSectionDetails(props) {
                         </Link>
                     </div>
                 </div>
-                <div
-                    id="detailsContent"
-                    className={classes.detailSectionContent}
-                    style={{minHeight: 550}}
-                >
+                <div id="detailsContent" className={classes.detailSectionContent}>
                     <div className={classes.listRowContainer}>
                         {collection.blurb && (
                             <div className={classes.blurbWrapper} style={{marginRight: 8}}>
@@ -468,7 +464,8 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid rgba(0,0,0, 0.08)',
         padding: '24px',
         width: '50%',
-        minHeight: 560,
+        minHeight: 500,
+        maxHeight: 510,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
             minHeight: 'unset',
@@ -608,10 +605,9 @@ const useStyles = makeStyles(theme => ({
     attributeWrapper: {
         display: 'grid',
         gap: 16,
-        margin: 8,
+        margin: '0 8px',
         gridTemplateColumns: '1fr 1fr 1fr',
         [theme.breakpoints.up('md')]: {
-            marginTop: '16px',
             marginBottom: '24px',
         },
         [theme.breakpoints.down('md')]: {

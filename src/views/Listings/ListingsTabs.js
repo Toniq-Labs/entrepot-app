@@ -1,22 +1,30 @@
 import {StyledTab, StyledTabs} from '../../components/shared/PageTab';
-import {useNavigate} from 'react-router-dom';
 import {GridDots24Icon, LayoutGrid24Icon} from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {makeStyles} from '@material-ui/core';
 
 export function ListingsTabs(props) {
-    const {collection, gridSize, setGridSize, storeUserPreferences, forceCheck} = props;
-    const navigate = useNavigate();
+    const {
+        gridSize,
+        setGridSize,
+        storeUserPreferences,
+        forceCheck,
+        currentTab,
+        setCurrentTab,
+        onTabChange,
+    } = props;
     const classes = useStyles();
 
     return (
         <>
             <StyledTabs
-                value={'nfts'}
+                value={currentTab}
                 indicatorColor="primary"
                 textColor="primary"
                 onChange={(e, tab) => {
-                    if (tab === 'activity') navigate(`/marketplace/${collection?.route}/activity`);
+                    if (tab !== currentTab) setCurrentTab(tab);
+                    onTabChange(tab);
+                    storeUserPreferences('currentTab', tab);
                 }}
             >
                 <StyledTab value="nfts" label="NFTs" />
