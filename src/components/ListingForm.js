@@ -21,12 +21,62 @@ export default function ListingForm(props) {
         pricePercentBelowFloor,
         setPricePercentBelowFloor,
     ] = React.useState(1);
+    const [
+        currentCollectionFloorPrice,
+        setCurrentCollectionFloorPrice,
+    ] = React.useState(undefined);
+    const [
+        decodedToken,
+        setDecodedToken,
+    ] = React.useState(undefined);
+    const [
+        collection,
+        setCollection,
+    ] = React.useState(undefined);
 
     React.useEffect(() => {
-        const currentCollectionFloorPrice = Number(
-            props.stats.find(collection => collection?.canister === props.nft?.collection?.id)
-                ?.stats?.floor,
+        if (props.nft?.id) {
+            setDecodedToken(extjs.decodeTokenId(props.nft.id));
+        } else {
+            setDecodedToken(undefined);
+        }
+    }, [props.nft]);
+
+    React.useEffect(() => {
+        setCollection(
+            decodedToken
+                ? props.collections.find(
+                      collection => collection.canister === decodedToken.canister,
+                  )
+                : undefined,
         );
+    }, [
+        props.collections,
+        decodedToken,
+    ]);
+
+    React.useEffect(() => {
+        const collection = decodedToken
+            ? props.collections.find(collection => collection.canister === decodedToken.canister)
+            : undefined;
+        if (props.stats && props.nft && collection) {
+            setCurrentCollectionFloorPrice(
+                Number(
+                    props.stats.find(collection => collection.canister === props.nft.collection?.id)
+                        ?.stats?.floor,
+                ),
+            );
+        } else {
+            setCurrentCollectionFloorPrice(undefined);
+        }
+    }, [
+        props.stats,
+        props.nft,
+        collection,
+        decodedToken,
+    ]);
+
+    React.useEffect(() => {
         if (!currentCollectionFloorPrice) {
             return;
         }
@@ -37,14 +87,9 @@ export default function ListingForm(props) {
         setPricePercentBelowFloor(Math.round(100 - Math.trunc(currentPercentOfFloorPrice * 100)));
     }, [
         price,
-        props.stats,
-        props.nft,
+        currentCollectionFloorPrice,
     ]);
 
-    const {index, canister} = props.nft.id
-        ? extjs.decodeTokenId(props.nft.id)
-        : {index: undefined, canister: undefined};
-    const collection = props.collections.find(e => e.canister === canister);
     const error = e => {
         props.error(e);
     };
@@ -81,11 +126,11 @@ export default function ListingForm(props) {
               nftImageLoaded,
               EntrepotNFTImage(
                   getEXTCanister(props.nft.collection.id),
-                  index,
+                  decodedToken?.index,
                   props.nft.id,
                   false,
                   0,
-                  collection.priority,
+                  collection?.priority,
               ),
               () => setNftImageLoaded(true),
           )
@@ -132,6 +177,13 @@ export default function ListingForm(props) {
                         </strong>{' '}
                         for the Creators, and a <strong>1% Marketplace fee</strong>
                     </Alert>
+                    {currentCollectionFloorPrice ? (
+                        <div style={{marginTop: '8px'}}>
+                            Current collection floor price: {currentCollectionFloorPrice}
+                        </div>
+                    ) : (
+                        ''
+                    )}
                     <div style={{display: 'flex', gap: '16px', marginTop: '16px'}}>
                         {nftImage ? (
                             <div
