@@ -47,7 +47,7 @@ function makeTopCards() {
     });
 }
 
-const homepageInputs: typeof EntrepotHomePageElement['inputsType'] = {
+const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
     carouselItems: doubleImages.map(url => {
         return {
             imageUrl: url,

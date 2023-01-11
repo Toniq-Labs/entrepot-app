@@ -318,7 +318,7 @@ const throttledUpdateScrollPosition = throttle(
     250,
     (
         element: HTMLElement,
-        updateState: (newState: Partial<typeof EntrepotCarouselElement['stateType']>) => void,
+        updateState: (newState: Partial<(typeof EntrepotCarouselElement)['stateType']>) => void,
     ) => {
         updateState({
             scrollPosition: {
