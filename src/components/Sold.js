@@ -10,7 +10,6 @@ import {useNavigate, Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
 import {
     EntrepotNFTImage,
-    EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
     EntrepotGetIcpUsd,
@@ -62,27 +61,8 @@ export default function Sold(props) {
     const nftImg = () => {
         return EntrepotNFTImage(props.collection, index, tokenid);
     };
-    const nftLink = () => {
-        return EntrepotNFTLink(props.collection, index, tokenid);
-    };
     const shorten = a => {
         return a.substring(0, 12) + '...';
-    };
-    const nriLink = () => {
-        if (props.collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=' + index
-            );
-        if (props.collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=' + index
-            );
-        if (props.collection === 'q6hjz-kyaaa-aaaah-qcama-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=' +
-                index
-            );
-        return 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=' + tokenid;
     };
     const showNri = () => {
         if (typeof props.nri == 'undefined') return '';

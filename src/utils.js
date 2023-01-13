@@ -276,12 +276,6 @@ const clipboardCopy = text => {
             //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
         }
     },
-    EntrepotNFTLink = (collection, index, id) => {
-        return (
-            getCanisterDetails(collection)?.getNftLinkUrl(index) ??
-            'https://' + collection + '.raw.ic0.app/?tokenid=' + id
-        );
-    },
     EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
         var avatarImgStyle = {
             position: 'absolute',
@@ -486,7 +480,6 @@ export {
     displayDate,
     EntrepotUpdateStats,
     EntrepotNFTImage,
-    EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
     EntrepotAllStats,

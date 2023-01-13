@@ -11,7 +11,7 @@ import {
 import React, {useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
 import {NftCard} from '../../../shared/NftCard';
-import {EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
+import {EntrepotNFTImage} from '../../../utils';
 import {
     ToniqButton,
     ToniqIcon,
@@ -21,6 +21,7 @@ import {DropShadowCard} from '../../../shared/DropShadowCard';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {getCanisterDetails} from '../../../typescript/data/canisters/canister-details/all-canister-details';
 
 function ListRow({items, classes, style}) {
     return (
@@ -167,7 +168,9 @@ export default function DetailSectionDetails(props) {
                     <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
                         <ToniqIcon icon={Chain24Icon} />
                         <Link
-                            href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                            href={getCanisterDetails(collection.canister).getNftLinkUrl({
+                                nftIndex: index,
+                            })}
                             target="_blank"
                             rel="noreferrer"
                             underline="none"
@@ -202,7 +205,9 @@ export default function DetailSectionDetails(props) {
                     <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
                         <ToniqIcon icon={Paper24Icon} />
                         <Link
-                            href={EntrepotNFTLink(collection.canister, index, tokenid)}
+                            href={getCanisterDetails(collection.canister).getNftLinkUrl({
+                                nftIndex: index,
+                            })}
                             target="_blank"
                             rel="noreferrer"
                             underline="none"

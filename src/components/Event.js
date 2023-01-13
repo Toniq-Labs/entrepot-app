@@ -3,14 +3,12 @@ import Timestamp from 'react-timestamp';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import MuiTooltip from '@material-ui/core/Tooltip';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
 import {
     EntrepotNFTImage,
-    EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
     EntrepotGetIcpUsd,

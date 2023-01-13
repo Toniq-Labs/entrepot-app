@@ -4,14 +4,10 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-import Skeleton from '@material-ui/lab/Skeleton';
 import extjs from '../ic/extjs.js';
-import {
-    EntrepotNFTImage,
-    EntrepotNFTLink,
-    EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
-} from '../utils.js';
+import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
+import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
+
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
     return n.toFixed(8).replace(/0{1,6}$/, '');
@@ -49,15 +45,31 @@ export default function SoldListing(props) {
             objectFit: 'contain',
         },
     };
-    const mintNumber = () => {
-        return EntrepotNFTMintNumber(props.collection, index);
-    };
-    const nftImg = () => {
-        return EntrepotNFTImage(props.collection, index, tokenid);
-    };
-    const nftLink = () => {
-        return EntrepotNFTLink(props.collection, index, tokenid);
-    };
+    const [
+        mintNumber,
+        setMintNumber,
+    ] = useState(0);
+    const [
+        nftImageTemplate,
+        setNftImageTemplate,
+    ] = useState('');
+    const [
+        nftLinkUrl,
+        setNftLinkUrl,
+    ] = useState('');
+
+    useEffect(() => {
+        setMintNumber(EntrepotNFTMintNumber(props.collection, index));
+        setNftImageTemplate(EntrepotNFTImage(props.collection, index, tokenid));
+        setNftLinkUrl(
+            getCanisterDetails(props.collection).getNftLinkUrl({nftIndex: index, nftId: id}),
+        );
+    }, [
+        props.collection,
+        index,
+        tokenid,
+    ]);
+
     return (
         <Grid style={{height: '100%'}} item xl={2} lg={3} md={4} sm={6} xs={6}>
             <Card>
@@ -81,7 +93,7 @@ export default function SoldListing(props) {
                                         rel="noreferrer"
                                         target="_blank"
                                     >
-                                        {'#' + mintNumber()}
+                                        {'#' + mintNumber}
                                     </a>
                                 </Tooltip>
                             </Typography>
@@ -176,7 +188,7 @@ export default function SoldListing(props) {
                                             style={{color: 'black', textDecoration: 'none'}}
                                             href={
                                                 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=' +
-                                                mintNumber()
+                                                mintNumber
                                             }
                                             rel="noreferrer"
                                             target="_blank"
@@ -202,7 +214,7 @@ export default function SoldListing(props) {
                                             style={{color: 'black', textDecoration: 'none'}}
                                             href={
                                                 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=' +
-                                                mintNumber()
+                                                mintNumber
                                             }
                                             rel="noreferrer"
                                             target="_blank"
@@ -296,13 +308,13 @@ export default function SoldListing(props) {
                         )}
                     </Grid>
 
-                    <a href={nftLink()} target="_blank" rel="noreferrer">
+                    <a href={nftLinkUrl} target="_blank" rel="noreferrer">
                         <div style={{...styles.avatarSkeletonContainer}}>
                             {EntrepotDisplayNFT(
                                 props.collection,
                                 tokenid,
                                 imgLoaded,
-                                nftImg(),
+                                nftImageTemplate,
                                 () => setImgLoaded(true),
                             )}
                         </div>

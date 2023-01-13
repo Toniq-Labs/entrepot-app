@@ -21,7 +21,6 @@ import {makeStyles} from '@material-ui/core';
 import {
     EntrepotEarnDetails,
     EntrepotNFTImage,
-    EntrepotNFTLink,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
 } from '../utils';
@@ -408,26 +407,6 @@ export default function NFT(props) {
             ref,
             collection.priority,
         );
-    };
-    const nftLink = () => {
-        return EntrepotNFTLink(getExtCanisterId(canister), index, tokenid);
-    };
-
-    const nriLink = () => {
-        if (canister === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=' + index
-            );
-        if (canister === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=' + index
-            );
-        if (canister === 'q6hjz-kyaaa-aaaah-qcama-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=' +
-                index
-            );
-        return 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=' + tokenid;
     };
     const showWrapped = () => {
         if (isNotEXT)

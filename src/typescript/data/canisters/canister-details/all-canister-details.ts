@@ -86,6 +86,6 @@ const mappedCanisterDetails: Readonly<Record<string, CanisterDetails>> = Object.
         .flat(),
 );
 
-export function getCanisterDetails(canisterId: string): CanisterDetails | undefined {
+export function getCanisterDetails(canisterId: string): CanisterDetails {
     return mappedCanisterDetails[canisterId] ?? createDefaultCanisterDetails(canisterId);
 }
