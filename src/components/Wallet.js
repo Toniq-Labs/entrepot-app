@@ -18,7 +18,6 @@ import CollectionsIcon from '@material-ui/icons/Collections';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import extjs from '../ic/extjs.js';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import GavelIcon from '@material-ui/icons/Gavel';
@@ -38,6 +37,7 @@ import PriceICP from '../components/PriceICP';
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -58,7 +58,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://ic0.app/');
+
 const drawerWidth = 300;
 
 const useStyles = makeStyles(theme => ({
@@ -147,10 +147,10 @@ export default function Wallet(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const refreshBalance = async showLoader => {
+    const refreshBalance = async () => {
         if (props.account) {
             try {
-                setBalance(await api.token().getBalance(props.account.address));
+                setBalance(await entrepotDataApi.token().getBalance(props.account.address));
             } catch (e) {
                 if (
                     e ==

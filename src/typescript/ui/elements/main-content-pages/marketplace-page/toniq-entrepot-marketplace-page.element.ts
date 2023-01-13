@@ -62,6 +62,7 @@ export const EntrepotMarketplacePageElement = defineElement<{
                                 collection.name,
                                 collection.keywords,
                                 collection.route,
+                                collection.id,
                             ].join(' ');
                             return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
                         },

@@ -1,5 +1,5 @@
 import extjs from './ic/extjs.js';
-const api = extjs.connect('https://ic0.app/');
+
 var loadedVolts = {};
 //Will attempt to load volt for principal, returns either false if none, or the principal
 export async function loadVolt(identity) {

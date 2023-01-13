@@ -33,6 +33,7 @@ const initFilters = {
 };
 
 export function Profile(props) {
+    console.log('collections', props.collections);
     const classes = profileStyles();
     const navigate = useNavigate();
     const nriDataRef = React.useRef(undefined);

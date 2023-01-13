@@ -4,8 +4,9 @@ import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
 import {TREASURE_CANISTER} from './utilities/treasure-canister';
+import {getCanisterDetails} from './typescript/data/canisters/canister-details/all-canister-details';
+import {entrepotDataApi} from './typescript/api/entrepot-data-api';
 
-const api = extjs.connect('https://ic0.app/');
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
@@ -58,7 +59,7 @@ const _getStats = async () => {
         } else {
             pxs.push(
                 (c =>
-                    api
+                    entrepotDataApi
                         .token(c)
                         .stats()
                         .then(r => {
@@ -71,37 +72,6 @@ const _getStats = async () => {
     const validResults = results.filter(result => !(result instanceof Error));
     _stats = validResults.concat(_ts);
     return _stats;
-    // (c => {
-    // api.token(c).stats().then(r => {
-    // res = {
-    // canister : c,
-    // stats : r
-    // };
-    // _stats.push(res);
-    // }).catch(e => {
-    // res = {
-    // canister : c,
-    // stats : false
-    // };
-    // _stats.push(res);
-    // });
-    // })(collections[i].canister);
-};
-const icpBunnyImage = i => {
-    const icbStorage = [
-        'efqhu-yqaaa-aaaaf-qaeda-cai',
-        'ecrba-viaaa-aaaaf-qaedq-cai',
-        'fp7fo-2aaaa-aaaaf-qaeea-cai',
-        'fi6d2-xyaaa-aaaaf-qaeeq-cai',
-        'fb5ig-bqaaa-aaaaf-qaefa-cai',
-        'fg4os-miaaa-aaaaf-qaefq-cai',
-        'ft377-naaaa-aaaaf-qaega-cai',
-        'fu2zl-ayaaa-aaaaf-qaegq-cai',
-        'f5zsx-wqaaa-aaaaf-qaeha-cai',
-        'f2yud-3iaaa-aaaaf-qaehq-cai',
-    ];
-
-    return 'https://' + icbStorage[i % 10] + '.raw.ic0.app/Token/' + i;
 };
 const clipboardCopy = text => {
         if (!navigator.clipboard) {
@@ -147,7 +117,8 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetailsData = id => {
         if (!earnData.hasOwnProperty(id)) {
-            api.canister(TREASURE_CANISTER)
+            entrepotDataApi
+                .canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -160,7 +131,8 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetails = (id, nft_price) => {
         if (!earnData.hasOwnProperty(id)) {
-            api.canister(TREASURE_CANISTER)
+            entrepotDataApi
+                .canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -199,7 +171,7 @@ const clipboardCopy = text => {
         }
         return '';
     },
-    EntrepotNFTImage = (collection, index, id, fullSize, ref, cachePriority) => {
+    EntrepotNFTImage = async (collection, tokenIndex, id, fullSize, ref, cachePriority) => {
         if (typeof ref == 'undefined') ref = '';
         else ref = '?' + ref;
 
@@ -210,22 +182,19 @@ const clipboardCopy = text => {
 
             return (
                 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' +
-                extjs.encodeTokenId('dexpm-6aaaa-aaaal-qbgrq-cai', index) +
+                extjs.encodeTokenId('dexpm-6aaaa-aaaal-qbgrq-cai', tokenIndex) +
                 ref +
                 '&cache=' +
                 cachePriority
             );
         }
 
-        if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
-            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
-        if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/' + index;
-        if (collection === 'y3b7h-siaaa-aaaah-qcnwa-cai')
-            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
-        if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
-        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpBunnyImage(index);
+        const collectionCanisterDetails = getCanisterDetails(collection);
+
+        if (collectionCanisterDetails) {
+            return await collectionCanisterDetails.getNftImageHtml({nftIndex: tokenIndex});
+        }
+
         if (collection === 'pk6rk-6aaaa-aaaae-qaazq-cai') {
             if (fullSize) {
                 return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
@@ -308,16 +277,10 @@ const clipboardCopy = text => {
         }
     },
     EntrepotNFTLink = (collection, index, id) => {
-        if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
-            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
-        if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/' + index;
-        if (collection === 'y3b7h-siaaa-aaaah-qcnwa-cai')
-            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
-        if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
-        if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpBunnyImage(index);
-        return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
+        return (
+            getCanisterDetails(collection)?.getNftLinkUrl(index) ??
+            'https://' + collection + '.raw.ic0.app/?tokenid=' + id
+        );
     },
     EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
         var avatarImgStyle = {
@@ -353,7 +316,8 @@ const clipboardCopy = text => {
         if (collection === TREASURE_CANISTER) {
             var nftImage = false;
             if (!earnData.hasOwnProperty(tokenid)) {
-                api.canister(TREASURE_CANISTER)
+                entrepotDataApi
+                    .canister(TREASURE_CANISTER)
                     .tp_loanDetails(tokenid)
                     .then(r => {
                         if (!earnData.hasOwnProperty(tokenid)) earnData[tokenid] = r[0];
@@ -456,7 +420,9 @@ const clipboardCopy = text => {
     EntrepotUpdateUSD = async () => {
         if (!lastUpdate || Date.now() - lastUpdate > 10 * 60 * 1000) {
             lastUpdate = Date.now();
-            var b = await api.canister('rkp4c-7iaaa-aaaaa-aaaca-cai').get_icp_xdr_conversion_rate();
+            var b = await entrepotDataApi
+                .canister('rkp4c-7iaaa-aaaaa-aaaca-cai')
+                .get_icp_xdr_conversion_rate();
             var b2 = await fetch(
                 'https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7',
             ).then(r => r.json());
@@ -507,7 +473,9 @@ const clipboardCopy = text => {
     },
     EntrepotGetLikes = async (tokenid, skipCache) => {
         if (!tokenLikes.hasOwnProperty(tokenid) || !skipCache) {
-            var likes = await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').likes(tokenid);
+            var likes = await entrepotDataApi
+                .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                .likes(tokenid);
             tokenLikes[tokenid] = Number(likes);
         }
         return tokenLikes[tokenid] < 0 ? 0 : tokenLikes[tokenid];

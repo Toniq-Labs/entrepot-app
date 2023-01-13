@@ -1,6 +1,6 @@
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
-import {getEXTCanister, getExtId} from '../utilities/load-tokens';
+import {getExtId} from '../utilities/load-tokens';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -13,7 +13,6 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Timestamp from 'react-timestamp';
 import extjs from '../ic/extjs.js';
-import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
@@ -27,8 +26,13 @@ import {
     EntrepotDisplayNFT,
 } from '../utils';
 import {TREASURE_CANISTER} from '../utilities/treasure-canister';
+import {
+    CanisterWrappedType,
+    isWrappedType,
+    getExtCanisterId,
+} from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
-const api = extjs.connect('https://ic0.app/');
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -63,13 +67,6 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-var toWrappedMap = {
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-};
 export default function NFT(props) {
     const classes = useStyles();
     const tokenid = props.tokenid;
@@ -85,7 +82,7 @@ export default function NFT(props) {
     ] = React.useState(0);
     const [
         isNotEXT,
-    ] = React.useState(toWrappedMap.hasOwnProperty(canister));
+    ] = React.useState(isWrappedType(canister, CanisterWrappedType.UnwrappedOriginal));
     const [
         listing,
         setListing,
@@ -132,7 +129,8 @@ export default function NFT(props) {
     };
     const getListing = () => {
         if (isNotEXT) return setListing(false);
-        api.token(canister)
+        entrepotDataApi
+            .token(canister)
             .listings()
             .then(r => {
                 var f = r.find(a => a[0] == index);
@@ -141,18 +139,20 @@ export default function NFT(props) {
             });
     };
     const getMetadata = async () => {
-        var md = await api.token(tokenid).getMetadata();
+        var md = await entrepotDataApi.token(tokenid).getMetadata();
         if (typeof md != 'undefined' && md.type == 'nonfungible') {
             setMetadata(md.metadata[0]);
         }
     };
     const getAuction = async () => {
-        var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getExtId(tokenid));
+        var resp = await entrepotDataApi
+            .canister('ffxbt-cqaaa-aaaak-qazbq-cai')
+            .auction(getExtId(tokenid));
         if (resp.length) setAuction(resp[0]);
         else setAuction(false);
     };
     const getOffer = async () => {
-        await api
+        await entrepotDataApi
             .canister('fcwhh-piaaa-aaaak-qazba-cai')
             .offers(getExtId(tokenid))
             .then(r => {
@@ -262,7 +262,7 @@ export default function NFT(props) {
             }
         } else {
             if (listing) {
-                //Contains a listing, must be EXT
+                // Contains a listing, must be EXT
                 buttons.push([
                     currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Update',
                     () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
@@ -277,7 +277,51 @@ export default function NFT(props) {
                         ),
                 ]);
             } else {
-                if (wrappedCanisters.concat(unwrappedCanisters).indexOf(canister) < 0) {
+                if (isNotEXT) {
+                    // Non EXT
+                    buttons.push([
+                        currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
+                        () =>
+                            props.wrapAndListNft(
+                                {id: tokenid, listing: listing},
+                                props.loader,
+                                props.refresh,
+                            ),
+                    ]);
+                    buttons.push([
+                        currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
+                        () =>
+                            props.transferNft(
+                                {id: tokenid, listing: listing},
+                                props.loader,
+                                transferRefresh,
+                            ),
+                    ]);
+                } else if (isWrappedType(canister, CanisterWrappedType.WrappedExt)) {
+                    // EXT Wrapper
+                    buttons.push([
+                        currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
+                        () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
+                    ]);
+                    buttons.push([
+                        'Transfer',
+                        () =>
+                            props.transferNft(
+                                {id: tokenid, listing: listing},
+                                props.loader,
+                                transferRefresh,
+                            ),
+                    ]);
+                    buttons.push([
+                        'Unwrap',
+                        () =>
+                            props.unwrapNft(
+                                {id: tokenid, listing: listing},
+                                props.loader,
+                                transferRefresh,
+                            ),
+                    ]);
+                } else {
                     //EXT only no wrapper
                     buttons.push([
                         currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
@@ -292,57 +336,6 @@ export default function NFT(props) {
                                 transferRefresh,
                             ),
                     ]);
-                } else {
-                    if (unwrappedCanisters.indexOf(canister) >= 0) {
-                        //Non EXT
-                        buttons.push([
-                            currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                            () =>
-                                props.wrapAndListNft(
-                                    {id: tokenid, listing: listing},
-                                    props.loader,
-                                    props.refresh,
-                                ),
-                        ]);
-                        buttons.push([
-                            currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
-                            () =>
-                                props.transferNft(
-                                    {id: tokenid, listing: listing},
-                                    props.loader,
-                                    transferRefresh,
-                                ),
-                        ]);
-                    } else {
-                        //EXT Wrapper
-                        buttons.push([
-                            currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                            () =>
-                                props.listNft(
-                                    {id: tokenid, listing: listing},
-                                    buttonLoader,
-                                    refresh,
-                                ),
-                        ]);
-                        buttons.push([
-                            'Transfer',
-                            () =>
-                                props.transferNft(
-                                    {id: tokenid, listing: listing},
-                                    props.loader,
-                                    transferRefresh,
-                                ),
-                        ]);
-                        buttons.push([
-                            'Unwrap',
-                            () =>
-                                props.unwrapNft(
-                                    {id: tokenid, listing: listing},
-                                    props.loader,
-                                    transferRefresh,
-                                ),
-                        ]);
-                    }
                 }
                 //Custom
                 if (canister == 'poyn6-dyaaa-aaaah-qcfzq-cai' && index >= 25000 && index < 30000) {
@@ -408,7 +401,7 @@ export default function NFT(props) {
     var collection = getCollection(canister);
     const nftImg = () => {
         return EntrepotNFTImage(
-            getEXTCanister(canister),
+            getExtCanisterId(canister),
             index,
             tokenid,
             false,
@@ -417,7 +410,7 @@ export default function NFT(props) {
         );
     };
     const nftLink = () => {
-        return EntrepotNFTLink(getEXTCanister(canister), index, tokenid);
+        return EntrepotNFTLink(getExtCanisterId(canister), index, tokenid);
     };
 
     const nriLink = () => {
@@ -436,20 +429,6 @@ export default function NFT(props) {
             );
         return 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=' + tokenid;
     };
-    const wrappedCanisters = [
-        'jeghr-iaaaa-aaaah-qco7q-cai',
-        'y3b7h-siaaa-aaaah-qcnwa-cai',
-        'q6hjz-kyaaa-aaaah-qcama-cai',
-        '3db6u-aiaaa-aaaah-qbjbq-cai',
-        'bxdf4-baaaa-aaaah-qaruq-cai',
-    ];
-    const unwrappedCanisters = [
-        'fl5nr-xiaaa-aaaai-qbjmq-cai',
-        '4nvhy-3qaaa-aaaah-qcnoq-cai',
-        'xkbqi-2qaaa-aaaah-qbpqq-cai',
-        'qcg3w-tyaaa-aaaah-qakea-cai',
-        'd3ttm-qaaaa-aaaai-qam4a-cai',
-    ];
     const showWrapped = () => {
         if (isNotEXT)
             return (
@@ -529,7 +508,7 @@ export default function NFT(props) {
                 >
                     <div style={{...styles.avatarSkeletonContainer}}>
                         {EntrepotDisplayNFT(
-                            getEXTCanister(canister),
+                            getExtCanisterId(canister),
                             tokenid,
                             imgLoaded,
                             nftImg(),

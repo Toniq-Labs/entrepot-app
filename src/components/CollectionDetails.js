@@ -18,8 +18,7 @@ import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
 import extjs from '../ic/extjs.js';
 import {CopyButton} from './shared/CopyButton';
-
-const api = extjs.connect('https://ic0.app/');
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -259,7 +258,8 @@ export default function CollectionDetails(props) {
     React.useEffect(() => {
         if (EntrepotAllStats().length) setStats(EntrepotCollectionStats(collection.canister));
 
-        api.token(collection.canister)
+        entrepotDataApi
+            .token(collection.canister)
             .size()
             .then(s => {
                 setSize(s);

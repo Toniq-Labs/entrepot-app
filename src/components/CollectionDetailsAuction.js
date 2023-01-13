@@ -1,21 +1,10 @@
 import React, {useState} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import PriceICP from './PriceICP';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import Tooltip from '@material-ui/core/Tooltip';
-import extjs from '../ic/extjs.js';
 import {makeStyles} from '@material-ui/core';
-import {Kyc32Icon} from '@toniq-labs/design-system';
-import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-const api = extjs.connect('https://ic0.app/');
-const numberWithCommas = x => {
-    var parts = x.toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
-};
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
 const useStyles = makeStyles(theme => ({
     banner: {
@@ -63,7 +52,6 @@ export default function CollectionDetails(props) {
         setSize,
     ] = useState(false);
 
-    var stats = props.stats;
     var collection = props.collection;
     React.useEffect(() => {
         if (blurbElement.clientHeight > 110) {
@@ -72,7 +60,8 @@ export default function CollectionDetails(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blurbElement]);
     React.useEffect(() => {
-        api.token(collection.canister)
+        entrepotDataApi
+            .token(collection.canister)
             .size()
             .then(s => {
                 setSize(s);

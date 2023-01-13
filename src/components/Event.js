@@ -61,57 +61,9 @@ export default function Event(props) {
     const nftImg = () => {
         return EntrepotNFTImage(props.collection, index, tokenid);
     };
-    const nftLink = () => {
-        return EntrepotNFTLink(props.collection, index, tokenid);
-    };
     const shorten = a => {
         return a.substring(0, 12) + '...';
     };
-    const nriLink = () => {
-        if (props.collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=punks&tokenid=' + index
-            );
-        if (props.collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=drips&tokenid=' + index
-            );
-        if (props.collection === 'q6hjz-kyaaa-aaaah-qcama-cai')
-            return (
-                'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?collection=bunnies&tokenid=' +
-                index
-            );
-        return 'https://nntkg-vqaaa-aaaad-qamfa-cai.ic.fleek.co/?tokenid=' + tokenid;
-    };
-    const showNri = () => {
-        if (typeof props.nri == 'undefined') return '';
-        if (props.nri === false) return '';
-        var collection = getCollection(props.collection);
-        if (collection.nftv) {
-            return (
-                <MuiTooltip
-                    title={
-                        'NFT Rarity Index is a 3rd party metric by NFT Village. For this collection, it displays the color and trait rarity of a specific ' +
-                        collection.unit +
-                        ' relative to others. It does not include Mint #, Twin Status or Animation within the index.'
-                    }
-                >
-                    <span>NRI: {(props.nri * 100).toFixed(1)}%</span>
-                </MuiTooltip>
-            );
-        } else return '';
-    };
-    const handleClick = () => {
-        navigate(`/marketplace/asset/${tokenid}`);
-    };
-    var t = [
-        'Common',
-        'Uncommon',
-        'Rare',
-        'Epic',
-        'Legendary',
-        'Mythic',
-    ];
     return (
         <TableRow>
             <TableCell>

@@ -8,7 +8,7 @@ import Timestamp from 'react-timestamp';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
-const api = extjs.connect('https://ic0.app/');
+
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
     // Remember the latest callback.

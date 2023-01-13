@@ -1,29 +1,17 @@
 import axios from 'axios';
 import extjs from '../ic/extjs.js';
-
-const api = extjs.connect('https://ic0.app/');
-
-const toWrappedMap = {
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-};
-
-export function getEXTCanister(canisterId) {
-    return toWrappedMap[canisterId] ?? canisterId;
-}
+import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
 export function getExtId(tokenid) {
     const {index, canister} = extjs.decodeTokenId(tokenid);
-    return extjs.encodeTokenId(getEXTCanister(canister), index);
+    return extjs.encodeTokenId(getExtCanisterId(canister), index);
 }
 
 export function nftIdToNft(address, nftId) {
     const canister = extjs.decodeTokenId(nftId).canister;
     return {
-        canister: getEXTCanister(canister),
+        canister: getExtCanisterId(canister),
         id: nftId,
         token: nftId,
         price: 0,
@@ -48,22 +36,22 @@ export async function loadAllUserTokens(address, principal) {
                     'xkbqi-2qaaa-aaaah-qbpqq-cai',
                     //"fl5nr-xiaaa-aaaai-qbjmq-cai",
                 ]
-                    .map(a => {
+                    .map(wrappedCanisterId => {
                         try {
-                            return api
-                                .token(a)
+                            return entrepotDataApi
+                                .token(wrappedCanisterId)
                                 .getTokens(address, principal)
-                                .then(r =>
-                                    r.map(b => ({
-                                        canister: getEXTCanister(a),
-                                        id: b.id,
-                                        token: b.id,
+                                .then(tokenList =>
+                                    tokenList.map(token => ({
+                                        canister: getExtCanisterId(wrappedCanisterId),
+                                        id: token.id,
+                                        token: token.id,
                                         price: 0,
                                         time: 0,
                                         owner: address,
                                     })),
                                 );
-                        } catch (e) {
+                        } catch (error) {
                             return false;
                         }
                     })

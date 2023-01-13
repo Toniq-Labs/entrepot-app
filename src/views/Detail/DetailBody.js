@@ -13,6 +13,7 @@ import DetailSectionHeader from './Section/Header';
 import DetailSectionDetails from './Section/Details';
 import DetailSectionActivity from './Section/Activity';
 import {TREASURE_CANISTER} from '../../utilities/treasure-canister';
+import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -33,7 +34,6 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://ic0.app/');
 
 const DetailBody = props => {
     const {
@@ -285,7 +285,7 @@ const DetailBody = props => {
             );
             setAttributes(traits);
         } else if (!traitsData && collection?.route === 'cronics') {
-            var result = await api.token(canister).listings();
+            var result = await entrepotDataApi.token(canister).listings();
 
             if (result.length) {
                 var genes = getGenes(result[index][2].nonfungible.metadata[0]).battle;

@@ -424,21 +424,6 @@ class ExtConnection {
                                                     };
                                                 });
                                                 resolve(ret);
-                                                // var wrappedMap = {
-                                                // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
-                                                // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
-                                                // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
-                                                // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
-                                                // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
-                                                // };
-                                                // if (wrappedMap.hasOwnProperty(tokenObj.canister)){
-                                                // this.token(wrappedMap(tokenObj.canister)).getTokens(aid, principal).then(r => {
-                                                // var ts = ret.map(a => {a.wrapped = true; return a});
-                                                // resolve(ts.concat(r));
-                                                // });
-                                                // } else {
-                                                // resolve(ret);
-                                                // };
                                             } else if (typeof r.err != 'undefined') {
                                                 if (
                                                     r.err.hasOwnProperty('Other') &&

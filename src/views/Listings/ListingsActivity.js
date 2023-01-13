@@ -20,12 +20,12 @@ import {
     toniqFontStyles,
 } from '@toniq-labs/design-system';
 import {NftCard} from '../../shared/NftCard.js';
-import {getEXTCanister} from '../../utilities/load-tokens.js';
 import Timestamp from 'react-timestamp';
 import chunk from 'lodash.chunk';
 import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
+import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -303,7 +303,7 @@ export default function ListingsActivity(props) {
                 return {
                     ...listing,
                     image: EntrepotNFTImage(
-                        getEXTCanister(canister),
+                        getExtCanisterId(canister),
                         index,
                         listing.token,
                         false,

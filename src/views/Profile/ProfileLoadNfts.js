@@ -1,13 +1,12 @@
 /* global BigInt */
-import getNri from '../../ic/nftv.js';
 import extjs from '../../ic/extjs.js';
-import {loadAllUserTokens, getEXTCanister, getExtId, nftIdToNft} from '../../utilities/load-tokens';
+import {loadAllUserTokens, getExtId, nftIdToNft} from '../../utilities/load-tokens';
 import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from '@augment-vir/common';
-
-const api = extjs.connect('https://ic0.app/');
+import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
+import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {
@@ -179,7 +178,9 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
 
     const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
     const offers = loadListing
-        ? await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(getExtId(rawNft.token))
+        ? await entrepotDataApi
+              .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+              .offers(getExtId(rawNft.token))
         : [];
     const rawListing = loadListing
         ? await (
@@ -208,7 +209,7 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
         index,
         rawListing,
         selfOffers,
-        image: EntrepotNFTImage(getEXTCanister(rawNft.canister), index, rawNft.token, false, 0),
+        image: EntrepotNFTImage(getExtCanisterId(rawNft.canister), index, rawNft.token, false, 0),
         mintNumber,
         collection,
         offers,

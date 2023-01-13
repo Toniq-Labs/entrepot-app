@@ -19,7 +19,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
-const api = extjs.connect('https://ic0.app/');
+
 const perPage = 60;
 const drawerWidth = 0; //300;
 

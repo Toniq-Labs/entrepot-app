@@ -43,7 +43,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://ic0.app/');
+
 const drawerWidth = 300;
 
 const useStyles = makeStyles(theme => ({

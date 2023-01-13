@@ -29,10 +29,10 @@ import {
     Infinity24Icon,
     Search24Icon,
 } from '@toniq-labs/design-system';
-import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {subscribe, unsubscribe} from '../events/events';
 import {loadVoltBalance} from '../volt';
+import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -53,8 +53,6 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-
-const api = extjs.connect('https://ic0.app/');
 
 export default function Navbar(props) {
     const navigate = useNavigate();
@@ -101,7 +99,7 @@ export default function Navbar(props) {
 
     const refresh = async () => {
         if (props.account) {
-            var b = await api.token().getBalance(props.account.address);
+            var b = await entrepotDataApi.token().getBalance(props.account.address);
             setBalance(b);
             if (props.currentAccount === 0) setVoltBalances(await loadVoltBalance(props.identity));
         } else {

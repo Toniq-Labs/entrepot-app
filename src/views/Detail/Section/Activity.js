@@ -12,9 +12,8 @@ import {NftCard} from '../../../shared/NftCard';
 import moment from 'moment';
 import {EntrepotGetIcpUsd, EntrepotNFTImage} from '../../../utils';
 import PriceUSD from '../../../components/PriceUSD';
-import {getEXTCanister} from '../../../utilities/load-tokens';
 import orderBy from 'lodash.orderby';
-
+import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 function ListRow({items, classes, style}) {
     return (
         <div
@@ -183,7 +182,7 @@ export default function DetailSectionActivity(props) {
                                 <NftCard
                                     listStyle={true}
                                     imageUrl={EntrepotNFTImage(
-                                        getEXTCanister(transaction.canister),
+                                        getExtCanisterId(transaction.canister),
                                         index,
                                         transaction.token,
                                         false,

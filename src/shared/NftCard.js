@@ -1,14 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import {toniqColors, cssToReactStyleObject} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
 
 export function NftCard(props) {
-    const imageSize = props.small ? css`160px` : css`272px`;
-    const listImageSize = props.listImageSize ? unsafeCSS(props.listImageSize) : css`64px`;
-    const imageSizeInUse = props.listStyle ? listImageSize : imageSize;
-
     const styles = cssToReactStyleObject(css`
         border-radius: 16px;
         background-color: ${toniqColors.pagePrimary.backgroundColor};
@@ -19,22 +15,12 @@ export function NftCard(props) {
         align-items: center;
     `);
 
-    const imageStyles = cssToReactStyleObject(css`
-        background-image: url('${unsafeCSS(props.imageUrl)}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        height: 100%;
-        width: 100%;
-    `);
-
     const imageWrapperStyles = cssToReactStyleObject(css`
         overflow: hidden;
         border-radius: 8px;
         position: relative;
         flex-shrink: 0;
-        height: ${imageSizeInUse};
-        width: ${imageSizeInUse};
+        max-height: 100%;
         max-width: 100%;
         background-color: #f1f1f1;
     `);
@@ -47,6 +33,15 @@ export function NftCard(props) {
         flex-direction: column;
     `);
 
+    const [
+        imageTemplate,
+        setImageTemplate,
+    ] = useState('');
+
+    useEffect(async () => {
+        setImageTemplate(await props.imageTemplateString);
+    }, [props.imageTemplateString]);
+
     return (
         <DropShadowCard
             onClick={props.onClick}
@@ -54,9 +49,27 @@ export function NftCard(props) {
             enableHover={true}
             style={{...styles, ...props.style}}
         >
-            <div style={imageWrapperStyles}>
-                <div style={imageStyles} />
-            </div>
+            <style
+                dangerouslySetInnerHTML={{
+                    __html: `
+                        .nft-card-image-wrapper > * {
+                            display: block;
+                            object-fit: cover;
+                            width: 100%;
+                            max-height: 100%;
+                            max-width: 100%;
+                        }`,
+                }}
+            ></style>
+            {
+                <div
+                    className="nft-card-image-wrapper"
+                    dangerouslySetInnerHTML={{
+                        __html: imageTemplate,
+                    }}
+                    style={imageWrapperStyles}
+                ></div>
+            }
             <div style={contentStyles}>{props.children}</div>
         </DropShadowCard>
     );

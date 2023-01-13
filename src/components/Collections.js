@@ -21,7 +21,7 @@ import Sold from './Sold';
 import SoldListing from './SoldListing';
 import BuyForm from './BuyForm';
 import {useNavigate} from 'react-router';
-const api = extjs.connect('https://ic0.app/');
+
 const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

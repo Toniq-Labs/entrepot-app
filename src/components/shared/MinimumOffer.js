@@ -7,12 +7,10 @@ import {
     toniqFontStyles,
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import extjs from '../../ic/extjs';
 import {icpToString} from '../PriceICP';
+import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
 
-const api = extjs.connect('https://ic0.app/');
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     hoverCard: {
         display: 'none',
         justifyContent: 'center',
@@ -42,7 +40,9 @@ export function MinimumOffer(props) {
     let aborted = abortController.signal.aborted;
 
     const getOffers = async () => {
-        let offers = await api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').offers(props.tokenid);
+        let offers = await entrepotDataApi
+            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+            .offers(props.tokenid);
         aborted = abortController.signal.aborted;
         if (aborted === false) {
             if (offers.length) {

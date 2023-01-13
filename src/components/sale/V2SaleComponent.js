@@ -14,7 +14,6 @@ import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-const api = extjs.connect('https://ic0.app/');
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
     // Remember the latest callback.

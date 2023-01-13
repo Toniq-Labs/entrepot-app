@@ -1,6 +1,6 @@
-// @ts-ignore: this file has no types
+// @ts-ignore: extjs has no types
 import extjs from '../../ic/extjs';
-import {CollectionStats} from './models/collection';
+import {CollectionStats} from '../data/models/collection';
 
 type EntrepotTokenApi = {
     call: EntrepotApi;
@@ -25,3 +25,6 @@ type EntrepotApi = {
 };
 
 export const entrepotDataApi = extjs.connect('https://ic0.app/') as EntrepotApi;
+export function connectToEntrepotDataApi(identity: string) {
+    return extjs.connect('https://ic0.app/', identity);
+}

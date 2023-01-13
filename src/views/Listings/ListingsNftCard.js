@@ -17,7 +17,7 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {getEXTCanister, getExtId} from '../../utilities/load-tokens';
+import {getExtId} from '../../utilities/load-tokens';
 import {Link} from 'react-router-dom';
 import {NftCard} from '../../shared/NftCard';
 import {EntrepotNFTImage} from '../../utils';
@@ -32,6 +32,7 @@ import Favourite from '../../components/Favourite';
 import {StateContainer} from '../../components/shared/StateContainer';
 import {camelCaseToTitleCase} from '../../utilities/string-utils';
 import {truncateNumber} from '@augment-vir/common';
+import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
@@ -546,9 +547,9 @@ export function ListingsNftCard(props) {
                                             }}
                                         >
                                             <NftCard
-                                                imageUrl={EntrepotNFTImage(
-                                                    getEXTCanister(listing.canister),
-                                                    index,
+                                                imageTemplateString={EntrepotNFTImage(
+                                                    getExtCanisterId(listing.canister),
+                                                    listing.index,
                                                     listing.tokenid,
                                                     false,
                                                     0,

@@ -1,6 +1,6 @@
-import {isCanisterId} from '../canister-id';
+import {isCanisterId} from '../canisters/canister-id';
 import {Collection, BaseCollection, CollectionStats} from '../models/collection';
-import {entrepotDataApi} from '../entrepot-data-api';
+import {entrepotDataApi} from '../../api/entrepot-data-api';
 import {removeUnknownKeys} from './cache-cleanup';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {isProd} from '../../environment/environment-by-url';

@@ -45,7 +45,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 
 import CloseIcon from '@material-ui/icons/Close';
-const api = extjs.connect('https://ic0.app/');
+
 const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -66,72 +66,6 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-var fromWrappedMap = {
-    'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
-    'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
-    '3db6u-aiaaa-aaaah-qbjbq-cai': 'd3ttm-qaaaa-aaaai-qam4a-cai',
-    'q6hjz-kyaaa-aaaah-qcama-cai': 'xkbqi-2qaaa-aaaah-qbpqq-cai',
-    'jeghr-iaaaa-aaaah-qco7q-cai': 'fl5nr-xiaaa-aaaai-qbjmq-cai',
-};
-var toWrappedMap = {
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-};
-const getEXTCanister = c => {
-    if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
-    else return c;
-};
-const loadAllTokens = async (address, principal) => {
-    var response = await Promise.all(
-        [
-            axios(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
-            ).then(r => r.data.map(a => ({...a, token: a.id}))),
-        ]
-            .concat(
-                [
-                    '4nvhy-3qaaa-aaaah-qcnoq-cai',
-                    'qcg3w-tyaaa-aaaah-qakea-cai',
-                    //"jzg5e-giaaa-aaaah-qaqda-cai",
-                    'd3ttm-qaaaa-aaaai-qam4a-cai',
-                    'xkbqi-2qaaa-aaaah-qbpqq-cai',
-                    'fl5nr-xiaaa-aaaai-qbjmq-cai',
-                ].map(a =>
-                    api
-                        .token(a)
-                        .getTokens(address, principal)
-                        .then(r =>
-                            r.map(b => ({
-                                canister: toWrappedMap[a],
-                                id: b.id,
-                                token: b.id,
-                                price: 0,
-                                time: 0,
-                                owner: address,
-                            })),
-                        ),
-                ),
-            )
-            .map(p => p.catch(e => e)),
-    );
-    var tokens = response.filter(result => !(result instanceof Error)).flat();
-    return tokens;
-};
-// const loadAllListings = async (address, principal) => {
-// var response = await Promise.all(props.collections.map(a => api.canister(a.canister).tokens_ext(address).then(r => (r.hasOwnProperty('ok') ? r.ok : []).map(b => [extjs.encodeTokenId(a.canister, b[0]), b[1]]).filter(c => c[1].length > 0))).map(p => p.catch(e => e)));
-// var tokens = response.filter(result => !(result instanceof Error)).flat();
-// // var wrappedMap = {
-// // "bxdf4-baaaa-aaaah-qaruq-cai" : "qcg3w-tyaaa-aaaah-qakea-cai",
-// // "y3b7h-siaaa-aaaah-qcnwa-cai" : "4nvhy-3qaaa-aaaah-qcnoq-cai",
-// // "3db6u-aiaaa-aaaah-qbjbq-cai" : "d3ttm-qaaaa-aaaai-qam4a-cai",
-// // "q6hjz-kyaaa-aaaah-qcama-cai" : "xkbqi-2qaaa-aaaah-qbpqq-cai",
-// // "jeghr-iaaaa-aaaah-qco7q-cai" : "fl5nr-xiaaa-aaaai-qbjmq-cai"
-// // };
-// return tokens;
-// };
 const useStyles = makeStyles(theme => ({
     tabsViewBig: {
         [theme.breakpoints.down('sm')]: {

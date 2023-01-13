@@ -50,8 +50,8 @@ import {
     EntrepotUpdateStats,
 } from './utils';
 import {TREASURE_CANISTER} from './utilities/treasure-canister';
-
-const api = extjs.connect('https://ic0.app/');
+import {connectToEntrepotDataApi, entrepotDataApi} from './typescript/api/entrepot-data-api';
+import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 const transactionFee = 10000;
 const transactionMin = 100000;
@@ -124,13 +124,6 @@ const emptyListing = {
 };
 var buttonLoader = false;
 var refresher = false;
-const canisterMap = {
-    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
-    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
-    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
-    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
-    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
-};
 var otherPrincipalsForPlug = [
     'xkbqi-2qaaa-aaaah-qbpqq-cai',
     'd3ttm-qaaaa-aaaai-qam4a-cai',
@@ -295,7 +288,7 @@ export default function App() {
     const repayContract = async (token, repaymentAddress, amount, reward, refresh) => {
         loader(true, 'Making repayment...');
         try {
-            const rBalance = BigInt(await api.token().getBalance(repaymentAddress));
+            const rBalance = BigInt(await entrepotDataApi.token().getBalance(repaymentAddress));
             var owed = amount + reward - rBalance;
             if (owed > 0n) {
                 if (balance < owed + 10000n) {
@@ -305,8 +298,7 @@ export default function App() {
                     );
                 }
                 loader(true, 'Transferring ICP...');
-                await extjs
-                    .connect('https://ic0.app/', identity)
+                connectToEntrepotDataApi(identity)
                     .token()
                     .transfer(
                         identity.getPrincipal(),
@@ -341,8 +333,7 @@ export default function App() {
         if (v) {
             try {
                 loader(true, 'Cancelling request...');
-                var r = await extjs
-                    .connect('https://ic0.app/', identity)
+                var r = connectToEntrepotDataApi(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -368,21 +359,18 @@ export default function App() {
         if (v) {
             try {
                 loader(true, 'Accepting request...');
-                var r = await extjs
-                    .connect('https://ic0.app/', identity)
+                var r = connectToEntrepotDataApi(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
                 var payToAddress = r.ok;
                 loader(true, 'Transferring ICP...');
-                await extjs
-                    .connect('https://ic0.app/', identity)
+                connectToEntrepotDataApi(identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, payToAddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
-                var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                var r2 = connectToEntrepotDataApi(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_settle(payToAddress);
                 loader(true, 'Reloading requests...');
@@ -511,7 +499,7 @@ export default function App() {
         for (var i = 0; i < payments[0].length; i++) {
             payment = payments[0][i];
             a = extjs.toAddress(identity.getPrincipal().toText(), payment);
-            b = Number(await api.token().getBalance(a));
+            b = Number(await entrepotDataApi.token().getBalance(a));
             c = Math.round(b * _collection.commission);
             try {
                 var txs = [];
@@ -766,17 +754,13 @@ export default function App() {
         );
         if (v) {
             var decoded = extjs.decodeTokenId(token.id);
-            var canister = canisterMap[decoded.canister];
+            var canister = getExtCanisterId([decoded.canister]);
             if (loader) loader(true, 'Creating wrapper...this may take a few minutes');
             try {
-                var r = await extjs
-                    .connect('https://ic0.app/', identity)
-                    .canister(canister)
-                    .wrap(token.id);
+                var r = connectToEntrepotDataApi(identity).canister(canister).wrap(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Sending NFT to wrapper...');
-                var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                var r2 = await connectToEntrepotDataApi(identity)
                     .token(token.id)
                     .transfer(
                         identity.getPrincipal().toText(),
@@ -1004,8 +988,7 @@ export default function App() {
             if (deposit) {
                 loader(true, 'Transferring ICP to Volt');
                 var address = await voltAPI.getAddress();
-                var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                var r2 = connectToEntrepotDataApi(identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, address, amount, 10000);
                 if (refresh) {

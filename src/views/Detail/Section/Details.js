@@ -11,7 +11,6 @@ import {
 import React, {useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
 import {NftCard} from '../../../shared/NftCard';
-import {getEXTCanister} from '../../../utilities/load-tokens';
 import {EntrepotNFTImage, EntrepotNFTLink} from '../../../utils';
 import {
     ToniqButton,
@@ -21,6 +20,7 @@ import {
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
+import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 function ListRow({items, classes, style}) {
     return (
@@ -336,7 +336,7 @@ export default function DetailSectionDetails(props) {
                                     <NftCard
                                         listStyle={true}
                                         imageUrl={EntrepotNFTImage(
-                                            getEXTCanister(canister),
+                                            getExtCanisterId(canister),
                                             index,
                                             tokenid,
                                             false,

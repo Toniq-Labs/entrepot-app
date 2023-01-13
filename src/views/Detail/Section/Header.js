@@ -30,8 +30,8 @@ import Favourite from '../../../components/Favourite';
 import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 import {NftCard} from '../../../shared/NftCard';
-import {getEXTCanister} from '../../../utilities/load-tokens';
 import PriceUSD from '../../../components/PriceUSD';
+import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 const DetailSectionHeader = props => {
     const {
@@ -437,7 +437,7 @@ const DetailSectionHeader = props => {
                                             <NftCard
                                                 listStyle={true}
                                                 imageUrl={EntrepotNFTImage(
-                                                    getEXTCanister(canister),
+                                                    getExtCanisterId(canister),
                                                     index,
                                                     tokenid,
                                                     false,
@@ -519,7 +519,7 @@ const DetailSectionHeader = props => {
                                 <NftCard
                                     listStyle={true}
                                     imageUrl={EntrepotNFTImage(
-                                        getEXTCanister(canister),
+                                        getExtCanisterId(canister),
                                         index,
                                         tokenid,
                                         false,

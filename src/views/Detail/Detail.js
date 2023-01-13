@@ -6,8 +6,6 @@ import {EntrepotCollectionStats} from '../../utils';
 import DetailBody from './DetailBody';
 import OfferForm from '../../components/OfferForm';
 
-const api = extjs.connect('https://ic0.app/');
-
 const Detail = props => {
     let {tokenid} = useParams();
     let {index, canister} = extjs.decodeTokenId(tokenid);
