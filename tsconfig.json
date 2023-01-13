@@ -29,7 +29,9 @@
         "./src/**/*.ts",
         "./src/**/*.tsx"
     ],
+    "exclude": ["scripts"],
     "ts-node": {
+        "transpileOnly": true,
         "compilerOptions": {
             "module": "CommonJS"
         }

@@ -2,15 +2,21 @@
     "name": "entrepot",
     "version": "0.1.0",
     "private": true,
+    "license": "MIT",
+    "author": "Toniq Labs",
     "scripts": {
-        "build": "tsc && node scripts/build.js pre; react-app-rewired build; node scripts/build.js post",
+        "build": "tsc && ts-node scripts/build.ts pre && react-app-rewired build && ts-node scripts/build.ts post",
         "eject": "react-app-rewired eject",
         "format": "prettier --color --list-different --write \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
-        "serve": "react-app-rewired build && serve -s build",
+        "postinstall": "ts-node scripts/build.ts install",
+        "preview": "npm run build && serve -s build",
         "start": "react-app-rewired start",
         "start:clean": "rm -rf node_modules/.cache && npm i && react-app-rewired start",
-        "test": "react-app-rewired test",
+        "test": "virmator test-web",
+        "test:all": "npm run test:format && npm run test:spelling && npm run test:types && npm run test:lint && npm run test",
         "test:format": "prettier --color --check \"./**/*.+(css|html|js|jsx|tsx|json|md|toml|ts|yaml|yml)\" --config \"./.prettierrc.js\"",
+        "test:lint": "eslint --config ./.eslintrc.cjs \"src/**/*.ts\"",
+        "test:spelling": "virmator spellcheck",
         "test:types": "tsc --noEmit"
     },
     "browserslist": {
@@ -27,18 +33,9 @@
             "last 2 edge version"
         ]
     },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ],
-        "globals": {
-            "globalThis": false
-        }
-    },
     "dependencies": {
-        "@augment-vir/browser": "^6.1.6",
-        "@augment-vir/common": "^6.1.6",
+        "@augment-vir/browser": "^7.0.0",
+        "@augment-vir/common": "^7.0.0",
         "@dfinity/agent": "^0.10.2",
         "@dfinity/auth-client": "^0.10.2",
         "@dfinity/candid": "^0.10.2",
@@ -48,7 +45,6 @@
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.60",
         "@mui/icons-material": "^5.3.1",
-        "@testing-library/jest-dom": "^5.16.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
         "@toniq-labs/design-system": "0.2.0",
@@ -71,7 +67,7 @@
         "os-browserify": "^0.3.0",
         "process": "^0.11.10",
         "query-string": "^7.1.0",
-        "random-words": "^1.2.0",
+        "random-words": "^1.2.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-hover-video-player": "^9.4.0",
@@ -96,20 +92,35 @@
         "web-vitals": "^2.1.4"
     },
     "devDependencies": {
+        "@augment-vir/browser-testing": "^7.0.0",
+        "@augment-vir/node-js": "^7.0.0",
+        "@open-wc/testing": "^3.1.7",
         "@toniq-labs/fleek-iterative-deploy": "1.2.11",
+        "@types/eslint": "^8.4.10",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "^18.11.18",
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.2",
+        "@web/dev-server-esbuild": "^0.3.3",
+        "@web/test-runner": "^0.15.0",
+        "@web/test-runner-commands": "^0.6.5",
+        "@web/test-runner-playwright": "^0.9.0",
         "browserslist": "^4.21.4",
-        "prettier": "2.8.1",
+        "cspell": "^6.18.1",
+        "eslint": "^8.31.0",
+        "istanbul-smart-text-reporter": "^1.1.1",
+        "prettier": "2.8.2",
         "prettier-plugin-jsdoc": "0.4.2",
         "prettier-plugin-multiline-arrays": "1.1.2",
         "prettier-plugin-packagejson": "2.3.0",
-        "prettier-plugin-sort-json": "0.0.3",
+        "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "0.3.1",
         "react-app-rewired": "^2.1.11",
         "redux": "^4.1.2",
         "serve": "^13.0.2",
+        "ts-node": "^10.9.1",
         "typescript": "^4.9.4",
+        "virmator": "^5.3.1",
         "webpack": "5.67.0"
     }
 }

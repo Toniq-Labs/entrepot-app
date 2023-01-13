@@ -10,7 +10,6 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
@@ -71,7 +70,7 @@ export default function PawnForm(props) {
     }, [props.nft.id]);
 
     const _submit = () => {
-        if (!floor) return props.error('Trying to retreive floor, please try again shortly.');
+        if (!floor) return props.error('Trying to retrieve floor, please try again shortly.');
         if (amount > floor)
             return props.error(
                 'The amount requested can not be more than the current floor for this collection (' +

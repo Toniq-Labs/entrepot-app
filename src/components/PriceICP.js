@@ -5,7 +5,6 @@ import {
     toniqFontStyles,
     Icp16Icon,
     Icp24Icon,
-    toniqColors,
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {numberWithCommas} from '../utilities/number-utils';
@@ -28,7 +27,11 @@ export function icpToString(priceE8s /* BigNumber */, convertToIcp, truncate) {
 export default function PriceICP(props) {
     return (
         <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
-            {props.price || props.price === 0 ? <ToniqIcon icon={Icp16Icon} /> : ''}
+            {props.price || props.price === 0 ? (
+                <ToniqIcon icon={props.large ? Icp24Icon : Icp16Icon} />
+            ) : (
+                ''
+            )}
             <span
                 style={{
                     display: 'inline-flex',
@@ -37,7 +40,9 @@ export default function PriceICP(props) {
                             ? toniqFontStyles.boldParagraphFont
                             : toniqFontStyles.paragraphFont,
                     ),
-                    ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
+                    ...cssToReactStyleObject(
+                        props.large ? toniqFontStyles.h3Font : toniqFontStyles.monospaceFont,
+                    ),
                 }}
             >
                 {props.text ? props.text : ''}

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
         transform: 'rotateY(180deg)',
     },
 }));
-var tmap = [
+var traitMap = [
     'C',
     'U',
     'R',
@@ -68,7 +68,7 @@ var tmap = [
     'L',
     'M',
 ];
-var tmap2 = [
+var traitMap2 = [
     'Common',
     'Uncommon',
     'Rare',
@@ -76,7 +76,7 @@ var tmap2 = [
     'Legendary',
     'Mythic',
 ];
-var tmap3 = [
+var traitMap3 = [
     '52%',
     '25%',
     '12.6%',
@@ -122,7 +122,7 @@ export default function Flip(props) {
                         src={
                             'https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.ic0.app/?asset=' +
                             props.card[0] +
-                            tmap[props.card[1]] +
+                            traitMap[props.card[1]] +
                             '&type=thumbnail'
                         }
                     />
@@ -140,9 +140,9 @@ export default function Flip(props) {
             {props.showRarity && !flipped ? (
                 <p>
                     <strong>
-                        {tmap2[props.card[1]]}
+                        {traitMap2[props.card[1]]}
                         <br />
-                        {tmap3[props.card[1]]}
+                        {traitMap3[props.card[1]]}
                     </strong>
                 </p>
             ) : (

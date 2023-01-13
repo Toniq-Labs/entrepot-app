@@ -3,7 +3,7 @@ import {Collection} from '../../../../data/models/collection';
 import {
     FilterTypeEnum,
     FilterDefinitions,
-    BooleanFilterTypeEnum,
+    // BooleanFilterTypeEnum,
     SortDefinition,
 } from '../../common/with-filters/filters-types';
 

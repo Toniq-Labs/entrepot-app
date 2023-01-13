@@ -5,7 +5,7 @@ import {
     BooleanFilterEntry,
     BooleanFilterTypeEnum,
 } from './filters-types';
-import {getValueFromNestedKeys, NestedKeys} from '../../../../augments/object';
+import {getValueFromNestedKeys, NestedSequentialKeys} from '@augment-vir/common';
 
 export function applyAllFilters<
     EntryData extends object,
@@ -63,7 +63,7 @@ function applyNumericRangeFilter<EntryData extends object>(
     }
     const value: unknown = getValueFromNestedKeys(
         dataEntry,
-        filter.filterField as NestedKeys<EntryData>,
+        filter.filterField as NestedSequentialKeys<EntryData>,
     );
     if (value == undefined) {
         return false;
@@ -107,7 +107,7 @@ function matchSingleCheckboxFilter<EntryData extends object>({
 }) {
     const matchThisData: unknown = getValueFromNestedKeys(
         dataEntry,
-        fieldKeys as NestedKeys<EntryData>,
+        fieldKeys as NestedSequentialKeys<EntryData>,
     );
     if (matchThisData == undefined) {
         return false;

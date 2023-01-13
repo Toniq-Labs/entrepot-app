@@ -15,7 +15,7 @@ import {Profile} from './views/Profile/Profile';
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {StoicIdentity} from 'ic-stoic-identity';
 import {throttle} from './typescript/augments/function';
-import {useNavigate} from 'react-router';
+import {useNavigate, matchPath} from 'react-router';
 import AlertDialog from './components/AlertDialog';
 import Backdrop from '@material-ui/core/Backdrop';
 import BuyForm from './components/BuyForm';
@@ -49,17 +49,16 @@ import {
     EntrepotClearLiked,
     EntrepotUpdateStats,
 } from './utils';
+import {TREASURE_CANISTER} from './utilities/treasure-canister';
 
 const api = extjs.connect('https://ic0.app/');
 
-const txfee = 10000;
-const txmin = 100000;
+const transactionFee = 10000;
+const transactionMin = 100000;
 const singleSecond = 1000;
 const singleMinute = 60 * singleSecond;
 const PURCHASE_TIME_LIMIT = 1.85 * singleMinute;
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
+
 const useStyles = makeStyles(theme => ({
     backdrop: {
         zIndex: 1600,
@@ -144,13 +143,7 @@ var otherPrincipalsForPlug = [
     'fcwhh-piaaa-aaaak-qazba-cai',
     'ffxbt-cqaaa-aaaak-qazbq-cai',
 ];
-const isDevEnv = () => {
-    if (window.location.hostname == 'localhost') return true;
-    if (window.location.host.indexOf('deploy-preview') == 0) return true;
-    if (window.location.host.indexOf('friendly-raman-30db7b') >= 0) return true;
-    return false;
-};
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
+
 export default function App() {
     const {pathname} = useLocation();
     const classes = useStyles();
@@ -299,11 +292,11 @@ export default function App() {
             setShowBuyForm(true);
         });
     };
-    const repayContract = async (token, repaymentaddress, amount, reward, refresh) => {
+    const repayContract = async (token, repaymentAddress, amount, reward, refresh) => {
         loader(true, 'Making repayment...');
         try {
-            var rbalance = BigInt(await api.token().getBalance(repaymentaddress));
-            var owed = amount + reward - rbalance;
+            const rBalance = BigInt(await api.token().getBalance(repaymentAddress));
+            var owed = amount + reward - rBalance;
             if (owed > 0n) {
                 if (balance < owed + 10000n) {
                     return alert(
@@ -318,7 +311,7 @@ export default function App() {
                     .transfer(
                         identity.getPrincipal(),
                         currentAccount,
-                        repaymentaddress,
+                        repaymentAddress,
                         owed,
                         10000,
                     );
@@ -326,7 +319,7 @@ export default function App() {
             loader(true, 'Closing contract...');
             var r2 = await extjs
                 .connect('https://ic0.app/', identity)
-                .canister(TREASURECANISTER)
+                .canister(TREASURE_CANISTER)
                 .tp_close(token);
             if (r2.hasOwnProperty('err')) throw r2.err;
             if (!r2.hasOwnProperty('ok')) throw 'Unknown Error';
@@ -350,7 +343,7 @@ export default function App() {
                 loader(true, 'Cancelling request...');
                 var r = await extjs
                     .connect('https://ic0.app/', identity)
-                    .canister(TREASURECANISTER)
+                    .canister(TREASURE_CANISTER)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
@@ -377,21 +370,21 @@ export default function App() {
                 loader(true, 'Accepting request...');
                 var r = await extjs
                     .connect('https://ic0.app/', identity)
-                    .canister(TREASURECANISTER)
+                    .canister(TREASURE_CANISTER)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
-                var paytoaddress = r.ok;
+                var payToAddress = r.ok;
                 loader(true, 'Transferring ICP...');
                 await extjs
                     .connect('https://ic0.app/', identity)
                     .token()
-                    .transfer(identity.getPrincipal(), currentAccount, paytoaddress, amount, 10000);
+                    .transfer(identity.getPrincipal(), currentAccount, payToAddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
                 var r2 = await extjs
                     .connect('https://ic0.app/', identity)
-                    .canister(TREASURECANISTER)
-                    .tp_settle(paytoaddress);
+                    .canister(TREASURE_CANISTER)
+                    .tp_settle(payToAddress);
                 loader(true, 'Reloading requests...');
                 await refresh();
                 loader(false);
@@ -425,7 +418,7 @@ export default function App() {
                 .canister(canisterId)
                 .lock(tokenid, listing.price, accounts[currentAccount].address, _getRandomBytes());
             if (r.hasOwnProperty('err')) throw r.err;
-            var paytoaddress = r.ok;
+            var payToAddress = r.ok;
             const lockTimeDuration = Date.now() - purchaseStartTime;
             if (lockTimeDuration > PURCHASE_TIME_LIMIT) {
                 throw new Error(
@@ -438,7 +431,7 @@ export default function App() {
                 .transfer(
                     identity.getPrincipal(),
                     currentAccount,
-                    paytoaddress,
+                    payToAddress,
                     listing.price,
                     10000,
                 );
@@ -522,7 +515,7 @@ export default function App() {
             c = Math.round(b * _collection.commission);
             try {
                 var txs = [];
-                if (b > txmin) {
+                if (b > transactionMin) {
                     txs.push(
                         _api
                             .token()
@@ -530,8 +523,8 @@ export default function App() {
                                 identity.getPrincipal().toText(),
                                 payment,
                                 address,
-                                BigInt(b - (txfee + c)),
-                                BigInt(txfee),
+                                BigInt(b - (transactionFee + c)),
+                                BigInt(transactionFee),
                             ),
                     );
                     txs.push(
@@ -541,8 +534,8 @@ export default function App() {
                                 identity.getPrincipal().toText(),
                                 payment,
                                 _collection.legacy,
-                                BigInt(c - txfee),
-                                BigInt(txfee),
+                                BigInt(c - transactionFee),
+                                BigInt(transactionFee),
                             ),
                     );
                 }
@@ -562,16 +555,11 @@ export default function App() {
         setBalance(0);
     };
     var openlogin = false;
-    const oauths = [
-        'google',
-        'twitter',
-        'facebook',
-        'github',
-    ];
     const loadOpenLogin = async () => {
         if (!openlogin) {
             openlogin = new OpenLogin({
                 clientId:
+                    // cspell:disable-next-line
                     'BHGs7-pkZO-KlT_BE6uMGsER2N1PC4-ERfU_c7BKN1szvtUaYFBwZMC2cwk53yIOLhdpaOFz4C55v_NounQBOfU',
                 network: 'mainnet',
                 uxMode: 'popup',
@@ -595,8 +583,8 @@ export default function App() {
                     id = await StoicIdentity.connect();
                     if (id) {
                         setIdentity(id);
-                        id.accounts().then(accs => {
-                            setAccounts(JSON.parse(accs));
+                        id.accounts().then(accounts => {
+                            setAccounts(JSON.parse(accounts));
                         });
                         setCurrentAccount(0);
                         localStorage.setItem('_loginType', t);
@@ -761,7 +749,7 @@ export default function App() {
         var r = await extjs
             .connect('https://ic0.app/', identity)
             .canister(canister)
-            .unwrap(token.id, [extjs.toSubaccount(currentAccount ?? 0)]);
+            .unwrap(token.id, [extjs.toSubAccount(currentAccount ?? 0)]);
         if (!r) {
             loader(false);
             return error("Couldn't unwrap!");
@@ -771,7 +759,7 @@ export default function App() {
         loader(false);
         return alert('Success!', 'Your NFT has been unwrapped!');
     };
-    const wrapAndlistNft = async (token, loader, refresh) => {
+    const wrapAndListNft = async (token, loader, refresh) => {
         var v = await confirm(
             'We need to wrap this',
             'You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?',
@@ -829,6 +817,11 @@ export default function App() {
         if (!appLoaded) {
             setAppLoaded(true);
         }
+    };
+
+    const showFooter = () => {
+        const match = matchPath({path: '/marketplace/:route'}, pathname);
+        return match ? 'none' : 'flex';
     };
 
     React.useEffect(() => {
@@ -900,7 +893,7 @@ export default function App() {
                 .canister('yigae-jqaaa-aaaah-qczbq-cai')
                 .tp_create(
                     id,
-                    extjs.toSubaccount(currentAccount ?? 0),
+                    extjs.toSubAccount(currentAccount ?? 0),
                     BigInt(Math.floor(amount * 100000000)),
                     BigInt(length) * 24n * 60n * 60n * 1000000000n,
                     BigInt(Math.floor(reward * 100000000)),
@@ -1112,8 +1105,8 @@ export default function App() {
                                 if (identity !== false) {
                                     //ID is a already connected wallet!
                                     setIdentity(identity);
-                                    identity.accounts().then(accs => {
-                                        setAccounts(JSON.parse(accs));
+                                    identity.accounts().then(accounts => {
+                                        setAccounts(JSON.parse(accounts));
                                     });
                                 } else {
                                     console.log('Error from stoic connect');
@@ -1262,7 +1255,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1419,7 +1412,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1482,7 +1475,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1518,7 +1511,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1551,7 +1544,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1615,7 +1608,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1678,7 +1671,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1714,7 +1707,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1748,7 +1741,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1785,7 +1778,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1822,7 +1815,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1859,7 +1852,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1893,7 +1886,7 @@ export default function App() {
                                             loggedIn={loggedIn}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -1926,7 +1919,7 @@ export default function App() {
                                             list={list}
                                             unpackNft={unpackNft}
                                             listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
+                                            wrapAndListNft={wrapAndListNft}
                                             unwrapNft={unwrapNft}
                                             transferNft={transferNft}
                                             pawnNft={pawnNft}
@@ -2152,7 +2145,7 @@ export default function App() {
                             />
                         </div>
                     </main>
-                    <EntrepotFooter style={{zIndex: 100}} />
+                    <EntrepotFooter style={{zIndex: 100, display: showFooter()}} />
 
                     <Backdrop className={classes.backdrop} open={loaderOpen}>
                         <CircularProgress color="inherit" />

@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import React from 'react';
 import HoverVideoPlayer from 'react-hover-video-player';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -7,13 +6,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Flip from './Flip';
 import extjs from '../ic/extjs.js';
-import {
-    EntrepotNFTImage,
-    EntrepotNFTLink,
-    EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
-    EntrepotGetICPUSD,
-} from '../utils';
+import {EntrepotNFTImage} from '../utils';
 var settings = {
     '6wih6-siaaa-aaaah-qczva-cai': {
         video: false,
@@ -33,9 +26,7 @@ var settings = {
 };
 var subs = [];
 export default function Opener(props) {
-    const {index, canister} = props.nft?.id
-        ? extjs.decodeTokenId(props.nft.id)
-        : {index: 0, canister: ''};
+    const {index} = props.nft?.id ? extjs.decodeTokenId(props.nft.id) : {index: 0, canister: ''};
     const [
         playOpen,
         setPlayOpen,
@@ -48,12 +39,7 @@ export default function Opener(props) {
         openerCards,
         setOpenerCards,
     ] = React.useState([]);
-    const [
-        toggleFlip,
-        setToggleFlip,
-    ] = React.useState(0);
     const hoverVideoRef = React.useRef();
-    const rnum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     React.useEffect(() => {
         if (props.open) openPack();
     }, [props.open]);
@@ -80,7 +66,7 @@ export default function Opener(props) {
             var r = await extjs
                 .connect('https://ic0.app/', props.identity)
                 .canister(props.nft.canister, 'ext')
-                .unpack(props.nft.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
+                .unpack(props.nft.id, [extjs.toSubAccount(props.currentAccount ?? 0)]);
             if (r.hasOwnProperty('err')) throw r.err;
             setOpenerCards(
                 r.ok.map(a => [

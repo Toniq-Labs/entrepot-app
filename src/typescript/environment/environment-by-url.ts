@@ -4,6 +4,7 @@ const devHosts = [
     'localhost',
     '127.0.0.1',
     'deploy-preview',
+    // cspell:disable-next-line
     'friendly-raman-30db7b',
 ];
 

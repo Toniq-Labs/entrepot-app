@@ -6,7 +6,7 @@ import {
     GOVERNANCE_CANISTER_ID,
     NNS_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID,
-    getCyclesTopupSubAccount,
+    getCyclesTopUpSubAccount,
     rosettaApi,
     principalToAccountIdentifier,
     toHexString,
@@ -43,12 +43,11 @@ import departureIDL from './candid/departure.did.js';
 import imaginationIDL from './candid/imagination.did.js';
 import entrepotIDL from './candid/entrepot.did.js';
 import treasureIDL from './candid/treasure.did.js';
-import voltfactoryIDL from './candid/voltfactory.did.js';
-import voltoffersIDL from './candid/voltoffers.did.js';
-import voltauctionsIDL from './candid/voltauctions.did.js';
+import voltFactoryIDL from './candid/volt-factory.did.js';
+import voltOffersIDL from './candid/volt-offers.did.js';
+import voltAuctionsIDL from './candid/volt-auctions.did.js';
 import voltIDL from './candid/volt.did.js';
 import licenseIDL from './candid/license.did.js';
-//import cronicsIDL from './candid/cronics.did.js';
 
 const constructUser = u => {
     if (isHex(u) && u.length === 64) {
@@ -84,7 +83,7 @@ const decodeTokenId = tid => {
     }
 };
 
-//Preload IDLS against a common name
+//Preload IDLs against a common name
 const _preloadedIdls = {
     governance: governanceIDL,
     ledger: ledgerIDL,
@@ -208,10 +207,10 @@ class ExtConnection {
         'fl5nr-xiaaa-aaaai-qbjmq-cai': departureIDL,
         '33uhc-liaaa-aaaah-qcbra-cai': mintregister,
         '6z5wo-yqaaa-aaaah-qcsfa-cai': entrepotIDL,
-        'fcwhh-piaaa-aaaak-qazba-cai': voltoffersIDL,
-        'ffxbt-cqaaa-aaaak-qazbq-cai': voltauctionsIDL,
+        'fcwhh-piaaa-aaaak-qazba-cai': voltOffersIDL,
+        'ffxbt-cqaaa-aaaak-qazbq-cai': voltAuctionsIDL,
         'yigae-jqaaa-aaaah-qczbq-cai': treasureIDL,
-        'flvm3-zaaaa-aaaak-qazaq-cai': voltfactoryIDL,
+        'flvm3-zaaaa-aaaak-qazaq-cai': voltFactoryIDL,
     };
     _metadata = {
         [LEDGER_CANISTER_ID]: {
@@ -516,7 +515,7 @@ class ExtConnection {
                         .catch(reject);
                 });
             },
-            getBalance: (address, princpal) => {
+            getBalance: (address, principal) => {
                 return new Promise((resolve, reject) => {
                     var args;
                     switch (tokenObj.canister) {
@@ -527,7 +526,7 @@ class ExtConnection {
                             break;
                         case 'qz7gu-giaaa-aaaaf-qaaka-cai':
                             args = {
-                                user: Principal.fromText(princpal),
+                                user: Principal.fromText(principal),
                             };
                             api.getBalanceInsecure(args)
                                 .then(b => {
@@ -552,7 +551,7 @@ class ExtConnection {
                     }
                 });
             },
-            getTransactions: (address, princpal) => {
+            getTransactions: address => {
                 return new Promise((resolve, reject) => {
                     switch (tokenObj.canister) {
                         case LEDGER_CANISTER_ID:
@@ -589,7 +588,7 @@ class ExtConnection {
             },
             /*
         from_principal = principal of account as text
-        from_sa = subaccount (to produce hex address). null/0 default as number
+        from_sa = subAccount (to produce hex address). null/0 default as number
         to_user = valid User (address or principal) as text
         amount = valid amount as BigInt
         fee = valid fee as BigInt
@@ -731,7 +730,7 @@ class ExtConnection {
                 return new Promise((resolve, reject) => {
                     switch (tokenObj.canister) {
                         case LEDGER_CANISTER_ID:
-                            var _to_sub = getCyclesTopupSubAccount(canister);
+                            var _to_sub = getCyclesTopUpSubAccount(canister);
                             var _to = principalToAccountIdentifier(
                                 CYCLES_MINTING_CANISTER_ID,
                                 _to_sub,
@@ -761,7 +760,7 @@ class ExtConnection {
                             reject('WIP');
                             break;
                         default:
-                            reject('Cycle topup is not supported by this token');
+                            reject('Cycle top up is not supported by this token');
                             break;
                     }
                 });
@@ -786,9 +785,6 @@ const extjs = {
     decodeTokenId: decodeTokenId,
     encodeTokenId: tokenIdentifier,
     toAddress: principalToAccountIdentifier,
-    toSubaccount: getSubAccountArray,
+    toSubAccount: getSubAccountArray,
 };
 export default extjs;
-//window.extjs = extjs.connect;
-//window.principalToAccountIdentifier = principalToAccountIdentifier;
-//window.fromHexString = fromHexString;

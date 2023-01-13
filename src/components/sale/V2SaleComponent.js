@@ -1,15 +1,10 @@
 /* global BigInt */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import SaleListing from '../SaleListing';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Timestamp from 'react-timestamp';
-import Pagination from '@material-ui/lab/Pagination';
-import {StoicIdentity} from 'ic-stoic-identity';
-import Sidebar from '../Sidebar';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -20,7 +15,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 const api = extjs.connect('https://ic0.app/');
-const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
     // Remember the latest callback.
@@ -212,16 +206,16 @@ export default function V2SaleComponent(props) {
             if (r.hasOwnProperty('err')) {
                 throw r.err;
             }
-            var paytoaddress = r.ok[0];
-            var pricetopay = r.ok[1];
+            var payToAddress = r.ok[0];
+            var priceToPay = r.ok[1];
             props.loader(true, 'Transferring ICP...');
             await api
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
                     props.currentAccount,
-                    paytoaddress,
-                    pricetopay,
+                    payToAddress,
+                    priceToPay,
                     10000,
                 );
             var r3;
@@ -230,7 +224,7 @@ export default function V2SaleComponent(props) {
                     props.loader(true, 'Completing purchase...');
                     r3 = await api
                         .canister(collection.canister, 'ext2')
-                        .ext_saleSettle(paytoaddress);
+                        .ext_saleSettle(payToAddress);
                 } catch (e) {
                     continue;
                 }
@@ -402,7 +396,7 @@ export default function V2SaleComponent(props) {
                                 <p>
                                     <strong>
                                         <span style={{fontSize: '20px', color: 'red'}}>
-                                            Sorry, your address is not eligble for this sale!
+                                            Sorry, your address is not eligible for this sale!
                                         </span>
                                     </strong>
                                 </p>

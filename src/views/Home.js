@@ -33,10 +33,6 @@ const useStyles = makeStyles(theme => ({
     banner: {
         position: 'relative',
     },
-    bannerimg: {
-        maxWidth: '100%',
-        borderRadius: '30px',
-    },
     anchor: {
         position: 'absolute',
         bottom: '-15px',
@@ -83,13 +79,14 @@ export default function Home(props) {
             content: (
                 <>
                     We will be releasing the next set of Cronic NFTs - Cronic Wearables! These are a
-                    seperate collection of NFTs that you can send to your Cronic!
+                    separate collection of NFTs that you can send to your Cronic!
                 </>
             ),
         },
         {
             title: 'Rise of the Magni',
             link: '/',
+            // cspell:disable-next-line
             image: '/collections/rotm.jpg',
             content: (
                 <>

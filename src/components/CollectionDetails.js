@@ -361,18 +361,6 @@ export default function CollectionDetails(props) {
                                     alignItems="center"
                                     direction="row"
                                 >
-                                    <Link
-                                        href={
-                                            'https://icscan.io/nft/collection/' +
-                                            collection.canister
-                                        }
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        underline="none"
-                                        style={{padding: 8}}
-                                    >
-                                        <ToniqIcon icon={BrandIcScan24Icon} />
-                                    </Link>
                                     {[
                                         'telegram',
                                         'twitter',
@@ -552,18 +540,6 @@ export default function CollectionDetails(props) {
                         <div style={{display: 'flex', flexDirection: 'column', gap: 36}}>
                             <div className={classes.socialsContainer}>
                                 <Grid container spacing={2} alignItems="center" direction="row">
-                                    <Link
-                                        href={
-                                            'https://icscan.io/nft/collection/' +
-                                            collection.canister
-                                        }
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        underline="none"
-                                        style={{padding: 8}}
-                                    >
-                                        <ToniqIcon icon={BrandIcScan24Icon} />
-                                    </Link>
                                     {[
                                         'telegram',
                                         'twitter',

@@ -1,7 +1,7 @@
 /**
  * @license MIT License
  * @file RosettaApi
- * @copyright Copyright (c) 2018-2021 Dylan Miller and dfinityexplorer contributors
+ * @copyright Copyright (c) 2018-2021 Dylan Miller and dfinity explorer contributors
  */
 
 import axios from 'axios';

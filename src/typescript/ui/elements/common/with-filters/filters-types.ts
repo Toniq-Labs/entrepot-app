@@ -1,4 +1,4 @@
-import {NestedKeys} from '../../../../augments/object';
+import {NestedSequentialKeys} from '@augment-vir/common';
 
 export enum FilterTypeEnum {
     Checkboxes = 'checkboxes',
@@ -53,13 +53,13 @@ export type SingleFilterDefinition<EntryGeneric extends object> =
                 filterType: FilterTypeEnum.NumericRange;
             } & NumericRangeFilterEntry)
       ) & {
-          filterField: Readonly<NestedKeys<EntryGeneric>>;
+          filterField: Readonly<NestedSequentialKeys<EntryGeneric>>;
       })
     | {
           filterType: FilterTypeEnum.ExpandingList;
           expanded: boolean;
           entries: ReadonlyArray<ExpandingListFilterEntry>;
-          filterField: Readonly<NestedKeys<EntryGeneric>> | ReadonlyArray<never[]>;
+          filterField: Readonly<NestedSequentialKeys<EntryGeneric>> | ReadonlyArray<never[]>;
       };
 
 export type FilterDefinitions<EntryGeneric extends object> = Readonly<
@@ -68,7 +68,7 @@ export type FilterDefinitions<EntryGeneric extends object> = Readonly<
 
 export type SortDefinition<EntryGeneric extends object> = {
     sortName: string;
-    sortField: Readonly<NestedKeys<EntryGeneric>>;
+    sortField: Readonly<NestedSequentialKeys<EntryGeneric>>;
 };
 
 export type CurrentSort = {

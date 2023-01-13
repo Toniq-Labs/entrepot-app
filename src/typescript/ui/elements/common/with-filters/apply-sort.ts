@@ -1,5 +1,5 @@
 import {CurrentSort, SortDefinition} from './filters-types';
-import {getValueFromNestedKeys, NestedKeys} from '../../../../augments/object';
+import {getValueFromNestedKeys, NestedSequentialKeys} from '@augment-vir/common';
 
 export function applySort<EntryGeneric extends object>({
     sortDefinitions,
@@ -21,11 +21,11 @@ export function applySort<EntryGeneric extends object>({
     return [...entries].sort((a, b) => {
         const aValue: unknown = getValueFromNestedKeys(
             a,
-            sortToUse.sortField as NestedKeys<EntryGeneric>,
+            sortToUse.sortField as NestedSequentialKeys<EntryGeneric>,
         );
         const bValue: unknown = getValueFromNestedKeys(
             b,
-            sortToUse.sortField as NestedKeys<EntryGeneric>,
+            sortToUse.sortField as NestedSequentialKeys<EntryGeneric>,
         );
 
         const numericA = Number(aValue);

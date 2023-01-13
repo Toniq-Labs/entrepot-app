@@ -1,6 +1,6 @@
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
-import {getEXTCanister, getEXTID} from '../utilities/load-tokens';
+import {getEXTCanister, getExtId} from '../utilities/load-tokens';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -26,13 +26,9 @@ import {
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
 } from '../utils';
+import {TREASURE_CANISTER} from '../utilities/treasure-canister';
 
 const api = extjs.connect('https://ic0.app/');
-const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
-const _showListingPrice = n => {
-    n = Number(n) / 100000000;
-    return n.toFixed(8).replace(/0{1,6}$/, '');
-};
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -52,10 +48,6 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const _showDate = t => {
-    return new Date(Number(t / 1000000n)).toLocaleDateString();
-};
-var doRefresh = false;
 const useStyles = makeStyles(theme => ({
     smallGrid: {
         width: '300px',
@@ -93,7 +85,6 @@ export default function NFT(props) {
     ] = React.useState(0);
     const [
         isNotEXT,
-        setIsNotEXT,
     ] = React.useState(toWrappedMap.hasOwnProperty(canister));
     const [
         listing,
@@ -133,14 +124,12 @@ export default function NFT(props) {
     ] = React.useState(false);
     const [
         earnCollections,
-        setEarnCollections,
     ] = React.useState(props.collections.filter(a => a.earn == true).map(a => a.id));
 
     const getCollection = c => {
         if (typeof props.collections.find(e => e.canister === c) == 'undefined') return {};
         return props.collections.find(e => e.canister === c);
     };
-    const navigate = useNavigate();
     const getListing = () => {
         if (isNotEXT) return setListing(false);
         api.token(canister)
@@ -158,14 +147,14 @@ export default function NFT(props) {
         }
     };
     const getAuction = async () => {
-        var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getEXTID(tokenid));
+        var resp = await api.canister('ffxbt-cqaaa-aaaak-qazbq-cai').auction(getExtId(tokenid));
         if (resp.length) setAuction(resp[0]);
         else setAuction(false);
     };
     const getOffer = async () => {
         await api
             .canister('fcwhh-piaaa-aaaak-qazba-cai')
-            .offers(getEXTID(tokenid))
+            .offers(getExtId(tokenid))
             .then(r => {
                 setOfferCount(r.length);
                 setOffer(r.sort((a, b) => Number(b.amount) - Number(a.amount))[0]);
@@ -240,14 +229,12 @@ export default function NFT(props) {
         else setCurrentBtnText(false);
     };
     const buttonPush = btn => {
-        var clickev = btn;
+        var clicker = btn;
         if (typeof btn == 'number') {
             setCurrentBtn(btn);
-            clickev = getButtons()[btn][1];
+            clicker = getButtons()[btn][1];
         }
-        //buttonLoader("test", false);
-        clickev();
-        //setCurrentBtn(null)
+        clicker();
     };
     const transferRefresh = async () => {
         props.hideNft(tokenid);
@@ -311,7 +298,7 @@ export default function NFT(props) {
                         buttons.push([
                             currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
                             () =>
-                                props.wrapAndlistNft(
+                                props.wrapAndListNft(
                                     {id: tokenid, listing: listing},
                                     props.loader,
                                     props.refresh,
@@ -538,7 +525,7 @@ export default function NFT(props) {
             >
                 <Link
                     style={{textDecoration: 'none', color: 'inherit'}}
-                    to={`/marketplace/asset/` + getEXTID(tokenid)}
+                    to={`/marketplace/asset/` + getExtId(tokenid)}
                 >
                     <div style={{...styles.avatarSkeletonContainer}}>
                         {EntrepotDisplayNFT(
@@ -752,7 +739,7 @@ export default function NFT(props) {
                             )}
                             {typeof props.view !== 'undefined' &&
                             props.view == 'marketplace' &&
-                            canister === TREASURECANISTER ? (
+                            canister === TREASURE_CANISTER ? (
                                 <Grid item xs={12}>
                                     {EntrepotEarnDetails(tokenid, listing.price)}
                                 </Grid>

@@ -10,30 +10,20 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import Grid from '@material-ui/core/Grid';
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import {useNavigate} from 'react-router';
 import {useParams} from 'react-router';
-import ListIcon from '@material-ui/icons/List';
 import Pagination from '@material-ui/lab/Pagination';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import extjs from '../ic/extjs.js';
-import {EntrepotGetAllLiked} from '../utils';
 import {useTheme} from '@material-ui/core/styles';
 import Pawn from './Pawn';
 import UserDetail from './UserDetail';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import CollectionsIcon from '@material-ui/icons/Collections';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import getNri from '../ic/nftv.js';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import CachedIcon from '@material-ui/icons/Cached';
@@ -41,10 +31,6 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import GavelIcon from '@material-ui/icons/Gavel';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
 import {makeStyles} from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
@@ -61,9 +47,6 @@ import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 import CloseIcon from '@material-ui/icons/Close';
 const api = extjs.connect('https://ic0.app/');
 const perPage = 60;
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -225,7 +208,7 @@ const useStyles = makeStyles(theme => ({
             display: 'none',
         },
     },
-    pagi: {
+    pagination: {
         display: 'flex',
         justifyContent: 'flex-end',
         marginTop: '20px',
@@ -245,7 +228,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-var pawnapi = extjs.connect('https://ic0.app/').canister('yigae-jqaaa-aaaah-qczbq-cai');
+var pawnApi = extjs.connect('https://ic0.app/').canister('yigae-jqaaa-aaaah-qczbq-cai');
 const getDays = a => Number(a.length / (24n * 60n * 60n * 1000000000n));
 const getApr = a =>
     ((Number(a.reward) / 100000000 / getDays(a)) * 365) / (Number(a.amount) / 100000000);
@@ -439,9 +422,9 @@ export default function UserLoan(props) {
         switch (props.view) {
             case 'earn':
                 if (displayView == 'requests') {
-                    data = (await pawnapi.tp_requests()).map(a => ({...a[1], type: 'request'}));
+                    data = (await pawnApi.tp_requests()).map(a => ({...a[1], type: 'request'}));
                 } else {
-                    data = (await pawnapi.tp_loansActive()).map(a => ({
+                    data = (await pawnApi.tp_loansActive()).map(a => ({
                         ...a[1],
                         index: a[0],
                         type: 'contract',
@@ -449,13 +432,13 @@ export default function UserLoan(props) {
                 }
                 break;
             case 'earn-requests':
-                data = (await pawnapi.tp_requestsByAddress(address)).map(a => ({
+                data = (await pawnApi.tp_requestsByAddress(address)).map(a => ({
                     ...a[1],
                     type: 'request',
                 }));
                 break;
             case 'earn-contracts':
-                data = (await pawnapi.tp_loansByAddress(address)).map(a => ({
+                data = (await pawnApi.tp_loansByAddress(address)).map(a => ({
                     ...a[1],
                     index: a[0],
                     type: 'contract',
@@ -973,7 +956,7 @@ export default function UserLoan(props) {
                             {displayedResults && displayedResults.length > perPage ? (
                                 <Grid item style={{marginLeft: 'auto'}}>
                                     <Pagination
-                                        className={classes.pagi}
+                                        className={classes.pagination}
                                         size="small"
                                         count={Math.ceil(displayedResults.length / perPage)}
                                         page={page}
@@ -1186,7 +1169,7 @@ export default function UserLoan(props) {
                         )}
                         {displayedResults && displayedResults.length > perPage ? (
                             <Pagination
-                                className={classes.pagi}
+                                className={classes.pagination}
                                 size="small"
                                 count={Math.ceil(displayedResults.length / perPage)}
                                 page={page}

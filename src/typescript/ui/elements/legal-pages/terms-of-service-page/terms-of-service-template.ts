@@ -1,5 +1,6 @@
 import {html} from 'element-vir';
 
+// cspell:disable
 export const termsOfServiceTemplate = html`
     <h1>
         <span>Terms Of Service - Entrepot</span>
@@ -968,3 +969,5 @@ export const termsOfServiceTemplate = html`
         <span>END OF AGREEMENT</span>
     </p>
 `;
+
+// cspell:enable

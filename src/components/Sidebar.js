@@ -18,7 +18,6 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import CachedIcon from '@material-ui/icons/Cached';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
@@ -64,7 +63,6 @@ const _showListingPrice = n => {
     n = Number(n) / 100000000;
     return n.toFixed(8).replace(/0{1,6}$/, '');
 };
-var intv = false;
 var loadedAccount = false;
 export default function Wallet(props) {
     const navigate = useNavigate();
@@ -114,7 +112,7 @@ export default function Wallet(props) {
     const refresh = async () => {
         if (props.account) {
             var b = await api.token().getBalance(props.account.address);
-            var thisacc = loadedAccount;
+            var thisAccount = loadedAccount;
             setBalance(b);
             var volt = await api
                 .canister('flvm3-zaaaa-aaaak-qazaq-cai')
@@ -123,8 +121,8 @@ export default function Wallet(props) {
             //setVoltBalances(b);
             var collection,
                 mcs = [];
-            var firstrun = false;
-            if (myCollections === false || myCollections.length === 0) firstrun = true;
+            var firstRun = false;
+            if (myCollections === false || myCollections.length === 0) firstRun = true;
             for (var i = 0; i < props.collections.length; i++) {
                 collection = props.collections[i];
                 if (!_isCanister(collection.canister)) continue;
@@ -206,13 +204,13 @@ export default function Wallet(props) {
                         ...collection,
                         count: tokens.length,
                     });
-                    if (firstrun) {
-                        if (thisacc == loadedAccount) setMyCollections(mcs);
+                    if (firstRun) {
+                        if (thisAccount == loadedAccount) setMyCollections(mcs);
                         else setMyCollections(false);
                     }
                 }
             }
-            if (thisacc == loadedAccount) setMyCollections(mcs);
+            if (thisAccount == loadedAccount) setMyCollections(mcs);
             else setMyCollections(false);
         }
     };

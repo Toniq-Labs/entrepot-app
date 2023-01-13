@@ -261,10 +261,10 @@ export default function Mint(props) {
     const _updates = async () => {
         const api = extjs.connect('https://ic0.app/', props.identity);
         var cs = await api.canister('33uhc-liaaa-aaaah-qcbra-cai').getCanisters();
-        var newcans = cs.map(p => p.toText());
-        setCanisters(newcans);
-        if (!canister && newcans.length) {
-            setCanister(newcans[0]);
+        var newCans = cs.map(p => p.toText());
+        setCanisters(newCans);
+        if (!canister && newCans.length) {
+            setCanister(newCans[0]);
         }
     };
     const selectFiles2 = e => {
@@ -273,7 +273,7 @@ export default function Mint(props) {
     const selectFiles = e => {
         setSelectedFiles(e.target.files);
     };
-    const transferaction = async () => {
+    const transferAction = async () => {
         if (!selectedFiles2.length) return props.error('Please select a file first');
         if (!canister) return props.error('Please select a canister first');
         var v = await props.confirm(
@@ -295,7 +295,7 @@ export default function Mint(props) {
                     console.log(r);
                     props.loader(false);
                     if (r.length == 0) {
-                        props.allert('Success', 'Bulk transfer successful');
+                        props.alert('Success', 'Bulk transfer successful');
                     } else {
                         props.error(r.length + ' transfers failed...');
                     }
@@ -308,7 +308,7 @@ export default function Mint(props) {
         };
         reader.readAsText(selectedFiles2[0]);
     };
-    const listaction = async () => {
+    const listAction = async () => {
         if (!selectedFiles2.length) return props.error('Please select a file first');
         if (!canister) return props.error('Please select a canister first');
         var v = await props.confirm(
@@ -343,7 +343,7 @@ export default function Mint(props) {
         };
         reader.readAsText(selectedFiles2[0]);
     };
-    const mintaction = async () => {
+    const mintAction = async () => {
         if (!selectedFiles.length) return props.error('Please select a file first');
         if (!canister) return props.error('Please select a canister first');
         var API = extjs.connect('https://ic0.app/', props.identity);
@@ -358,11 +358,11 @@ export default function Mint(props) {
                     300,
                 ],
             );
-            var tpayload = new Uint8Array(await thumb.arrayBuffer());
+            var transactionPayload = new Uint8Array(await thumb.arrayBuffer());
             var tb = [
                 {
                     ctype: thumb.type,
-                    data: [[...tpayload]],
+                    data: [[...transactionPayload]],
                 },
             ];
             var pl = [...payload];
@@ -461,7 +461,7 @@ export default function Mint(props) {
                                         <br />
                                         <br />
                                         <Button
-                                            onClick={mintaction}
+                                            onClick={mintAction}
                                             variant="contained"
                                             color="primary"
                                             style={{
@@ -502,7 +502,7 @@ export default function Mint(props) {
                                         <br />
                                         <br />
                                         <Button
-                                            onClick={transferaction}
+                                            onClick={transferAction}
                                             variant="contained"
                                             color="primary"
                                             style={{
@@ -514,7 +514,7 @@ export default function Mint(props) {
                                             Bulk Transfer
                                         </Button>
                                         <Button
-                                            onClick={listaction}
+                                            onClick={listAction}
                                             variant="contained"
                                             color="primary"
                                             style={{

@@ -32,7 +32,7 @@ import {
 import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {subscribe, unsubscribe} from '../events/events';
-import {loadVolt, loadVoltBalance} from '../volt';
+import {loadVoltBalance} from '../volt';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -395,62 +395,6 @@ const useStyles = makeStyles(theme => {
         root: {
             display: 'flex',
         },
-        grow: {
-            flexGrow: 1,
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-            [minHamburgerMenuBreakpoint]: {
-                display: 'none',
-            },
-        },
-        toolbar: theme.mixins.toolbar,
-        toolbarButtons: {
-            marginLeft: 'auto',
-        },
-        content: {
-            flexGrow: 1,
-        },
-        marketplace: {
-            backgroundImage: "url('/icon/marketplace.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '20px',
-            backgroundPosition: '0 49%',
-            paddingLeft: 30,
-            '&:hover, &.selected': {
-                backgroundImage: "url('/icon/marketplace-g.png')",
-            },
-        },
-        create: {
-            backgroundImage: "url('/icon/create.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '20px',
-            backgroundPosition: '0 49%',
-            paddingLeft: 30,
-            '&:hover, &.selected': {
-                backgroundImage: "url('/icon/create-g.png')",
-            },
-        },
-        contact: {
-            backgroundImage: "url('/icon/support.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '20px',
-            backgroundPosition: '0 49%',
-            paddingLeft: 30,
-            '&:hover, &.selected': {
-                backgroundImage: "url('/icon/support-g.png')",
-            },
-        },
-        watchlist: {
-            backgroundImage: "url('/icon/watchlist.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '20px',
-            backgroundPosition: '0 49%',
-            paddingLeft: 30,
-            '&:hover, &.selected': {
-                backgroundImage: "url('/icon/watchlist-g.png')",
-            },
-        },
         bigScreenNavButtons: {
             display: 'flex',
             alignItems: 'stretch',
@@ -459,23 +403,6 @@ const useStyles = makeStyles(theme => {
             paddingLeft: '16px',
             [maxHamburgerMenuBreakpoint]: {
                 display: 'none',
-            },
-        },
-        button1: {
-            fontSize: '1.2em',
-            fontWeight: 'bold',
-            borderBottom: '3px solid transparent',
-            borderRadius: 0,
-            textAlign: 'left',
-            display: 'flex',
-            justifyContent: 'flex-start',
-            paddingLeft: '30px',
-            paddingTop: '40px',
-            height: 73,
-            '&:hover': {
-                color: '#00d092 !important',
-                backgroundColor: '#fff',
-                borderBottom: '3px solid #00d092 !important',
             },
         },
     };

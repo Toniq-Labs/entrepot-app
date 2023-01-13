@@ -205,7 +205,7 @@ const useStyles = makeStyles(theme => ({
             display: 'none',
         },
     },
-    pagi: {
+    pagination: {
         display: 'flex',
         justifyContent: 'flex-end',
         marginTop: '20px',
@@ -488,12 +488,12 @@ export default function UserCollection(props) {
                     case 'nri':
                         var aa = extjs.decodeTokenId(a);
                         var bb = extjs.decodeTokenId(b);
-                        var nria = getNri(aa.canister, aa.index);
-                        var nrib = getNri(bb.canister, bb.index);
-                        if (nria === false && nrib === false) return 0;
-                        if (nria === false) return 1;
-                        if (nrib === false) return -1;
-                        return Number(nrib) - Number(nria);
+                        var nriA = getNri(aa.canister, aa.index);
+                        var nriB = getNri(bb.canister, bb.index);
+                        if (nriA === false && nriB === false) return 0;
+                        if (nriA === false) return 1;
+                        if (nriB === false) return -1;
+                        return Number(nriB) - Number(nriA);
                     default:
                         return 0;
                 }
@@ -732,7 +732,7 @@ export default function UserCollection(props) {
                             {displayedResults && displayedResults.length > perPage ? (
                                 <Grid item style={{marginLeft: 'auto'}}>
                                     <Pagination
-                                        className={classes.pagi}
+                                        className={classes.pagination}
                                         size="small"
                                         count={Math.ceil(displayedResults.length / perPage)}
                                         page={page}
@@ -815,12 +815,12 @@ export default function UserCollection(props) {
                                                 case 'nri':
                                                     var aa = extjs.decodeTokenId(a.token);
                                                     var bb = extjs.decodeTokenId(b.token);
-                                                    var nria = getNri(aa.canister, aa.index);
-                                                    var nrib = getNri(bb.canister, bb.index);
-                                                    if (nria === false && nrib === false) return 0;
-                                                    if (nria === false) return 1;
-                                                    if (nrib === false) return -1;
-                                                    return Number(nrib) - Number(nria);
+                                                    var nriA = getNri(aa.canister, aa.index);
+                                                    var nriB = getNri(bb.canister, bb.index);
+                                                    if (nriA === false && nriB === false) return 0;
+                                                    if (nriA === false) return 1;
+                                                    if (nriB === false) return -1;
+                                                    return Number(nriB) - Number(nriA);
                                                 default:
                                                     return 0;
                                             }
@@ -845,7 +845,7 @@ export default function UserCollection(props) {
                                                     unpackNft={props.unpackNft}
                                                     listNft={props.listNft}
                                                     cancelNft={props.cancelNft}
-                                                    wrapAndlistNft={props.wrapAndlistNft}
+                                                    wrapAndListNft={props.wrapAndListNft}
                                                     unwrapNft={props.unwrapNft}
                                                     transferNft={props.transferNft}
                                                     pawnNft={props.pawnNft}
@@ -861,7 +861,7 @@ export default function UserCollection(props) {
                         )}
                         {displayedResults && displayedResults.length > perPage ? (
                             <Pagination
-                                className={classes.pagi}
+                                className={classes.pagination}
                                 size="small"
                                 count={Math.ceil(displayedResults.length / perPage)}
                                 page={page}

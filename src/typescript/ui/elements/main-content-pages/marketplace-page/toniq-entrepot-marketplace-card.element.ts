@@ -3,11 +3,9 @@ import {assign, css, defineElement, html} from 'element-vir';
 import {CollectionStats} from '../../../../data/models/collection';
 import {
     Icp16Icon,
-    Icp24Icon,
     ToniqChip,
     toniqColors,
     toniqFontStyles,
-    ToniqIcon,
     toniqShadows,
     applyBackgroundAndForeground,
     removeNativeFormStyles,

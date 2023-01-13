@@ -512,14 +512,14 @@ export default function Listings(props) {
                 .canister(canisterId)
                 .lock(tokenid, listing[1].price, props.account.address, _getRandomBytes());
             if (r.hasOwnProperty('err')) throw r.err;
-            var paytoaddress = r.ok;
+            var payToAddress = r.ok;
             props.loader(true, 'Transferring ICP...');
             await _api
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
                     props.currentAccount,
-                    paytoaddress,
+                    payToAddress,
                     listing[1].price,
                     10000,
                 );
@@ -677,7 +677,6 @@ export default function Listings(props) {
                         </Select>
                     </FormControl>
                 </h1>
-                {/*collection?.canister == "oeee4-qaaaa-aaaak-qaaeq-cai" ? <Alert severity="error"><strong>There seems to be an issue with the <a href="https://dashboard.internetcomputer.org/subnet/opn46-zyspe-hhmyp-4zu6u-7sbrh-dok77-m7dch-im62f-vyimr-a3n2c-4ae" target="_blank">oopn46-zyspe... subnet</a> which is causing issues with this collection.</strong></Alert> : ""*/}
                 <p style={{fontSize: '1.2em'}}>{collection?.blurb}</p>
             </div>
             {_isCanister(collection.canister) ? (
@@ -1060,7 +1059,7 @@ export default function Listings(props) {
                         {showing === 'all' ? (
                             listings.length > perPage ? (
                                 <Pagination
-                                    className={classes.pagi}
+                                    className={classes.pagination}
                                     size="small"
                                     count={Math.ceil(listings.length / perPage)}
                                     page={page}
@@ -1071,7 +1070,7 @@ export default function Listings(props) {
                             )
                         ) : transactions.length > perPage ? (
                             <Pagination
-                                className={classes.pagi}
+                                className={classes.pagination}
                                 size="small"
                                 count={Math.ceil(transactions.length / perPage)}
                                 page={page}
@@ -1380,7 +1379,7 @@ export default function Listings(props) {
                     {showing === 'all' ? (
                         listings.length > perPage ? (
                             <Pagination
-                                className={classes.pagi}
+                                className={classes.pagination}
                                 size="small"
                                 count={Math.ceil(listings.length / perPage)}
                                 page={page}
@@ -1391,7 +1390,7 @@ export default function Listings(props) {
                         )
                     ) : transactions.length > perPage ? (
                         <Pagination
-                            className={classes.pagi}
+                            className={classes.pagination}
                             size="small"
                             count={Math.ceil(transactions.length / perPage)}
                             page={page}
@@ -1410,7 +1409,7 @@ export default function Listings(props) {
 }
 
 const useStyles = makeStyles(theme => ({
-    pagi: {
+    pagination: {
         display: 'flex',
         justifyContent: 'flex-end',
         marginTop: '5px',

@@ -17,6 +17,8 @@ import {isInRange} from '../../utilities/number-utils.js';
 import getGenes from '../../components/CronicStats.js';
 import extjs from '../../ic/extjs';
 import {ListingsOtherControls} from './ListingsOtherControls';
+import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
+import ListingsActivity from './ListingsActivity';
 const api = extjs.connect('https://ic0.app/');
 
 function useInterval(callback, delay) {
@@ -52,11 +54,18 @@ const useDidMountEffect = (func, deps) => {
 var userPreferences;
 var storageKey = 'userPreferences';
 
-const defaultSortOption = {
+const defaultSortOptionNfts = {
     value: {
         type: 'price',
     },
     label: 'Price',
+};
+
+const defaultSortOptionActivity = {
+    value: {
+        type: 'time',
+    },
+    label: 'Time',
 };
 
 const defaultSortType = 'asc';
@@ -69,8 +78,30 @@ const defaultOpenedAccordions = [
     'traits',
 ];
 
-const sortOptions = [
-    defaultSortOption,
+const sortOptionsNfts = [
+    defaultSortOptionNfts,
+    {
+        value: {
+            type: 'rarity',
+        },
+        label: 'Rarity',
+    },
+    {
+        value: {
+            type: 'mintNumber',
+        },
+        label: 'Mint #',
+    },
+];
+
+const sortOptionsActivity = [
+    defaultSortOptionActivity,
+    {
+        value: {
+            type: 'price',
+        },
+        label: 'Price',
+    },
     {
         value: {
             type: 'rarity',
@@ -216,6 +247,16 @@ export function ListingsBody(props) {
     ] = useState(false);
     const query = searchParams.get('search') || '';
 
+    const [
+        defaultSortOption,
+        setDefaultSortOption,
+    ] = useState(defaultSortOptionNfts);
+
+    const [
+        sortOptions,
+        setSortOptions,
+    ] = useState(sortOptionsNfts);
+
     const storeUserPreferences = (preferenceKey, value) => {
         var storage = JSON.stringify({
             ...userPreferences,
@@ -266,6 +307,7 @@ export function ListingsBody(props) {
             sortOption: defaultSortOption,
             sortType: defaultSortType,
             gridSize: 'large',
+            currentTab: 'nfts',
             openedAccordion: defaultOpenedAccordions,
         };
         storeUserPreferences(false, userPreferences);
@@ -278,11 +320,15 @@ export function ListingsBody(props) {
     const [
         sort,
         setSort,
-    ] = useState(userPreferences.sortOption);
+    ] = useState(defaultSortOption);
     const [
         sortType,
         setSortType,
-    ] = useState(userPreferences.sortType || defaultSortType);
+    ] = useState(defaultSortType);
+    const [
+        currentTab,
+        setCurrentTab,
+    ] = useState(userPreferences.currentTab || 'nfts');
     const [
         gridSize,
         setGridSize,
@@ -503,7 +549,9 @@ export function ListingsBody(props) {
             });
         }, options);
 
-        observer.observe(loadingRefEl);
+        if (loadingRefEl) {
+            observer.observe(loadingRefEl);
+        }
 
         return () => {
             componentMounted.current = false;
@@ -520,14 +568,27 @@ export function ListingsBody(props) {
     return (
         <div className={classes.contentWrapper}>
             <ListingsTabs
-                collection={collection}
                 gridSize={gridSize}
                 setGridSize={setGridSize}
                 storeUserPreferences={storeUserPreferences}
                 forceCheck={forceCheck}
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
+                onTabChange={currentTab => {
+                    if (currentTab === 'nfts') {
+                        setDefaultSortOption(defaultSortOptionNfts);
+                        setSortOptions(sortOptionsNfts);
+                        setSort(defaultSortOptionNfts);
+                    } else {
+                        setDefaultSortOption(defaultSortOptionActivity);
+                        setSortOptions(sortOptionsActivity);
+                        setSort(defaultSortOptionActivity);
+                    }
+                }}
             />
             <WithFilterPanel
-                showFilters={showFilters}
+                noFilters={currentTab === 'activity' ? true : false}
+                showFilters={currentTab === 'activity' ? false : showFilters}
                 onShowFiltersChange={newShowFilters => {
                     setShowFilters(newShowFilters);
                 }}
@@ -556,51 +617,78 @@ export function ListingsBody(props) {
                     />
                 }
                 otherControlsChildren={
-                    <ListingsOtherControls
+                    currentTab === 'nfts' ? (
+                        <ListingsOtherControls
+                            setSort={setSort}
+                            storeUserPreferences={storeUserPreferences}
+                            pageListing={pageListing}
+                            forceCheck={forceCheck}
+                            hasRarity={hasRarity}
+                            sort={sort}
+                            sortOptions={sortOptions}
+                            sortType={sortType}
+                            setSortType={setSortType}
+                            gridSize={gridSize}
+                            setGridSize={setGridSize}
+                            query={query}
+                            setSearchParams={setSearchParams}
+                            showFilters={showFilters}
+                            setShowFilters={setShowFilters}
+                        />
+                    ) : (
+                        <ListingsOtherControlsActivity
+                            setSort={setSort}
+                            storeUserPreferences={storeUserPreferences}
+                            hasRarity={hasRarity}
+                            sort={sort}
+                            sortOptions={sortOptions}
+                            sortType={sortType}
+                            setSortType={setSortType}
+                            query={query}
+                            setSearchParams={setSearchParams}
+                        />
+                    )
+                }
+            >
+                {currentTab === 'nfts' ? (
+                    <ListingsNftCard
+                        collection={collection}
+                        gridSize={gridSize}
+                        filteredAndSortedListings={filteredAndSortedListings}
+                        hasListing={hasListing}
+                        pageListing={pageListing}
+                        _updates={_updates}
+                        listings={listings}
+                        loadingRef={loadingRef}
+                        buyNft={buyNft}
+                        faveRefresher={faveRefresher}
+                        identity={identity}
+                        loggedIn={loggedIn}
+                        showFilters={showFilters}
+                        sort={sort}
                         setSort={setSort}
                         storeUserPreferences={storeUserPreferences}
-                        pageListing={pageListing}
                         forceCheck={forceCheck}
+                        sortOptions={sortOptions}
                         hasRarity={hasRarity}
+                        sortType={sortType}
+                        setSortType={setSortType}
+                        currentFilters={currentFilters}
+                        setCurrentFilters={setCurrentFilters}
+                        defaultFilter={defaultFilter}
+                    />
+                ) : (
+                    <ListingsActivity
+                        collection={collection}
+                        setSort={setSort}
+                        storeUserPreferences={storeUserPreferences}
                         sort={sort}
                         sortOptions={sortOptions}
                         sortType={sortType}
                         setSortType={setSortType}
-                        gridSize={gridSize}
-                        setGridSize={setGridSize}
                         query={query}
-                        setSearchParams={setSearchParams}
-                        showFilters={showFilters}
-                        setShowFilters={setShowFilters}
                     />
-                }
-            >
-                <ListingsNftCard
-                    collection={collection}
-                    gridSize={gridSize}
-                    filteredAndSortedListings={filteredAndSortedListings}
-                    hasListing={hasListing}
-                    pageListing={pageListing}
-                    _updates={_updates}
-                    listings={listings}
-                    loadingRef={loadingRef}
-                    buyNft={buyNft}
-                    faveRefresher={faveRefresher}
-                    identity={identity}
-                    loggedIn={loggedIn}
-                    showFilters={showFilters}
-                    sort={sort}
-                    setSort={setSort}
-                    storeUserPreferences={storeUserPreferences}
-                    forceCheck={forceCheck}
-                    sortOptions={sortOptions}
-                    hasRarity={hasRarity}
-                    sortType={sortType}
-                    setSortType={setSortType}
-                    currentFilters={currentFilters}
-                    setCurrentFilters={setCurrentFilters}
-                    defaultFilter={defaultFilter}
-                />
+                )}
             </WithFilterPanel>
         </div>
     );

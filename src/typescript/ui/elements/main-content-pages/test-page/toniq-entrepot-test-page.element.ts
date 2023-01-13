@@ -1,7 +1,7 @@
 import randomWords from 'random-words';
 import {toniqFontStyles} from '@toniq-labs/design-system';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign, defineElementNoInputs, listen} from 'element-vir';
+import {html, css, assign, defineElementNoInputs} from 'element-vir';
 import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
@@ -47,7 +47,7 @@ function makeTopCards() {
     });
 }
 
-const homepageInputs: typeof EntrepotHomePageElement['inputsType'] = {
+const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
     carouselItems: doubleImages.map(url => {
         return {
             imageUrl: url,

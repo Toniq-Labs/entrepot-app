@@ -1,5 +1,5 @@
 import {dispatch} from '../events/events';
-import {EntrepotIsLiked, EntrepotLike, EntrepotUnike, EntrepotGetLikes} from '../utils';
+import {EntrepotIsLiked, EntrepotLike, EntrepotUnlike, EntrepotGetLikes} from '../utils';
 import {makeStyles} from '@material-ui/core';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import React, {useState, useEffect, useRef} from 'react';
@@ -44,7 +44,7 @@ export default function Favourite(props) {
 
     const _refresh = async () => {
         if (skipRefresh) return;
-        if (props.showcount) EntrepotGetLikes(props.tokenid).then(r => setCount(r));
+        if (props.showCount) EntrepotGetLikes(props.tokenid).then(r => setCount(r));
         setLiked(EntrepotIsLiked(props.tokenid));
     };
 
@@ -59,7 +59,7 @@ export default function Favourite(props) {
         if (liked) {
             setCount(count - 1);
             setLiked(false);
-            EntrepotUnike(props.tokenid, props.identity);
+            EntrepotUnlike(props.tokenid, props.identity);
         } else {
             setCount(count ? count + 1 : 1);
             setLiked(true);
@@ -78,7 +78,7 @@ export default function Favourite(props) {
 
     return (
         <div className={`${classes.host} ${props.className}`}>
-            {props.showcount && count && (
+            {props.showCount && count && (
                 <span>{count >= 1000 ? (count / 1000).toFixed(1) + 'k' : count}</span>
             )}
             <ToniqIcon

@@ -15,7 +15,7 @@ export function getEXTCanister(canisterId) {
     return toWrappedMap[canisterId] ?? canisterId;
 }
 
-export function getEXTID(tokenid) {
+export function getExtId(tokenid) {
     const {index, canister} = extjs.decodeTokenId(tokenid);
     return extjs.encodeTokenId(getEXTCanister(canister), index);
 }
