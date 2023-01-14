@@ -11,7 +11,6 @@ import {
     principalToAccountIdentifier,
     toHexString,
     from32bits,
-    to32bits,
     isHex,
     getSubAccountArray,
     fromHexString,
@@ -48,6 +47,7 @@ import voltOffersIDL from './candid/volt-offers.did.js';
 import voltAuctionsIDL from './candid/volt-auctions.did.js';
 import voltIDL from './candid/volt.did.js';
 import licenseIDL from './candid/license.did.js';
+import {to32bitArray} from '../typescript/augments/bits';
 
 const constructUser = u => {
     if (isHex(u) && u.length === 64) {
@@ -61,7 +61,7 @@ const tokenIdentifier = (principal, index) => {
     const array = new Uint8Array([
         ...padding,
         ...Principal.fromText(principal).toUint8Array(),
-        ...to32bits(index),
+        ...to32bitArray(index),
     ]);
     return Principal.fromUint8Array(array).toText();
 };
@@ -286,9 +286,9 @@ class ExtConnection {
                 idl = this._mapIdls[tokenObj.canister];
             else idl = _preloadedIdls['ext']; //ext is our token default...
         }
-        var api = this.canister(tokenObj.canister, idl);
+        var canisterApi = this.canister(tokenObj.canister, idl);
         return {
-            call: api,
+            call: canisterApi,
             fee: () => {
                 return new Promise((resolve, reject) => {
                     switch (tokenObj.canister) {
@@ -307,20 +307,20 @@ class ExtConnection {
             },
             size: async () => {
                 if (tokenObj.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
-                    let x = await api.getRegistry();
+                    let x = await canisterApi.getRegistry();
                     return x.length;
                 }
 
                 if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
-                    loadedTokens[tokenObj.canister] = await api.getTokens();
+                    loadedTokens[tokenObj.canister] = await canisterApi.getTokens();
                 }
                 return loadedTokens[tokenObj.canister].length;
             },
             listings: async () => {
                 if (!loadedTokens.hasOwnProperty(tokenObj.canister)) {
-                    loadedTokens[tokenObj.canister] = await api.getTokens();
+                    loadedTokens[tokenObj.canister] = await canisterApi.getTokens();
                 }
-                var listings = await api.listings();
+                var listings = await canisterApi.listings();
                 return loadedTokens[tokenObj.canister].map(a => [
                     a[0],
                     listings.find(b => b[0] === a[0])
@@ -332,7 +332,8 @@ class ExtConnection {
             stats: () => {
                 return new Promise((resolve, reject) => {
                     try {
-                        api.stats()
+                        canisterApi
+                            .stats()
                             .then(r => {
                                 resolve({
                                     total: (Number(r[0] / 1000000n) / 100).toFixed(2),
@@ -364,7 +365,7 @@ class ExtConnection {
                             if (aid !== principalToAccountIdentifier(principal, 0)) {
                                 resolve([]);
                             } else {
-                                api.user_tokens(Principal.fromText(principal)).then(r => {
+                                canisterApi.user_tokens(Principal.fromText(principal)).then(r => {
                                     resolve(
                                         r.map(x => {
                                             return {
@@ -385,7 +386,7 @@ class ExtConnection {
                             if (aid !== principalToAccountIdentifier(principal, 0)) {
                                 resolve([]);
                             } else {
-                                api.getAllNFT(Principal.fromText(principal)).then(r => {
+                                canisterApi.getAllNFT(Principal.fromText(principal)).then(r => {
                                     resolve(
                                         r.map(x => {
                                             return {
@@ -405,10 +406,12 @@ class ExtConnection {
                             }
                             break;
                         default:
-                            if (typeof api.tokens_ext == 'undefined') reject('Not supported');
+                            if (typeof canisterApi.tokens_ext == 'undefined')
+                                reject('Not supported');
                             else {
                                 try {
-                                    api.tokens_ext(aid)
+                                    canisterApi
+                                        .tokens_ext(aid)
                                         .then(r => {
                                             if (typeof r.ok != 'undefined') {
                                                 var ret = r.ok.map(d => {
@@ -449,7 +452,8 @@ class ExtConnection {
                     } else {
                         switch (tokenObj.canister) {
                             default:
-                                api.metadata(tokenObj.token)
+                                canisterApi
+                                    .metadata(tokenObj.token)
                                     .then(r => {
                                         if (typeof r.ok != 'undefined') {
                                             if (typeof r.ok.fungible != 'undefined') {
@@ -480,7 +484,8 @@ class ExtConnection {
             },
             getBearer: () => {
                 return new Promise((resolve, reject) => {
-                    api.bearer(tokenObj.token)
+                    canisterApi
+                        .bearer(tokenObj.token)
                         .then(r => {
                             if (typeof r.ok != 'undefined') resolve(r.ok);
                             else if (typeof r.err != 'undefined') reject(r.err);
@@ -491,7 +496,8 @@ class ExtConnection {
             },
             getDetails: () => {
                 return new Promise((resolve, reject) => {
-                    api.details(tokenObj.token)
+                    canisterApi
+                        .details(tokenObj.token)
                         .then(r => {
                             if (typeof r.ok != 'undefined') resolve(r.ok);
                             else if (typeof r.err != 'undefined') reject(r.err);
@@ -513,7 +519,8 @@ class ExtConnection {
                             args = {
                                 user: Principal.fromText(principal),
                             };
-                            api.getBalanceInsecure(args)
+                            canisterApi
+                                .getBalanceInsecure(args)
                                 .then(b => {
                                     var bal = b.length === 0 ? 0 : b[0];
                                     resolve(bal);
@@ -525,7 +532,8 @@ class ExtConnection {
                                 user: constructUser(address),
                                 token: tokenObj.token,
                             };
-                            api.balance(args)
+                            canisterApi
+                                .balance(args)
                                 .then(r => {
                                     if (typeof r.ok != 'undefined') resolve(r.ok);
                                     else if (typeof r.err != 'undefined') reject(r.err);
@@ -594,7 +602,8 @@ class ExtConnection {
                                 from_subaccount: [getSubAccountArray(from_sa ?? 0)],
                                 price: price === 0 ? [] : [price],
                             };
-                            api.list(args)
+                            canisterApi
+                                .list(args)
                                 .then(b => {
                                     if (typeof b.ok != 'undefined') {
                                         resolve(true);
@@ -620,7 +629,8 @@ class ExtConnection {
                                 memo: memo ? Number(BigInt(memo)) : 0,
                                 created_at_time: [],
                             };
-                            api.send_dfx(args)
+                            canisterApi
+                                .send_dfx(args)
                                 .then(bh => {
                                     resolve(true);
                                 })
@@ -636,7 +646,8 @@ class ExtConnection {
                                 reject(
                                     'This does not support traditional addresses, you must use a Principal',
                                 );
-                            api.transfer_to(Principal.fromText(to_user), tokenObj.index)
+                            canisterApi
+                                .transfer_to(Principal.fromText(to_user), tokenObj.index)
                                 .then(b => {
                                     if (b) {
                                         resolve(true);
@@ -651,11 +662,12 @@ class ExtConnection {
                                 reject(
                                     'This does not support traditional addresses, you must use a Principal',
                                 );
-                            api.transferFrom(
-                                Principal.fromText(from_principal),
-                                Principal.fromText(to_user),
-                                tokenObj.index,
-                            )
+                            canisterApi
+                                .transferFrom(
+                                    Principal.fromText(from_principal),
+                                    Principal.fromText(to_user),
+                                    tokenObj.index,
+                                )
                                 .then(b => {
                                     if (b.hasOwnProperty('ok')) {
                                         resolve(true);
@@ -672,7 +684,8 @@ class ExtConnection {
                                 from: Principal.fromText(from_principal),
                                 amount: amount,
                             };
-                            api.transfer(args)
+                            canisterApi
+                                .transfer(args)
                                 .then(b => {
                                     if (typeof b.ok != 'undefined') {
                                         resolve(true);
@@ -698,7 +711,8 @@ class ExtConnection {
                                 memo: typeof memo == 'string' ? fromHexString(memo) : memo,
                                 notify: notify,
                             };
-                            api.transfer(args)
+                            canisterApi
+                                .transfer(args)
                                 .then(b => {
                                     if (typeof b.ok != 'undefined') {
                                         resolve(b.ok);
@@ -728,7 +742,8 @@ class ExtConnection {
                                 created_at_time: [],
                                 amount: {e8s: amount},
                             };
-                            api.send_dfx(args)
+                            canisterApi
+                                .send_dfx(args)
                                 .then(block => {
                                     var args = {
                                         block_height: block,
@@ -737,7 +752,7 @@ class ExtConnection {
                                         to_subaccount: [getSubAccountArray(_to_sub)],
                                         to_canister: Principal.fromText(CYCLES_MINTING_CANISTER_ID),
                                     };
-                                    api.notify_dfx(args).then(resolve).catch(reject);
+                                    canisterApi.notify_dfx(args).then(resolve).catch(reject);
                                 })
                                 .catch(reject);
                             break;

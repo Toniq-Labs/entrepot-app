@@ -4,6 +4,7 @@ import {Ed25519KeyIdentity} from '@dfinity/identity';
 import {getCrc32} from '@dfinity/principal/lib/esm/utils/getCrc';
 import {sha224} from '@dfinity/principal/lib/esm/utils/sha224';
 import RosettaApi from './RosettaApi.js';
+import {to32bitArray} from '../typescript/augments/bits';
 
 const LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 const GOVERNANCE_CANISTER_ID = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
@@ -44,7 +45,7 @@ const principalToAccountIdentifier = (p, s) => {
         ...getSubAccountArray(s),
     ]);
     const hash = sha224(array);
-    const checksum = to32bits(getCrc32(hash));
+    const checksum = to32bitArray(getCrc32(hash));
     const array2 = new Uint8Array([
         ...checksum,
         ...hash,
@@ -58,7 +59,7 @@ const getSubAccountArray = s => {
         //32 bit number only
         return Array(28)
             .fill(0)
-            .concat(to32bits(s ? s : 0));
+            .concat(to32bitArray(s ? s : 0));
     }
 };
 const from32bits = ba => {
@@ -67,11 +68,6 @@ const from32bits = ba => {
         value = (value << 8) | ba[i];
     }
     return value;
-};
-const to32bits = num => {
-    let b = new ArrayBuffer(4);
-    new DataView(b).setUint32(0, num);
-    return Array.from(new Uint8Array(b));
 };
 const toHexString = byteArray => {
     return Array.from(byteArray, function (byte) {
@@ -137,7 +133,6 @@ export {
     principalToAccountIdentifier,
     getSubAccountArray,
     from32bits,
-    to32bits,
     toHexString,
     fromHexString,
     mnemonicToId,
