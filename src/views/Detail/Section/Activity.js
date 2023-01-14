@@ -181,7 +181,7 @@ export default function DetailSectionActivity(props) {
                             return (
                                 <NftCard
                                     listStyle={true}
-                                    imageUrl={EntrepotNFTImage(
+                                    imageTemplate={EntrepotNFTImage(
                                         getExtCanisterId(transaction.canister),
                                         index,
                                         transaction.token,

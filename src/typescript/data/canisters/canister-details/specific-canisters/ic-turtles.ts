@@ -17,10 +17,6 @@ export const icTurtlesCanisterDetails: RawCanisterDetails = {
         ].join('/');
     },
     getNftImageHtml: async ({nftLinkUrl}) => {
-        const response = await axios(nftLinkUrl);
-        const svgData = response.data;
-        const betterSvg = createResizableSvg(svgData);
-
-        return betterSvg;
+        return createResizableSvg(nftLinkUrl);
     },
 };

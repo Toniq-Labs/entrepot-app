@@ -436,7 +436,7 @@ const DetailSectionHeader = props => {
                                         return (
                                             <NftCard
                                                 listStyle={true}
-                                                imageUrl={EntrepotNFTImage(
+                                                imageTemplate={EntrepotNFTImage(
                                                     getExtCanisterId(canister),
                                                     index,
                                                     tokenid,
@@ -518,7 +518,7 @@ const DetailSectionHeader = props => {
                             return (
                                 <NftCard
                                     listStyle={true}
-                                    imageUrl={EntrepotNFTImage(
+                                    imageTemplate={EntrepotNFTImage(
                                         getExtCanisterId(canister),
                                         index,
                                         tokenid,

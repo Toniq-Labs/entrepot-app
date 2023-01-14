@@ -547,7 +547,7 @@ export function ListingsNftCard(props) {
                                             }}
                                         >
                                             <NftCard
-                                                imageTemplateString={EntrepotNFTImage(
+                                                imageTemplate={EntrepotNFTImage(
                                                     getExtCanisterId(listing.canister),
                                                     listing.index,
                                                     listing.tokenid,

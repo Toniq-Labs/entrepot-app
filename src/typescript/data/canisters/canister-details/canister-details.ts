@@ -1,20 +1,24 @@
+import {TemplateResult} from 'lit';
 import {Overwrite} from '@augment-vir/common';
-import {Promisable} from 'type-fest';
+import {Promisable, SetOptional} from 'type-fest';
 
 export type GetNftImageHtmlInputs = {
+    fullSize?: boolean;
+    nftId: string;
+    nftIndex: number;
+    priority?: number;
     /** I have no idea what this is, something to do with refresh counts. */
     ref?: number | undefined;
-    nftIndex: number;
-    nftId: string;
-    fullSize?: boolean;
-    priority?: number;
 };
 
-export type RawGetNftImageHtmlInputs = Required<
-    GetNftImageHtmlInputs & {
-        originalCanisterId: string;
-        nftLinkUrl: string;
-    }
+export type RawGetNftImageHtmlInputs = SetOptional<
+    Required<
+        GetNftImageHtmlInputs & {
+            originalCanisterId: string;
+            nftLinkUrl: string;
+        }
+    >,
+    'ref'
 >;
 
 export type RawCanisterDetails = {
@@ -25,17 +29,24 @@ export type RawCanisterDetails = {
               original: string;
           }
         | string;
-    getNftLinkUrl: (
+    /** If this isn't provided, the default method will be used. */
+    getNftLinkUrl?: (
         inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
-    ) => string;
-    getNftImageHtml: (inputs: RawGetNftImageHtmlInputs) => Promisable<string>;
+    ) => string | undefined;
+    /** If this isn't provided, the default method will be used. */
+    getNftImageHtml?: (inputs: RawGetNftImageHtmlInputs) => Promisable<TemplateResult | undefined>;
 };
 
-export type CanisterDetails = Overwrite<
-    RawCanisterDetails,
-    {
-        hasWrappedCanister: boolean;
-        extCanisterId: string;
-        getNftImageHtml: (inputs: GetNftImageHtmlInputs) => Promisable<string>;
-    }
+export type CanisterDetails = Required<
+    Overwrite<
+        RawCanisterDetails,
+        {
+            hasWrappedCanister: boolean;
+            extCanisterId: string;
+            getNftLinkUrl: (
+                inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
+            ) => string;
+            getNftImageHtml: (inputs: GetNftImageHtmlInputs) => Promisable<TemplateResult>;
+        }
+    >
 >;

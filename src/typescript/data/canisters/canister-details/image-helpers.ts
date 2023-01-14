@@ -1,4 +1,12 @@
-export function createResizableSvg(originalSvg: string): string {
+import {html} from 'element-vir';
+import {TemplateResult} from 'lit';
+import {unsafeSVG} from 'lit/directives/unsafe-svg.js';
+import axios from 'axios';
+
+export async function createResizableSvg(svgUrl: string): Promise<TemplateResult> {
+    const response = await axios(svgUrl);
+    const originalSvg = response.data;
+
     const svgWrapper = document.createElement('div');
     svgWrapper.innerHTML = originalSvg;
     const svgElement = svgWrapper.querySelector('svg')!;
@@ -13,9 +21,11 @@ export function createResizableSvg(originalSvg: string): string {
     svgElement.style.removeProperty('width');
     svgElement.style.removeProperty('height');
 
-    return svgWrapper.innerHTML;
+    return unsafeSVG(svgWrapper.innerHTML) as TemplateResult;
 }
 
-export async function getImageHTML({nftLinkUrl}: {nftLinkUrl: string}): Promise<string> {
-    return `<img src="${nftLinkUrl}" />`;
+export async function createImageHTML(imageUrl: string): Promise<TemplateResult> {
+    return html`
+        <img src="${imageUrl}" />
+    `;
 }

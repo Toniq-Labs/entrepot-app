@@ -315,7 +315,7 @@ export function ProfileBody(props) {
                             onClick={() => {
                                 navigate(`/marketplace/asset/${userNft.token}`);
                             }}
-                            imageUrl={userNft.image}
+                            imageTemplate={userNft.image}
                             key={userNft.token}
                         >
                             {nftCardContents(userNft, props)}

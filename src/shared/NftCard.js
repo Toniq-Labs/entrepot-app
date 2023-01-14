@@ -3,6 +3,7 @@ import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import {toniqColors, cssToReactStyleObject} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
+import {convertTemplateToString} from '../typescript/augments/lit';
 
 export function NftCard(props) {
     const styles = cssToReactStyleObject(css`
@@ -13,6 +14,7 @@ export function NftCard(props) {
         display: flex;
         flex-direction: ${props.listStyle ? css`row` : css`column`};
         align-items: center;
+        display: flex;
     `);
 
     const imageWrapperStyles = cssToReactStyleObject(css`
@@ -39,8 +41,12 @@ export function NftCard(props) {
     ] = useState('');
 
     useEffect(async () => {
-        setImageTemplate(await props.imageTemplateString);
-    }, [props.imageTemplateString]);
+        const template = await props.imageTemplate;
+        const templateString =
+            typeof template === 'string' ? template : convertTemplateToString(template);
+        console.log({templateString, template});
+        setImageTemplate(templateString);
+    }, [props.imageTemplate]);
 
     return (
         <DropShadowCard

@@ -1,6 +1,5 @@
 import {RawCanisterDetails} from '../canister-details';
 import {getCanisterDomain} from '../../../../api/ic-canister-domain';
-import {getImageHTML} from '../image-helpers';
 
 export const icpBunnyCanisterDetails: RawCanisterDetails = {
     collectionName: 'ICPBunny',
@@ -30,5 +29,4 @@ export const icpBunnyCanisterDetails: RawCanisterDetails = {
             nftIndex,
         ].join('/');
     },
-    getNftImageHtml: getImageHTML,
 };

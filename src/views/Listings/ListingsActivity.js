@@ -437,7 +437,7 @@ export default function ListingsActivity(props) {
                                 onClick={() => {
                                     navigate(`/marketplace/asset/${listing.token}`);
                                 }}
-                                imageUrl={listing.image}
+                                imageTemplate={listing.image}
                                 key={listing.id}
                             >
                                 <>
