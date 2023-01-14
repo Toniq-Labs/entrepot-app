@@ -21,9 +21,9 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
-import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 
@@ -111,10 +111,10 @@ export default function Wallet(props) {
     };
     const refresh = async () => {
         if (props.account) {
-            var b = await api.token().getBalance(props.account.address);
+            var b = await defaultEntrepotApi.token().getBalance(props.account.address);
             var thisAccount = loadedAccount;
             setBalance(b);
-            var volt = await api
+            var volt = await defaultEntrepotApi
                 .canister('flvm3-zaaaa-aaaak-qazaq-cai')
                 .hasOwnerCanister(props.identity.getPrincipal());
             console.log(test, volt);
@@ -127,7 +127,7 @@ export default function Wallet(props) {
                 collection = props.collections[i];
                 if (!_isCanister(collection.canister)) continue;
                 try {
-                    var tokens = await api
+                    var tokens = await defaultEntrepotApi
                         .token(collection.canister)
                         .getTokens(props.account.address);
                     if (collection.canister === 'bxdf4-baaaa-aaaah-qaruq-cai') {
@@ -136,7 +136,7 @@ export default function Wallet(props) {
                             return a;
                         });
                         tokens = tokens.concat(
-                            await api
+                            await defaultEntrepotApi
                                 .token('qcg3w-tyaaa-aaaah-qakea-cai')
                                 .getTokens(
                                     props.account.address,
@@ -149,7 +149,7 @@ export default function Wallet(props) {
                             return a;
                         });
                         tokens = tokens.concat(
-                            await api
+                            await defaultEntrepotApi
                                 .token('4nvhy-3qaaa-aaaah-qcnoq-cai')
                                 .getTokens(
                                     props.account.address,
@@ -162,7 +162,7 @@ export default function Wallet(props) {
                             return a;
                         });
                         tokens = tokens.concat(
-                            await api
+                            await defaultEntrepotApi
                                 .token('d3ttm-qaaaa-aaaai-qam4a-cai')
                                 .getTokens(
                                     props.account.address,
@@ -175,7 +175,7 @@ export default function Wallet(props) {
                             return a;
                         });
                         tokens = tokens.concat(
-                            await api
+                            await defaultEntrepotApi
                                 .token('xkbqi-2qaaa-aaaah-qbpqq-cai')
                                 .getTokens(
                                     props.account.address,
@@ -188,7 +188,7 @@ export default function Wallet(props) {
                             return a;
                         });
                         tokens = tokens.concat(
-                            await api
+                            await defaultEntrepotApi
                                 .token('fl5nr-xiaaa-aaaai-qbjmq-cai')
                                 .getTokens(
                                     props.account.address,

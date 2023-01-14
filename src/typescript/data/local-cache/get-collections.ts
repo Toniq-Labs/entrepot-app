@@ -1,6 +1,6 @@
 import {isCanisterId} from '../canisters/canister-id';
 import {Collection, BaseCollection, CollectionStats} from '../models/collection';
-import {entrepotDataApi} from '../../api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../api/entrepot-data-api';
 import {removeUnknownKeys} from './cache-cleanup';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {isProd} from '../../environment/environment-by-url';
@@ -70,7 +70,7 @@ async function getCollectionsStats(
                 fetchValueCallback: async (): Promise<Collection['stats']> => {
                     if (baseCollection.market) {
                         try {
-                            const stats = await entrepotDataApi.token(baseCollection.id).stats();
+                            const stats = await defaultEntrepotApi.token(baseCollection.id).stats();
                             return stats;
                         } catch (error) {
                             return undefined;

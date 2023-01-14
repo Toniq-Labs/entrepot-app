@@ -5,6 +5,7 @@ import extjs from '../../ic/extjs';
 import {EntrepotCollectionStats} from '../../utils';
 import DetailBody from './DetailBody';
 import OfferForm from '../../components/OfferForm';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
 
 const Detail = props => {
     let {tokenid} = useParams();
@@ -30,7 +31,7 @@ const Detail = props => {
     ] = useState(false);
 
     const reloadOffers = async () => {
-        await api
+        await defaultEntrepotApi
             .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
             .offers(tokenid)
             .then(r => {

@@ -30,7 +30,7 @@ import {
     isWrappedType,
     getExtCanisterId,
 } from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
-import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -128,7 +128,7 @@ export default function NFT(props) {
     };
     const getListing = () => {
         if (isNotEXT) return setListing(false);
-        entrepotDataApi
+        defaultEntrepotApi
             .token(canister)
             .listings()
             .then(r => {
@@ -138,20 +138,20 @@ export default function NFT(props) {
             });
     };
     const getMetadata = async () => {
-        var md = await entrepotDataApi.token(tokenid).getMetadata();
+        var md = await defaultEntrepotApi.token(tokenid).getMetadata();
         if (typeof md != 'undefined' && md.type == 'nonfungible') {
             setMetadata(md.metadata[0]);
         }
     };
     const getAuction = async () => {
-        var resp = await entrepotDataApi
+        var resp = await defaultEntrepotApi
             .canister('ffxbt-cqaaa-aaaak-qazbq-cai')
             .auction(getExtId(tokenid));
         if (resp.length) setAuction(resp[0]);
         else setAuction(false);
     };
     const getOffer = async () => {
-        await entrepotDataApi
+        await defaultEntrepotApi
             .canister('fcwhh-piaaa-aaaak-qazba-cai')
             .offers(getExtId(tokenid))
             .then(r => {

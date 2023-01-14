@@ -5,7 +5,10 @@ import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
 import {TREASURE_CANISTER} from './utilities/treasure-canister';
 import {getCanisterDetails} from './typescript/data/canisters/canister-details/all-canister-details';
-import {entrepotDataApi} from './typescript/api/entrepot-data-api';
+import {
+    defaultEntrepotApi,
+    createEntrepotApiWithIdentity,
+} from './typescript/api/entrepot-data-api';
 
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -59,7 +62,7 @@ const _getStats = async () => {
         } else {
             pxs.push(
                 (c =>
-                    entrepotDataApi
+                    defaultEntrepotApi
                         .token(c)
                         .stats()
                         .then(r => {
@@ -117,7 +120,7 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetailsData = id => {
         if (!earnData.hasOwnProperty(id)) {
-            entrepotDataApi
+            defaultEntrepotApi
                 .canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
@@ -131,7 +134,7 @@ const clipboardCopy = text => {
     },
     EntrepotEarnDetails = (id, nft_price) => {
         if (!earnData.hasOwnProperty(id)) {
-            entrepotDataApi
+            defaultEntrepotApi
                 .canister(TREASURE_CANISTER)
                 .tp_loanDetails(id)
                 .then(r => {
@@ -172,27 +175,21 @@ const clipboardCopy = text => {
         return '';
     },
     EntrepotNFTImage = async (collection, tokenIndex, id, fullSize, ref, cachePriority) => {
-        if (typeof ref == 'undefined') ref = '';
-        else ref = '?' + ref;
+        // if (typeof ref == 'undefined') ref = '';
+        // else ref = '?' + ref;
 
         if (typeof cachePriority == 'undefined') cachePriority = '10';
-
-        if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false) {
-            // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
-
-            return (
-                'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' +
-                extjs.encodeTokenId('dexpm-6aaaa-aaaal-qbgrq-cai', tokenIndex) +
-                ref +
-                '&cache=' +
-                cachePriority
-            );
-        }
 
         const collectionCanisterDetails = getCanisterDetails(collection);
 
         if (collectionCanisterDetails) {
-            return await collectionCanisterDetails.getNftImageHtml({nftIndex: tokenIndex});
+            return await collectionCanisterDetails.getNftImageHtml({
+                fullSize,
+                nftId: id,
+                nftIndex: tokenIndex,
+                priority: Number(cachePriority),
+                ref: Number(ref),
+            });
         }
 
         if (collection === 'pk6rk-6aaaa-aaaae-qaazq-cai') {
@@ -310,7 +307,7 @@ const clipboardCopy = text => {
         if (collection === TREASURE_CANISTER) {
             var nftImage = false;
             if (!earnData.hasOwnProperty(tokenid)) {
-                entrepotDataApi
+                defaultEntrepotApi
                     .canister(TREASURE_CANISTER)
                     .tp_loanDetails(tokenid)
                     .then(r => {
@@ -414,7 +411,7 @@ const clipboardCopy = text => {
     EntrepotUpdateUSD = async () => {
         if (!lastUpdate || Date.now() - lastUpdate > 10 * 60 * 1000) {
             lastUpdate = Date.now();
-            var b = await entrepotDataApi
+            var b = await defaultEntrepotApi
                 .canister('rkp4c-7iaaa-aaaaa-aaaca-cai')
                 .get_icp_xdr_conversion_rate();
             var b2 = await fetch(
@@ -438,14 +435,14 @@ const clipboardCopy = text => {
     },
     EntrepotUpdateLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://ic0.app/', identity);
-            _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
+            const entrepotApi = createEntrepotApiWithIdentity(identity);
+            _liked = await entrepotApi.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
         } else _liked = [];
     },
     EntrepotSaveLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://ic0.app/', identity);
-            await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').saveLiked(_liked);
+            const entrepotApi = createEntrepotApiWithIdentity(identity);
+            await entrepotApi.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').saveLiked(_liked);
         }
     },
     EntrepotIsLiked = tokenid => {
@@ -467,7 +464,7 @@ const clipboardCopy = text => {
     },
     EntrepotGetLikes = async (tokenid, skipCache) => {
         if (!tokenLikes.hasOwnProperty(tokenid) || !skipCache) {
-            var likes = await entrepotDataApi
+            var likes = await defaultEntrepotApi
                 .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                 .likes(tokenid);
             tokenLikes[tokenid] = Number(likes);

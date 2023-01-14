@@ -5,7 +5,10 @@ import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from '@augment-vir/common';
-import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
+import {
+    defaultEntrepotApi,
+    createEntrepotApiWithIdentity,
+} from '../../typescript/api/entrepot-data-api';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
@@ -129,8 +132,7 @@ async function getOwnedNfts(address, identity, collections) {
 }
 
 async function getOffersMadeNfts(address, identity, collections) {
-    const offersMadeNftIds = await extjs
-        .connect('https://ic0.app/', identity)
+    const offersMadeNftIds = await createEntrepotApiWithIdentity(identity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .offered();
     const offersMadeNfts = await Promise.all(
@@ -151,8 +153,7 @@ async function getOffersMadeNfts(address, identity, collections) {
 }
 
 async function getFavoritesNfts(address, identity, collections) {
-    const favoriteNftIds = await extjs
-        .connect('https://ic0.app/', identity)
+    const favoriteNftIds = await createEntrepotApiWithIdentity(identity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .liked();
     const favoriteNfts = await Promise.all(
@@ -178,7 +179,7 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
 
     const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
     const offers = loadListing
-        ? await entrepotDataApi
+        ? await defaultEntrepotApi
               .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
               .offers(getExtId(rawNft.token))
         : [];

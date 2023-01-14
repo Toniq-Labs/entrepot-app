@@ -8,7 +8,7 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../PriceICP';
-import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
 
 const useStyles = makeStyles(() => ({
     hoverCard: {
@@ -40,7 +40,7 @@ export function MinimumOffer(props) {
     let aborted = abortController.signal.aborted;
 
     const getOffers = async () => {
-        let offers = await entrepotDataApi
+        let offers = await defaultEntrepotApi
             .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
             .offers(props.tokenid);
         aborted = abortController.signal.aborted;

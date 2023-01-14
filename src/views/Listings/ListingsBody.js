@@ -20,7 +20,7 @@ import extjs from '../../ic/extjs';
 import {ListingsOtherControls} from './ListingsOtherControls';
 import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
 import ListingsActivity from './ListingsActivity';
-import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -363,10 +363,10 @@ export function ListingsBody(props) {
 
     const _updates = async (s, canister) => {
         canister = canister ?? collection?.canister;
-        setSize(await entrepotDataApi.token(collection.canister).size());
+        setSize(await defaultEntrepotApi.token(collection.canister).size());
 
         try {
-            var result = await entrepotDataApi.token(canister).listings();
+            var result = await defaultEntrepotApi.token(canister).listings();
             let traitsCategories;
             if (traitsData) {
                 traitsCategories = sortBy(

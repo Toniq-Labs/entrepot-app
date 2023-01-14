@@ -21,6 +21,10 @@ import Sold from './Sold';
 import SoldListing from './SoldListing';
 import BuyForm from './BuyForm';
 import {useNavigate} from 'react-router';
+import {
+    defaultEntrepotApi,
+    createEntrepotApiWithIdentity,
+} from '../typescript/api/entrepot-data-api';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -507,14 +511,14 @@ export default function Listings(props) {
                 return props.loader(false);
             }
             props.loader(true, 'Locking NFT...');
-            const _api = extjs.connect('https://ic0.app/', props.identity);
-            var r = await _api
+            const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+            var r = await entrepotApi
                 .canister(canisterId)
                 .lock(tokenid, listing[1].price, props.account.address, _getRandomBytes());
             if (r.hasOwnProperty('err')) throw r.err;
             var payToAddress = r.ok;
             props.loader(true, 'Transferring ICP...');
-            await _api
+            await entrepotApi
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
@@ -527,7 +531,7 @@ export default function Listings(props) {
             while (true) {
                 try {
                     props.loader(true, 'Settling purchase...');
-                    r3 = await _api.canister(canisterId).settle(tokenid);
+                    r3 = await entrepotApi.canister(canisterId).settle(tokenid);
                     if (r3.hasOwnProperty('ok')) break;
                 } catch (e) {}
             }
@@ -575,10 +579,10 @@ export default function Listings(props) {
             if (s === 'all') {
                 try {
                     if (c === 'e3izy-jiaaa-aaaah-qacbq-cai') {
-                        var txs = await api.canister(c).transactions();
+                        var txs = await defaultEntrepotApi.canister(c).transactions();
                         setTransactions(txs.slice(82));
                     }
-                    var listings = await api.canister(c).listings();
+                    var listings = await defaultEntrepotApi.canister(c).listings();
                     setAllListings(listings);
                     setListings(applyFilters(listings, s, c));
 
@@ -591,13 +595,13 @@ export default function Listings(props) {
                             'dv6u3-vqaaa-aaaah-qcdlq-cai',
                         ].indexOf(c) >= 0
                     ) {
-                        var txs = await api.canister(c).transactions();
+                        var txs = await defaultEntrepotApi.canister(c).transactions();
                         var nt = txs;
                         setTempTx(applyFilters(nt, s, c));
                     }
                 } catch (e) {}
             } else {
-                var txs = await api.canister(c).transactions();
+                var txs = await defaultEntrepotApi.canister(c).transactions();
                 var nt = txs;
                 if (c === 'e3izy-jiaaa-aaaah-qacbq-cai') {
                     nt = txs.slice(82);

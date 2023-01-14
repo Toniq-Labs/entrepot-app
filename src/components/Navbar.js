@@ -32,7 +32,7 @@ import {
 import {icpToString} from './PriceICP';
 import {subscribe, unsubscribe} from '../events/events';
 import {loadVoltBalance} from '../volt';
-import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -99,7 +99,7 @@ export default function Navbar(props) {
 
     const refresh = async () => {
         if (props.account) {
-            var b = await entrepotDataApi.token().getBalance(props.account.address);
+            var b = await defaultEntrepotApi.token().getBalance(props.account.address);
             setBalance(b);
             if (props.currentAccount === 0) setVoltBalances(await loadVoltBalance(props.identity));
         } else {

@@ -31,6 +31,10 @@ import {makeStyles} from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
 import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {
+    createEntrepotApiWithIdentity,
+    defaultEntrepotApi,
+} from '../typescript/api/entrepot-data-api';
 
 const perPage = 60;
 
@@ -291,8 +295,7 @@ export default function UserCollection(props) {
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'favorites':
-                var r = await extjs
-                    .connect('https://ic0.app/', props.identity)
+                var r = await createEntrepotApiWithIdentity(props.identity)
                     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                     .liked();
                 data = r.filter((a, i) => r.indexOf(a) == i);
@@ -307,8 +310,7 @@ export default function UserCollection(props) {
                 }));
                 break;
             case 'offers-made':
-                var r = await extjs
-                    .connect('https://ic0.app/', props.identity)
+                var r = await createEntrepotApiWithIdentity(props.identity)
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
                 data = r.filter((a, i) => r.indexOf(a) == i);
@@ -329,8 +331,7 @@ export default function UserCollection(props) {
                                 address +
                                 '/all',
                         ),
-                        extjs
-                            .connect('https://ic0.app/', props.identity)
+                        createEntrepotApiWithIdentity(props.identity)
                             .canister('fcwhh-piaaa-aaaak-qazba-cai')
                             .allOffers(),
                     ].map(p => p.catch(e => e)),
@@ -457,8 +458,7 @@ export default function UserCollection(props) {
     React.useEffect(() => {
         console.log('Hook: start');
         setDisplayedResults(false);
-        extjs
-            .connect('https://ic0.app/')
+        defaultEntrepotApi
             .canister('yigae-jqaaa-aaaah-qczbq-cai')
             .tp_whitelisted()
             .then(r => {

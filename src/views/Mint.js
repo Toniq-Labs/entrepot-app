@@ -1,19 +1,14 @@
 /* global BigInt */
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import {makeStyles, Container} from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import {clipboardCopy} from '../utils';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
 
-import {StoicIdentity} from 'ic-stoic-identity';
-import extjs from '../ic/extjs.js';
 function generateThumbnail(file, boundBox) {
     return new Promise((resolve, reject) => {
         var tt = file.type.split('/');
@@ -259,8 +254,8 @@ export default function Mint(props) {
     const classes = useStyles();
     const chunkSize = 1900000;
     const _updates = async () => {
-        const api = extjs.connect('https://ic0.app/', props.identity);
-        var cs = await api.canister('33uhc-liaaa-aaaah-qcbra-cai').getCanisters();
+        const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var cs = await entrepotApi.canister('33uhc-liaaa-aaaah-qcbra-cai').getCanisters();
         var newCans = cs.map(p => p.toText());
         setCanisters(newCans);
         if (!canister && newCans.length) {
@@ -282,15 +277,16 @@ export default function Mint(props) {
         );
         if (!v) return;
         props.loader(true, 'Attempting Bulk transfer...');
-        var API = extjs.connect('https://ic0.app/', props.identity);
-        var _api = API.canister(canister, 'nft');
+        var entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var canisterApi = entrepotApi.canister(canister, 'nft');
         var reader = new FileReader();
         reader.onload = function () {
             var data = CSVToArray(reader.result).map(a => [
                 Number(a[0]),
                 a[1],
             ]);
-            _api.transfer_bulk(data)
+            canisterApi
+                .transfer_bulk(data)
                 .then(r => {
                     console.log(r);
                     props.loader(false);
@@ -317,15 +313,16 @@ export default function Mint(props) {
         );
         if (!v) return;
         props.loader(true, 'Attempting Bulk list...');
-        var API = extjs.connect('https://ic0.app/', props.identity);
-        var _api = API.canister(canister, 'nft');
+        var entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var canisterApi = entrepotApi.canister(canister, 'nft');
         var reader = new FileReader();
         reader.onload = function () {
             var data = CSVToArray(reader.result).map(a => [
                 Number(a[0]),
                 BigInt(a[1]),
             ]);
-            _api.list_bulk(data)
+            canisterApi
+                .list_bulk(data)
                 .then(r => {
                     console.log(r);
                     props.loader(false);
@@ -346,8 +343,8 @@ export default function Mint(props) {
     const mintAction = async () => {
         if (!selectedFiles.length) return props.error('Please select a file first');
         if (!canister) return props.error('Please select a canister first');
-        var API = extjs.connect('https://ic0.app/', props.identity);
-        var _api = API.canister(canister, 'nft');
+        var entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var canisterApi = entrepotApi.canister(canister, 'nft');
         for (var i = 0; i < selectedFiles.length; i++) {
             props.loader(true, 'Working on ' + selectedFiles[i].name);
             var payload = new Uint8Array(await selectedFiles[i].arrayBuffer());
@@ -376,7 +373,7 @@ export default function Mint(props) {
                     ctype: selectedFiles[i].type,
                     data: [pl],
                 };
-                var assetId = await _api.addAsset(args);
+                var assetId = await canisterApi.addAsset(args);
             } else {
                 var n = Math.ceil(pl.length / chunkSize);
                 props.loader(true, 'Uploading ' + selectedFiles[i].name + ' as ' + n + ' Chunks');
@@ -385,18 +382,18 @@ export default function Mint(props) {
                     data: [pl.splice(0, chunkSize)],
                 };
                 props.loader(true, 'Sending Chunk 1/' + n);
-                var assetId = await _api.addAsset(args);
+                var assetId = await canisterApi.addAsset(args);
                 var c = 1;
                 while (pl.length > chunkSize) {
                     c++;
                     props.loader(true, 'Sending Chunk ' + c + '/' + n);
-                    await _api.streamAsset(assetId, false, pl.splice(0, chunkSize));
+                    await canisterApi.streamAsset(assetId, false, pl.splice(0, chunkSize));
                 }
                 props.loader(true, 'Sending final Chunk');
-                await _api.streamAsset(assetId, false, pl);
+                await canisterApi.streamAsset(assetId, false, pl);
             }
             props.loader(true, 'Asset loaded, minting NFT...');
-            var r = await _api.mintNFT({
+            var r = await canisterApi.mintNFT({
                 to: props.address,
                 asset: assetId,
             });

@@ -50,7 +50,10 @@ import {
     EntrepotUpdateStats,
 } from './utils';
 import {TREASURE_CANISTER} from './utilities/treasure-canister';
-import {connectToEntrepotDataApi, entrepotDataApi} from './typescript/api/entrepot-data-api';
+import {
+    createEntrepotApiWithIdentity,
+    defaultEntrepotApi,
+} from './typescript/api/entrepot-data-api';
 import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 const transactionFee = 10000;
@@ -288,7 +291,7 @@ export default function App() {
     const repayContract = async (token, repaymentAddress, amount, reward, refresh) => {
         loader(true, 'Making repayment...');
         try {
-            const rBalance = BigInt(await entrepotDataApi.token().getBalance(repaymentAddress));
+            const rBalance = BigInt(await defaultEntrepotApi.token().getBalance(repaymentAddress));
             var owed = amount + reward - rBalance;
             if (owed > 0n) {
                 if (balance < owed + 10000n) {
@@ -298,7 +301,7 @@ export default function App() {
                     );
                 }
                 loader(true, 'Transferring ICP...');
-                connectToEntrepotDataApi(identity)
+                createEntrepotApiWithIdentity(identity)
                     .token()
                     .transfer(
                         identity.getPrincipal(),
@@ -309,8 +312,7 @@ export default function App() {
                     );
             }
             loader(true, 'Closing contract...');
-            var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+            var r2 = await createEntrepotApiWithIdentity(identity)
                 .canister(TREASURE_CANISTER)
                 .tp_close(token);
             if (r2.hasOwnProperty('err')) throw r2.err;
@@ -333,7 +335,7 @@ export default function App() {
         if (v) {
             try {
                 loader(true, 'Cancelling request...');
-                var r = connectToEntrepotDataApi(identity)
+                var r = createEntrepotApiWithIdentity(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -359,18 +361,18 @@ export default function App() {
         if (v) {
             try {
                 loader(true, 'Accepting request...');
-                var r = connectToEntrepotDataApi(identity)
+                var r = createEntrepotApiWithIdentity(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
                 var payToAddress = r.ok;
                 loader(true, 'Transferring ICP...');
-                connectToEntrepotDataApi(identity)
+                createEntrepotApiWithIdentity(identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, payToAddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
-                var r2 = connectToEntrepotDataApi(identity)
+                var r2 = createEntrepotApiWithIdentity(identity)
                     .canister(TREASURE_CANISTER)
                     .tp_settle(payToAddress);
                 loader(true, 'Reloading requests...');
@@ -401,8 +403,8 @@ export default function App() {
                 return false;
             }
             loader(true, 'Locking NFT...');
-            const _api = extjs.connect('https://ic0.app/', identity);
-            var r = await _api
+            const entrepotApi = createEntrepotApiWithIdentity(identity);
+            var r = await entrepotApi
                 .canister(canisterId)
                 .lock(tokenid, listing.price, accounts[currentAccount].address, _getRandomBytes());
             if (r.hasOwnProperty('err')) throw r.err;
@@ -414,7 +416,7 @@ export default function App() {
                 );
             }
             loader(true, 'Transferring ICP...');
-            await _api
+            await entrepotApi
                 .token()
                 .transfer(
                     identity.getPrincipal(),
@@ -425,7 +427,7 @@ export default function App() {
                 );
             var r3;
             loader(true, 'Settling purchase...');
-            await _api.canister(canisterId).settle(tokenid);
+            await entrepotApi.canister(canisterId).settle(tokenid);
             loader(false);
             alert(
                 'Transaction complete',
@@ -489,8 +491,8 @@ export default function App() {
             !_collection.legacy
         )
             return true;
-        const _api = extjs.connect('https://ic0.app/', identity);
-        var payments = await _api.canister(_collection.canister).payments();
+        const entrepotApi = createEntrepotApiWithIdentity(identity);
+        var payments = await entrepotApi.canister(_collection.canister).payments();
         if (payments.length === 0) return true;
         if (payments[0].length === 0) return true;
         if (payments[0].length === 1) loader(true, 'Payment found, processing...');
@@ -499,13 +501,13 @@ export default function App() {
         for (var i = 0; i < payments[0].length; i++) {
             payment = payments[0][i];
             a = extjs.toAddress(identity.getPrincipal().toText(), payment);
-            b = Number(await entrepotDataApi.token().getBalance(a));
+            b = Number(await defaultEntrepotApi.token().getBalance(a));
             c = Math.round(b * _collection.commission);
             try {
                 var txs = [];
                 if (b > transactionMin) {
                     txs.push(
-                        _api
+                        entrepotApi
                             .token()
                             .transfer(
                                 identity.getPrincipal().toText(),
@@ -516,7 +518,7 @@ export default function App() {
                             ),
                     );
                     txs.push(
-                        _api
+                        entrepotApi
                             .token()
                             .transfer(
                                 identity.getPrincipal().toText(),
@@ -734,8 +736,7 @@ export default function App() {
     const unwrapNft = async (token, loader, refresh) => {
         loader(true, 'Unwrapping NFT...');
         var canister = extjs.decodeTokenId(token.id).canister;
-        var r = await extjs
-            .connect('https://ic0.app/', identity)
+        var r = await createEntrepotApiWithIdentity(identity)
             .canister(canister)
             .unwrap(token.id, [extjs.toSubAccount(currentAccount ?? 0)]);
         if (!r) {
@@ -757,10 +758,10 @@ export default function App() {
             var canister = getExtCanisterId([decoded.canister]);
             if (loader) loader(true, 'Creating wrapper...this may take a few minutes');
             try {
-                var r = connectToEntrepotDataApi(identity).canister(canister).wrap(token.id);
+                var r = createEntrepotApiWithIdentity(identity).canister(canister).wrap(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Sending NFT to wrapper...');
-                var r2 = await connectToEntrepotDataApi(identity)
+                var r2 = await createEntrepotApiWithIdentity(identity)
                     .token(token.id)
                     .transfer(
                         identity.getPrincipal().toText(),
@@ -773,7 +774,7 @@ export default function App() {
                     );
                 if (!r2) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Wrapping NFT...');
-                await extjs.connect('https://ic0.app/', identity).canister(canister).mint(token.id);
+                await createEntrepotApiWithIdentity(identity).canister(canister).mint(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Loading NFTs...');
                 if (refresh) await refresh();
@@ -872,8 +873,7 @@ export default function App() {
     const pawn = async (id, amount, reward, length, loader, refresh) => {
         if (loader) loader(true, 'Creating Earn Request...');
         try {
-            var r = await extjs
-                .connect('https://ic0.app/', identity)
+            var r = await createEntrepotApiWithIdentity(identity)
                 .canister('yigae-jqaaa-aaaah-qczbq-cai')
                 .tp_create(
                     id,
@@ -887,8 +887,7 @@ export default function App() {
             if (r.hasOwnProperty('err')) throw r.err;
             if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
             if (loader) loader(true, 'Sending NFT to canister...');
-            var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+            var r2 = await createEntrepotApiWithIdentity(identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -912,9 +911,9 @@ export default function App() {
     const _voltCreate = async showAlert => {
         loader(true, 'Creating Volt wallet...');
         try {
-            var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', identity)
-                .canister('flvm3-zaaaa-aaaak-qazaq-cai');
+            var voltFactoryAPI = createEntrepotApiWithIdentity(identity).canister(
+                'flvm3-zaaaa-aaaak-qazaq-cai',
+            );
             var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
             if (volt.length) {
                 loader(false);
@@ -941,8 +940,7 @@ export default function App() {
                 ) {
                     loader(true, 'Transferring ICP...');
                     var address = await voltFactoryAPI.getPaymentAddress(identity.getPrincipal());
-                    await extjs
-                        .connect('https://ic0.app/', identity)
+                    await createEntrepotApiWithIdentity(identity)
                         .token()
                         .transfer(
                             identity.getPrincipal(),
@@ -975,20 +973,21 @@ export default function App() {
             }
         }
         try {
-            var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', identity)
-                .canister('flvm3-zaaaa-aaaak-qazaq-cai');
+            var voltFactoryAPI = createEntrepotApiWithIdentity(identity).canister(
+                'flvm3-zaaaa-aaaak-qazaq-cai',
+            );
             var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
             if (volt.length) {
             } else throw 'There was a problem finding your Volt!';
-            var voltAPI = extjs
-                .connect('https://ic0.app/', identity)
-                .canister(volt[0].toText(), 'volt');
+            var voltAPI = createEntrepotApiWithIdentity(identity).canister(
+                volt[0].toText(),
+                'volt',
+            );
 
             if (deposit) {
                 loader(true, 'Transferring ICP to Volt');
                 var address = await voltAPI.getAddress();
-                var r2 = connectToEntrepotDataApi(identity)
+                var r2 = createEntrepotApiWithIdentity(identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, address, amount, 10000);
                 if (refresh) {
@@ -1032,8 +1031,7 @@ export default function App() {
     const transfer = async (id, address, loader, refresh) => {
         if (loader) loader(true, 'Transferring NFT...');
         try {
-            var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+            var r2 = await createEntrepotApiWithIdentity(identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -1058,8 +1056,7 @@ export default function App() {
     const list = async (id, price, loader, refresh) => {
         if (loader) loader(true);
         try {
-            var r = await extjs
-                .connect('https://ic0.app/', identity)
+            var r = await createEntrepotApiWithIdentity(identity)
                 .token(id)
                 .list(currentAccount, price);
             console.log(r);

@@ -1,6 +1,5 @@
 /* global BigInt */
 import React from 'react';
-import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -8,6 +7,10 @@ import Timestamp from 'react-timestamp';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import {
+    defaultEntrepotApi,
+    createEntrepotApiWithIdentity,
+} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -95,7 +98,7 @@ export default function OldSaleComponent(props) {
     ] = React.useState([1n]);
 
     const _updates = async () => {
-        var salesSettings = await api
+        var salesSettings = await defaultEntrepotApi
             .canister(collection.canister, 'sale')
             .salesSettings(props.account ? props.account.address : '');
         setSalePrice(salesSettings.salePrice);
@@ -145,8 +148,8 @@ export default function OldSaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://ic0.app/', props.identity);
-            var r = await api
+            const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+            var r = await entrepotApi
                 .canister(collection.canister, 'sale')
                 .reserve(price, qty, props.account.address, _getRandomBytes());
             if (r.hasOwnProperty('err')) {
@@ -155,7 +158,7 @@ export default function OldSaleComponent(props) {
             var payToAddress = r.ok[0];
             var priceToPay = r.ok[1];
             props.loader(true, 'Transferring ICP...');
-            await api
+            await entrepotApi
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
@@ -168,7 +171,9 @@ export default function OldSaleComponent(props) {
             while (true) {
                 try {
                     props.loader(true, 'Completing purchase...');
-                    r3 = await api.canister(collection.canister, 'sale').retrieve(payToAddress);
+                    r3 = await entrepotApi
+                        .canister(collection.canister, 'sale')
+                        .retrieve(payToAddress);
                 } catch (e) {
                     continue;
                 }

@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import {makeStyles} from '@material-ui/core';
-import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 
 const useStyles = makeStyles(theme => ({
     banner: {
@@ -60,7 +60,7 @@ export default function CollectionDetails(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blurbElement]);
     React.useEffect(() => {
-        entrepotDataApi
+        defaultEntrepotApi
             .token(collection.canister)
             .size()
             .then(s => {

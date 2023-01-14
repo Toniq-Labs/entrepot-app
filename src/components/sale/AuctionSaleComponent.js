@@ -19,6 +19,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
 
 const perPage = 60;
 const drawerWidth = 0; //300;
@@ -368,9 +369,9 @@ export default function Listings(props) {
         if (!_isCanister(c)) return updateListings([]);
         if (!collection.market) return updateListings([]);
 
-        setSize(await api.token(collection.canister).size());
+        setSize(await defaultEntrepotApi.token(collection.canister).size());
         try {
-            var listings = await api.token(c).listings();
+            var listings = await defaultEntrepotApi.token(c).listings();
             if (collection?.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
                 listings = listings.filter((val, idx) => {
                     if (idx >= size) return false;
@@ -409,9 +410,7 @@ export default function Listings(props) {
             }
             var auctions = [];
             if (_showing == 'auction') {
-                var auctionsAPI = extjs
-                    .connect('https://ic0.app/')
-                    .canister('ffxbt-cqaaa-aaaak-qazbq-cai');
+                var auctionsAPI = defaultEntrepotApi.canister('ffxbt-cqaaa-aaaak-qazbq-cai');
                 auctions = (await auctionsAPI.allAuctions())
                     .map(a => extjs.decodeTokenId(a))
                     .filter(a => a.canister == collection.canister)

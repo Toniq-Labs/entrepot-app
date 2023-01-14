@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import Flip from './Flip';
 import extjs from '../ic/extjs.js';
 import {EntrepotNFTImage} from '../utils';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
+
 var settings = {
     '6wih6-siaaa-aaaah-qczva-cai': {
         video: false,
@@ -63,8 +65,7 @@ export default function Opener(props) {
         setOpenerOpen(true);
         //hot api, will sign as identity - BE CAREFUL
         try {
-            var r = await extjs
-                .connect('https://ic0.app/', props.identity)
+            var r = await createEntrepotApiWithIdentity(props.identity)
                 .canister(props.nft.canister, 'ext')
                 .unpack(props.nft.id, [extjs.toSubAccount(props.currentAccount ?? 0)]);
             if (r.hasOwnProperty('err')) throw r.err;

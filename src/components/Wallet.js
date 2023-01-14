@@ -37,7 +37,7 @@ import PriceICP from '../components/PriceICP';
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
-import {entrepotDataApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -150,7 +150,7 @@ export default function Wallet(props) {
     const refreshBalance = async () => {
         if (props.account) {
             try {
-                setBalance(await entrepotDataApi.token().getBalance(props.account.address));
+                setBalance(await defaultEntrepotApi.token().getBalance(props.account.address));
             } catch (e) {
                 if (
                     e ==

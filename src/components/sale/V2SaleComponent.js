@@ -1,6 +1,5 @@
 /* global BigInt */
 import React, {useState} from 'react';
-import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +12,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import {
+    createEntrepotApiWithIdentity,
+    defaultEntrepotApi,
+} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -104,7 +107,7 @@ export default function V2SaleComponent(props) {
     }, [blurbElement]);
 
     const _updates = async () => {
-        var resp = await api
+        var resp = await defaultEntrepotApi
             .canister(collection.canister, 'ext2')
             .ext_saleSettings(props.account ? props.account.address : '');
         if (!resp.length) return;
@@ -198,8 +201,8 @@ export default function V2SaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://ic0.app/', props.identity);
-            var r = await api
+            const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+            var r = await entrepotApi
                 .canister(collection.canister, 'ext2')
                 .ext_salePurchase(id, price, qty, props.account.address);
             if (r.hasOwnProperty('err')) {
@@ -208,7 +211,7 @@ export default function V2SaleComponent(props) {
             var payToAddress = r.ok[0];
             var priceToPay = r.ok[1];
             props.loader(true, 'Transferring ICP...');
-            await api
+            await entrepotApi
                 .token()
                 .transfer(
                     props.identity.getPrincipal(),
@@ -221,7 +224,7 @@ export default function V2SaleComponent(props) {
             while (true) {
                 try {
                     props.loader(true, 'Completing purchase...');
-                    r3 = await api
+                    r3 = await entrepotApi
                         .canister(collection.canister, 'ext2')
                         .ext_saleSettle(payToAddress);
                 } catch (e) {

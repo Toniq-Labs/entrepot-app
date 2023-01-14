@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {Principal} from '@dfinity/principal';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
 
 export default function AuctionForm(props) {
     const [
@@ -51,9 +52,9 @@ export default function AuctionForm(props) {
         //Submit
         props.loader(true, 'Loading Volt...');
         try {
-            var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', props.identity)
-                .canister('flvm3-zaaaa-aaaak-qazaq-cai');
+            var voltFactoryAPI = createEntrepotApiWithIdentity(props.identity).canister(
+                'flvm3-zaaaa-aaaak-qazaq-cai',
+            );
             var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
             if (!volt.length) {
                 props.loader(false);
@@ -69,9 +70,10 @@ export default function AuctionForm(props) {
             }
             props.loader(true, 'Checking balances...');
             var voltPrincipal = volt[0];
-            var voltAPI = extjs
-                .connect('https://ic0.app/', props.identity)
-                .canister(voltPrincipal.toText(), 'volt');
+            var voltAPI = createEntrepotApiWithIdentity(props.identity).canister(
+                voltPrincipal.toText(),
+                'volt',
+            );
             var resp = await voltAPI.getBalances('icpledger', 'ryjl3-tyaaa-aaaaa-aaaba-cai', []);
             if (resp.hasOwnProperty('ok')) {
                 var available = Number(resp.ok[0]) - Number(resp.ok[2]);
@@ -88,8 +90,7 @@ export default function AuctionForm(props) {
                     ) {
                         props.loader(true, 'Topping up Volt...');
                         var address = await voltAPI.getAddress();
-                        await extjs
-                            .connect('https://ic0.app/', props.identity)
+                        await createEntrepotApiWithIdentity(props.identity)
                             .token()
                             .transfer(
                                 props.identity.getPrincipal(),
@@ -105,9 +106,9 @@ export default function AuctionForm(props) {
             }
 
             props.loader(true, 'Submitting auction bid...');
-            var auctionsAPI = extjs
-                .connect('https://ic0.app/', props.identity)
-                .canister('ffxbt-cqaaa-aaaak-qazbq-cai');
+            var auctionsAPI = createEntrepotApiWithIdentity(props.identity).canister(
+                'ffxbt-cqaaa-aaaak-qazbq-cai',
+            );
             var memo = await auctionsAPI.createMemo(props.tokenid, props.address);
             var resp1 = await voltAPI.authorize(
                 {

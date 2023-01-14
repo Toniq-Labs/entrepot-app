@@ -13,7 +13,10 @@ import DetailSectionHeader from './Section/Header';
 import DetailSectionDetails from './Section/Details';
 import DetailSectionActivity from './Section/Activity';
 import {TREASURE_CANISTER} from '../../utilities/treasure-canister';
-import {entrepotDataApi} from '../../typescript/api/entrepot-data-api';
+import {
+    defaultEntrepotApi,
+    createEntrepotApiWithIdentity,
+} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -236,8 +239,8 @@ const DetailBody = props => {
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');
-        const _api = extjs.connect('https://ic0.app/', props.identity);
-        await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').cancelOffer(tokenid);
+        const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        await entrepotApi.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').cancelOffer(tokenid);
         await reloadOffers();
         props.loader(false);
         props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
@@ -285,7 +288,7 @@ const DetailBody = props => {
             );
             setAttributes(traits);
         } else if (!traitsData && collection?.route === 'cronics') {
-            var result = await entrepotDataApi.token(canister).listings();
+            var result = await defaultEntrepotApi.token(canister).listings();
 
             if (result.length) {
                 var genes = getGenes(result[index][2].nonfungible.metadata[0]).battle;
