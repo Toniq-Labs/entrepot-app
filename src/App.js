@@ -2058,7 +2058,24 @@ export default function App() {
                                     <Route path="/test" exact element={<EntrepotTestPage />} />
                                 )}
                                 <Route path="/" exact element={<EntrepotTestPage />} />
-                                <Route path="/sale" element={<EntrepotAllLaunches />} />
+                                <Route
+                                    path="/sale"
+                                    element={
+                                        <EntrepotAllLaunches
+                                            collections={collections}
+                                            account={
+                                                accounts.length > 0
+                                                    ? accounts[currentAccount]
+                                                    : false
+                                            }
+                                            onCollectionSelected={event => {
+                                                navigate({
+                                                    pathname: '/sale/' + event.detail.route,
+                                                });
+                                            }}
+                                        />
+                                    }
+                                />
                                 {/* <Route
                                     path="/sale"
                                     exact

@@ -17,6 +17,6 @@ function convertToIcpNumber(input: ValidIcp): number {
 }
 
 // extra type guard because apparently TS isn't smart enough to use typeof on its own here
-function isBigInt(input: unknown): input is BigInt {
+export function isBigInt(input: unknown): input is BigInt {
     return typeof input === 'bigint';
 }
