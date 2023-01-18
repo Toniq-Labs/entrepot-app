@@ -16,7 +16,7 @@ import moment, {duration} from 'moment';
 type StatsArray = {
     title: string;
     icon?: ToniqSvg | undefined;
-    stat: string | number | BigNumber;
+    stat: string | number | BigNumber | undefined;
 };
 
 export const EntrepotAllLaunchesCardElement = defineElement<{
@@ -32,12 +32,16 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
     tagName: 'toniq-entrepot-all-launches-card',
     styles: css`
         :host {
-            display: inline-flex;
+            scroll-snap-align: start;
+        }
+
+        .card-wrapper {
+            display: flex;
             flex-direction: column;
             border-radius: 16px;
             will-change: filter;
-            margin: 16px 4px;
-            width: 304px;
+            margin: 16px;
+            min-width: 304px;
             max-width: 100%;
             border: 1px solid transparent;
             cursor: pointer;
@@ -67,6 +71,7 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            min-height: 40px;
         }
 
         .image-holder {
@@ -197,18 +202,22 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
 
         return html`
             <button class="card-button">
-                <div
-                    class="image-holder"
-                    style="background-image: url('${inputs.collectionImageUrl}')"
-                ></div>
-                <div class="collection-details">
-                    <div class="collection-info">
-                        <div class="launch">${formattedDate(inputs.date)}</div>
-                        <h3>${inputs.collectionName}</h3>
-                        <p class="description">${inputs.descriptionText}</p>
+                <div class="card-wrapper">
+                    <div
+                        class="image-holder"
+                        style="background-image: url('${inputs.collectionImageUrl}')"
+                    ></div>
+                    <div class="collection-details">
+                        <div class="collection-info">
+                            <div class="launch">${formattedDate(inputs.date)}</div>
+                            <h3>${inputs.collectionName}</h3>
+                            <p class="description">${inputs.descriptionText}</p>
+                        </div>
+                        <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
+                        ${inputs.progress !== undefined
+                            ? createProgressTemplate(inputs.progress)
+                            : ''}
                     </div>
-                    <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
-                    ${inputs.progress !== undefined ? createProgressTemplate(inputs.progress) : ''}
                 </div>
             </button>
         `;
@@ -226,13 +235,15 @@ function createStatsTemplate(
         return html`
             <div class="stat-entry">
                 <span class="stat-title">${statEntry.title}</span>
-                <${ToniqChip}
+                ${statEntry.stat
+                    ? html`<${ToniqChip}
                     class=${ToniqChip.hostClasses.secondary}
                     ${assign(ToniqChip, {
                         icon: statEntry.icon,
                         text: truncateNumber(statEntry.stat),
                     })}
-                ></${ToniqChip}>
+                ></${ToniqChip}>`
+                    : ''}
             </div>
         `;
     });
