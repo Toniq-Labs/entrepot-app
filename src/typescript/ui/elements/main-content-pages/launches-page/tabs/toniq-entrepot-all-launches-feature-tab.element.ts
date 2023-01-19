@@ -14,6 +14,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
     upcoming: ReadonlyArray<CollectionSales> | undefined;
     inProgress: ReadonlyArray<CollectionSales> | undefined;
     endingSoon: ReadonlyArray<CollectionSales> | undefined;
+    updateState: (newState: any) => void;
 }>()({
     tagName: 'toniq-entrepot-all-launches-feature-tab',
     styles: css`
@@ -51,7 +52,15 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                 <div>
                     <div class="header">
                         <span class="title">Upcoming</span>
-                        <button class="see-all">See All</button>
+                        <button
+                            class="see-all"
+                            @click=${() =>
+                                inputs.updateState({
+                                    allLaunchesSelectedTab: {label: 'Upcoming', value: 'upcoming'},
+                                })}
+                        >
+                            See All
+                        </button>
                     </div>
                     ${inputs.upcoming
                         ? html`
@@ -104,7 +113,18 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                 <div>
                     <div class="header">
                         <span class="title">In Progress</span>
-                        <button class="see-all">See All</button>
+                        <button
+                            class="see-all"
+                            @click=${() =>
+                                inputs.updateState({
+                                    allLaunchesSelectedTab: {
+                                        label: 'In Progress',
+                                        value: 'inProgress',
+                                    },
+                                })}
+                        >
+                            See All
+                        </button>
                     </div>
 
                     ${inputs.inProgress
@@ -119,12 +139,12 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                         collectionImageUrl: collection.collection,
                                                         collectionName: collection.name,
                                                         descriptionText: collection.brief,
-                                                        date: collection.sales.startDate,
+                                                        date: collection.sales.endDate,
                                                         statsArray: [
                                                             {
                                                                 title: 'PRICE',
                                                                 icon: Icp16Icon,
-                                                                stat: collection.stats?.total,
+                                                                stat: collection.stats!.total,
                                                             },
                                                             {
                                                                 title: 'SOLD',
@@ -163,7 +183,18 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                 <div>
                     <div class="header">
                         <span class="title">Ending Soon</span>
-                        <button class="see-all">See All</button>
+                        <button
+                            class="see-all"
+                            @click=${() =>
+                                inputs.updateState({
+                                    allLaunchesSelectedTab: {
+                                        label: 'Ending Soon',
+                                        value: 'endingSoon',
+                                    },
+                                })}
+                        >
+                            See All
+                        </button>
                     </div>
                     ${inputs.endingSoon
                         ? html`

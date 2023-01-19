@@ -11,7 +11,7 @@ import {RequiredAndNotNullBy} from '@augment-vir/common';
 import {throttle} from '../../../augments/function';
 import {classMap} from 'lit/directives/class-map.js';
 
-const maxCardHeight = 495;
+const maxCardHeight = 510;
 
 export const EntrepotHorizontalScrollElement = defineElement<{
     children: HTMLTemplateResult;
@@ -24,7 +24,6 @@ export const EntrepotHorizontalScrollElement = defineElement<{
             right: Infinity,
         },
         scrollSnapPositions: [] as number[],
-        scrollThrottle: false,
     },
     styles: css`
         :host {
@@ -35,7 +34,7 @@ export const EntrepotHorizontalScrollElement = defineElement<{
 
         .scroll-container {
             max-height: 495px;
-            margin: 0 -16px;
+            margin: 0 -22px;
             overflow-y: hidden;
         }
 
@@ -51,11 +50,11 @@ export const EntrepotHorizontalScrollElement = defineElement<{
         .arrow {
             --background-degrees: 90deg;
             position: absolute;
-            width: 200px;
-            max-width: 20%;
+            height: 42px;
             top: 0;
             bottom: 0;
             left: 0;
+            margin: auto 0;
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -63,7 +62,7 @@ export const EntrepotHorizontalScrollElement = defineElement<{
         }
 
         .arrow.left {
-            left: -20px;
+            left: -24px;
             right: unset;
         }
 
@@ -71,7 +70,7 @@ export const EntrepotHorizontalScrollElement = defineElement<{
             justify-content: flex-end;
             --background-degrees: -90deg;
             left: unset;
-            right: -29px;
+            right: -24px;
         }
 
         .arrow.right::after {
@@ -107,50 +106,56 @@ export const EntrepotHorizontalScrollElement = defineElement<{
         }
     `,
     renderCallback: ({inputs, state, host, updateState}) => {
-        const leftArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, 0);
-        const rightArrowHideZone = getMidSnapPosition(state.scrollSnapPositions, -1);
-
         return html`
-			<div class="scroll-container" style="max-height: ${
-                inputs.maxCardHeight ? `${inputs.maxCardHeight}px` : `${maxCardHeight}px`
-            }">
+			<div
+                class="scroll-container"
+                style="max-height: ${
+                    inputs.maxCardHeight ? `${inputs.maxCardHeight}px` : `${maxCardHeight}px`
+                }"
+            >
 				<div class="arrow left">
 					<${ToniqIcon}
 						class=${classMap({
-                            hidden: state.scrollPosition.left <= (leftArrowHideZone ?? 100),
+                            hidden: state.scrollPosition.left <= 100,
                         })}
 						${assign(ToniqIcon, {
                             icon: ChevronDown24Icon,
                         })}
 						${listen('click', () => {
-                            scrollSnapToNext(getScrollContainer(host), 'left');
+                            rotateCarousel({
+                                direction: 'left',
+                                host,
+                            });
                         })}
 					></${ToniqIcon}>
 				</div>
-				<div class="items-container" ${onResize(() => {
-                    updateState({
-                        scrollSnapPositions: getScrollSnapPositions(getScrollContainer(host)).x,
-                    });
-                })}
-                class="images-container"
-                ${listen('scroll', event => {
-                    throttledUpdateScrollPosition(event.target as HTMLElement, updateState);
-                })}>
+				<div
+                    class="items-container"
+                    ${onResize(event => {
+                        updateState({
+                            scrollSnapPositions: getScrollSnapPositions(getScrollContainer(host)).x,
+                        });
+                        throttledUpdateScrollPosition(event.target as HTMLElement, updateState);
+                    })}
+                    ${listen('scroll', event => {
+                        throttledUpdateScrollPosition(event.target as HTMLElement, updateState);
+                    })}
+                >
 					${inputs.children}
 				</div>
 				<div class="arrow right">
 					<${ToniqIcon}
 						class=${classMap({
-                            hidden:
-                                rightArrowHideZone == undefined
-                                    ? state.scrollPosition.right <= 100
-                                    : state.scrollPosition.left >= rightArrowHideZone,
+                            hidden: state.scrollPosition.right <= 100,
                         })}
 						${assign(ToniqIcon, {
                             icon: ChevronDown24Icon,
                         })}
 						${listen('click', () => {
-                            scrollSnapToNext(getScrollContainer(host), 'right');
+                            rotateCarousel({
+                                direction: 'right',
+                                host,
+                            });
                         })}
 					></${ToniqIcon}>
 				</div>
@@ -159,28 +164,55 @@ export const EntrepotHorizontalScrollElement = defineElement<{
     },
 });
 
-function getMidSnapPosition(positions: number[], positionToRead: number): number | undefined {
-    const increment = positionToRead >= 0 ? 1 : -1;
-    const indexToRead: number =
-        positionToRead < 0 ? positions.length + positionToRead : positionToRead;
-    const nextIndex = indexToRead + increment;
-
-    const start = positions[indexToRead];
-    const end = positions[nextIndex];
-
-    if (start == undefined || end == undefined) {
-        return undefined;
-    }
-
-    return (start + end) / 2 + increment * 20;
-}
-
 function getScrollContainer(host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>) {
     const scrollContainer = host.shadowRoot.querySelector('.items-container');
     if (!(scrollContainer instanceof HTMLElement)) {
         throw new Error(`Failed to find scroll container.`);
     }
     return scrollContainer;
+}
+
+function rotateCarousel({
+    host,
+    direction,
+}: {
+    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>;
+    direction: 'left' | 'right';
+}) {
+    const scrollContainer = getScrollContainer(host);
+    const snapPositions = getScrollSnapPositions(getScrollContainer(host)).x;
+
+    const currentPosition = getSnapPositionClosestTo(scrollContainer.scrollLeft, snapPositions);
+    const directionFactor = direction === 'right' ? 1 : -1;
+    const nextPosition = getSnapPositionClosestTo(
+        (currentPosition || 0) + (scrollContainer.clientWidth - 304) * directionFactor,
+        snapPositions,
+    );
+
+    if (direction === 'right' && nextPosition > currentPosition) {
+        scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+    } else if (direction === 'left' && nextPosition < currentPosition) {
+        scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+    } else {
+        scrollSnapToNext(scrollContainer, direction);
+    }
+}
+
+function getSnapPositionClosestTo(
+    closestToThis: number,
+    snapPositions: ReadonlyArray<number>,
+): number {
+    const closestPosition = snapPositions.reduce((closest, position) => {
+        const positionDistance = Math.abs(closestToThis - position);
+        const closestDistance = Math.abs(closestToThis - closest);
+        if (positionDistance < closestDistance) {
+            return position;
+        } else {
+            return closest;
+        }
+    }, Infinity);
+
+    return closestPosition;
 }
 
 const throttledUpdateScrollPosition = throttle(
@@ -196,7 +228,6 @@ const throttledUpdateScrollPosition = throttle(
                 left: element.scrollLeft,
                 right: element.scrollWidth - element.scrollLeft - element.clientWidth,
             },
-            scrollThrottle: false,
         });
     },
 );

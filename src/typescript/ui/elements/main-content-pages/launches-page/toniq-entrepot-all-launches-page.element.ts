@@ -92,11 +92,11 @@ export const EntrepotAllLaunchesPageElement = defineElement<{
             },
             {
                 label: 'In Progress',
-                value: 'inprogress',
+                value: 'inProgress',
             },
             {
                 label: 'Ending Soon',
-                value: 'endingsoon',
+                value: 'endingSoon',
             },
         ];
 
@@ -133,6 +133,7 @@ export const EntrepotAllLaunchesPageElement = defineElement<{
                                 upcoming: state.upcoming,
                                 inProgress: state.inProgress,
                                 endingSoon: state.endingSoon,
+                                updateState,
                             })}
                             ${listen(
                                 EntrepotAllLaunchesFeatureTabElement.events.collectionSelected,

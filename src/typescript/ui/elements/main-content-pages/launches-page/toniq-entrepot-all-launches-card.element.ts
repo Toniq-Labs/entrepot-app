@@ -16,7 +16,7 @@ import moment, {duration} from 'moment';
 type StatsArray = {
     title: string;
     icon?: ToniqSvg | undefined;
-    stat: string | number | BigNumber | undefined;
+    stat: string | number | BigNumber;
 };
 
 export const EntrepotAllLaunchesCardElement = defineElement<{
@@ -47,6 +47,7 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             cursor: pointer;
             ${applyBackgroundAndForeground(toniqColors.pagePrimary)};
             ${toniqShadows.popupShadow};
+            height: 100%;
         }
 
         .card-button {
@@ -58,6 +59,7 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             flex-direction: column;
             flex-grow: 1;
             color: inherit;
+            height: 100%;
         }
 
         :host(:hover) {
@@ -71,7 +73,6 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            min-height: 40px;
         }
 
         .image-holder {
@@ -90,14 +91,20 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             flex-direction: column;
             padding: 16px;
             text-align: center;
+            justify-content: space-between;
         }
 
         .collection-info {
             display: flex;
-            flex-grow: 1;
             gap: 12px;
             flex-direction: column;
             text-align: center;
+        }
+
+        .collection-stats {
+            display: flex;
+            gap: 24px;
+            flex-direction: column;
         }
 
         h3 {
@@ -213,10 +220,12 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
                             <h3>${inputs.collectionName}</h3>
                             <p class="description">${inputs.descriptionText}</p>
                         </div>
-                        <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
-                        ${inputs.progress !== undefined
-                            ? createProgressTemplate(inputs.progress)
-                            : ''}
+                        <div class="collection-stats">
+                            <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
+                            ${inputs.progress !== undefined
+                                ? createProgressTemplate(inputs.progress)
+                                : ''}
+                        </div>
                     </div>
                 </div>
             </button>
@@ -233,18 +242,20 @@ function createStatsTemplate(
 
     return statsArray.map(statEntry => {
         return html`
-            <div class="stat-entry">
-                <span class="stat-title">${statEntry.title}</span>
-                ${statEntry.stat
-                    ? html`<${ToniqChip}
-                    class=${ToniqChip.hostClasses.secondary}
-                    ${assign(ToniqChip, {
-                        icon: statEntry.icon,
-                        text: truncateNumber(statEntry.stat),
-                    })}
-                ></${ToniqChip}>`
-                    : ''}
-            </div>
+            ${statEntry.stat !== undefined
+                ? html`
+                    <div class="stat-entry">
+                        <span class="stat-title">${statEntry.title}</span>
+                        <${ToniqChip}
+                            class=${ToniqChip.hostClasses.secondary}
+                            ${assign(ToniqChip, {
+                                icon: statEntry.icon,
+                                text: truncateNumber(statEntry.stat),
+                            })}
+                        ></${ToniqChip}>
+                    </div>
+                `
+                : ''}
         `;
     });
 }
