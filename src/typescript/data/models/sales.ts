@@ -10,8 +10,9 @@ export type SalesGroup = {
     end: BigNumber;
     id: BigNumber;
     name: string;
-    Pricing: Array<Array<BigNumber>>;
+    pricing: Array<Array<BigNumber>>;
     start: BigNumber;
+    participants?: Array<string>;
 };
 
 export type Sales = {
@@ -26,6 +27,7 @@ export type SalesData = Sales & {
     startDate: number;
     endDate: number;
     percentMinted: number;
+    salePrice: number;
 };
 
 export type CollectionSales = Collection & {

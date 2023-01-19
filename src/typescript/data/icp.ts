@@ -8,7 +8,7 @@ export function toIcp(input: ValidIcp) {
     return truncateNumber(numeric);
 }
 
-function convertToIcpNumber(input: ValidIcp): number {
+export function convertToIcpNumber(input: ValidIcp): number {
     if (input instanceof BigNumber || isBigInt(input)) {
         return Number(input) / 100000000;
     } else {

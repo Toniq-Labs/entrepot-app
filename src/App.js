@@ -2069,9 +2069,16 @@ export default function App() {
                                                     : false
                                             }
                                             onCollectionSelected={event => {
-                                                navigate({
-                                                    pathname: '/sale/' + event.detail.route,
-                                                });
+                                                const collection = event.detail;
+                                                if (
+                                                    typeof collection == 'undefined' ||
+                                                    typeof collection.sale == 'undefined' ||
+                                                    collection.sale == false
+                                                ) {
+                                                    navigate(`/marketplace/${collection?.route}`);
+                                                } else {
+                                                    navigate(`/sale/${collection?.route}`);
+                                                }
                                             }}
                                         />
                                     }

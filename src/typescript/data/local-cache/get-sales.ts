@@ -1,8 +1,8 @@
 import {Collection} from '../models/collection';
 import {entrepotDataApi} from '../entrepot-data-api';
 import {BigNumber} from 'bignumber.js';
-import {isBigInt} from '../icp';
-import {Account, CollectionSales, Sales} from '../models/sales';
+import {convertToIcpNumber, isBigInt} from '../icp';
+import {Account, CollectionSales, Sales, SalesGroup} from '../models/sales';
 
 export async function getCollectionSales(
     collections: Array<Collection>,
@@ -12,24 +12,44 @@ export async function getCollectionSales(
         collections.map(async collection => {
             return {
                 ...collection,
-                data: (await entrepotDataApi
+                saleSettings: (await entrepotDataApi
                     .canister(collection.canister, 'ext2')
                     .ext_saleSettings(account ? account.address : '')) as Array<Sales>,
+                saleCurrent: (await entrepotDataApi
+                    .canister(collection.canister, 'ext2')
+                    .ext_saleCurrent()) as Array<Sales>,
             };
         }),
     );
 
     const allSales = salesSettings
         .filter(result => {
-            return result.status !== 'rejected' && result.value.data.length;
+            return result.status !== 'rejected' && result.value.saleSettings.length;
         })
         .map(result => {
-            const {data, ...collection} = (
-                result as PromiseFulfilledResult<Collection & {data: Array<Sales>}>
+            const {saleSettings, saleCurrent, ...collection} = (
+                result as PromiseFulfilledResult<
+                    Collection & {saleSettings: Array<Sales>} & {saleCurrent: Array<Sales>}
+                >
             ).value;
-            const {start, end, quantity, remaining} = data[0]!;
+            const {start, end, quantity, remaining} = saleSettings[0]!;
+            const {groups} = saleCurrent[0]!;
+            const publicSaleGroups = groups.filter(currentSale => {
+                return currentSale.participants?.length === 0;
+            });
+            let salePrice;
+            if (publicSaleGroups !== undefined) {
+                salePrice = getSalePrice(publicSaleGroups);
+            } else {
+                const privateSaleGroups = groups.filter(currentSale => {
+                    return currentSale.participants?.length;
+                });
+                salePrice = getSalePrice(privateSaleGroups);
+            }
+            salePrice = salePrice ? convertToIcpNumber(salePrice) : 0;
+
             const formattedData = {
-                ...(data[0] as Sales),
+                ...(saleSettings[0] as Sales),
                 startDate:
                     start instanceof BigNumber || isBigInt(start) ? Number(start) / 1000000 : start,
                 endDate: end instanceof BigNumber || isBigInt(end) ? Number(end) / 1000000 : end,
@@ -39,6 +59,8 @@ export async function getCollectionSales(
                             Number.EPSILON) *
                             100,
                     ) / 100,
+                groups,
+                salePrice,
             };
 
             return {
@@ -47,4 +69,22 @@ export async function getCollectionSales(
             };
         });
     return allSales;
+}
+
+function getSalePrice(saleGroup: SalesGroup[]) {
+    return saleGroup
+        .map(saleGroup => {
+            return saleGroup.pricing;
+        })
+        .map(pricing => {
+            return pricing.map(price => {
+                return price[1];
+            });
+        })
+        .reduce((prevPricing, currentPricing) => {
+            return Number(prevPricing) < Number(currentPricing) ? prevPricing : currentPricing;
+        })
+        .reduce((prevPricing, currentPricing) => {
+            return Number(prevPricing) < Number(currentPricing) ? prevPricing : currentPricing;
+        });
 }

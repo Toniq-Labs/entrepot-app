@@ -80,7 +80,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             {
                                                                 title: 'PRICE',
                                                                 icon: Icp16Icon,
-                                                                stat: collection.stats!.total,
+                                                                stat: collection.sales.salePrice,
                                                             },
                                                             {
                                                                 title: 'SIZE',
@@ -144,7 +144,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             {
                                                                 title: 'PRICE',
                                                                 icon: Icp16Icon,
-                                                                stat: collection.stats!.total,
+                                                                stat: collection.sales.salePrice,
                                                             },
                                                             {
                                                                 title: 'SOLD',
@@ -213,7 +213,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             {
                                                                 title: 'PRICE',
                                                                 icon: Icp16Icon,
-                                                                stat: collection.stats!.total,
+                                                                stat: collection.sales.salePrice,
                                                             },
                                                             {
                                                                 title: 'SOLD',
