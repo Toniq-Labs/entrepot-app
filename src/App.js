@@ -33,7 +33,7 @@ import Listings from './views/Listings/Listings.js';
 import ListingsActivity from './views/Listings/ListingsActivity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
-import {EntrepotAllLaunches} from './typescript/ui/elements/main-content-pages/launches-page/toniq-entrepot-all-launches-page.element';
+import {EntrepotSale} from './typescript/ui/elements/main-content-pages/sale-page/toniq-entrepot-sale-page.element';
 import Mint from './views/Mint';
 import Navbar from './components/Navbar';
 import Opener from './components/Opener';
@@ -2061,7 +2061,7 @@ export default function App() {
                                 <Route
                                     path="/sale"
                                     element={
-                                        <EntrepotAllLaunches
+                                        <EntrepotSale
                                             collections={collections}
                                             account={
                                                 accounts.length > 0

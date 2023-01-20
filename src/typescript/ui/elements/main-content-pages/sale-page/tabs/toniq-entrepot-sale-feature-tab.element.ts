@@ -7,16 +7,16 @@ import {
 } from '@toniq-labs/design-system';
 import {CollectionSales} from '../../../../../data/models/sales';
 import {EntrepotHorizontalScrollElement} from '../../../common/toniq-entrepot-horizontal-scroll.element';
-import {EntrepotAllLaunchesCardElement} from '../toniq-entrepot-all-launches-card.element';
+import {EntrepotSaleCardElement} from '../toniq-entrepot-sale-card.element';
 import {Collection} from '../../../../../data/models/collection';
 
-export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
+export const EntrepotSaleFeatureTabElement = defineElement<{
     upcoming: ReadonlyArray<CollectionSales> | undefined;
     inProgress: ReadonlyArray<CollectionSales> | undefined;
     endingSoon: ReadonlyArray<CollectionSales> | undefined;
     updateState: (newState: any) => void;
 }>()({
-    tagName: 'toniq-entrepot-all-launches-feature-tab',
+    tagName: 'toniq-entrepot-sale-feature-tab',
     styles: css`
         .header {
             display: flex;
@@ -56,7 +56,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                             class="see-all"
                             @click=${() =>
                                 inputs.updateState({
-                                    allLaunchesSelectedTab: {label: 'Upcoming', value: 'upcoming'},
+                                    SaleSelectedTab: {label: 'Upcoming', value: 'upcoming'},
                                 })}
                         >
                             See All
@@ -69,8 +69,8 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                     children: html`
                                         ${inputs.upcoming.map(collection => {
                                             return html`
-												<${EntrepotAllLaunchesCardElement}
-													${assign(EntrepotAllLaunchesCardElement, {
+												<${EntrepotSaleCardElement}
+													${assign(EntrepotSaleCardElement, {
                                                         collectionImageUrl: collection.collection,
                                                         collectionName: collection.name,
                                                         descriptionText: collection.brief,
@@ -99,7 +99,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             ),
                                                         );
                                                     })}
-												></${EntrepotAllLaunchesCardElement}>
+												></${EntrepotSaleCardElement}>
 											`;
                                         })}
                                     `,
@@ -117,7 +117,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                             class="see-all"
                             @click=${() =>
                                 inputs.updateState({
-                                    allLaunchesSelectedTab: {
+                                    SaleSelectedTab: {
                                         label: 'In Progress',
                                         value: 'inProgress',
                                     },
@@ -134,8 +134,8 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                     children: html`
                                         ${inputs.inProgress.map(collection => {
                                             return html`
-												<${EntrepotAllLaunchesCardElement}
-													${assign(EntrepotAllLaunchesCardElement, {
+												<${EntrepotSaleCardElement}
+													${assign(EntrepotSaleCardElement, {
                                                         collectionImageUrl: collection.collection,
                                                         collectionName: collection.name,
                                                         descriptionText: collection.brief,
@@ -170,7 +170,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             ),
                                                         );
                                                     })}
-												></${EntrepotAllLaunchesCardElement}>
+												></${EntrepotSaleCardElement}>
 											`;
                                         })}
                                     `,
@@ -187,7 +187,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                             class="see-all"
                             @click=${() =>
                                 inputs.updateState({
-                                    allLaunchesSelectedTab: {
+                                    SaleSelectedTab: {
                                         label: 'Ending Soon',
                                         value: 'endingSoon',
                                     },
@@ -203,8 +203,8 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                     children: html`
                                         ${inputs.endingSoon.map(collection => {
                                             return html`
-												<${EntrepotAllLaunchesCardElement}
-													${assign(EntrepotAllLaunchesCardElement, {
+												<${EntrepotSaleCardElement}
+													${assign(EntrepotSaleCardElement, {
                                                         collectionImageUrl: collection.collection,
                                                         collectionName: collection.name,
                                                         descriptionText: collection.brief,
@@ -239,7 +239,7 @@ export const EntrepotAllLaunchesFeatureTabElement = defineElement<{
                                                             ),
                                                         );
                                                     })}
-												></${EntrepotAllLaunchesCardElement}>
+												></${EntrepotSaleCardElement}>
 											`;
                                         })}
                                     `,

@@ -2,9 +2,9 @@ import {defineElement, listen, defineElementEvent, html, css} from 'element-vir'
 import {classMap} from 'lit/directives/class-map.js';
 import {
     toniqFontStyles,
-    removeNativeFormStyles,
     toniqColors,
     createFocusStyles,
+    removeNativeFormStyles,
 } from '@toniq-labs/design-system';
 
 export type TopTab<ValueGeneric = unknown> = {
@@ -30,6 +30,29 @@ export const EntrepotTopTabsElement = defineElement<{
             outline: none;
         }
 
+        a {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+        }
+
+        a::after {
+            content: attr(data-text);
+            content: attr(data-text) / '';
+            height: 0;
+            visibility: hidden;
+            overflow: hidden;
+            user-select: none;
+            pointer-events: none;
+            ${toniqFontStyles.boldParagraphFont};
+
+            @media speech {
+                display: none;
+            }
+        }
+
         ul {
             list-style: none;
             display: flex;
@@ -53,7 +76,7 @@ export const EntrepotTopTabsElement = defineElement<{
             ${toniqFontStyles.boldParagraphFont};
             color: ${toniqColors.pageInteraction.foregroundColor};
             border-bottom-color: ${toniqColors.pageInteraction.foregroundColor};
-            border-bottom-width: 2px;
+            border-bottom-width: 1px;
             pointer-events: none;
         }
 
@@ -90,7 +113,7 @@ function makeTopTab(tab: TopTab, isSelected: boolean, clickCallback: () => void)
             })}
             ${listen('click', clickCallback)}
         >
-            <button>${tab.label}</button>
+            <button><a data-text="${tab.label}">${tab.label}</a></button>
         </li>
     `;
 }

@@ -19,35 +19,28 @@ type StatsArray = {
     stat: string | number | BigNumber;
 };
 
-export const EntrepotAllLaunchesCardElement = defineElement<{
+export const EntrepotSaleCategoryCardElement = defineElement<{
     collectionName: string;
     collectionImageUrl: string;
-    // this should eventually be the collection's creator
     descriptionText: string;
     date: number;
     dateMessage?: string;
     statsArray: Array<StatsArray>;
-    progress?: number;
+    progress?: number | undefined;
 }>()({
-    tagName: 'toniq-entrepot-all-launches-card',
+    tagName: 'toniq-entrepot-sale-category-card',
     styles: css`
         :host {
-            scroll-snap-align: start;
-        }
-
-        .card-wrapper {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
             border-radius: 16px;
             will-change: filter;
-            margin: 16px;
-            min-width: 304px;
+            width: 644px;
             max-width: 100%;
             border: 1px solid transparent;
             cursor: pointer;
             ${applyBackgroundAndForeground(toniqColors.pagePrimary)};
             ${toniqShadows.popupShadow};
-            height: 100%;
         }
 
         .card-button {
@@ -55,11 +48,10 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             text-decoration: none;
             display: flex;
             align-items: stretch;
-            text-align: left;
+            text-align: start;
             flex-direction: column;
             flex-grow: 1;
             color: inherit;
-            height: 100%;
         }
 
         :host(:hover) {
@@ -84,27 +76,30 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             background-size: cover;
         }
 
+        .collection-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 322px);
+        }
+
         .collection-details {
             display: flex;
-            flex-grow: 1;
-            gap: 24px;
             flex-direction: column;
-            padding: 16px;
-            text-align: center;
-            justify-content: space-between;
+            gap: 8px;
         }
 
         .collection-info {
             display: flex;
-            gap: 12px;
+            gap: 28px;
             flex-direction: column;
-            text-align: center;
+            text-align: left;
+            padding: 24px 16px;
         }
 
         .collection-stats {
             display: flex;
-            gap: 24px;
+            gap: 16px;
             flex-direction: column;
+            padding: 12px 16px;
         }
 
         h3 {
@@ -124,7 +119,7 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
             max-width: 140px;
             ${toniqFontStyles.boldParagraphFont};
             color: #ffffff;
-            margin: 0 auto;
+            margin-right: auto;
         }
 
         .launch-time-unit {
@@ -209,24 +204,22 @@ export const EntrepotAllLaunchesCardElement = defineElement<{
 
         return html`
             <button class="card-button">
-                <div class="card-wrapper">
+                <div class="collection-content">
                     <div
                         class="image-holder"
                         style="background-image: url('${inputs.collectionImageUrl}')"
                     ></div>
-                    <div class="collection-details">
-                        <div class="collection-info">
-                            <div class="launch">${formattedDate(inputs.date)}</div>
+                    <div class="collection-info">
+                        <div class="launch">${formattedDate(inputs.date)}</div>
+                        <div class="collection-details">
                             <h3>${inputs.collectionName}</h3>
                             <p class="description">${inputs.descriptionText}</p>
                         </div>
-                        <div class="collection-stats">
-                            <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
-                            ${inputs.progress !== undefined
-                                ? createProgressTemplate(inputs.progress)
-                                : ''}
-                        </div>
                     </div>
+                </div>
+                <div class="collection-stats">
+                    <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
+                    ${inputs.progress !== undefined ? createProgressTemplate(inputs.progress) : ''}
                 </div>
             </button>
         `;
