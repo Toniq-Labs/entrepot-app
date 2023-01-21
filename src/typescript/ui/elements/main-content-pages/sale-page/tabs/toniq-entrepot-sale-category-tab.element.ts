@@ -40,6 +40,14 @@ export const EntrepotSaleCategoryTabElement = defineElement<{
             justify-content: center;
             grid-template-columns: repeat(auto-fill, 644px);
         }
+
+        @media (max-width: 1439px) {
+            .items-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-evenly;
+            }
+        }
     `,
     events: {
         collectionSelected: defineElementEvent<Collection>(),

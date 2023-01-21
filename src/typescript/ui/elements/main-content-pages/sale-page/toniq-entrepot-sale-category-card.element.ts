@@ -253,10 +253,42 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
         .preloader-pill {
             display: block;
             height: 24px;
-            width: 165px;
+            width: 130px;
             background-color: #f6f6f6;
             border-radius: 8px;
             margin: 0 auto;
+        }
+
+
+        @media (max-width: 1439px) {
+            :host {
+                width: 304px;
+            }
+
+            .collection-content {
+                display: flex;
+            }
+
+            .image-holder {
+                flex: 1 1 0%;
+            }
+
+            .collection-info {
+                flex: 1 1 0%;
+            }
+
+            .collection-content {
+                display: grid;
+                grid-template-columns: unset;
+            }
+
+            .stat-title-preloader {
+                width: 35px;
+            }
+
+            .preloader-pill {
+                width: 80px;
+            }
         }
     `,
     renderCallback: ({inputs}) => {
