@@ -87,6 +87,7 @@ export const EntrepotSalePageElement = defineElement<{
         });
     },
     renderCallback: ({state, updateState, events}) => {
+        const preloaders = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
         const tabs = [
             {
                 label: 'Featured',
@@ -163,39 +164,51 @@ export const EntrepotSalePageElement = defineElement<{
                                         ? html`
                                               ${state.upcoming.map(collection => {
                                                   return html`
-                                            <${EntrepotSaleCategoryCardElement}
-                                                ${assign(EntrepotSaleCategoryCardElement, {
-                                                    collectionImageUrl: collection.collection,
-                                                    collectionName: collection.name,
-                                                    descriptionText: collection.brief,
-                                                    date: collection.sales.endDate,
-                                                    dateMessage: 'Just Launched',
-                                                    statsArray: [
-                                                        {
-                                                            title: 'PRICE',
-                                                            icon: Icp16Icon,
-                                                            stat: collection.sales.salePrice,
-                                                        },
-                                                        {
-                                                            title: 'SIZE',
-                                                            stat: collection.sales.quantity,
-                                                        },
-                                                        {
-                                                            title: 'FOR SALE',
-                                                            stat: collection.sales.remaining,
-                                                        },
-                                                    ],
-                                                })}
-                                                ${listen('click', () => {
-                                                    dispatchEvent(
-                                                        new events.collectionSelected(collection),
-                                                    );
-                                                })}
-                                            ></${EntrepotSaleCategoryCardElement}>
-                                            `;
+                                                    <${EntrepotSaleCategoryCardElement}
+                                                        ${assign(EntrepotSaleCategoryCardElement, {
+                                                            collectionImageUrl:
+                                                                collection.collection,
+                                                            collectionName: collection.name,
+                                                            descriptionText: collection.brief,
+                                                            date: collection.sales.endDate,
+                                                            dateMessage: 'Just Launched',
+                                                            statsArray: [
+                                                                {
+                                                                    title: 'PRICE',
+                                                                    icon: Icp16Icon,
+                                                                    stat: collection.sales
+                                                                        .salePrice,
+                                                                },
+                                                                {
+                                                                    title: 'SIZE',
+                                                                    stat: collection.sales.quantity,
+                                                                },
+                                                                {
+                                                                    title: 'FOR SALE',
+                                                                    stat: collection.sales
+                                                                        .remaining,
+                                                                },
+                                                            ],
+                                                        })}
+                                                        ${listen('click', () => {
+                                                            dispatchEvent(
+                                                                new events.collectionSelected(
+                                                                    collection,
+                                                                ),
+                                                            );
+                                                        })}
+                                                    ></${EntrepotSaleCategoryCardElement}>
+                                                    `;
                                               })}
                                           `
-                                        : 'Fetching Data'}
+                                        : html`
+                                              ${preloaders.map(() => {
+                                                  return html`
+                                                    <${EntrepotSaleCategoryCardElement}
+                                                    ></${EntrepotSaleCategoryCardElement}>
+                                                    `;
+                                              })}
+                                          `}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>
@@ -265,7 +278,14 @@ export const EntrepotSalePageElement = defineElement<{
                                                     `;
                                               })}
                                           `
-                                        : 'Fetching Data'}
+                                        : html`
+                                              ${preloaders.map(() => {
+                                                  return html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                                `;
+                                              })}
+                                          `}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>
@@ -335,7 +355,14 @@ export const EntrepotSalePageElement = defineElement<{
                                                     `;
                                               })}
                                           `
-                                        : 'Fetching Data'}
+                                        : html`
+                                              ${preloaders.map(() => {
+                                                  return html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                                `;
+                                              })}
+                                          `}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>

@@ -49,7 +49,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
     },
     renderCallback: ({inputs, dispatch, events}) => {
         const preloaders = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
-        console.log(preloaders);
+
         function goToTab(tab: TopTab) {
             inputs.updateState({SaleSelectedTab: tab});
             window.scrollTo({behavior: 'smooth', top: 0});
