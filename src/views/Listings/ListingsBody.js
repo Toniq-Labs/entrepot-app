@@ -305,7 +305,8 @@ export function ListingsBody(props) {
                 ...defaultFilter,
             },
             sortOption: defaultSortOption,
-            sortType: defaultSortType,
+            sortTypeNfts: defaultSortType,
+            sortTypeActivity: defaultSortType,
             gridSize: 'large',
             currentTab: 'nfts',
             openedAccordion: defaultOpenedAccordions,
@@ -324,7 +325,7 @@ export function ListingsBody(props) {
     const [
         sortType,
         setSortType,
-    ] = useState(defaultSortType);
+    ] = useState(userPreferences.sortTypeNfts || defaultSortType);
     const [
         currentTab,
         setCurrentTab,
@@ -642,8 +643,7 @@ export function ListingsBody(props) {
                             hasRarity={hasRarity}
                             sort={sort}
                             sortOptions={sortOptions}
-                            sortType={sortType}
-                            setSortType={setSortType}
+                            sortTypeActivity={userPreferences.sortTypeActivity || defaultSortType}
                             query={query}
                             setSearchParams={setSearchParams}
                         />

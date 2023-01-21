@@ -9,6 +9,7 @@ import {
     useTheme,
 } from '@material-ui/core';
 import {
+    ArrowLeft24Icon,
     ChevronDown24Icon,
     ChevronUp24Icon,
     CircleWavyCheck24Icon,
@@ -18,7 +19,7 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../../utils';
+import {EntrepotGetIcpUsd, EntrepotNFTImage, EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {
     ToniqButton,
@@ -30,6 +31,7 @@ import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 import {NftCard} from '../../../shared/NftCard';
 import {getEXTCanister} from '../../../utilities/load-tokens';
+import PriceUSD from '../../../components/PriceUSD';
 
 const DetailSectionHeader = props => {
     const {
@@ -171,7 +173,18 @@ const DetailSectionHeader = props => {
                     </DropShadowCard>
                 </Grid>
                 <Grid item xs={12} sm={7} className={classes.headerContent}>
-                    <Grid container style={{height: '100%'}}>
+                    <Grid container style={{height: '100%', gap: 16}}>
+                        <Grid item xs={12}>
+                            <button
+                                class={`${classes.returnToCollection} ${classes.removeNativeButtonStyles}`}
+                                onClick={() => {
+                                    navigate('/marketplace/' + collection.route);
+                                }}
+                            >
+                                <ToniqIcon icon={ArrowLeft24Icon}></ToniqIcon>
+                                <span>Return to Collection</span>
+                            </button>
+                        </Grid>
                         <Grid item xs={12} className={classes.namePriceContainer}>
                             <div className={classes.nameContent}>
                                 <Grid container justifyContent="space-between" alignItems="center">
@@ -186,7 +199,7 @@ const DetailSectionHeader = props => {
                                             {EntrepotNFTMintNumber(collection.canister, index)}
                                         </span>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item class={classes.hideWhenMobile}>
                                         <Favourite
                                             className={classes.favourite}
                                             showCount={true}
@@ -211,7 +224,11 @@ const DetailSectionHeader = props => {
                                             navigate('/marketplace/' + collection.route);
                                         }}
                                     >
-                                        <span className={classes.hoverText}>{collection.name}</span>
+                                        <span
+                                            className={`${classes.collectionName} ${classes.hoverText}`}
+                                        >
+                                            {collection.name}
+                                        </span>
                                     </button>
                                     {collection.kyc ? (
                                         <ToniqIcon
@@ -224,6 +241,17 @@ const DetailSectionHeader = props => {
                                         ''
                                     )}
                                 </div>
+                                <Grid item class={classes.hideWhenDesktop}>
+                                    <Favourite
+                                        className={classes.favourite}
+                                        showCount={true}
+                                        count={2}
+                                        refresher={props.faveRefresher}
+                                        identity={props.identity}
+                                        loggedIn={props.loggedIn}
+                                        tokenid={tokenid}
+                                    />
+                                </Grid>
                                 <div
                                     style={{
                                         display: 'flex',
@@ -233,16 +261,26 @@ const DetailSectionHeader = props => {
                                 >
                                     <div className={classes.nftDescContainer3}>
                                         {getPriceData() ? (
-                                            <span
-                                                style={{
-                                                    fontWeight: '600',
-                                                    fontSize: '36px',
-                                                    lineHeight: '48px',
-                                                    color: toniqColors.pagePrimary.foregroundColor,
-                                                }}
-                                            >
-                                                {icpToString(getPriceData(), true, true)} ICP
-                                            </span>
+                                            <div class={classes.priceWrapper}>
+                                                <span
+                                                    style={{
+                                                        fontWeight: '600',
+                                                        fontSize: '36px',
+                                                        lineHeight: '48px',
+                                                        color: toniqColors.pagePrimary
+                                                            .foregroundColor,
+                                                    }}
+                                                >
+                                                    {icpToString(getPriceData(), true, true)} ICP
+                                                </span>
+                                                <span class={classes.priceUSD}>
+                                                    (
+                                                    <PriceUSD
+                                                        price={EntrepotGetIcpUsd(getPriceData())}
+                                                    />
+                                                    )
+                                                </span>
+                                            </div>
                                         ) : (
                                             <span
                                                 style={{
@@ -515,10 +553,7 @@ export default DetailSectionHeader;
 const useStyles = makeStyles(theme => ({
     detailHeader: {
         [theme.breakpoints.up('md')]: {
-            paddingBottom: 56,
-        },
-        [theme.breakpoints.down('sm')]: {
-            paddingBottom: 32,
+            paddingBottom: 16,
         },
     },
     detailSectionHeader: {
@@ -543,7 +578,6 @@ const useStyles = makeStyles(theme => ({
     headerContent: {
         display: 'flex',
         flexDirection: 'column',
-        paddingTop: '32px!important',
         [theme.breakpoints.down('md')]: {
             paddingTop: '16px!important',
         },
@@ -577,7 +611,7 @@ const useStyles = makeStyles(theme => ({
             gap: '40px',
         },
         [theme.breakpoints.down('xs')]: {
-            gap: '16px',
+            gap: '24px',
         },
     },
     nftDescContainer3: {
@@ -782,5 +816,24 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 16,
+    },
+    returnToCollection: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 8,
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+    },
+    priceWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+    },
+    priceUSD: {
+        ...cssToReactStyleObject(toniqFontStyles.toniqFont),
+        fontSize: 20,
+    },
+    collectionName: {
+        fontWeight: 500,
     },
 }));

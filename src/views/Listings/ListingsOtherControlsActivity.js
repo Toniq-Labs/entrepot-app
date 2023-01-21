@@ -12,6 +12,7 @@ import {
     ToniqIcon,
     ToniqInput,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {useState} from 'react';
 
 const useStyles = makeStyles(theme => ({
     toggleSort: {
@@ -70,11 +71,16 @@ export function ListingsOtherControlsActivity(props) {
         hasRarity,
         sort,
         sortOptions,
-        sortType,
-        setSortType,
         query,
         setSearchParams,
+        sortTypeActivity,
     } = props;
+
+    const [
+        sortType,
+        setSortType,
+    ] = useState(sortTypeActivity);
+
     const classes = useStyles();
     return (
         <div className={classes.shadowWrapper}>
@@ -100,7 +106,10 @@ export function ListingsOtherControlsActivity(props) {
                     className={classes.toggleSort}
                     onClick={() => {
                         sortType === 'asc' ? setSortType('desc') : setSortType('asc');
-                        storeUserPreferences('sortType', sortType === 'asc' ? 'desc' : 'asc');
+                        storeUserPreferences(
+                            'sortTypeActivity',
+                            sortType === 'asc' ? 'desc' : 'asc',
+                        );
                     }}
                 >
                     {sortType === 'asc' ? (

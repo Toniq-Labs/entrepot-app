@@ -445,7 +445,7 @@ export default function DetailSectionDetails(props) {
 
 const useStyles = makeStyles(theme => ({
     detailSectionWrapper: {
-        padding: '56px 0',
+        padding: '16px 0',
         display: 'flex',
         justifyContent: 'center',
         gap: 28,

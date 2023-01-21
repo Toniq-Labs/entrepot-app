@@ -7,7 +7,7 @@ export function CopyButton(props) {
     const [
         copyState,
         setCopyState,
-    ] = useState('Copy');
+    ] = useState(props.copyMessage ? props.copyMessage : 'Copy');
     const classes = useStyles();
 
     const onCopy = event => {
@@ -15,7 +15,7 @@ export function CopyButton(props) {
         navigator.clipboard.writeText(props.text);
         setCopyState('Copied!');
         setTimeout(() => {
-            setCopyState('Copy');
+            setCopyState(props.copyMessage ? props.copyMessage : 'Copy');
         }, 1500);
     };
 

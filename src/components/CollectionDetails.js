@@ -314,7 +314,7 @@ export default function CollectionDetails(props) {
                     <div className={classes.cardActionsWrapper}>
                         <div className={classes.cardActionsExplorers}>
                             <Link
-                                href={'https://icscan.io/nft/collection/' + collection.canister}
+                                href={'https://icscan.io/canister/' + collection.canister}
                                 target="_blank"
                                 rel="noreferrer"
                                 underline="none"
@@ -338,7 +338,7 @@ export default function CollectionDetails(props) {
                             </Link>
                         </div>
                         <hr className={classes.divider} style={{margin: 0}} />
-                        <CopyButton text={collection.canister} />
+                        <CopyButton text={collection.canister} copyMessage="Copy canister ID" />
                     </div>
                 </Avatar>
                 <div className={classes.detailsWrapper}>
