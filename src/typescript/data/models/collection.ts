@@ -6,6 +6,7 @@ export type BaseCollection = {
     /** Html string */
     blurb: string;
     brief: string;
+    canister: string;
     /** Url */
     collection: string;
     commission: number;

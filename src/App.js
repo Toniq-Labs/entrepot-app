@@ -31,17 +31,17 @@ import legacyPrincipalPayouts from './payments.json';
 import ListingForm from './components/ListingForm';
 import Listings from './views/Listings/Listings.js';
 import ListingsActivity from './views/Listings/ListingsActivity';
+import UserCollection from './components/UserCollection';
+import UserLoan from './components/UserLoan';
+import {EntrepotSale} from './typescript/ui/elements/main-content-pages/sale-page/toniq-entrepot-sale-page.element';
 import Mint from './views/Mint';
 import Navbar from './components/Navbar';
 import Opener from './components/Opener';
 import OpenLogin from '@toruslabs/openlogin';
 import PawnForm from './components/PawnForm';
 import React from 'react';
-import Sale from './views/Sale';
 import TransferForm from './components/TransferForm';
 import UserActivity from './components/UserActivity';
-import UserCollection from './components/UserCollection';
-import UserLoan from './components/UserLoan';
 import VoltTransferForm from './components/VoltTransferForm';
 import {
     EntrepotUpdateUSD,
@@ -2060,6 +2060,31 @@ export default function App() {
                                 <Route path="/" exact element={<EntrepotTestPage />} />
                                 <Route
                                     path="/sale"
+                                    element={
+                                        <EntrepotSale
+                                            collections={collections}
+                                            account={
+                                                accounts.length > 0
+                                                    ? accounts[currentAccount]
+                                                    : false
+                                            }
+                                            onCollectionSelected={event => {
+                                                const collection = event.detail;
+                                                if (
+                                                    typeof collection == 'undefined' ||
+                                                    typeof collection.sale == 'undefined' ||
+                                                    collection.sale == false
+                                                ) {
+                                                    navigate(`/marketplace/${collection?.route}`);
+                                                } else {
+                                                    navigate(`/sale/${collection?.route}`);
+                                                }
+                                            }}
+                                        />
+                                    }
+                                />
+                                {/* <Route
+                                    path="/sale"
                                     exact
                                     element={
                                         <Sale
@@ -2084,7 +2109,7 @@ export default function App() {
                                             accounts={accounts}
                                         />
                                     }
-                                />
+                                /> */}
                                 <Route path="*" element={<MissingPage404 />} />
                             </Routes>
                             <BuyForm open={showBuyForm} {...buyFormData} />

@@ -8,7 +8,7 @@ export function toIcp(input: ValidIcp) {
     return truncateNumber(numeric);
 }
 
-function convertToIcpNumber(input: ValidIcp): number {
+export function convertToIcpNumber(input: ValidIcp): number {
     if (input instanceof BigNumber || isBigInt(input)) {
         return Number(input) / 100000000;
     } else {
@@ -17,6 +17,6 @@ function convertToIcpNumber(input: ValidIcp): number {
 }
 
 // extra type guard because apparently TS isn't smart enough to use typeof on its own here
-function isBigInt(input: unknown): input is BigInt {
+export function isBigInt(input: unknown): input is BigInt {
     return typeof input === 'bigint';
 }

@@ -58,6 +58,7 @@ export default function Sale(props) {
     const classes = useStyles();
 
     const navigate = useNavigate();
+    console.log(props.collections);
     return (
         <>
             <div style={{width: '100%', display: 'block', position: 'relative'}}>
