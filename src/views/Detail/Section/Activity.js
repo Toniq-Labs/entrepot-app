@@ -296,7 +296,7 @@ const useStyles = makeStyles(theme => ({
     activityWrapper: {
         display: 'grid',
         gap: '16px',
-        padding: '56px 0',
+        padding: '16px 0',
         [theme.breakpoints.down('sm')]: {
             padding: '32px 0',
         },
