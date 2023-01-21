@@ -72,6 +72,9 @@ export const EntrepotSalePageElement = defineElement<{
                         moment().subtract(12, 'hours'),
                     );
                 })
+                .filter(collectionSale => {
+                    return Number(collectionSale.sales.remaining) > 0;
+                })
                 .sort(
                     (prev: CollectionSales, next: CollectionSales) =>
                         prev.sales.endDate - next.sales.endDate,

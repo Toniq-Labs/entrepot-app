@@ -20,11 +20,11 @@ type StatsArray = {
 };
 
 export const EntrepotSaleCardElement = defineElement<{
-    collectionName: string;
-    collectionImageUrl: string;
+    collectionName?: string;
+    collectionImageUrl?: string;
     // this should eventually be the collection's creator
-    descriptionText: string;
-    date: number;
+    descriptionText?: string;
+    date?: number;
     dateMessage?: string;
     statsArray: Array<StatsArray>;
     progress?: number;
@@ -50,7 +50,42 @@ export const EntrepotSaleCardElement = defineElement<{
             height: 100%;
         }
 
+        .preloader
+            position: relative;
+            height: 420px;
+        }
+
+        .preloader::after {
+            content: '';
+            position: absolute;
+            display: block;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            background-image: linear-gradient(
+                90deg,
+                rgba(#f6f7f8, 0) 0,
+                rgba(#f6f7f8, 0.4) 20%,
+                rgba(#f6f7f8, 0.4) 40%,
+                rgba(#f6f7f8, 0) 100%
+            );
+            background-size: 200px 100%;
+            background-position: -150% 0;
+            pointer-events: none;
+            background-repeat: no-repeat;
+            animation: loading 1500ms infinite 0ms ease-out;
+
+            @keyframes loading {
+                to {
+                    background-position: 300% 0;
+                }
+            }
+        }
+
         .card-button {
+            position: relative;
             ${removeNativeFormStyles};
             text-decoration: none;
             display: flex;
@@ -75,6 +110,14 @@ export const EntrepotSaleCardElement = defineElement<{
             overflow: hidden;
         }
 
+        .description-preloader {
+            display: block;
+            height: 20px;
+            width: 270px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
+        }
+
         .image-holder {
             height: 188px;
             width: 100%;
@@ -82,6 +125,11 @@ export const EntrepotSaleCardElement = defineElement<{
             overflow: hidden;
             background-position: center;
             background-size: cover;
+        }
+
+        .image-holder-preloader {
+            display: block;
+            background-color: #f6f6f6;
         }
 
         .collection-details {
@@ -127,8 +175,22 @@ export const EntrepotSaleCardElement = defineElement<{
             margin: 0 auto;
         }
 
+        .launch-preloader {
+            display: block;
+            width: 50%;
+            background-color: #f6f6f6;
+        }
+
         .launch-time-unit {
             display: inline-flex;
+        }
+
+        .title-preloader {
+            display: block;
+            height: 28px;
+            width: 128px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
         }
 
         .stats {
@@ -164,6 +226,15 @@ export const EntrepotSaleCardElement = defineElement<{
             ${applyBackgroundAndForeground(toniqColors.pageSecondary)};
         }
 
+        .stat-title-preloader {
+            display: block;
+            height: 14px;
+            width: 35px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+
         progress {
             opacity: 0;
         }
@@ -183,6 +254,14 @@ export const EntrepotSaleCardElement = defineElement<{
             border-radius: 16px;
             background: #00d093;
             margin-top: 1px;
+        }
+
+        .preloader-pill {
+            display: block;
+            height: 24px;
+            width: 80px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
         }
     `,
     renderCallback: ({inputs}) => {
@@ -208,27 +287,62 @@ export const EntrepotSaleCardElement = defineElement<{
         }
 
         return html`
-            <button class="card-button">
-                <div class="card-wrapper">
-                    <div
-                        class="image-holder"
-                        style="background-image: url('${inputs.collectionImageUrl}')"
-                    ></div>
-                    <div class="collection-details">
-                        <div class="collection-info">
-                            <div class="launch">${formattedDate(inputs.date)}</div>
-                            <h3>${inputs.collectionName}</h3>
-                            <p class="description">${inputs.descriptionText}</p>
-                        </div>
-                        <div class="collection-stats">
-                            <div class="stats">${createStatsTemplate(inputs.statsArray)}</div>
-                            ${inputs.progress !== undefined
-                                ? createProgressTemplate(inputs.progress)
-                                : ''}
-                        </div>
-                    </div>
-                </div>
-            </button>
+            ${inputs.date
+                ? html`
+                      <button class="card-button">
+                          <div class="card-wrapper">
+                              <div
+                                  class="image-holder"
+                                  style="background-image: url('${inputs.collectionImageUrl}')"
+                              ></div>
+                              <div class="collection-details">
+                                  <div class="collection-info">
+                                      <div class="launch">${formattedDate(inputs.date)}</div>
+                                      <h3>${inputs.collectionName}</h3>
+                                      <p class="description">${inputs.descriptionText}</p>
+                                  </div>
+                                  <div class="collection-stats">
+                                      <div class="stats">
+                                          ${createStatsTemplate(inputs.statsArray)}
+                                      </div>
+                                      ${inputs.progress !== undefined
+                                          ? createProgressTemplate(inputs.progress)
+                                          : ''}
+                                  </div>
+                              </div>
+                          </div>
+                      </button>
+                  `
+                : html`
+                      <button class="card-button">
+                          <div class="card-wrapper preloader">
+                              <div class="image-holder image-holder-preloader"></div>
+                              <div class="collection-details">
+                                  <div class="collection-info">
+                                      <span class="launch launch-preloader"></span>
+                                      <span class="title-preloader"></span>
+                                      <span class="description description-preloader"></span>
+                                  </div>
+                                  <div class="collection-stats">
+                                      <div class="stats">
+                                          <div class="stat-entry">
+                                              <span class="stat-title stat-title-preloader"></span>
+                                              <span class="preloader-pill"></span>
+                                          </div>
+                                          <div class="stat-entry">
+                                              <span class="stat-title stat-title-preloader"></span>
+                                              <span class="preloader-pill"></span>
+                                          </div>
+                                          <div class="stat-entry">
+                                              <span class="stat-title stat-title-preloader"></span>
+                                              <span class="preloader-pill"></span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </button>
+                  `}
         `;
     },
 });

@@ -9,6 +9,7 @@ import {CollectionSales} from '../../../../../data/models/sales';
 import {EntrepotHorizontalScrollElement} from '../../../common/toniq-entrepot-horizontal-scroll.element';
 import {EntrepotSaleCardElement} from '../toniq-entrepot-sale-card.element';
 import {Collection} from '../../../../../data/models/collection';
+import {TopTab} from '../../../common/toniq-entrepot-top-tabs.element';
 
 export const EntrepotSaleFeatureTabElement = defineElement<{
     upcoming: ReadonlyArray<CollectionSales> | undefined;
@@ -47,6 +48,13 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
         collectionSelected: defineElementEvent<Collection>(),
     },
     renderCallback: ({inputs, dispatch, events}) => {
+        const preloaders = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
+        console.log(preloaders);
+        function goToTab(tab: TopTab) {
+            inputs.updateState({SaleSelectedTab: tab});
+            window.scrollTo({behavior: 'smooth', top: 0});
+        }
+
         return html`
             <div class="tab-content">
                 <div>
@@ -54,10 +62,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                         <span class="title">Upcoming</span>
                         <button
                             class="see-all"
-                            @click=${() =>
-                                inputs.updateState({
-                                    SaleSelectedTab: {label: 'Upcoming', value: 'upcoming'},
-                                })}
+                            @click=${() => goToTab({label: 'Upcoming', value: 'upcoming'})}
                         >
                             See All
                         </button>
@@ -107,7 +112,21 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                 })}
 							></${EntrepotHorizontalScrollElement}>
 						`
-                        : 'Fetching data'}
+                        : html`
+                              <${EntrepotHorizontalScrollElement}
+								${assign(EntrepotHorizontalScrollElement, {
+                                    children: html`
+                                        ${preloaders.map(() => {
+                                            return html`
+												<${EntrepotSaleCardElement}
+												></${EntrepotSaleCardElement}>
+											`;
+                                        })}
+                                    `,
+                                    maxCardHeight: 460,
+                                })}
+							></${EntrepotHorizontalScrollElement}>
+                          `}
                 </div>
 
                 <div>
@@ -115,13 +134,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                         <span class="title">In Progress</span>
                         <button
                             class="see-all"
-                            @click=${() =>
-                                inputs.updateState({
-                                    SaleSelectedTab: {
-                                        label: 'In Progress',
-                                        value: 'inProgress',
-                                    },
-                                })}
+                            @click=${() => goToTab({label: 'In Progress', value: 'inProgress'})}
                         >
                             See All
                         </button>
@@ -177,7 +190,21 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                 })}
 							></${EntrepotHorizontalScrollElement}>
 						`
-                        : 'Fetching data'}
+                        : html`
+                            <${EntrepotHorizontalScrollElement}
+                                ${assign(EntrepotHorizontalScrollElement, {
+                                    children: html`
+                                        ${preloaders.map(() => {
+                                            return html`
+                                                <${EntrepotSaleCardElement}
+                                                ></${EntrepotSaleCardElement}>
+                                            `;
+                                        })}
+                                    `,
+                                    maxCardHeight: 460,
+                                })}
+                            ></${EntrepotHorizontalScrollElement}>
+                        `}
                 </div>
 
                 <div>
@@ -185,13 +212,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                         <span class="title">Ending Soon</span>
                         <button
                             class="see-all"
-                            @click=${() =>
-                                inputs.updateState({
-                                    SaleSelectedTab: {
-                                        label: 'Ending Soon',
-                                        value: 'endingSoon',
-                                    },
-                                })}
+                            @click=${() => goToTab({label: 'Ending Soon', value: 'endingSoon'})}
                         >
                             See All
                         </button>
@@ -246,7 +267,21 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                 })}
 							></${EntrepotHorizontalScrollElement}>
 						`
-                        : 'Fetching data'}
+                        : html`
+                            <${EntrepotHorizontalScrollElement}
+                                ${assign(EntrepotHorizontalScrollElement, {
+                                    children: html`
+                                        ${preloaders.map(() => {
+                                            return html`
+                                                <${EntrepotSaleCardElement}
+                                                ></${EntrepotSaleCardElement}>
+                                            `;
+                                        })}
+                                    `,
+                                    maxCardHeight: 460,
+                                })}
+                            ></${EntrepotHorizontalScrollElement}>
+                        `}
                 </div>
             </div>
         `;
