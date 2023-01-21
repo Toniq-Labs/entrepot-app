@@ -48,7 +48,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
         collectionSelected: defineElementEvent<Collection>(),
     },
     renderCallback: ({inputs, dispatch, events}) => {
-        const preloaders = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
+        const preloader = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
 
         function goToTab(tab: TopTab) {
             inputs.updateState({SaleSelectedTab: tab});
@@ -116,7 +116,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                               <${EntrepotHorizontalScrollElement}
 								${assign(EntrepotHorizontalScrollElement, {
                                     children: html`
-                                        ${preloaders.map(() => {
+                                        ${preloader.map(() => {
                                             return html`
 												<${EntrepotSaleCardElement}
 												></${EntrepotSaleCardElement}>
@@ -194,7 +194,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             <${EntrepotHorizontalScrollElement}
                                 ${assign(EntrepotHorizontalScrollElement, {
                                     children: html`
-                                        ${preloaders.map(() => {
+                                        ${preloader.map(() => {
                                             return html`
                                                 <${EntrepotSaleCardElement}
                                                 ></${EntrepotSaleCardElement}>
@@ -271,7 +271,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             <${EntrepotHorizontalScrollElement}
                                 ${assign(EntrepotHorizontalScrollElement, {
                                     children: html`
-                                        ${preloaders.map(() => {
+                                        ${preloader.map(() => {
                                             return html`
                                                 <${EntrepotSaleCardElement}
                                                 ></${EntrepotSaleCardElement}>

@@ -87,7 +87,7 @@ export const EntrepotSalePageElement = defineElement<{
         });
     },
     renderCallback: ({state, updateState, events}) => {
-        const preloaders = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
+        const preloader = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
         const tabs = [
             {
                 label: 'Featured',
@@ -202,7 +202,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               })}
                                           `
                                         : html`
-                                              ${preloaders.map(() => {
+                                              ${preloader.map(() => {
                                                   return html`
                                                     <${EntrepotSaleCategoryCardElement}
                                                     ></${EntrepotSaleCategoryCardElement}>
@@ -279,7 +279,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               })}
                                           `
                                         : html`
-                                              ${preloaders.map(() => {
+                                              ${preloader.map(() => {
                                                   return html`
                                                 <${EntrepotSaleCategoryCardElement}
                                                 ></${EntrepotSaleCategoryCardElement}>
@@ -356,7 +356,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               })}
                                           `
                                         : html`
-                                              ${preloaders.map(() => {
+                                              ${preloader.map(() => {
                                                   return html`
                                                 <${EntrepotSaleCategoryCardElement}
                                                 ></${EntrepotSaleCategoryCardElement}>
