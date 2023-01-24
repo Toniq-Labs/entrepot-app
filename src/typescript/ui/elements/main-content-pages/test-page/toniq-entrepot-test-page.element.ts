@@ -76,7 +76,7 @@ const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
         }),
     topCollections: {
         past24Hours: makeTopCards(),
-        top: makeTopCards(),
+        allTime: makeTopCards(),
     },
 };
 

@@ -16,7 +16,7 @@ import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-to
 
 export const EntrepotHomePageElement = defineElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
-    topCollections: Readonly<Record<'top' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
+    topCollections: Readonly<Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
     carouselItems: ReadonlyArray<CarouselItem>;
 }>()({
     tagName: 'toniq-entrepot-home-page',
@@ -113,10 +113,10 @@ export const EntrepotHomePageElement = defineElement<{
                       value: inputs.topCollections.past24Hours,
                   }
                 : undefined,
-            inputs.topCollections.top.length
+            inputs.topCollections.allTime.length
                 ? {
-                      label: 'Top Collections',
-                      value: inputs.topCollections.top,
+                      label: 'All Time',
+                      value: inputs.topCollections.allTime,
                   }
                 : undefined,
         ].filter(isTruthy);

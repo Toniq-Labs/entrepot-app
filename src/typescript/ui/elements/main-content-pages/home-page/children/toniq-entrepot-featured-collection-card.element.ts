@@ -174,7 +174,7 @@ export const EntrepotFeaturedCollectionCardElement = defineElement<FeaturedColle
                     ></${ToniqButton}>
                     <${ToniqButton}
                         class="explore-button"
-                        ${assign(ToniqButton, {text: 'Explore'})}
+                        ${assign(ToniqButton, {text: !state.flipped ? 'More Info' : 'Back'})}
                         ${listen('click', () => {
                             updateState({flipped: !state.flipped});
                         })}
