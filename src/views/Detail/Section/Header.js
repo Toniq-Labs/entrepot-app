@@ -273,13 +273,19 @@ const DetailSectionHeader = props => {
                                                 >
                                                     {icpToString(getPriceData(), true, true)} ICP
                                                 </span>
-                                                <span class={classes.priceUSD}>
-                                                    (
-                                                    <PriceUSD
-                                                        price={EntrepotGetIcpUsd(getPriceData())}
-                                                    />
-                                                    )
-                                                </span>
+                                                {EntrepotGetIcpUsd(getPriceData()) ? (
+                                                    <span class={classes.priceUSD}>
+                                                        (
+                                                        <PriceUSD
+                                                            price={EntrepotGetIcpUsd(
+                                                                getPriceData(),
+                                                            )}
+                                                        />
+                                                        )
+                                                    </span>
+                                                ) : (
+                                                    ''
+                                                )}
                                             </div>
                                         ) : (
                                             <span

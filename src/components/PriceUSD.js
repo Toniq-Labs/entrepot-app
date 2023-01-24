@@ -5,5 +5,5 @@ const numberWithCommas = x => {
     return parts.join('.');
 };
 export default function PriceUSD(props) {
-    return <>${numberWithCommas(props.price)}</>;
+    return props.price ? <>${numberWithCommas(props.price)}</> : '';
 }
