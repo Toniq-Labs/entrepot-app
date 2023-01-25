@@ -7,6 +7,7 @@ import {WithFilterPanel} from '../../shared/WithFilterPanel.js';
 import {useLocation, useSearchParams} from 'react-router-dom';
 import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
+import sortBy from 'lodash.sortby';
 import {forceCheck} from 'react-lazyload';
 import {cronicFilterTraits} from '../../model/constants.js';
 import {ListingsTabs} from './ListingsTabs.js';
@@ -247,16 +248,6 @@ export function ListingsBody(props) {
     ] = useState(false);
     const query = searchParams.get('search') || '';
 
-    const [
-        defaultSortOption,
-        setDefaultSortOption,
-    ] = useState(defaultSortOptionNfts);
-
-    const [
-        sortOptions,
-        setSortOptions,
-    ] = useState(sortOptionsNfts);
-
     const storeUserPreferences = (preferenceKey, value) => {
         var storage = JSON.stringify({
             ...userPreferences,
@@ -304,7 +295,8 @@ export function ListingsBody(props) {
             filterOptions: {
                 ...defaultFilter,
             },
-            sortOption: defaultSortOption,
+            sortOptionNfts: defaultSortOptionNfts,
+            sortOptionActivity: defaultSortOptionActivity,
             sortTypeNfts: defaultSortType,
             sortTypeActivity: defaultSortType,
             gridSize: 'large',
@@ -319,13 +311,24 @@ export function ListingsBody(props) {
         setShowFilters,
     ] = useState(true);
     const [
-        sort,
-        setSort,
-    ] = useState(defaultSortOption);
+        sortNfts,
+        setSortNfts,
+    ] = useState(userPreferences.sortOptionNfts || defaultSortOptionNfts);
+
     const [
-        sortType,
-        setSortType,
+        sortActivity,
+        setSortActivity,
+    ] = useState(userPreferences.sortOptionActivity || defaultSortOptionActivity);
+
+    const [
+        sortTypeNfts,
+        setSortTypeNfts,
     ] = useState(userPreferences.sortTypeNfts || defaultSortType);
+
+    const [
+        sortTypeActivity,
+        setSortTypeActivity,
+    ] = useState(userPreferences.sortTypeActivity || defaultSortType);
     const [
         currentTab,
         setCurrentTab,
@@ -421,37 +424,42 @@ export function ListingsBody(props) {
             });
 
             if (traitsData) {
-                traitsCategories = traitsCategories.map((category, categoryIndex) => {
-                    const traitsCount = category.values
-                        .map(traits => {
-                            const traitCount = listings.reduce((current, listing) => {
-                                const categoryIndex = listing.traits.findIndex(listingTrait => {
-                                    return listingTrait.category === category.category;
+                traitsCategories = sortBy(
+                    traitsCategories.map(category => {
+                        const traitsCount = category.values
+                            .map(traits => {
+                                const traitCount = listings.reduce((current, listing) => {
+                                    const categoryIndex = listing.traits.findIndex(listingTrait => {
+                                        return listingTrait.category === category.category;
+                                    });
+
+                                    return (
+                                        current +
+                                        (traits === listing.traits[categoryIndex].value ? 1 : 0)
+                                    );
+                                }, 0);
+
+                                return {
+                                    [traits]: traitCount,
+                                };
+                            })
+                            .sort((a, b) => {
+                                return Object.values(b)[0] - Object.values(a)[0];
+                            })
+                            .reduce((currentTraitCount, traitCount) => {
+                                return Object.assign(currentTraitCount, {
+                                    [Object.keys(traitCount)[0]]: Object.values(traitCount)[0],
                                 });
+                            }, {});
 
-                                return (
-                                    current +
-                                    (traits === listing.traits[categoryIndex].value ? 1 : 0)
-                                );
-                            }, 0);
-
-                            return {
-                                [traits]: traitCount,
-                            };
-                        })
-                        .reduce((currentTraitCount, traitCount) => {
-                            const traitKey = Object.keys(traitCount)[0];
-                            return (
-                                (currentTraitCount[traitKey] = traitCount[traitKey]),
-                                currentTraitCount
-                            );
-                        }, {});
-
-                    return {
-                        ...category,
-                        count: traitsCount,
-                    };
-                });
+                        return {
+                            ...category,
+                            values: Object.keys(traitsCount),
+                            count: traitsCount,
+                        };
+                    }),
+                    ['category'],
+                );
             }
 
             setTraitsCategories(traitsCategories);
@@ -508,17 +516,17 @@ export function ListingsBody(props) {
         [
             value => {
                 if (
-                    sort.value.type === 'price' &&
-                    typeof value[sort.value.type] !== 'bigint' &&
-                    isNaN(value[sort.value.type])
+                    sortNfts.value.type === 'price' &&
+                    typeof value[sortNfts.value.type] !== 'bigint' &&
+                    isNaN(value[sortNfts.value.type])
                 ) {
-                    return sort.value.sort === 'asc' ? Infinity : -Infinity;
+                    return sortNfts.value.sort === 'asc' ? Infinity : -Infinity;
                 }
 
-                return value[sort.value.type];
+                return value[sortNfts.value.type];
             },
         ],
-        [sortType],
+        [sortTypeNfts],
     );
 
     useInterval(_updates, 10 * 1000);
@@ -575,17 +583,6 @@ export function ListingsBody(props) {
                 forceCheck={forceCheck}
                 currentTab={currentTab}
                 setCurrentTab={setCurrentTab}
-                onTabChange={currentTab => {
-                    if (currentTab === 'nfts') {
-                        setDefaultSortOption(defaultSortOptionNfts);
-                        setSortOptions(sortOptionsNfts);
-                        setSort(defaultSortOptionNfts);
-                    } else {
-                        setDefaultSortOption(defaultSortOptionActivity);
-                        setSortOptions(sortOptionsActivity);
-                        setSort(defaultSortOptionActivity);
-                    }
-                }}
             />
             <WithFilterPanel
                 noFilters={currentTab === 'activity' ? true : false}
@@ -620,15 +617,15 @@ export function ListingsBody(props) {
                 otherControlsChildren={
                     currentTab === 'nfts' ? (
                         <ListingsOtherControls
-                            setSort={setSort}
+                            setSort={setSortNfts}
                             storeUserPreferences={storeUserPreferences}
                             pageListing={pageListing}
                             forceCheck={forceCheck}
                             hasRarity={hasRarity}
-                            sort={sort}
-                            sortOptions={sortOptions}
-                            sortType={sortType}
-                            setSortType={setSortType}
+                            sort={sortNfts}
+                            sortOptions={sortOptionsNfts}
+                            sortType={sortTypeNfts}
+                            setSortType={setSortTypeNfts}
                             gridSize={gridSize}
                             setGridSize={setGridSize}
                             query={query}
@@ -638,12 +635,13 @@ export function ListingsBody(props) {
                         />
                     ) : (
                         <ListingsOtherControlsActivity
-                            setSort={setSort}
+                            setSort={setSortActivity}
                             storeUserPreferences={storeUserPreferences}
                             hasRarity={hasRarity}
-                            sort={sort}
-                            sortOptions={sortOptions}
-                            sortTypeActivity={userPreferences.sortTypeActivity || defaultSortType}
+                            sort={sortActivity}
+                            sortOptions={sortOptionsActivity}
+                            sortType={sortTypeActivity}
+                            setSortType={setSortTypeActivity}
                             query={query}
                             setSearchParams={setSearchParams}
                         />
@@ -665,14 +663,14 @@ export function ListingsBody(props) {
                         identity={identity}
                         loggedIn={loggedIn}
                         showFilters={showFilters}
-                        sort={sort}
-                        setSort={setSort}
+                        sort={sortNfts}
+                        setSort={setSortNfts}
                         storeUserPreferences={storeUserPreferences}
                         forceCheck={forceCheck}
-                        sortOptions={sortOptions}
+                        sortOptions={sortOptionsNfts}
                         hasRarity={hasRarity}
-                        sortType={sortType}
-                        setSortType={setSortType}
+                        sortType={sortTypeNfts}
+                        setSortType={setSortTypeNfts}
                         currentFilters={currentFilters}
                         setCurrentFilters={setCurrentFilters}
                         defaultFilter={defaultFilter}
@@ -680,12 +678,12 @@ export function ListingsBody(props) {
                 ) : (
                     <ListingsActivity
                         collection={collection}
-                        setSort={setSort}
+                        setSort={setSortActivity}
                         storeUserPreferences={storeUserPreferences}
-                        sort={sort}
-                        sortOptions={sortOptions}
-                        sortType={sortType}
-                        setSortType={setSortType}
+                        sort={sortActivity}
+                        sortOptions={sortOptionsActivity}
+                        sortType={sortTypeActivity}
+                        setSortType={setSortTypeActivity}
                         query={query}
                     />
                 )}

@@ -22,11 +22,10 @@ type StatsArray = {
 export const EntrepotSaleCardElement = defineElement<{
     collectionName?: string;
     collectionImageUrl?: string;
-    // this should eventually be the collection's creator
     descriptionText?: string;
     date?: number;
     dateMessage?: string;
-    statsArray: Array<StatsArray>;
+    statsArray?: Array<StatsArray>;
     progress?: number;
 }>()({
     tagName: 'toniq-entrepot-sale-card',
@@ -287,7 +286,7 @@ export const EntrepotSaleCardElement = defineElement<{
         }
 
         return html`
-            ${inputs.date
+            ${inputs.date && inputs.statsArray
                 ? html`
                       <button class="card-button">
                           <div class="card-wrapper">

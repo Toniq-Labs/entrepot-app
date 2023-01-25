@@ -12,7 +12,6 @@ import {
     ToniqIcon,
     ToniqInput,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
-import {useState} from 'react';
 
 const useStyles = makeStyles(theme => ({
     toggleSort: {
@@ -66,20 +65,16 @@ const useStyles = makeStyles(theme => ({
 
 export function ListingsOtherControlsActivity(props) {
     const {
+        sort,
         setSort,
         storeUserPreferences,
         hasRarity,
-        sort,
         sortOptions,
-        query,
-        setSearchParams,
-        sortTypeActivity,
-    } = props;
-
-    const [
         sortType,
         setSortType,
-    ] = useState(sortTypeActivity);
+        query,
+        setSearchParams,
+    } = props;
 
     const classes = useStyles();
     return (
@@ -126,7 +121,7 @@ export function ListingsOtherControlsActivity(props) {
                     selected={sort}
                     onSelectChange={event => {
                         setSort(event.detail);
-                        storeUserPreferences('sortOption', event.detail);
+                        storeUserPreferences('sortOptionActivity', event.detail);
                     }}
                     options={sortOptions.filter(sortOption => {
                         return sortOption.value.type === 'rarity' && !hasRarity() ? false : true;

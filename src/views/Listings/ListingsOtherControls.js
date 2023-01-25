@@ -136,7 +136,7 @@ export function ListingsOtherControls(props) {
                     selected={sort}
                     onSelectChange={event => {
                         setSort(event.detail);
-                        storeUserPreferences('sortOption', event.detail);
+                        storeUserPreferences('sortOptionNfts', event.detail);
                         pageListing.current = 0;
                         forceCheck();
                     }}

@@ -25,7 +25,7 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
     descriptionText?: string;
     date?: number;
     dateMessage?: string;
-    statsArray: Array<StatsArray>;
+    statsArray?: Array<StatsArray>;
     progress?: number | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-category-card',
@@ -78,7 +78,7 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
         .image-holder {
             height: 188px;
             width: 100%;
-            border-radius: 16px 16px 0 0;
+            border-radius: 16px 0 0 0;
             overflow: hidden;
             background-position: center;
             background-size: cover;
@@ -271,10 +271,13 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
 
             .image-holder {
                 flex: 1 1 0%;
+                border-radius: 16px 16px 0 0;
             }
 
             .collection-info {
                 flex: 1 1 0%;
+                gap: 12px;
+                text-align: center;
             }
 
             .collection-content {
@@ -288,6 +291,10 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
 
             .preloader-pill {
                 width: 80px;
+            }
+
+            .launch {
+                margin: 0 auto;
             }
         }
     `,
@@ -314,7 +321,7 @@ export const EntrepotSaleCategoryCardElement = defineElement<{
         }
 
         return html`
-            ${inputs.date
+            ${inputs.date && inputs.statsArray
                 ? html`
                       <button class="card-button">
                           <div class="collection-content">

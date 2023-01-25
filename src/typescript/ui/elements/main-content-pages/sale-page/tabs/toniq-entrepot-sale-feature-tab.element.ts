@@ -119,6 +119,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                         ${preloader.map(() => {
                                             return html`
 												<${EntrepotSaleCardElement}
+                                                ${assign(EntrepotSaleCardElement, {})}
 												></${EntrepotSaleCardElement}>
 											`;
                                         })}
@@ -197,6 +198,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                         ${preloader.map(() => {
                                             return html`
                                                 <${EntrepotSaleCardElement}
+                                                ${assign(EntrepotSaleCardElement, {})}
                                                 ></${EntrepotSaleCardElement}>
                                             `;
                                         })}
@@ -274,6 +276,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                                         ${preloader.map(() => {
                                             return html`
                                                 <${EntrepotSaleCardElement}
+                                                ${assign(EntrepotSaleCardElement, {})}
                                                 ></${EntrepotSaleCardElement}>
                                             `;
                                         })}

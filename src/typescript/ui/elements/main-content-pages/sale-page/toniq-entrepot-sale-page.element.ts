@@ -86,7 +86,7 @@ export const EntrepotSalePageElement = defineElement<{
             updateState({endingSoon});
         });
     },
-    renderCallback: ({state, updateState, events}) => {
+    renderCallback: ({state, updateState, events, dispatch}) => {
         const preloader = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
         const tabs = [
             {
@@ -191,7 +191,7 @@ export const EntrepotSalePageElement = defineElement<{
                                                             ],
                                                         })}
                                                         ${listen('click', () => {
-                                                            dispatchEvent(
+                                                            dispatch(
                                                                 new events.collectionSelected(
                                                                     collection,
                                                                 ),
@@ -205,6 +205,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               ${preloader.map(() => {
                                                   return html`
                                                     <${EntrepotSaleCategoryCardElement}
+                                                    ${assign(EntrepotSaleCategoryCardElement, {})}
                                                     ></${EntrepotSaleCategoryCardElement}>
                                                     `;
                                               })}
@@ -268,7 +269,7 @@ export const EntrepotSalePageElement = defineElement<{
                                                                 },
                                                             )}
                                                             ${listen('click', () => {
-                                                                dispatchEvent(
+                                                                dispatch(
                                                                     new events.collectionSelected(
                                                                         collection,
                                                                     ),
@@ -282,6 +283,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               ${preloader.map(() => {
                                                   return html`
                                                 <${EntrepotSaleCategoryCardElement}
+                                                ${assign(EntrepotSaleCategoryCardElement, {})}
                                                 ></${EntrepotSaleCategoryCardElement}>
                                                 `;
                                               })}
@@ -345,7 +347,7 @@ export const EntrepotSalePageElement = defineElement<{
                                                                 },
                                                             )}
                                                             ${listen('click', () => {
-                                                                dispatchEvent(
+                                                                dispatch(
                                                                     new events.collectionSelected(
                                                                         collection,
                                                                     ),
@@ -359,6 +361,7 @@ export const EntrepotSalePageElement = defineElement<{
                                               ${preloader.map(() => {
                                                   return html`
                                                 <${EntrepotSaleCategoryCardElement}
+                                                ${assign(EntrepotSaleCategoryCardElement, {})}
                                                 ></${EntrepotSaleCategoryCardElement}>
                                                 `;
                                               })}

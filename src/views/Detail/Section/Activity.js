@@ -148,8 +148,10 @@ export default function DetailSectionActivity(props) {
                                 Result ({sortedActivity.length})
                             </span>
                             <ToniqDropdown
-                                className={classes.filterDropdown}
-                                selectedLabelPrefix="Sort By:"
+                                style={{
+                                    '--toniq-accent-secondary-background-color': 'transparent',
+                                    width: 'unset',
+                                }}
                                 selected={sort}
                                 onSelectChange={event => {
                                     setSort(event.detail);

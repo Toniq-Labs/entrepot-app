@@ -547,7 +547,6 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         gap: 32,
         backgroundColor: 'white',
-        height: '100%',
         [theme.breakpoints.down('sm')]: {
             gap: 24,
         },
@@ -607,13 +606,10 @@ const useStyles = makeStyles(theme => ({
         gap: 16,
         margin: '0 8px',
         gridTemplateColumns: '1fr 1fr 1fr',
-        [theme.breakpoints.up('md')]: {
-            marginBottom: '24px',
-        },
+        marginBottom: '16px',
         [theme.breakpoints.down('md')]: {
             gridTemplateColumns: '1fr 1fr',
             marginTop: '8px',
-            marginBottom: '16px',
         },
     },
     attributeHeader: {
