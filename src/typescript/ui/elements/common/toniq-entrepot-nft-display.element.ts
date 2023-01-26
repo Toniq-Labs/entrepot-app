@@ -50,9 +50,6 @@ export const EntrepotNftDisplayElement = defineToniqElement<
             align-items: center;
         }
     `,
-    initCallback: () => {
-        console.log('getting initialized...');
-    },
     renderCallback: ({inputs, state, updateState}) => {
         updateState({
             imageTemplate: {
