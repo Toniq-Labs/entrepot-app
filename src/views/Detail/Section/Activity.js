@@ -186,6 +186,8 @@ export default function DetailSectionActivity(props) {
                                     nftId={transaction.token}
                                     cachePriority={0}
                                     key={index}
+                                    max={{height: 64, width: 64}}
+                                    min={{height: 64, width: 64}}
                                 >
                                     <ListRow
                                         items={[

@@ -346,6 +346,8 @@ export default function DetailSectionDetails(props) {
                                         cachePriority={0}
                                         key={index}
                                         style={{margin: '0 8px', padding: 12}}
+                                        max={{height: 64, width: 64}}
+                                        min={{height: 64, width: 64}}
                                     >
                                         <ListRow
                                             items={[

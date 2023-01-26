@@ -163,7 +163,7 @@ const DetailSectionHeader = props => {
 
     return (
         <Box className={classes.detailHeader}>
-            <div className={classes.detailSectionHeader}>
+            <div className={`${classes.detailSectionHeader} detail-section-header`}>
                 <Grid item xs={12} sm={5}>
                     <DropShadowCard
                         className={classes.imageWrapperContainer}

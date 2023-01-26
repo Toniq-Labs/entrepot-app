@@ -218,6 +218,10 @@ const DetailBody = props => {
                         nftIndex={index}
                         nftId={tokenid}
                         fullSize={true}
+                        max={{
+                            width: 477,
+                            height: 1000,
+                        }}
                     />
                 );
             // return extractEmbeddedImage(
@@ -337,7 +341,7 @@ const DetailBody = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <Container className={classes.container}>
+        <Container className={`${classes.container} detail-body-container`}>
             <Container className={classes.nftDescWrapper}>
                 <DetailSectionHeader
                     index={index}

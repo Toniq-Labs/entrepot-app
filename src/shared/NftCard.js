@@ -28,13 +28,13 @@ export function NftCard(props) {
     return (
         <DropShadowCard
             onClick={props.onClick}
-            className={props.className}
+            className={`${props.className} nft-card-drop-shadow-card`}
             enableHover={true}
             style={{...styles, ...props.style}}
         >
             <EntrepotNftDisplay
-                max={{height: 456, width: 272}}
-                min={{height: 200, width: 272}}
+                max={props.max ?? {height: 456, width: 272}}
+                min={props.min ?? {height: 200, width: 272}}
                 collectionId={props.collectionId}
                 nftIndex={props.nftIndex}
                 nftId={props.nftId}
