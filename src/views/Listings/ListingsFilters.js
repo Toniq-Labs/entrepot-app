@@ -1,3 +1,4 @@
+import {removeCommasFromNumberString} from '@augment-vir/common';
 import {Grid, makeStyles} from '@material-ui/core';
 import {
     cssToReactStyleObject,
@@ -281,15 +282,18 @@ export function ListingsFilters(props) {
                                                 : String(currentFilters.price.min)
                                         }
                                         onValueChange={event => {
-                                            const value =
-                                                isNaN(event.detail) || event.detail === ''
+                                            const numericCast = Number(
+                                                removeCommasFromNumberString(event.detail),
+                                            );
+                                            const newValue =
+                                                isNaN(numericCast) || event.detail === ''
                                                     ? undefined
-                                                    : event.detail;
+                                                    : numericCast;
                                             var filterOptions = {
                                                 ...currentFilters,
                                                 price: {
                                                     ...currentFilters.price,
-                                                    min: value,
+                                                    min: newValue,
                                                 },
                                             };
                                             setCurrentFilters(filterOptions);
@@ -305,15 +309,18 @@ export function ListingsFilters(props) {
                                                 : String(currentFilters.price.max)
                                         }
                                         onValueChange={event => {
-                                            const value =
-                                                isNaN(event.detail) || event.detail === ''
+                                            const numericCast = Number(
+                                                removeCommasFromNumberString(event.detail),
+                                            );
+                                            const newValue =
+                                                isNaN(numericCast) || event.detail === ''
                                                     ? undefined
-                                                    : event.detail;
+                                                    : numericCast;
                                             var filterOptions = {
                                                 ...currentFilters,
                                                 price: {
                                                     ...currentFilters.price,
-                                                    max: value,
+                                                    max: newValue,
                                                 },
                                             };
                                             setCurrentFilters(filterOptions);

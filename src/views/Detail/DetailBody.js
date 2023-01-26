@@ -203,6 +203,9 @@ const DetailBody = props => {
                     EntrepotNFTImage(canister, index, tokenid, true),
                     classes,
                 );
+                /* eslint-disable no-unreachable */
+                break;
+
             // for pre-generated images residing on asset canisters
             // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals
             case 'asset_canisters':
@@ -210,6 +213,8 @@ const DetailBody = props => {
                     detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
                     classes,
                 );
+                /* eslint-disable no-unreachable */
+                break;
 
             // default case is to just use the thumbnail on the detail page
             default:

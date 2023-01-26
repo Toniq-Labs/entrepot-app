@@ -266,7 +266,7 @@ export function ListingsNftCard(props) {
                                 color: toniqColors.pageSecondary.foregroundColor,
                             }}
                         >
-                            NFTs&nbsp;{listings ? `(${filteredAndSortedListings.length})` : ''}
+                            {listings ? `NFTs (${filteredAndSortedListings.length})` : ''}
                         </span>
                         <div className={classes.tokenWrapper}>
                             <div className={classes.tokenWrapper}>

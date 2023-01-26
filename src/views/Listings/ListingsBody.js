@@ -133,31 +133,29 @@ function doesCollectionPassFilters(listing, currentFilters, traitsData, collecti
     if (!listing) {
         return false;
     }
-    if (currentFilters.price.min && currentFilters.price.max) {
-        if (
-            Number(listing.price) / 100000000 > currentFilters.price.max ||
-            Number(listing.price) / 100000000 < currentFilters.price.min
-        ) {
-            return false;
-        }
+
+    if (
+        !isInRange(
+            Number(listing.price) / 100000000,
+            currentFilters.price.min,
+            currentFilters.price.max,
+        )
+    ) {
+        return false;
     }
 
-    if (currentFilters.rarity.min && currentFilters.rarity.max) {
-        if (
-            listing.rarity > currentFilters.rarity.max ||
-            listing.rarity < currentFilters.rarity.min
-        ) {
-            return false;
-        }
+    if (!isInRange(listing.rarity, currentFilters.rarity.min, currentFilters.rarity.max)) {
+        return false;
     }
 
-    if (currentFilters.mintNumber.min && currentFilters.mintNumber.max) {
-        if (
-            Number(listing.mintNumber) > currentFilters.mintNumber.max ||
-            Number(listing.mintNumber) < currentFilters.mintNumber.min
-        ) {
-            return false;
-        }
+    if (
+        !isInRange(
+            Number(listing.mintNumber),
+            currentFilters.mintNumber.min,
+            currentFilters.mintNumber.max,
+        )
+    ) {
+        return false;
     }
 
     if (currentFilters.traits.values.length) {
@@ -371,14 +369,17 @@ export function ListingsBody(props) {
             var result = await api.token(canister).listings();
             let traitsCategories;
             if (traitsData) {
-                traitsCategories = traitsData[0].map(trait => {
-                    return {
-                        category: trait[1],
-                        values: trait[2].map(trait => {
-                            return trait[1];
-                        }),
-                    };
-                });
+                traitsCategories = sortBy(
+                    traitsData[0].map(trait => {
+                        return {
+                            category: trait[1],
+                            values: trait[2].map(trait => {
+                                return trait[1];
+                            }),
+                        };
+                    }),
+                    ['category'],
+                );
             } else if (collection?.route === 'cronics') {
                 traitsCategories = cronicFilterTraits.map(trait => {
                     return {
@@ -424,42 +425,45 @@ export function ListingsBody(props) {
             });
 
             if (traitsData) {
-                traitsCategories = sortBy(
-                    traitsCategories.map(category => {
-                        const traitsCount = category.values
-                            .map(traits => {
-                                const traitCount = listings.reduce((current, listing) => {
-                                    const categoryIndex = listing.traits.findIndex(listingTrait => {
-                                        return listingTrait.category === category.category;
-                                    });
-
-                                    return (
-                                        current +
-                                        (traits === listing.traits[categoryIndex].value ? 1 : 0)
-                                    );
-                                }, 0);
-
-                                return {
-                                    [traits]: traitCount,
-                                };
-                            })
-                            .sort((a, b) => {
-                                return Object.values(b)[0] - Object.values(a)[0];
-                            })
-                            .reduce((currentTraitCount, traitCount) => {
-                                return Object.assign(currentTraitCount, {
-                                    [Object.keys(traitCount)[0]]: Object.values(traitCount)[0],
+                traitsCategories = traitsCategories.map(category => {
+                    const traitsCount = category.values
+                        .map(traits => {
+                            const traitCount = listings.reduce((current, listing) => {
+                                const categoryIndex = listing.traits.findIndex(listingTrait => {
+                                    return listingTrait.category === category.category;
                                 });
-                            }, {});
 
-                        return {
-                            ...category,
-                            values: Object.keys(traitsCount),
-                            count: traitsCount,
-                        };
-                    }),
-                    ['category'],
-                );
+                                if (categoryIndex === -1) {
+                                    return 0;
+                                }
+
+                                return (
+                                    current +
+                                    (traits === listing.traits[categoryIndex].value ? 1 : 0)
+                                );
+                            }, 0);
+
+                            return {
+                                [traits]: traitCount,
+                            };
+                        })
+                        .sort((a, b) => {
+                            return Object.values(b)[0] - Object.values(a)[0];
+                        })
+                        .reduce((currentTraitCount, traitCount) => {
+                            const traitKey = Object.keys(traitCount)[0];
+                            return (
+                                (currentTraitCount[traitKey] = traitCount[traitKey]),
+                                currentTraitCount
+                            );
+                        }, {});
+
+                    return {
+                        ...category,
+                        values: Object.keys(traitsCount),
+                        count: traitsCount,
+                    };
+                });
             }
 
             setTraitsCategories(traitsCategories);

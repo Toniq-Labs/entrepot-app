@@ -23,7 +23,7 @@ export function ListingsTabs(props) {
                 textColor="primary"
                 onChange={(e, tab) => {
                     if (tab !== currentTab) setCurrentTab(tab);
-                    onTabChange(tab);
+                    if (onTabChange) onTabChange(tab);
                     storeUserPreferences('currentTab', tab);
                 }}
             >

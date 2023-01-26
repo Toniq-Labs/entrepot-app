@@ -485,9 +485,11 @@ const useStyles = makeStyles(theme => ({
         gap: 12,
         maxHeight: 448,
         height: '100%',
-        overflowY: 'overlay',
+        overflowY: 'auto',
         paddingRight: 18,
         paddingBottom: 6,
+        scrollbarColor: '#00D093 #F0F0F0',
+        scrollbarWidth: 6,
         '&::-webkit-scrollbar': {
             width: 8,
         },

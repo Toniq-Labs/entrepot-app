@@ -1,6 +1,8 @@
 import {truncateNumber} from '@augment-vir/common';
 
-export function isInRange(value, min, max) {
+export function isInRange(value, min, max, minDefault = 0, maxDefault = Infinity) {
+    if (min === undefined) min = minDefault;
+    if (max === undefined) max = maxDefault;
     return value >= min && value <= max;
 }
 
