@@ -9,7 +9,7 @@ import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
 import {EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetIcpUsd} from '../utils.js';
-import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 export default function Sold(props) {
     const [
@@ -107,7 +107,7 @@ export default function Sold(props) {
                                 props.collection,
                                 tokenid,
                                 imgLoaded,
-                                <EntrepotNftImage
+                                <EntrepotNftDisplay
                                     collectionId={props.collection}
                                     nftIndex={index}
                                     nftId={tokenid}

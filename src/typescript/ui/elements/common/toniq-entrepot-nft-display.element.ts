@@ -26,10 +26,10 @@ const defaultDimensionConstraint: DimensionConstraints = {
     },
 };
 
-export const EntrepotNftImageElement = defineToniqElement<
+export const EntrepotNftDisplayElement = defineToniqElement<
     NftImageInputs & PartialAndNullable<DimensionConstraints>
 >()({
-    tagName: 'toniq-entrepot-nft-image',
+    tagName: 'toniq-entrepot-nft-display',
     stateInit: {
         imageTemplate: asyncState<NftImageDisplayData>(),
     },
@@ -72,10 +72,10 @@ export const EntrepotNftImageElement = defineToniqElement<
         const asyncTemplate = renderAsyncState(
             state.imageTemplate,
             html`
-                    <${ToniqIcon}
-                        ${assign(ToniqIcon, {icon: LoaderAnimated24Icon})}
-                    ></${ToniqIcon}>
-                `,
+                <${ToniqIcon}
+                    ${assign(ToniqIcon, {icon: LoaderAnimated24Icon})}
+                ></${ToniqIcon}>
+            `,
             resolvedValue => html`
                     <${VirResizableImage}
                         ${assign(VirResizableImage, {
@@ -104,4 +104,4 @@ export const EntrepotNftImageElement = defineToniqElement<
     },
 });
 
-export const EntrepotNftImage = wrapInReactComponent(EntrepotNftImageElement);
+export const EntrepotNftDisplay = wrapInReactComponent(EntrepotNftDisplayElement);

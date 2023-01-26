@@ -8,7 +8,7 @@ import Flip from './Flip';
 import extjs from '../ic/extjs.js';
 
 import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
-import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 var settings = {
     '6wih6-siaaa-aaaah-qczva-cai': {
@@ -168,7 +168,7 @@ export default function Opener(props) {
                                         );
                                     else
                                         return (
-                                            <EntrepotNftImage
+                                            <EntrepotNftDisplay
                                                 collectionId={props.nft.canister}
                                                 nftIndex={index}
                                                 nftId={props.nft.id}

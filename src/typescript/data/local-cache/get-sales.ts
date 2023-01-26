@@ -1,8 +1,9 @@
 import {Collection} from '../models/collection';
-import {entrepotDataApi} from '../entrepot-data-api';
+
 import {BigNumber} from 'bignumber.js';
 import {convertToIcpNumber, isBigInt} from '../icp';
 import {Account, CollectionSales, Sales, SalesGroup} from '../models/sales';
+import {defaultEntrepotApi} from '../../api/entrepot-data-api';
 
 export async function getCollectionSales(
     collections: Array<Collection>,
@@ -12,10 +13,10 @@ export async function getCollectionSales(
         collections.map(async collection => {
             return {
                 ...collection,
-                saleSettings: (await entrepotDataApi
+                saleSettings: (await defaultEntrepotApi
                     .canister(collection.canister, 'ext2')
                     .ext_saleSettings(account ? account.address : '')) as Array<Sales>,
-                saleCurrent: (await entrepotDataApi
+                saleCurrent: (await defaultEntrepotApi
                     .canister(collection.canister, 'ext2')
                     .ext_saleCurrent()) as Array<Sales>,
             };

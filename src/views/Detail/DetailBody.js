@@ -17,7 +17,7 @@ import {
     createEntrepotApiWithIdentity,
 } from '../../typescript/api/entrepot-data-api';
 import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
-import {EntrepotNftImage} from '../../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -213,7 +213,7 @@ const DetailBody = props => {
             // default case is to just use the thumbnail on the detail page
             default:
                 return (
-                    <EntrepotNftImage
+                    <EntrepotNftDisplay
                         collectionId={canister}
                         nftIndex={index}
                         nftId={tokenid}

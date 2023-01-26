@@ -26,7 +26,7 @@ import {
 } from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
-import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -476,7 +476,7 @@ export default function NFT(props) {
                             getExtCanisterId(canister),
                             tokenid,
                             imgLoaded,
-                            <EntrepotNftImage
+                            <EntrepotNftDisplay
                                 collection={getExtCanisterId(canister)}
                                 nftIndex={index}
                                 nftId={tokenid}

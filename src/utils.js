@@ -8,7 +8,7 @@ import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
 } from './typescript/api/entrepot-data-api';
-import {EntrepotNftImage} from './typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from './typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -237,7 +237,7 @@ const clipboardCopy = text => {
                         //     }}
                         //     src={nftImage}
                         // />
-                        <EntrepotNftImage
+                        <EntrepotNftDisplay
                             collectionId={canister}
                             nftIndex={index}
                             nftId={earnData[tokenid].tokenid}

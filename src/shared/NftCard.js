@@ -3,7 +3,7 @@ import {css} from 'element-vir';
 import {unsafeCSS} from 'lit';
 import {toniqColors, cssToReactStyleObject} from '@toniq-labs/design-system';
 import {DropShadowCard} from './DropShadowCard';
-import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 export function NftCard(props) {
     const styles = cssToReactStyleObject(css`
@@ -32,7 +32,7 @@ export function NftCard(props) {
             enableHover={true}
             style={{...styles, ...props.style}}
         >
-            <EntrepotNftImage
+            <EntrepotNftDisplay
                 max={{height: 456, width: 272}}
                 min={{height: 200, width: 272}}
                 collectionId={props.collectionId}

@@ -20,7 +20,6 @@ import {
     X24Icon,
 } from '@toniq-labs/design-system';
 import {EntrepotGetIcpUsd, EntrepotNFTMintNumber} from '../../../utils';
-import {EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {
     ToniqButton,

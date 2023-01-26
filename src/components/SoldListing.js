@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import extjs from '../ic/extjs.js';
 import {EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
 import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
-import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
@@ -310,7 +310,7 @@ export default function SoldListing(props) {
                                 props.collection,
                                 tokenid,
                                 imgLoaded,
-                                <EntrepotNftImage
+                                <EntrepotNftDisplay
                                     collectionId={props.collection}
                                     nftIndex={index}
                                     nftId={tokenid}
