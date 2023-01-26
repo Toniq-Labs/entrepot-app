@@ -4,7 +4,7 @@ import extjs from '../../ic/extjs.js';
 import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
 import {useNavigate} from 'react-router';
-import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../../utils';
+import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../../utils';
 import {
     ToniqDropdown,
     ToniqMiddleEllipsis,
@@ -302,13 +302,10 @@ export default function ListingsActivity(props) {
 
                 return {
                     ...listing,
-                    image: EntrepotNFTImage(
-                        getExtCanisterId(canister),
-                        index,
-                        listing.token,
-                        false,
-                        0,
-                    ),
+                    collectionId: getExtCanisterId(canister),
+                    nftIndex: index,
+                    nftId: listing.token,
+                    cachePriority: 0,
                     rarity,
                     mintNumber,
                 };
@@ -437,7 +434,10 @@ export default function ListingsActivity(props) {
                                 onClick={() => {
                                     navigate(`/marketplace/asset/${listing.token}`);
                                 }}
-                                imageTemplate={listing.image}
+                                collectionId={listing.collectionId}
+                                nftIndex={listing.nftIndex}
+                                nftId={listing.nftId}
+                                cachePriority={listing.cachePriority}
                                 key={listing.id}
                             >
                                 <>

@@ -6,15 +6,37 @@ import {icPunksCanisterDetails} from './specific-canisters/ic-punks';
 import {icatsCanisterDetails} from './specific-canisters/icats';
 import {icpBunnyCanisterDetails} from './specific-canisters/icp-bunny';
 import {createFullCanisterDetails} from './full-canister-details';
+import {btcFlowerCanisterDetails} from './specific-canisters/btc-flower';
 import {icpFlowerCanisterDetails} from './specific-canisters/icp-flower';
+import {ethFlowerCanisterDetails} from './specific-canisters/eth-flower';
+import {pineapplePunksCanisterDetails} from './specific-canisters/pineapple-punks';
+import {dfinityDeckOriginsCanisterDetails} from './specific-canisters/dfinity-deck-origins';
+import {icDinosCanisterDetails} from './specific-canisters/ic-dinos';
+import {icKittiesCanisterDetails} from './specific-canisters/ic-kitties';
+import {icPuppiesCanisterDetails} from './specific-canisters/ic-puppies';
+import {cronicCrittersCanisterDetails} from './specific-canisters/cronic-critters';
+import {icBucksCanisterDetails} from './specific-canisters/ic-bucks';
+import {icelebrityCanisterDetails} from './specific-canisters/icelebrity';
+import {pokeBotsCanisterDetails} from './specific-canisters/poked-bots';
 
 const allCanisterDetails = [
+    btcFlowerCanisterDetails,
+    cronicCrittersCanisterDetails,
+    dfinityDeckOriginsCanisterDetails,
+    ethFlowerCanisterDetails,
     icatsCanisterDetails,
+    icBucksCanisterDetails,
+    icDinosCanisterDetails,
     icDripCanisterDetails,
+    icelebrityCanisterDetails,
+    icKittiesCanisterDetails,
     icpBunnyCanisterDetails,
-    icPunksCanisterDetails,
-    icTurtlesCanisterDetails,
     icpFlowerCanisterDetails,
+    icPunksCanisterDetails,
+    icPuppiesCanisterDetails,
+    icTurtlesCanisterDetails,
+    pineapplePunksCanisterDetails,
+    pokeBotsCanisterDetails,
 ];
 
 /**

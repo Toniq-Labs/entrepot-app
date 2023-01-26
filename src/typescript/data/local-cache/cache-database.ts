@@ -1,4 +1,4 @@
-import {extractErrorMessage, ObjectValueType} from '@augment-vir/common';
+import {extractErrorMessage, PropertyValueType} from '@augment-vir/common';
 import Dexie, {Table} from 'dexie';
 import {BaseCollection, Collection} from '../models/collection';
 import {NriData} from '../models/nri-data';
@@ -42,7 +42,7 @@ class InternalEntrepotDatabaseClass extends Dexie {
 
 export type EntrepotCacheDatabase = InternalEntrepotDatabaseClass;
 
-export type EntrepotCacheTableName = ObjectValueType<{
+export type EntrepotCacheTableName = PropertyValueType<{
     [Prop in keyof EntrepotCacheDatabase]: EntrepotCacheDatabase[Prop] extends Table ? Prop : never;
 }>;
 
@@ -65,16 +65,19 @@ async function createDatabase(): Promise<InternalEntrepotDatabaseClass> {
             data: undefined,
             rowKey: putTestKey,
         });
+        await database.nriCache.delete(putTestKey);
         database.collectionsStatsCache.toArray();
         await database.collectionsStatsCache.put({
             data: undefined,
             rowKey: putTestKey,
         });
+        await database.collectionsStatsCache.delete(putTestKey);
         database.allBaseCollectionsCache.toArray();
         await database.allBaseCollectionsCache.put({
             data: [],
             rowKey: putTestKey,
         });
+        await database.allBaseCollectionsCache.delete(putTestKey);
         return database;
     } catch (error) {
         /** If there was an error for some reason, just reset the database. */

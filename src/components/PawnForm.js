@@ -13,14 +13,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
-import {EntrepotNFTImage} from '../utils.js';
+
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 export default function PawnForm(props) {
-    const [
-        imgLoaded,
-        setImgLoaded,
-    ] = React.useState(false);
     const [
         amount,
         setAmount,
@@ -98,24 +95,10 @@ export default function PawnForm(props) {
                     Lock NFT in protocol
                 </DialogTitle>
                 <DialogContent>
-                    <img
-                        alt="NFT"
-                        src={props.nft.id ? EntrepotNFTImage(canister, index, props.nft.id) : ''}
-                        style={{
-                            maxHeight: '200px',
-                            margin: '0px auto 20px',
-                            display: imgLoaded ? 'block' : 'none',
-                        }}
-                        onLoad={() => setImgLoaded(true)}
-                    />
-                    <Skeleton
-                        style={{
-                            width: '200px',
-                            height: '200px',
-                            margin: '0px auto 20px',
-                            display: imgLoaded ? 'none' : 'block',
-                        }}
-                        variant="rect"
+                    <EntrepotNftImage
+                        collectionId={canister}
+                        nftIndex={index}
+                        nftId={props.nft.id}
                     />
                     <Alert severity="info">
                         Please enter the amount of ICP, the rewards, and the length of the contract

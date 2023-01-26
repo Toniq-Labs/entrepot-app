@@ -8,13 +8,9 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
-import {
-    EntrepotNFTImage,
-    EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
-    EntrepotGetIcpUsd,
-} from '../utils.js';
-import {TREASURE_CANISTER} from '../utilities/treasure-canister';
+import {EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetIcpUsd} from '../utils.js';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -44,9 +40,6 @@ export default function Pawn(props) {
         setImgLoaded,
     ] = React.useState(false);
     let {canister, index} = extjs.decodeTokenId(props.event.tokenid);
-    const nftImg = () => {
-        return EntrepotNFTImage(canister, index, props.event.tokenid);
-    };
     const styles = {
         avatarSkeletonContainer: {
             height: 0,
@@ -74,7 +67,7 @@ export default function Pawn(props) {
     };
     const refresh = () => {};
     const viewNft = () => {
-        var tokenid = extjs.encodeTokenId(TREASURE_CANISTER, props.event.index);
+        var tokenid = extjs.encodeTokenId(treasureCanisterId, props.event.index);
         window.open('/marketplace/asset/' + tokenid);
     };
     const repayContract = async () => {
@@ -140,7 +133,11 @@ export default function Pawn(props) {
                                 canister,
                                 props.event.tokenid,
                                 imgLoaded,
-                                nftImg(),
+                                <EntrepotNftImage
+                                    collectionId={canister}
+                                    nftIndex={index}
+                                    nftId={props.event.tokenid}
+                                />,
                                 () => setImgLoaded(true),
                             )}
                         </div>

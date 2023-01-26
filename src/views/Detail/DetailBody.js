@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {makeStyles, Container} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
 import extjs from '../../ic/extjs.js';
-import {EntrepotNFTImage, EntrepotNFTMintNumber, EntrepotCollectionStats} from '../../utils';
+import {EntrepotNFTMintNumber, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import chunk from 'lodash.chunk';
 import getGenes from '../../components/CronicStats';
@@ -12,11 +12,12 @@ import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';
 import DetailSectionHeader from './Section/Header';
 import DetailSectionDetails from './Section/Details';
 import DetailSectionActivity from './Section/Activity';
-import {TREASURE_CANISTER} from '../../utilities/treasure-canister';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
 } from '../../typescript/api/entrepot-data-api';
+import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
+import {EntrepotNftImage} from '../../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -175,59 +176,54 @@ const DetailBody = props => {
         switch (detailPage) {
             // for generative collections where assets are all stored on the same canister
             // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
-            case 'generative_assets_on_nft_canister':
-                return extractEmbeddedImage(
-                    EntrepotNFTImage(canister, index, tokenid, true),
-                    classes,
-                );
-                /* eslint-disable no-unreachable */
-                break;
-            /* eslint-enable */
+            // case 'generative_assets_on_nft_canister':
+            //     return extractEmbeddedImage(
+            //         EntrepotNFTImage(canister, index, tokenid, true),
+            //         classes,
+            //     );
 
             // for interactive NFTs or videos
             case 'interactive_nfts_or_videos':
-            case TREASURE_CANISTER:
-                return (
-                    <iframe
-                        frameBorder="0"
-                        src={EntrepotNFTImage(canister, index, tokenid, true)}
-                        alt=""
-                        title={tokenid}
-                        className={classes.nftIframe}
-                    />
-                );
-                /* eslint-disable no-unreachable */
-                break;
-            /* eslint-enable */
+            case treasureCanisterId:
+                return 'IFRAME';
+            // return (
+            //     <iframe
+            //         frameBorder="0"
+            //         src={EntrepotNFTImage(canister, index, tokenid, true)}
+            //         alt=""
+            //         title={tokenid}
+            //         className={classes.nftIframe}
+            //     />
+            // );
 
             // for videos that don't fit in the iframe and need a video tag
             case 'videos_that_dont_fit_in_frame':
-                return extractEmbeddedVideo(
-                    EntrepotNFTImage(canister, index, tokenid, true),
-                    classes,
-                );
-                /* eslint-disable no-unreachable */
-                break;
-
+            // return extractEmbeddedVideo(
+            //     EntrepotNFTImage(canister, index, tokenid, true),
+            //     classes,
+            // );
             // for pre-generated images residing on asset canisters
             // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals
             case 'asset_canisters':
-                return extractEmbeddedImage(
-                    detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
-                    classes,
-                );
-                /* eslint-disable no-unreachable */
-                break;
+            // return extractEmbeddedImage(
+            //     detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
+            //     classes,
+            // );
 
             // default case is to just use the thumbnail on the detail page
             default:
-                return extractEmbeddedImage(
-                    detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
-                    classes,
+                return (
+                    <EntrepotNftImage
+                        collectionId={canister}
+                        nftIndex={index}
+                        nftId={tokenid}
+                        fullSize={true}
+                    />
                 );
-                /* eslint-disable no-unreachable */
-                break;
-            /* eslint-enable */
+            // return extractEmbeddedImage(
+            //     detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
+            //     classes,
+            // );
         }
     };
 

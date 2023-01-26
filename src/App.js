@@ -49,12 +49,12 @@ import {
     EntrepotClearLiked,
     EntrepotUpdateStats,
 } from './utils';
-import {TREASURE_CANISTER} from './utilities/treasure-canister';
 import {
     createEntrepotApiWithIdentity,
     defaultEntrepotApi,
 } from './typescript/api/entrepot-data-api';
 import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
 
 const transactionFee = 10000;
 const transactionMin = 100000;
@@ -313,7 +313,7 @@ export default function App() {
             }
             loader(true, 'Closing contract...');
             var r2 = await createEntrepotApiWithIdentity(identity)
-                .canister(TREASURE_CANISTER)
+                .canister(treasureCanisterId)
                 .tp_close(token);
             if (r2.hasOwnProperty('err')) throw r2.err;
             if (!r2.hasOwnProperty('ok')) throw 'Unknown Error';
@@ -336,7 +336,7 @@ export default function App() {
             try {
                 loader(true, 'Cancelling request...');
                 var r = createEntrepotApiWithIdentity(identity)
-                    .canister(TREASURE_CANISTER)
+                    .canister(treasureCanisterId)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
@@ -362,7 +362,7 @@ export default function App() {
             try {
                 loader(true, 'Accepting request...');
                 var r = createEntrepotApiWithIdentity(identity)
-                    .canister(TREASURE_CANISTER)
+                    .canister(treasureCanisterId)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
                 if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
@@ -373,7 +373,7 @@ export default function App() {
                     .transfer(identity.getPrincipal(), currentAccount, payToAddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
                 var r2 = createEntrepotApiWithIdentity(identity)
-                    .canister(TREASURE_CANISTER)
+                    .canister(treasureCanisterId)
                     .tp_settle(payToAddress);
                 loader(true, 'Reloading requests...');
                 await refresh();

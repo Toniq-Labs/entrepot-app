@@ -7,6 +7,7 @@ import {
     ArrowRight24Icon,
     toniqColors,
     ToniqIcon,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css, assign, listen, onResize} from 'element-vir';
 import {throttle} from '../../../augments/function';
@@ -18,7 +19,7 @@ export type CarouselItem = {
 
 const carouselImageWidth = 340;
 
-export const EntrepotCarouselElement = defineElement<{
+export const EntrepotCarouselElement = defineToniqElement<{
     items: ReadonlyArray<CarouselItem>;
     automaticRotation?: boolean;
 }>()({

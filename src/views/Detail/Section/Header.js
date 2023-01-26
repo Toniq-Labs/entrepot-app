@@ -19,7 +19,8 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {EntrepotGetIcpUsd, EntrepotNFTImage, EntrepotNFTMintNumber} from '../../../utils';
+import {EntrepotGetIcpUsd, EntrepotNFTMintNumber} from '../../../utils';
+import {EntrepotNFTMintNumber} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {
     ToniqButton,
@@ -436,13 +437,10 @@ const DetailSectionHeader = props => {
                                         return (
                                             <NftCard
                                                 listStyle={true}
-                                                imageTemplate={EntrepotNFTImage(
-                                                    getExtCanisterId(canister),
-                                                    index,
-                                                    tokenid,
-                                                    false,
-                                                    0,
-                                                )}
+                                                collectionId={getExtCanisterId(canister)}
+                                                nftIndex={index}
+                                                nftId={tokenid}
+                                                cachePriority={0}
                                                 key={index}
                                                 className={classes.benefitCard}
                                             >
@@ -518,13 +516,10 @@ const DetailSectionHeader = props => {
                             return (
                                 <NftCard
                                     listStyle={true}
-                                    imageTemplate={EntrepotNFTImage(
-                                        getExtCanisterId(canister),
-                                        index,
-                                        tokenid,
-                                        false,
-                                        0,
-                                    )}
+                                    collectionId={getExtCanisterId(canister)}
+                                    nftIndex={index}
+                                    nftId={tokenid}
+                                    cachePriority={0}
                                     key={index}
                                     listImageSize={fullScreen ? '80px' : '96px'}
                                     className={classes.benefitCard}

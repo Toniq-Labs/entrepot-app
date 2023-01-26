@@ -1,6 +1,6 @@
-import {TemplateResult} from 'lit';
 import {Overwrite} from '@augment-vir/common';
 import {Promisable, SetOptional} from 'type-fest';
+import {NftImageDisplayData} from '../get-nft-image-data';
 
 export type GetNftImageHtmlInputs = {
     fullSize?: boolean;
@@ -30,11 +30,15 @@ export type RawCanisterDetails = {
           }
         | string;
     /** If this isn't provided, the default method will be used. */
-    getNftLinkUrl?: (
-        inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
-    ) => string | undefined;
+    getNftLinkUrl?:
+        | ((
+              inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
+          ) => string | undefined)
+        | undefined;
     /** If this isn't provided, the default method will be used. */
-    getNftImageHtml?: (inputs: RawGetNftImageHtmlInputs) => Promisable<TemplateResult | undefined>;
+    getNftImageData?:
+        | ((inputs: RawGetNftImageHtmlInputs) => Promisable<NftImageDisplayData | undefined>)
+        | undefined;
 };
 
 export type CanisterDetails = Required<
@@ -46,7 +50,7 @@ export type CanisterDetails = Required<
             getNftLinkUrl: (
                 inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
             ) => string;
-            getNftImageHtml: (inputs: GetNftImageHtmlInputs) => Promisable<TemplateResult>;
+            getNftImageData: (inputs: GetNftImageHtmlInputs) => Promisable<NftImageDisplayData>;
         }
     >
 >;

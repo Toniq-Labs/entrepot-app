@@ -3,10 +3,11 @@ import {
     applyBackgroundAndForeground,
     toniqColors,
     toniqFontStyles,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css} from 'element-vir';
 
-export const EntrepotHomePageTopCardHeaderElement = defineElement<{
+export const EntrepotHomePageTopCardHeaderElement = defineToniqElement<{
     hasIndex: boolean;
     hasImage: boolean;
 }>()({

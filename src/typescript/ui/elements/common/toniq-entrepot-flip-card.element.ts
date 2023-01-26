@@ -1,9 +1,9 @@
 import {defineElement, html, css, listen, defineElementEvent} from 'element-vir';
 import {makeDropShadowCardStyles} from '../styles/drop-shadow-card.style';
 import {classMap} from 'lit/directives/class-map.js';
-import {toniqColors} from '@toniq-labs/design-system';
+import {toniqColors, defineToniqElement} from '@toniq-labs/design-system';
 
-export const EntrepotFlipCardElement = defineElement<{flipped: boolean}>()({
+export const EntrepotFlipCardElement = defineToniqElement<{flipped: boolean}>()({
     tagName: 'toniq-entrepot-flip-card',
     events: {
         flipChange: defineElementEvent<boolean>(),

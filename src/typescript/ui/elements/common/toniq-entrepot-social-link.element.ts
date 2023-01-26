@@ -3,6 +3,7 @@ import {
     BrandTwitter24Icon,
     ToniqIcon,
     ToniqSvg,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css, assign} from 'element-vir';
 
@@ -21,7 +22,7 @@ export type SocialLinkDetails = Readonly<{
     type: SocialLinkTypeEnum;
 }>;
 
-export const EntrepotSocialLinkElement = defineElement<{
+export const EntrepotSocialLinkElement = defineToniqElement<{
     socialLinkDetails: SocialLinkDetails;
 }>()({
     tagName: 'toniq-entrepot-social-link',

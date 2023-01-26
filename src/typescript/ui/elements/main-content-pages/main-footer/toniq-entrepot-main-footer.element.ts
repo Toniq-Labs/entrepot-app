@@ -12,10 +12,11 @@ import {
     toniqIconColorCssVarNames,
     ToniqInput,
     ToniqSvg,
+    defineToniqElementNoInputs,
 } from '@toniq-labs/design-system';
 import {unsafeCSS} from 'lit';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign, defineElementNoInputs, listen} from 'element-vir';
+import {html, css, assign, listen} from 'element-vir';
 
 const footerSocialIcons: ReadonlyArray<{
     icon: ToniqSvg;
@@ -122,7 +123,7 @@ const footerLinkSections: ReadonlyArray<FooterLinkSection> = [
     },
 ];
 
-const EntrepotFooterElement = defineElementNoInputs({
+const EntrepotFooterElement = defineToniqElementNoInputs({
     tagName: 'toniq-entrepot-main-footer',
     stateInit: {
         subscriptionInput: '',

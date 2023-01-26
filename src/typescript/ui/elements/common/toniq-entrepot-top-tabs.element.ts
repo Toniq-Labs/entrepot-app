@@ -5,6 +5,7 @@ import {
     toniqColors,
     createFocusStyles,
     removeNativeFormStyles,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 
 export type TopTab<ValueGeneric = unknown> = {
@@ -12,7 +13,7 @@ export type TopTab<ValueGeneric = unknown> = {
     value: ValueGeneric;
 };
 
-export const EntrepotTopTabsElement = defineElement<{
+export const EntrepotTopTabsElement = defineToniqElement<{
     tabs: ReadonlyArray<TopTab>;
     selected: Readonly<TopTab>;
 }>()({

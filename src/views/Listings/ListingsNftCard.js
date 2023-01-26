@@ -20,7 +20,7 @@ import {
 import {getExtId} from '../../utilities/load-tokens';
 import {Link} from 'react-router-dom';
 import {NftCard} from '../../shared/NftCard';
-import {EntrepotNFTImage} from '../../utils';
+
 import PriceICP from '../../components/PriceICP';
 import {
     ToniqButton,
@@ -547,13 +547,10 @@ export function ListingsNftCard(props) {
                                             }}
                                         >
                                             <NftCard
-                                                imageTemplate={EntrepotNFTImage(
-                                                    getExtCanisterId(listing.canister),
-                                                    listing.index,
-                                                    listing.tokenid,
-                                                    false,
-                                                    0,
-                                                )}
+                                                collectionId={getExtCanisterId(listing.canister)}
+                                                nftIndex={listing.index}
+                                                nftId={listing.tokenid}
+                                                cachePriority={0}
                                                 small={gridSize === 'small'}
                                                 className={classes.nftCard}
                                                 style={{

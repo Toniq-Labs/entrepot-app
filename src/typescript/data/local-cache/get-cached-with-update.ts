@@ -36,7 +36,9 @@ export async function getCachedWithUpdate<TableNameGeneric extends EntrepotCache
     let cached: EntrepotCacheTableCacheItem<TableNameGeneric> | undefined = undefined;
     try {
         cached = await (await getEntrepotCacheDatabase())[databaseTableName].get(rowKey);
-    } catch (error) {}
+    } catch (error) {
+        console.error(`Database error`);
+    }
     if (cached) {
         // update later in the background
         setTimeout(

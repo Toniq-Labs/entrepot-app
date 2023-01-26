@@ -18,19 +18,15 @@ import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from '../ic/nftv.js';
 import {makeStyles} from '@material-ui/core';
-import {
-    EntrepotEarnDetails,
-    EntrepotNFTImage,
-    EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
-} from '../utils';
-import {TREASURE_CANISTER} from '../utilities/treasure-canister';
+import {EntrepotEarnDetails, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils';
 import {
     CanisterWrappedType,
     isWrappedType,
     getExtCanisterId,
 } from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -397,17 +393,7 @@ export default function NFT(props) {
     const mintNumber = () => {
         return EntrepotNFTMintNumber(canister, index);
     };
-    var collection = getCollection(canister);
-    const nftImg = () => {
-        return EntrepotNFTImage(
-            getExtCanisterId(canister),
-            index,
-            tokenid,
-            false,
-            ref,
-            collection.priority,
-        );
-    };
+    const collection = getCollection(canister);
     const showWrapped = () => {
         if (isNotEXT)
             return (
@@ -490,8 +476,15 @@ export default function NFT(props) {
                             getExtCanisterId(canister),
                             tokenid,
                             imgLoaded,
-                            nftImg(),
-                            () => setImgLoaded(true),
+                            <EntrepotNftImage
+                                collection={getExtCanisterId(canister)}
+                                nftIndex={index}
+                                nftId={tokenid}
+                                fullSize={false}
+                                ref={ref}
+                                cachePriority={collection.priority}
+                            />,
+                            () => setImgLoaded(collection.true),
                         )}
                     </div>
                     {offerCount > 0 ? (
@@ -697,7 +690,7 @@ export default function NFT(props) {
                             )}
                             {typeof props.view !== 'undefined' &&
                             props.view == 'marketplace' &&
-                            canister === TREASURE_CANISTER ? (
+                            canister === treasureCanisterId ? (
                                 <Grid item xs={12}>
                                     {EntrepotEarnDetails(tokenid, listing.price)}
                                 </Grid>

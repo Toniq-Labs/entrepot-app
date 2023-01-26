@@ -6,48 +6,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Alert from '@material-ui/lab/Alert';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
-import {EntrepotNFTImage, EntrepotGetIcpUsd, EntrepotEarnDetailsData} from '../utils.js';
-import {TREASURE_CANISTER} from '../utilities/treasure-canister';
+import {EntrepotGetIcpUsd, EntrepotEarnDetailsData} from '../utils.js';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
 export default function BuyForm(props) {
-    const [
-        imgLoaded,
-        setImgLoaded,
-    ] = React.useState(false);
     const handleClick = t => {
-        setImgLoaded(false);
         if (typeof props.handler != 'undefined') props.handler(t);
     };
+
     return (
         <Dialog fullWidth={true} maxWidth={'xs'} open={props.open} style={{textAlign: 'center'}}>
             <DialogTitle id="alert-dialog-title">
                 <strong>You are about to make a purchase!</strong>
             </DialogTitle>
             <DialogContent>
-                <img
-                    alt="NFT"
-                    src={EntrepotNFTImage(props.canister, props.index, props.tokenid)}
-                    style={{
-                        maxHeight: '200px',
-                        margin: '0px auto 20px',
-                        display: imgLoaded ? 'block' : 'none',
-                    }}
-                    onLoad={() => setImgLoaded(true)}
+                <EntrepotNftImage
+                    collectionId={props.canister}
+                    nftIndex={props.index}
+                    nftId={props.tokenid}
                 />
-                <Skeleton
-                    style={{
-                        width: '200px',
-                        height: '200px',
-                        margin: '0px auto 20px',
-                        display: imgLoaded ? 'none' : 'block',
-                    }}
-                    variant="rect"
-                />
-                {props.canister == TREASURE_CANISTER ? (
+                {props.canister == treasureCanisterId ? (
                     <Alert severity="warning">
                         <strong>
                             This is a Toniq Earn contract; do not confuse for actual NFTs

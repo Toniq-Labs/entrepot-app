@@ -8,6 +8,7 @@ import {
     ToniqIcon,
     toniqShadows,
     ToniqSvg,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 
 export type CreateCardInputs = {
@@ -18,7 +19,7 @@ export type CreateCardInputs = {
     buttons: ReadonlyArray<{text: string; primary: boolean}>;
 };
 
-export const EntrepotCreateCardElement = defineElement<CreateCardInputs>()({
+export const EntrepotCreateCardElement = defineToniqElement<CreateCardInputs>()({
     tagName: 'toniq-entrepot-create-card',
     styles: css`
         :host {

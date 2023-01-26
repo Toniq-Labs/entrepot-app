@@ -1,13 +1,13 @@
 import randomWords from 'random-words';
-import {toniqFontStyles} from '@toniq-labs/design-system';
+import {toniqFontStyles, defineToniqElementNoInputs} from '@toniq-labs/design-system';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign, defineElementNoInputs} from 'element-vir';
+import {html, css, assign} from 'element-vir';
 import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
 import {shuffle} from '../../../../augments/array';
 
-const images = [
+const mockImages = [
     'https://ixk4q-oiaaa-aaaaj-qap3q-cai.raw.ic0.app/?index=60',
     'https://mtohu-naaaa-aaaaj-qaqfq-cai.raw.ic0.app/?index=90',
     'https://mtohu-naaaa-aaaaj-qaqfq-cai.raw.ic0.app/?index=95',
@@ -24,8 +24,8 @@ const images = [
 ] as const;
 
 const doubleImages = shuffle([
-    ...images,
-    ...images,
+    ...mockImages,
+    ...mockImages,
 ]);
 
 function makeTopCards() {
@@ -59,7 +59,7 @@ const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
         .map(() => {
             return {
                 collectionName: 'Motoko Ghosts',
-                imageUrls: shuffle(images),
+                imageUrls: shuffle(mockImages),
                 longDescription: randomWords({min: 50, max: 2000, join: ' '}),
                 collectionRoute: '',
                 socialLinks: [
@@ -80,7 +80,7 @@ const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
     },
 };
 
-const EntrepotTestElement = defineElementNoInputs({
+const EntrepotTestElement = defineToniqElementNoInputs({
     tagName: 'toniq-entrepot-test-page',
     styles: css`
         :host {

@@ -17,6 +17,7 @@ import {
     ToniqIcon,
     ToniqInput,
     ToniqToggleButton,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {EntrepotFilterElement} from './toniq-entrepot-filter.element';
 import {applySort} from './apply-sort';
@@ -50,7 +51,7 @@ export function createWithFiltersInputs<
     return inputs;
 }
 
-export const EntrepotWithFiltersElement = defineElement<WithFiltersElementInputs<any, any>>()({
+export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementInputs<any, any>>()({
     tagName: 'toniq-entrepot-with-filters',
     cssVars: {
         filterPanelWidth: '333px',

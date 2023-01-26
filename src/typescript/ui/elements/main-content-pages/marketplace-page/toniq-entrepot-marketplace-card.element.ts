@@ -9,10 +9,11 @@ import {
     toniqShadows,
     applyBackgroundAndForeground,
     removeNativeFormStyles,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {truncateNumber} from '@augment-vir/common';
 
-export const EntrepotMarketplaceCardElement = defineElement<{
+export const EntrepotMarketplaceCardElement = defineToniqElement<{
     collectionName: string;
     collectionImageUrl: string;
     // this should eventually be the collection's creator

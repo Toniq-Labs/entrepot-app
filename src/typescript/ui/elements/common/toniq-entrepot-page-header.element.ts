@@ -1,7 +1,7 @@
 import {css, defineElement, html} from 'element-vir';
-import {toniqFontStyles} from '@toniq-labs/design-system';
+import {toniqFontStyles, defineToniqElement} from '@toniq-labs/design-system';
 
-export const EntrepotPageHeaderElement = defineElement<{headerText: string}>()({
+export const EntrepotPageHeaderElement = defineToniqElement<{headerText: string}>()({
     tagName: 'toniq-entrepot-page-header',
     styles: css`
         h1 {

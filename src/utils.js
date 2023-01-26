@@ -3,12 +3,12 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
-import {TREASURE_CANISTER} from './utilities/treasure-canister';
-import {getCanisterDetails} from './typescript/data/canisters/canister-details/all-canister-details';
+import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
 } from './typescript/api/entrepot-data-api';
+import {EntrepotNftImage} from './typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -121,7 +121,7 @@ const clipboardCopy = text => {
     EntrepotEarnDetailsData = id => {
         if (!earnData.hasOwnProperty(id)) {
             defaultEntrepotApi
-                .canister(TREASURE_CANISTER)
+                .canister(treasureCanisterId)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -135,7 +135,7 @@ const clipboardCopy = text => {
     EntrepotEarnDetails = (id, nft_price) => {
         if (!earnData.hasOwnProperty(id)) {
             defaultEntrepotApi
-                .canister(TREASURE_CANISTER)
+                .canister(treasureCanisterId)
                 .tp_loanDetails(id)
                 .then(r => {
                     if (!earnData.hasOwnProperty(id)) earnData[id] = r[0];
@@ -174,106 +174,7 @@ const clipboardCopy = text => {
         }
         return '';
     },
-    EntrepotNFTImage = async (collection, tokenIndex, id, fullSize, ref, cachePriority) => {
-        // if (typeof ref == 'undefined') ref = '';
-        // else ref = '?' + ref;
-
-        if (typeof cachePriority == 'undefined') cachePriority = '10';
-
-        const collectionCanisterDetails = getCanisterDetails(collection);
-
-        if (collectionCanisterDetails) {
-            return await collectionCanisterDetails.getNftImageHtml({
-                fullSize,
-                nftId: id,
-                nftIndex: tokenIndex,
-                priority: Number(cachePriority),
-                ref: Number(ref),
-            });
-        }
-
-        if (collection === 'pk6rk-6aaaa-aaaae-qaazq-cai') {
-            if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
-            } else {
-                return 'https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/' + id;
-            }
-        }
-        if (collection === 'dhiaa-ryaaa-aaaae-qabva-cai') {
-            if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
-            } else {
-                return 'https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/' + id;
-            }
-        }
-        if (collection === 'skjpp-haaaa-aaaae-qac7q-cai') {
-            if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
-            } else {
-                return 'https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/' + id;
-            }
-        }
-        if (collection === TREASURE_CANISTER) {
-            if (!fullSize) {
-                return '/earn/loading.png';
-            }
-        }
-        if (fullSize) {
-            return 'https://' + collection + '.raw.ic0.app/?cc=0&tokenid=' + id;
-        } else {
-            //add collections with wearables or other dynamic traits here
-            //these images will not be cached
-            if (collection === '7i54s-nyaaa-aaaal-abomq-cai ') {
-                let cacheParam = (Math.random() + 1).toString(36).substring(7);
-                return (
-                    'https://images.entrepot.app/t/7i54s-nyaaa-aaaal-abomq-cai /' +
-                    id +
-                    '?cache=' +
-                    cachePriority +
-                    '&cachebuster=' +
-                    cacheParam
-                );
-            }
-            //       if (collection === 'rxrsz-5aaaa-aaaam-qaysa-cai')
-            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            //       if (collection === 'sbcwr-3qaaa-aaaam-qamoa-cai')
-            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'yrdz3-2yaaa-aaaah-qcvpa-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'rw7qm-eiaaa-aaaak-aaiqq-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === '5movr-diaaa-aaaak-aaftq-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            //       if (collection === 'dhyds-jaaaa-aaaao-aaiia-cai')
-            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            //       if (collection === '46sy3-aiaaa-aaaah-qczza-cai')
-            //         return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'e3izy-jiaaa-aaaah-qacbq-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-            if (collection === 'xjjax-uqaaa-aaaal-qbfgq-cai')
-                return 'https://images.entrepot.app/tnc/' + collection + '/' + id + ref;
-
-            //end of section
-
-            if (collection === '6wih6-siaaa-aaaah-qczva-cai')
-                return (
-                    'https://' +
-                    collection +
-                    '.raw.ic0.app/?cc' +
-                    Date.now() +
-                    '&type=thumbnail&tokenid=' +
-                    id +
-                    ref
-                );
-            if (collection === 'kss7i-hqaaa-aaaah-qbvmq-cai')
-                return 'https://' + collection + '.raw.ic0.app/?type=thumbnail&tokenid=' + id;
-            return (
-                'https://images.entrepot.app/t/' + collection + '/' + id + '?cache=' + cachePriority
-            );
-            //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
-        }
-    },
-    EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
+    EntrepotDisplayNFT = (collection, tokenid, imgLoaded, imageTemplate, onload) => {
         var avatarImgStyle = {
             position: 'absolute',
             top: '0%',
@@ -300,44 +201,47 @@ const clipboardCopy = text => {
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
-        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai')
-            return (
-                <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
-            );
-        if (collection === TREASURE_CANISTER) {
-            var nftImage = false;
+        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai') {
+            return imageTemplate;
+            // <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
+        }
+        if (collection === treasureCanisterId) {
+            let index;
+            let canister;
             if (!earnData.hasOwnProperty(tokenid)) {
                 defaultEntrepotApi
-                    .canister(TREASURE_CANISTER)
+                    .canister(treasureCanisterId)
                     .tp_loanDetails(tokenid)
                     .then(r => {
                         if (!earnData.hasOwnProperty(tokenid)) earnData[tokenid] = r[0];
                     });
             } else {
-                let {index, canister} = extjs.decodeTokenId(earnData[tokenid].tokenid);
-                nftImage = EntrepotNFTImage(canister, index, earnData[tokenid].tokenid, false);
+                const decoded = extjs.decodeTokenId(earnData[tokenid].tokenid);
+                index = decoded.index;
+                canister = decoded.canister;
             }
             return (
                 <>
-                    <img
-                        alt={tokenid}
-                        style={{...avatarImgStyle, display: imgLoaded ? 'block' : 'none'}}
-                        src={image}
-                        onLoad={onload}
-                    />
+                    {imageTemplate}
                     {earnData.hasOwnProperty(tokenid) ? (
-                        <img
-                            alt={tokenid}
-                            style={{
-                                width: '25%',
-                                height: '25%',
-                                borderRadius: '100%',
-                                position: 'absolute',
-                                right: '5%',
-                                bottom: '5%',
-                                display: imgLoaded ? 'block' : 'none',
-                            }}
-                            src={nftImage}
+                        // <img
+                        //     alt={tokenid}
+                        //     style={{
+                        //         width: '25%',
+                        //         height: '25%',
+                        //         borderRadius: '100%',
+                        //         position: 'absolute',
+                        //         right: '5%',
+                        //         bottom: '5%',
+                        //         display: imgLoaded ? 'block' : 'none',
+                        //     }}
+                        //     src={nftImage}
+                        // />
+                        <EntrepotNftImage
+                            collectionId={canister}
+                            nftIndex={index}
+                            nftId={earnData[tokenid].tokenid}
+                            fullSize={false}
                         />
                     ) : (
                         ''
@@ -370,23 +274,7 @@ const clipboardCopy = text => {
                 </>
             );
         }
-        return (
-            <>
-                <img
-                    alt={tokenid}
-                    style={{...avatarImgStyle, display: imgLoaded ? 'block' : 'none'}}
-                    src={image}
-                    onLoad={onload}
-                />
-                <Skeleton
-                    style={{
-                        ...avatarLoaded,
-                        display: imgLoaded ? 'none' : 'block',
-                    }}
-                    variant="rect"
-                />
-            </>
-        );
+        return imageTemplate;
     },
     EntrepotNFTMintNumber = (collection, index, id) => {
         if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai') return index;
@@ -476,7 +364,6 @@ export {
     compressAddress,
     displayDate,
     EntrepotUpdateStats,
-    EntrepotNFTImage,
     EntrepotNFTMintNumber,
     EntrepotDisplayNFT,
     EntrepotAllStats,

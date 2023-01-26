@@ -11,10 +11,10 @@ import {
 } from './children/toniq-entrepot-top-card.element';
 import {CarouselItem, EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
 import {isTruthy} from '@augment-vir/common';
-import {toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
+import {toniqColors, toniqFontStyles, defineToniqElement} from '@toniq-labs/design-system';
 import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
 
-export const EntrepotHomePageElement = defineElement<{
+export const EntrepotHomePageElement = defineToniqElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
     topCollections: Readonly<Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
     carouselItems: ReadonlyArray<CarouselItem>;

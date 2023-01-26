@@ -6,6 +6,7 @@ import {
     toniqFontStyles,
     ToniqIcon,
     X24Icon,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {areJsonEqual, isTruthy, truncateNumber} from '@augment-vir/common';
 import {isStillAtDefaults} from './is-still-default';
@@ -16,7 +17,7 @@ type FilterTokenInputs = {
     filter: SingleFilterDefinition<any>;
 };
 
-export const EntrepotFilterTokenElement = defineElement<FilterTokenInputs>()({
+export const EntrepotFilterTokenElement = defineToniqElement<FilterTokenInputs>()({
     tagName: 'toniq-entrepot-filter-token',
     events: {
         resetFilter: defineElementEvent<SingleFilterDefinition<any>>(),

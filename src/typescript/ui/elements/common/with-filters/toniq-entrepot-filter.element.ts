@@ -10,11 +10,12 @@ import {
     ChevronUp24Icon,
     ToniqIcon,
     removeNativeFormStyles,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {removeCommasFromNumberString} from '@augment-vir/common';
 import {EntrepotExpandingListFilterElement} from './toniq-entrepot-expanding-list-filter.element';
 
-export const EntrepotFilterElement = defineElement<{
+export const EntrepotFilterElement = defineToniqElement<{
     filterName: string;
     filter: SingleFilterDefinition<any>;
 }>()({

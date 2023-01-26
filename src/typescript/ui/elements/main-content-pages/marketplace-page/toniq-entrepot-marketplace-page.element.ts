@@ -10,8 +10,9 @@ import {CurrentSort} from '../../common/with-filters/filters-types';
 import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.element';
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
+import {defineToniqElement} from '@toniq-labs/design-system';
 
-export const EntrepotMarketplacePageElement = defineElement<{
+export const EntrepotMarketplacePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
 }>()({
     tagName: 'toniq-entrepot-marketplace-page',

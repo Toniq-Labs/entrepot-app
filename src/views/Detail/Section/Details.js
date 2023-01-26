@@ -11,7 +11,7 @@ import {
 import React, {useState} from 'react';
 import PriceICP from '../../../components/PriceICP';
 import {NftCard} from '../../../shared/NftCard';
-import {EntrepotNFTImage} from '../../../utils';
+
 import {
     ToniqButton,
     ToniqIcon,
@@ -340,13 +340,10 @@ export default function DetailSectionDetails(props) {
                                 return (
                                     <NftCard
                                         listStyle={true}
-                                        imageTemplate={EntrepotNFTImage(
-                                            getExtCanisterId(canister),
-                                            index,
-                                            tokenid,
-                                            false,
-                                            0,
-                                        )}
+                                        collectionId={getExtCanisterId(canister)}
+                                        nftIndex={index}
+                                        nftId={tokenid}
+                                        cachePriority={0}
                                         key={index}
                                         style={{margin: '0 8px', padding: 12}}
                                     >

@@ -1,10 +1,11 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, css, defineElementNoInputs, html} from 'element-vir';
+import {assign, css, html} from 'element-vir';
 import {
     Api64Icon,
     CircleDashes64Icon,
     Rocket64Icon,
     toniqFontStyles,
+    defineToniqElementNoInputs,
 } from '@toniq-labs/design-system';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotCreateCardElement, CreateCardInputs} from './toniq-entrepot-create-card.element';
@@ -76,7 +77,7 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
     },
 ];
 
-export const EntrepotCreatePageElement = defineElementNoInputs({
+export const EntrepotCreatePageElement = defineToniqElementNoInputs({
     tagName: 'toniq-entrepot-create-page',
     styles: css`
         :host {

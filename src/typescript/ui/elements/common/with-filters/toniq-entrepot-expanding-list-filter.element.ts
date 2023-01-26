@@ -12,9 +12,10 @@ import {
     toniqFontStyles,
     ToniqIcon,
     ToniqInput,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 
-export const EntrepotExpandingListFilterElement = defineElement<{
+export const EntrepotExpandingListFilterElement = defineToniqElement<{
     expandingListEntry: ExpandingListFilterEntry;
 }>()({
     tagName: 'toniq-entrepot-expanding-list-template',

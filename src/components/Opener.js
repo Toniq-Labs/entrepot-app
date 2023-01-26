@@ -6,8 +6,9 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Flip from './Flip';
 import extjs from '../ic/extjs.js';
-import {EntrepotNFTImage} from '../utils';
+
 import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 var settings = {
     '6wih6-siaaa-aaaah-qczva-cai': {
@@ -167,18 +168,13 @@ export default function Opener(props) {
                                         );
                                     else
                                         return (
-                                            <>
-                                                <img
-                                                    style={{borderRadius: 10, width: 300}}
-                                                    src={EntrepotNFTImage(
-                                                        props.nft.canister,
-                                                        index,
-                                                        props.nft.id,
-                                                        false,
-                                                        1,
-                                                    )}
-                                                />
-                                            </>
+                                            <EntrepotNftImage
+                                                collectionId={props.nft.canister}
+                                                nftIndex={index}
+                                                nftId={props.nft.id}
+                                                fullSize={false}
+                                                cachePriority={1}
+                                            />
                                         );
                                 })}
                             </Grid>

@@ -6,7 +6,7 @@ import {
     RawGetNftImageHtmlInputs,
 } from './canister-details';
 import {createDefaultCanisterDetails} from './default-canister-details';
-import {TemplateResult} from 'lit';
+import {NftImageDisplayData} from '../get-nft-image-data';
 
 async function fullGetNftImageHtml({
     rawCanisterDetails,
@@ -18,7 +18,7 @@ async function fullGetNftImageHtml({
     inputs: GetNftImageHtmlInputs;
     originalCanisterId: string;
     defaultFallbacks: CanisterDetails;
-}): Promise<TemplateResult> {
+}): Promise<NftImageDisplayData> {
     try {
         const inputsForRawCanisterDetails: Omit<RawGetNftImageHtmlInputs, 'nftLinkUrl'> = {
             priority: 10,
@@ -27,21 +27,23 @@ async function fullGetNftImageHtml({
             originalCanisterId,
         };
 
+        const customNftLinkUrl: string | undefined = rawCanisterDetails.getNftLinkUrl?.(
+            inputsForRawCanisterDetails,
+        );
+
         const nftLinkUrl: string =
-            rawCanisterDetails.getNftLinkUrl?.(inputsForRawCanisterDetails) ??
-            defaultFallbacks.getNftLinkUrl(inputsForRawCanisterDetails);
+            customNftLinkUrl ?? defaultFallbacks.getNftLinkUrl(inputsForRawCanisterDetails);
 
-        const customTemplate = await rawCanisterDetails.getNftImageHtml?.({
-            ...inputsForRawCanisterDetails,
-            nftLinkUrl,
-        });
+        const customData: NftImageDisplayData | undefined =
+            (await rawCanisterDetails.getNftImageData?.({
+                ...inputsForRawCanisterDetails,
+                nftLinkUrl,
+            })) ?? (customNftLinkUrl ? {url: customNftLinkUrl} : undefined);
 
-        const finalTemplate =
-            customTemplate ?? defaultFallbacks.getNftImageHtml(inputsForRawCanisterDetails);
+        const finalImageData =
+            customData ?? defaultFallbacks.getNftImageData(inputsForRawCanisterDetails);
 
-        console.log({finalTemplate});
-
-        return finalTemplate;
+        return finalImageData;
     } catch (error) {
         throw new Error(
             `Failed to get NFT image HTML for '${
@@ -74,7 +76,7 @@ export function createFullCanisterDetails(rawCanisterDetails: RawCanisterDetails
         getNftLinkUrl: inputs => {
             return defaultFallbacks.getNftLinkUrl(inputs) ?? defaultFallbacks.getNftLinkUrl(inputs);
         },
-        getNftImageHtml: async inputs => {
+        getNftImageData: async inputs => {
             return fullGetNftImageHtml({
                 rawCanisterDetails,
                 inputs,

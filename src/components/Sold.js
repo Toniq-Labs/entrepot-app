@@ -8,12 +8,8 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
-import {
-    EntrepotNFTImage,
-    EntrepotNFTMintNumber,
-    EntrepotDisplayNFT,
-    EntrepotGetIcpUsd,
-} from '../utils.js';
+import {EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetIcpUsd} from '../utils.js';
+import {EntrepotNftImage} from '../typescript/ui/elements/common/toniq-entrepot-nft-image.element';
 
 export default function Sold(props) {
     const [
@@ -57,9 +53,6 @@ export default function Sold(props) {
 
     const mintNumber = () => {
         return EntrepotNFTMintNumber(props.collection, index);
-    };
-    const nftImg = () => {
-        return EntrepotNFTImage(props.collection, index, tokenid);
     };
     const shorten = a => {
         return a.substring(0, 12) + '...';
@@ -114,7 +107,11 @@ export default function Sold(props) {
                                 props.collection,
                                 tokenid,
                                 imgLoaded,
-                                nftImg(),
+                                <EntrepotNftImage
+                                    collectionId={props.collection}
+                                    nftIndex={index}
+                                    nftId={tokenid}
+                                />,
                                 () => setImgLoaded(true),
                             )}
                         </div>

@@ -1,7 +1,7 @@
 /* global BigInt */
 import extjs from '../../ic/extjs.js';
 import {loadAllUserTokens, getExtId, nftIdToNft} from '../../utilities/load-tokens';
-import {EntrepotNFTImage, EntrepotNFTMintNumber} from '../../utils';
+import {EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from '@augment-vir/common';
@@ -210,7 +210,8 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
         index,
         rawListing,
         selfOffers,
-        image: EntrepotNFTImage(getExtCanisterId(rawNft.canister), index, rawNft.token, false, 0),
+        image: '',
+        // image: EntrepotNFTImage(getExtCanisterId(rawNft.canister), index, rawNft.token, false, 0),
         mintNumber,
         collection,
         offers,

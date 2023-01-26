@@ -3,6 +3,7 @@ import {
     applyBackgroundAndForeground,
     toniqColors,
     toniqFontStyles,
+    defineToniqElement,
 } from '@toniq-labs/design-system';
 import {defineElement, html, css} from 'element-vir';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
@@ -10,7 +11,7 @@ import {ValidIcp, toIcp} from '../../../../../data/icp';
 
 export type TopCardInputs = Readonly<(typeof EntrepotHomePageTopCardElement)['inputsType']>;
 
-export const EntrepotHomePageTopCardElement = defineElement<{
+export const EntrepotHomePageTopCardElement = defineToniqElement<{
     imageUrl?: string | undefined;
     collectionName: string;
     floorPrice: ValidIcp;
