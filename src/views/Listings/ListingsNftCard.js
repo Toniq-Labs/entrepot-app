@@ -271,9 +271,9 @@ export function ListingsNftCard(props) {
                         </span>
                         <div className={classes.tokenWrapper}>
                             <div className={classes.tokenWrapper}>
-                                {tokenFilters.map(token => {
+                                {tokenFilters.map((token, tokenId) => {
                                     return token.type !== 'traits' ? (
-                                        <div className={classes.token}>
+                                        <div key={tokenId} className={classes.token}>
                                             <span>{token.tokenText}</span>
                                             <ToniqIcon
                                                 className={classes.tokenCloseIcon}
@@ -297,82 +297,95 @@ export function ListingsNftCard(props) {
                                         </div>
                                     ) : (
                                         collection.route !== 'cronics' &&
-                                            token.values.map(traitCategoryToken => {
-                                                return traitCategoryToken.values.map(traitToken => {
-                                                    return (
-                                                        <div className={classes.token}>
-                                                            <span>
-                                                                {`${traitCategoryToken.category}: ${traitToken}`}
-                                                            </span>
-                                                            <ToniqIcon
-                                                                className={classes.tokenCloseIcon}
-                                                                icon={X24Icon}
-                                                                onClick={() => {
-                                                                    const traitCategoryIndex =
-                                                                        findCurrentFilterTraitIndex(
-                                                                            traitCategoryToken.category,
-                                                                        );
-
-                                                                    const traitIndex =
-                                                                        currentFilters.traits.values[
-                                                                            traitCategoryIndex
-                                                                        ].values.findIndex(
-                                                                            trait => {
-                                                                                return (
-                                                                                    trait ===
-                                                                                    traitToken
+                                            token.values.map(
+                                                (traitCategoryToken, traitCategoryTokenId) => {
+                                                    return traitCategoryToken.values.map(
+                                                        traitToken => {
+                                                            return (
+                                                                <div
+                                                                    key={traitCategoryTokenId}
+                                                                    className={classes.token}
+                                                                >
+                                                                    <span>
+                                                                        {`${traitCategoryToken.category}: ${traitToken}`}
+                                                                    </span>
+                                                                    <ToniqIcon
+                                                                        className={
+                                                                            classes.tokenCloseIcon
+                                                                        }
+                                                                        icon={X24Icon}
+                                                                        onClick={() => {
+                                                                            const traitCategoryIndex =
+                                                                                findCurrentFilterTraitIndex(
+                                                                                    traitCategoryToken.category,
                                                                                 );
-                                                                            },
-                                                                        );
 
-                                                                    if (traitCategoryIndex !== -1) {
-                                                                        currentFilters.traits.values[
-                                                                            traitCategoryIndex
-                                                                        ].values.splice(
-                                                                            traitIndex,
-                                                                            1,
-                                                                        );
-                                                                    }
+                                                                            const traitIndex =
+                                                                                currentFilters.traits.values[
+                                                                                    traitCategoryIndex
+                                                                                ].values.findIndex(
+                                                                                    trait => {
+                                                                                        return (
+                                                                                            trait ===
+                                                                                            traitToken
+                                                                                        );
+                                                                                    },
+                                                                                );
 
-                                                                    if (
-                                                                        traitIndex !== -1 &&
-                                                                        currentFilters.traits
-                                                                            .values[
-                                                                            traitCategoryIndex
-                                                                        ].values &&
-                                                                        !currentFilters.traits
-                                                                            .values[
-                                                                            traitCategoryIndex
-                                                                        ].values.length
-                                                                    ) {
-                                                                        currentFilters.traits.values.splice(
-                                                                            traitCategoryIndex,
-                                                                            1,
-                                                                        );
-                                                                    }
+                                                                            if (
+                                                                                traitCategoryIndex !==
+                                                                                -1
+                                                                            ) {
+                                                                                currentFilters.traits.values[
+                                                                                    traitCategoryIndex
+                                                                                ].values.splice(
+                                                                                    traitIndex,
+                                                                                    1,
+                                                                                );
+                                                                            }
 
-                                                                    var filterOptions = {
-                                                                        ...currentFilters,
-                                                                        traits: {
-                                                                            ...currentFilters.traits,
-                                                                            values: currentFilters
-                                                                                .traits.values,
-                                                                        },
-                                                                    };
+                                                                            if (
+                                                                                traitIndex !== -1 &&
+                                                                                currentFilters
+                                                                                    .traits.values[
+                                                                                    traitCategoryIndex
+                                                                                ].values &&
+                                                                                !currentFilters
+                                                                                    .traits.values[
+                                                                                    traitCategoryIndex
+                                                                                ].values.length
+                                                                            ) {
+                                                                                currentFilters.traits.values.splice(
+                                                                                    traitCategoryIndex,
+                                                                                    1,
+                                                                                );
+                                                                            }
 
-                                                                    setCurrentFilters(
-                                                                        filterOptions,
-                                                                    );
-                                                                    storeUserPreferences(
-                                                                        'filterOptions',
-                                                                        filterOptions,
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </div>
+                                                                            var filterOptions = {
+                                                                                ...currentFilters,
+                                                                                traits: {
+                                                                                    ...currentFilters.traits,
+                                                                                    values: currentFilters
+                                                                                        .traits
+                                                                                        .values,
+                                                                                },
+                                                                            };
+
+                                                                            setCurrentFilters(
+                                                                                filterOptions,
+                                                                            );
+                                                                            storeUserPreferences(
+                                                                                'filterOptions',
+                                                                                filterOptions,
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        },
                                                     );
-                                                });
-                                            })
+                                                },
+                                            )
                                     );
                                 })}
                             </div>

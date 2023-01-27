@@ -603,11 +603,7 @@ export default function Listings(props) {
             <div style={{}}>
                 <div style={{maxWidth: 1200, margin: '0 auto 0'}}>
                     <div style={{textAlign: 'center'}}>
-                        <CollectionDetails
-                            classes={classes}
-                            stats={stats}
-                            collection={collection}
-                        />
+                        <CollectionDetails collection={collection} />
                     </div>
                 </div>
                 <br />

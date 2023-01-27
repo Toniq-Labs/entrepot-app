@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Link, Avatar, makeStyles, Tooltip} from '@material-ui/core';
+import {Grid, Link, Avatar, makeStyles} from '@material-ui/core';
 import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {
     cssToReactStyleObject,
@@ -16,7 +16,6 @@ import {icpToString} from './PriceICP.js';
 import {formatNumber} from '../utilities/number-utils.js';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
-import extjs from '../ic/extjs.js';
 import {CopyButton} from './shared/CopyButton';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
 

@@ -1,7 +1,7 @@
 import {RawCanisterDetails} from '../canister-details';
 
 export const genesisIICanisterDetails: RawCanisterDetails = {
-    collectionName: 'Gensis II',
+    collectionName: 'Genesis II',
     canisterId: 't555s-uyaaa-aaaal-qbjsa-cai',
     getNftImageData: ({fullSize, nftLinkUrl}) => {
         if (fullSize) {

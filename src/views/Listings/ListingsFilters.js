@@ -74,6 +74,56 @@ const useStyles = makeStyles(theme => ({
             color: '#FFFFFF',
         },
     },
+    statusRadio: {
+        display: 'block',
+        position: 'relative',
+        paddingLeft: 30,
+        cursor: 'pointer',
+        fontSize: 22,
+        '-webkit-user-select': 'none',
+        '-moz-user-select': 'none',
+        '-ms-user-select': 'none',
+        'user-select': 'none',
+        ...cssToReactStyleObject(toniqFontStyles.boldParagraphFont),
+        '& input': {
+            position: 'absolute',
+            opacity: 0,
+            cursor: 'pointer',
+        },
+        '& .radio-checkmark': {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            margin: 'auto 0',
+            height: 18,
+            width: 18,
+            border: '2px solid black',
+            borderRadius: '50%',
+        },
+        '& .radio-checkmark::after': {
+            content: '""',
+            position: 'absolute',
+            display: 'none',
+            top: 3,
+            left: 3,
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: '#00D093',
+        },
+        '&:hover input ~ .radio-checkmark': {
+            border: '2px solid #00D093',
+        },
+        '& input:checked ~ .radio-checkmark': {
+            backgroundColor: '#ffffff',
+            border: '2px solid #00D093',
+        },
+        '& input:checked ~ .radio-checkmark::after': {
+            display: 'block',
+        },
+    },
+    radioCheckmark: {},
 }));
 
 export function ListingsFilters(props) {
@@ -206,56 +256,88 @@ export function ListingsFilters(props) {
                                 gap: 24,
                             }}
                         >
-                            <ToniqCheckbox
-                                checked={currentFilters.status[filterTypes.status.listed] === true}
-                                onCheckedChange={event => {
-                                    if (
-                                        event.detail === false &&
-                                        currentFilters.status[filterTypes.status.unlisted] === false
-                                    )
-                                        return;
-                                    var filterOptions = {
-                                        ...currentFilters,
-                                        status: {
-                                            ...currentFilters.status,
-                                            [filterTypes.status.listed]: event.detail,
-                                        },
-                                    };
-                                    setCurrentFilters(filterOptions);
-                                    storeUserPreferences('filterOptions', filterOptions);
-                                }}
-                            >
+                            <label className={classes.statusRadio}>
+                                All
+                                <input
+                                    readOnly
+                                    type="radio"
+                                    id="all"
+                                    name="status"
+                                    value="all"
+                                    checked={
+                                        currentFilters.status[filterTypes.status.listed] === true &&
+                                        currentFilters.status[filterTypes.status.unlisted] === true
+                                    }
+                                    onClick={() => {
+                                        var filterOptions = {
+                                            ...currentFilters,
+                                            status: {
+                                                [filterTypes.status.unlisted]: true,
+                                                [filterTypes.status.listed]: true,
+                                            },
+                                        };
+                                        setCurrentFilters(filterOptions);
+                                        storeUserPreferences('filterOptions', filterOptions);
+                                    }}
+                                ></input>
+                                <span className="radio-checkmark" htmlFor="all"></span>
+                            </label>
+                            <label className={classes.statusRadio}>
                                 Listed
-                            </ToniqCheckbox>
-                            <ToniqCheckbox
-                                checked={
-                                    currentFilters.status[filterTypes.status.unlisted] === true
-                                }
-                                onCheckedChange={event => {
-                                    if (
-                                        event.detail === false &&
-                                        currentFilters.status[filterTypes.status.listed] === false
-                                    )
-                                        return;
-                                    var filterOptions = {
-                                        ...currentFilters,
-                                        status: {
-                                            ...currentFilters.status,
-                                            [filterTypes.status.unlisted]: event.detail,
-                                        },
-                                    };
-                                    setCurrentFilters(filterOptions);
-                                    storeUserPreferences('filterOptions', filterOptions);
-                                }}
-                            >
+                                <input
+                                    readOnly
+                                    type="radio"
+                                    id="listed"
+                                    name="status"
+                                    value="listed"
+                                    defaultChecked={
+                                        currentFilters.status[filterTypes.status.listed] === true
+                                    }
+                                    onClick={() => {
+                                        var filterOptions = {
+                                            ...currentFilters,
+                                            status: {
+                                                [filterTypes.status.unlisted]: false,
+                                                [filterTypes.status.listed]: true,
+                                            },
+                                        };
+                                        setCurrentFilters(filterOptions);
+                                        storeUserPreferences('filterOptions', filterOptions);
+                                    }}
+                                ></input>
+                                <span className="radio-checkmark" htmlFor="listed"></span>
+                            </label>
+                            <label className={classes.statusRadio}>
                                 Unlisted
-                            </ToniqCheckbox>
+                                <input
+                                    readOnly
+                                    type="radio"
+                                    id="unlisted"
+                                    name="status"
+                                    value="unlisted"
+                                    defaultChecked={
+                                        currentFilters.status[filterTypes.status.unlisted] === true
+                                    }
+                                    onClick={() => {
+                                        var filterOptions = {
+                                            ...currentFilters,
+                                            status: {
+                                                [filterTypes.status.unlisted]: true,
+                                                [filterTypes.status.listed]: false,
+                                            },
+                                        };
+                                        setCurrentFilters(filterOptions);
+                                        storeUserPreferences('filterOptions', filterOptions);
+                                    }}
+                                ></input>
+                                <span className="radio-checkmark" htmlFor="unlisted"></span>
+                            </label>
                         </div>
                     </div>
                 </Accordion>
             </div>
-            {filterRanges[currentFilters.price.type].min !== Infinity &&
-                filterRanges[currentFilters.price.type].max !== Infinity && (
+            {currentFilters.status[filterTypes.status.listed] &&
+                !currentFilters.status[filterTypes.status.unlisted] && (
                     <div>
                         <Accordion
                             title="Price"

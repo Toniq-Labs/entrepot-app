@@ -134,28 +134,34 @@ function doesCollectionPassFilters(listing, currentFilters, traitsData, collecti
         return false;
     }
 
-    if (
-        !isInRange(
-            Number(listing.price) / 100000000,
-            currentFilters.price.min,
-            currentFilters.price.max,
-        )
-    ) {
-        return false;
+    if (currentFilters.price.min || currentFilters.price.max) {
+        if (
+            !isInRange(
+                Number(listing.price) / 100000000,
+                currentFilters.price.min,
+                currentFilters.price.max,
+            )
+        ) {
+            return false;
+        }
     }
 
-    if (!isInRange(listing.rarity, currentFilters.rarity.min, currentFilters.rarity.max)) {
-        return false;
+    if (currentFilters.rarity.min || currentFilters.rarity.max) {
+        if (!isInRange(listing.rarity, currentFilters.rarity.min, currentFilters.rarity.max)) {
+            return false;
+        }
     }
 
-    if (
-        !isInRange(
-            Number(listing.mintNumber),
-            currentFilters.mintNumber.min,
-            currentFilters.mintNumber.max,
-        )
-    ) {
-        return false;
+    if (currentFilters.mintNumber.min || currentFilters.mintNumber.max) {
+        if (
+            !isInRange(
+                Number(listing.mintNumber),
+                currentFilters.mintNumber.min,
+                currentFilters.mintNumber.max,
+            )
+        ) {
+            return false;
+        }
     }
 
     if (currentFilters.traits.values.length) {
@@ -261,7 +267,7 @@ export function ListingsBody(props) {
         status: {
             listed: true,
             unlisted: false,
-            type: 'listed',
+            type: 'status',
         },
         price: {
             min: undefined,
