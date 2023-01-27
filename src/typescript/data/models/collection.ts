@@ -38,7 +38,7 @@ export type BaseCollection = {
     priority: number;
     route: string;
     sale: boolean;
-    saletype: 'v1' | 'v2';
+    saletype: 'v1' | 'v2' | 'auction';
     standard: 'legacy' | 'ext' | 'EXT';
     /** Url */
     telegram: string;

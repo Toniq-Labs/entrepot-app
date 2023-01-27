@@ -1,4 +1,3 @@
-/* global BigInt */
 import React from 'react';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -7,10 +6,7 @@ import Timestamp from 'react-timestamp';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {
-    defaultEntrepotApi,
-    createEntrepotApiWithIdentity,
-} from '../../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -98,7 +94,8 @@ export default function OldSaleComponent(props) {
     ] = React.useState([1n]);
 
     const _updates = async () => {
-        var salesSettings = await defaultEntrepotApi
+        const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var salesSettings = await entrepotApi
             .canister(collection.canister, 'sale')
             .salesSettings(props.account ? props.account.address : '');
         setSalePrice(salesSettings.salePrice);
@@ -114,7 +111,6 @@ export default function OldSaleComponent(props) {
         );
         setPrice(salesSettings.price);
     };
-    const theme = useTheme();
     const classes = useStyles();
     const styles = {
         main: {
