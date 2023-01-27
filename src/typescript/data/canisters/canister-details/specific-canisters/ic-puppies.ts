@@ -1,5 +1,4 @@
 import {RawCanisterDetails} from '../canister-details';
-import {createResizableSvg} from '../image-helpers';
 import {formEntrepotTncImagesUrl} from '../../../../api/entrepot-images-url';
 
 export const icPuppiesCanisterDetails: RawCanisterDetails = {

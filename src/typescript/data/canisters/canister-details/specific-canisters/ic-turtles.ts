@@ -1,7 +1,5 @@
-import axios from 'axios';
 import {RawCanisterDetails} from '../canister-details';
 import {getCanisterDomain} from '../../../../api/ic-canister-domain';
-import {createResizableSvg} from '../image-helpers';
 
 export const icTurtlesCanisterDetails: RawCanisterDetails = {
     collectionName: 'ICTurtles',

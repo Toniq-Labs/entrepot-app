@@ -21,6 +21,7 @@ import {pokeBotsCanisterDetails} from './specific-canisters/poked-bots';
 import {motokoMechsCanisterDetails} from './specific-canisters/motoko-mechs';
 import {genesisIICanisterDetails} from './specific-canisters/genesis-ii';
 import {moonWalkersCanisterDetails} from './specific-canisters/moon-walkers';
+import {petBotsCanisterDetails} from './specific-canisters/pet-bots';
 
 const allCanisterDetails = [
     btcFlowerCanisterDetails,
@@ -30,6 +31,7 @@ const allCanisterDetails = [
     genesisIICanisterDetails,
     icatsCanisterDetails,
     icBucksCanisterDetails,
+    petBotsCanisterDetails,
     icDinosCanisterDetails,
     icDripCanisterDetails,
     icelebrityCanisterDetails,

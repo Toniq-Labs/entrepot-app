@@ -12,6 +12,7 @@ export const btcFlowerCanisterDetails: RawCanisterDetails = {
                   entrepotImagesCanisterId: '7budn-wqaaa-aaaah-qcsba-cai',
                   nftId,
               });
+
         return {
             url: imageUrl,
         };
