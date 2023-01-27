@@ -67,7 +67,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             See All
                         </button>
                     </div>
-                    ${inputs.upcoming
+                    ${inputs.upcoming && inputs.upcoming.length
                         ? html`
 							<${EntrepotHorizontalScrollElement}
 								${assign(EntrepotHorizontalScrollElement, {
@@ -141,7 +141,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                         </button>
                     </div>
 
-                    ${inputs.inProgress
+                    ${inputs.inProgress && inputs.inProgress.length
                         ? html`
 							<${EntrepotHorizontalScrollElement}
 								${assign(EntrepotHorizontalScrollElement, {
@@ -219,7 +219,7 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             See All
                         </button>
                     </div>
-                    ${inputs.endingSoon
+                    ${inputs.endingSoon && inputs.endingSoon.length
                         ? html`
 							<${EntrepotHorizontalScrollElement}
 								${assign(EntrepotHorizontalScrollElement, {
