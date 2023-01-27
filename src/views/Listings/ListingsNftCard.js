@@ -37,6 +37,7 @@ import {getExtCanisterId} from '../../typescript/data/canisters/canister-details
 const useStyles = makeStyles(theme => ({
     nftCard: {
         position: 'relative',
+        height: '100%',
         '&:hover .hoverCard': {
             display: 'flex',
         },
@@ -589,9 +590,12 @@ export function ListingsNftCard(props) {
                                                             }}
                                                         >
                                                             <span
-                                                                style={cssToReactStyleObject(
-                                                                    toniqFontStyles.h3Font,
-                                                                )}
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    ...cssToReactStyleObject(
+                                                                        toniqFontStyles.h3Font,
+                                                                    ),
+                                                                }}
                                                             >
                                                                 {listing.price ? (
                                                                     <PriceICP
@@ -669,9 +673,12 @@ export function ListingsNftCard(props) {
                                                             }}
                                                         >
                                                             <span
-                                                                style={cssToReactStyleObject(
-                                                                    toniqFontStyles.boldParagraphFont,
-                                                                )}
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    ...cssToReactStyleObject(
+                                                                        toniqFontStyles.boldParagraphFont,
+                                                                    ),
+                                                                }}
                                                             >
                                                                 {listing.price ? (
                                                                     <PriceICP
@@ -729,8 +736,9 @@ export function ListingsNftCard(props) {
                                                     className={classes.favourite}
                                                     style={{
                                                         position: 'absolute',
-                                                        top: gridSize === 'small' ? 12 : 24,
-                                                        left: gridSize === 'small' ? 12 : 24,
+                                                        top: gridSize === 'small' ? 20 : 24,
+                                                        left: gridSize === 'small' ? 14 : 24,
+                                                        zIndex: 100,
                                                     }}
                                                     onClick={e => {
                                                         e.preventDefault();

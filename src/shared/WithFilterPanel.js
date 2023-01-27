@@ -163,6 +163,10 @@ export function WithFilterPanel(props) {
                             .with-filter-panel .other-controls {
                                 margin-left: 16px;
                             }
+                            .other-controls:not(:empty) {
+                                padding: 16px 16px 8px;
+                                margin-left: -16px;
+                            }
                         }
                     `),
                 }}

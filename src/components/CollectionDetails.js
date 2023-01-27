@@ -341,7 +341,7 @@ export default function CollectionDetails(props) {
                     </div>
                 </Avatar>
                 <div className={classes.detailsWrapper}>
-                    <div container item className={classes.nftNameWrapper}>
+                    <div className={classes.nftNameWrapper}>
                         <span className={classes.nftName}>{collection.name}</span>
                         {collection.kyc && (
                             <ToniqIcon
