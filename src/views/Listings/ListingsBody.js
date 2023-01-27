@@ -166,13 +166,15 @@ function doesCollectionPassFilters(listing, currentFilters, traitsData, collecti
 
     if (currentFilters.traits.values.length) {
         return currentFilters.traits.values.reduce((currentCategory, category) => {
-            const categoryIndex = listing.traits.findIndex(listingTrait => {
+            const listingCategory = listing.traits.find(listingTrait => {
                 return listingTrait.category === category.category;
             });
 
-            const trait = category.values.reduce((currentTrait, trait) => {
-                return currentTrait || trait === listing.traits[categoryIndex].value;
-            }, false);
+            const trait = listingCategory
+                ? category.values.reduce((currentTrait, trait) => {
+                      return currentTrait || String(trait) === String(listingCategory.value);
+                  }, false)
+                : false;
 
             return currentCategory && trait;
         }, true);
@@ -455,9 +457,11 @@ export function ListingsBody(props) {
                                 return Object.values(b)[0] - Object.values(a)[0];
                             })
                             .reduce((currentTraitCount, traitCount) => {
-                                return Object.assign(currentTraitCount, {
-                                    [Object.keys(traitCount)[0]]: Object.values(traitCount)[0],
-                                });
+                                const traitKey = Object.keys(traitCount)[0];
+                                return (
+                                    (currentTraitCount[traitKey] = traitCount[traitKey]),
+                                    currentTraitCount
+                                );
                             }, {});
 
                         return {
@@ -497,8 +501,8 @@ export function ListingsBody(props) {
                   return currentFilters.status.listed && currentFilters.status.unlisted
                       ? true
                       : currentFilters.status.unlisted
-                      ? listing[1] === false
-                      : listing[1];
+                      ? !listing[1]
+                      : typeof listing[1] === 'object';
               })
         : [];
 
