@@ -45,7 +45,8 @@ export const EntrepotSalePageElement = defineElement<{
         endingSoon: undefined as undefined | Array<CollectionSales>,
     },
     initCallback: ({inputs, updateState}) => {
-        getCollectionSales(inputs.collections, inputs.account).then(collectionSales => {
+        const saleCollections = inputs.collections.filter(collection => collection.sale);
+        getCollectionSales(saleCollections, inputs.account).then(collectionSales => {
             const upcoming = collectionSales
                 .filter(collectionSale => {
                     return moment(collectionSale.sales.startDate).isAfter(
@@ -87,7 +88,7 @@ export const EntrepotSalePageElement = defineElement<{
         });
     },
     renderCallback: ({state, updateState, events, dispatch}) => {
-        const preloader = new Array(Math.floor(Math.random() * (8 - 3) + 3)).fill(0);
+        const preloader = new Array(Math.floor(Math.random() * (8 - 4) + 4)).fill(0);
         const tabs = [
             {
                 label: 'Featured',
@@ -160,7 +161,7 @@ export const EntrepotSalePageElement = defineElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'Upcoming',
                                 children: html`
-                                    ${state.upcoming
+                                    ${state.upcoming && state.upcoming.length
                                         ? html`
                                               ${state.upcoming.map(collection => {
                                                   return html`
@@ -224,7 +225,7 @@ export const EntrepotSalePageElement = defineElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'In Progress',
                                 children: html`
-                                    ${state.inProgress
+                                    ${state.inProgress && state.inProgress.length
                                         ? html`
                                               ${state.inProgress.map(collection => {
                                                   return html`
@@ -302,7 +303,7 @@ export const EntrepotSalePageElement = defineElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'Ending Soon',
                                 children: html`
-                                    ${state.endingSoon
+                                    ${state.endingSoon && state.endingSoon.length
                                         ? html`
                                               ${state.endingSoon.map(collection => {
                                                   return html`
