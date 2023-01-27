@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, createRef} from 'react';
+import React, {useEffect, useState, useRef, createRef, useMemo} from 'react';
 import {makeStyles} from '@material-ui/core';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
@@ -77,22 +77,6 @@ const defaultOpenedAccordions = [
     'rarity',
     'mintNumber',
     'traits',
-];
-
-const sortOptionsNfts = [
-    defaultSortOptionNfts,
-    {
-        value: {
-            type: 'rarity',
-        },
-        label: 'Rarity',
-    },
-    {
-        value: {
-            type: 'mintNumber',
-        },
-        label: 'Mint #',
-    },
 ];
 
 const sortOptionsActivity = [
@@ -351,6 +335,56 @@ export function ListingsBody(props) {
         currentFilters,
         setCurrentFilters,
     ] = useState(userPreferences.filterOptions);
+
+    const sortOptionsNfts = useMemo(() => {
+        const sortOptionNftsInit = (listed, unlisted) => {
+            const options =
+                listed && !unlisted
+                    ? [
+                          defaultSortOptionNfts,
+                          {
+                              value: {
+                                  type: 'rarity',
+                              },
+                              label: 'Rarity',
+                          },
+                          {
+                              value: {
+                                  type: 'mintNumber',
+                              },
+                              label: 'Mint #',
+                          },
+                      ]
+                    : [
+                          {
+                              value: {
+                                  type: 'rarity',
+                              },
+                              label: 'Rarity',
+                          },
+                          {
+                              value: {
+                                  type: 'mintNumber',
+                              },
+                              label: 'Mint #',
+                          },
+                      ];
+            const findOption = options.find(option => {
+                return option.value.type === sortNfts.value.type;
+            });
+
+            if (!findOption) setSortNfts(options[0]);
+            return options;
+        };
+
+        return sortOptionNftsInit(
+            currentFilters.status[filterTypes.status.listed],
+            currentFilters.status[filterTypes.status.unlisted],
+        );
+    }, [
+        currentFilters.status,
+        sortNfts.value.type,
+    ]);
 
     const navigate = useNavigate();
 
