@@ -32,6 +32,7 @@ import {DropShadowCard} from '../../../shared/DropShadowCard';
 import {NftCard} from '../../../shared/NftCard';
 import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {EntrepotNftDisplay} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 const DetailSectionHeader = props => {
     const {
@@ -41,7 +42,6 @@ const DetailSectionHeader = props => {
         transactions,
         _afterList,
         _afterBuy,
-        displayImage,
         tokenid,
         index,
         canister,
@@ -53,81 +53,7 @@ const DetailSectionHeader = props => {
     const benefitsContentWrapperRef = createRef();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const mockBenefits = [];
-    // const mockBenefits = [
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    //     {
-    //         name: 'Portal',
-    //         provider: 'DSCVR',
-    //         benefit:
-    //             'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
-    //     },
-    // ];
+    const benefits = []; // mockBenefits;
     const [
         isOpenBenefitDialog,
         setIsOpenBenefitDialog,
@@ -165,11 +91,15 @@ const DetailSectionHeader = props => {
         <Box className={classes.detailHeader}>
             <div className={`${classes.detailSectionHeader} detail-section-header`}>
                 <Grid item xs={12} sm={5}>
-                    <DropShadowCard
-                        className={classes.imageWrapperContainer}
-                        style={{padding: '1px'}}
-                    >
-                        <div className={classes.imageWrapper}>{displayImage(tokenid)}</div>
+                    <DropShadowCard style={{padding: '16px'}}>
+                        <EntrepotNftDisplay
+                            collectionId={props.canister}
+                            nftIndex={props.index}
+                            nftId={props.tokenid}
+                            fullSize={true}
+                            max={{width: 477, height: 900}}
+                            min={{width: 477, height: 350}}
+                        />
                     </DropShadowCard>
                 </Grid>
                 <Grid item xs={12} sm={7} className={classes.headerContent}>
@@ -384,7 +314,7 @@ const DetailSectionHeader = props => {
                                 }}
                             >
                                 <span className={classes.detailSectionTitle}>Benefits</span>
-                                {mockBenefits.length ? (
+                                {benefits.length ? (
                                     <div>
                                         <div className={classes.viewListWrapper}>
                                             <button
@@ -427,12 +357,12 @@ const DetailSectionHeader = props => {
                                     ''
                                 )}
                             </div>
-                            {mockBenefits.length ? (
+                            {benefits.length ? (
                                 <div
                                     ref={benefitsContentWrapperRef}
                                     className={classes.benefitsContentWrapper}
                                 >
-                                    {mockBenefits.map((benefit, index) => {
+                                    {benefits.map((benefit, index) => {
                                         return (
                                             <NftCard
                                                 listStyle={true}
@@ -511,7 +441,7 @@ const DetailSectionHeader = props => {
                         style={{width: '100%', padding: 10, marginBottom: 16}}
                     />
                     <div className={classes.dialogBenefitWrapper}>
-                        {mockBenefits.map((benefit, index) => {
+                        {benefits.map((benefit, index) => {
                             return (
                                 <NftCard
                                     listStyle={true}
@@ -627,20 +557,6 @@ const useStyles = makeStyles(theme => ({
     hoverText: {
         '&:hover': {
             color: toniqColors.pageInteraction.foregroundColor,
-        },
-    },
-    imageWrapperContainer: {
-        '&::after': {
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background:
-                'linear-gradient(to left, rgba(0, 208, 147, 0), rgba(0, 208, 147, 0.2), rgba(0, 208, 147, 0.4), rgba(0, 208, 147, 1))',
-            content: '""',
-            zIndex: '-1',
-            borderRadius: '17px',
         },
     },
     imageWrapper: {
@@ -837,3 +753,78 @@ const useStyles = makeStyles(theme => ({
         fontWeight: 500,
     },
 }));
+
+const mockBenefits = [
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+    {
+        name: 'Portal',
+        provider: 'DSCVR',
+        benefit:
+            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration',
+    },
+];

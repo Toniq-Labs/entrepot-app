@@ -31,7 +31,7 @@ export const EntrepotNftDisplayElement = defineToniqElement<
 >()({
     tagName: 'toniq-entrepot-nft-display',
     stateInit: {
-        imageTemplate: asyncState<NftImageDisplayData>(),
+        nftImageData: asyncState<NftImageDisplayData>(),
     },
     styles: css`
         :host {
@@ -52,7 +52,7 @@ export const EntrepotNftDisplayElement = defineToniqElement<
     `,
     renderCallback: ({inputs, state, updateState}) => {
         updateState({
-            imageTemplate: {
+            nftImageData: {
                 createPromise: async () => {
                     return await getNftImageData(inputs);
                 },
@@ -66,19 +66,20 @@ export const EntrepotNftDisplayElement = defineToniqElement<
         };
 
         const asyncTemplate = renderAsyncState(
-            state.imageTemplate,
+            state.nftImageData,
             html`
                 <${ToniqIcon}
                     ${assign(ToniqIcon, {icon: LoaderAnimated24Icon})}
                 ></${ToniqIcon}>
             `,
-            resolvedValue => html`
+            resolvedImageData => html`
                     <${VirResizableImage}
                         ${assign(VirResizableImage, {
-                            imageUrl: resolvedValue.url,
+                            imageUrl: resolvedImageData.url,
                             max: dimensionConstraints.max,
                             min: dimensionConstraints.min,
-                            transformSvgJavascript: resolvedValue.transformSvgJavascript ?? '',
+                            transformJavascript: resolvedImageData.transformJavascript ?? '',
+                            originalImageSize: resolvedImageData.imageDimensions,
                         })}
                     >
                         <${ToniqIcon}

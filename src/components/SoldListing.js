@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils.js';
+import {EntrepotNFTMintNumber} from '../utils.js';
 import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
@@ -305,19 +305,11 @@ export default function SoldListing(props) {
                     </Grid>
 
                     <a href={nftLinkUrl} target="_blank" rel="noreferrer">
-                        <div style={{...styles.avatarSkeletonContainer}}>
-                            {EntrepotDisplayNFT(
-                                props.collection,
-                                tokenid,
-                                imgLoaded,
-                                <EntrepotNftDisplay
-                                    collectionId={props.collection}
-                                    nftIndex={index}
-                                    nftId={tokenid}
-                                />,
-                                () => setImgLoaded(true),
-                            )}
-                        </div>
+                        <EntrepotNftDisplay
+                            collectionId={props.collection}
+                            nftIndex={index}
+                            nftId={tokenid}
+                        />
                     </a>
 
                     <Typography

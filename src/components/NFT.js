@@ -18,7 +18,7 @@ import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from '../ic/nftv.js';
 import {makeStyles} from '@material-ui/core';
-import {EntrepotEarnDetails, EntrepotNFTMintNumber, EntrepotDisplayNFT} from '../utils';
+import {EntrepotEarnDetails, EntrepotNFTMintNumber} from '../utils';
 import {
     CanisterWrappedType,
     isWrappedType,
@@ -471,22 +471,14 @@ export default function NFT(props) {
                     style={{textDecoration: 'none', color: 'inherit'}}
                     to={`/marketplace/asset/` + getExtId(tokenid)}
                 >
-                    <div style={{...styles.avatarSkeletonContainer}}>
-                        {EntrepotDisplayNFT(
-                            getExtCanisterId(canister),
-                            tokenid,
-                            imgLoaded,
-                            <EntrepotNftDisplay
-                                collection={getExtCanisterId(canister)}
-                                nftIndex={index}
-                                nftId={tokenid}
-                                fullSize={false}
-                                ref={ref}
-                                cachePriority={collection.priority}
-                            />,
-                            () => setImgLoaded(collection.true),
-                        )}
-                    </div>
+                    <EntrepotNftDisplay
+                        collection={getExtCanisterId(canister)}
+                        nftIndex={index}
+                        nftId={tokenid}
+                        fullSize={false}
+                        ref={ref}
+                        cachePriority={collection.priority}
+                    />
                     {offerCount > 0 ? (
                         <Chip
                             style={{

@@ -1,3 +1,4 @@
+import {Dimensions} from '@electrovir/resizable-image-element';
 import {getCanisterDetails} from './canister-details/all-canister-details';
 import {treasureCanisterId} from './treasure-canister';
 
@@ -12,7 +13,8 @@ export type NftImageInputs = {
 
 export type NftImageDisplayData = {
     url: string;
-    transformSvgJavascript?: string | undefined;
+    transformJavascript?: string | undefined;
+    imageDimensions?: Dimensions;
 };
 
 export async function getNftImageData({
@@ -39,3 +41,6 @@ export async function getNftImageData({
         ref: Number(ref),
     });
 }
+
+// https://ugdkf-taaaa-aaaak-acoia-cai.raw.ic0.app/?tokenid=bfx6f-yakor-uwiaa-aaaaa-cqats-aaqca-aaaej-q
+// https://ugdkf-taaaa-aaaak-acoia-cai.raw.ic0.app/?cc=0&tokenid=rsj5w-2ikor-uwiaa-aaaaa-cqats-aaqca-aaal5-q

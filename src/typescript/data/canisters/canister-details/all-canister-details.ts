@@ -18,12 +18,16 @@ import {cronicCrittersCanisterDetails} from './specific-canisters/cronic-critter
 import {icBucksCanisterDetails} from './specific-canisters/ic-bucks';
 import {icelebrityCanisterDetails} from './specific-canisters/icelebrity';
 import {pokeBotsCanisterDetails} from './specific-canisters/poked-bots';
+import {motokoMechsCanisterDetails} from './specific-canisters/motoko-mechs';
+import {genesisIICanisterDetails} from './specific-canisters/genesis-ii';
+import {moonWalkersCanisterDetails} from './specific-canisters/moon-walkers';
 
 const allCanisterDetails = [
     btcFlowerCanisterDetails,
     cronicCrittersCanisterDetails,
     dfinityDeckOriginsCanisterDetails,
     ethFlowerCanisterDetails,
+    genesisIICanisterDetails,
     icatsCanisterDetails,
     icBucksCanisterDetails,
     icDinosCanisterDetails,
@@ -35,6 +39,8 @@ const allCanisterDetails = [
     icPunksCanisterDetails,
     icPuppiesCanisterDetails,
     icTurtlesCanisterDetails,
+    moonWalkersCanisterDetails,
+    motokoMechsCanisterDetails,
     pineapplePunksCanisterDetails,
     pokeBotsCanisterDetails,
 ];

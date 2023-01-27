@@ -11,6 +11,7 @@ import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {defineToniqElement} from '@toniq-labs/design-system';
+import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
 
 export const EntrepotMarketplacePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
@@ -21,6 +22,7 @@ export const EntrepotMarketplacePageElement = defineToniqElement<{
             display: block;
             min-height: 100vh;
         }
+
         @media (max-width: 1200px) {
             :host {
                 padding: 16px;
@@ -71,14 +73,14 @@ export const EntrepotMarketplacePageElement = defineToniqElement<{
                             return html`
                                 <${EntrepotMarketplaceCardElement}
                                     ${assign(EntrepotMarketplaceCardElement, {
-                                        collectionImageUrl: collection.collection,
-                                        collectionName: collection.name,
-                                        descriptionText: collection.brief,
-                                        stats: collection.stats,
+                                        collection: collection,
                                     })}
-                                    ${listen('click', () => {
-                                        dispatch(new events.collectionSelected(collection));
-                                    })}
+                                    ${listen(
+                                        EntrepotMarketplaceCardElement.events.navigateToRoute,
+                                        () => {
+                                            dispatch(new events.collectionSelected(collection));
+                                        },
+                                    )}
                                 ></${EntrepotMarketplaceCardElement}>
                             `;
                         },

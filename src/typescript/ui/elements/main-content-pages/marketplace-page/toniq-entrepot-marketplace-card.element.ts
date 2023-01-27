@@ -1,6 +1,6 @@
 import {HTMLTemplateResult} from 'lit';
-import {assign, css, defineElement, html} from 'element-vir';
-import {CollectionStats} from '../../../../data/models/collection';
+import {assign, css, defineElementEvent, html} from 'element-vir';
+import {Collection, CollectionStats} from '../../../../data/models/collection';
 import {
     Icp16Icon,
     ToniqChip,
@@ -12,15 +12,15 @@ import {
     defineToniqElement,
 } from '@toniq-labs/design-system';
 import {truncateNumber} from '@augment-vir/common';
+import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
 
 export const EntrepotMarketplaceCardElement = defineToniqElement<{
-    collectionName: string;
-    collectionImageUrl: string;
-    // this should eventually be the collection's creator
-    descriptionText: string;
-    stats: Pick<CollectionStats, 'total' | 'floor' | 'listings'> | undefined;
+    collection: Pick<Readonly<Collection>, 'name' | 'brief' | 'stats' | 'route' | 'collection'>;
 }>()({
     tagName: 'toniq-entrepot-marketplace-card',
+    events: {
+        navigateToRoute: defineElementEvent<string>(),
+    },
     styles: css`
         :host {
             display: inline-flex;
@@ -36,8 +36,9 @@ export const EntrepotMarketplaceCardElement = defineToniqElement<{
             ${toniqShadows.popupShadow}
         }
 
-        .card-button {
-            ${removeNativeFormStyles}
+        a {
+            height: 100%;
+            width: 100%;
             text-decoration: none;
             display: flex;
             align-items: stretch;
@@ -119,19 +120,28 @@ export const EntrepotMarketplaceCardElement = defineToniqElement<{
             ${applyBackgroundAndForeground(toniqColors.pageSecondary)}
         }
     `,
-    renderCallback: ({inputs}) => {
+    renderCallback: ({inputs, events, dispatch}) => {
+        const linkUrl = `/marketplace/${inputs.collection.route}`;
         return html`
-            <button class="card-button">
+            <a
+                href=${linkUrl}
+                @click=${(clickEvent: MouseEvent) => {
+                    if (shouldMouseEventTriggerRoutes(clickEvent)) {
+                        clickEvent.preventDefault();
+                        dispatch(new events.navigateToRoute(inputs.collection.route));
+                    }
+                }}
+            >
                 <div
                     class="image-holder"
-                    style="background-image: url('${inputs.collectionImageUrl}')"
+                    style="background-image: url('${inputs.collection.collection}')"
                 ></div>
                 <div class="collection-details">
-                    <h3>${inputs.collectionName}</h3>
-                    <p class="description">${inputs.descriptionText}</p>
-                    <div class="stats">${createStatsTemplate(inputs.stats)}</div>
+                    <h3>${inputs.collection.name}</h3>
+                    <p class="description">${inputs.collection.brief}</p>
+                    <div class="stats">${createStatsTemplate(inputs.collection.stats)}</div>
                 </div>
-            </button>
+            </a>
         `;
     },
 });

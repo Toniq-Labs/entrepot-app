@@ -54,6 +54,7 @@ module.exports = {
         'infinitywallet',
         'lazyload',
         'magni',
+        'mechs',
         'mintregister',
         'moonwalker',
         'motoko',

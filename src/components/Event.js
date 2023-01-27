@@ -7,7 +7,7 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
 import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotDisplayNFT, EntrepotGetIcpUsd} from '../utils.js';
+import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../utils.js';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 export default function Event(props) {
@@ -74,19 +74,11 @@ export default function Event(props) {
                             paddingRight: 10,
                         }}
                     >
-                        <div style={{...styles.avatarSkeletonContainer}}>
-                            {EntrepotDisplayNFT(
-                                props.collection,
-                                tokenid,
-                                imgLoaded,
-                                <EntrepotNftDisplay
-                                    collectionId={props.collection}
-                                    nftIndex={index}
-                                    nftId={tokenid}
-                                />,
-                                () => setImgLoaded(true),
-                            )}
-                        </div>
+                        <EntrepotNftDisplay
+                            collectionId={props.collection}
+                            nftIndex={index}
+                            nftId={tokenid}
+                        />
                     </div>
                     <strong>
                         {getCollection(props.collection).name} {'#' + mintNumber()}

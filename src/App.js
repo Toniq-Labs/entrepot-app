@@ -794,6 +794,8 @@ export default function App() {
     const updateCollections = async () => {
         const allCollectionsWithCaching = Object.values(await getAllCollectionsWithCaching());
         setCollections(allCollectionsWithCaching);
+
+        console.log({collections: collections});
         allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
 
         if (isToniqEarnAllowed === undefined) {
