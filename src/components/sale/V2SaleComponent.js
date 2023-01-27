@@ -1,5 +1,5 @@
-/* global BigInt */
 import React, {useState} from 'react';
+import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +12,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import {
-    createEntrepotApiWithIdentity,
-    defaultEntrepotApi,
-} from '../../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -63,10 +60,6 @@ export default function V2SaleComponent(props) {
         setGroups,
     ] = React.useState([]);
     const [
-        currentGroup,
-        setCurrentGroup,
-    ] = React.useState(false);
-    const [
         remaining,
         setRemaining,
     ] = React.useState(false);
@@ -107,12 +100,12 @@ export default function V2SaleComponent(props) {
     }, [blurbElement]);
 
     const _updates = async () => {
-        var resp = await defaultEntrepotApi
+        const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+        var resp = await entrepotApi
             .canister(collection.canister, 'ext2')
             .ext_saleSettings(props.account ? props.account.address : '');
         if (!resp.length) return;
         var salesSettings = resp[0];
-        console.log(salesSettings);
         setStartTime(Number(salesSettings.start / 1000000n));
         setEndTime(Number(salesSettings.end / 1000000n));
         setRemaining(Number(salesSettings.remaining));
@@ -165,9 +158,7 @@ export default function V2SaleComponent(props) {
             setGroups(g);
             if (g.length && currentPriceGroup === false) setCurrentPriceGroup(Number(g[0].id));
         }
-        setCurrentGroup(groups.find(a => Number(a.id) == currentPriceGroup));
     };
-    const theme = useTheme();
     const classes = useStyles();
     const styles = {
         main: {
@@ -277,6 +268,7 @@ export default function V2SaleComponent(props) {
                     <a
                         href={'https://icscan.io/nft/collection/' + collection.canister}
                         target="_blank"
+                        rel="noreferrer"
                     >
                         <img alt="create" style={{width: 32}} src={'/icon/icscan.png'} />
                     </a>
@@ -289,9 +281,14 @@ export default function V2SaleComponent(props) {
                         'distrikt',
                     ]
                         .filter(a => collection.hasOwnProperty(a) && collection[a])
-                        .map(a => {
+                        .map((a, index) => {
                             return (
-                                <a href={collection[a]} target="_blank">
+                                <a
+                                    key={index}
+                                    href={collection[a]}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <img
                                         alt="create"
                                         style={{width: 32}}
@@ -442,7 +439,6 @@ export default function V2SaleComponent(props) {
                                         textColor="primary"
                                         centered={false}
                                         scrollButtons="on"
-                                        allowScrollButtonsMobile
                                         variant="scrollable"
                                         onChange={(e, nv) => {
                                             setCurrentPriceGroup(nv);
@@ -468,6 +464,7 @@ export default function V2SaleComponent(props) {
                                             if (badge) {
                                                 return (
                                                     <Tab
+                                                        key={index}
                                                         className={classes.tabsViewTab}
                                                         value={Number(group.id)}
                                                         label={
@@ -569,34 +566,37 @@ export default function V2SaleComponent(props) {
                                                         spacing={2}
                                                         style={{}}
                                                     >
-                                                        {getCurrentGroup().pricing.map(o => {
-                                                            return (
-                                                                <Grid
-                                                                    className={classes.stat}
-                                                                    item
-                                                                    sm={3}
-                                                                >
-                                                                    <Button
-                                                                        variant={'contained'}
-                                                                        disabled
-                                                                        color={'primary'}
-                                                                        style={{
-                                                                            fontWeight: 'bold',
-                                                                            margin: '0 auto',
-                                                                        }}
+                                                        {getCurrentGroup().pricing.map(
+                                                            (o, index) => {
+                                                                return (
+                                                                    <Grid
+                                                                        key={index}
+                                                                        className={classes.stat}
+                                                                        item
+                                                                        sm={3}
                                                                     >
-                                                                        Buy {Number(o[0])} NFT
-                                                                        {o[0] === 1 ? '' : 's'}
-                                                                        <br />
-                                                                        for{' '}
-                                                                        {_showListingPrice(
-                                                                            o[0] * o[1],
-                                                                        )}{' '}
-                                                                        ICP
-                                                                    </Button>
-                                                                </Grid>
-                                                            );
-                                                        })}
+                                                                        <Button
+                                                                            variant={'contained'}
+                                                                            disabled
+                                                                            color={'primary'}
+                                                                            style={{
+                                                                                fontWeight: 'bold',
+                                                                                margin: '0 auto',
+                                                                            }}
+                                                                        >
+                                                                            Buy {Number(o[0])} NFT
+                                                                            {o[0] === 1 ? '' : 's'}
+                                                                            <br />
+                                                                            for{' '}
+                                                                            {_showListingPrice(
+                                                                                o[0] * o[1],
+                                                                            )}{' '}
+                                                                            ICP
+                                                                        </Button>
+                                                                    </Grid>
+                                                                );
+                                                            },
+                                                        )}
                                                     </Grid>
                                                 </>
                                             ) : (
@@ -609,48 +609,51 @@ export default function V2SaleComponent(props) {
                                                         spacing={2}
                                                         style={{}}
                                                     >
-                                                        {getCurrentGroup().pricing.map(o => {
-                                                            return (
-                                                                <Grid
-                                                                    className={classes.stat}
-                                                                    item
-                                                                    sm={3}
-                                                                >
-                                                                    <Button
-                                                                        variant={'contained'}
-                                                                        color={'primary'}
-                                                                        onClick={() =>
-                                                                            buyFromSale(
-                                                                                Number(
-                                                                                    groups.find(
-                                                                                        a =>
-                                                                                            Number(
-                                                                                                a.id,
-                                                                                            ) ==
-                                                                                            currentPriceGroup,
-                                                                                    ).id,
-                                                                                ),
-                                                                                Number(o[0]),
-                                                                                o[0] * o[1],
-                                                                            )
-                                                                        }
-                                                                        style={{
-                                                                            fontWeight: 'bold',
-                                                                            margin: '0 auto',
-                                                                        }}
+                                                        {getCurrentGroup().pricing.map(
+                                                            (o, index) => {
+                                                                return (
+                                                                    <Grid
+                                                                        key={index}
+                                                                        className={classes.stat}
+                                                                        item
+                                                                        sm={3}
                                                                     >
-                                                                        Buy {Number(o[0])} NFT
-                                                                        {o[0] === 1 ? '' : 's'}
-                                                                        <br />
-                                                                        for{' '}
-                                                                        {_showListingPrice(
-                                                                            o[0] * o[1],
-                                                                        )}{' '}
-                                                                        ICP
-                                                                    </Button>
-                                                                </Grid>
-                                                            );
-                                                        })}
+                                                                        <Button
+                                                                            variant={'contained'}
+                                                                            color={'primary'}
+                                                                            onClick={() =>
+                                                                                buyFromSale(
+                                                                                    Number(
+                                                                                        groups.find(
+                                                                                            a =>
+                                                                                                Number(
+                                                                                                    a.id,
+                                                                                                ) ==
+                                                                                                currentPriceGroup,
+                                                                                        ).id,
+                                                                                    ),
+                                                                                    Number(o[0]),
+                                                                                    o[0] * o[1],
+                                                                                )
+                                                                            }
+                                                                            style={{
+                                                                                fontWeight: 'bold',
+                                                                                margin: '0 auto',
+                                                                            }}
+                                                                        >
+                                                                            Buy {Number(o[0])} NFT
+                                                                            {o[0] === 1 ? '' : 's'}
+                                                                            <br />
+                                                                            for{' '}
+                                                                            {_showListingPrice(
+                                                                                o[0] * o[1],
+                                                                            )}{' '}
+                                                                            ICP
+                                                                        </Button>
+                                                                    </Grid>
+                                                                );
+                                                            },
+                                                        )}
                                                     </Grid>
                                                     <p>
                                                         <strong>Please note:</strong> All
@@ -663,6 +666,7 @@ export default function V2SaleComponent(props) {
                                                         <a
                                                             href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit"
                                                             target="_blank"
+                                                            rel="noreferrer"
                                                         >
                                                             Terms of Service
                                                         </a>
