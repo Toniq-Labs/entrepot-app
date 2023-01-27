@@ -263,6 +263,10 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
     stateInit: {
         searchValue: '',
     },
+    initCallback: ({updateState}) => {
+        const searchTerm = new URL(document.location.href).searchParams.get('search');
+        if (searchTerm !== null) updateState({searchValue: searchTerm});
+    },
     events: {
         showFiltersChange: defineElementEvent<boolean>(),
         filtersChange: defineElementEvent<WithFiltersElementInputs<any, any>['currentFilters']>(),

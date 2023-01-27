@@ -1,6 +1,6 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {ensureType} from '@augment-vir/common';
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {
     EntrepotWithFiltersElement,
@@ -11,7 +11,6 @@ import {EntrepotMarketplaceCardElement} from './toniq-entrepot-marketplace-card.
 import {sortDefinitions, defaultMarketplaceFilters} from './marketplace-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {defineToniqElement} from '@toniq-labs/design-system';
-import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
 
 export const EntrepotMarketplacePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;

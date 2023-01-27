@@ -202,7 +202,9 @@ export default function Navbar(props) {
                         zIndex: 1400,
                         background: 'white',
                         ...(props.showHeaderShadow
-                            ? {}
+                            ? {
+                                  boxShadow: 'rgb(229 232 235) 0px 1px 0px 0px',
+                              }
                             : {
                                   boxShadow: 'none',
                               }),
