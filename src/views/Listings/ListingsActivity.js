@@ -439,6 +439,8 @@ export default function ListingsActivity(props) {
                                 nftId={listing.nftId}
                                 cachePriority={listing.cachePriority}
                                 key={listing.id}
+                                max={{height: 64, width: 64}}
+                                min={{height: 64, width: 64}}
                             >
                                 <>
                                     <ListRow

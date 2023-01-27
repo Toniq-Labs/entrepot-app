@@ -551,17 +551,14 @@ export function ListingsNftCard(props) {
                                                 nftIndex={listing.index}
                                                 nftId={listing.tokenid}
                                                 cachePriority={0}
-                                                small={gridSize === 'small'}
                                                 className={classes.nftCard}
-                                                style={{
-                                                    maxWidth:
-                                                        gridSize === 'small'
-                                                            ? gridSmallMaxWidth
-                                                            : gridLargeMaxWidth,
-                                                    maxHeight:
-                                                        gridSize === 'small'
-                                                            ? 'unset'
-                                                            : gridLargeMaxHeight,
+                                                max={{
+                                                    width: gridSize === 'small' ? 150 : 272,
+                                                    height: gridSize === 'small' ? 330 : 600,
+                                                }}
+                                                min={{
+                                                    width: gridSize === 'small' ? 150 : 272,
+                                                    height: gridSize === 'small' ? 110 : 200,
                                                 }}
                                             >
                                                 {gridSize === 'large' ? (
