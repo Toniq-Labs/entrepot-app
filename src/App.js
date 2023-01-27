@@ -2045,11 +2045,6 @@ export default function App() {
                                     element={
                                         <EntrepotSale
                                             collections={collections}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
                                             onCollectionSelected={event => {
                                                 const collection = event.detail;
                                                 if (

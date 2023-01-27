@@ -4,7 +4,7 @@ import {Collection} from '../../../../data/models/collection';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {getCollectionSales} from '../../../../data/local-cache/get-sales';
-import {Account, CollectionSales} from '../../../../data/models/sales';
+import {CollectionSales} from '../../../../data/models/sales';
 import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
@@ -13,7 +13,6 @@ import {Icp16Icon} from '@toniq-labs/design-system';
 
 export const EntrepotSalePageElement = defineElement<{
     collections: Array<Collection>;
-    account: Account;
 }>()({
     tagName: 'toniq-entrepot-sale-page',
     styles: css`
@@ -46,7 +45,7 @@ export const EntrepotSalePageElement = defineElement<{
     },
     initCallback: ({inputs, updateState}) => {
         const saleCollections = inputs.collections.filter(collection => collection.sale);
-        getCollectionSales(saleCollections, inputs.account).then(collectionSales => {
+        getCollectionSales(saleCollections).then(collectionSales => {
             const upcoming = collectionSales
                 .filter(collectionSale => {
                     return moment(collectionSale.sales.startDate).isAfter(

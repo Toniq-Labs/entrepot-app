@@ -8,7 +8,6 @@ import {
     toniqFontStyles,
     toniqShadows,
     applyBackgroundAndForeground,
-    removeNativeFormStyles,
     defineToniqElement,
 } from '@toniq-labs/design-system';
 import {truncateNumber} from '@augment-vir/common';

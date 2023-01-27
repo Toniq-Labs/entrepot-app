@@ -47,6 +47,7 @@ import voltOffersIDL from './candid/volt-offers.did.js';
 import voltAuctionsIDL from './candid/volt-auctions.did.js';
 import voltIDL from './candid/volt.did.js';
 import licenseIDL from './candid/license.did.js';
+import launchIDL from './candid/launch.did.js';
 import {to32bitArray} from '../typescript/augments/bits';
 
 const constructUser = u => {
@@ -97,6 +98,7 @@ const _preloadedIdls = {
     volt: voltIDL,
     license: licenseIDL,
     default: extIDL,
+    launch: launchIDL,
 };
 
 var tokensToLoad = {
