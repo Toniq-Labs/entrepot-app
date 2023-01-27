@@ -54,7 +54,6 @@ export const EntrepotNftDisplayElement = defineToniqElement<
         updateState({
             imageTemplate: {
                 createPromise: async () => {
-                    await wait(2000);
                     return await getNftImageData(inputs);
                 },
                 trigger: {...inputs},

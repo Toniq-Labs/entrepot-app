@@ -25,6 +25,9 @@ export function NftCard(props) {
         flex-direction: column;
     `);
 
+    //      ?? {height: 456, width: 272}
+    //  ?? {height: 200, width: 272}
+
     return (
         <DropShadowCard
             onClick={props.onClick}
@@ -33,8 +36,8 @@ export function NftCard(props) {
             style={{...styles, ...props.style}}
         >
             <EntrepotNftDisplay
-                max={props.max ?? {height: 456, width: 272}}
-                min={props.min ?? {height: 200, width: 272}}
+                max={props.max}
+                min={props.min}
                 collectionId={props.collectionId}
                 nftIndex={props.nftIndex}
                 nftId={props.nftId}

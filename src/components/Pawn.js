@@ -114,7 +114,7 @@ export default function Pawn(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <TableRow>
+        <TableRow className="pawn-table-row">
             <TableCell align="left">
                 <Link
                     to={`/marketplace/asset/${props.event.tokenid}`}
@@ -128,19 +128,13 @@ export default function Pawn(props) {
                             paddingRight: 10,
                         }}
                     >
-                        <div style={{...styles.avatarSkeletonContainer}}>
-                            {EntrepotDisplayNFT(
-                                canister,
-                                props.event.tokenid,
-                                imgLoaded,
-                                <EntrepotNftDisplay
-                                    collectionId={canister}
-                                    nftIndex={index}
-                                    nftId={props.event.tokenid}
-                                />,
-                                () => setImgLoaded(true),
-                            )}
-                        </div>
+                        <EntrepotNftDisplay
+                            collectionId={canister}
+                            nftIndex={index}
+                            nftId={props.event.tokenid}
+                            max={{width: 40, height: 40}}
+                            min={{width: 40, height: 40}}
+                        />
                     </div>
                     <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
                         <strong>

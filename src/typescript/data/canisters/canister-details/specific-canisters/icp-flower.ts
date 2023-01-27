@@ -10,7 +10,6 @@ export const icpFlowerCanisterDetails: RawCanisterDetails = {
         const refQuery: string = ref == undefined ? '' : String(ref);
         const ampersand = ref == undefined ? '' : '&';
         const queryParams = `?${refQuery}${ampersand}cache=${priority}`;
-
         const imageUrl = `https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/${encodedTokenId}${queryParams}`;
 
         return {

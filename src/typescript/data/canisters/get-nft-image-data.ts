@@ -35,7 +35,7 @@ export async function getNftImageData({
         fullSize,
         nftId,
         nftIndex,
-        priority: Number(cachePriority),
+        priority: Number(cachePriority ?? 0),
         ref: Number(ref),
     });
 }
