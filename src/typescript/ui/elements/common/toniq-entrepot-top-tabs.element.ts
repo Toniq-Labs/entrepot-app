@@ -1,4 +1,4 @@
-import {defineElement, listen, defineElementEvent, html, css} from 'element-vir';
+import {listen, defineElementEvent, html, css} from 'element-vir';
 import {classMap} from 'lit/directives/class-map.js';
 import {
     toniqFontStyles,
@@ -22,6 +22,17 @@ export const EntrepotTopTabsElement = defineToniqElement<{
         :host {
             display: flex;
             ${toniqFontStyles.paragraphFont};
+            position: relative;
+        }
+
+        :host::after {
+            position: absolute;
+            content: '';
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            border-bottom: 1px solid ${toniqColors.divider.foregroundColor};
+            z-index: 0;
         }
 
         button {
@@ -57,8 +68,9 @@ export const EntrepotTopTabsElement = defineToniqElement<{
         ul {
             list-style: none;
             display: flex;
-            flex-wrap: wrap;
+            gap: 16px;
             flex-grow: 1;
+            overflow-x: scroll;
         }
 
         ${createFocusStyles({
@@ -67,8 +79,7 @@ export const EntrepotTopTabsElement = defineToniqElement<{
             outlineGap: 0,
         })}
 
-        ul,
-        li {
+        ul {
             margin: 0;
             padding: 0;
         }
@@ -76,13 +87,19 @@ export const EntrepotTopTabsElement = defineToniqElement<{
         li.selected {
             ${toniqFontStyles.boldParagraphFont};
             color: ${toniqColors.pageInteraction.foregroundColor};
-            border-bottom-color: ${toniqColors.pageInteraction.foregroundColor};
-            border-bottom-width: 1px;
+            border-bottom: 1px solid ${toniqColors.pageInteraction.foregroundColor};
             pointer-events: none;
+            z-index: 1;
         }
 
         li {
-            border-bottom: 1px solid ${toniqColors.divider.foregroundColor};
+            margin: 0;
+            padding: 6px 6px 10px;
+            white-space: nowrap;
+        }
+
+        li > button {
+            padding: 6px;
         }
 
         li:last-of-type {
