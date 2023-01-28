@@ -10,7 +10,9 @@ export enum TransactionDirection {
 
 export type UserTransaction = Transaction & {directionForCurrentUser: TransactionDirection};
 
-async function updateUserTransactions(userAddress: string): Promise<UserTransaction[]> {
+async function updateUserTransactions(
+    userAddress: string,
+): Promise<ReadonlyArray<UserTransaction>> {
     const cloudFunctionsUrl = createCloudFunctionsEndpointUrl([
         'user',
         userAddress,
@@ -42,9 +44,12 @@ async function updateUserTransactions(userAddress: string): Promise<UserTransact
         .filter(isTruthy);
 }
 
-export const userTransactions = defineAutomaticallyUpdatingCache({
+export const userTransactions = defineAutomaticallyUpdatingCache<
+    Awaited<ReturnType<typeof updateUserTransactions>>,
+    SubKeyRequirementEnum.Required,
+    string
+>({
     cacheName: 'user-transactions',
     valueUpdater: updateUserTransactions,
     subKeyRequirement: SubKeyRequirementEnum.Required,
-    enableLogging: true,
 });

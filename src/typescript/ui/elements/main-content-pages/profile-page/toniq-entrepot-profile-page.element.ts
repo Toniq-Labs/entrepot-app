@@ -13,7 +13,10 @@ import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header
 import {defineToniqElement} from '@toniq-labs/design-system';
 import {UserIdentity} from '../../../../data/models/user/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user/account';
-import {userTransactions} from '../../../../data/local-cache/caches/user-transactions';
+import {
+    UserTransaction,
+    userTransactions,
+} from '../../../../data/local-cache/caches/user-transactions';
 
 export const EntrepotProfilePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
@@ -40,17 +43,26 @@ export const EntrepotProfilePageElement = defineToniqElement<{
     stateInit: {
         showFilters: false,
         filters: defaultProfileFilters,
-        thing: asyncState<{}>(),
+        userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
         currentSort: ensureType<CurrentSort>({
             ascending: false,
             name: profileSortDefinitions[0].sortName,
         }),
     },
+    initCallback: ({inputs, updateState}) => {
+        userTransactions.subscribe(({subKey: updatedAddress, newValue}) => {
+            if (inputs.account && inputs.account.address === updatedAddress) {
+                updateState({
+                    userTransactions: {
+                        resolvedValue: newValue,
+                    },
+                });
+            }
+        });
+    },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        console.log({...inputs});
-
         updateState({
-            thing: {
+            userTransactions: {
                 createPromise: async () => {
                     if (inputs.account) {
                         const currentUserTransactions = await userTransactions.get(
@@ -58,12 +70,13 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                         );
 
                         console.log({currentUserTransactions});
+                        return currentUserTransactions;
+                    } else {
+                        return [];
                     }
-                    return {};
                 },
                 trigger: {
                     account: inputs.account,
-                    collections: inputs.collections.length,
                 },
             },
         });

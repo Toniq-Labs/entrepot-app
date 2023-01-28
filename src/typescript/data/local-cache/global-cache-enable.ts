@@ -6,7 +6,7 @@ const globalCacheOptions: LocalCacheOptions = {
     enableBrowserStorageCache: true,
     enableMemoryCache: true,
     enableAutomaticUpdating: true,
-    enableLogging: true,
+    enableLogging: false,
     minUpdateInterval: 10_000,
 } as const;
 
