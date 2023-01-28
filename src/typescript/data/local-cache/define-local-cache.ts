@@ -2,8 +2,11 @@ import {LocalCacheOptions} from './cache-options';
 import {} from 'element-vir';
 import {
     AnyFunction,
+    areJsonEqual,
+    assertRuntimeTypeOf,
     awaitedForEach,
     extractErrorMessage,
+    isRuntimeTypeOf,
     JsonCompatibleValue,
     Overwrite,
     UnPromise,
@@ -41,6 +44,22 @@ export type LocalCacheDefinitionSetup<
     valueUpdater: CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
 } & Partial<LocalCacheOptions>;
 
+type Listener<ValueGeneric extends JsonCompatibleValue> = (
+    newValue: UnPromise<ValueGeneric>,
+) => Promise<void> | void;
+
+type UnSubscribe = () => void;
+
+export type SubscribeToCache<
+    ValueGeneric extends JsonCompatibleValue,
+    SubKeyRequirementGeneric extends SubKeyRequirementEnum,
+    SubKeyGeneric extends string,
+> = SubKeyRequirementGeneric extends SubKeyRequirementEnum.Blocked
+    ? (listener: Listener<ValueGeneric>) => UnSubscribe
+    : SubKeyRequirementGeneric extends SubKeyRequirementEnum.Required
+    ? (subKey: SubKeyGeneric, listener: Listener<ValueGeneric>) => UnSubscribe
+    : (subKey: SubKeyGeneric | undefined, listener: Listener<ValueGeneric>) => UnSubscribe;
+
 export type LocalCacheDefinition<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
@@ -52,6 +71,7 @@ export type LocalCacheDefinition<
         SubKeyRequirementGeneric,
         SubKeyGeneric
     >;
+    subscribe: SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
 };
 
 const defaultSubKey = Symbol('default-sub-key');
@@ -104,11 +124,19 @@ export function defineAutomaticallyUpdatingCache<
             const keys = Array.from(inMemoryEntry.cachedKeys) as ReadonlyArray<
                 SubKeyGeneric | typeof defaultSubKey
             >;
+
             await awaitedForEach(keys, async key => {
-                if (key === defaultSubKey) {
-                    await updateValue(setup, undefined);
-                } else {
-                    await updateValue(setup, key);
+                const accessorKey = key === defaultSubKey ? undefined : key;
+                const lastValue = await getValue(
+                    {...setup, enableLogging: false},
+                    accessorKey,
+                    false,
+                );
+                const newValue = await updateValue(setup, accessorKey);
+                if (!lastValue || !areJsonEqual(lastValue, newValue)) {
+                    listeners.get(key)?.forEach(listener => {
+                        listener(newValue);
+                    });
                 }
             });
         }, setup.minUpdateInterval);
@@ -121,9 +149,11 @@ export function defineAutomaticallyUpdatingCache<
 
     setNextUpdate();
 
+    const listeners = new Map<SubKeyGeneric | typeof defaultSubKey, Set<AnyFunction>>();
+
     return {
         get: (async (subKey?: SubKeyGeneric | undefined) =>
-            getValue(setup, subKey)) as CacheAccessCallback<
+            getValue(setup, subKey, true)) as CacheAccessCallback<
             ValueGeneric,
             SubKeyRequirementGeneric,
             SubKeyGeneric
@@ -134,6 +164,41 @@ export function defineAutomaticallyUpdatingCache<
             SubKeyRequirementGeneric,
             SubKeyGeneric
         >,
+        subscribe: ((
+            maybeSubKey: SubKeyGeneric | Listener<ValueGeneric> | undefined,
+            maybeListener?: Listener<ValueGeneric> | undefined,
+        ) => {
+            let accessorKey: SubKeyGeneric | typeof defaultSubKey = defaultSubKey;
+            let listener: Listener<ValueGeneric>;
+
+            if (setup.subKeyRequirement === SubKeyRequirementEnum.Blocked) {
+                assertRuntimeTypeOf(maybeSubKey, 'string', 'subscribe subKey input');
+                accessorKey = maybeSubKey;
+                assertRuntimeTypeOf(maybeListener, 'function', 'subscribe listener input');
+                listener = maybeListener;
+            } else if (setup.subKeyRequirement === SubKeyRequirementEnum.Optional) {
+                if (isRuntimeTypeOf(maybeSubKey, 'string') && maybeSubKey) {
+                    accessorKey = maybeSubKey;
+                }
+                assertRuntimeTypeOf(maybeListener, 'function', 'subscribe listener input');
+                listener = maybeListener;
+            } else {
+                assertRuntimeTypeOf(maybeSubKey, 'function', 'subscribe listener input');
+                listener = maybeSubKey as Listener<ValueGeneric>;
+            }
+
+            if (!listeners.has(accessorKey)) {
+                listeners.set(accessorKey, new Set());
+            }
+
+            const subKeyListeners = listeners.get(accessorKey)!;
+
+            subKeyListeners.add(listener);
+
+            return () => {
+                subKeyListeners.delete(listener);
+            };
+        }) as SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
     };
 }
 
@@ -264,7 +329,26 @@ async function getValue<
 >(
     setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
     subKey: SubKeyGeneric | undefined,
-): Promise<UnPromise<ValueGeneric>> {
+    allowUpdate: true,
+): Promise<UnPromise<ValueGeneric>>;
+async function getValue<
+    ValueGeneric extends JsonCompatibleValue,
+    SubKeyRequirementGeneric extends SubKeyRequirementEnum,
+    SubKeyGeneric extends string,
+>(
+    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
+    subKey: SubKeyGeneric | undefined,
+    allowUpdate: false,
+): Promise<UnPromise<ValueGeneric> | undefined>;
+async function getValue<
+    ValueGeneric extends JsonCompatibleValue,
+    SubKeyRequirementGeneric extends SubKeyRequirementEnum,
+    SubKeyGeneric extends string,
+>(
+    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
+    subKey: SubKeyGeneric | undefined,
+    allowUpdate: boolean,
+): Promise<UnPromise<ValueGeneric> | undefined> {
     console.log('getting');
     const accessorKey = subKey ?? defaultSubKey;
 
@@ -302,5 +386,9 @@ async function getValue<
     }
 
     logIf(setup, `No cached value to get for '${setup.cacheName}:${subKey}'`);
-    return await updateValue(setup, subKey);
+    if (allowUpdate) {
+        return await updateValue(setup, subKey);
+    } else {
+        return undefined;
+    }
 }
