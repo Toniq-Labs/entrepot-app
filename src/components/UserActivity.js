@@ -33,6 +33,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
+import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-data-api';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -223,9 +224,11 @@ export default function UserActivity(props) {
     const refresh = async () => {
         if (!address) return;
         var data = await fetch(
-            'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                address +
-                '/transactions',
+            createCloudFunctionsEndpointUrl([
+                'user',
+                address,
+                'transactions',
+            ]),
         ).then(r => r.json());
         data = data.filter((a, i) => data.findIndex(b => b.id == a.id) == i);
         data = data.filter(e => e.token != '');

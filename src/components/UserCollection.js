@@ -34,6 +34,7 @@ import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wr
 import {
     createEntrepotApiWithIdentity,
     defaultEntrepotApi,
+    createCloudFunctionsEndpointUrl,
 } from '../typescript/api/entrepot-data-api';
 
 const perPage = 60;
@@ -253,43 +254,46 @@ export default function UserCollection(props) {
         }
         if (!address) return;
         var data = [];
+        const allUserDataEndpoint = createCloudFunctionsEndpointUrl([
+            'user',
+            address,
+            'all',
+        ]);
+
         // eslint-disable-next-line default-case
         switch (props.view) {
             case 'collected':
                 //TODO
-                var response = await axios(
-                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                        address +
-                        '/all',
-                );
+                var response = await axios(allUserDataEndpoint);
                 data = response.data;
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'new-request':
                 //if (whitelistedPawnCanisters === false) return;
-                var response = await axios(
-                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                        address +
-                        '/all',
-                );
+                var response = await axios(allUserDataEndpoint);
                 data = response.data;
                 data = data.filter(a => !a.price && earnCollections.indexOf(a.canister) >= 0);
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'earn-nfts':
                 var response = await axios(
-                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                        address +
-                        '/yigae-jqaaa-aaaah-qczbq-cai/all',
+                    createCloudFunctionsEndpointUrl([
+                        'user',
+                        address,
+                        'yigae-jqaaa-aaaah-qczbq-cai',
+                        'all',
+                    ]),
                 );
                 data = response.data;
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'selling':
                 var response = await axios(
-                    'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                        address +
-                        '/listed',
+                    createCloudFunctionsEndpointUrl([
+                        'user',
+                        address,
+                        'listed',
+                    ]),
                 );
                 data = response.data.filter(a => a.price > 0);
                 data = data.map(a => ({...a, token: a.id}));
@@ -326,11 +330,7 @@ export default function UserCollection(props) {
             case 'offers-received':
                 var r = await Promise.all(
                     [
-                        axios(
-                            'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                                address +
-                                '/all',
-                        ),
+                        axios(allUserDataEndpoint),
                         createEntrepotApiWithIdentity(props.identity)
                             .canister('fcwhh-piaaa-aaaak-qazba-cai')
                             .allOffers(),

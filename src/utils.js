@@ -1,9 +1,8 @@
 import React from 'react';
-import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
-import extjs from './ic/extjs.js';
 import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
+import {createCloudFunctionsEndpointUrl} from './typescript/api/entrepot-data-api';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
@@ -44,9 +43,7 @@ var _stats = [],
     earnData = {};
 const _getStats = async () => {
     var collections = (
-        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/collections').then(r =>
-            r.json(),
-        )
+        await fetch(createCloudFunctionsEndpointUrl(['collections'])).then(r => r.json())
     )
         .map(a => ({...a, canister: a.id}))
         .filter(a => _isCanister(a.canister));

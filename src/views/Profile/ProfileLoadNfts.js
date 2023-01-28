@@ -8,8 +8,8 @@ import {wait} from '@augment-vir/common';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
+    createCloudFunctionsEndpointUrl,
 } from '../../typescript/api/entrepot-data-api';
-import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {
@@ -80,9 +80,11 @@ async function getActivityNfts(address, collections) {
     const rawData = (
         await (
             await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' +
-                    address +
-                    '/transactions',
+                createCloudFunctionsEndpointUrl([
+                    'user',
+                    address,
+                    'transactions',
+                ]),
             )
         ).json()
     ).filter(nft => nft.token !== '');
@@ -186,7 +188,10 @@ async function getNftData(rawNft, collections, waitIndex, loadListing, address) 
     const rawListing = loadListing
         ? await (
               await fetch(
-                  'https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + rawNft.token,
+                  createCloudFunctionsEndpointUrl([
+                      'token',
+                      rawNft.token,
+                  ]),
               )
           ).json()
         : undefined;

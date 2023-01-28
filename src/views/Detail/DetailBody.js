@@ -15,6 +15,7 @@ import DetailSectionActivity from './Section/Activity';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
+    createCloudFunctionsEndpointUrl,
 } from '../../typescript/api/entrepot-data-api';
 import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
@@ -90,7 +91,12 @@ const DetailBody = props => {
     const activity = transactions[activityPage];
     const _refresh = async () => {
         reloadOffers();
-        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/token/' + tokenid)
+        await fetch(
+            createCloudFunctionsEndpointUrl([
+                'token',
+                tokenid,
+            ]),
+        )
             .then(r => r.json())
             .then(r => {
                 setListing({

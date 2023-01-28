@@ -1,7 +1,10 @@
 import axios from 'axios';
 import extjs from '../ic/extjs.js';
 import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {
+    defaultEntrepotApi,
+    createCloudFunctionsEndpointUrl,
+} from '../typescript/api/entrepot-data-api';
 
 export function getExtId(tokenid) {
     const {index, canister} = extjs.decodeTokenId(tokenid);
@@ -24,7 +27,11 @@ export async function loadAllUserTokens(address, principal) {
     var response = await Promise.all(
         [
             axios(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/user/' + address + '/all',
+                createCloudFunctionsEndpointUrl([
+                    'user',
+                    address,
+                    'all',
+                ]),
             ).then(r => r.data.map(a => ({...a, token: a.id}))),
         ]
             .concat(

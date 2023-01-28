@@ -10,6 +10,7 @@ import {useNavigate} from 'react-router-dom';
 import Features from '../components/Features';
 import ReactPlayer from 'react-player';
 import Carousel from 'react-material-ui-carousel';
+import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-data-api';
 const useStyles = makeStyles(theme => ({
     root: {
         maxWidth: 345,
@@ -53,7 +54,7 @@ export default function Home(props) {
         setItems,
     ] = React.useState([]);
     React.useEffect(() => {
-        fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/banners')
+        fetch(createCloudFunctionsEndpointUrl(['banners']))
             .then(r => r.json())
             .then(r => {
                 setItems(r);

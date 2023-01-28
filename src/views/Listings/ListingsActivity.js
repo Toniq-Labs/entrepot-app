@@ -26,6 +26,7 @@ import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -291,9 +292,11 @@ export default function ListingsActivity(props) {
 
         try {
             var result = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/canister/' +
-                    canister +
-                    '/transactions',
+                createCloudFunctionsEndpointUrl([
+                    'canister',
+                    canister,
+                    'transactions',
+                ]),
             ).then(r => r.json());
             var listings = result.map(listing => {
                 const {index, canister} = extjs.decodeTokenId(listing.token);

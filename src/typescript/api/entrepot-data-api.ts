@@ -29,3 +29,11 @@ export const defaultEntrepotApi = extjs.connect('https://ic0.app/') as EntrepotA
 export function createEntrepotApiWithIdentity(identity: string) {
     return extjs.connect('https://ic0.app/', identity);
 }
+
+export function createCloudFunctionsEndpointUrl(paths: ReadonlyArray<string>): string {
+    return [
+        'https://us-central1-entrepot-api.cloudfunctions.net',
+        'api',
+        ...paths,
+    ].join('/');
+}

@@ -1,15 +1,14 @@
 import {isCanisterId} from '../canisters/canister-id';
 import {Collection, BaseCollection, CollectionStats} from '../models/collection';
-import {defaultEntrepotApi} from '../../api/entrepot-data-api';
+import {defaultEntrepotApi, createCloudFunctionsEndpointUrl} from '../../api/entrepot-data-api';
 import {removeUnknownKeys} from './cache-cleanup';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {isProd} from '../../environment/environment-by-url';
 import {extractErrorMessage} from '@augment-vir/common';
 
-const cloudFunctionsApiEndpoint = `https://us-central1-entrepot-api.cloudfunctions.net/api`;
 const collectionsEndpoint = isProd
-    ? `${cloudFunctionsApiEndpoint}/collections`
-    : `${cloudFunctionsApiEndpoint}/collectionsDev`;
+    ? createCloudFunctionsEndpointUrl(['collections'])
+    : createCloudFunctionsEndpointUrl(['collectionsDev']);
 
 async function getBaseCollections() {
     return await getCachedWithUpdate({
