@@ -11,7 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
-} from '../../typescript/api/entrepot-data-api';
+} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

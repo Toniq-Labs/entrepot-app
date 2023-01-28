@@ -24,7 +24,7 @@ import {useNavigate} from 'react-router';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
-} from '../typescript/api/entrepot-data-api';
+} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 const perPage = 60;
 function useInterval(callback, delay) {

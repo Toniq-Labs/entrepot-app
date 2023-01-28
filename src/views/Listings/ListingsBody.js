@@ -20,7 +20,7 @@ import extjs from '../../ic/extjs';
 import {ListingsOtherControls} from './ListingsOtherControls';
 import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
 import ListingsActivity from './ListingsActivity';
-import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

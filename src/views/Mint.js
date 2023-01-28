@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import {clipboardCopy} from '../utils';
-import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 function generateThumbnail(file, boundBox) {
     return new Promise((resolve, reject) => {

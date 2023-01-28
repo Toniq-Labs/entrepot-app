@@ -6,7 +6,7 @@ import Timestamp from 'react-timestamp';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

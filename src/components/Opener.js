@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import Flip from './Flip';
 import extjs from '../ic/extjs.js';
 
-import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 var settings = {

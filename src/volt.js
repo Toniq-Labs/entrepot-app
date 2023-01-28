@@ -1,4 +1,4 @@
-import {createEntrepotApiWithIdentity} from './typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from './typescript/api/entrepot-apis/entrepot-data-api';
 
 var loadedVolts = {};
 //Will attempt to load volt for principal, returns either false if none, or the principal

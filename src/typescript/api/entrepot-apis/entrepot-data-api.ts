@@ -1,6 +1,6 @@
 // @ts-ignore: extjs has no types
-import extjs from '../../ic/extjs';
-import {CollectionStats} from '../data/models/collection';
+import extjs from '../../../ic/extjs';
+import {CollectionStats} from '../../data/models/collection';
 
 type EntrepotTokenApi = {
     call: EntrepotApi;

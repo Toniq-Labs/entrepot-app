@@ -12,7 +12,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

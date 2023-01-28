@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {Principal} from '@dfinity/principal';
-import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 export default function AuctionForm(props) {
     const [

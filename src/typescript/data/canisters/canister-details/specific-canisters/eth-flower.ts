@@ -1,6 +1,6 @@
 import {RawCanisterDetails} from '../canister-details';
 import {getCanisterDomain} from '../../../../api/ic-canister-domain';
-import {formEntrepotImagesUrl} from '../../../../api/entrepot-images-url';
+import {formEntrepotImagesUrl} from '../../../../api/entrepot-apis/entrepot-images-url';
 
 export const ethFlowerCanisterDetails: RawCanisterDetails = {
     collectionName: 'ETH Flower',

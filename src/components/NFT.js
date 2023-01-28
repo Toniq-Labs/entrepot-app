@@ -24,7 +24,7 @@ import {
     isWrappedType,
     getExtCanisterId,
 } from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 

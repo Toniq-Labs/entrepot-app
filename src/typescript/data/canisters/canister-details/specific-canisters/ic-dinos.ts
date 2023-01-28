@@ -1,4 +1,4 @@
-import {formEntrepotTncImagesUrl} from '../../../../api/entrepot-images-url';
+import {formEntrepotTncImagesUrl} from '../../../../api/entrepot-apis/entrepot-images-url';
 import {RawCanisterDetails} from '../canister-details';
 
 export const icDinosCanisterDetails: RawCanisterDetails = {

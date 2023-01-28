@@ -16,7 +16,7 @@ import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
     createCloudFunctionsEndpointUrl,
-} from '../../typescript/api/entrepot-data-api';
+} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 

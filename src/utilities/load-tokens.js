@@ -4,7 +4,7 @@ import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wr
 import {
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
-} from '../typescript/api/entrepot-data-api';
+} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 export function getExtId(tokenid) {
     const {index, canister} = extjs.decodeTokenId(tokenid);

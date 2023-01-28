@@ -1,4 +1,4 @@
-import {createQueryParamString} from '../augments/url';
+import {createQueryParamString} from '../../augments/url';
 
 export function formEntrepotImagesUrl({
     entrepotImagesCanisterId,

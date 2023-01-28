@@ -33,7 +33,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
-import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-data-api';
+import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 const perPage = 60;
 function useInterval(callback, delay) {

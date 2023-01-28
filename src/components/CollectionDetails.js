@@ -17,7 +17,7 @@ import {formatNumber} from '../utilities/number-utils.js';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
 import {CopyButton} from './shared/CopyButton';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

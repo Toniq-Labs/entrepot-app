@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import {makeStyles} from '@material-ui/core';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 const useStyles = makeStyles(theme => ({
     banner: {

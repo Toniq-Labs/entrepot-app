@@ -1,6 +1,9 @@
-import {isCanisterId} from '../canisters/canister-id';
+import {isCanisterId} from '../models/canister-id';
 import {Collection, BaseCollection, CollectionStats} from '../models/collection';
-import {defaultEntrepotApi, createCloudFunctionsEndpointUrl} from '../../api/entrepot-data-api';
+import {
+    defaultEntrepotApi,
+    createCloudFunctionsEndpointUrl,
+} from '../../api/entrepot-apis/entrepot-data-api';
 import {removeUnknownKeys} from './cache-cleanup';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {isProd} from '../../environment/environment-by-url';

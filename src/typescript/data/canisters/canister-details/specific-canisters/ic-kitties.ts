@@ -1,5 +1,5 @@
 import {RawCanisterDetails} from '../canister-details';
-import {formEntrepotTncImagesUrl} from '../../../../api/entrepot-images-url';
+import {formEntrepotTncImagesUrl} from '../../../../api/entrepot-apis/entrepot-images-url';
 import {html} from 'element-vir';
 import {getDefaultNftImageData} from '../default-canister-details';
 

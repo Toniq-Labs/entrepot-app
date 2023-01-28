@@ -32,7 +32,7 @@ import {
 import {icpToString} from './PriceICP';
 import {subscribe, unsubscribe} from '../events/events';
 import {loadVoltBalance} from '../volt';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

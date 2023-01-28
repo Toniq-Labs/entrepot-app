@@ -9,7 +9,7 @@ import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
     createCloudFunctionsEndpointUrl,
-} from '../../typescript/api/entrepot-data-api';
+} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {

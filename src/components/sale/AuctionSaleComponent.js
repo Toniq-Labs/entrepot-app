@@ -19,7 +19,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
-import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 const perPage = 60;
 const drawerWidth = 0; //300;

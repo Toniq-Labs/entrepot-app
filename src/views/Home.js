@@ -10,7 +10,7 @@ import {useNavigate} from 'react-router-dom';
 import Features from '../components/Features';
 import ReactPlayer from 'react-player';
 import Carousel from 'react-material-ui-carousel';
-import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-data-api';
+import {createCloudFunctionsEndpointUrl} from '../typescript/api/entrepot-apis/entrepot-data-api';
 const useStyles = makeStyles(theme => ({
     root: {
         maxWidth: 345,

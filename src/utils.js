@@ -2,11 +2,11 @@ import React from 'react';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
-import {createCloudFunctionsEndpointUrl} from './typescript/api/entrepot-data-api';
+import {createCloudFunctionsEndpointUrl} from './typescript/api/entrepot-apis/entrepot-data-api';
 import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
-} from './typescript/api/entrepot-data-api';
+} from './typescript/api/entrepot-apis/entrepot-data-api';
 
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;

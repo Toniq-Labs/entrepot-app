@@ -35,7 +35,7 @@ import {
     createEntrepotApiWithIdentity,
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
-} from '../typescript/api/entrepot-data-api';
+} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 const perPage = 60;
 

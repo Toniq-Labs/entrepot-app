@@ -8,7 +8,7 @@ import {
 } from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {icpToString} from '../PriceICP';
-import {defaultEntrepotApi} from '../../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 const useStyles = makeStyles(() => ({
     hoverCard: {

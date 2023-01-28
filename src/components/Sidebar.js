@@ -23,7 +23,7 @@ import SnackbarButton from '../components/SnackbarButton';
 import Blockie from '../components/Blockie';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
 

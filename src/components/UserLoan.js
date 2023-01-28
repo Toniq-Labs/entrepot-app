@@ -45,7 +45,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 
 import CloseIcon from '@material-ui/icons/Close';
-import {defaultEntrepotApi} from '../typescript/api/entrepot-data-api';
+import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 
 const perPage = 60;
 function useInterval(callback, delay) {

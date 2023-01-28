@@ -1,6 +1,6 @@
 import {getCanisterDomain} from '../../../api/ic-canister-domain';
 import {CanisterDetails, GetNftImageHtmlInputs, RawCanisterDetails} from './canister-details';
-import {formEntrepotImagesUrl} from '../../../api/entrepot-images-url';
+import {formEntrepotImagesUrl} from '../../../api/entrepot-apis/entrepot-images-url';
 
 export function createDefaultCanisterDetails(
     canisterId: string,
