@@ -5,7 +5,7 @@ import {icDripCanisterDetails} from './specific-canisters/ic-drip';
 import {icPunksCanisterDetails} from './specific-canisters/ic-punks';
 import {icatsCanisterDetails} from './specific-canisters/icats';
 import {icpBunnyCanisterDetails} from './specific-canisters/icp-bunny';
-import {createFullCanisterDetails} from './full-canister-details';
+import {createFullCanisterDetails} from './create-full-canister-details';
 import {btcFlowerCanisterDetails} from './specific-canisters/btc-flower';
 import {icpFlowerCanisterDetails} from './specific-canisters/icp-flower';
 import {ethFlowerCanisterDetails} from './specific-canisters/eth-flower';
@@ -58,3 +58,7 @@ const mappedCanisterDetails: Readonly<Record<string, CanisterDetails>> = Object.
 export function getCanisterDetails(canisterId: string): CanisterDetails {
     return mappedCanisterDetails[canisterId] ?? createDefaultCanisterDetails(canisterId);
 }
+
+export const allWrappedCanisters: ReadonlyArray<CanisterDetails> = Object.values(
+    mappedCanisterDetails,
+).filter(canisterDetails => canisterDetails.hasWrappedCanister);

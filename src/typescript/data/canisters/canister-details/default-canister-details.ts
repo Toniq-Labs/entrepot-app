@@ -10,6 +10,7 @@ export function createDefaultCanisterDetails(
         canisterId,
         collectionName: canisterId,
         extCanisterId: canisterId,
+        originalCanisterId: canisterId,
         hasWrappedCanister: false,
         getNftLinkUrl: ({nftId}) => {
             return `https://${canisterId}.raw.ic0.app/?tokenid=${nftId}`;

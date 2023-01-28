@@ -12,4 +12,4 @@ type StoicIdentity = SignIdentity & {
 // what's the shape of a plug identity?
 type PlugIdentity = StoicIdentity;
 
-export type Identity = StoicIdentity | PlugIdentity;
+export type UserIdentity = StoicIdentity | PlugIdentity;

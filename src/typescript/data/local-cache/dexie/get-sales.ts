@@ -1,8 +1,8 @@
-import {Collection} from '../models/collection';
+import {Collection} from '../../models/collection';
 import {BigNumber} from 'bignumber.js';
-import {convertToIcpNumber, isBigInt} from '../icp';
-import {CollectionSales, Sales, SalesData, SalesGroup} from '../models/sales';
-import {defaultEntrepotApi} from '../../api/entrepot-apis/entrepot-data-api';
+import {convertToIcpNumber, isBigInt} from '../../icp';
+import {CollectionSales, Sales, SalesData, SalesGroup} from '../../models/sales';
+import {defaultEntrepotApi} from '../../../api/entrepot-apis/entrepot-data-api';
 
 export async function getCollectionSales(
     collections: Array<Collection>,

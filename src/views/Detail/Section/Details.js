@@ -20,7 +20,7 @@ import {
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
-import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {getCanisterDetails} from '../../../typescript/data/canisters/canister-details/all-canister-details';
 
 function ListRow({items, classes, style}) {

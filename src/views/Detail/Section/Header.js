@@ -31,7 +31,7 @@ import {icpToString} from '../../../components/PriceICP';
 import {DropShadowCard} from '../../../shared/DropShadowCard';
 import {NftCard} from '../../../shared/NftCard';
 import PriceUSD from '../../../components/PriceUSD';
-import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {EntrepotNftDisplay} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 
 const DetailSectionHeader = props => {

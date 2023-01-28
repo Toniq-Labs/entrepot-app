@@ -30,7 +30,7 @@ import Avatar from '@material-ui/core/Avatar';
 import {makeStyles} from '@material-ui/core';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
-import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {getExtCanisterId} from '../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {
     createEntrepotApiWithIdentity,
     defaultEntrepotApi,

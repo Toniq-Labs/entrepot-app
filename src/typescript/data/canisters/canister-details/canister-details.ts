@@ -47,6 +47,7 @@ export type CanisterDetails = Required<
         {
             hasWrappedCanister: boolean;
             extCanisterId: string;
+            originalCanisterId: string;
             getNftLinkUrl: (
                 inputs: Pick<RawGetNftImageHtmlInputs, 'originalCanisterId' | 'nftId' | 'nftIndex'>,
             ) => string;

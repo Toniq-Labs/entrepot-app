@@ -5,9 +5,10 @@ import {Ed25519KeyIdentity} from '@dfinity/identity';
 import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
 import {EntrepotFooter} from './typescript/ui/elements/main-content-pages/main-footer/toniq-entrepot-main-footer.element';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
+import {EntrepotProfile} from './typescript/ui/elements/main-content-pages/profile-page/toniq-entrepot-profile-page.element';
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
-import {getAllCollectionsWithCaching} from './typescript/data/local-cache/get-collections';
+import {getAllCollectionsWithCaching} from './typescript/data/local-cache/dexie/get-collections';
 import {isProd} from './typescript/environment/environment-by-url';
 import {makeStyles} from '@material-ui/core/styles';
 import {MissingPage404} from './views/MissingPage404';
@@ -52,8 +53,8 @@ import {
 import {
     createEntrepotApiWithIdentity,
     defaultEntrepotApi,
-} from './typescript/api/entrepot-data-api';
-import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-ids';
+} from './typescript/api/entrepot-apis/entrepot-data-api';
+import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-id';
 import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
 
 const transactionFee = 10000;
@@ -836,12 +837,11 @@ export default function App() {
                 path=":tab"
                 exact
                 element={
-                    <Profile
+                    <EntrepotProfile
                         onSellClick={listNft}
                         onTransferClick={transferNft}
-                        loader={loader}
                         identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        account={accounts[currentAccount]}
                         collections={collections}
                     />
                 }
@@ -850,12 +850,11 @@ export default function App() {
                 path=""
                 exact
                 element={
-                    <Profile
+                    <EntrepotProfile
                         onSellClick={listNft}
                         onTransferClick={transferNft}
-                        loader={loader}
                         identity={identity}
-                        account={accounts.length > 0 ? accounts[currentAccount] : false}
+                        account={accounts[currentAccount]}
                         collections={collections}
                     />
                 }

@@ -1,7 +1,7 @@
 import {extractErrorMessage, PropertyValueType} from '@augment-vir/common';
 import Dexie, {Table} from 'dexie';
-import {BaseCollection, Collection} from '../models/collection';
-import {NriData} from '../models/nri-data';
+import {BaseCollection, Collection} from '../../models/collection';
+import {NriData} from '../../models/nri-data';
 import {deleteDatabase} from './delete-database';
 
 export type NriCacheItem = {

@@ -25,7 +25,7 @@ import chunk from 'lodash.chunk';
 import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
-import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-ids';
+import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 
 function useInterval(callback, delay) {

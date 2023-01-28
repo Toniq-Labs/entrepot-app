@@ -1,5 +1,5 @@
 import {wait} from '@augment-vir/common';
-import {NriData} from '../models/nri-data';
+import {NriData} from '../../models/nri-data';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {removeUnknownKeys} from './cache-cleanup';
 

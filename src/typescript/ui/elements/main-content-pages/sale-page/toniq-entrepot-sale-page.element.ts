@@ -3,7 +3,7 @@ import {assign, css, defineElement, defineElementEvent, html, listen} from 'elem
 import {Collection} from '../../../../data/models/collection';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
-import {getCollectionSales} from '../../../../data/local-cache/get-sales';
+import {getCollectionSales} from '../../../../data/local-cache/dexie/get-sales';
 import {CollectionSales} from '../../../../data/models/sales';
 import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';

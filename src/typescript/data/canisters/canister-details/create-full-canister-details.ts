@@ -73,6 +73,7 @@ export function createFullCanisterDetails(rawCanisterDetails: RawCanisterDetails
         ...rawCanisterDetails,
         hasWrappedCanister: isWrappedCanister,
         extCanisterId,
+        originalCanisterId,
         getNftLinkUrl: inputs => {
             return defaultFallbacks.getNftLinkUrl(inputs) ?? defaultFallbacks.getNftLinkUrl(inputs);
         },

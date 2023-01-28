@@ -12,7 +12,7 @@ import {ProfileHeader} from './ProfileHeader';
 import {ProfileBody} from './ProfileBody';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {startLoadingProfileNftsAndCollections} from './ProfileLoadNfts';
-import {getThrottledNriDataForCanisters} from '../../typescript/data/local-cache/get-nri';
+import {getThrottledNriDataForCanisters} from '../../typescript/data/local-cache/dexie/get-nri';
 import {ProfileTabs, ProfileViewType, AllFilter} from './ProfileTabs';
 import {resolvedOrUndefined} from '../../utilities/async';
 import {useParams, useNavigate, useSearchParams, createSearchParams} from 'react-router-dom';

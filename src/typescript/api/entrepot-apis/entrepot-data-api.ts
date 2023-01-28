@@ -2,7 +2,7 @@
 import extjs from '../../../ic/extjs';
 import {CollectionStats} from '../../data/models/collection';
 
-type EntrepotTokenApi = {
+export type EntrepotTokenApi = {
     call: EntrepotApi;
     fee(): Promise<number>;
     size(): Promise<number>;
@@ -11,8 +11,8 @@ type EntrepotTokenApi = {
     getTokens(aid: any, principal: any): Promise<any>;
     getBearer(): Promise<any>;
     getDetails(): Promise<any>;
-    getBalance(address: any, principal: any): Promise<any>;
-    getTransactions(address: any): Promise<any>;
+    getBalance(address: string, principal: any): Promise<any>;
+    getTransactions(address: string): Promise<{id: string}[]>;
 };
 
 type EntrepotApi = {
