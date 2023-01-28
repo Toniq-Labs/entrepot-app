@@ -450,7 +450,9 @@ export default function CollectionDetails(props) {
                                         </span>
                                         <ToniqChip
                                             className={`toniq-chip-secondary ${classes.stats}`}
-                                            style={cssToReactStyleObject(toniqFontStyles.boldFont)}
+                                            style={cssToReactStyleObject(
+                                                toniqFontStyles.boldParagraphFont,
+                                            )}
                                             icon={Icp16Icon}
                                             text={icpToString(
                                                 isNaN(stats.total) ? '0.00' : stats.total,
@@ -469,7 +471,9 @@ export default function CollectionDetails(props) {
                                         </span>
                                         <ToniqChip
                                             className={`toniq-chip-secondary ${classes.stats}`}
-                                            style={cssToReactStyleObject(toniqFontStyles.boldFont)}
+                                            style={cssToReactStyleObject(
+                                                toniqFontStyles.boldParagraphFont,
+                                            )}
                                             text={stats.listings}
                                         ></ToniqChip>
                                     </Grid>
@@ -483,7 +487,9 @@ export default function CollectionDetails(props) {
                                         </span>
                                         <ToniqChip
                                             className={`toniq-chip-secondary ${classes.stats}`}
-                                            style={cssToReactStyleObject(toniqFontStyles.boldFont)}
+                                            style={cssToReactStyleObject(
+                                                toniqFontStyles.boldParagraphFont,
+                                            )}
                                             icon={Icp16Icon}
                                             text={icpToString(
                                                 isNaN(stats.average) ? '0.00' : stats.average,
@@ -502,7 +508,9 @@ export default function CollectionDetails(props) {
                                         </span>
                                         <ToniqChip
                                             className={`toniq-chip-secondary ${classes.stats}`}
-                                            style={cssToReactStyleObject(toniqFontStyles.boldFont)}
+                                            style={cssToReactStyleObject(
+                                                toniqFontStyles.boldParagraphFont,
+                                            )}
                                             text={size}
                                         ></ToniqChip>
                                     </Grid>
@@ -523,7 +531,7 @@ export default function CollectionDetails(props) {
                                             <ToniqChip
                                                 className={`toniq-chip-secondary ${classes.stats}`}
                                                 style={cssToReactStyleObject(
-                                                    toniqFontStyles.boldFont,
+                                                    toniqFontStyles.boldParagraphFont,
                                                 )}
                                                 text={`${formatNumber(
                                                     (collection.commission - 0.01) * 100,
