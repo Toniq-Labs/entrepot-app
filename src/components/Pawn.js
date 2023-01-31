@@ -7,11 +7,11 @@ import Button from '@material-ui/core/Button';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {Link} from 'react-router-dom';
-import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../utils.js';
+import {EntrepotGetIcpUsd} from '../utils.js';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
-import {encodeNftId} from '../typescript/augments/nft/nft-id';
+import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -40,7 +40,7 @@ export default function Pawn(props) {
         imgLoaded,
         setImgLoaded,
     ] = React.useState(false);
-    let {canister, index} = extjs.decodeTokenId(props.event.tokenid);
+    let {canister, index} = decodeNftId(props.event.tokenid);
     const styles = {
         avatarSkeletonContainer: {
             height: 0,
@@ -140,7 +140,11 @@ export default function Pawn(props) {
                     <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
                         <strong>
                             {getCollection(canister).name}{' '}
-                            {'#' + EntrepotNFTMintNumber(canister, index)}
+                            {'#' +
+                                getNftMintNumber({
+                                    collectionId: canister,
+                                    nftIndex: index,
+                                })}
                         </strong>
                         {props.event.floor ? (
                             <>

@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core';
-import extjs from '../../ic/extjs.js';
 import getNri from '../../ic/nftv.js';
 import orderBy from 'lodash.orderby';
 import {useNavigate} from 'react-router';
-import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../../utils';
+import {EntrepotGetIcpUsd} from '../../utils';
 import {
     ToniqDropdown,
     ToniqMiddleEllipsis,
@@ -27,6 +26,8 @@ import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {decodeNftId} from '../../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -299,9 +300,12 @@ export default function ListingsActivity(props) {
                 ]),
             ).then(r => r.json());
             var listings = result.map(listing => {
-                const {index, canister} = extjs.decodeTokenId(listing.token);
+                const {index, canister} = decodeNftId(listing.token);
                 const rarity = Number((getNri(canister, index) * 100).toFixed(1));
-                const mintNumber = EntrepotNFTMintNumber(canister, index);
+                const mintNumber = getNftMintNumber({
+                    collectionId: canister,
+                    nftIndex: index,
+                });
 
                 return {
                     ...listing,

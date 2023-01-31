@@ -396,7 +396,11 @@ async function getValue<
     const accessorKey = generatedKey || defaultSubKey;
 
     if (setup.enableCacheMemory) {
-        if ('cachedData' in memoryEntry && memoryEntry.cachedData) {
+        if (
+            'cachedData' in memoryEntry &&
+            memoryEntry.cachedData &&
+            accessorKey in memoryEntry.cachedData
+        ) {
             logIf(setup, `Accessing in-memory cache for '${setup.cacheName}:${generatedKey}'`);
             return memoryEntry.cachedData[accessorKey];
         }

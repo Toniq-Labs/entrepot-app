@@ -17,7 +17,6 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {getExtId} from '../../utilities/load-tokens';
 import {Link} from 'react-router-dom';
 import {NftCard} from '../../shared/NftCard';
 
@@ -33,6 +32,7 @@ import {StateContainer} from '../../components/shared/StateContainer';
 import {camelCaseToTitleCase} from '../../utilities/string-utils';
 import {truncateNumber} from '@augment-vir/common';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-id';
+import {getExtNftId} from '../../typescript/data/nft/nft-id';
 
 const useStyles = makeStyles(theme => ({
     nftCard: {
@@ -546,7 +546,9 @@ export function ListingsNftCard(props) {
                                         }
                                     >
                                         <Link
-                                            to={`/marketplace/asset/` + getExtId(listing.tokenid)}
+                                            to={
+                                                `/marketplace/asset/` + getExtNftId(listing.tokenid)
+                                            }
                                             style={{textDecoration: 'none'}}
                                             rel="noopener noreferrer"
                                             onClick={() => {

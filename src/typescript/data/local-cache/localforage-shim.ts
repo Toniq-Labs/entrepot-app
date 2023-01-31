@@ -3,3 +3,11 @@ import type LocalForageType from 'localforage';
 import localForageImport from 'localforage/src/localforage.js';
 
 export const localForage: typeof LocalForageType = localForageImport;
+
+async function clearLocalForage() {
+    await localForage.clear();
+    globalThis.location.reload();
+}
+
+// use this for debugging
+(globalThis as any).clearLocalForage = clearLocalForage;

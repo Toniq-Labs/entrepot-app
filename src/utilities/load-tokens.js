@@ -5,12 +5,7 @@ import {
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
-import {encodeNftId} from '../typescript/augments/nft/nft-id';
-
-export function getExtId(tokenid) {
-    const {index, canister} = extjs.decodeTokenId(tokenid);
-    return encodeNftId(getExtCanisterId(canister), index);
-}
+import {encodeNftId} from '../typescript/data/nft/nft-id';
 
 export async function loadAllUserTokens(address, principal) {
     var response = await Promise.all(

@@ -2,8 +2,7 @@
 import React, {useState} from 'react';
 import {makeStyles, Container} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
-import extjs from '../../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotCollectionStats} from '../../utils';
+import {EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import chunk from 'lodash.chunk';
 import getGenes from '../../components/CronicStats';
@@ -19,6 +18,8 @@ import {
 } from '../../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -110,7 +111,7 @@ const DetailBody = props => {
                 }
             });
 
-        let {index} = extjs.decodeTokenId(tokenid);
+        let {index} = decodeNftId(tokenid);
         await getAttributes(index);
     };
 
@@ -167,7 +168,7 @@ const DetailBody = props => {
     };
 
     const displayImage = tokenid => {
-        let {index, canister} = extjs.decodeTokenId(tokenid);
+        let {index, canister} = decodeNftId(tokenid);
         let detailPage;
 
         if (collection.hasOwnProperty('detailpage')) {
@@ -275,25 +276,26 @@ const DetailBody = props => {
 
         let traits;
         if (traitsData) {
-            traits = traitsData[1][EntrepotNFTMintNumber(collection.canister, index) - 1][1].map(
-                trait => {
-                    const traitCategory = trait[0];
-                    const traitValue = trait[1];
+            traits = traitsData[1][
+                getNftMintNumber({
+                    collectionId: collection.canister,
+                    nftIndex: index,
+                }) - 1
+            ][1].map(trait => {
+                const traitCategory = trait[0];
+                const traitValue = trait[1];
 
-                    return {
-                        category: uppercaseFirstLetterOfWord(
-                            traitsCategories[traitCategory].category,
-                        ),
-                        value: uppercaseFirstLetterOfWord(
-                            typeof traitsCategories[traitCategory].values[traitValue] === 'string'
-                                ? traitsCategories[traitCategory].values[traitValue]
-                                : Boolean(
-                                      traitsCategories[traitCategory].values[traitValue],
-                                  ).toString(),
-                        ),
-                    };
-                },
-            );
+                return {
+                    category: uppercaseFirstLetterOfWord(traitsCategories[traitCategory].category),
+                    value: uppercaseFirstLetterOfWord(
+                        typeof traitsCategories[traitCategory].values[traitValue] === 'string'
+                            ? traitsCategories[traitCategory].values[traitValue]
+                            : Boolean(
+                                  traitsCategories[traitCategory].values[traitValue],
+                              ).toString(),
+                    ),
+                };
+            });
             setAttributes(traits);
         } else if (!traitsData && collection?.route === 'cronics') {
             var result = await defaultEntrepotApi.token(canister).listings();

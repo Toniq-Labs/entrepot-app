@@ -20,7 +20,7 @@ import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
-import {encodeNftId} from '../../typescript/augments/nft/nft-id';
+import {encodeNftId, decodeNftId} from '../../typescript/data/nft/nft-id';
 
 const perPage = 60;
 const drawerWidth = 0; //300;
@@ -413,7 +413,7 @@ export default function Listings(props) {
             if (_showing == 'auction') {
                 var auctionsAPI = defaultEntrepotApi.canister('ffxbt-cqaaa-aaaak-qazbq-cai');
                 auctions = (await auctionsAPI.allAuctions())
-                    .map(a => extjs.decodeTokenId(a))
+                    .map(a => decodeNftId(a))
                     .filter(a => a.canister == collection.canister)
                     .map(a => a.index);
             }

@@ -7,9 +7,10 @@ import MuiTooltip from '@material-ui/core/Tooltip';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
-import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../utils.js';
+import {EntrepotGetIcpUsd} from '../utils.js';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
 export default function Sold(props) {
     const [
@@ -18,7 +19,7 @@ export default function Sold(props) {
     ] = React.useState(false);
     const navigate = useNavigate();
     const transaction = props.transaction;
-    const index = extjs.decodeTokenId(transaction.token).index;
+    const index = decodeNftId(transaction.token).index;
     const tokenid = transaction.token;
 
     const getCollection = c => {
@@ -51,9 +52,6 @@ export default function Sold(props) {
         },
     };
 
-    const mintNumber = () => {
-        return EntrepotNFTMintNumber(props.collection, index);
-    };
     const shorten = a => {
         return a.substring(0, 12) + '...';
     };
@@ -109,7 +107,12 @@ export default function Sold(props) {
                         />
                     </div>
                     <strong>
-                        {getCollection(props.collection).name} {'#' + mintNumber()}
+                        {getCollection(props.collection).name}{' '}
+                        {'#' +
+                            getNftMintNumber({
+                                collectionId: props.collection,
+                                nftIndex: index,
+                            })}
                     </strong>
                 </Link>
             </TableCell>

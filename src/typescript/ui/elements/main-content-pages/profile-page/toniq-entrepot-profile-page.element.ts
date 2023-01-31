@@ -1,6 +1,15 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {ensureType} from '@augment-vir/common';
-import {assign, asyncState, css, defineElementEvent, html, listen} from 'element-vir';
+import {
+    ArrayElement,
+    ensureType,
+    filterObject,
+    isRuntimeTypeOf,
+    isTruthy,
+    mapObjectValues,
+    wait,
+    wrapNarrowTypeWithTypeCheck,
+} from '@augment-vir/common';
+import {assign, AsyncState, asyncState, css, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {
     EntrepotWithFiltersElement,
@@ -18,9 +27,42 @@ import {
     userTransactionsCache,
 } from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
 import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
-import {UserNft} from '../../../../data/models/user-data/user-nft';
+import {UserNft} from '../../../../data/nft/user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {userMadeOffersCache} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
+import {NftExtraData} from '../../../../data/nft/nft-extra-data';
+import {
+    nftExtraDataCache,
+    NftExtraDataCacheInputs,
+} from '../../../../data/local-cache/caches/nft-extra-data-cache';
+
+function getAllNftsThatNeedData(
+    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
+): Record<string, NftExtraDataCacheInputs['userNft']> {
+    const nftsThatNeedIds: Record<string, NftExtraDataCacheInputs['userNft']> = {};
+
+    asyncStates.forEach(possibleArray => {
+        if (isRuntimeTypeOf(possibleArray, 'array')) {
+            possibleArray.forEach(entry => {
+                nftsThatNeedIds[entry.nftId] = entry;
+            });
+        }
+    });
+
+    return nftsThatNeedIds;
+}
+
+function makeNftExtraDataLoadTrigger(
+    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
+) {
+    return asyncStates.map(asyncState => {
+        if (isRuntimeTypeOf(asyncState, 'array')) {
+            return asyncState;
+        } else {
+            return [];
+        }
+    });
+}
 
 export const EntrepotProfilePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
@@ -50,7 +92,8 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
         userNfts: asyncState<ReadonlyArray<UserNft>>(),
         userFavorites: asyncState<ReadonlyArray<UserNft>>(),
-        userOffersMade: asyncState<ReadonlyArray<unknown>>(),
+        userOffersMade: asyncState<ReadonlyArray<UserNft>>(),
+        nftExtraData: asyncState<Readonly<Record<string, NftExtraData>>>(),
         currentSort: ensureType<CurrentSort>({
             ascending: false,
             name: profileSortDefinitions[0].sortName,
@@ -87,6 +130,15 @@ export const EntrepotProfilePageElement = defineToniqElement<{
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         console.log({...state});
+
+        const asyncUserNftArrays: ReadonlyArray<
+            AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>
+        > = [
+            state.userFavorites,
+            state.userNfts,
+            state.userOffersMade,
+            state.userTransactions,
+        ];
 
         updateState({
             userTransactions: {
@@ -138,6 +190,30 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     account: inputs.userAccount?.address,
                     identity: inputs.userIdentity?.getPrincipal().toText(),
                 },
+            },
+            nftExtraData: {
+                createPromise: async () => {
+                    const nftsThatNeedData = getAllNftsThatNeedData(asyncUserNftArrays);
+                    let waitIndex = 1;
+                    const nftExtraDataPromises = await mapObjectValues(
+                        nftsThatNeedData,
+                        async (nftId, userNft) => {
+                            const extraData = await nftExtraDataCache.get({
+                                userNft,
+                                waitIndex: waitIndex++,
+                            });
+
+                            if (!extraData) {
+                                console.log(`why is this undefined ${nftId}`);
+                            }
+
+                            return extraData;
+                        },
+                    );
+
+                    return nftExtraDataPromises;
+                },
+                trigger: makeNftExtraDataLoadTrigger(asyncUserNftArrays),
             },
         });
 

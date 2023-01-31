@@ -1,9 +1,9 @@
 import {Principal} from '@dfinity/principal';
-import {toHexString} from '../string';
-import {from32bits, to32bitArray} from '../bits';
-import {getExtCanisterId} from '../../data/canisters/canister-details/wrapped-canister-id';
-import {UserNft} from '../../data/models/user-data/user-nft';
-import {EntrepotUserAccount} from '../../data/models/user-data/account';
+import {toHexString} from '../../augments/string';
+import {from32bits, to32bitArray} from '../../augments/bits';
+import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-id';
+import {UserNft, parseRawUserNft} from './user-nft';
+import {EntrepotUserAccount} from '../models/user-data/account';
 
 export function decodeNftId(nftId: string) {
     var p: any = [...Principal.fromText(nftId).toUint8Array()];
@@ -40,14 +40,15 @@ export function nftIdToNft({
     userAccount: EntrepotUserAccount;
     nftId: string;
 }): UserNft {
-    const canister = decodeNftId(nftId).canister;
-    return {
-        collectionId: getExtCanisterId(canister),
-        nftId,
-        listPrice: 0,
+    const decodedNft = decodeNftId(nftId);
+
+    return parseRawUserNft({
+        canister: decodedNft.canister,
+        id: nftId,
+        owner: userAccount.address,
+        price: 0,
         time: 0,
-        ownerAddress: userAccount.address,
-    };
+    });
 }
 
 export function nftIdsToNfts({
@@ -58,4 +59,9 @@ export function nftIdsToNfts({
     nftIds: ReadonlyArray<string>;
 }): UserNft[] {
     return nftIds.map(nftId => nftIdToNft({userAccount, nftId}));
+}
+
+export function getExtNftId(nftId: string) {
+    const {index, canister} = decodeNftId(nftId);
+    return encodeNftId(getExtCanisterId(canister), index);
 }

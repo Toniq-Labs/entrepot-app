@@ -25,7 +25,7 @@ import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
-import {encodeNftId} from '../typescript/augments/nft/nft-id';
+import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -1246,7 +1246,7 @@ export default function Listings(props) {
                                                                     <SoldListing
                                                                         gri={getNri(
                                                                             collection?.canister,
-                                                                            extjs.decodeTokenId(
+                                                                            decodeNftId(
                                                                                 transaction.token,
                                                                             ).index,
                                                                         )}
@@ -1320,18 +1320,16 @@ export default function Listings(props) {
                                                                         Number(
                                                                             getNri(
                                                                                 collection?.canister,
-                                                                                extjs.decodeTokenId(
-                                                                                    b.token,
-                                                                                ).index,
+                                                                                decodeNftId(b.token)
+                                                                                    .index,
                                                                             ),
                                                                         ) *
                                                                             100 -
                                                                         Number(
                                                                             getNri(
                                                                                 collection?.canister,
-                                                                                extjs.decodeTokenId(
-                                                                                    a.token,
-                                                                                ).index,
+                                                                                decodeNftId(a.token)
+                                                                                    .index,
                                                                             ),
                                                                         ) *
                                                                             100
@@ -1342,10 +1340,8 @@ export default function Listings(props) {
                                                                     return 1;
                                                                 case 'mint_number':
                                                                     return (
-                                                                        extjs.decodeTokenId(a.token)
-                                                                            .index -
-                                                                        extjs.decodeTokenId(b.token)
-                                                                            .index
+                                                                        decodeNftId(a.token).index -
+                                                                        decodeNftId(b.token).index
                                                                     );
                                                                 default:
                                                                     return 0;
@@ -1361,7 +1357,7 @@ export default function Listings(props) {
                                                                 <Sold
                                                                     gri={getNri(
                                                                         collection?.canister,
-                                                                        extjs.decodeTokenId(
+                                                                        decodeNftId(
                                                                             transaction.token,
                                                                         ).index,
                                                                     )}

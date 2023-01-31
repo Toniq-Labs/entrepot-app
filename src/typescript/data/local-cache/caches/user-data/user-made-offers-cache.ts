@@ -2,8 +2,8 @@ import {createEntrepotApiWithIdentity} from '../../../../api/entrepot-apis/entre
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {UserNft} from '../../../models/user-data/user-nft';
-import {nftIdsToNfts} from '../../../../augments/nft/nft-id';
+import {UserNft} from '../../../nft/user-nft';
+import {nftIdsToNfts} from '../../../nft/nft-id';
 
 export type UserOffersInputs = {
     userAccount: EntrepotUserAccount;

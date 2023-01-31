@@ -1,6 +1,5 @@
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
-import {getExtId} from '../utilities/load-tokens';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -12,13 +11,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Timestamp from 'react-timestamp';
-import extjs from '../ic/extjs.js';
 import {Link} from 'react-router-dom';
 import Favourite from './Favourite';
 import PriceICP from './PriceICP';
 import getNri from '../ic/nftv.js';
 import {makeStyles} from '@material-ui/core';
-import {EntrepotEarnDetails, EntrepotNFTMintNumber} from '../utils';
+import {EntrepotEarnDetails} from '../utils';
 import {
     CanisterWrappedType,
     isWrappedType,
@@ -27,6 +25,8 @@ import {
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {getExtNftId, decodeNftId} from '../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 export default function NFT(props) {
     const classes = useStyles();
     const tokenid = props.tokenid;
-    const {index, canister} = extjs.decodeTokenId(tokenid);
+    const {index, canister} = decodeNftId(tokenid);
     const nri = getNri(canister, index);
     const [
         metadata,
@@ -142,14 +142,14 @@ export default function NFT(props) {
     const getAuction = async () => {
         var resp = await defaultEntrepotApi
             .canister('ffxbt-cqaaa-aaaak-qazbq-cai')
-            .auction(getExtId(tokenid));
+            .auction(getExtNftId(tokenid));
         if (resp.length) setAuction(resp[0]);
         else setAuction(false);
     };
     const getOffer = async () => {
         await defaultEntrepotApi
             .canister('fcwhh-piaaa-aaaak-qazba-cai')
-            .offers(getExtId(tokenid))
+            .offers(getExtNftId(tokenid))
             .then(r => {
                 setOfferCount(r.length);
                 setOffer(r.sort((a, b) => Number(b.amount) - Number(a.amount))[0]);
@@ -391,7 +391,10 @@ export default function NFT(props) {
         return buttons;
     };
     const mintNumber = () => {
-        return EntrepotNFTMintNumber(canister, index);
+        return getNftMintNumber({
+            collectionId: canister,
+            nftIndex: index,
+        });
     };
     const collection = getCollection(canister);
     const showWrapped = () => {
@@ -469,7 +472,7 @@ export default function NFT(props) {
             >
                 <Link
                     style={{textDecoration: 'none', color: 'inherit'}}
-                    to={`/marketplace/asset/` + getExtId(tokenid)}
+                    to={`/marketplace/asset/` + getExtNftId(tokenid)}
                 >
                     <EntrepotNftDisplay
                         collection={getExtCanisterId(canister)}

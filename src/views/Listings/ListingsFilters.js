@@ -13,7 +13,7 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {Accordion} from '../../components/Accordion';
 import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';
-import {EntrepotNFTMintNumber} from '../../utils';
+import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
 const useStyles = makeStyles(theme => ({
     traitsWrapper: {
@@ -184,7 +184,12 @@ export function ListingsFilters(props) {
     }, -Infinity);
 
     const lowestMint = filteredStatusListings.reduce((lowest, listing) => {
-        const currentValue = EntrepotNFTMintNumber(listing?.canister, listing?.index);
+        const currentValue = listing
+            ? getNftMintNumber({
+                  collectionId: listing.canister,
+                  nftIndex: listing.index,
+              })
+            : undefined;
         if (currentValue < lowest) {
             return currentValue;
         } else {
@@ -193,7 +198,12 @@ export function ListingsFilters(props) {
     }, Infinity);
 
     const highestMint = filteredStatusListings.reduce((highest, listing) => {
-        const currentValue = EntrepotNFTMintNumber(listing?.canister, listing?.index);
+        const currentValue = listing
+            ? getNftMintNumber({
+                  collectionId: listing.canister,
+                  nftIndex: listing.index,
+              })
+            : undefined;
         if (currentValue > highest) {
             return currentValue;
         } else {

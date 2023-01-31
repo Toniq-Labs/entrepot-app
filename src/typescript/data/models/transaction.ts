@@ -5,9 +5,9 @@ export type Transaction = {
     collectionId: CanisterId;
     sellerAddress: string;
     timestampNanosecond: number;
-    tokenId: string;
+    nftId: string;
     transactionId: string;
-    transactionPrice: number;
+    listPrice: number;
 };
 
 export type RawTransaction = {
@@ -30,8 +30,8 @@ export function parseRawTransaction(raw: RawTransaction): Transaction | undefine
         collectionId: raw.canister,
         sellerAddress: raw.seller,
         timestampNanosecond: raw.time,
-        tokenId: raw.token,
+        nftId: raw.token,
         transactionId: raw.id,
-        transactionPrice: raw.price,
+        listPrice: raw.price,
     };
 }

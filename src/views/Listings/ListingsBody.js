@@ -13,15 +13,14 @@ import {cronicFilterTraits} from '../../model/constants.js';
 import {ListingsTabs} from './ListingsTabs.js';
 import {ListingsFilters} from './ListingsFilters.js';
 import {ListingsNftCard} from './ListingsNftCard.js';
-import {EntrepotNFTMintNumber} from '../../utils.js';
 import {isInRange} from '../../utilities/number-utils.js';
 import getGenes from '../../components/CronicStats.js';
-import extjs from '../../ic/extjs';
 import {ListingsOtherControls} from './ListingsOtherControls';
 import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
 import ListingsActivity from './ListingsActivity';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
-import {encodeNftId} from '../../typescript/augments/nft/nft-id';
+import {encodeNftId, decodeNftId} from '../../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -430,12 +429,15 @@ export function ListingsBody(props) {
 
             var listings = result.map((listing, listingIndex) => {
                 const tokenid = encodeNftId(collection?.canister, listing[0]);
-                const {index, canister} = extjs.decodeTokenId(tokenid);
+                const {index, canister} = decodeNftId(tokenid);
                 const rarity =
                     typeof getNri(canister, index) === 'number'
                         ? Number((getNri(canister, index) * 100).toFixed(1))
                         : false;
-                const mintNumber = EntrepotNFTMintNumber(canister, index);
+                const mintNumber = getNftMintNumber({
+                    collectionId: canister,
+                    nftIndex: index,
+                });
                 // eslint-disable-next-line no-undef
                 const price = listing[1].price ? BigInt(listing[1].price) : listing[1].price;
                 let traits;

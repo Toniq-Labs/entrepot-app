@@ -57,7 +57,7 @@ import {
 } from './typescript/api/entrepot-apis/entrepot-data-api';
 import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-id';
 import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
-import {encodeNftId} from './typescript/augments/nft/nft-id';
+import {encodeNftId, decodeNftId} from './typescript/data/nft/nft-id';
 
 const transactionFee = 10000;
 const transactionMin = 100000;
@@ -276,7 +276,7 @@ export default function App() {
 
     const _buyForm = (tokenid, price) => {
         return new Promise(async (resolve, reject) => {
-            let {index, canister} = extjs.decodeTokenId(tokenid);
+            let {index, canister} = decodeNftId(tokenid);
             setBuyFormData({
                 index: index,
                 canister: canister,
@@ -732,7 +732,7 @@ export default function App() {
 
     const unwrapNft = async (token, loader, refresh) => {
         loader(true, 'Unwrapping NFT...');
-        var canister = extjs.decodeTokenId(token.id).canister;
+        var canister = decodeNftId(token.id).canister;
         var r = await createEntrepotApiWithIdentity(identity)
             .canister(canister)
             .unwrap(token.id, [extjs.toSubAccount(currentAccount ?? 0)]);
@@ -751,7 +751,7 @@ export default function App() {
             'You are trying to list a non-compatible NFT for sale. We need to securely wrap this NFT first. Would you like to proceed?',
         );
         if (v) {
-            var decoded = extjs.decodeTokenId(token.id);
+            var decoded = decodeNftId(token.id);
             var canister = getExtCanisterId([decoded.canister]);
             if (loader) loader(true, 'Creating wrapper...this may take a few minutes');
             try {

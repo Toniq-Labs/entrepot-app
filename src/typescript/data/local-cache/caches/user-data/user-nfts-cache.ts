@@ -2,7 +2,7 @@ import {createCloudFunctionsEndpointUrl} from '../../../../api/entrepot-apis/ent
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {RawUserNft, parseRawUserNft, UserNft} from '../../../models/user-data/user-nft';
+import {RawUserNft, parseRawUserNft, UserNft} from '../../../nft/user-nft';
 
 export type UserNftsInput = {
     userAccount: EntrepotUserAccount;

@@ -4,10 +4,10 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber} from '../utils.js';
 import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
@@ -19,7 +19,7 @@ export default function SoldListing(props) {
         setImgLoaded,
     ] = React.useState(false);
     const transaction = props.transaction;
-    const index = extjs.decodeTokenId(transaction.token).index;
+    const index = decodeNftId(transaction.token).index;
     const tokenid = transaction.token;
     const styles = {
         avatarSkeletonContainer: {
@@ -56,7 +56,12 @@ export default function SoldListing(props) {
     ] = useState('');
 
     useEffect(() => {
-        setMintNumber(EntrepotNFTMintNumber(props.collection, index));
+        setMintNumber(
+            getNftMintNumber({
+                collectionId: props.collection,
+                nftIndex: index,
+            }),
+        );
         setNftLinkUrl(
             getCanisterDetails(props.collection).getNftLinkUrl({nftIndex: index, nftId: id}),
         );

@@ -9,6 +9,7 @@ import extjs from '../ic/extjs.js';
 
 import {createEntrepotApiWithIdentity} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 var settings = {
     '6wih6-siaaa-aaaah-qczva-cai': {
@@ -29,7 +30,7 @@ var settings = {
 };
 var subs = [];
 export default function Opener(props) {
-    const {index} = props.nft?.id ? extjs.decodeTokenId(props.nft.id) : {index: 0, canister: ''};
+    const {index} = props.nft?.id ? decodeNftId(props.nft.id) : {index: 0, canister: ''};
     const [
         playOpen,
         setPlayOpen,

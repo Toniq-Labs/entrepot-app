@@ -1,15 +1,10 @@
 /* global BigInt */
-import extjs from '../../ic/extjs.js';
-import {getExtId} from '../../utilities/load-tokens';
-import {EntrepotNFTMintNumber} from '../../utils';
 import {createNftFilterStats} from './ProfileNftStats';
 import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
 import {wait} from '@augment-vir/common';
-import {
-    defaultEntrepotApi,
-    createEntrepotApiWithIdentity,
-    createCloudFunctionsEndpointUrl,
-} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {decodeNftId} from '../../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {
@@ -54,51 +49,54 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
 }
 
 async function getNftData(rawNft, collections, waitIndex, loadListing, address) {
-    await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
-    const {index} = extjs.decodeTokenId(rawNft.token);
+    // await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
+    // const {index} = decodeNftId(rawNft.token);
 
-    const mintNumber = EntrepotNFTMintNumber(rawNft.canister, index);
-    const offers = loadListing
-        ? await defaultEntrepotApi
-              .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-              .offers(getExtId(rawNft.token))
-        : [];
-    const rawListing = loadListing
-        ? await (
-              await fetch(
-                  createCloudFunctionsEndpointUrl([
-                      'token',
-                      rawNft.token,
-                  ]),
-              )
-          ).json()
-        : undefined;
+    // const mintNumber = getNftMintNumber({
+    //     collectionId: rawNft.canister,
+    //     nftIndex: index,
+    // });
+    // const offers = loadListing
+    //     ? await defaultEntrepotApi
+    //           .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+    //           .offers(getExtNftId(rawNft.token))
+    //     : [];
+    // const rawListing = loadListing
+    //     ? await (
+    //           await fetch(
+    //               createCloudFunctionsEndpointUrl([
+    //                   'token',
+    //                   rawNft.token,
+    //               ]),
+    //           )
+    //       ).json()
+    //     : undefined;
 
-    const listing = rawListing?.price
-        ? {
-              price: BigInt(rawListing.price),
-              locked: rawListing.time > 0 ? [BigInt(rawListing.time)] : [],
-          }
-        : rawNft.price
-        ? {
-              price: BigInt(rawNft.price),
-              locked: false,
-          }
-        : undefined;
+    // const listing = rawListing?.price
+    //     ? {
+    //           price: BigInt(rawListing.price),
+    //           locked: rawListing.time > 0 ? [BigInt(rawListing.time)] : [],
+    //       }
+    //     : rawNft.price
+    //     ? {
+    //           price: BigInt(rawNft.price),
+    //           locked: false,
+    //       }
+    //     : undefined;
     const collection = collections.find(collection => collection.canister === rawNft.canister);
 
-    const selfOffers = offers.filter(offer => offer[3] === address);
+    // const selfOffers = offers.filter(offer => offer[3] === address);
     const userNft = {
         ...rawNft,
-        index,
-        rawListing,
-        selfOffers,
+        // index,
+        // rawListing,
+        // selfOffers,
         image: '',
         // image: EntrepotNFTImage(getExtCanisterId(rawNft.canister), index, rawNft.token, false, 0),
-        mintNumber,
+        // mintNumber,
         collection,
-        offers,
-        listing,
+        // offers,
+        // listing,
         traits: undefined,
     };
 

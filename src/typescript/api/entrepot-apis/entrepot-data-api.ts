@@ -5,6 +5,7 @@ import {UserIdentity} from '../../data/models/user-data/identity';
 // @ts-ignore: extjs has no types
 import extjs from '../../../ic/extjs';
 import {Sales} from '../../data/models/sales';
+import {RawNftOffer} from '../../data/nft/nft-offers';
 
 export type EntrepotTokenApi = {
     call: EntrepotApi;
@@ -19,12 +20,13 @@ export type EntrepotTokenApi = {
     getTransactions(address: string): Promise<{id: string}[]>;
 };
 
-export type NftIds = ReadonlyArray<string>;
+export type NftIds = string[];
 
 type CanisterApi = {
     liked: () => Promise<NftIds>;
-    get_all_launch_settings: () => Promise<ReadonlyArray<Sales>>;
+    get_all_launch_settings: () => Promise<Sales[]>;
     offered: () => Promise<NftIds>;
+    offers: (nftId: string) => Promise<RawNftOffer[]>;
 };
 
 type EntrepotApi = {
@@ -42,7 +44,7 @@ export function createEntrepotApiWithIdentity(identity: UserIdentity | undefined
     return extjs.connect('https://ic0.app/', identity);
 }
 
-export function createCloudFunctionsEndpointUrl(paths: ReadonlyArray<string>): string {
+export function createCloudFunctionsEndpointUrl(paths: string[]): string {
     return [
         'https://us-central1-entrepot-api.cloudfunctions.net',
         'api',

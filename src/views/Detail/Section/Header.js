@@ -19,7 +19,7 @@ import {
     toniqFontStyles,
     X24Icon,
 } from '@toniq-labs/design-system';
-import {EntrepotGetIcpUsd, EntrepotNFTMintNumber} from '../../../utils';
+import {EntrepotGetIcpUsd} from '../../../utils';
 import {useNavigate} from 'react-router-dom';
 import {
     ToniqButton,
@@ -33,6 +33,7 @@ import {NftCard} from '../../../shared/NftCard';
 import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {EntrepotNftDisplay} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {getNftMintNumber} from '../../../typescript/data/nft/user-nft';
 
 const DetailSectionHeader = props => {
     const {
@@ -126,7 +127,10 @@ const DetailSectionHeader = props => {
                                             }}
                                         >
                                             {collection.name} #
-                                            {EntrepotNFTMintNumber(collection.canister, index)}
+                                            {getNftMintNumber({
+                                                collectionId: collection.canister,
+                                                nftIndex: index,
+                                            })}
                                         </span>
                                     </Grid>
                                     <Grid item class={classes.hideWhenMobile}>

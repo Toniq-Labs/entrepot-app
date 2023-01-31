@@ -46,6 +46,7 @@ import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 
 import CloseIcon from '@material-ui/icons/Close';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -381,7 +382,7 @@ export default function UserLoan(props) {
                 break;
         }
         data = data.map(a => {
-            let {canister, index} = extjs.decodeTokenId(a.tokenid);
+            let {canister, index} = decodeNftId(a.tokenid);
             var s = EntrepotCollectionStats(canister);
             var data = {...a, days: getDays(a), apr: getApr(a)};
             if (!isNaN(Number(s.floor))) {

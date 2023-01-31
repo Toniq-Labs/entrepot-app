@@ -16,6 +16,7 @@ import extjs from '../ic/extjs.js';
 
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 export default function PawnForm(props) {
     const [
@@ -49,7 +50,7 @@ export default function PawnForm(props) {
 
     React.useEffect(() => {
         if (props.nft.id) {
-            let {canister, index} = extjs.decodeTokenId(props.nft.id);
+            let {canister, index} = decodeNftId(props.nft.id);
             setIndex(index);
             setCanister(canister);
             var s = EntrepotCollectionStats(canister);

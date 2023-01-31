@@ -6,9 +6,10 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
-import extjs from '../ic/extjs.js';
-import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../utils.js';
+import {EntrepotGetIcpUsd} from '../utils.js';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
+import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
 export default function Event(props) {
     const getCollection = c => {
@@ -21,7 +22,7 @@ export default function Event(props) {
     ] = React.useState(false);
     const navigate = useNavigate();
     const event = props.event;
-    const index = extjs.decodeTokenId(event.token).index;
+    const index = decodeNftId(event.token).index;
     const tokenid = event.token;
     const styles = {
         avatarSkeletonContainer: {
@@ -50,7 +51,10 @@ export default function Event(props) {
     };
 
     const mintNumber = () => {
-        return EntrepotNFTMintNumber(props.collection, index);
+        return getNftMintNumber({
+            collectionId: props.collection,
+            nftIndex: index,
+        });
     };
     const shorten = a => {
         return a.substring(0, 12) + '...';

@@ -45,32 +45,14 @@ import voltAuctionsIDL from './candid/volt-auctions.did.js';
 import voltIDL from './candid/volt.did.js';
 import licenseIDL from './candid/license.did.js';
 import launchIDL from './candid/launch.did.js';
-import {from32bits} from '../typescript/augments/bits';
-import {fromHexString, toHexString} from '../typescript/augments/string';
-import {encodeNftId} from '../typescript/augments/nft/nft-id';
+import {fromHexString} from '../typescript/augments/string';
+import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
 
 const constructUser = u => {
     if (isHex(u) && u.length === 64) {
         return {address: u};
     } else {
         return {principal: Principal.fromText(u)};
-    }
-};
-const decodeTokenId = tid => {
-    var p = [...Principal.fromText(tid).toUint8Array()];
-    var padding = p.splice(0, 4);
-    if (toHexString(padding) !== toHexString(Buffer('\x0Atid'))) {
-        return {
-            index: 0,
-            canister: tid,
-            token: encodeNftId(tid, 0),
-        };
-    } else {
-        return {
-            index: from32bits(p.splice(-4)),
-            canister: Principal.fromUint8Array(p).toText(),
-            token: tid,
-        };
     }
 };
 
@@ -272,7 +254,7 @@ class ExtConnection {
     }
     token(tid, idl) {
         if (!tid) tid = LEDGER_CANISTER_ID; //defaults to ledger
-        var tokenObj = decodeTokenId(tid);
+        var tokenObj = decodeNftId(tid);
         if (!idl) {
             if (this._mapIdls.hasOwnProperty(tokenObj.canister))
                 idl = this._mapIdls[tokenObj.canister];
@@ -768,7 +750,6 @@ class ExtConnection {
 
 const extjs = {
     connect: (host, identity) => new ExtConnection(host ?? 'https://ic0.app/', identity),
-    decodeTokenId: decodeTokenId,
     toAddress: principalToAccountIdentifier,
     toSubAccount: getSubAccountArray,
 };

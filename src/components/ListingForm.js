@@ -9,6 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 export default function ListingForm(props) {
     const [
@@ -17,7 +18,7 @@ export default function ListingForm(props) {
     ] = React.useState(props.nft.listing?.price ? Number(props.nft.listing.price) / 100000000 : 0);
     var collection;
     if (props.nft.id) {
-        const {index, canister} = extjs.decodeTokenId(props.nft.id);
+        const {index, canister} = decodeNftId(props.nft.id);
         collection = props.collections.find(e => e.canister === canister);
     }
     const error = e => {

@@ -36,6 +36,7 @@ import {
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 const perPage = 60;
 
@@ -309,7 +310,7 @@ export default function UserCollection(props) {
                     price: 0,
                     time: 0,
                     owner: false,
-                    canister: extjs.decodeTokenId(a).canister,
+                    canister: decodeNftId(a).canister,
                     listing: null,
                 }));
                 break;
@@ -324,7 +325,7 @@ export default function UserCollection(props) {
                     price: 0,
                     time: 0,
                     owner: false,
-                    canister: extjs.decodeTokenId(a).canister,
+                    canister: decodeNftId(a).canister,
                 }));
                 break;
             case 'offers-received':
@@ -391,7 +392,7 @@ export default function UserCollection(props) {
             _displayNfts = _displayNfts.filter(
                 (token, i) =>
                     _collectionFilter == 'all' ||
-                    getExtCanisterId(extjs.decodeTokenId(token).canister) == _collectionFilter,
+                    getExtCanisterId(decodeNftId(token).canister) == _collectionFilter,
             );
             _displayNfts = _displayNfts.sort((a, b) => {
                 switch (sort) {
@@ -410,10 +411,10 @@ export default function UserCollection(props) {
                         if (bp === false) return -1;
                         return bp - ap;
                     case 'mint_number':
-                        return extjs.decodeTokenId(a).index - extjs.decodeTokenId(b).index;
+                        return decodeNftId(a).index - decodeNftId(b).index;
                     case 'nri':
-                        var aa = extjs.decodeTokenId(a);
-                        var bb = extjs.decodeTokenId(b);
+                        var aa = decodeNftId(a);
+                        var bb = decodeNftId(b);
                         var nriA = getNri(aa.canister, aa.index);
                         var nriB = getNri(bb.canister, bb.index);
                         if (nriA === false && nriB === false) return 0;
@@ -427,7 +428,7 @@ export default function UserCollection(props) {
             setDisplayNfts(_displayNfts);
             setHideCollectionFilter(false);
             setTokenCanisters(
-                _nfts.map(tokenid => getExtCanisterId(extjs.decodeTokenId(tokenid).canister)),
+                _nfts.map(tokenid => getExtCanisterId(decodeNftId(tokenid).canister)),
             );
             canUpdateNfts = true;
         }
@@ -734,12 +735,12 @@ export default function UserCollection(props) {
                                                     return bp - ap;
                                                 case 'mint_number':
                                                     return (
-                                                        extjs.decodeTokenId(a.token).index -
-                                                        extjs.decodeTokenId(b.token).index
+                                                        decodeNftId(a.token).index -
+                                                        decodeNftId(b.token).index
                                                     );
                                                 case 'nri':
-                                                    var aa = extjs.decodeTokenId(a.token);
-                                                    var bb = extjs.decodeTokenId(b.token);
+                                                    var aa = decodeNftId(a.token);
+                                                    var bb = decodeNftId(b.token);
                                                     var nriA = getNri(aa.canister, aa.index);
                                                     var nriB = getNri(bb.canister, bb.index);
                                                     if (nriA === false && nriB === false) return 0;

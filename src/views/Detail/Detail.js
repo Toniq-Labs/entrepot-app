@@ -6,10 +6,11 @@ import {EntrepotCollectionStats} from '../../utils';
 import DetailBody from './DetailBody';
 import OfferForm from '../../components/OfferForm';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {decodeNftId} from '../../typescript/data/nft/nft-id';
 
 const Detail = props => {
     let {tokenid} = useParams();
-    let {index, canister} = extjs.decodeTokenId(tokenid);
+    let {index, canister} = decodeNftId(tokenid);
     const [
         floor,
         setFloor,
