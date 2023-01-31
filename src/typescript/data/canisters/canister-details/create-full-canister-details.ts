@@ -45,10 +45,11 @@ async function fullGetNftImageHtml({
 
         return finalImageData;
     } catch (error) {
+        console.error({...inputs});
         throw new Error(
             `Failed to get NFT image HTML for '${
                 rawCanisterDetails.collectionName
-            }' with inputs: '${JSON.stringify(inputs)}': ${extractErrorMessage(error)}`,
+            }' with inputs: ${extractErrorMessage(error)}`,
         );
     }
 }

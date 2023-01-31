@@ -157,6 +157,10 @@ export default function App() {
         setCollections,
     ] = React.useState([]);
     const [
+        collectionMap,
+        setCollectionMap,
+    ] = React.useState({});
+    const [
         appLoaded,
         setAppLoaded,
     ] = React.useState(false);
@@ -789,10 +793,12 @@ export default function App() {
         }
     };
     const updateCollections = async () => {
-        const allCollectionsWithCaching = Object.values(await getAllCollectionsWithCaching());
+        const collectionMap = await getAllCollectionsWithCaching();
+        const allCollectionsWithCaching = Object.values(collectionMap);
         setCollections(allCollectionsWithCaching);
+        setCollectionMap(collectionMap);
 
-        console.log({collections: collections});
+        console.log({collections});
         allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
 
         if (isToniqEarnAllowed === undefined) {
@@ -834,11 +840,15 @@ export default function App() {
                 exact
                 element={
                     <EntrepotProfile
+                        style={{
+                            margin: '-32px',
+                        }}
                         onSellClick={listNft}
                         onTransferClick={transferNft}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
-                        collections={collections}
+                        collectionMap={collectionMap}
+                        toniqEarnAllowed={isToniqEarnAllowed}
                     />
                 }
             />
@@ -847,11 +857,15 @@ export default function App() {
                 exact
                 element={
                     <EntrepotProfile
+                        style={{
+                            margin: '-32px',
+                        }}
                         onSellClick={listNft}
                         onTransferClick={transferNft}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
-                        collections={collections}
+                        collectionMap={collectionMap}
+                        toniqEarnAllowed={isToniqEarnAllowed}
                     />
                 }
             />

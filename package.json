@@ -48,7 +48,7 @@
         "@mui/icons-material": "^5.3.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
-        "@toniq-labs/design-system": "0.4.3",
+        "@toniq-labs/design-system": "0.4.4",
         "@toruslabs/openlogin": "^1.4.0",
         "assert": "^2.0.0",
         "axios": "^0.25.0",
@@ -57,7 +57,7 @@
         "buffer": "^6.0.3",
         "crypto-browserify": "^3.12.0",
         "dexie": "^3.2.3",
-        "element-vir": "^9.1.4",
+        "element-vir": "^9.2.0",
         "ethereum-blockies-base64": "^1.0.2",
         "html-react-parser": "3.0.4",
         "https-browserify": "^1.0.0",
@@ -123,7 +123,7 @@
         "serve": "^13.0.2",
         "ts-node": "^10.9.1",
         "type-fest": "^3.5.3",
-        "typescript": "^4.9.4",
+        "typescript": "^4.9.5",
         "virmator": "^5.4.0",
         "webpack": "5.67.0"
     }

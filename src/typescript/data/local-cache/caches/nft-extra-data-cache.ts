@@ -5,7 +5,7 @@ import {
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../define-local-cache';
 import {UserNft} from '../../nft/user-nft';
 import {getExtNftId} from '../../nft/nft-id';
-import {wait} from '@augment-vir/common';
+import {wait, JsonCompatibleValue} from '@augment-vir/common';
 import {NftExtraData} from '../../nft/nft-extra-data';
 import {parseRawNftOffer} from '../../nft/nft-offers';
 
@@ -55,6 +55,8 @@ async function updateNftExtraData({
         listing,
         offers: offersMadeOnCurrentNft,
     };
+
+    const derp: JsonCompatibleValue = nftExtraData;
 
     return nftExtraData;
 }

@@ -1,6 +1,8 @@
+import {NftOffer} from './nft-offers';
+
 export type NftExtraData = {
     nftId: string;
-    offers: unknown[];
+    offers: NftOffer[];
     listing:
         | {
               price: number;

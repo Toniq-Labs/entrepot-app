@@ -71,3 +71,5 @@ export type CollectionStats = {
 export type Collection = BaseCollection & {
     stats: CollectionStats | undefined;
 };
+
+export type CollectionMap = Readonly<Record<string, Collection>>;

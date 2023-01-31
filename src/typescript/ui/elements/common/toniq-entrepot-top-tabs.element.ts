@@ -40,6 +40,11 @@ export const EntrepotTopTabsElement = defineToniqElement<{
             padding: 12px;
             position: relative;
             outline: none;
+            padding: 6px;
+        }
+
+        button:focus {
+            outline: 0;
         }
 
         a {
@@ -70,11 +75,11 @@ export const EntrepotTopTabsElement = defineToniqElement<{
             display: flex;
             gap: 16px;
             flex-grow: 1;
-            overflow-x: scroll;
+            overflow-x: auto;
         }
 
         ${createFocusStyles({
-            mainSelector: 'button:focus',
+            mainSelector: 'button:focus:focus-visible:not(:active)',
             elementBorderSize: 0,
             outlineGap: 0,
         })}
@@ -87,7 +92,7 @@ export const EntrepotTopTabsElement = defineToniqElement<{
         li.selected {
             ${toniqFontStyles.boldParagraphFont};
             color: ${toniqColors.pageInteraction.foregroundColor};
-            border-bottom: 1px solid ${toniqColors.pageInteraction.foregroundColor};
+            border-bottom: 2px solid ${toniqColors.pageInteraction.foregroundColor};
             pointer-events: none;
             z-index: 1;
         }
@@ -96,10 +101,6 @@ export const EntrepotTopTabsElement = defineToniqElement<{
             margin: 0;
             padding: 6px 6px 10px;
             white-space: nowrap;
-        }
-
-        li > button {
-            padding: 6px;
         }
 
         li:last-of-type {
@@ -117,7 +118,7 @@ export const EntrepotTopTabsElement = defineToniqElement<{
                         dispatch(new events.tabChange(tab));
                     }),
                 )}
-                <li></li>
+                <li class="take up remaining space"></li>
             </ul>
         `;
     },
@@ -131,7 +132,7 @@ function makeTopTab(tab: TopTab, isSelected: boolean, clickCallback: () => void)
             })}
             ${listen('click', clickCallback)}
         >
-            <button><a data-text="${tab.label}">${tab.label}</a></button>
+            <button><a data-text=${tab.label}>${tab.label}</a></button>
         </li>
     `;
 }

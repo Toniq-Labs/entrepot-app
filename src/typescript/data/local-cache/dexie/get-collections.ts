@@ -1,5 +1,5 @@
 import {isCanisterId} from '../../models/canister-id';
-import {Collection, BaseCollection, CollectionStats} from '../../models/collection';
+import {Collection, BaseCollection, CollectionStats, CollectionMap} from '../../models/collection';
 import {
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
@@ -32,9 +32,7 @@ async function getBaseCollections() {
     });
 }
 
-export async function getAllCollectionsWithCaching(): Promise<
-    Readonly<Record<string, Collection>>
-> {
+export async function getAllCollectionsWithCaching(): Promise<CollectionMap> {
     try {
         const baseCollections = (await getBaseCollections()).filter(collection => !collection.dev);
 

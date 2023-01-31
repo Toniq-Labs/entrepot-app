@@ -163,22 +163,34 @@ export function defineAutomaticallyUpdatingCache<
                     memoryEntry,
                     lastInputs as KeyInputsGeneric,
                 );
-                if (!lastValue || !areJsonEqual(lastValue, newValue)) {
-                    const listenerOutput: ListenerOutput<ValueGeneric, SubKeyRequirementGeneric> = (
-                        setup.subKeyRequirement === SubKeyRequirementEnum.Blocked
-                            ? {
-                                  newValue,
-                              }
-                            : generatedKey === defaultSubKey
-                            ? {
-                                  newValue,
-                              }
-                            : {
-                                  generatedKey,
-                                  newValue,
-                              }
-                    ) as ListenerOutput<ValueGeneric, SubKeyRequirementGeneric>;
-                    listeners.forEach(listener => listener(listenerOutput));
+                try {
+                    if (!lastValue || !areJsonEqual(lastValue, newValue)) {
+                        const listenerOutput: ListenerOutput<
+                            ValueGeneric,
+                            SubKeyRequirementGeneric
+                        > = (
+                            setup.subKeyRequirement === SubKeyRequirementEnum.Blocked
+                                ? {
+                                      newValue,
+                                  }
+                                : generatedKey === defaultSubKey
+                                ? {
+                                      newValue,
+                                  }
+                                : {
+                                      generatedKey,
+                                      newValue,
+                                  }
+                        ) as ListenerOutput<ValueGeneric, SubKeyRequirementGeneric>;
+                        listeners.forEach(listener => listener(listenerOutput));
+                    }
+                } catch (error) {
+                    console.error('errored data:', {
+                        cacheName: setup.cacheName,
+                        lastValue,
+                        newValue,
+                    });
+                    throw error;
                 }
             });
         }, setup.minUpdateInterval);

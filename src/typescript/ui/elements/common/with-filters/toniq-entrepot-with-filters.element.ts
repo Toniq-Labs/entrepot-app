@@ -1,5 +1,5 @@
 import {classMap} from 'lit/directives/class-map.js';
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElement, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {CurrentSort, FilterDefinitions, SortDefinition} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
 import {applyAllFilters} from './apply-filters';
@@ -18,6 +18,7 @@ import {
     ToniqInput,
     ToniqToggleButton,
     defineToniqElement,
+    LoaderAnimated24Icon,
 } from '@toniq-labs/design-system';
 import {EntrepotFilterElement} from './toniq-entrepot-filter.element';
 import {applySort} from './apply-sort';
@@ -32,11 +33,12 @@ export type WithFiltersElementInputs<
     defaultFilters: FilterDefinitionsGeneric;
     sortDefinitions: ReadonlyArray<SortDefinition<EntryData>>;
     currentSort: CurrentSort;
+    isLoading?: boolean;
     countName: string;
     searchPlaceholder: string;
     showFilters: boolean;
     allEntries: ReadonlyArray<Readonly<EntryData>>;
-    createEntryTemplateCallback: (entry: Readonly<EntryData>) => HTMLTemplateResult;
+    createEntryTemplateCallback: (entry: Readonly<EntryData>) => HTMLTemplateResult | string;
     searchCallback: (searchTerm: string, entry: Readonly<EntryData>) => boolean;
 };
 
@@ -125,6 +127,10 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             display: flex;
             flex-wrap: wrap;
             justify-content: space-evenly;
+        }
+
+        .content-entries.is-loading-entries {
+            justify-content: center;
         }
 
         .filters-panel-wrapper {
@@ -442,10 +448,25 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                         </span>
                         ${sortTemplate}
                     </div>
-                    <div class="content-entries">
-                        ${sortedFilteredEntries.map(entry => {
-                            return inputs.createEntryTemplateCallback(entry);
+                    <div
+                        class=${classMap({
+                            'content-entries': true,
+                            'is-loading-entries': !!inputs.isLoading,
                         })}
+                    >
+                        ${renderIf(
+                            !!inputs.isLoading,
+                            html`
+                                <${ToniqIcon}
+                                    ${assign(ToniqIcon, {
+                                        icon: LoaderAnimated24Icon,
+                                    })}
+                                ></${ToniqIcon}>
+                            `,
+                            sortedFilteredEntries.map(entry => {
+                                return inputs.createEntryTemplateCallback(entry);
+                            }),
+                        )}
                     </div>
                 </div>
             </div>

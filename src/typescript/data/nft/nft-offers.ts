@@ -13,14 +13,14 @@ export type RawNftOffer = [
 
 export type NftOffer = {
     offerMadeByUserAccountAddress: string;
-    timestamp: bigint;
-    offerAmount: bigint;
+    timestamp: number;
+    offerAmount: number;
 };
 
 export function parseRawNftOffer(rawNftOffer: RawNftOffer): NftOffer {
     return {
-        offerAmount: rawNftOffer[1],
+        offerAmount: Number(rawNftOffer[1]),
         offerMadeByUserAccountAddress: rawNftOffer[3],
-        timestamp: rawNftOffer[2],
+        timestamp: Number(rawNftOffer[2]),
     };
 }
