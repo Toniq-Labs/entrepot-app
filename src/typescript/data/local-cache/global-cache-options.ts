@@ -3,8 +3,8 @@ import {maskObjects} from '../../augments/object';
 
 /** If we need to modify a setting globally for all caches, do so here. */
 const globalCacheOptions: LocalCacheOptions = {
-    enableBrowserStorageCache: true,
-    enableMemoryCache: true,
+    enableCacheBrowserStorage: true,
+    enableCacheMemory: true,
     enableAutomaticUpdating: true,
     enableLogging: false,
     minUpdateInterval: 10_000,

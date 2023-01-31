@@ -1,19 +1,16 @@
 import {LocalCacheOptions} from './cache-options';
-import {} from 'element-vir';
 import {
     AnyFunction,
     areJsonEqual,
-    assertRuntimeTypeOf,
     awaitedForEach,
     extractErrorMessage,
-    isRuntimeTypeOf,
     JsonCompatibleValue,
     Overwrite,
     UnPromise,
 } from '@augment-vir/common';
 import {Promisable} from 'type-fest';
-import localForage from 'localforage';
 import {maskOptionsWithGlobalOptions} from './global-cache-options';
+import {localForage} from './localforage-shim';
 
 export enum SubKeyRequirementEnum {
     // sub keys are always required to be passed into cache get methods
@@ -299,11 +296,11 @@ async function updateValue<
     memoryEntry.lastUpdate = Date.now();
     memoryEntry.generatedKeys.add(accessorKey);
 
-    if (setup.enableMemoryCache) {
+    if (setup.enableCacheMemory) {
         addInMemoryValue(setup, generatedKey, newValue, memoryEntry);
     }
 
-    if (setup.enableBrowserStorageCache) {
+    if (setup.enableCacheBrowserStorage) {
         try {
             const lastItem: NonNullable<MemoryEntry<ValueGeneric>['cachedData']> =
                 (await localForage.getItem(setup.cacheName)) || {};
@@ -398,14 +395,14 @@ async function getValue<
 ): Promise<UnPromise<ValueGeneric> | undefined> {
     const accessorKey = generatedKey || defaultSubKey;
 
-    if (setup.enableMemoryCache) {
+    if (setup.enableCacheMemory) {
         if ('cachedData' in memoryEntry && memoryEntry.cachedData) {
             logIf(setup, `Accessing in-memory cache for '${setup.cacheName}:${generatedKey}'`);
             return memoryEntry.cachedData[accessorKey];
         }
     }
 
-    if (setup.enableBrowserStorageCache) {
+    if (setup.enableCacheBrowserStorage) {
         try {
             const inBrowserStorage: NonNullable<MemoryEntry<ValueGeneric>['cachedData']> | null =
                 await localForage.getItem(setup.cacheName);
@@ -417,7 +414,7 @@ async function getValue<
 
                 const cachedData = inBrowserStorage[accessorKey] as UnPromise<ValueGeneric>;
 
-                if (setup.enableMemoryCache) {
+                if (setup.enableCacheMemory) {
                     addInMemoryValue(setup, generatedKey, cachedData, memoryEntry);
                 }
 

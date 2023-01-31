@@ -1,6 +1,7 @@
 export type LocalCacheOptions = {
-    enableBrowserStorageCache: boolean;
-    enableMemoryCache: boolean;
+    enableCacheBrowserStorage: boolean;
+    enableCacheMemory: boolean;
+
     enableAutomaticUpdating: boolean;
     enableLogging: boolean;
     minUpdateInterval: number;

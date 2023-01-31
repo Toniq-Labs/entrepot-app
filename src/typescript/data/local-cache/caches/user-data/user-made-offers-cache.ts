@@ -3,35 +3,35 @@ import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
 import {UserNft} from '../../../models/user-data/user-nft';
-import {nftIdToNft, nftIdsToNfts} from '../../../../augments/nft/nft-id';
+import {nftIdsToNfts} from '../../../../augments/nft/nft-id';
 
-export type UserFavoritesInputs = {
+export type UserOffersInputs = {
     userAccount: EntrepotUserAccount;
     userIdentity: UserIdentity;
 };
 
-export function makeUserFavoritesKey({userAccount, userIdentity}: UserFavoritesInputs) {
+export function makeUserOffersKey({userAccount, userIdentity}: UserOffersInputs) {
     return `${userAccount.address}__${userIdentity.getPrincipal().toText()}`;
 }
 
-async function updateUserFavorites({
+async function updateUserMadeOffers({
     userAccount,
     userIdentity,
-}: UserFavoritesInputs): Promise<UserNft[]> {
-    const favoriteNftIds = await createEntrepotApiWithIdentity(userIdentity)
+}: UserOffersInputs): Promise<UserNft[]> {
+    const offersMadeNftIds = await createEntrepotApiWithIdentity(userIdentity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-        .liked();
+        .offered();
 
-    return nftIdsToNfts({userAccount, nftIds: favoriteNftIds});
+    return nftIdsToNfts({userAccount, nftIds: offersMadeNftIds});
 }
 
-export const userFavoritesCache = defineAutomaticallyUpdatingCache<
-    Awaited<ReturnType<typeof updateUserFavorites>>,
+export const userMadeOffersCache = defineAutomaticallyUpdatingCache<
+    Awaited<ReturnType<typeof updateUserMadeOffers>>,
     SubKeyRequirementEnum.Required,
-    UserFavoritesInputs
+    UserOffersInputs
 >({
-    cacheName: 'user-favorites',
-    valueUpdater: updateUserFavorites,
-    keyGenerator: makeUserFavoritesKey,
+    cacheName: 'user-offers',
+    valueUpdater: updateUserMadeOffers,
+    keyGenerator: makeUserOffersKey,
     subKeyRequirement: SubKeyRequirementEnum.Required,
 });

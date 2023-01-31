@@ -19,9 +19,12 @@ export type EntrepotTokenApi = {
     getTransactions(address: string): Promise<{id: string}[]>;
 };
 
+export type NftIds = ReadonlyArray<string>;
+
 type CanisterApi = {
-    liked: () => Promise<ReadonlyArray<string>>;
+    liked: () => Promise<NftIds>;
     get_all_launch_settings: () => Promise<ReadonlyArray<Sales>>;
+    offered: () => Promise<NftIds>;
 };
 
 type EntrepotApi = {

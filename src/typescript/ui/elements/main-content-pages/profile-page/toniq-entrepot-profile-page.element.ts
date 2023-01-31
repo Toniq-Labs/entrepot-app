@@ -20,6 +20,7 @@ import {
 import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
 import {UserNft} from '../../../../data/models/user-data/user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
+import {userMadeOffersCache} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
 
 export const EntrepotProfilePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
@@ -49,6 +50,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
         userNfts: asyncState<ReadonlyArray<UserNft>>(),
         userFavorites: asyncState<ReadonlyArray<UserNft>>(),
+        userOffersMade: asyncState<ReadonlyArray<unknown>>(),
         currentSort: ensureType<CurrentSort>({
             ascending: false,
             name: profileSortDefinitions[0].sortName,
@@ -59,6 +61,24 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
                     userTransactions: {
+                        resolvedValue: newValue,
+                    },
+                });
+            }
+        });
+        userNftsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+            if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
+                updateState({
+                    userNfts: {
+                        resolvedValue: newValue,
+                    },
+                });
+            }
+        });
+        userFavoritesCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+            if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
+                updateState({
+                    userFavorites: {
                         resolvedValue: newValue,
                     },
                 });
@@ -97,6 +117,19 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                 createPromise: async () =>
                     inputs.userAccount && inputs.userIdentity
                         ? userFavoritesCache.get({
+                              userIdentity: inputs.userIdentity,
+                              userAccount: inputs.userAccount,
+                          })
+                        : [],
+                trigger: {
+                    account: inputs.userAccount?.address,
+                    identity: inputs.userIdentity?.getPrincipal().toText(),
+                },
+            },
+            userOffersMade: {
+                createPromise: async () =>
+                    inputs.userAccount && inputs.userIdentity
+                        ? userMadeOffersCache.get({
                               userIdentity: inputs.userIdentity,
                               userAccount: inputs.userAccount,
                           })

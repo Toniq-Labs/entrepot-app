@@ -28,6 +28,7 @@ async function includeCollectionsAndStats(nfts, allCollections) {
 
     return {
         nfts: allowedNfts,
+
         collections,
         stats: createNftFilterStats(allowedNfts),
     };
@@ -42,14 +43,7 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
             resolve(await includeCollectionsAndStats([], allCollections)),
         ),
         [ProfileTabs.Offers]: new Promise(async resolve =>
-            resolve(
-                await includeCollectionsAndStats(
-                    [
-                        ...(await getOffersMadeNfts(address, identity, allCollections)),
-                    ],
-                    allCollections,
-                ),
-            ),
+            resolve(await includeCollectionsAndStats([], allCollections)),
         ),
         [ProfileTabs.Activity]: new Promise(async resolve =>
             resolve(await includeCollectionsAndStats({})),
@@ -57,27 +51,6 @@ export function startLoadingProfileNftsAndCollections(address, identity, allColl
     };
 
     return allNftsSets;
-}
-
-async function getOffersMadeNfts(address, identity, collections) {
-    const offersMadeNftIds = await createEntrepotApiWithIdentity(identity)
-        .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-        .offered();
-    const offersMadeNfts = await Promise.all(
-        offersMadeNftIds.map(async (nftId, index) => {
-            // const nft = nftIdToNft(address, nftId);
-            // const nftWithData = await getNftData(nft, collections, index, true, address);
-            // return {
-            //     ...nftWithData,
-            //     statuses: new Set(
-            //         nftWithData.offers.length - nftWithData.selfOffers.length
-            //             ? [nftStatusesByTab[ProfileTabs.Offers].HasOtherOffers]
-            //             : [],
-            //     ),
-            // };
-        }),
-    );
-    return offersMadeNfts;
 }
 
 async function getNftData(rawNft, collections, waitIndex, loadListing, address) {

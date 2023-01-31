@@ -1,5 +1,4 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {html} from 'element-vir';
 import {createQueryParamString} from './url';
 
 describe(createQueryParamString.name, () => {
