@@ -13,7 +13,7 @@ import {
 } from '@augment-vir/common';
 import {Promisable} from 'type-fest';
 import localForage from 'localforage';
-import {maskOptionsWithGlobalOptions} from './global-cache-enable';
+import {maskOptionsWithGlobalOptions} from './global-cache-options';
 
 export enum SubKeyRequirementEnum {
     // sub keys are always required to be passed into cache get methods
@@ -27,70 +27,75 @@ export enum SubKeyRequirementEnum {
 type CacheAccessCallback<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 > = SubKeyRequirementGeneric extends SubKeyRequirementEnum.Blocked
     ? () => Promisable<UnPromise<ValueGeneric>>
     : SubKeyRequirementGeneric extends SubKeyRequirementEnum.Required
-    ? (subKey: SubKeyGeneric) => Promisable<UnPromise<ValueGeneric>>
-    : (subKey?: SubKeyGeneric | undefined) => Promisable<UnPromise<ValueGeneric>>;
+    ? (keyInputs: KeyInputsGeneric) => Promisable<UnPromise<ValueGeneric>>
+    : (keyInputs?: KeyInputsGeneric | undefined) => Promisable<UnPromise<ValueGeneric>>;
 
 export type LocalCacheDefinitionSetup<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 > = {
     cacheName: string;
     subKeyRequirement: SubKeyRequirementGeneric;
-    valueUpdater: CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
+    valueUpdater: CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>;
+    keyGenerator: (keyInputs: KeyInputsGeneric) => string;
 } & Partial<LocalCacheOptions>;
 
 type ListenerOutput<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
 > = SubKeyRequirementGeneric extends SubKeyRequirementEnum.Blocked
     ? {
           newValue: UnPromise<ValueGeneric>;
       }
     : SubKeyRequirementGeneric extends SubKeyRequirementEnum.Required
     ? {
-          subKey: SubKeyGeneric;
+          generatedKey: string;
           newValue: UnPromise<ValueGeneric>;
       }
     : {
-          subKey?: SubKeyGeneric;
+          generatedKey?: string;
           newValue: UnPromise<ValueGeneric>;
       };
 
 type Listener<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
-> = (
-    output: ListenerOutput<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-) => Promise<void> | void;
+> = (output: ListenerOutput<ValueGeneric, SubKeyRequirementGeneric>) => Promise<void> | void;
 
 type UnSubscribe = () => void;
 
 export type SubscribeToCache<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
-> = (listener: Listener<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>) => UnSubscribe;
+> = (listener: Listener<ValueGeneric, SubKeyRequirementGeneric>) => UnSubscribe;
+
+type GenerateKeyProp<
+    SubKeyRequirementGeneric extends SubKeyRequirementEnum,
+    KeyInputsGeneric extends object,
+> = SubKeyRequirementGeneric extends SubKeyRequirementEnum.Blocked
+    ? {}
+    : {
+          generateKey: (inputs: KeyInputsGeneric) => string;
+      };
 
 export type LocalCacheDefinition<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 > = {
-    get: CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
+    get: CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>;
     forceImmediateUpdate: CacheAccessCallback<
         ValueGeneric,
         SubKeyRequirementGeneric,
-        SubKeyGeneric
+        KeyInputsGeneric
     >;
-    subscribe: SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
-};
+    subscribe: SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric>;
+} & GenerateKeyProp<SubKeyRequirementGeneric, KeyInputsGeneric>;
 
 const defaultSubKey = Symbol('default-sub-key');
 
@@ -98,7 +103,8 @@ type MemoryEntry<ValueGeneric extends JsonCompatibleValue> = {
     /** If memory cache is disabled, this data property will not get set. */
     cachedData?: Partial<Record<string | typeof defaultSubKey, UnPromise<ValueGeneric>>>;
     lastUpdate: number;
-    cachedKeys: Set<string | typeof defaultSubKey>;
+    generatedKeys: Set<string | typeof defaultSubKey>;
+    lastGeneratedKeyInputs: Map<string | typeof defaultSubKey, object>;
 };
 
 function logIf(setup: Pick<LocalCacheOptions, 'enableLogging'>, ...inputs: unknown[]) {
@@ -114,14 +120,18 @@ const memoryCache: {[cacheName: string]: MemoryEntry<any>} = {};
 export function defineAutomaticallyUpdatingCache<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    rawInputs: LocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-): LocalCacheDefinition<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric> {
+    rawInputs: LocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>,
+): LocalCacheDefinition<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric> {
     const setup = {
         ...rawInputs,
         ...maskOptionsWithGlobalOptions(rawInputs),
     };
+
+    if (memoryCache[setup.cacheName]) {
+        throw new Error(`Tried to setup '${setup.cacheName}' cache but it is already setup.`);
+    }
 
     const memoryEntry: MemoryEntry<ValueGeneric> = setupMemoryEntry(setup);
     memoryCache[setup.cacheName] = memoryEntry;
@@ -137,90 +147,121 @@ export function defineAutomaticallyUpdatingCache<
         lastTimeoutId = (globalThis.setTimeout as Window['setTimeout'])(async () => {
             setNextUpdate();
             logIf(setup, `Updating '${setup.cacheName}' cache`);
-            const cachedKeys = Array.from(memoryEntry.cachedKeys) as ReadonlyArray<
-                SubKeyGeneric | typeof defaultSubKey
-            >;
+            const cachedKeys = Array.from(memoryEntry.generatedKeys);
 
-            await awaitedForEach(cachedKeys, async subKey => {
-                const accessorKey = subKey === defaultSubKey ? undefined : subKey;
+            await awaitedForEach(cachedKeys, async generatedKey => {
+                const accessorKey = generatedKey === defaultSubKey ? undefined : generatedKey;
+                const lastInputs = memoryEntry.lastGeneratedKeyInputs.get(generatedKey);
+
                 const lastValue = await getValue(
                     {...setup, enableLogging: false},
                     accessorKey,
                     memoryEntry,
+                    lastInputs as KeyInputsGeneric,
                     false,
                 );
-                const newValue = await updateValue(setup, accessorKey, memoryEntry);
+                const newValue = await updateValue(
+                    setup,
+                    accessorKey,
+                    memoryEntry,
+                    lastInputs as KeyInputsGeneric,
+                );
                 if (!lastValue || !areJsonEqual(lastValue, newValue)) {
-                    const listenerOutput: ListenerOutput<
-                        ValueGeneric,
-                        SubKeyRequirementGeneric,
-                        SubKeyGeneric
-                    > = (
+                    const listenerOutput: ListenerOutput<ValueGeneric, SubKeyRequirementGeneric> = (
                         setup.subKeyRequirement === SubKeyRequirementEnum.Blocked
                             ? {
                                   newValue,
                               }
-                            : subKey === defaultSubKey
+                            : generatedKey === defaultSubKey
                             ? {
                                   newValue,
                               }
                             : {
-                                  subKey,
+                                  generatedKey,
                                   newValue,
                               }
-                    ) as ListenerOutput<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>;
+                    ) as ListenerOutput<ValueGeneric, SubKeyRequirementGeneric>;
                     listeners.forEach(listener => listener(listenerOutput));
                 }
             });
         }, setup.minUpdateInterval);
     }
 
-    async function forceUpdate(subKey?: SubKeyGeneric | undefined) {
+    async function forceUpdate(generatedKey?: string | undefined) {
         setNextUpdate();
-        return await updateValue(setup, subKey, memoryEntry);
+        const lastInputs = memoryEntry.lastGeneratedKeyInputs.get(generatedKey || defaultSubKey);
+
+        return await updateValue(setup, generatedKey, memoryEntry, lastInputs as KeyInputsGeneric);
     }
 
     setNextUpdate();
 
-    const listeners = new Set<Listener<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>>();
+    const listeners = new Set<Listener<ValueGeneric, SubKeyRequirementGeneric>>();
+
+    function generateKey(keysInput: KeyInputsGeneric | undefined): string | undefined {
+        if (keysInput == undefined) {
+            return undefined;
+        } else {
+            return setup.keyGenerator(keysInput);
+        }
+    }
+
+    const keyGenerator: GenerateKeyProp<SubKeyRequirementGeneric, KeyInputsGeneric> =
+        setup.subKeyRequirement === SubKeyRequirementEnum.Blocked
+            ? ({} as GenerateKeyProp<SubKeyRequirementGeneric, KeyInputsGeneric>)
+            : ({
+                  generateKey: generateKey,
+              } as GenerateKeyProp<SubKeyRequirementGeneric, KeyInputsGeneric>);
 
     return {
-        get: (async (subKey?: SubKeyGeneric | undefined) =>
-            getValue(setup, subKey, memoryEntry, true)) as CacheAccessCallback<
-            ValueGeneric,
-            SubKeyRequirementGeneric,
-            SubKeyGeneric
-        >,
-        forceImmediateUpdate: (async (subKey?: SubKeyGeneric | undefined) =>
-            forceUpdate(subKey)) as CacheAccessCallback<
-            ValueGeneric,
-            SubKeyRequirementGeneric,
-            SubKeyGeneric
-        >,
-        subscribe: ((listener: Listener<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>) => {
+        get: (async (keyInputs?: KeyInputsGeneric | undefined) => {
+            const generatedKey = generateKey(keyInputs);
+
+            if (keyInputs) {
+                memoryEntry.lastGeneratedKeyInputs.set(generatedKey || defaultSubKey, keyInputs);
+            }
+
+            return getValue(setup, generatedKey, memoryEntry, keyInputs as KeyInputsGeneric, true);
+        }) as CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>,
+        forceImmediateUpdate: (async (keyInputs?: KeyInputsGeneric | undefined) => {
+            const generatedKey = generateKey(keyInputs);
+
+            if (keyInputs) {
+                memoryEntry.lastGeneratedKeyInputs.set(generatedKey || defaultSubKey, keyInputs);
+            }
+
+            return forceUpdate(generatedKey);
+        }) as CacheAccessCallback<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>,
+        subscribe: ((listener: Listener<ValueGeneric, SubKeyRequirementGeneric>) => {
             listeners.add(listener);
 
             return () => {
                 listeners.delete(listener);
             };
-        }) as SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
+        }) as SubscribeToCache<ValueGeneric, SubKeyRequirementGeneric>,
+        ...keyGenerator,
     };
 }
 
 function setupMemoryEntry<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
 ): MemoryEntry<ValueGeneric> {
-    const initCachedKeys: MemoryEntry<ValueGeneric>['cachedKeys'] =
+    const initCachedKeys: MemoryEntry<ValueGeneric>['generatedKeys'] =
         setup.subKeyRequirement === SubKeyRequirementEnum.Required
             ? new Set()
             : new Set([defaultSubKey]);
     const newCacheEntry: MemoryEntry<ValueGeneric> = {
         lastUpdate: 0,
-        cachedKeys: initCachedKeys,
+        generatedKeys: initCachedKeys,
+        lastGeneratedKeyInputs: new Map(),
     };
 
     return newCacheEntry;
@@ -229,32 +270,37 @@ function setupMemoryEntry<
 type MaskedLocalCacheDefinitionSetup<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 > = Overwrite<
-    LocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
+    LocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, KeyInputsGeneric>,
     LocalCacheOptions
 >;
 
 async function updateValue<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-    subKey: SubKeyGeneric | undefined,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
+    generatedKey: string | undefined,
     memoryEntry: MemoryEntry<ValueGeneric>,
+    inputs: KeyInputsGeneric,
 ): Promise<UnPromise<ValueGeneric>> {
     const newValue: UnPromise<ValueGeneric> =
         setup.subKeyRequirement === SubKeyRequirementEnum.Blocked
             ? await (setup.valueUpdater as AnyFunction)()
-            : await (setup.valueUpdater as AnyFunction)(subKey);
-    const accessorKey = subKey ?? defaultSubKey;
+            : await setup.valueUpdater(inputs);
+    const accessorKey = generatedKey || defaultSubKey;
 
     memoryEntry.lastUpdate = Date.now();
-    memoryEntry.cachedKeys.add(accessorKey);
+    memoryEntry.generatedKeys.add(accessorKey);
 
     if (setup.enableMemoryCache) {
-        addInMemoryValue(setup, subKey, newValue, memoryEntry);
+        addInMemoryValue(setup, generatedKey, newValue, memoryEntry);
     }
 
     if (setup.enableBrowserStorageCache) {
@@ -264,14 +310,14 @@ async function updateValue<
 
             lastItem[accessorKey] = newValue;
 
-            logIf(setup, `Saving to in-browser cache for '${setup.cacheName}:${subKey}'`);
+            logIf(setup, `Saving to in-browser cache for '${setup.cacheName}:${generatedKey}'`);
             localForage.setItem(setup.cacheName, lastItem);
         } catch (error) {
             logIf(
                 setup,
                 `Failed to save to in-browser storage for '${
                     setup.cacheName
-                }' with subKey '${subKey}': ${extractErrorMessage(error)}`,
+                }' with generatedKey '${generatedKey}': ${extractErrorMessage(error)}`,
             );
         }
     }
@@ -282,60 +328,79 @@ async function updateValue<
 function addInMemoryValue<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-    subKey: SubKeyGeneric | undefined,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
+    generatedKey: string | undefined,
     newValue: UnPromise<ValueGeneric>,
     memoryEntry: MemoryEntry<ValueGeneric>,
 ): void {
-    const accessorKey = subKey ?? defaultSubKey;
+    const accessorKey = generatedKey || defaultSubKey;
 
-    memoryEntry.cachedKeys.add(accessorKey);
+    memoryEntry.generatedKeys.add(accessorKey);
 
     if (!memoryEntry.cachedData) {
         memoryEntry.cachedData = {};
     }
     memoryEntry.lastUpdate = Date.now();
-    logIf(setup, `Saving to in-memory cache for '${setup.cacheName}:${subKey}'`);
+    logIf(setup, `Saving to in-memory cache for '${setup.cacheName}:${generatedKey}'`);
     memoryEntry.cachedData[accessorKey] = newValue;
 }
 
 async function getValue<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-    subKey: SubKeyGeneric | undefined,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
+    generatedKey: string | undefined,
     memoryEntry: MemoryEntry<ValueGeneric>,
+    keyInputs: KeyInputsGeneric,
     allowUpdate: true,
 ): Promise<UnPromise<ValueGeneric>>;
 async function getValue<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-    subKey: SubKeyGeneric | undefined,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
+    generatedKey: string | undefined,
     memoryEntry: MemoryEntry<ValueGeneric>,
+    keyInputs: KeyInputsGeneric,
     allowUpdate: false,
 ): Promise<UnPromise<ValueGeneric> | undefined>;
 async function getValue<
     ValueGeneric extends JsonCompatibleValue,
     SubKeyRequirementGeneric extends SubKeyRequirementEnum,
-    SubKeyGeneric extends string,
+    KeyInputsGeneric extends object,
 >(
-    setup: MaskedLocalCacheDefinitionSetup<ValueGeneric, SubKeyRequirementGeneric, SubKeyGeneric>,
-    subKey: SubKeyGeneric | undefined,
+    setup: MaskedLocalCacheDefinitionSetup<
+        ValueGeneric,
+        SubKeyRequirementGeneric,
+        KeyInputsGeneric
+    >,
+    generatedKey: string | undefined,
     memoryEntry: MemoryEntry<ValueGeneric>,
+    keyInputs: KeyInputsGeneric,
     allowUpdate: boolean,
 ): Promise<UnPromise<ValueGeneric> | undefined> {
-    const accessorKey = subKey ?? defaultSubKey;
+    const accessorKey = generatedKey || defaultSubKey;
 
     if (setup.enableMemoryCache) {
         if ('cachedData' in memoryEntry && memoryEntry.cachedData) {
-            logIf(setup, `Accessing in-memory cache for '${setup.cacheName}:${subKey}'`);
+            logIf(setup, `Accessing in-memory cache for '${setup.cacheName}:${generatedKey}'`);
             return memoryEntry.cachedData[accessorKey];
         }
     }
@@ -345,12 +410,15 @@ async function getValue<
             const inBrowserStorage: NonNullable<MemoryEntry<ValueGeneric>['cachedData']> | null =
                 await localForage.getItem(setup.cacheName);
             if (inBrowserStorage !== null && accessorKey in inBrowserStorage) {
-                logIf(setup, `Accessing in-browser storage for '${setup.cacheName}:${subKey}'`);
+                logIf(
+                    setup,
+                    `Accessing in-browser storage for '${setup.cacheName}:${generatedKey}'`,
+                );
 
                 const cachedData = inBrowserStorage[accessorKey] as UnPromise<ValueGeneric>;
 
                 if (setup.enableMemoryCache) {
-                    addInMemoryValue(setup, subKey, cachedData, memoryEntry);
+                    addInMemoryValue(setup, generatedKey, cachedData, memoryEntry);
                 }
 
                 return cachedData;
@@ -360,14 +428,14 @@ async function getValue<
                 setup,
                 `Failed to access in-browser storage for '${
                     setup.cacheName
-                }:${subKey}': ${extractErrorMessage(error)}`,
+                }:${generatedKey}': ${extractErrorMessage(error)}`,
             );
         }
     }
 
-    logIf(setup, `No cached value to get for '${setup.cacheName}:${subKey}'`);
+    logIf(setup, `No cached value to get for '${setup.cacheName}:${generatedKey}'`);
     if (allowUpdate) {
-        return await updateValue(setup, subKey, memoryEntry);
+        return await updateValue(setup, generatedKey, memoryEntry, keyInputs);
     } else {
         return undefined;
     }

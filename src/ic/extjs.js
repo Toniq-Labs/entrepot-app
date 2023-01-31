@@ -9,11 +9,8 @@ import {
     getCyclesTopUpSubAccount,
     rosettaApi,
     principalToAccountIdentifier,
-    toHexString,
-    from32bits,
     isHex,
     getSubAccountArray,
-    fromHexString,
     validatePrincipal,
 } from './utils.js';
 
@@ -48,7 +45,9 @@ import voltAuctionsIDL from './candid/volt-auctions.did.js';
 import voltIDL from './candid/volt.did.js';
 import licenseIDL from './candid/license.did.js';
 import launchIDL from './candid/launch.did.js';
-import {to32bitArray} from '../typescript/augments/bits';
+import {from32bits} from '../typescript/augments/bits';
+import {fromHexString, toHexString} from '../typescript/augments/string';
+import {encodeNftId} from '../typescript/augments/nft/nft-id';
 
 const constructUser = u => {
     if (isHex(u) && u.length === 64) {
@@ -57,15 +56,6 @@ const constructUser = u => {
         return {principal: Principal.fromText(u)};
     }
 };
-const tokenIdentifier = (principal, index) => {
-    const padding = Buffer('\x0Atid');
-    const array = new Uint8Array([
-        ...padding,
-        ...Principal.fromText(principal).toUint8Array(),
-        ...to32bitArray(index),
-    ]);
-    return Principal.fromUint8Array(array).toText();
-};
 const decodeTokenId = tid => {
     var p = [...Principal.fromText(tid).toUint8Array()];
     var padding = p.splice(0, 4);
@@ -73,7 +63,7 @@ const decodeTokenId = tid => {
         return {
             index: 0,
             canister: tid,
-            token: tokenIdentifier(tid, 0),
+            token: encodeNftId(tid, 0),
         };
     } else {
         return {
@@ -371,7 +361,7 @@ class ExtConnection {
                                     resolve(
                                         r.map(x => {
                                             return {
-                                                id: tokenIdentifier(tokenObj.canister, Number(x)),
+                                                id: encodeNftId(tokenObj.canister, Number(x)),
                                                 canister: tokenObj.canister,
                                                 index: Number(x),
                                                 listing: false,
@@ -392,10 +382,7 @@ class ExtConnection {
                                     resolve(
                                         r.map(x => {
                                             return {
-                                                id: tokenIdentifier(
-                                                    tokenObj.canister,
-                                                    Number(x[0]),
-                                                ),
+                                                id: encodeNftId(tokenObj.canister, Number(x[0])),
                                                 canister: tokenObj.canister,
                                                 index: Number(x[0]),
                                                 listing: false,
@@ -419,10 +406,7 @@ class ExtConnection {
                                                 var ret = r.ok.map(d => {
                                                     return {
                                                         index: d[0],
-                                                        id: tokenIdentifier(
-                                                            tokenObj.canister,
-                                                            d[0],
-                                                        ),
+                                                        id: encodeNftId(tokenObj.canister, d[0]),
                                                         canister: tokenObj.canister,
                                                         listing: d[1].length ? d[1][0] : false,
                                                         metadata: d[2].length ? d[2][0] : false,
@@ -785,7 +769,6 @@ class ExtConnection {
 const extjs = {
     connect: (host, identity) => new ExtConnection(host ?? 'https://ic0.app/', identity),
     decodeTokenId: decodeTokenId,
-    encodeTokenId: tokenIdentifier,
     toAddress: principalToAccountIdentifier,
     toSubAccount: getSubAccountArray,
 };

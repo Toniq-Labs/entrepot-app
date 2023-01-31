@@ -11,6 +11,7 @@ import extjs from '../ic/extjs.js';
 import {EntrepotNFTMintNumber, EntrepotGetIcpUsd} from '../utils.js';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {encodeNftId} from '../typescript/augments/nft/nft-id';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -67,7 +68,7 @@ export default function Pawn(props) {
     };
     const refresh = () => {};
     const viewNft = () => {
-        var tokenid = extjs.encodeTokenId(treasureCanisterId, props.event.index);
+        var tokenid = encodeNftId(treasureCanisterId, props.event.index);
         window.open('/marketplace/asset/' + tokenid);
     };
     const repayContract = async () => {

@@ -20,6 +20,7 @@ import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {encodeNftId} from '../../typescript/augments/nft/nft-id';
 
 const perPage = 60;
 const drawerWidth = 0; //300;
@@ -824,11 +825,11 @@ export default function Listings(props) {
                                                                 gridSize={gridSize}
                                                                 loggedIn={props.loggedIn}
                                                                 identity={props.identity}
-                                                                tokenid={extjs.encodeTokenId(
+                                                                tokenid={encodeNftId(
                                                                     collection?.canister,
                                                                     listing[0],
                                                                 )}
-                                                                key={extjs.encodeTokenId(
+                                                                key={encodeNftId(
                                                                     collection?.canister,
                                                                     listing[0],
                                                                 )}

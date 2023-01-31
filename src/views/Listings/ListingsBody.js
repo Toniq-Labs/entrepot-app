@@ -21,6 +21,7 @@ import {ListingsOtherControls} from './ListingsOtherControls';
 import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
 import ListingsActivity from './ListingsActivity';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {encodeNftId} from '../../typescript/augments/nft/nft-id';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -428,7 +429,7 @@ export function ListingsBody(props) {
             }
 
             var listings = result.map((listing, listingIndex) => {
-                const tokenid = extjs.encodeTokenId(collection?.canister, listing[0]);
+                const tokenid = encodeNftId(collection?.canister, listing[0]);
                 const {index, canister} = extjs.decodeTokenId(tokenid);
                 const rarity =
                     typeof getNri(canister, index) === 'number'

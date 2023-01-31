@@ -1,7 +1,8 @@
 import {isTruthy} from '@augment-vir/common';
-import {createCloudFunctionsEndpointUrl} from '../../../api/entrepot-apis/entrepot-data-api';
-import {Transaction, RawTransaction, serializeTransaction} from '../../models/transaction';
-import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../define-local-cache';
+import {createCloudFunctionsEndpointUrl} from '../../../../api/entrepot-apis/entrepot-data-api';
+import {Transaction, RawTransaction, parseRawTransaction} from '../../../models/transaction';
+import {EntrepotUserAccount} from '../../../models/user-data/account';
+import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
 
 export enum TransactionDirection {
     Purchase = 'purchase',
@@ -10,12 +11,17 @@ export enum TransactionDirection {
 
 export type UserTransaction = Transaction & {directionForCurrentUser: TransactionDirection};
 
-async function updateUserTransactions(
-    userAddress: string,
-): Promise<ReadonlyArray<UserTransaction>> {
+export type UserTransactionsInput = {
+    userAccount: EntrepotUserAccount;
+};
+
+async function updateUserTransactions({
+    userAccount,
+}: UserTransactionsInput): Promise<ReadonlyArray<UserTransaction>> {
+    const userAccountAddress = userAccount.address;
     const cloudFunctionsUrl = createCloudFunctionsEndpointUrl([
         'user',
-        userAddress,
+        userAccountAddress,
         'transactions',
     ]);
 
@@ -25,14 +31,14 @@ async function updateUserTransactions(
 
     return rawTransactions
         .map((rawTransaction): UserTransaction | undefined => {
-            const transaction = serializeTransaction(rawTransaction);
+            const transaction = parseRawTransaction(rawTransaction);
 
             if (!transaction) {
                 return undefined;
             }
 
             const direction =
-                transaction.buyerAddress === userAddress
+                transaction.buyerAddress === userAccountAddress
                     ? TransactionDirection.Purchase
                     : TransactionDirection.Sale;
 
@@ -44,12 +50,13 @@ async function updateUserTransactions(
         .filter(isTruthy);
 }
 
-export const userTransactions = defineAutomaticallyUpdatingCache<
+export const userTransactionsCache = defineAutomaticallyUpdatingCache<
     Awaited<ReturnType<typeof updateUserTransactions>>,
     SubKeyRequirementEnum.Required,
-    string
+    UserTransactionsInput
 >({
     cacheName: 'user-transactions',
     valueUpdater: updateUserTransactions,
+    keyGenerator: ({userAccount}) => userAccount.address,
     subKeyRequirement: SubKeyRequirementEnum.Required,
 });

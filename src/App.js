@@ -4,6 +4,7 @@ import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import {EntrepotCreate} from './typescript/ui/elements/main-content-pages/create-page/toniq-entrepot-create-page.element';
 import {EntrepotFooter} from './typescript/ui/elements/main-content-pages/main-footer/toniq-entrepot-main-footer.element';
+import {fromHexString} from './typescript/augments/string';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
 import {EntrepotProfile} from './typescript/ui/elements/main-content-pages/profile-page/toniq-entrepot-profile-page.element';
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
@@ -56,6 +57,7 @@ import {
 } from './typescript/api/entrepot-apis/entrepot-data-api';
 import {getExtCanisterId} from './typescript/data/canisters/canister-details/wrapped-canister-id';
 import {treasureCanisterId} from './typescript/data/canisters/treasure-canister';
+import {encodeNftId} from './typescript/augments/nft/nft-id';
 
 const transactionFee = 10000;
 const transactionMin = 100000;
@@ -396,7 +398,7 @@ export default function App() {
                 'Your balance is insufficient to complete this transaction',
             );
         const purchaseStartTime = Date.now();
-        var tokenid = extjs.encodeTokenId(canisterId, index);
+        var tokenid = encodeNftId(canisterId, index);
         try {
             var answer = await _buyForm(tokenid, listing.price);
             if (!answer) {
@@ -558,12 +560,6 @@ export default function App() {
         }
         await openlogin.init();
         return openlogin;
-    };
-    const fromHexString = hex => {
-        if (hex.substr(0, 2) === '0x') hex = hex.substr(2);
-        for (var bytes = [], c = 0; c < hex.length; c += 2)
-            bytes.push(parseInt(hex.substr(c, 2), 16));
-        return bytes;
     };
     const login = async t => {
         loader(true, 'Connecting your wallet...');
@@ -781,7 +777,7 @@ export default function App() {
                 if (refresh) await refresh();
                 if (loader) loader(false);
                 //New token id
-                token.id = extjs.encodeTokenId(canister, decoded.index);
+                token.id = encodeNftId(canister, decoded.index);
                 token.canister = canister;
                 token.wrapped = true;
                 listNft(token, loader, refresh);
@@ -840,8 +836,8 @@ export default function App() {
                     <EntrepotProfile
                         onSellClick={listNft}
                         onTransferClick={transferNft}
-                        identity={identity}
-                        account={accounts[currentAccount]}
+                        userIdentity={identity || undefined}
+                        userAccount={accounts[currentAccount]}
                         collections={collections}
                     />
                 }
@@ -853,8 +849,8 @@ export default function App() {
                     <EntrepotProfile
                         onSellClick={listNft}
                         onTransferClick={transferNft}
-                        identity={identity}
-                        account={accounts[currentAccount]}
+                        userIdentity={identity || undefined}
+                        userAccount={accounts[currentAccount]}
                         collections={collections}
                     />
                 }

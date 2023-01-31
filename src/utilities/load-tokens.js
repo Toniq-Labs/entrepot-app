@@ -5,22 +5,11 @@ import {
     defaultEntrepotApi,
     createCloudFunctionsEndpointUrl,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {encodeNftId} from '../typescript/augments/nft/nft-id';
 
 export function getExtId(tokenid) {
     const {index, canister} = extjs.decodeTokenId(tokenid);
-    return extjs.encodeTokenId(getExtCanisterId(canister), index);
-}
-
-export function nftIdToNft(address, nftId) {
-    const canister = extjs.decodeTokenId(nftId).canister;
-    return {
-        canister: getExtCanisterId(canister),
-        id: nftId,
-        token: nftId,
-        price: 0,
-        time: 0,
-        owner: address,
-    };
+    return encodeNftId(getExtCanisterId(canister), index);
 }
 
 export async function loadAllUserTokens(address, principal) {

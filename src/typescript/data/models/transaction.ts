@@ -20,7 +20,7 @@ export type RawTransaction = {
     token: string;
 };
 
-export function serializeTransaction(raw: RawTransaction): Transaction | undefined {
+export function parseRawTransaction(raw: RawTransaction): Transaction | undefined {
     if (!raw.token) {
         return undefined;
     }

@@ -5,6 +5,7 @@ import {getCrc32} from '@dfinity/principal/lib/esm/utils/getCrc';
 import {sha224} from '@dfinity/principal/lib/esm/utils/sha224';
 import RosettaApi from './RosettaApi.js';
 import {to32bitArray} from '../typescript/augments/bits';
+import {toHexString} from '../typescript/augments/string';
 
 const LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 const GOVERNANCE_CANISTER_ID = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
@@ -62,23 +63,6 @@ const getSubAccountArray = s => {
             .concat(to32bitArray(s ? s : 0));
     }
 };
-const from32bits = ba => {
-    var value;
-    for (var i = 0; i < 4; i++) {
-        value = (value << 8) | ba[i];
-    }
-    return value;
-};
-const toHexString = byteArray => {
-    return Array.from(byteArray, function (byte) {
-        return ('0' + (byte & 0xff).toString(16)).slice(-2);
-    }).join('');
-};
-const fromHexString = hex => {
-    if (hex.substr(0, 2) === '0x') hex = hex.substr(2);
-    for (var bytes = [], c = 0; c < hex.length; c += 2) bytes.push(parseInt(hex.substr(c, 2), 16));
-    return bytes;
-};
 const mnemonicToId = mnemonic => {
     var seed = bip39.mnemonicToSeedSync(mnemonic);
     seed = Array.from(seed);
@@ -132,9 +116,6 @@ export {
     Principal,
     principalToAccountIdentifier,
     getSubAccountArray,
-    from32bits,
-    toHexString,
-    fromHexString,
     mnemonicToId,
     encrypt,
     decrypt,

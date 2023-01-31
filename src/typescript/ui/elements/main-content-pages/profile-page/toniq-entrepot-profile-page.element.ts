@@ -11,17 +11,20 @@ import {EntrepotProfileCardElement} from './toniq-entrepot-profile-card.element'
 import {profileSortDefinitions, defaultProfileFilters} from './profile-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {defineToniqElement} from '@toniq-labs/design-system';
-import {UserIdentity} from '../../../../data/models/user/identity';
-import {EntrepotUserAccount} from '../../../../data/models/user/account';
+import {UserIdentity} from '../../../../data/models/user-data/identity';
+import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
 import {
     UserTransaction,
-    userTransactions,
-} from '../../../../data/local-cache/caches/user-transactions';
+    userTransactionsCache,
+} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
+import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
+import {UserNft} from '../../../../data/models/user-data/user-nft';
+import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
 
 export const EntrepotProfilePageElement = defineToniqElement<{
     collections: ReadonlyArray<Collection>;
-    identity: UserIdentity;
-    account: EntrepotUserAccount | undefined;
+    userIdentity: UserIdentity | undefined;
+    userAccount: EntrepotUserAccount | undefined;
 }>()({
     tagName: 'toniq-entrepot-profile-page',
     styles: css`
@@ -44,14 +47,16 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         showFilters: false,
         filters: defaultProfileFilters,
         userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
+        userNfts: asyncState<ReadonlyArray<UserNft>>(),
+        userFavorites: asyncState<ReadonlyArray<UserNft>>(),
         currentSort: ensureType<CurrentSort>({
             ascending: false,
             name: profileSortDefinitions[0].sortName,
         }),
     },
     initCallback: ({inputs, updateState}) => {
-        userTransactions.subscribe(({subKey: updatedAddress, newValue}) => {
-            if (inputs.account && inputs.account.address === updatedAddress) {
+        userTransactionsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+            if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
                     userTransactions: {
                         resolvedValue: newValue,
@@ -61,22 +66,44 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         });
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
+        console.log({...state});
+
         updateState({
             userTransactions: {
-                createPromise: async () => {
-                    if (inputs.account) {
-                        const currentUserTransactions = await userTransactions.get(
-                            inputs.account.address,
-                        );
-
-                        console.log({currentUserTransactions});
-                        return currentUserTransactions;
-                    } else {
-                        return [];
-                    }
-                },
+                createPromise: async () =>
+                    inputs.userAccount
+                        ? userTransactionsCache.get({
+                              userAccount: inputs.userAccount,
+                          })
+                        : [],
                 trigger: {
-                    account: inputs.account,
+                    account: inputs.userAccount?.address,
+                },
+            },
+            userNfts: {
+                createPromise: async () =>
+                    inputs.userAccount && inputs.userIdentity
+                        ? userNftsCache.get({
+                              userAccount: inputs.userAccount,
+                              userIdentity: inputs.userIdentity,
+                          })
+                        : [],
+                trigger: {
+                    account: inputs.userAccount?.address,
+                    identity: inputs.userIdentity?.getPrincipal().toText(),
+                },
+            },
+            userFavorites: {
+                createPromise: async () =>
+                    inputs.userAccount && inputs.userIdentity
+                        ? userFavoritesCache.get({
+                              userIdentity: inputs.userIdentity,
+                              userAccount: inputs.userAccount,
+                          })
+                        : [],
+                trigger: {
+                    account: inputs.userAccount?.address,
+                    identity: inputs.userIdentity?.getPrincipal().toText(),
                 },
             },
         });

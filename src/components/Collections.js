@@ -25,6 +25,7 @@ import {
     defaultEntrepotApi,
     createEntrepotApiWithIdentity,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {encodeNftId} from '../typescript/augments/nft/nft-id';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -500,7 +501,7 @@ export default function Listings(props) {
                 'There was an error',
                 'Your balance is insufficient to complete this transaction',
             );
-        var tokenid = extjs.encodeTokenId(canisterId, listing[0]);
+        var tokenid = encodeNftId(canisterId, listing[0]);
         try {
             var img =
                 canisterId === 'bxdf4-baaaa-aaaah-qaruq-cai'

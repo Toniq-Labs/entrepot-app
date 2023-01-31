@@ -7,7 +7,7 @@ import {defaultEntrepotApi} from '../../../api/entrepot-apis/entrepot-data-api';
 export async function getCollectionSales(
     collections: Array<Collection>,
 ): Promise<Array<CollectionSales>> {
-    const allLaunchSettings: Array<Sales> = await defaultEntrepotApi
+    const allLaunchSettings: ReadonlyArray<Sales> = await defaultEntrepotApi
         .canister('uczwa-vyaaa-aaaam-abdba-cai', 'launch')
         .get_all_launch_settings();
 
