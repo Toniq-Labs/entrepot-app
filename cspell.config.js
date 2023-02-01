@@ -75,5 +75,6 @@ module.exports = {
         'Toniq',
         'toruslabs',
         'videos_that_dont_fit_in_frame',
+        'localforage',
     ],
 };
