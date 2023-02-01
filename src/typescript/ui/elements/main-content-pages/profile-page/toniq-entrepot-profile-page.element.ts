@@ -210,6 +210,9 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             state.userTransactions,
         ];
 
+        console.log({...state});
+
+        // update nft data
         updateState({
             userTransactions: {
                 createPromise: async () =>
