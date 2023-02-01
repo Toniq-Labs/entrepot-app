@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
@@ -310,7 +310,7 @@ export default function SoldListing(props) {
                     </Grid>
 
                     <a href={nftLinkUrl} target="_blank" rel="noreferrer">
-                        <EntrepotNftDisplay
+                        <EntrepotNftDisplayReact
                             collectionId={props.collection}
                             nftIndex={index}
                             nftId={tokenid}

@@ -1,6 +1,6 @@
-import {CanisterId} from './canister-id';
+import {CanisterId} from '../models/canister-id';
 
-export type Transaction = {
+export type UserNftTransaction = {
     buyerAddress: string;
     collectionId: CanisterId;
     sellerAddress: string;
@@ -10,7 +10,7 @@ export type Transaction = {
     listPrice: number;
 };
 
-export type RawTransaction = {
+export type RawUserNftTransaction = {
     buyer: string;
     canister: CanisterId;
     id: string;
@@ -20,7 +20,9 @@ export type RawTransaction = {
     token: string;
 };
 
-export function parseRawTransaction(raw: RawTransaction): Transaction | undefined {
+export function parseRawUserNftTransaction(
+    raw: RawUserNftTransaction,
+): UserNftTransaction | undefined {
     if (!raw.token) {
         return undefined;
     }

@@ -10,7 +10,7 @@ import Alert from '@material-ui/lab/Alert';
 import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {EntrepotGetIcpUsd, EntrepotEarnDetailsData} from '../utils.js';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
 export default function BuyForm(props) {
@@ -24,7 +24,7 @@ export default function BuyForm(props) {
                 <strong>You are about to make a purchase!</strong>
             </DialogTitle>
             <DialogContent>
-                <EntrepotNftDisplay
+                <EntrepotNftDisplayReact
                     collectionId={props.canister}
                     nftIndex={props.index}
                     nftId={props.tokenid}

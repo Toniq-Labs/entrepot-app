@@ -9,7 +9,7 @@ import PriceUSD from './PriceUSD';
 import {Link} from 'react-router-dom';
 import {EntrepotGetIcpUsd} from '../utils.js';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
@@ -129,7 +129,7 @@ export default function Pawn(props) {
                             paddingRight: 10,
                         }}
                     >
-                        <EntrepotNftDisplay
+                        <EntrepotNftDisplayReact
                             collectionId={canister}
                             nftIndex={index}
                             nftId={props.event.tokenid}

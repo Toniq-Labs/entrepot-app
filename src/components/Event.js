@@ -7,7 +7,7 @@ import PriceICP from './PriceICP';
 import PriceUSD from './PriceUSD';
 import {useNavigate, Link} from 'react-router-dom';
 import {EntrepotGetIcpUsd} from '../utils.js';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 
@@ -78,7 +78,7 @@ export default function Event(props) {
                             paddingRight: 10,
                         }}
                     >
-                        <EntrepotNftDisplay
+                        <EntrepotNftDisplayReact
                             collectionId={props.collection}
                             nftIndex={index}
                             nftId={tokenid}

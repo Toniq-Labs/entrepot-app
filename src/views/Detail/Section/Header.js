@@ -32,7 +32,7 @@ import {DropShadowCard} from '../../../shared/DropShadowCard';
 import {NftCard} from '../../../shared/NftCard';
 import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
-import {EntrepotNftDisplay} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getNftMintNumber} from '../../../typescript/data/nft/user-nft';
 
 const DetailSectionHeader = props => {
@@ -93,7 +93,7 @@ const DetailSectionHeader = props => {
             <div className={`${classes.detailSectionHeader} detail-section-header`}>
                 <Grid item xs={12} sm={5}>
                     <DropShadowCard style={{padding: '16px'}}>
-                        <EntrepotNftDisplay
+                        <EntrepotNftDisplayReact
                             collectionId={props.canister}
                             nftIndex={props.index}
                             nftId={props.tokenid}

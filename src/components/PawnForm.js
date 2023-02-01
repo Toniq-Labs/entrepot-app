@@ -15,7 +15,7 @@ import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 export default function PawnForm(props) {
@@ -96,7 +96,7 @@ export default function PawnForm(props) {
                     Lock NFT in protocol
                 </DialogTitle>
                 <DialogContent>
-                    <EntrepotNftDisplay
+                    <EntrepotNftDisplayReact
                         collectionId={canister}
                         nftIndex={index}
                         nftId={props.nft.id}

@@ -50,6 +50,7 @@ import {
     NftExtraDataCacheInputs,
 } from '../../../../data/local-cache/caches/nft-extra-data-cache';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
+import {UserNftTransaction} from '../../../../data/nft/user-nft-transaction';
 
 function getAllNftsThatNeedData(
     asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
@@ -153,8 +154,9 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         }
     `,
     events: {
-        sellClick: defineElementEvent<void>(),
-        transferClick: defineElementEvent<void>(),
+        sellClick: defineElementEvent<{nftId: string}>(),
+        transferClick: defineElementEvent<{nftId: string}>(),
+        nftClick: defineElementEvent<{nftId: string}>(),
     },
     stateInit: {
         showFilters: false,
@@ -357,23 +359,39 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                         countName: 'NFTs',
                         showFilters: state.showFilters,
                         currentSort: state.currentSort,
-                        sortDefinitions: profileSortDefinitions,
-                        defaultFilters: defaultProfileFilters,
-                        currentFilters: state.filters,
+                        sortDefinitions: {} as any,
+                        defaultFilters: {} as any,
+                        currentFilters: {} as any,
                         isLoading: !Array.isArray(entries),
                         allEntries: Array.isArray(entries) ? entries : [],
                         searchPlaceholder: 'Search: Collection Name or Keywords',
                         searchCallback: (searchTerm, collection) => {
-                            const allSearchAreas = [
-                                collection.name,
-                                collection.keywords,
-                                collection.route,
-                                collection.id,
-                            ].join(' ');
-                            return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
+                            return true;
+                            // const allSearchAreas = [
+                            //     collection.name,
+                            //     collection.keywords,
+                            //     collection.route,
+                            //     collection.id,
+                            // ].join(' ');
+                            // return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
                         },
-                        createEntryTemplateCallback: userNft => {
-                            return JSON.stringify(userNft);
+                        createEntryTemplateCallback: (entry: UserNft | UserNftTransaction) => {
+                            if (!isRenderReady(state.nftExtraData)) {
+                                return 'loading';
+                            }
+                            const nftExtraData = state.nftExtraData[entry.nftId]!;
+                            const userNft: UserNft | undefined =
+                                'transactionId' in entry ? undefined : entry;
+                            const nftTransaction: UserNftTransaction | undefined =
+                                'transactionId' in entry ? entry : undefined;
+                            return html`
+                            <${EntrepotProfileCardElement}
+                                ${assign(EntrepotProfileCardElement, {
+                                    nftExtraData,
+                                    nftTransaction,
+                                    userNft,
+                                })}
+                            ></${EntrepotProfileCardElement}>`;
                         },
                     }),
                 )}

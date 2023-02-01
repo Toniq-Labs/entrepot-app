@@ -14,7 +14,7 @@ import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/
 import {DimensionConstraints, VirResizableImage} from '@electrovir/resizable-image-element';
 import {PartialAndNullable, wait} from '@augment-vir/common';
 
-// these dimensions are set so that they fit within an NFTCard component size of 300x600
+// these dimensions are set so that they fit within an NFTCard component size of about 300x600
 const defaultDimensionConstraint: DimensionConstraints = {
     min: {
         width: 272,
@@ -101,4 +101,4 @@ export const EntrepotNftDisplayElement = defineToniqElement<
     },
 });
 
-export const EntrepotNftDisplay = wrapInReactComponent(EntrepotNftDisplayElement);
+export const EntrepotNftDisplayReact = wrapInReactComponent(EntrepotNftDisplayElement);

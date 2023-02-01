@@ -17,7 +17,7 @@ import {
     createCloudFunctionsEndpointUrl,
 } from '../../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
-import {EntrepotNftDisplay} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
 
@@ -175,7 +175,7 @@ const DetailBody = props => {
             // default case is to just use the thumbnail on the detail page
             default:
                 return (
-                    <EntrepotNftDisplay
+                    <EntrepotNftDisplayReact
                         collectionId={canister}
                         nftIndex={index}
                         nftId={tokenid}

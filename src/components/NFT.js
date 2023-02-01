@@ -24,7 +24,7 @@ import {
 } from '../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
-import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getExtNftId, decodeNftId} from '../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../typescript/data/nft/user-nft';
 import {entrepotCanisters} from '../typescript/api/entrepot-apis/entrepot-canisters';
@@ -470,7 +470,7 @@ export default function NFT(props) {
                     style={{textDecoration: 'none', color: 'inherit'}}
                     to={`/marketplace/asset/` + getExtNftId(tokenid)}
                 >
-                    <EntrepotNftDisplay
+                    <EntrepotNftDisplayReact
                         collection={getExtCanisterId(canister)}
                         nftIndex={index}
                         nftId={tokenid}
