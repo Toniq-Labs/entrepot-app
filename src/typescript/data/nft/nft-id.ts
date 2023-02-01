@@ -4,6 +4,7 @@ import {from32bits, to32bitArray} from '../../augments/bits';
 import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-id';
 import {UserNft, parseRawUserNft} from './user-nft';
 import {EntrepotUserAccount} from '../models/user-data/account';
+import {CanisterId} from '../models/canister-id';
 
 export function decodeNftId(nftId: string) {
     var p: any = [...Principal.fromText(nftId).toUint8Array()];
@@ -11,13 +12,13 @@ export function decodeNftId(nftId: string) {
     if (toHexString(padding) !== toHexString(Buffer.from('\x0Atid'))) {
         return {
             index: 0,
-            canister: nftId,
+            canister: nftId as CanisterId,
             token: encodeNftId(nftId, 0),
         };
     } else {
         return {
             index: from32bits(p.splice(-4)),
-            canister: Principal.fromUint8Array(p).toText(),
+            canister: Principal.fromUint8Array(p).toText() as CanisterId,
             token: nftId,
         };
     }

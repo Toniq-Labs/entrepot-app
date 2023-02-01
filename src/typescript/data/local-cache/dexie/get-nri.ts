@@ -1,11 +1,12 @@
 import {wait} from '@augment-vir/common';
-import {NriData} from '../../models/nri-data';
+import {CollectionNriData} from '../../models/collection-nri-data';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {removeUnknownKeys} from './cache-cleanup';
+import {CanisterId} from '../../models/canister-id';
 
 export async function getThrottledNriDataForCanisters(
     canisterIds: string[],
-): Promise<Record<string, NriData>> {
+): Promise<Record<string, CollectionNriData>> {
     const allNriCacheItems = await Promise.all(
         canisterIds.map(async (canisterId, waitIndex) => {
             return {
@@ -25,7 +26,7 @@ export async function getThrottledNriDataForCanisters(
     const nriDataByCanisterId = allNriCacheItems.reduce((accum, nriCacheItem) => {
         accum[nriCacheItem.canisterId] = nriCacheItem.data;
         return accum;
-    }, {} as Record<string, NriData>);
+    }, {} as Record<string, CollectionNriData>);
 
     // don't await this, it'll execute in the background
     removeUnknownKeys('nriCache', Object.keys(nriDataByCanisterId));
@@ -33,15 +34,26 @@ export async function getThrottledNriDataForCanisters(
     return nriDataByCanisterId;
 }
 
-async function fetchCanisterNriData(canisterId: string, throttleTime: number): Promise<NriData> {
+async function fetchCanisterNriData(
+    canisterId: string,
+    throttleTime: number,
+): Promise<CollectionNriData> {
     // only throttle when we actually make a network request
     await wait(throttleTime);
     const response = await fetch('/nri/' + canisterId + '.json');
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-        const jsonData = await response.json();
-        return jsonData;
-    } else {
-        return undefined;
+
+    const isJson = contentType && contentType.includes('application/json');
+
+    let nriData = undefined;
+    try {
+        nriData = isJson ? await response.json() : undefined;
+    } catch (error) {
+        console.error(`Failed to read NRI data for '${canisterId}':`, error);
     }
+
+    return {
+        collectionId: canisterId as CanisterId,
+        nriData,
+    };
 }

@@ -1,14 +1,15 @@
 import {isRuntimeTypeOf} from '@augment-vir/common';
 import {getCanisterDetails} from './all-canister-details';
+import {CanisterId} from '../../models/canister-id';
 
 /** Or, in other words, get the wrapped canister id. */
-export function getExtCanisterId(canisterId: string): string {
+export function getExtCanisterId(canisterId: string): CanisterId {
     const details = getCanisterDetails(canisterId);
     if (!details) {
-        return canisterId;
+        return canisterId as CanisterId;
     }
 
-    return details.extCanisterId;
+    return details.extCanisterId as CanisterId;
 }
 
 export function getOriginalCanisterId(canisterId: string): string {

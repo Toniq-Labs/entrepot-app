@@ -1,4 +1,5 @@
 import {wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
+import {ReadonlyDeep} from 'type-fest';
 import {Collection} from '../../../../data/models/collection';
 import {
     FilterTypeEnum,
@@ -100,7 +101,7 @@ export const defaultMarketplaceFilters = wrapNarrowTypeWithTypeCheck<
 });
 
 export const sortDefinitions = wrapNarrowTypeWithTypeCheck<
-    ReadonlyArray<SortDefinition<Collection>>
+    ReadonlyArray<ReadonlyDeep<SortDefinition<Collection>>>
 >()([
     {
         sortName: 'Volume',

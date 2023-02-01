@@ -1,10 +1,11 @@
 import {decodeNftId} from './nft-id';
 import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-id';
 import {getCanisterDetails} from '../canisters/canister-details/all-canister-details';
+import {CanisterId} from '../models/canister-id';
 
 export type RawUserNft = {
     id: string;
-    canister: string;
+    canister: CanisterId;
     owner: string;
     price: number;
     time: number;
@@ -14,7 +15,7 @@ export type UserNft = {
     nftId: string;
     nftIndex: number;
     nftMintNumber: number;
-    collectionId: string;
+    collectionId: CanisterId;
     ownerAddress: string;
     listPrice: number;
     /** I don't actually know what this time property represents, I've only ever seen it be 0. */

@@ -4,6 +4,7 @@ import {
     camelCaseToKebabCase,
     ensureType,
     filterObject,
+    isPromiseLike,
     isRuntimeTypeOf,
     isTruthy,
     mapObjectValues,
@@ -26,9 +27,9 @@ import {
     EntrepotWithFiltersElement,
     createWithFiltersInputs,
 } from '../../common/with-filters/toniq-entrepot-with-filters.element';
-import {CurrentSort} from '../../common/with-filters/filters-types';
-import {EntrepotProfileCardElement} from './toniq-entrepot-profile-card.element';
-import {profileSortDefinitions, defaultProfileFilters} from './profile-filters';
+import {CurrentSort, FilterDefinitions} from '../../common/with-filters/filters-types';
+import {EntrepotProfileCardElement} from './toniq-entrepot-profile-nft-card.element';
+import {defaultProfileFilters, profileUserNftSortDefinitions} from './user-nft-profile-filters';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {defineToniqElement} from '@toniq-labs/design-system';
 import {UserIdentity} from '../../../../data/models/user-data/identity';
@@ -44,28 +45,47 @@ import {
     userMadeOffersCache,
     makeUserOffersKey,
 } from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
-import {NftExtraData} from '../../../../data/nft/nft-extra-data';
+import {NftExtraData, emptyNftExtraData} from '../../../../data/nft/nft-extra-data';
 import {
     nftExtraDataCache,
     NftExtraDataCacheInputs,
 } from '../../../../data/local-cache/caches/nft-extra-data-cache';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {UserNftTransaction} from '../../../../data/nft/user-nft-transaction';
+import {collectionNriCache} from '../../../../data/local-cache/caches/collection-nri-cache';
+import {CollectionNriData} from '../../../../data/models/collection-nri-data';
+import {CanisterId} from '../../../../data/models/canister-id';
 
 function getAllNftsThatNeedData(
     asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
 ): Record<string, NftExtraDataCacheInputs['userNft']> {
-    const nftsThatNeedIds: Record<string, NftExtraDataCacheInputs['userNft']> = {};
+    const nftsThatNeedExtraData: Record<string, NftExtraDataCacheInputs['userNft']> = {};
 
     asyncStates.forEach(possibleArray => {
         if (isRuntimeTypeOf(possibleArray, 'array')) {
             possibleArray.forEach(entry => {
-                nftsThatNeedIds[entry.nftId] = entry;
+                nftsThatNeedExtraData[entry.nftId] = entry;
             });
         }
     });
 
-    return nftsThatNeedIds;
+    return nftsThatNeedExtraData;
+}
+
+function getAllCollectionIds(
+    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<UserNft, 'collectionId'>>>>,
+): CanisterId[] {
+    const collectionIds = new Set<CanisterId>();
+
+    asyncStates.forEach(possibleArray => {
+        if (isRuntimeTypeOf(possibleArray, 'array')) {
+            possibleArray.forEach(entry => {
+                collectionIds.add(entry.collectionId);
+            });
+        }
+    });
+
+    return Array.from(collectionIds);
 }
 
 function makeNftExtraDataLoadTrigger(
@@ -104,6 +124,7 @@ const profileTopTabs = [
 ] as const;
 
 type ProfileTopTab = ArrayElement<typeof profileTopTabs>;
+type ProfileTopTabValue = ProfileTopTab['value'];
 
 function combineOffers({
     userOffersMade,
@@ -160,17 +181,42 @@ export const EntrepotProfilePageElement = defineToniqElement<{
     },
     stateInit: {
         showFilters: false,
-        filters: defaultProfileFilters,
+        filters: ensureType<Record<ProfileTopTabValue, FilterDefinitions<any>>>({
+            activity: defaultProfileFilters,
+            earn: defaultProfileFilters,
+            favorites: defaultProfileFilters,
+            'my-nfts': defaultProfileFilters,
+            offers: defaultProfileFilters,
+        }),
         currentTopTab: profileTopTabs[0] as ProfileTopTab,
         userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
         userNfts: asyncState<ReadonlyArray<UserNft>>(),
         userFavorites: asyncState<ReadonlyArray<UserNft>>(),
         userOffersMade: asyncState<ReadonlyArray<UserNft>>(),
+        collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
         userEarnNfts: asyncState<ReadonlyArray<unknown>>(),
         nftExtraData: asyncState<Readonly<Record<string, NftExtraData>>>(),
-        currentSort: ensureType<CurrentSort>({
-            ascending: false,
-            name: profileSortDefinitions[0].sortName,
+        currentSort: ensureType<Record<ProfileTopTabValue, CurrentSort>>({
+            activity: {
+                ascending: false,
+                name: profileUserNftSortDefinitions[0].sortName,
+            },
+            earn: {
+                ascending: false,
+                name: profileUserNftSortDefinitions[0].sortName,
+            },
+            favorites: {
+                ascending: false,
+                name: profileUserNftSortDefinitions[0].sortName,
+            },
+            'my-nfts': {
+                ascending: false,
+                name: profileUserNftSortDefinitions[0].sortName,
+            },
+            offers: {
+                ascending: false,
+                name: profileUserNftSortDefinitions[0].sortName,
+            },
         }),
     },
     initCallback: ({inputs, state, updateState}) => {
@@ -201,8 +247,11 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                 });
             }
         });
-        nftExtraDataCache.subscribe(({generatedKey: nftId, newValue}) => {
+        nftExtraDataCache.subscribe(async ({generatedKey: nftId, newValue}) => {
             console.log('extra data cache updated');
+            if (isPromiseLike(state.nftExtraData)) {
+                await state.nftExtraData;
+            }
             updateState({
                 nftExtraData: {
                     resolvedValue: {
@@ -227,16 +276,30 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                 }
             }
         });
+        collectionNriCache.subscribe(async ({generatedKey: collectionId, newValue}) => {
+            console.log('extra data cache updated');
+            if (isPromiseLike(state.collectionNriData)) {
+                await state.collectionNriData;
+            }
+            updateState({
+                collectionNriData: {
+                    resolvedValue: {
+                        ...(isRenderReady(state.collectionNriData) ? state.collectionNriData : {}),
+                        [collectionId]: newValue,
+                    },
+                },
+            });
+        });
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        const asyncUserNftArrays: ReadonlyArray<
-            AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>
-        > = [
+        const asyncUserNftArrays = [
             state.userFavorites,
             state.userNfts,
             state.userOffersMade,
             state.userTransactions,
         ];
+
+        const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
 
         console.log({...state});
 
@@ -266,6 +329,32 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     account: inputs.userAccount?.address,
                     identity: inputs.userIdentity?.getPrincipal().toText(),
                 },
+            },
+            collectionNriData: {
+                createPromise: async () => {
+                    let waitIndex = 1;
+                    const nriData = await Promise.all(
+                        allUserCollectionIds.map(async collectionId => {
+                            return collectionNriCache.get({
+                                collectionId,
+                                waitIndex: waitIndex++,
+                            });
+                        }),
+                    );
+
+                    const nriDataByCollectionId: Record<CanisterId, CollectionNriData> =
+                        Object.fromEntries(
+                            nriData.map((nriEntry): [CanisterId, CollectionNriData] => {
+                                return [
+                                    nriEntry.collectionId,
+                                    nriEntry,
+                                ];
+                            }),
+                        );
+
+                    return nriDataByCollectionId;
+                },
+                trigger: allUserCollectionIds,
             },
             userFavorites: {
                 createPromise: async () =>
@@ -326,14 +415,32 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             favorites: state.userFavorites,
             offers: combineOffers(state),
             activity: state.userTransactions,
-            earn: state.userEarnNfts,
+            // earn: state.userEarnNfts,
+            earn: [],
         });
 
         const allowedTabs = inputs.toniqEarnAllowed
             ? profileTopTabs
             : profileTopTabs.filter(topTab => !topTab.label.toLowerCase().includes('earn'));
 
-        const entries = tabToStateProp[state.currentTopTab.value];
+        const asyncEntries:
+            | AsyncState<ReadonlyArray<UserNftTransaction>>
+            | AsyncState<ReadonlyArray<UserNft>> = tabToStateProp[state.currentTopTab.value];
+
+        const entries: ReadonlyArray<Readonly<ProfilePageNftEntry>> = isRenderReady(asyncEntries)
+            ? asyncEntries.map((nft): ProfilePageNftEntry => {
+                  const maybeExtraData: NftExtraData | undefined = isRenderReady(state.nftExtraData)
+                      ? state.nftExtraData[nft.nftId]
+                      : undefined;
+
+                  const extraNftData: NftExtraData = maybeExtraData || emptyNftExtraData;
+
+                  return {
+                      ...extraNftData,
+                      ...nft,
+                  } as ProfilePageNftEntry;
+              })
+            : [];
 
         return html`
             <${EntrepotPageHeaderElement}
@@ -359,11 +466,11 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                         countName: 'NFTs',
                         showFilters: state.showFilters,
                         currentSort: state.currentSort,
-                        sortDefinitions: {} as any,
-                        defaultFilters: {} as any,
-                        currentFilters: {} as any,
-                        isLoading: !Array.isArray(entries),
-                        allEntries: Array.isArray(entries) ? entries : [],
+                        sortDefinitions: [],
+                        defaultFilters: {},
+                        currentFilters: {},
+                        isLoading: !isRenderReady(asyncEntries),
+                        allEntries: entries ? entries : [],
                         searchPlaceholder: 'Search: Collection Name or Keywords',
                         searchCallback: (searchTerm, collection) => {
                             return true;
@@ -375,7 +482,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                             // ].join(' ');
                             // return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
                         },
-                        createEntryTemplateCallback: (entry: UserNft | UserNftTransaction) => {
+                        createEntryTemplateCallback: (entry: ProfilePageNftEntry) => {
                             if (!isRenderReady(state.nftExtraData)) {
                                 return 'loading';
                             }
@@ -399,10 +506,20 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     updateState({showFilters: event.detail});
                 })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
-                    updateState({filters: event.detail});
+                    updateState({
+                        filters: {
+                            ...state.filters,
+                            [state.currentTopTab.value]: event.detail,
+                        },
+                    });
                 })}
                 ${listen(EntrepotWithFiltersElement.events.sortChange, event => {
-                    updateState({currentSort: event.detail});
+                    updateState({
+                        currentSort: {
+                            ...state.currentSort,
+                            [state.currentTopTab.value]: event.detail,
+                        },
+                    });
                 })}
             >
             </${EntrepotWithFiltersElement}>

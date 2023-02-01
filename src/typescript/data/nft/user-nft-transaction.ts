@@ -4,7 +4,7 @@ export type UserNftTransaction = {
     buyerAddress: string;
     collectionId: CanisterId;
     sellerAddress: string;
-    timestampNanosecond: number;
+    timestampMillisecond: number;
     nftId: string;
     transactionId: string;
     listPrice: number;
@@ -31,7 +31,7 @@ export function parseRawUserNftTransaction(
         buyerAddress: raw.buyer,
         collectionId: raw.canister,
         sellerAddress: raw.seller,
-        timestampNanosecond: raw.time,
+        timestampMillisecond: raw.time / 1_000_000,
         nftId: raw.token,
         transactionId: raw.id,
         listPrice: raw.price,

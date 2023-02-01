@@ -11,13 +11,15 @@ export enum BooleanFilterTypeEnum {
     Exclusive = 'exclusive',
     /** For this filter type, string comparison values must merely contain the checkbox value. */
     Contains = 'contains',
+    /** For this filter type, allow any values. Use this for an "all" filter. */
+    Everything = 'everything',
 }
 
 export type BooleanFilterEntry = {
     label: string;
     checked: boolean;
     /** If value is not provided, the label is used as the filter. */
-    value?: string;
+    value?: string | boolean;
     /** If filterType is not provided, BooleanFilterTypeEnum.Exclusive is used */
     filterType?: BooleanFilterTypeEnum;
 };
@@ -53,22 +55,23 @@ export type SingleFilterDefinition<EntryGeneric extends object> =
                 filterType: FilterTypeEnum.NumericRange;
             } & NumericRangeFilterEntry)
       ) & {
-          filterField: Readonly<NestedSequentialKeys<EntryGeneric>>;
+          filterField: NestedSequentialKeys<EntryGeneric>;
       })
     | {
           filterType: FilterTypeEnum.ExpandingList;
           expanded: boolean;
           entries: ReadonlyArray<ExpandingListFilterEntry>;
-          filterField: Readonly<NestedSequentialKeys<EntryGeneric>> | ReadonlyArray<never[]>;
+          filterField: NestedSequentialKeys<EntryGeneric> | never[];
       };
 
-export type FilterDefinitions<EntryGeneric extends object> = Readonly<
-    Record<string, SingleFilterDefinition<EntryGeneric>>
+export type FilterDefinitions<EntryGeneric extends object> = Record<
+    string,
+    SingleFilterDefinition<EntryGeneric>
 >;
 
 export type SortDefinition<EntryGeneric extends object> = {
     sortName: string;
-    sortField: Readonly<NestedSequentialKeys<EntryGeneric>>;
+    sortField: NestedSequentialKeys<EntryGeneric>;
 };
 
 export type CurrentSort = {

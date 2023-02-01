@@ -6,6 +6,7 @@ import {wait, JsonCompatibleValue} from '@augment-vir/common';
 import {NftExtraData} from '../../nft/nft-extra-data';
 import {parseRawNftOffer} from '../../nft/nft-offers';
 import {entrepotCanisters} from '../../../api/entrepot-apis/entrepot-canisters';
+import {CollectionNriData} from '../../models/collection-nri-data';
 
 export type NftExtraDataCacheInputs = {
     userNft: Pick<UserNft, 'listPrice' | 'nftId'>;

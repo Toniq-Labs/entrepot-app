@@ -1,12 +1,13 @@
 import {CurrentSort, SortDefinition} from './filters-types';
 import {getValueFromNestedKeys, NestedSequentialKeys} from '@augment-vir/common';
+import {ReadonlyDeep} from 'type-fest';
 
 export function applySort<EntryGeneric extends object>({
     sortDefinitions,
     currentSort,
     entries,
 }: {
-    sortDefinitions: ReadonlyArray<SortDefinition<EntryGeneric>>;
+    sortDefinitions: ReadonlyArray<ReadonlyDeep<SortDefinition<EntryGeneric>>>;
     currentSort: CurrentSort;
     entries: ReadonlyArray<EntryGeneric>;
 }) {

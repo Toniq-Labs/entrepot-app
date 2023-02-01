@@ -1,13 +1,13 @@
 import {extractErrorMessage, PropertyValueType} from '@augment-vir/common';
 import Dexie, {Table} from 'dexie';
 import {BaseCollection, Collection} from '../../models/collection';
-import {NriData} from '../../models/nri-data';
+import {CollectionNriData} from '../../models/collection-nri-data';
 import {deleteDatabase} from './delete-database';
 
 export type NriCacheItem = {
     /** CanisterId */
     rowKey: string;
-    data: NriData;
+    data: CollectionNriData;
 };
 
 export type CollectionStatsCacheItem = {

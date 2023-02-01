@@ -24,15 +24,16 @@ import {EntrepotFilterElement} from './toniq-entrepot-filter.element';
 import {applySort} from './apply-sort';
 import {EntrepotFilterTokenElement} from './toniq-entrepot-filter-token.element';
 import {countFiltersNotAtDefaults} from './is-still-default';
+import {ReadonlyDeep} from 'type-fest';
 
 export type WithFiltersElementInputs<
     EntryData extends object,
     FilterDefinitionsGeneric extends FilterDefinitions<EntryData>,
 > = {
-    currentFilters: FilterDefinitionsGeneric;
-    defaultFilters: FilterDefinitionsGeneric;
-    sortDefinitions: ReadonlyArray<SortDefinition<EntryData>>;
-    currentSort: CurrentSort;
+    currentFilters: ReadonlyDeep<FilterDefinitionsGeneric>;
+    defaultFilters: ReadonlyDeep<FilterDefinitionsGeneric>;
+    sortDefinitions: ReadonlyArray<ReadonlyDeep<SortDefinition<EntryData>>>;
+    currentSort: ReadonlyDeep<CurrentSort>;
     isLoading?: boolean;
     countName: string;
     searchPlaceholder: string;
@@ -275,7 +276,10 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
     },
     events: {
         showFiltersChange: defineElementEvent<boolean>(),
-        filtersChange: defineElementEvent<WithFiltersElementInputs<any, any>['currentFilters']>(),
+        filtersChange:
+            defineElementEvent<
+                WithFiltersElementInputs<any, FilterDefinitions<any>>['currentFilters']
+            >(),
         sortChange: defineElementEvent<CurrentSort>(),
     },
     renderCallback: ({inputs, dispatch, events, state, updateState}) => {

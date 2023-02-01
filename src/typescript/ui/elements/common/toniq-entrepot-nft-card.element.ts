@@ -7,10 +7,13 @@ import {
 } from '@toniq-labs/design-system';
 import {UserNft} from '../../../data/nft/user-nft';
 import {NftExtraData} from '../../../data/nft/nft-extra-data';
-import {makeDropShadowCardStyles} from '../styles/drop-shadow-card.style';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
 
-export const EntrepotNftCardElement = defineToniqElement<{nft: UserNft & NftExtraData}>()({
+export type NftCardInputs = {
+    nft: Pick<UserNft & NftExtraData, 'collectionId' | 'nftId' | 'nftIndex'>;
+};
+
+export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
     tagName: 'toniq-entrepot-nft-card',
     styles: css`
         :host {

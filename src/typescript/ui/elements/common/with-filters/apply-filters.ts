@@ -104,7 +104,11 @@ function matchSingleCheckboxFilter<EntryData extends object>({
     dataEntry: EntryData;
     fieldKeys: string[];
     checkbox: BooleanFilterEntry;
-}) {
+}): boolean {
+    if (checkbox.filterType === BooleanFilterTypeEnum.Everything) {
+        return true;
+    }
+
     const matchThisData: unknown = getValueFromNestedKeys(
         dataEntry,
         fieldKeys as NestedSequentialKeys<EntryData>,
@@ -115,21 +119,35 @@ function matchSingleCheckboxFilter<EntryData extends object>({
 
     const checkboxValue = checkbox.value ?? checkbox.label;
 
-    const matchesData: ((value: string) => boolean) | undefined = Array.isArray(matchThisData)
+    const matchesData: ((value: string | boolean) => boolean) | undefined = Array.isArray(
+        matchThisData,
+    )
         ? value => {
               return matchThisData.includes(value);
           }
         : typeof matchThisData === 'string'
         ? value => {
-              if (checkbox.filterType === BooleanFilterTypeEnum.Contains) {
-                  return matchThisData.includes(value);
+              if (typeof value === 'boolean') {
+                  if (value) {
+                      return !!matchThisData;
+                  } else {
+                      return !matchThisData;
+                  }
               } else {
-                  return value === matchThisData;
+                  if (checkbox.filterType === BooleanFilterTypeEnum.Contains) {
+                      return matchThisData.includes(value);
+                  } else {
+                      return value === matchThisData;
+                  }
               }
           }
         : typeof matchThisData === 'boolean'
-        ? () => {
-              return matchThisData;
+        ? value => {
+              if (value) {
+                  return !!matchThisData;
+              } else {
+                  return !matchThisData;
+              }
           }
         : undefined;
 
