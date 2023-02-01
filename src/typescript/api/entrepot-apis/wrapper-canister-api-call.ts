@@ -32,7 +32,6 @@ export const allWrappedCanistersApi: AllWrappedCanistersApi = new Proxy(
             if (actualApiMethod == undefined || !isRuntimeTypeOf(actualApiMethod, 'function')) {
                 return undefined;
             }
-            console.log('yeet');
 
             return wrapApiCall(property as keyof EntrepotTokenApiMethods);
         },
