@@ -159,7 +159,7 @@ export default function DetailSectionActivity(props) {
                             />
                         </div>
                     </div>
-                    <div container className={classes.listRowContainer}>
+                    <div className={classes.listRowContainer}>
                         <div className={classes.listRowHeader}>
                             <ListRow
                                 items={[

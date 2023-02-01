@@ -107,7 +107,7 @@ const DetailSectionHeader = props => {
                     <Grid container style={{height: '100%', gap: 16}}>
                         <Grid item xs={12}>
                             <button
-                                class={`${classes.returnToCollection} ${classes.removeNativeButtonStyles}`}
+                                className={`${classes.returnToCollection} ${classes.removeNativeButtonStyles}`}
                                 onClick={() => {
                                     navigate('/marketplace/' + collection.route);
                                 }}
@@ -133,7 +133,7 @@ const DetailSectionHeader = props => {
                                             })}
                                         </span>
                                     </Grid>
-                                    <Grid item class={classes.hideWhenMobile}>
+                                    <Grid item className={classes.hideWhenMobile}>
                                         <Favourite
                                             className={classes.favourite}
                                             showCount={true}
@@ -175,7 +175,7 @@ const DetailSectionHeader = props => {
                                         ''
                                     )}
                                 </div>
-                                <Grid item class={classes.hideWhenDesktop}>
+                                <Grid item className={classes.hideWhenDesktop}>
                                     <Favourite
                                         className={classes.favourite}
                                         showCount={true}
@@ -195,7 +195,7 @@ const DetailSectionHeader = props => {
                                 >
                                     <div className={classes.nftDescContainer3}>
                                         {getPriceData() ? (
-                                            <div class={classes.priceWrapper}>
+                                            <div className={classes.priceWrapper}>
                                                 <span
                                                     style={{
                                                         fontWeight: '600',
@@ -208,7 +208,7 @@ const DetailSectionHeader = props => {
                                                     {icpToString(getPriceData(), true, true)} ICP
                                                 </span>
                                                 {EntrepotGetIcpUsd(getPriceData()) ? (
-                                                    <span class={classes.priceUSD}>
+                                                    <span className={classes.priceUSD}>
                                                         (
                                                         <PriceUSD
                                                             price={EntrepotGetIcpUsd(
@@ -236,17 +236,41 @@ const DetailSectionHeader = props => {
                                             </span>
                                         )}
                                     </div>
-                                    <div>
-                                        {owner &&
-                                        props.account &&
-                                        props.account.address === owner ? (
-                                            <div style={{display: 'flex', gap: '16px'}}>
-                                                {listing !== false &&
-                                                listing &&
-                                                listing.price > 0n ? (
-                                                    <>
+                                    {props.identity ? (
+                                        <div>
+                                            {owner &&
+                                            props.account &&
+                                            props.account.address === owner ? (
+                                                <div style={{display: 'flex', gap: '16px'}}>
+                                                    {listing !== false &&
+                                                    listing &&
+                                                    listing.price > 0n ? (
+                                                        <>
+                                                            <ToniqButton
+                                                                text="Update Listing"
+                                                                onClick={() => {
+                                                                    props.listNft(
+                                                                        {
+                                                                            id: tokenid,
+                                                                            listing: listing,
+                                                                        },
+                                                                        props.loader,
+                                                                        _afterList,
+                                                                    );
+                                                                }}
+                                                            />
+                                                            <ToniqButton
+                                                                text="Cancel Listing"
+                                                                className="toniq-button-secondary"
+                                                                onClick={() => {
+                                                                    cancelListing();
+                                                                }}
+                                                            />
+                                                            {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                                                        </>
+                                                    ) : (
                                                         <ToniqButton
-                                                            text="Update Listing"
+                                                            text="List Item"
                                                             onClick={() => {
                                                                 props.listNft(
                                                                     {
@@ -258,55 +282,35 @@ const DetailSectionHeader = props => {
                                                                 );
                                                             }}
                                                         />
-                                                        <ToniqButton
-                                                            text="Cancel Listing"
-                                                            className="toniq-button-secondary"
-                                                            onClick={() => {
-                                                                cancelListing();
-                                                            }}
-                                                        />
-                                                        {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
-                                                    </>
-                                                ) : (
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div style={{display: 'flex', gap: '16px'}}>
                                                     <ToniqButton
-                                                        text="List Item"
+                                                        text="Buy Now"
                                                         onClick={() => {
-                                                            props.listNft(
-                                                                {
-                                                                    id: tokenid,
-                                                                    listing: listing,
-                                                                },
-                                                                props.loader,
-                                                                _afterList,
+                                                            props.buyNft(
+                                                                collection.canister,
+                                                                index,
+                                                                listing,
+                                                                _afterBuy,
                                                             );
                                                         }}
                                                     />
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div style={{display: 'flex', gap: '16px'}}>
-                                                <ToniqButton
-                                                    text="Buy Now"
-                                                    onClick={() => {
-                                                        props.buyNft(
-                                                            collection.canister,
-                                                            index,
-                                                            listing,
-                                                            _afterBuy,
-                                                        );
-                                                    }}
-                                                />
-                                                <ToniqButton
-                                                    text="Make Offer"
-                                                    className="toniq-button-outline"
-                                                    onClick={() => {
-                                                        makeOffer();
-                                                    }}
-                                                />
-                                                {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
-                                            </div>
-                                        )}
-                                    </div>
+                                                    <ToniqButton
+                                                        text="Make Offer"
+                                                        className="toniq-button-outline"
+                                                        onClick={() => {
+                                                            makeOffer();
+                                                        }}
+                                                    />
+                                                    {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        ''
+                                    )}
                                 </div>
                             </div>
                         </Grid>

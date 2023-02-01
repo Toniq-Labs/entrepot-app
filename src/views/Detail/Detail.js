@@ -1,7 +1,6 @@
 import chunk from 'lodash.chunk';
 import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
-import extjs from '../../ic/extjs';
 import {EntrepotCollectionStats} from '../../utils';
 import DetailBody from './DetailBody';
 import OfferForm from '../../components/OfferForm';

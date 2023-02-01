@@ -1,4 +1,4 @@
-import {Grid, Link, makeStyles} from '@material-ui/core';
+import {Grid, Link, makeStyles, Tooltip} from '@material-ui/core';
 import {
     Chain24Icon,
     cssToReactStyleObject,
@@ -202,20 +202,27 @@ export default function DetailSectionDetails(props) {
                             )}
                         </div>
                     )}
-                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                        <ToniqIcon icon={Paper24Icon} />
-                        <Link
-                            href={getCanisterDetails(collection.canister).getNftLinkUrl({
-                                nftIndex: index,
-                            })}
-                            target="_blank"
-                            rel="noreferrer"
-                            underline="none"
-                            className={classes.linkTextBold}
-                        >
-                            License
-                        </Link>
-                    </div>
+                    {collection.nftlicense !== '' ? (
+                        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                            <ToniqIcon icon={Paper24Icon} />
+                            <Link
+                                href={collection.nftlicense}
+                                target="_blank"
+                                rel="noreferrer"
+                                underline="none"
+                                className={classes.linkTextBold}
+                            >
+                                License
+                            </Link>
+                        </div>
+                    ) : (
+                        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                            <ToniqIcon icon={Paper24Icon} />
+                            <Tooltip title="Coming Soon" arrow placement="top">
+                                <span className={classes.linkTextBold}>License</span>
+                            </Tooltip>
+                        </div>
+                    )}
                 </div>
                 <div id="detailsContent" className={classes.detailSectionContent}>
                     <div className={classes.listRowContainer}>
@@ -249,65 +256,73 @@ export default function DetailSectionDetails(props) {
                                 )}
                             </div>
                         )}
-                        {attributes && attributes.length ? (
-                            <div className={classes.attributeWrapper}>
-                                {attributes.map((attribute, attributeIndex) => (
-                                    <DropShadowCard
-                                        enableHover
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            padding: '0',
-                                            minHeight: 132,
-                                        }}
-                                        key={attributeIndex}
-                                    >
-                                        <span className={classes.attributeHeader}>
-                                            <span
-                                                style={cssToReactStyleObject(
-                                                    toniqFontStyles.labelFont,
-                                                )}
-                                            >
-                                                {attribute.category}
-                                            </span>
-                                        </span>
-                                        <Grid
-                                            container
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                textAlign: 'center',
-                                                padding: '16px 20px',
-                                                flexGrow: 1,
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    ...cssToReactStyleObject(
-                                                        toniqFontStyles.paragraphFont,
-                                                    ),
-                                                    ...cssToReactStyleObject(
-                                                        toniqFontStyles.boldFont,
-                                                    ),
-                                                    display: '-webkit-box',
-                                                    overflow: 'hidden',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                }}
-                                            >
-                                                {attribute.value}
-                                            </span>
-                                        </Grid>
-                                    </DropShadowCard>
-                                ))}
-                            </div>
-                        ) : (
+                        {!attributes ? (
                             <span className={classes.noDataText} style={{flexGrow: 1}}>
-                                NO META DATA AVAILABLE
+                                {reloadIcon()}
                             </span>
+                        ) : (
+                            <>
+                                {typeof attributes === 'object' && attributes.length ? (
+                                    <div className={classes.attributeWrapper}>
+                                        {attributes.map((attribute, attributeIndex) => (
+                                            <DropShadowCard
+                                                enableHover
+                                                style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    padding: '0',
+                                                    minHeight: 132,
+                                                }}
+                                                key={attributeIndex}
+                                            >
+                                                <span className={classes.attributeHeader}>
+                                                    <span
+                                                        style={cssToReactStyleObject(
+                                                            toniqFontStyles.labelFont,
+                                                        )}
+                                                    >
+                                                        {attribute.category}
+                                                    </span>
+                                                </span>
+                                                <Grid
+                                                    container
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        textAlign: 'center',
+                                                        padding: '16px 20px',
+                                                        flexGrow: 1,
+                                                    }}
+                                                >
+                                                    <span
+                                                        style={{
+                                                            ...cssToReactStyleObject(
+                                                                toniqFontStyles.paragraphFont,
+                                                            ),
+                                                            ...cssToReactStyleObject(
+                                                                toniqFontStyles.boldFont,
+                                                            ),
+                                                            display: '-webkit-box',
+                                                            overflow: 'hidden',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                        }}
+                                                    >
+                                                        {attribute.value}
+                                                    </span>
+                                                </Grid>
+                                            </DropShadowCard>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <span className={classes.noDataText} style={{flexGrow: 1}}>
+                                        NO META DATA AVAILABLE
+                                    </span>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
@@ -330,116 +345,132 @@ export default function DetailSectionDetails(props) {
                             }}
                         />
                     </div>
-                    {offerListing && offerListing.length ? (
-                        <div
-                            id="offersContent"
-                            className={classes.detailSectionContent}
-                            style={{paddingBottom: 24}}
-                        >
-                            {offerListing.slice().map((offer, index) => {
-                                return (
-                                    <NftCard
-                                        listStyle={true}
-                                        collectionId={getExtCanisterId(canister)}
-                                        nftIndex={index}
-                                        nftId={tokenid}
-                                        cachePriority={0}
-                                        key={index}
-                                        style={{margin: '0 8px', padding: 12}}
-                                        max={{height: 64, width: 64}}
-                                        min={{height: 64, width: 64}}
-                                    >
-                                        <ListRow
-                                            items={[
-                                                '',
-                                                <div
-                                                    style={{
-                                                        display: 'flex',
-                                                        alignContent: 'center',
-                                                        justifyContent: 'left',
-                                                        alignItems: 'center',
-                                                        ...cssToReactStyleObject(
-                                                            toniqFontStyles.paragraphFont,
-                                                        ),
-                                                    }}
-                                                >
-                                                    <PriceICP
-                                                        large={false}
-                                                        volume={true}
-                                                        clean={false}
-                                                        price={offer.amount}
-                                                    />
-                                                </div>,
-                                                <div
-                                                    style={{
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                    }}
-                                                >
-                                                    {floor ? (
-                                                        getFloorDelta(offer.amount)
-                                                    ) : (
-                                                        <ToniqIcon
-                                                            style={{
-                                                                color: String(
-                                                                    toniqColors.pagePrimary
-                                                                        .foregroundColor,
-                                                                ),
-                                                                alignSelf: 'center',
-                                                            }}
-                                                            icon={LoaderAnimated24Icon}
-                                                        />
-                                                    )}
-                                                </div>,
-                                                <div>
-                                                    {props.identity &&
-                                                    props.identity.getPrincipal().toText() ===
-                                                        offer.buyer.toText() ? (
-                                                        <ToniqButton
-                                                            text="Cancel"
-                                                            onClick={cancelOffer}
-                                                        />
-                                                    ) : (
-                                                        <Link
-                                                            href={`https://icscan.io/account/${offer.buyer}`}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            underline="none"
-                                                        >
-                                                            <ToniqMiddleEllipsis
-                                                                letterCount={4}
-                                                                text={offer.buyer.toText()}
-                                                                className={classes.linkText}
-                                                            />
-                                                        </Link>
-                                                    )}
-                                                </div>,
-                                            ]}
-                                            classes={classes}
-                                        />
-                                    </NftCard>
-                                );
-                            })}
-                        </div>
+                    {!offerListing ? (
+                        <span className={classes.noDataText} style={{flexGrow: 1}}>
+                            {reloadIcon()}
+                        </span>
                     ) : (
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexGrow: 1,
-                            }}
-                        >
-                            <span className={classes.noDataText}>THERE ARE NO OPEN OFFERS</span>
-                            <ToniqButton
-                                className={'toniq-button-outline'}
-                                text="Make an Offer"
-                                onClick={() => {
-                                    makeOffer();
-                                }}
-                            />
-                        </div>
+                        <>
+                            {typeof offerListing === 'object' && offerListing.length ? (
+                                <div
+                                    id="offersContent"
+                                    className={classes.detailSectionContent}
+                                    style={{paddingBottom: 24}}
+                                >
+                                    {offerListing.slice().map((offer, index) => {
+                                        return (
+                                            <NftCard
+                                                listStyle={true}
+                                                collectionId={getExtCanisterId(canister)}
+                                                nftIndex={index}
+                                                nftId={tokenid}
+                                                cachePriority={0}
+                                                key={index}
+                                                style={{margin: '0 8px', padding: 12}}
+                                                max={{height: 64, width: 64}}
+                                                min={{height: 64, width: 64}}
+                                            >
+                                                <ListRow
+                                                    items={[
+                                                        '',
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                alignContent: 'center',
+                                                                justifyContent: 'left',
+                                                                alignItems: 'center',
+                                                                ...cssToReactStyleObject(
+                                                                    toniqFontStyles.paragraphFont,
+                                                                ),
+                                                            }}
+                                                        >
+                                                            <PriceICP
+                                                                large={false}
+                                                                volume={true}
+                                                                clean={false}
+                                                                price={offer.amount}
+                                                            />
+                                                        </div>,
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                justifyContent: 'center',
+                                                            }}
+                                                        >
+                                                            {floor ? (
+                                                                getFloorDelta(offer.amount)
+                                                            ) : (
+                                                                <ToniqIcon
+                                                                    style={{
+                                                                        color: String(
+                                                                            toniqColors.pagePrimary
+                                                                                .foregroundColor,
+                                                                        ),
+                                                                        alignSelf: 'center',
+                                                                    }}
+                                                                    icon={LoaderAnimated24Icon}
+                                                                />
+                                                            )}
+                                                        </div>,
+                                                        <div>
+                                                            {props.identity &&
+                                                            props.identity
+                                                                .getPrincipal()
+                                                                .toText() ===
+                                                                offer.buyer.toText() ? (
+                                                                <ToniqButton
+                                                                    text="Cancel"
+                                                                    onClick={cancelOffer}
+                                                                />
+                                                            ) : (
+                                                                <Link
+                                                                    href={`https://icscan.io/account/${offer.buyer}`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    underline="none"
+                                                                >
+                                                                    <ToniqMiddleEllipsis
+                                                                        letterCount={4}
+                                                                        text={offer.buyer.toText()}
+                                                                        className={classes.linkText}
+                                                                    />
+                                                                </Link>
+                                                            )}
+                                                        </div>,
+                                                    ]}
+                                                    classes={classes}
+                                                />
+                                            </NftCard>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexGrow: 1,
+                                    }}
+                                >
+                                    <span className={classes.noDataText}>
+                                        THERE ARE NO OPEN OFFERS
+                                    </span>
+                                    {props.identity && props.account.address !== owner ? (
+                                        <ToniqButton
+                                            className={'toniq-button-outline'}
+                                            text="Make an Offer"
+                                            onClick={() => {
+                                                makeOffer();
+                                            }}
+                                        />
+                                    ) : (
+                                        ''
+                                    )}
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -553,6 +584,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         gap: 32,
         backgroundColor: 'white',
+        flex: 1,
         [theme.breakpoints.down('sm')]: {
             gap: 24,
         },

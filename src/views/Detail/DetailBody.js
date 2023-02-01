@@ -81,10 +81,6 @@ const DetailBody = props => {
         traitsData,
         setTraitsData,
     ] = useState(false);
-    const [
-        detailsUrl,
-        setDetailsUrl,
-    ] = useState(false);
 
     redirectIfBlockedFromEarnFeatures(navigate, collection, props);
 
@@ -122,49 +118,6 @@ const DetailBody = props => {
     const _afterBuy = async () => {
         await reloadOffers();
         await _refresh();
-    };
-
-    const getImageDetailsUrl = async (url, regExp) => {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const text = await blob.text();
-        const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
-        setDetailsUrl(simplifiedText.match(regExp) !== null ? simplifiedText.match(regExp)[1] : '');
-    };
-
-    const getVideoDetailsUrl = async (url, regExp, regExp2) => {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const text = await blob.text();
-        const simplifiedText = text.replace('\n', ' ').replace(/\s{2,}/, ' ');
-        if (simplifiedText.includes('URL=')) {
-            setDetailsUrl(simplifiedText.match(regExp2)[1]);
-        } else if (simplifiedText.includes('source')) {
-            setDetailsUrl(simplifiedText.match(regExp)[1]);
-        } else {
-            setDetailsUrl(url);
-        }
-    };
-
-    const extractEmbeddedImage = (svgUrl, classes) => {
-        getImageDetailsUrl(svgUrl, /image href="([^"]+)"/);
-
-        return (
-            <div className={classes.nftImage}>
-                <img src={svgUrl} alt="" className={classes.nftImage} />
-            </div>
-        );
-    };
-
-    const extractEmbeddedVideo = (iframeUrl, classes) => {
-        getVideoDetailsUrl(iframeUrl, /source src="([^"]+)"/);
-        if (detailsUrl) {
-            return (
-                <video width="100%" autoPlay muted loop>
-                    <source src={detailsUrl} type="video/mp4" />
-                </video>
-            );
-        }
     };
 
     const displayImage = tokenid => {
@@ -257,7 +210,7 @@ const DetailBody = props => {
 
     const getAttributes = async index => {
         let traitsCategories;
-        if (traitsData) {
+        if (typeof traitsData === 'object' && traitsData.length) {
             traitsCategories = traitsData[0].map(trait => {
                 return {
                     category: trait[1],
@@ -275,7 +228,7 @@ const DetailBody = props => {
         }
 
         let traits;
-        if (traitsData) {
+        if (typeof traitsData === 'object' && traitsData.length) {
             traits = traitsData[1][
                 getNftMintNumber({
                     collectionId: collection.canister,
@@ -297,7 +250,17 @@ const DetailBody = props => {
                 };
             });
             setAttributes(traits);
-        } else if (!traitsData && collection?.route === 'cronics') {
+        } else if (
+            typeof traitsData === 'object' &&
+            !traitsData.length &&
+            collection?.route !== 'cronics'
+        ) {
+            setAttributes([]);
+        } else if (
+            typeof traitsData === 'object' &&
+            !traitsData.length &&
+            collection?.route === 'cronics'
+        ) {
             var result = await defaultEntrepotApi.token(canister).listings();
 
             if (result.length) {
@@ -346,6 +309,8 @@ const DetailBody = props => {
         loadTraits().then(traits => {
             if (traits) {
                 setTraitsData(traits);
+            } else {
+                setTraitsData([]);
             }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
