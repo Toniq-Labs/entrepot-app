@@ -27,6 +27,7 @@ import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister
 import {EntrepotNftDisplay} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getExtNftId, decodeNftId} from '../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../typescript/data/nft/user-nft';
+import {entrepotCanisters} from '../typescript/api/entrepot-apis/entrepot-canisters';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -140,20 +141,15 @@ export default function NFT(props) {
         }
     };
     const getAuction = async () => {
-        var resp = await defaultEntrepotApi
-            .canister('ffxbt-cqaaa-aaaak-qazbq-cai')
-            .auction(getExtNftId(tokenid));
+        var resp = await entrepotCanisters.nftAuctions.auction(getExtNftId(tokenid));
         if (resp.length) setAuction(resp[0]);
         else setAuction(false);
     };
     const getOffer = async () => {
-        await defaultEntrepotApi
-            .canister('fcwhh-piaaa-aaaak-qazba-cai')
-            .offers(getExtNftId(tokenid))
-            .then(r => {
-                setOfferCount(r.length);
-                setOffer(r.sort((a, b) => Number(b.amount) - Number(a.amount))[0]);
-            });
+        await entrepotCanisters.nftOffers.offers(getExtNftId(tokenid)).then(r => {
+            setOfferCount(r.length);
+            setOffer(r.sort((a, b) => Number(b.amount) - Number(a.amount))[0]);
+        });
     };
     useInterval(() => {
         refresh();

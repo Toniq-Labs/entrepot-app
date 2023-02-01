@@ -40,7 +40,10 @@ import {
 import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
 import {UserNft} from '../../../../data/nft/user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
-import {userMadeOffersCache} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
+import {
+    userMadeOffersCache,
+    makeUserOffersKey,
+} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
 import {NftExtraData} from '../../../../data/nft/nft-extra-data';
 import {
     nftExtraDataCache,
@@ -109,18 +112,15 @@ function combineOffers({
     userOffersMade: AsyncState<ReadonlyArray<UserNft>>;
     userNfts: AsyncState<ReadonlyArray<UserNft>>;
     nftExtraData: AsyncState<Readonly<Record<string, NftExtraData>>>;
-}): AsyncState<ReadonlyArray<UserNft>> {
-    const allOffers: UserNft[] = [];
+}): Error | PromiseLike<any> | ReadonlyArray<UserNft> {
     if (!isRenderReady(nftExtraData)) {
-        return nftExtraData as Promise<any> | Error;
+        return nftExtraData;
     }
 
-    if (Array.isArray(userOffersMade)) {
-        allOffers.push(...userOffersMade);
-    }
-    if (Array.isArray(userNfts)) {
-        allOffers.push();
-    }
+    const allOffers: UserNft[] = [
+        ...(Array.isArray(userOffersMade) ? userOffersMade : []),
+        ...(Array.isArray(userNfts) ? userNfts : []),
+    ];
 
     return allOffers.filter(userNft => {
         return !!nftExtraData[userNft.nftId]?.offers.length;
@@ -171,7 +171,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             name: profileSortDefinitions[0].sortName,
         }),
     },
-    initCallback: ({inputs, updateState}) => {
+    initCallback: ({inputs, state, updateState}) => {
         userTransactionsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
@@ -197,6 +197,32 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                         resolvedValue: newValue,
                     },
                 });
+            }
+        });
+        nftExtraDataCache.subscribe(({generatedKey: nftId, newValue}) => {
+            console.log('extra data cache updated');
+            updateState({
+                nftExtraData: {
+                    resolvedValue: {
+                        ...(isRenderReady(state.nftExtraData) ? state.nftExtraData : {}),
+                        [nftId]: newValue,
+                    },
+                },
+            });
+        });
+        userMadeOffersCache.subscribe(({generatedKey: updatedGeneratedKey, newValue}) => {
+            if (inputs.userAccount && inputs.userIdentity) {
+                const userKey = makeUserOffersKey({
+                    userAccount: inputs.userAccount,
+                    userIdentity: inputs.userIdentity,
+                });
+                if (userKey === updatedGeneratedKey) {
+                    updateState({
+                        userOffersMade: {
+                            resolvedValue: newValue,
+                        },
+                    });
+                }
             }
         });
     },

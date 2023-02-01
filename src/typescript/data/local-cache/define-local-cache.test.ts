@@ -27,7 +27,6 @@ describe(defineAutomaticallyUpdatingCache.name, () => {
         },
         enableAutomaticUpdating: false,
         enableCacheBrowserStorage: true,
-        enableCacheMemory: true,
         enableLogging: false,
         minUpdateInterval: Infinity,
     });

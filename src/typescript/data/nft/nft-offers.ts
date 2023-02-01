@@ -1,26 +1,26 @@
+import {isRuntimeTypeOf} from '@augment-vir/common';
 import {Principal} from '@dfinity/principal';
 
-export type RawNftOffer = [
-    // I have no idea what this principal is, it doesn't seem to actually correspond to anything
-    Principal,
-    // amount
-    bigint,
-    // time stamp
-    bigint,
-    // offer maker account address
-    string,
-];
+export type RawNftOffer = {
+    // not sure what this address property refers to
+    address: string;
+    amount: bigint;
+    authId: bigint;
+    offerer: Principal;
+    time: bigint;
+};
 
 export type NftOffer = {
-    offerMadeByUserAccountAddress: string;
+    offererAccountAddress: string;
+    // unix epoch timestamp in milliseconds
     timestamp: number;
     offerAmount: number;
 };
 
 export function parseRawNftOffer(rawNftOffer: RawNftOffer): NftOffer {
     return {
-        offerAmount: Number(rawNftOffer[1]),
-        offerMadeByUserAccountAddress: rawNftOffer[3],
-        timestamp: Number(rawNftOffer[2]),
+        offerAmount: Number(rawNftOffer.amount),
+        offererAccountAddress: rawNftOffer.offerer.toText(),
+        timestamp: Number(rawNftOffer.time / BigInt(1_000_000)),
     };
 }

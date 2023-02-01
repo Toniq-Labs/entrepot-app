@@ -4,7 +4,7 @@ import {useParams} from 'react-router-dom';
 import {EntrepotCollectionStats} from '../../utils';
 import DetailBody from './DetailBody';
 import OfferForm from '../../components/OfferForm';
-import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
+import {entrepotCanisters} from '../../typescript/api/entrepot-apis/entrepot-canisters';
 import {decodeNftId} from '../../typescript/data/nft/nft-id';
 
 const Detail = props => {
@@ -31,22 +31,20 @@ const Detail = props => {
     ] = useState(false);
 
     const reloadOffers = async () => {
-        await defaultEntrepotApi
-            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-            .offers(tokenid)
-            .then(r => {
-                const offerData = r
-                    .map(a => {
-                        return {buyer: a[0], amount: a[1], time: a[2]};
-                    })
-                    .sort((a, b) => Number(b.amount) - Number(a.amount));
-                if (offerData.length) {
-                    setOffers(chunk(offerData, 9));
-                    setOfferListing(offers[offerPage]);
-                } else {
-                    setOfferListing([]);
-                }
-            });
+        await entrepotCanisters.nftOffers.offers(tokenid).then(r => {
+            const offerData = r
+                .map(a => {
+                    return {buyer: a.offerer, amount: a.amount, time: a.time};
+                })
+                .sort((a, b) => Number(b.amount) - Number(a.amount));
+
+            if (offerData.length) {
+                setOffers(chunk(offerData, 9));
+                setOfferListing(offers[offerPage]);
+            } else {
+                setOfferListing([]);
+            }
+        });
     };
 
     const closeOfferForm = () => {

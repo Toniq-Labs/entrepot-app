@@ -11,3 +11,4 @@ async function clearLocalForage() {
 
 // use this for debugging
 (globalThis as any).clearLocalForage = clearLocalForage;
+(globalThis as any).localForage = localForage;

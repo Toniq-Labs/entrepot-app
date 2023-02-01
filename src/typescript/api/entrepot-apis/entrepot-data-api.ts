@@ -26,7 +26,6 @@ type CanisterApi = {
     liked: () => Promise<NftIds>;
     get_all_launch_settings: () => Promise<Sales[]>;
     offered: () => Promise<NftIds>;
-    offers: (nftId: string) => Promise<RawNftOffer[]>;
 };
 
 type EntrepotApi = {
@@ -34,7 +33,7 @@ type EntrepotApi = {
     idl(canisterId: string, idl: any): void;
     setIdentity(identity: any): EntrepotApi;
     setHost(host: any): EntrepotApi;
-    canister(canisterId: string, idl?: any): CanisterApi;
+    canister(canisterId: string, idl?: any): any;
     token(tokenId?: string, idl?: any): EntrepotTokenApi;
 };
 

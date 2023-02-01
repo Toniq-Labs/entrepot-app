@@ -4,10 +4,9 @@ import {maskObjects} from '../../augments/object';
 /** If we need to modify a setting globally for all caches, do so here. */
 const globalCacheOptions: LocalCacheOptions = {
     enableCacheBrowserStorage: true,
-    enableCacheMemory: true,
     enableAutomaticUpdating: true,
     enableLogging: false,
-    minUpdateInterval: 10_000,
+    minUpdateInterval: 1_000_000,
 } as const;
 
 export function maskOptionsWithGlobalOptions(

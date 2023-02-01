@@ -1,13 +1,11 @@
-import {
-    createCloudFunctionsEndpointUrl,
-    defaultEntrepotApi,
-} from '../../../api/entrepot-apis/entrepot-data-api';
+import {createCloudFunctionsEndpointUrl} from '../../../api/entrepot-apis/entrepot-data-api';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../define-local-cache';
 import {UserNft} from '../../nft/user-nft';
 import {getExtNftId} from '../../nft/nft-id';
 import {wait, JsonCompatibleValue} from '@augment-vir/common';
 import {NftExtraData} from '../../nft/nft-extra-data';
 import {parseRawNftOffer} from '../../nft/nft-offers';
+import {entrepotCanisters} from '../../../api/entrepot-apis/entrepot-canisters';
 
 export type NftExtraDataCacheInputs = {
     userNft: Pick<UserNft, 'listPrice' | 'nftId'>;
@@ -15,7 +13,7 @@ export type NftExtraDataCacheInputs = {
 };
 
 export function makeUserNftsKey({userNft}: NftExtraDataCacheInputs) {
-    return `${userNft.nftId}`;
+    return userNft.nftId;
 }
 
 async function updateNftExtraData({
@@ -23,10 +21,9 @@ async function updateNftExtraData({
     waitIndex,
 }: NftExtraDataCacheInputs): Promise<NftExtraData> {
     await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
+
     const offersMadeOnCurrentNft = (
-        await defaultEntrepotApi
-            .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-            .offers(getExtNftId(userNft.nftId))
+        await entrepotCanisters.nftOffers.offers(getExtNftId(userNft.nftId))
     ).map(parseRawNftOffer);
 
     const rawListing = await (
@@ -71,4 +68,5 @@ export const nftExtraDataCache = defineAutomaticallyUpdatingCache<
     keyGenerator: makeUserNftsKey,
     subKeyRequirement: SubKeyRequirementEnum.Required,
     minUpdateInterval: 30_000,
+    enableLogging: true,
 });
