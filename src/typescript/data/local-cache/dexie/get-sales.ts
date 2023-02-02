@@ -11,55 +11,62 @@ export async function getCollectionSales(
         .canister('uczwa-vyaaa-aaaam-abdba-cai', 'launch')
         .get_all_launch_settings();
 
-    return collections.map((collection: Collection) => {
-        const launchSetting = allLaunchSettings.find(launch => {
-            return launch.id === collection.id;
-        });
-
-        if (launchSetting) {
-            const {start, end, quantity, remaining, groups} = launchSetting;
-
-            const publicSaleGroups = groups.filter(currentSale => {
-                return currentSale.public;
+    return collections
+        .map((collection: Collection) => {
+            const launchSetting = allLaunchSettings.find(launch => {
+                return launch.id === collection.id;
             });
-            let salePrice;
 
-            if (publicSaleGroups !== undefined) {
-                salePrice = getSalePrice(publicSaleGroups);
-            } else {
-                const privateSaleGroups = groups.filter(currentSale => {
-                    return !currentSale.public;
+            if (launchSetting) {
+                const {start, end, quantity, remaining, groups} = launchSetting;
+
+                const publicSaleGroups = groups.filter(currentSale => {
+                    return currentSale.public;
                 });
-                salePrice = getSalePrice(privateSaleGroups);
-            }
-            salePrice = salePrice ? convertToIcpNumber(salePrice) : 0;
+                let salePrice;
 
-            const formattedData = {
-                ...launchSetting,
-                startDate:
-                    start instanceof BigNumber || isBigInt(start) ? Number(start) / 1000000 : start,
-                endDate: end instanceof BigNumber || isBigInt(end) ? Number(end) / 1000000 : end,
-                percentMinted:
-                    Math.round(
-                        (((Number(quantity) - Number(remaining)) / Number(quantity)) * 100 +
-                            Number.EPSILON) *
-                            100,
-                    ) / 100,
-                groups,
-                salePrice,
-            } as SalesData;
+                if (publicSaleGroups !== undefined) {
+                    salePrice = getSalePrice(publicSaleGroups);
+                } else {
+                    const privateSaleGroups = groups.filter(currentSale => {
+                        return !currentSale.public;
+                    });
+                    salePrice = getSalePrice(privateSaleGroups);
+                }
+                salePrice = salePrice ? convertToIcpNumber(salePrice) : 0;
+
+                const formattedData = {
+                    ...launchSetting,
+                    startDate:
+                        start instanceof BigNumber || isBigInt(start)
+                            ? Number(start) / 1000000
+                            : start,
+                    endDate:
+                        end instanceof BigNumber || isBigInt(end) ? Number(end) / 1000000 : end,
+                    percentMinted:
+                        Math.round(
+                            (((Number(quantity) - Number(remaining)) / Number(quantity)) * 100 +
+                                Number.EPSILON) *
+                                100,
+                        ) / 100,
+                    groups,
+                    salePrice,
+                } as SalesData;
+
+                return {
+                    ...collection,
+                    sales: formattedData,
+                };
+            }
 
             return {
                 ...collection,
-                sales: formattedData,
+                sales: {} as SalesData,
             };
-        }
-
-        return {
-            ...collection,
-            sales: {} as SalesData,
-        };
-    });
+        })
+        .filter(collectionSales => {
+            return Object.keys(collectionSales.sales).length;
+        });
 }
 
 function getSalePrice(saleGroup: SalesGroup[]) {

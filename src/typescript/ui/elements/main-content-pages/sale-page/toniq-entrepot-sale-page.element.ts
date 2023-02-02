@@ -46,10 +46,6 @@ export const EntrepotSalePageElement = defineElement<{
     initCallback: ({inputs, updateState}) => {
         const saleCollections = inputs.collections.filter(collection => collection.sale);
         getCollectionSales(saleCollections).then(collectionSales => {
-            collectionSales = collectionSales.filter(collectionSales => {
-                return Object.keys(collectionSales.sales).length;
-            });
-
             const upcoming = collectionSales
                 .filter(collectionSale => {
                     return moment(collectionSale.sales.startDate).isAfter(
