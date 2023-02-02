@@ -1,4 +1,4 @@
-import {wait} from '@augment-vir/common';
+import {isTruthy, wait} from '@augment-vir/common';
 import {CollectionNriData} from '../../models/collection-nri-data';
 import {getCachedWithUpdate} from './get-cached-with-update';
 import {removeUnknownKeys} from './cache-cleanup';
@@ -7,24 +7,25 @@ import {CanisterId} from '../../models/canister-id';
 export async function getThrottledNriDataForCanisters(
     canisterIds: string[],
 ): Promise<Record<string, CollectionNriData>> {
-    const allNriCacheItems = await Promise.all(
-        canisterIds.map(async (canisterId, waitIndex) => {
-            return {
-                canisterId,
-                data: await getCachedWithUpdate({
+    const allNriCacheItems = (
+        await Promise.all(
+            canisterIds.map(async (canisterId, waitIndex) => {
+                const collectionNriData = await getCachedWithUpdate({
                     databaseTableName: 'nriCache',
                     rowKey: canisterId,
                     fetchValueCallback: async () => {
                         const throttleTime = waitIndex + (Math.random() * waitIndex || 1) / 10;
                         return await fetchCanisterNriData(canisterId, throttleTime);
                     },
-                }),
-            };
-        }),
-    );
+                });
+
+                return collectionNriData;
+            }),
+        )
+    ).filter(isTruthy);
 
     const nriDataByCanisterId = allNriCacheItems.reduce((accum, nriCacheItem) => {
-        accum[nriCacheItem.canisterId] = nriCacheItem.data;
+        accum[nriCacheItem?.collectionId] = nriCacheItem;
         return accum;
     }, {} as Record<string, CollectionNriData>);
 

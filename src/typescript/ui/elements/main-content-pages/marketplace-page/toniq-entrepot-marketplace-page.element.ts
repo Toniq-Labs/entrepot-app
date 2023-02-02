@@ -89,7 +89,7 @@ export const EntrepotMarketplacePageElement = defineToniqElement<{
                     updateState({showFilters: event.detail});
                 })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
-                    updateState({filters: event.detail});
+                    updateState({filters: event.detail as typeof defaultMarketplaceFilters});
                 })}
                 ${listen(EntrepotWithFiltersElement.events.sortChange, event => {
                     updateState({currentSort: event.detail});

@@ -9,6 +9,7 @@ import {
     isTruthy,
     mapObjectValues,
     typedMap,
+    typedObjectFromEntries,
     wait,
     wrapNarrowTypeWithTypeCheck,
 } from '@augment-vir/common';
@@ -22,22 +23,13 @@ import {
     isRenderReady,
     listen,
 } from 'element-vir';
-import {Collection, CollectionMap} from '../../../../data/models/collection';
-import {
-    EntrepotWithFiltersElement,
-    createWithFiltersInputs,
-} from '../../common/with-filters/toniq-entrepot-with-filters.element';
-import {CurrentSort, FilterDefinitions} from '../../common/with-filters/filters-types';
-import {EntrepotProfileCardElement} from './toniq-entrepot-profile-nft-card.element';
-import {defaultProfileFilters, profileUserNftSortDefinitions} from './user-nft-profile-filters';
+import {CollectionMap} from '../../../../data/models/collection';
+import {EntrepotWithFiltersElement} from '../../common/with-filters/toniq-entrepot-with-filters.element';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {defineToniqElement} from '@toniq-labs/design-system';
 import {UserIdentity} from '../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
-import {
-    UserTransaction,
-    userTransactionsCache,
-} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
+import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
 import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
 import {UserNft} from '../../../../data/nft/user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
@@ -45,16 +37,17 @@ import {
     userMadeOffersCache,
     makeUserOffersKey,
 } from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
-import {NftExtraData, emptyNftExtraData} from '../../../../data/nft/nft-extra-data';
 import {
     nftExtraDataCache,
     NftExtraDataCacheInputs,
 } from '../../../../data/local-cache/caches/nft-extra-data-cache';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
-import {UserNftTransaction} from '../../../../data/nft/user-nft-transaction';
 import {collectionNriCache} from '../../../../data/local-cache/caches/collection-nri-cache';
 import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
+import {getAllowedTabs, ProfileTab} from './profile-tabs';
+import {profilePageStateInit} from './entrepot-profile-page-state';
+import {generateProfileWithFiltersInput} from './profile-entries/profile-entries';
 
 function getAllNftsThatNeedData(
     asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
@@ -99,61 +92,11 @@ function makeNftExtraDataLoadTrigger(
         }
     });
 }
-
-const profileTopTabs = [
-    {
-        label: 'My NFTs',
-        value: 'my-nfts',
-    },
-    {
-        label: 'Favorites',
-        value: 'favorites',
-    },
-    {
-        label: 'Offers',
-        value: 'offers',
-    },
-    {
-        label: 'Activity',
-        value: 'activity',
-    },
-    {
-        label: 'Earn',
-        value: 'earn',
-    },
-] as const;
-
-type ProfileTopTab = ArrayElement<typeof profileTopTabs>;
-type ProfileTopTabValue = ProfileTopTab['value'];
-
-function combineOffers({
-    userOffersMade,
-    userNfts,
-    nftExtraData,
-}: {
-    userOffersMade: AsyncState<ReadonlyArray<UserNft>>;
-    userNfts: AsyncState<ReadonlyArray<UserNft>>;
-    nftExtraData: AsyncState<Readonly<Record<string, NftExtraData>>>;
-}): Error | PromiseLike<any> | ReadonlyArray<UserNft> {
-    if (!isRenderReady(nftExtraData)) {
-        return nftExtraData;
-    }
-
-    const allOffers: UserNft[] = [
-        ...(Array.isArray(userOffersMade) ? userOffersMade : []),
-        ...(Array.isArray(userNfts) ? userNfts : []),
-    ];
-
-    return allOffers.filter(userNft => {
-        return !!nftExtraData[userNft.nftId]?.offers.length;
-    });
-}
-
 export const EntrepotProfilePageElement = defineToniqElement<{
     collections: CollectionMap;
     userIdentity: UserIdentity | undefined;
     userAccount: EntrepotUserAccount | undefined;
-    toniqEarnAllowed: boolean;
+    isToniqEarnAllowed: boolean;
 }>()({
     tagName: 'toniq-entrepot-profile-page',
     styles: css`
@@ -179,46 +122,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         transferClick: defineElementEvent<{nftId: string}>(),
         nftClick: defineElementEvent<{nftId: string}>(),
     },
-    stateInit: {
-        showFilters: false,
-        filters: ensureType<Record<ProfileTopTabValue, FilterDefinitions<any>>>({
-            activity: defaultProfileFilters,
-            earn: defaultProfileFilters,
-            favorites: defaultProfileFilters,
-            'my-nfts': defaultProfileFilters,
-            offers: defaultProfileFilters,
-        }),
-        currentTopTab: profileTopTabs[0] as ProfileTopTab,
-        userTransactions: asyncState<ReadonlyArray<UserTransaction>>(),
-        userNfts: asyncState<ReadonlyArray<UserNft>>(),
-        userFavorites: asyncState<ReadonlyArray<UserNft>>(),
-        userOffersMade: asyncState<ReadonlyArray<UserNft>>(),
-        collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
-        userEarnNfts: asyncState<ReadonlyArray<unknown>>(),
-        nftExtraData: asyncState<Readonly<Record<string, NftExtraData>>>(),
-        currentSort: ensureType<Record<ProfileTopTabValue, CurrentSort>>({
-            activity: {
-                ascending: false,
-                name: profileUserNftSortDefinitions[0].sortName,
-            },
-            earn: {
-                ascending: false,
-                name: profileUserNftSortDefinitions[0].sortName,
-            },
-            favorites: {
-                ascending: false,
-                name: profileUserNftSortDefinitions[0].sortName,
-            },
-            'my-nfts': {
-                ascending: false,
-                name: profileUserNftSortDefinitions[0].sortName,
-            },
-            offers: {
-                ascending: false,
-                name: profileUserNftSortDefinitions[0].sortName,
-            },
-        }),
-    },
+    stateInit: profilePageStateInit,
     initCallback: ({inputs, state, updateState}) => {
         userTransactionsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
@@ -408,39 +312,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             },
         });
 
-        const tabToStateProp = wrapNarrowTypeWithTypeCheck<
-            Record<ProfileTopTab['value'], AsyncState<ReadonlyArray<any>>>
-        >()({
-            'my-nfts': state.userNfts,
-            favorites: state.userFavorites,
-            offers: combineOffers(state),
-            activity: state.userTransactions,
-            // earn: state.userEarnNfts,
-            earn: [],
-        });
-
-        const allowedTabs = inputs.toniqEarnAllowed
-            ? profileTopTabs
-            : profileTopTabs.filter(topTab => !topTab.label.toLowerCase().includes('earn'));
-
-        const asyncEntries:
-            | AsyncState<ReadonlyArray<UserNftTransaction>>
-            | AsyncState<ReadonlyArray<UserNft>> = tabToStateProp[state.currentTopTab.value];
-
-        const entries: ReadonlyArray<Readonly<ProfilePageNftEntry>> = isRenderReady(asyncEntries)
-            ? asyncEntries.map((nft): ProfilePageNftEntry => {
-                  const maybeExtraData: NftExtraData | undefined = isRenderReady(state.nftExtraData)
-                      ? state.nftExtraData[nft.nftId]
-                      : undefined;
-
-                  const extraNftData: NftExtraData = maybeExtraData || emptyNftExtraData;
-
-                  return {
-                      ...extraNftData,
-                      ...nft,
-                  } as ProfilePageNftEntry;
-              })
-            : [];
+        const filterInputs = generateProfileWithFiltersInput({...state}, inputs.collections);
 
         return html`
             <${EntrepotPageHeaderElement}
@@ -451,57 +323,16 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             <${EntrepotTopTabsElement}
                 ${assign(EntrepotTopTabsElement, {
                     selected: state.currentTopTab,
-                    tabs: allowedTabs,
+                    tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
                 })}
                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                     updateState({
-                        currentTopTab: event.detail as ProfileTopTab,
+                        currentTopTab: event.detail as ProfileTab,
                     });
                 })}
             ></${EntrepotTopTabsElement}>
             <${EntrepotWithFiltersElement}
-                ${assign(
-                    EntrepotWithFiltersElement,
-                    createWithFiltersInputs({
-                        countName: 'NFTs',
-                        showFilters: state.showFilters,
-                        currentSort: state.currentSort,
-                        sortDefinitions: [],
-                        defaultFilters: {},
-                        currentFilters: {},
-                        isLoading: !isRenderReady(asyncEntries),
-                        allEntries: entries ? entries : [],
-                        searchPlaceholder: 'Search: Collection Name or Keywords',
-                        searchCallback: (searchTerm, collection) => {
-                            return true;
-                            // const allSearchAreas = [
-                            //     collection.name,
-                            //     collection.keywords,
-                            //     collection.route,
-                            //     collection.id,
-                            // ].join(' ');
-                            // return allSearchAreas.toLowerCase().includes(searchTerm.toLowerCase());
-                        },
-                        createEntryTemplateCallback: (entry: ProfilePageNftEntry) => {
-                            if (!isRenderReady(state.nftExtraData)) {
-                                return 'loading';
-                            }
-                            const nftExtraData = state.nftExtraData[entry.nftId]!;
-                            const userNft: UserNft | undefined =
-                                'transactionId' in entry ? undefined : entry;
-                            const nftTransaction: UserNftTransaction | undefined =
-                                'transactionId' in entry ? entry : undefined;
-                            return html`
-                            <${EntrepotProfileCardElement}
-                                ${assign(EntrepotProfileCardElement, {
-                                    nftExtraData,
-                                    nftTransaction,
-                                    userNft,
-                                })}
-                            ></${EntrepotProfileCardElement}>`;
-                        },
-                    }),
-                )}
+                ${assign(EntrepotWithFiltersElement, filterInputs)}
                 ${listen(EntrepotWithFiltersElement.events.showFiltersChange, event => {
                     updateState({showFilters: event.detail});
                 })}

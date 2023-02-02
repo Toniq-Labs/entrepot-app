@@ -1,13 +1,18 @@
 import {CanisterId} from '../models/canister-id';
+import {decodeNftId} from './nft-id';
+import {TransactionDirection} from '../local-cache/caches/user-data/user-transactions-cache';
+import {getNftMintNumber} from './nft-mint-number';
+import {BaseNft} from './base-nft';
 
-export type UserNftTransaction = {
+export type UserNftTransaction = BaseNft & {
     buyerAddress: string;
-    collectionId: CanisterId;
     sellerAddress: string;
     timestampMillisecond: number;
-    nftId: string;
     transactionId: string;
-    listPrice: number;
+};
+
+export type UserTransactionWithDirection = UserNftTransaction & {
+    directionForCurrentUser: TransactionDirection;
 };
 
 export type RawUserNftTransaction = {
@@ -27,6 +32,14 @@ export function parseRawUserNftTransaction(
         return undefined;
     }
 
+    const {index, canister} = decodeNftId(raw.token);
+
+    if (canister !== raw.canister) {
+        throw new Error(
+            `Decoded canister id '${canister}' did not match transaction canister id '${raw.canister}'`,
+        );
+    }
+
     return {
         buyerAddress: raw.buyer,
         collectionId: raw.canister,
@@ -34,6 +47,8 @@ export function parseRawUserNftTransaction(
         timestampMillisecond: raw.time / 1_000_000,
         nftId: raw.token,
         transactionId: raw.id,
+        nftMintNumber: getNftMintNumber({collectionId: raw.canister, nftIndex: index}),
         listPrice: raw.price,
+        nftIndex: index,
     };
 }

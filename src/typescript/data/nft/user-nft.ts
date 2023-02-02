@@ -1,7 +1,8 @@
 import {decodeNftId} from './nft-id';
 import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-id';
-import {getCanisterDetails} from '../canisters/canister-details/all-canister-details';
 import {CanisterId} from '../models/canister-id';
+import {getNftMintNumber} from './nft-mint-number';
+import {BaseNft} from './base-nft';
 
 export type RawUserNft = {
     id: string;
@@ -11,26 +12,14 @@ export type RawUserNft = {
     time: number;
 };
 
-export type UserNft = {
-    nftId: string;
-    nftIndex: number;
-    nftMintNumber: number;
-    collectionId: CanisterId;
+export type UserNft = BaseNft & {
     ownerAddress: string;
-    listPrice: number;
-    /** I don't actually know what this time property represents, I've only ever seen it be 0. */
+    /**
+     * I don't actually know what this time property represents for a user NFT: I've only ever seen
+     * it be 0.
+     */
     time: number;
 };
-
-export function getNftMintNumber(nftDetails: Pick<UserNft, 'collectionId' | 'nftIndex'>): number {
-    const collectionDetails = getCanisterDetails(nftDetails.collectionId);
-
-    if (collectionDetails.hasWrappedCanister) {
-        return nftDetails.nftIndex;
-    } else {
-        return nftDetails.nftIndex + 1;
-    }
-}
 
 export function parseRawUserNft(rawNft: RawUserNft): UserNft {
     const decodedNftId = decodeNftId(rawNft.id);

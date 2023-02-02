@@ -9,7 +9,7 @@ describe(countFiltersNotAtDefaults.name, () => {
             filterType: FilterTypeEnum.NumericRange,
             currentMax: 0,
             currentMin: 0,
-            filterField: 'test-field',
+            filterField: ['test-field'],
         },
     });
 

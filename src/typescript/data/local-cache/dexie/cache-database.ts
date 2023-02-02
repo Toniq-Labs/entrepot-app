@@ -7,7 +7,7 @@ import {deleteDatabase} from './delete-database';
 export type NriCacheItem = {
     /** CanisterId */
     rowKey: string;
-    data: CollectionNriData;
+    data: CollectionNriData | undefined;
 };
 
 export type CollectionStatsCacheItem = {
