@@ -354,7 +354,8 @@ const clipboardCopy = text => {
         if (
             collection == 'ugdkf-taaaa-aaaak-acoia-cai' ||
             collection == 'bzsui-sqaaa-aaaah-qce2a-cai' ||
-            collection == '4ggk4-mqaaa-aaaae-qad6q-cai'
+            collection == '4ggk4-mqaaa-aaaae-qad6q-cai' ||
+            collection == 'jv55j-riaaa-aaaal-abvnq-cai'
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
