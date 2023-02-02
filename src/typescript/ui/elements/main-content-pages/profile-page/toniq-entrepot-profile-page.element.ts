@@ -93,7 +93,7 @@ function makeNftExtraDataLoadTrigger(
     });
 }
 export const EntrepotProfilePageElement = defineToniqElement<{
-    collections: CollectionMap;
+    collectionMap: CollectionMap;
     userIdentity: UserIdentity | undefined;
     userAccount: EntrepotUserAccount | undefined;
     isToniqEarnAllowed: boolean;
@@ -312,7 +312,9 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             },
         });
 
-        const filterInputs = generateProfileWithFiltersInput({...state}, inputs.collections);
+        const filterInputs = generateProfileWithFiltersInput({...state}, inputs.collectionMap);
+
+        console.log({filterInputs});
 
         return html`
             <${EntrepotPageHeaderElement}

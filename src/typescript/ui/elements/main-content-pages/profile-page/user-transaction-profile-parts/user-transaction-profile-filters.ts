@@ -78,7 +78,7 @@ export function createUserTransactionFilterInputs({
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileFullUserTransaction>>;
 } & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentTopTab'>) {
-    createWithFiltersInputs({
+    return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({isRenderReady, showFilters}),
         currentSort: currentSort[currentTopTab.value],
         sortDefinitions: profileUserTransactionSortDefinitions,

@@ -13,7 +13,7 @@ import {
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {Accordion} from '../../components/Accordion';
 import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';
-import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../../typescript/data/nft/nft-mint-number';
 
 const useStyles = makeStyles(theme => ({
     traitsWrapper: {

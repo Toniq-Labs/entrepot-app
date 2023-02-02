@@ -796,6 +796,7 @@ export default function App() {
         const collectionMap = await getAllCollectionsWithCaching();
         const allCollectionsWithCaching = Object.values(collectionMap);
         setCollections(allCollectionsWithCaching);
+        console.log({collectionMap});
         setCollectionMap(collectionMap);
 
         console.log({collections});

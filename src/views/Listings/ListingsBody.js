@@ -20,7 +20,7 @@ import {ListingsOtherControlsActivity} from './ListingsOtherControlsActivity';
 import ListingsActivity from './ListingsActivity';
 import {defaultEntrepotApi} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 import {encodeNftId, decodeNftId} from '../../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../../typescript/data/nft/nft-mint-number';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

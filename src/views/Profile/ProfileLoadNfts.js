@@ -1,10 +1,6 @@
 /* global BigInt */
 import {createNftFilterStats} from './ProfileNftStats';
-import {ProfileTabs, nftStatusesByTab} from './ProfileTabs';
-import {wait} from '@augment-vir/common';
-import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
-import {decodeNftId} from '../../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
+import {ProfileTabs} from './ProfileTabs';
 
 async function includeCollectionsAndStats(nfts, allCollections) {
     const allowedCollections = allCollections.filter(collection => {

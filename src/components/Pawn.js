@@ -11,7 +11,7 @@ import {EntrepotGetIcpUsd} from '../utils.js';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../typescript/data/nft/nft-mint-number';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

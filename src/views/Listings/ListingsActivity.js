@@ -27,7 +27,7 @@ import PriceUSD from '../../components/PriceUSD.js';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
 import {decodeNftId} from '../../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../../typescript/data/nft/nft-mint-number';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

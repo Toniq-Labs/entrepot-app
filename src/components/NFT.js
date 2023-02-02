@@ -26,7 +26,7 @@ import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getExtNftId, decodeNftId} from '../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../typescript/data/nft/nft-mint-number';
 import {entrepotCanisters} from '../typescript/api/entrepot-apis/entrepot-canisters';
 
 function useInterval(callback, delay) {

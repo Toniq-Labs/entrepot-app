@@ -9,7 +9,7 @@ import {useNavigate, Link} from 'react-router-dom';
 import {EntrepotGetIcpUsd} from '../utils.js';
 import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../typescript/data/nft/nft-mint-number';
 
 export default function Event(props) {
     const getCollection = c => {

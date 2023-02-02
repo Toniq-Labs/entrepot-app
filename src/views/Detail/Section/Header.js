@@ -33,7 +33,7 @@ import {NftCard} from '../../../shared/NftCard';
 import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {EntrepotNftDisplayReact} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
-import {getNftMintNumber} from '../../../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../../../typescript/data/nft/nft-mint-number';
 
 const DetailSectionHeader = props => {
     const {

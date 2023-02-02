@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {getCanisterDetails} from '../typescript/data/canisters/canister-details/all-canister-details';
 import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
-import {getNftMintNumber} from '../typescript/data/nft/user-nft';
+import {getNftMintNumber} from '../typescript/data/nft/nft-mint-number';
 
 const _showListingPrice = n => {
     n = Number(n) / 100000000;

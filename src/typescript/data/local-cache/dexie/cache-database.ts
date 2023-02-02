@@ -31,7 +31,7 @@ class InternalEntrepotDatabaseClass extends Dexie {
 
     public constructor() {
         super(databaseName);
-        this.version(3).stores({
+        this.version(4).stores({
             /** & designates the unique key: https://dexie.org/docs/Version/Version.stores() */
             nriCache: '&rowKey',
             collectionsStatsCache: '&rowKey',

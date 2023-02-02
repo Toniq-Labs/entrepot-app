@@ -76,7 +76,7 @@ export function createUserNftFilterInputs({
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileFullUserNft>>;
 } & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentTopTab'>) {
-    createWithFiltersInputs({
+    return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({isRenderReady, showFilters}),
         currentSort: currentSort[currentTopTab.value],
         sortDefinitions: profileUserNftSortDefinitions,

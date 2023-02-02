@@ -69,5 +69,5 @@ export const nftExtraDataCache = defineAutomaticallyUpdatingCache<
     keyGenerator: makeUserNftsKey,
     subKeyRequirement: SubKeyRequirementEnum.Required,
     minUpdateInterval: 30_000,
-    enableLogging: true,
+    enableLogging: false,
 });

@@ -46,5 +46,5 @@ export const collectionNriCache = defineAutomaticallyUpdatingCache<
     keyGenerator: makeNriCacheKey,
     subKeyRequirement: SubKeyRequirementEnum.Required,
     minUpdateInterval: 120_000,
-    enableLogging: true,
+    enableLogging: false,
 });
