@@ -9,7 +9,7 @@ import {
     ToniqIcon,
     defineToniqElement,
 } from '@toniq-labs/design-system';
-import {defineElement, html, css, assign, listen, onResize} from 'element-vir';
+import {html, css, assign, listen, onResize} from 'element-vir';
 import {throttle} from '../../../augments/function';
 
 export type CarouselItem = {
@@ -39,7 +39,7 @@ export const EntrepotCarouselElement = defineToniqElement<{
             display: block;
             position: relative;
             margin: 32px 0;
-            max-height: 340px;
+            max-height: 355px;
             overflow-y: hidden;
         }
 
@@ -51,12 +51,17 @@ export const EntrepotCarouselElement = defineToniqElement<{
             justify-content: center;
             align-items: center;
             scroll-snap-align: center;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0px 0px 4px rgba(0, 208, 147, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
         }
 
         img {
-            max-height: 100%;
-            max-width: 100%;
             border-radius: 16px;
+            width: 100%;
+            margin: auto;
         }
 
         .images-container {
@@ -66,7 +71,7 @@ export const EntrepotCarouselElement = defineToniqElement<{
             overflow-x: scroll;
             scroll-snap-type: x mandatory;
             z-index: 9;
-            padding-bottom: 100px;
+            padding: 4px 0 100px;
         }
 
         .arrow {
