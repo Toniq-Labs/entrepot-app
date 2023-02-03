@@ -1,4 +1,4 @@
-import {isRuntimeTypeOf} from '@augment-vir/common';
+/* global BigInt */
 import {Principal} from '@dfinity/principal';
 
 export type RawNftOffer = {
