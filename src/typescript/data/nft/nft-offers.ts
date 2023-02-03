@@ -1,4 +1,3 @@
-/* global BigInt */
 import {Principal} from '@dfinity/principal';
 
 export type RawNftOffer = {

@@ -3,6 +3,7 @@ const eslintConfig = {
     extends: ['react-app'],
     globals: {
         globalThis: false,
+        BigInt: true,
     },
     rules: {
         eqeqeq: [
