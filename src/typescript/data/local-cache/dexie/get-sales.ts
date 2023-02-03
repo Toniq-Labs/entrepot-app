@@ -11,7 +11,7 @@ export async function getCollectionSales(
         .canister('uczwa-vyaaa-aaaam-abdba-cai', 'launch')
         .get_all_launch_settings();
 
-    return collections.map((collection: Collection) => {
+    return collections.reduce((result: CollectionSales[], collection: Collection) => {
         const launchSetting = allLaunchSettings.find(launch => {
             return launch.id === collection.id;
         });
@@ -49,17 +49,16 @@ export async function getCollectionSales(
                 salePrice,
             } as SalesData;
 
-            return {
-                ...collection,
-                sales: formattedData,
-            };
+            if (Object.keys(formattedData).length) {
+                result.push({
+                    ...collection,
+                    sales: formattedData,
+                });
+            }
         }
 
-        return {
-            ...collection,
-            sales: {} as SalesData,
-        };
-    });
+        return result;
+    }, []);
 }
 
 function getSalePrice(saleGroup: SalesGroup[]) {
