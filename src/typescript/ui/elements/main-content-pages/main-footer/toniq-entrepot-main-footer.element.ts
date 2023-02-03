@@ -467,7 +467,7 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
         `;
         const copyRightLine = html`
             <div class="copyright-line">
-                <a href="https://toniqlabs.com">© 2022 Toniq Labs</a>
+                <a href="https://toniqlabs.com">© ${new Date().getFullYear()} Toniq Labs</a>
                 <span>
                     <a href="">Privacy Policy</a>
                     <a href="/tos">Terms of Service</a>
