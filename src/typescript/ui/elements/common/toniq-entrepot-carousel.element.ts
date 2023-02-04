@@ -54,7 +54,7 @@ export const EntrepotCarouselElement = defineToniqElement<{
             background: #ffffff;
             border: 1px solid rgba(0, 0, 0, 0.04);
             box-shadow: 0px 16px 16px rgba(39, 170, 243, 0.16);
-            border-radius: 8px;
+            border-radius: 16px;
             overflow: hidden;
         }
 
