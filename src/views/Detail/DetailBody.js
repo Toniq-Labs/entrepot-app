@@ -328,7 +328,6 @@ const DetailBody = props => {
                     transactions={transactions}
                     _afterList={_afterList}
                     _afterBuy={_afterBuy}
-                    displayImage={displayImage}
                     setOpenOfferForm={setOpenOfferForm}
                     {...props}
                 />

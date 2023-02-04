@@ -5,17 +5,19 @@ import {
     toniqFontStyles,
     defineToniqElement,
 } from '@toniq-labs/design-system';
-import {defineElement, html, css} from 'element-vir';
+import {html, css, assign} from 'element-vir';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {ValidIcp, toIcp} from '../../../../../data/icp';
+import {decodeNftId} from '../../../../../data/nft/nft-id';
+import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-display.element';
 
 export type TopCardInputs = Readonly<(typeof EntrepotHomePageTopCardElement)['inputsType']>;
 
 export const EntrepotHomePageTopCardElement = defineToniqElement<{
-    imageUrl?: string | undefined;
     collectionName: string;
     floorPrice: ValidIcp;
     volume: ValidIcp;
+    id: string;
     index?: number | undefined;
 }>()({
     tagName: 'toniq-entrepot-home-page-top-card',
@@ -117,13 +119,24 @@ export const EntrepotHomePageTopCardElement = defineToniqElement<{
                 : html`
                       <span class="index-number">${inputs.index}</span>
                   `;
-
+        let {index, canister} = decodeNftId(inputs.id);
         const imageTemplate =
-            inputs.imageUrl == undefined
+            canister == undefined
                 ? ''
                 : html`
                       <div class="image-wrapper">
-                          <img class="collection-image" src=${inputs.imageUrl} />
+                        <${EntrepotNftDisplayElement}
+                            ${assign(EntrepotNftDisplayElement, {
+                                collectionId: canister,
+                                fullSize: false,
+                                cachePriority: 0,
+                                nftId: inputs.id,
+                                nftIndex: index,
+                                ref: 0,
+                                min: {width: 72, height: 72},
+                                max: {width: 72, height: 72},
+                            })}
+                        ></${EntrepotNftDisplayElement}>
                       </div>
                   `;
 

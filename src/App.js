@@ -796,10 +796,7 @@ export default function App() {
         const collectionMap = await getAllCollectionsWithCaching();
         const allCollectionsWithCaching = Object.values(collectionMap);
         setCollections(allCollectionsWithCaching);
-        console.log({collectionMap});
         setCollectionMap(collectionMap);
-
-        console.log({collections});
         allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
 
         if (isToniqEarnAllowed === undefined) {
@@ -2047,9 +2044,17 @@ export default function App() {
                                 {isProd ? (
                                     ''
                                 ) : (
-                                    <Route path="/test" exact element={<EntrepotTestPage />} />
+                                    <Route
+                                        path="/test"
+                                        exact
+                                        element={<EntrepotTestPage collections={collections} />}
+                                    />
                                 )}
-                                <Route path="/" exact element={<EntrepotTestPage />} />
+                                <Route
+                                    path="/"
+                                    exact
+                                    element={<EntrepotTestPage collections={collections} />}
+                                />
                                 <Route
                                     path="/sale"
                                     element={

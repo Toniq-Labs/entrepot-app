@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {defineElement, html, css, assign, listen} from 'element-vir';
+import {html, css, assign, listen} from 'element-vir';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {
     FeaturedCollectionInputs,
@@ -9,15 +9,16 @@ import {
     TopCardInputs,
     EntrepotHomePageTopCardElement,
 } from './children/toniq-entrepot-top-card.element';
-import {CarouselItem, EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
+import {EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
 import {isTruthy} from '@augment-vir/common';
 import {toniqColors, toniqFontStyles, defineToniqElement} from '@toniq-labs/design-system';
 import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
+import {Collection} from '../../../../data/models/collection';
 
 export const EntrepotHomePageElement = defineToniqElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
     topCollections: Readonly<Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
-    carouselItems: ReadonlyArray<CarouselItem>;
+    carouselItems: ReadonlyArray<Collection>;
 }>()({
     tagName: 'toniq-entrepot-home-page',
     stateInit: {

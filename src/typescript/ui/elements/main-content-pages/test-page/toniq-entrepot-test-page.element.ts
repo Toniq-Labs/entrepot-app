@@ -1,11 +1,12 @@
 import randomWords from 'random-words';
-import {toniqFontStyles, defineToniqElementNoInputs} from '@toniq-labs/design-system';
+import {toniqFontStyles} from '@toniq-labs/design-system';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign} from 'element-vir';
+import {html, css, assign, defineElement} from 'element-vir';
 import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
 import {shuffle} from '../../../../augments/array';
+import {Collection} from '../../../../data/models/collection';
 
 const mockImages = [
     'https://ixk4q-oiaaa-aaaaj-qap3q-cai.raw.ic0.app/?index=60',
@@ -23,64 +24,25 @@ const mockImages = [
     'https://5movr-diaaa-aaaak-aaftq-cai.raw.ic0.app/?tokenid=mijgx-uikor-uwiaa-aaaaa-cqabm-4aqca-aaamu-q',
 ] as const;
 
-const doubleImages = shuffle([
-    ...mockImages,
-    ...mockImages,
-]);
-
-function makeTopCards() {
-    return shuffle(doubleImages).map((imageUrl, index) => {
-        const simpleFloorPrice = !!Math.round(Math.random());
-        const simpleVolume = !!Math.round(Math.random());
-
+function makeTopCards(highlights: Collection[]) {
+    return shuffle(highlights).map((highlight, index) => {
         return {
-            collectionName: randomWords({min: 1, max: 3, join: ' '}),
-            floorPrice: simpleFloorPrice
-                ? Math.round(Math.random() * 10) * 100
+            collectionName: highlight.name,
+            floorPrice: highlight.stats?.floor
+                ? Number(highlight.stats?.floor)
                 : Math.random() * 10_000,
-            volume: simpleVolume
-                ? Math.round(Math.random() * 10) * 1_000
+            volume: highlight.stats?.listings
+                ? highlight.stats?.listings
                 : Math.random() * 10_000_000,
-            imageUrl: imageUrl,
             index: index + 1,
+            id: highlight.id,
         };
     });
 }
 
-const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
-    carouselItems: doubleImages.map(url => {
-        return {
-            imageUrl: url,
-            link: '',
-        };
-    }),
-    featuredCollections: Array(4)
-        .fill(0)
-        .map(() => {
-            return {
-                collectionName: 'Motoko Ghosts',
-                imageUrls: shuffle(mockImages),
-                longDescription: randomWords({min: 50, max: 2000, join: ' '}),
-                collectionRoute: '',
-                socialLinks: [
-                    {
-                        link: '',
-                        type: SocialLinkTypeEnum.Discord,
-                    },
-                    {
-                        link: '',
-                        type: SocialLinkTypeEnum.Twitter,
-                    },
-                ],
-            };
-        }),
-    topCollections: {
-        past24Hours: makeTopCards(),
-        allTime: makeTopCards(),
-    },
-};
-
-const EntrepotTestElement = defineToniqElementNoInputs({
+const EntrepotTestElement = defineElement<{
+    collections: Array<Collection>;
+}>()({
     tagName: 'toniq-entrepot-test-page',
     styles: css`
         :host {
@@ -104,7 +66,35 @@ const EntrepotTestElement = defineToniqElementNoInputs({
             padding: 0;
         }
     `,
-    renderCallback: () => {
+    renderCallback: ({inputs}) => {
+        const highlights = shuffle(inputs.collections).slice(0, 26);
+        const homepageInputs: (typeof EntrepotHomePageElement)['inputsType'] = {
+            carouselItems: highlights,
+            featuredCollections: Array(4)
+                .fill(0)
+                .map(() => {
+                    return {
+                        collectionName: 'Motoko Ghosts',
+                        imageUrls: shuffle(mockImages),
+                        longDescription: randomWords({min: 50, max: 2000, join: ' '}),
+                        collectionRoute: '',
+                        socialLinks: [
+                            {
+                                link: '',
+                                type: SocialLinkTypeEnum.Discord,
+                            },
+                            {
+                                link: '',
+                                type: SocialLinkTypeEnum.Twitter,
+                            },
+                        ],
+                    };
+                }),
+            topCollections: {
+                past24Hours: makeTopCards(highlights),
+                allTime: makeTopCards(highlights),
+            },
+        };
         return html`
             <${EntrepotHomePageElement}
                 ${assign(EntrepotHomePageElement, homepageInputs)}

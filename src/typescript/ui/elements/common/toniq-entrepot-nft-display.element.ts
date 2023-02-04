@@ -12,7 +12,7 @@ import {
 } from '../../../data/canisters/get-nft-image-data';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {DimensionConstraints, VirResizableImage} from '@electrovir/resizable-image-element';
-import {PartialAndNullable, wait} from '@augment-vir/common';
+import {PartialAndNullable} from '@augment-vir/common';
 
 // these dimensions are set so that they fit within an NFTCard component size of about 300x600
 const defaultDimensionConstraint: DimensionConstraints = {

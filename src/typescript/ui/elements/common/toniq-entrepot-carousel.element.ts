@@ -11,6 +11,9 @@ import {
 } from '@toniq-labs/design-system';
 import {html, css, assign, listen, onResize} from 'element-vir';
 import {throttle} from '../../../augments/function';
+import {Collection} from '../../../data/models/collection';
+import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
+import {decodeNftId} from '../../../data/nft/nft-id';
 
 export type CarouselItem = {
     imageUrl: string;
@@ -20,7 +23,7 @@ export type CarouselItem = {
 const carouselImageWidth = 340;
 
 export const EntrepotCarouselElement = defineToniqElement<{
-    items: ReadonlyArray<CarouselItem>;
+    items: ReadonlyArray<Collection>;
     automaticRotation?: boolean;
 }>()({
     tagName: 'toniq-entrepot-carousel',
@@ -84,7 +87,7 @@ export const EntrepotCarouselElement = defineToniqElement<{
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            z-index: 10;
+            z-index: 200;
             background: linear-gradient(
                 var(--background-degrees),
                 white 0%,
@@ -178,10 +181,22 @@ export const EntrepotCarouselElement = defineToniqElement<{
                     ></${ToniqIcon}>
                 </div>
                 ${inputs.items.map(item => {
+                    let {index, canister} = decodeNftId(item.id);
                     return html`
-                        <a href="${item.link}">
+                        <a href="${`marketplace/asset/${item.id}`}">
                             <div class="carousel-image-wrapper">
-                                <img src=${item.imageUrl} />
+                                <${EntrepotNftDisplayElement}
+                                    ${assign(EntrepotNftDisplayElement, {
+                                        collectionId: canister,
+                                        fullSize: false,
+                                        cachePriority: 0,
+                                        nftId: item.id,
+                                        nftIndex: index,
+                                        ref: 0,
+                                        min: {width: 360, height: 360},
+                                        max: {width: 360, height: 360},
+                                    })}
+                                ></${EntrepotNftDisplayElement}>
                             </div>
                         </a>
                     `;
