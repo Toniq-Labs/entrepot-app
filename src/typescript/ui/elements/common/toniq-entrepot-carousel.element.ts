@@ -39,7 +39,7 @@ export const EntrepotCarouselElement = defineToniqElement<{
             display: block;
             position: relative;
             margin: 32px 0;
-            max-height: 355px;
+            max-height: 375px;
             overflow-y: hidden;
         }
 
@@ -53,8 +53,8 @@ export const EntrepotCarouselElement = defineToniqElement<{
             scroll-snap-align: center;
             background: #ffffff;
             border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0px 0px 4px rgba(0, 208, 147, 0.5);
-            border-radius: 16px;
+            box-shadow: 0px 16px 16px rgba(39, 170, 243, 0.16);
+            border-radius: 8px;
             overflow: hidden;
         }
 
