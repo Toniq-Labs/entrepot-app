@@ -11,8 +11,9 @@ import {
     ToniqIcon,
     removeNativeFormStyles,
     defineToniqElement,
+    ToniqRadioGroup,
 } from '@toniq-labs/design-system';
-import {removeCommasFromNumberString} from '@augment-vir/common';
+import {isRuntimeTypeOf, removeCommasFromNumberString} from '@augment-vir/common';
 import {EntrepotExpandingListFilterElement} from './toniq-entrepot-expanding-list-filter.element';
 
 export const EntrepotFilterElement = defineToniqElement<{
@@ -174,6 +175,28 @@ function createFilterInternals(
                 ></${ToniqCheckbox}>
             `;
         });
+    } else if (filter.filterType === FilterTypeEnum.Radio) {
+        return html`
+            <${ToniqRadioGroup}
+                ${assign(ToniqRadioGroup, {
+                    entries: filter.radios.map(radio => {
+                        return {
+                            value: isRuntimeTypeOf(radio.value, 'boolean')
+                                ? String(radio.value)
+                                : radio.value ?? radio.label,
+                            label: radio.label,
+                        };
+                    }),
+                    value: String(filter.value),
+                })}
+                ${listen(ToniqRadioGroup.events.valueChange, event => {
+                    changeCallback({
+                        ...filter,
+                        value: event.detail,
+                    });
+                })}
+            ></${ToniqRadioGroup}>
+        `;
     } else if (filter.filterType === FilterTypeEnum.ExpandingList) {
         return createExpandingListTemplate(filter, changeCallback);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {

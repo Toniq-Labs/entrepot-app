@@ -1,22 +1,8 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {
-    ArrayElement,
-    camelCaseToKebabCase,
-    ensureType,
-    filterObject,
-    isPromiseLike,
-    isRuntimeTypeOf,
-    isTruthy,
-    mapObjectValues,
-    typedMap,
-    typedObjectFromEntries,
-    wait,
-    wrapNarrowTypeWithTypeCheck,
-} from '@augment-vir/common';
+import {isPromiseLike, isRuntimeTypeOf, mapObjectValues} from '@augment-vir/common';
 import {
     assign,
     AsyncState,
-    asyncState,
     css,
     defineElementEvent,
     html,
@@ -152,7 +138,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             }
         });
         nftExtraDataCache.subscribe(async ({generatedKey: nftId, newValue}) => {
-            console.log('extra data cache updated');
             if (isPromiseLike(state.nftExtraData)) {
                 await state.nftExtraData;
             }
@@ -181,7 +166,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             }
         });
         collectionNriCache.subscribe(async ({generatedKey: collectionId, newValue}) => {
-            console.log('extra data cache updated');
             if (isPromiseLike(state.collectionNriData)) {
                 await state.collectionNriData;
             }

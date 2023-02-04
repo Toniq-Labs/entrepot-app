@@ -51,6 +51,11 @@ export function isStillAtDefaults({
             defaultFilter.currentMin === filter.currentMin &&
             defaultFilter.selectedType === filter.selectedType
         );
+    } else if (
+        defaultFilter.filterType === FilterTypeEnum.Radio &&
+        filter.filterType === FilterTypeEnum.Radio
+    ) {
+        return defaultFilter.value === filter.value;
     } else {
         throw new Error(
             `Unsupported filter types for calculating if at default value: ${defaultFilter.filterType}, ${filter.filterType}`,

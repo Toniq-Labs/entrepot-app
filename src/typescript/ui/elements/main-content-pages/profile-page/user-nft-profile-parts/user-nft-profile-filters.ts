@@ -20,25 +20,23 @@ export const defaultProfileUserNftFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileFullUserNft>>
 >()({
     Listed: {
-        filterType: FilterTypeEnum.Checkboxes,
-        checkboxes: [
+        filterType: FilterTypeEnum.Radio,
+        radios: [
             {
-                checked: true,
                 label: 'All',
                 filterType: BooleanFilterTypeEnum.Everything,
             },
             {
-                checked: false,
                 label: 'Listed',
                 value: true,
             },
             {
-                checked: false,
                 label: 'Unlisted',
                 value: false,
             },
         ],
         filterField: ['isListed'],
+        value: 'All',
     },
 } as const);
 

@@ -8,7 +8,7 @@ import {
     X24Icon,
     defineToniqElement,
 } from '@toniq-labs/design-system';
-import {areJsonEqual, isTruthy, truncateNumber} from '@augment-vir/common';
+import {areJsonEqual, isLengthAtLeast, isTruthy, truncateNumber} from '@augment-vir/common';
 import {isStillAtDefaults} from './is-still-default';
 
 type FilterTokenInputs = {
@@ -153,9 +153,20 @@ function createTokens({
             filter.currentMin == undefined ? '' : `${truncateNumber(filter.currentMin)} < `;
         const end = filter.currentMax == undefined ? '' : ` < ${truncateNumber(filter.currentMax)}`;
         return [{text: `${start}${filterName}${end}`, resetValue: defaultFilter}];
+    } else if (
+        filter.filterType === FilterTypeEnum.Radio &&
+        defaultFilter.filterType === FilterTypeEnum.Radio
+    ) {
+        const selectedRadio = filter.radios.filter(
+            radio => String(radio.value) === filter.value,
+        )[0];
+        if (!selectedRadio) {
+            throw new Error(`Failed to find the selected radio filter.`);
+        }
+        return [{text: `${filterName}=${selectedRadio.label}`, resetValue: defaultFilter}];
     } else {
         throw new Error(
-            `Unsupported filter type for tokens: ${defaultFilter.filterType}, ${filter.filterType}`,
+            `Unsupported filter type for tokens: '${defaultFilter.filterType}', '${filter.filterType}'`,
         );
     }
 }

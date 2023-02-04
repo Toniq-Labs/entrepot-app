@@ -2,6 +2,7 @@ import {NestedSequentialKeys} from '@augment-vir/common';
 
 export enum FilterTypeEnum {
     Checkboxes = 'checkboxes',
+    Radio = 'radio',
     ExpandingList = 'expanding-list',
     NumericRange = 'numeric-range',
 }
@@ -47,6 +48,11 @@ export type ExpandingListFilterEntry = {
 
 export type SingleFilterDefinition<EntryGeneric extends object> =
     | ((
+          | {
+                filterType: FilterTypeEnum.Radio;
+                radios: ReadonlyArray<Omit<BooleanFilterEntry, 'checked'>>;
+                value: string | boolean;
+            }
           | {
                 filterType: FilterTypeEnum.Checkboxes;
                 checkboxes: ReadonlyArray<BooleanFilterEntry>;

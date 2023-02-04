@@ -22,6 +22,8 @@ function applyIndividualFilter<EntryData extends object>(
 ): boolean {
     if (filter.filterType === FilterTypeEnum.Checkboxes) {
         return applyCheckboxFilter(dataEntry, filter);
+    } else if (filter.filterType === FilterTypeEnum.Radio) {
+        return applyRadioFilter(dataEntry, filter);
     } else if (filter.filterType === FilterTypeEnum.ExpandingList) {
         return applyExpandingListFilter(dataEntry, filter);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
@@ -81,6 +83,22 @@ function applyNumericRangeFilter<EntryData extends object>(
     const matchesMin = filter.currentMin == undefined ? true : matchThisData >= filter.currentMin;
 
     return matchesMax && matchesMin;
+}
+
+function applyRadioFilter<EntryData extends object>(
+    dataEntry: EntryData,
+    filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.Radio}>,
+): boolean {
+    return filter.radios.every(radio => {
+        return matchSingleCheckboxFilter({
+            dataEntry,
+            fieldKeys: filter.filterField as string[],
+            checkbox: {
+                ...radio,
+                checked: radio.value ? radio.value === filter.value : radio.label === filter.value,
+            },
+        });
+    });
 }
 
 function applyCheckboxFilter<EntryData extends object>(
