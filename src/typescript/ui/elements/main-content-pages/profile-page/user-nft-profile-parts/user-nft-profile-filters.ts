@@ -1,5 +1,4 @@
 import {wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
-import {UserNft} from '../../../../../data/nft/raw-user-nft';
 import {
     FilterTypeEnum,
     FilterDefinitions,
@@ -9,7 +8,7 @@ import {
 import {ReadonlyDeep} from 'type-fest';
 import {assign, html, isRenderReady, listen} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
-import {ProfilePageStateType} from '../entrepot-profile-page-state';
+import {ProfilePageStateType} from '../profile-page-state';
 import {BaseFullProfileEntry} from '../profile-entries/base-full-profile-entry';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
 import {
@@ -21,10 +20,10 @@ import {
 } from '@toniq-labs/design-system';
 import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
 import {ProfileTab, ProfileTopTabValue} from '../profile-tabs';
-import {NftOffer} from '../../../../../data/nft/nft-offer';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {BaseNft} from '../../../../../data/nft/base-nft';
 
-export type ProfileFullUserNft = UserNft & BaseFullProfileEntry & {isListed: boolean};
+export type ProfileFullUserNft = BaseNft & BaseFullProfileEntry & {isListed: boolean};
 
 export const defaultProfileUserNftFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileFullUserNft>>
@@ -53,7 +52,10 @@ export const defaultProfileUserNftFilters = wrapNarrowTypeWithTypeCheck<
         filterType: FilterTypeEnum.NumericRange,
         currentMin: undefined,
         currentMax: undefined,
-        filterField: ['listPrice'],
+        filterField: [
+            'listing',
+            'price',
+        ],
     },
     NRI: {
         filterType: FilterTypeEnum.NumericRange,
@@ -76,7 +78,8 @@ export const profileUserNftSortDefinitions = wrapNarrowTypeWithTypeCheck<
     {
         sortName: 'Price',
         sortField: [
-            'listPrice',
+            'listing',
+            'price',
         ],
     },
     {
@@ -162,7 +165,7 @@ function createRightSideTemplate({
     currentProfileTab: ProfileTab;
     sellCallback: () => void;
     transferCallback: () => void;
-    offers: ReadonlyArray<NftOffer>;
+    offers: Readonly<BaseNft['offers']>;
     userOwns: boolean;
 }) {
     if (currentProfileTab.value === 'my-nfts') {

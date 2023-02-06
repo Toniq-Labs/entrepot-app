@@ -6,12 +6,12 @@ import {
     toniqColors,
     toniqShadows,
 } from '@toniq-labs/design-system';
-import {UserNft} from '../../../data/nft/raw-user-nft';
 import {NftListing} from '../../../data/nft/nft-listing';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
+import {BaseNft} from '../../../data/nft/base-nft';
 
 export type NftCardInputs = {
-    nft: Pick<UserNft & NftListing, 'collectionId' | 'nftId' | 'nftIndex'>;
+    nft: Pick<BaseNft & NftListing, 'collectionId' | 'nftId' | 'nftIndex'>;
 };
 
 export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({

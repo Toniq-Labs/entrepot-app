@@ -40,7 +40,7 @@ export function MinimumOffer(props) {
     let aborted = abortController.signal.aborted;
 
     const getOffers = async () => {
-        let offers = await entrepotCanisters.nftAuctions.offers(props.tokenid);
+        let offers = await entrepotCanisters.nftOffers.offers(props.tokenid);
         aborted = abortController.signal.aborted;
         if (aborted === false) {
             if (offers.length) {

@@ -303,7 +303,7 @@ export default function UserCollection(props) {
                 var r = await createEntrepotApiWithIdentity(props.identity)
                     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                     .liked();
-                data = r.filter((a, i) => r.indexOf(a) == i);
+                data = offeredResponse.filter((a, i) => offeredResponse.indexOf(a) == i);
                 data = data.map(a => ({
                     id: a,
                     token: a,
@@ -315,17 +315,17 @@ export default function UserCollection(props) {
                 }));
                 break;
             case 'offers-made':
-                var r = await createEntrepotApiWithIdentity(props.identity)
+                const offeredResponse = await createEntrepotApiWithIdentity(props.identity)
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
-                data = r.filter((a, i) => r.indexOf(a) == i);
-                data = data.map(a => ({
-                    id: a,
-                    token: a,
+                data = offeredResponse.filter((a, i) => offeredResponse.indexOf(a) == i);
+                data = data.map(entry => ({
+                    id: entry,
+                    token: entry,
                     price: 0,
                     time: 0,
                     owner: false,
-                    canister: decodeNftId(a).canister,
+                    canister: decodeNftId(entry).canister,
                 }));
                 break;
             case 'offers-received':
@@ -337,7 +337,7 @@ export default function UserCollection(props) {
                             .allOffers(),
                     ].map(p => p.catch(e => e)),
                 );
-                var r2 = r.filter(result => !(result instanceof Error));
+                var r2 = offeredResponse.filter(result => !(result instanceof Error));
                 var r3 = r2[0].data
                     .map(a => ({...a, token: a.id}))
                     .filter(a => r2[1].indexOf(a.token) >= 0);

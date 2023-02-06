@@ -4,6 +4,7 @@ import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
 import {fetchRawNftListingAndOffers} from '../fetch-raw-nft-listing-and-offers';
 import {BaseNft, parseRawNftData} from '../../../nft/base-nft';
+import {getEntrepotCanister} from '../../../../api/entrepot-apis/entrepot-canisters';
 
 export type UserFavoritesInputs = {
     userAccount: EntrepotUserAccount;
@@ -15,9 +16,7 @@ export function makeUserFavoritesKey({userIdentity}: UserFavoritesInputs) {
 }
 
 async function updateUserFavorites({userIdentity}: UserFavoritesInputs): Promise<BaseNft[]> {
-    const favoriteNftIds = await createEntrepotApiWithIdentity(userIdentity)
-        .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-        .liked();
+    const favoriteNftIds = await getEntrepotCanister({userIdentity}).favorites.liked();
 
     const userOfferedNfts = Promise.all(
         favoriteNftIds.map(async (favoriteNftId, index) => {

@@ -10,10 +10,12 @@ import {ReadonlyDeep} from 'type-fest';
 import {assign, html, isRenderReady} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
 import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
-import {TransactionDirection} from '../../../../../data/local-cache/caches/user-data/user-transactions-cache';
-import {ProfilePageStateType} from '../entrepot-profile-page-state';
+import {ProfilePageStateType} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
-import {UserTransactionWithDirection} from '../../../../../data/nft/user-nft-transaction';
+import {
+    TransactionDirection,
+    UserTransactionWithDirection,
+} from '../../../../../data/nft/user-nft-transaction';
 import {BaseFullProfileEntry} from '../profile-entries/base-full-profile-entry';
 
 export type ProfileFullUserTransaction = UserTransactionWithDirection & BaseFullProfileEntry;
@@ -55,7 +57,8 @@ const profileUserTransactionSortDefinitions = wrapNarrowTypeWithTypeCheck<
     {
         sortName: 'Price',
         sortField: [
-            'listPrice',
+            'listing',
+            'price',
         ],
     },
     {

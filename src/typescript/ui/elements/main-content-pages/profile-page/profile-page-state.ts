@@ -5,7 +5,6 @@ import {
     defaultProfileUserNftFilters,
     profileUserNftSortDefinitions,
 } from './user-nft-profile-parts/user-nft-profile-filters';
-import {UserNft} from '../../../../data/nft/raw-user-nft';
 import {NftListing} from '../../../../data/nft/nft-listing';
 import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
@@ -31,12 +30,11 @@ export const profilePageStateInit = {
     }),
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
-    userNfts: asyncState<ReadonlyArray<UserNft>>(),
-    userFavorites: asyncState<ReadonlyArray<UserNft>>(),
-    userOffersMade: asyncState<ReadonlyArray<UserNft>>(),
+    userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
+    userFavorites: asyncState<ReadonlyArray<BaseNft>>(),
+    userOffersMade: asyncState<ReadonlyArray<BaseNft>>(),
     collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
     userEarnNfts: asyncState<ReadonlyArray<ProfileFullEarnNft>>(),
-    nftExtraData: asyncState<Readonly<Record<string, NftListing>>>(),
     currentSort: ensureType<Record<ProfileTopTabValue, ReadonlyDeep<CurrentSort>>>({
         activity: {
             ascending: false,

@@ -9,14 +9,17 @@ export type NftListingPrice = {
 
 export type NftListing = {
     collectionId: CanisterId;
-    listing: NftListingPrice | undefined;
+    listing: NftListingPrice;
     nftId: string;
     ownerAddress: string;
 };
 
 export const emptyNftListing: NftListing = {
     collectionId: '' as any,
-    listing: undefined,
+    listing: {
+        price: 0,
+        lockedTimestamp: 0,
+    },
     nftId: '',
     ownerAddress: '',
 };
@@ -32,12 +35,10 @@ export type RawNftListing = {
 };
 
 export function parseRawNftListing(rawNftListingAndOffers: RawNftListing): NftListing {
-    const listing: NftListingPrice | undefined = rawNftListingAndOffers.price
-        ? {
-              price: rawNftListingAndOffers.price,
-              lockedTimestamp: rawNftListingAndOffers.time,
-          }
-        : undefined;
+    const listing: NftListingPrice = {
+        price: rawNftListingAndOffers.price,
+        lockedTimestamp: rawNftListingAndOffers.time,
+    };
 
     return {
         collectionId: rawNftListingAndOffers.canister,

@@ -65,9 +65,14 @@ export default function OfferForm(props) {
                 voltPrincipal.toText(),
                 'volt',
             );
-            var resp = await voltAPI.getBalances('icpledger', 'ryjl3-tyaaa-aaaaa-aaaba-cai', []);
-            if (resp.hasOwnProperty('ok')) {
-                var available = Number(resp.ok[0]) - Number(resp.ok[2]);
+            const getBalanceResponse = await voltAPI.getBalances(
+                'icpledger',
+                'ryjl3-tyaaa-aaaaa-aaaba-cai',
+                [],
+            );
+
+            if (getBalanceResponse.hasOwnProperty('ok')) {
+                var available = Number(getBalanceResponse.ok[0]) - Number(getBalanceResponse.ok[2]);
                 if (Number(offerAmountIcp) + 10000 > available) {
                     var bal = Math.floor(Number(offerAmountIcp) + 10000) - available;
                     props.loader(false);
@@ -93,7 +98,7 @@ export default function OfferForm(props) {
                     } else return;
                 }
             } else {
-                throw resp.err;
+                throw getBalanceResponse.err;
             }
 
             props.loader(true, 'Submitting offer...');

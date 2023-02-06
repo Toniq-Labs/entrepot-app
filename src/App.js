@@ -1336,7 +1336,7 @@ export default function App() {
                                             }}
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             onCollectionSelected={event => {
-                                                console.log({collection: +event.detail});
+                                                console.log({selectedCollection: event.detail});
                                                 navigate({
                                                     pathname: '/marketplace/' + event.detail.route,
                                                 });

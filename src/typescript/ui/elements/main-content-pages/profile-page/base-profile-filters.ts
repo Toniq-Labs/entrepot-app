@@ -1,4 +1,4 @@
-import {ProfilePageStateType} from './entrepot-profile-page-state';
+import {ProfilePageStateType} from './profile-page-state';
 import {AnyFullProfileEntryType} from './profile-entries/profile-entry-types';
 
 export function createBaseProfileWithFiltersInputs({

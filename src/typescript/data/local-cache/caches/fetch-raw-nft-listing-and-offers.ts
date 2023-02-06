@@ -17,6 +17,8 @@ export async function fetchRawNftListingAndOffers(
 
     const rawNftOffers = await entrepotCanisters.nftOffers.offers(getExtNftId(nftId));
 
+    console.log({rawNftOffers, nftId, extId: getExtNftId(nftId)});
+
     const rawNftListing: RawNftListing = await (
         await fetch(
             createCloudFunctionsEndpointUrl([

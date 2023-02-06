@@ -1,7 +1,7 @@
 import {PropertyValueType} from '@augment-vir/common';
 import {AsyncState} from 'element-vir';
 import {ProfileTopTabValue} from '../profile-tabs';
-import {ProfilePageStateType, ProfileFullEarnNft} from '../entrepot-profile-page-state';
+import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
 import {ProfileFullUserNft} from '../user-nft-profile-parts/user-nft-profile-filters';
 import {ProfileFullUserTransaction} from '../user-transaction-profile-parts/user-transaction-profile-filters';
 
@@ -11,7 +11,7 @@ type StateEntryType<SpecificKey extends keyof ProfilePageStateType> =
         : never;
 
 type TabValueToEntryType = {
-    'my-nfts': StateEntryType<'userNfts'>;
+    'my-nfts': StateEntryType<'userOwnedNfts'>;
     favorites: StateEntryType<'userFavorites'>;
     offers: StateEntryType<'userOffersMade'>;
     activity: StateEntryType<'userTransactions'>;

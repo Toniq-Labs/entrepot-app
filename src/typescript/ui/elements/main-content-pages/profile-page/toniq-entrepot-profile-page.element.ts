@@ -17,42 +17,22 @@ import {UserIdentity} from '../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
 import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
 import {userOwnedNftsCache} from '../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
-import {UserNft} from '../../../../data/nft/raw-user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {
     userMadeOffersCache,
     makeUserOffersKey,
 } from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
-import {
-    nftExtraDataCache,
-    NftExtraDataCacheInputs,
-} from '../../../../data/local-cache/caches/nft-extra-data-cache';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {collectionNriCache} from '../../../../data/local-cache/caches/collection-nri-cache';
 import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {getAllowedTabs, ProfileTab} from './profile-tabs';
-import {profilePageStateInit} from './entrepot-profile-page-state';
+import {profilePageStateInit} from './profile-page-state';
 import {generateProfileWithFiltersInput} from './profile-entries/profile-entries';
-
-function getAllNftsThatNeedData(
-    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
-): Record<string, NftExtraDataCacheInputs['userNft']> {
-    const nftsThatNeedExtraData: Record<string, NftExtraDataCacheInputs['userNft']> = {};
-
-    asyncStates.forEach(possibleArray => {
-        if (isRuntimeTypeOf(possibleArray, 'array')) {
-            possibleArray.forEach(entry => {
-                nftsThatNeedExtraData[entry.nftId] = entry;
-            });
-        }
-    });
-
-    return nftsThatNeedExtraData;
-}
+import {BaseNft} from '../../../../data/nft/base-nft';
 
 function getAllCollectionIds(
-    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<UserNft, 'collectionId'>>>>,
+    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<BaseNft, 'collectionId'>>>>,
 ): CanisterId[] {
     const collectionIds = new Set<CanisterId>();
 
@@ -67,17 +47,6 @@ function getAllCollectionIds(
     return Array.from(collectionIds);
 }
 
-function makeNftExtraDataLoadTrigger(
-    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<NftExtraDataCacheInputs['userNft']>>>,
-) {
-    return asyncStates.map(asyncState => {
-        if (isRuntimeTypeOf(asyncState, 'array')) {
-            return asyncState;
-        } else {
-            return [];
-        }
-    });
-}
 export const EntrepotProfilePageElement = defineToniqElement<{
     collectionMap: CollectionMap;
     userIdentity: UserIdentity | undefined;
@@ -122,7 +91,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         userOwnedNftsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
-                    userNfts: {
+                    userOwnedNfts: {
                         resolvedValue: newValue,
                     },
                 });
@@ -136,19 +105,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     },
                 });
             }
-        });
-        nftExtraDataCache.subscribe(async ({generatedKey: nftId, newValue}) => {
-            if (isPromiseLike(state.nftExtraData)) {
-                await state.nftExtraData;
-            }
-            updateState({
-                nftExtraData: {
-                    resolvedValue: {
-                        ...(isRenderReady(state.nftExtraData) ? state.nftExtraData : {}),
-                        [nftId]: newValue,
-                    },
-                },
-            });
         });
         userMadeOffersCache.subscribe(({generatedKey: updatedGeneratedKey, newValue}) => {
             if (inputs.userAccount && inputs.userIdentity) {
@@ -182,7 +138,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         const asyncUserNftArrays = [
             state.userFavorites,
-            state.userNfts,
+            state.userOwnedNfts,
             state.userOffersMade,
             state.userTransactions,
         ];
@@ -202,7 +158,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     account: inputs.userAccount?.address,
                 },
             },
-            userNfts: {
+            userOwnedNfts: {
                 createPromise: async () => {
                     return inputs.userAccount && inputs.userIdentity
                         ? userOwnedNftsCache.get({
@@ -267,30 +223,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     account: inputs.userAccount?.address,
                     identity: inputs.userIdentity?.getPrincipal().toText(),
                 },
-            },
-            nftExtraData: {
-                createPromise: async () => {
-                    const nftsThatNeedData = getAllNftsThatNeedData(asyncUserNftArrays);
-                    let waitIndex = 1;
-                    const nftExtraDataPromises = await mapObjectValues(
-                        nftsThatNeedData,
-                        async (nftId, userNft) => {
-                            const extraData = await nftExtraDataCache.get({
-                                userNft,
-                                waitIndex: waitIndex++,
-                            });
-
-                            if (!extraData) {
-                                console.log(`why is this undefined ${nftId}`);
-                            }
-
-                            return extraData;
-                        },
-                    );
-
-                    return nftExtraDataPromises;
-                },
-                trigger: makeNftExtraDataLoadTrigger(asyncUserNftArrays),
             },
         });
 

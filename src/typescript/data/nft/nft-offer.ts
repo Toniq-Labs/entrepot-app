@@ -9,6 +9,7 @@ export type RawNftOffer = {
     authId: bigint;
     offerer: Principal;
     time: bigint;
+    volt: Principal;
 };
 
 export type NftOffers = {

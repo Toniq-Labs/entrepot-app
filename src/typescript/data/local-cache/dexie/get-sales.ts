@@ -2,14 +2,13 @@ import {Collection} from '../../models/collection';
 import {BigNumber} from 'bignumber.js';
 import {convertToIcpNumber, isBigInt} from '../../icp';
 import {CollectionSales, Sales, SalesData, SalesGroup} from '../../models/sales';
-import {defaultEntrepotApi} from '../../../api/entrepot-apis/entrepot-data-api';
+import {entrepotCanisters} from '../../../api/entrepot-apis/entrepot-canisters';
 
 export async function getCollectionSales(
     collections: Array<Collection>,
 ): Promise<Array<CollectionSales>> {
-    const allLaunchSettings: ReadonlyArray<Sales> = await defaultEntrepotApi
-        .canister('uczwa-vyaaa-aaaam-abdba-cai', 'launch')
-        .get_all_launch_settings();
+    const allLaunchSettings: ReadonlyArray<Sales> =
+        await entrepotCanisters.launch.get_all_launch_settings();
 
     return collections.reduce((result: CollectionSales[], collection: Collection) => {
         const launchSetting = allLaunchSettings.find(launch => {

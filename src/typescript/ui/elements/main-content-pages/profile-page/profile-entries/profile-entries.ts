@@ -1,9 +1,8 @@
 import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from '../profile-tabs';
-import {UserNft} from '../../../../../data/nft/raw-user-nft';
 import {NftListing, emptyNftListing} from '../../../../../data/nft/nft-listing';
-import {ProfilePageStateType, ProfileFullEarnNft} from '../entrepot-profile-page-state';
+import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
 import {
     ProfileFullUserNft,
     createUserNftFilterInputs,
@@ -20,26 +19,22 @@ import {
 } from './profile-entry-types';
 import {CollectionMap} from '../../../../../data/models/collection';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {BaseNft} from '../../../../../data/nft/base-nft';
 
 function combineOffers({
     userOffersMade,
-    userNfts,
-    nftExtraData,
-}: Pick<ProfilePageStateType, 'userOffersMade' | 'userNfts' | 'nftExtraData'>):
+    userOwnedNfts,
+}: Pick<ProfilePageStateType, 'userOffersMade' | 'userOwnedNfts'>):
     | Error
     | PromiseLike<any>
-    | ReadonlyArray<UserNft> {
-    if (!isRenderReady(nftExtraData)) {
-        return nftExtraData;
-    }
-
-    const allOffers: UserNft[] = [
+    | ReadonlyArray<BaseNft> {
+    const allPotentialNftsWithOffers: BaseNft[] = [
         ...(Array.isArray(userOffersMade) ? userOffersMade : []),
-        ...(Array.isArray(userNfts) ? userNfts : []),
+        ...(Array.isArray(userOwnedNfts) ? userOwnedNfts : []),
     ];
 
-    return allOffers.filter(userNft => {
-        return !!nftExtraData[userNft.nftId]?.offers.length;
+    return allPotentialNftsWithOffers.filter(nft => {
+        return nft.offers.length;
     });
 }
 
@@ -47,15 +42,14 @@ function getAsyncStateForCurrentTab(
     currentState: Pick<
         ProfilePageStateType,
         | 'userOffersMade'
-        | 'userNfts'
-        | 'nftExtraData'
+        | 'userOwnedNfts'
         | 'userFavorites'
         | 'userTransactions'
         | 'currentProfileTab'
     >,
 ) {
     const tabToStateProp: Record<ProfileTopTabValue, AsyncState<ReadonlyArray<any>>> = {
-        'my-nfts': currentState.userNfts,
+        'my-nfts': currentState.userOwnedNfts,
         favorites: currentState.userFavorites,
         offers: combineOffers(currentState),
         activity: currentState.userTransactions,
@@ -83,10 +77,6 @@ export function generateProfileWithFiltersInput({
 
     const entries: AnyFullProfileEntries = isRenderReady(asyncEntries)
         ? (asyncEntries.map((nft): ArrayElement<AnyFullProfileEntries> => {
-              const extraNftData: NftListing = isRenderReady(currentProfilePageState.nftExtraData)
-                  ? currentProfilePageState.nftExtraData[nft.nftId] ?? emptyNftListing
-                  : emptyNftListing;
-
               const nftNri: number | undefined = isRenderReady(
                   currentProfilePageState.collectionNriData,
               )
@@ -100,7 +90,6 @@ export function generateProfileWithFiltersInput({
               if (isNftType(nft, profileTabMap.activity.value, currentProfilePageState)) {
                   const fullTransaction: ProfileFullUserTransaction = {
                       ...nft,
-                      ...extraNftData,
                       nftNri,
                       collection,
                   };
@@ -109,7 +98,6 @@ export function generateProfileWithFiltersInput({
               } else if (isNftType(nft, profileTabMap.earn.value, currentProfilePageState)) {
                   // need to figure out earn types still
                   const fullEarn: ProfileFullEarnNft = {
-                      ...extraNftData,
                       ...nft,
                       nftNri,
                       collection,
@@ -117,10 +105,9 @@ export function generateProfileWithFiltersInput({
                   return fullEarn;
               } else {
                   const fullUserNft: ProfileFullUserNft = {
-                      ...extraNftData,
                       ...nft,
                       nftNri,
-                      isListed: !!nft.listPrice,
+                      isListed: !!nft.listing.price,
                       collection,
                   };
 
