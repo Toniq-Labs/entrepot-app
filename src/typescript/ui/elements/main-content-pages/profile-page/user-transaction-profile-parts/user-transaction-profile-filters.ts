@@ -22,25 +22,24 @@ const defaultProfileUserTransactionFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileFullUserTransaction>>
 >()({
     Listed: {
-        filterType: FilterTypeEnum.Checkboxes,
-        checkboxes: [
+        filterType: FilterTypeEnum.Radio,
+        radios: [
             {
-                checked: true,
                 label: 'All',
+                value: 'All',
                 filterType: BooleanFilterTypeEnum.Everything,
             },
             {
-                checked: false,
                 label: 'Purchases',
                 value: TransactionDirection.Purchase,
             },
             {
-                checked: false,
                 label: 'Sales',
                 value: TransactionDirection.Sale,
             },
         ],
         filterField: ['directionForCurrentUser'],
+        value: 'All',
     },
 } as const);
 
@@ -73,30 +72,30 @@ export function createUserTransactionFilterInputs({
     filters,
     isRenderReady,
     entries,
-    currentTopTab,
+    currentProfileTab,
 }: {
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileFullUserTransaction>>;
-} & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentTopTab'>) {
+} & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentProfileTab'>) {
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({isRenderReady, showFilters}),
-        currentSort: currentSort[currentTopTab.value],
+        currentSort: currentSort[currentProfileTab.value],
         sortDefinitions: profileUserTransactionSortDefinitions,
         defaultFilters: defaultProfileUserTransactionFilters,
-        currentFilters: filters[currentTopTab.value],
+        currentFilters: filters[currentProfileTab.value],
         allEntries: entries ? entries : [],
         createEntryTemplateCallback: (entry: ProfileFullUserTransaction) => {
             if (!isRenderReady) {
                 return 'loading';
             }
             return html`
-                            <${EntrepotProfileCardElement}
-                                ${assign(EntrepotProfileCardElement, {
-                                    nft: {
-                                        ...entry,
-                                    },
-                                })}
-                            ></${EntrepotProfileCardElement}>`;
+                <${EntrepotProfileCardElement}
+                    ${assign(EntrepotProfileCardElement, {
+                        nft: {
+                            ...entry,
+                        },
+                    })}
+                ></${EntrepotProfileCardElement}>`;
         },
     });
 }

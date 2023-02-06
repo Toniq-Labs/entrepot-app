@@ -70,7 +70,8 @@ function applyNumericRangeFilter<EntryData extends object>(
     if (value == undefined) {
         return false;
     }
-    const matchThisData: number = Number(value);
+    const factor = filter.factor || 1;
+    const matchThisData: number = Number(value) * factor;
 
     if (isNaN(matchThisData)) {
         console.error({filter, dataEntry});
@@ -89,15 +90,21 @@ function applyRadioFilter<EntryData extends object>(
     dataEntry: EntryData,
     filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.Radio}>,
 ): boolean {
-    return filter.radios.every(radio => {
-        return matchSingleCheckboxFilter({
-            dataEntry,
-            fieldKeys: filter.filterField as string[],
-            checkbox: {
-                ...radio,
-                checked: radio.value ? radio.value === filter.value : radio.label === filter.value,
-            },
-        });
+    const selectedRadio = filter.radios.filter(
+        radio => String(radio.value) === String(filter.value),
+    )[0];
+
+    if (!selectedRadio) {
+        throw new Error(`Failed to find selected radio in '${filter.filterField}' filter.`);
+    }
+
+    return matchSingleCheckboxFilter({
+        dataEntry,
+        fieldKeys: filter.filterField as string[],
+        checkbox: {
+            ...selectedRadio,
+            checked: true,
+        },
     });
 }
 

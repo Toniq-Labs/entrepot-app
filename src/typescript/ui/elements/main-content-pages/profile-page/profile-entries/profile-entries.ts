@@ -1,8 +1,8 @@
 import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from '../profile-tabs';
-import {UserNft} from '../../../../../data/nft/user-nft';
-import {NftExtraData, emptyNftExtraData} from '../../../../../data/nft/nft-extra-data';
+import {UserNft} from '../../../../../data/nft/raw-user-nft';
+import {NftListing, emptyNftListing} from '../../../../../data/nft/nft-listing';
 import {ProfilePageStateType, ProfileFullEarnNft} from '../entrepot-profile-page-state';
 import {
     ProfileFullUserNft,
@@ -19,6 +19,7 @@ import {
     isEntriesType,
 } from './profile-entry-types';
 import {CollectionMap} from '../../../../../data/models/collection';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 
 function combineOffers({
     userOffersMade,
@@ -50,7 +51,7 @@ function getAsyncStateForCurrentTab(
         | 'nftExtraData'
         | 'userFavorites'
         | 'userTransactions'
-        | 'currentTopTab'
+        | 'currentProfileTab'
     >,
 ) {
     const tabToStateProp: Record<ProfileTopTabValue, AsyncState<ReadonlyArray<any>>> = {
@@ -61,21 +62,30 @@ function getAsyncStateForCurrentTab(
         // earn: currentState.userEarnNfts,
         earn: [],
     };
-    return tabToStateProp[currentState.currentTopTab.value];
+    return tabToStateProp[currentState.currentProfileTab.value];
 }
 
-export function generateProfileWithFiltersInput(
-    currentProfilePageState: ProfilePageStateType,
-    collectionMap: CollectionMap,
-) {
+export function generateProfileWithFiltersInput({
+    currentProfilePageState,
+    collectionMap,
+    sellCallback,
+    transferCallback,
+    userAccount,
+}: {
+    currentProfilePageState: ProfilePageStateType;
+    collectionMap: CollectionMap;
+    sellCallback: (nftId: string) => void;
+    transferCallback: (nftId: string) => void;
+    userAccount: EntrepotUserAccount | undefined;
+}) {
     const asyncEntries: AnyProfileEntriesAsyncState =
         getAsyncStateForCurrentTab(currentProfilePageState);
 
     const entries: AnyFullProfileEntries = isRenderReady(asyncEntries)
         ? (asyncEntries.map((nft): ArrayElement<AnyFullProfileEntries> => {
-              const extraNftData: NftExtraData = isRenderReady(currentProfilePageState.nftExtraData)
-                  ? currentProfilePageState.nftExtraData[nft.nftId] ?? emptyNftExtraData
-                  : emptyNftExtraData;
+              const extraNftData: NftListing = isRenderReady(currentProfilePageState.nftExtraData)
+                  ? currentProfilePageState.nftExtraData[nft.nftId] ?? emptyNftListing
+                  : emptyNftListing;
 
               const nftNri: number | undefined = isRenderReady(
                   currentProfilePageState.collectionNriData,
@@ -134,6 +144,9 @@ export function generateProfileWithFiltersInput(
             ...currentProfilePageState,
             entries,
             isRenderReady: isEntriesRenderReady,
+            sellCallback,
+            transferCallback,
+            userAccount,
         });
     }
 }

@@ -4,14 +4,11 @@ import {
     RawUserNftTransaction,
     parseRawUserNftTransaction,
     UserTransactionWithDirection,
+    TransactionDirection,
 } from '../../../nft/user-nft-transaction';
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-
-export enum TransactionDirection {
-    Purchase = 'purchase',
-    Sale = 'sale',
-}
+import {fetchRawNftListingAndOffers} from '../fetch-raw-nft-listing-and-offers';
 
 export type UserTransactionsInput = {
     userAccount: EntrepotUserAccount;
@@ -31,25 +28,37 @@ async function updateUserTransactions({
         await fetch(cloudFunctionsUrl)
     ).json();
 
-    return rawTransactions
-        .map((rawTransaction): UserTransactionWithDirection | undefined => {
-            const transaction = parseRawUserNftTransaction(rawTransaction);
+    const transactions = await Promise.all(
+        rawTransactions.map(
+            async (rawTransaction, index): Promise<UserTransactionWithDirection | undefined> => {
+                if (!rawTransaction.token) {
+                    return undefined;
+                }
 
-            if (!transaction) {
-                return undefined;
-            }
+                const rawNftListingAndOffers = await fetchRawNftListingAndOffers(
+                    index + 1,
+                    rawTransaction.id,
+                );
 
-            const direction =
-                transaction.buyerAddress === userAccountAddress
-                    ? TransactionDirection.Purchase
-                    : TransactionDirection.Sale;
+                const transaction = parseRawUserNftTransaction({
+                    ...rawNftListingAndOffers,
+                    rawTransaction,
+                });
 
-            return {
-                ...transaction,
-                directionForCurrentUser: direction,
-            };
-        })
-        .filter(isTruthy);
+                const direction =
+                    transaction.buyerAddress === userAccountAddress
+                        ? TransactionDirection.Purchase
+                        : TransactionDirection.Sale;
+
+                return {
+                    ...transaction,
+                    directionForCurrentUser: direction,
+                };
+            },
+        ),
+    );
+
+    return transactions.filter(isTruthy);
 }
 
 export const userTransactionsCache = defineAutomaticallyUpdatingCache<

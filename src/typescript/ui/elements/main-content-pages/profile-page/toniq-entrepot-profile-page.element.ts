@@ -16,8 +16,8 @@ import {defineToniqElement} from '@toniq-labs/design-system';
 import {UserIdentity} from '../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
 import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
-import {userNftsCache} from '../../../../data/local-cache/caches/user-data/user-nfts-cache';
-import {UserNft} from '../../../../data/nft/user-nft';
+import {userOwnedNftsCache} from '../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
+import {UserNft} from '../../../../data/nft/raw-user-nft';
 import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {
     userMadeOffersCache,
@@ -109,7 +109,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         nftClick: defineElementEvent<{nftId: string}>(),
     },
     stateInit: profilePageStateInit,
-    initCallback: ({inputs, state, updateState}) => {
+    initCallback: ({inputs, state, updateState, dispatch, events}) => {
         userTransactionsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
@@ -119,7 +119,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                 });
             }
         });
-        userNftsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+        userOwnedNftsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
             if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
                 updateState({
                     userNfts: {
@@ -189,8 +189,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
 
         const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
 
-        console.log({...state});
-
         // update nft data
         updateState({
             userTransactions: {
@@ -207,7 +205,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             userNfts: {
                 createPromise: async () => {
                     return inputs.userAccount && inputs.userIdentity
-                        ? userNftsCache.get({
+                        ? userOwnedNftsCache.get({
                               userAccount: inputs.userAccount,
                               userIdentity: inputs.userIdentity,
                           })
@@ -296,9 +294,17 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             },
         });
 
-        const filterInputs = generateProfileWithFiltersInput({...state}, inputs.collectionMap);
-
-        console.log({filterInputs});
+        const filterInputs = generateProfileWithFiltersInput({
+            currentProfilePageState: {...state},
+            collectionMap: inputs.collectionMap,
+            sellCallback: nftId => {
+                dispatch(new events.sellClick({nftId}));
+            },
+            transferCallback: nftId => {
+                dispatch(new events.transferClick({nftId}));
+            },
+            userAccount: inputs.userAccount,
+        });
 
         return html`
             <${EntrepotPageHeaderElement}
@@ -308,12 +314,12 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             ></${EntrepotPageHeaderElement}>
             <${EntrepotTopTabsElement}
                 ${assign(EntrepotTopTabsElement, {
-                    selected: state.currentTopTab,
+                    selected: state.currentProfileTab,
                     tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
                 })}
                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                     updateState({
-                        currentTopTab: event.detail as ProfileTab,
+                        currentProfileTab: event.detail as ProfileTab,
                     });
                 })}
             ></${EntrepotTopTabsElement}>
@@ -326,7 +332,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     updateState({
                         filters: {
                             ...state.filters,
-                            [state.currentTopTab.value]: event.detail,
+                            [state.currentProfileTab.value]: event.detail,
                         },
                     });
                 })}
@@ -334,7 +340,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     updateState({
                         currentSort: {
                             ...state.currentSort,
-                            [state.currentTopTab.value]: event.detail,
+                            [state.currentProfileTab.value]: event.detail,
                         },
                     });
                 })}

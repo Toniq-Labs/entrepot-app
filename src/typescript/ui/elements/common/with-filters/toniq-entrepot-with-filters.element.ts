@@ -128,6 +128,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             display: flex;
             flex-wrap: wrap;
             justify-content: space-evenly;
+            gap: 16px 4px;
         }
 
         .content-entries.is-loading-entries {

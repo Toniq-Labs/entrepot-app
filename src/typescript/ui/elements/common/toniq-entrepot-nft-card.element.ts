@@ -2,20 +2,24 @@ import {assign, css, html} from 'element-vir';
 import {
     applyBackgroundAndForeground,
     defineToniqElement,
+    interactionDuration,
     toniqColors,
     toniqShadows,
 } from '@toniq-labs/design-system';
-import {UserNft} from '../../../data/nft/user-nft';
-import {NftExtraData} from '../../../data/nft/nft-extra-data';
+import {UserNft} from '../../../data/nft/raw-user-nft';
+import {NftListing} from '../../../data/nft/nft-listing';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
 
 export type NftCardInputs = {
-    nft: Pick<UserNft & NftExtraData, 'collectionId' | 'nftId' | 'nftIndex'>;
+    nft: Pick<UserNft & NftListing, 'collectionId' | 'nftId' | 'nftIndex'>;
 };
 
 export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
     tagName: 'toniq-entrepot-nft-card',
-    styles: css`
+    hostClasses: {
+        blockInteraction: false,
+    },
+    styles: ({hostClassSelectors, hostClassNames}) => css`
         :host {
             width: 384;
             max-width: 100%;
@@ -26,20 +30,57 @@ export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
             display: flex;
             flex-direction: column;
             ${toniqShadows.popupShadow}
+            transition: ${interactionDuration};
+            padding: 16px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        :host(:hover) {
+            border-color: purple;
+            border-color: ${toniqColors.pageInteraction.foregroundColor};
+        }
+
+        ${hostClassSelectors.blockInteraction} {
+            cursor: auto;
+        }
+
+        :host(.${hostClassNames.blockInteraction}:hover) {
+            border-color: transparent;
+        }
+
+        .image-wrapper {
+            position: relative;
+        }
+
+        .image-overlay {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
         }
     `,
     renderCallback: ({inputs, state, updateState}) => {
         return html`
-            <${EntrepotNftDisplayElement}
-                ${assign(EntrepotNftDisplayElement, {
-                    collectionId: inputs.nft.collectionId,
-                    fullSize: false,
-                    cachePriority: 0,
-                    nftId: inputs.nft.nftId,
-                    nftIndex: inputs.nft.nftIndex,
-                    ref: 0,
-                })}
-            ></${EntrepotNftDisplayElement}>
+            <div class="image-wrapper">
+                <${EntrepotNftDisplayElement}
+                    ${assign(EntrepotNftDisplayElement, {
+                        collectionId: inputs.nft.collectionId,
+                        fullSize: false,
+                        cachePriority: 0,
+                        nftId: inputs.nft.nftId,
+                        nftIndex: inputs.nft.nftIndex,
+                        ref: 0,
+                    })}
+                ></${EntrepotNftDisplayElement}>
+                <div class="image-overlay">
+                    <slot name="image-overlay"></slot>
+                </div>
+            </div>
+            <div class="footer-contents">
+                <slot></slot>
+            </div>
         `;
     },
 });

@@ -1,1 +1,1 @@
-export const treasureCanisterId = 'yigae-jqaaa-aaaah-qczbq-cai';
+export const treasureCanisterId = 'yigae-jqaaa-aaaah-qczbq-cai' as const;

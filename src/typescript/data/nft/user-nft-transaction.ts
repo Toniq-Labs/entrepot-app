@@ -1,8 +1,9 @@
 import {CanisterId} from '../models/canister-id';
 import {decodeNftId} from './nft-id';
-import {TransactionDirection} from '../local-cache/caches/user-data/user-transactions-cache';
 import {getNftMintNumber} from './nft-mint-number';
 import {BaseNft} from './base-nft';
+import {parseRawNftListing, RawNftListing, NftListingPrice} from './nft-listing';
+import {parseRawNftOffers, RawNftOffer} from './nft-offer';
 
 export type UserNftTransaction = BaseNft & {
     buyerAddress: string;
@@ -10,6 +11,11 @@ export type UserNftTransaction = BaseNft & {
     timestampMillisecond: number;
     transactionId: string;
 };
+
+export enum TransactionDirection {
+    Purchase = 'purchase',
+    Sale = 'sale',
+}
 
 export type UserTransactionWithDirection = UserNftTransaction & {
     directionForCurrentUser: TransactionDirection;
@@ -25,30 +31,42 @@ export type RawUserNftTransaction = {
     token: string;
 };
 
-export function parseRawUserNftTransaction(
-    raw: RawUserNftTransaction,
-): UserNftTransaction | undefined {
-    if (!raw.token) {
-        return undefined;
-    }
+export function parseRawUserNftTransaction({
+    rawTransaction,
+    rawNftListing,
+    rawNftOffers,
+}: {
+    rawTransaction: RawUserNftTransaction;
+    rawNftListing: RawNftListing;
+    rawNftOffers: RawNftOffer[];
+}): UserNftTransaction {
+    const decodedNft = decodeNftId(rawTransaction.token);
 
-    const {index, canister} = decodeNftId(raw.token);
-
-    if (canister !== raw.canister) {
+    if (decodedNft.canister !== rawTransaction.canister) {
+        console.error({rawNft: rawNftListing, decodedNft: decodedNft});
         throw new Error(
-            `Decoded canister id '${canister}' did not match transaction canister id '${raw.canister}'`,
+            `Decoded canister id '${decodedNft.canister}' did not match transaction canister id '${rawTransaction.canister}'`,
         );
     }
 
+    const listing: NftListingPrice = {
+        price: rawTransaction.price,
+        lockedTimestamp: rawTransaction.time,
+    };
+
     return {
-        buyerAddress: raw.buyer,
-        collectionId: raw.canister,
-        sellerAddress: raw.seller,
-        timestampMillisecond: raw.time / 1_000_000,
-        nftId: raw.token,
-        transactionId: raw.id,
-        nftMintNumber: getNftMintNumber({collectionId: raw.canister, nftIndex: index}),
-        listPrice: raw.price,
-        nftIndex: index,
+        ...parseRawNftListing(rawNftListing),
+        ...parseRawNftOffers(rawNftOffers),
+        buyerAddress: rawTransaction.buyer,
+        nftIndex: decodedNft.index,
+        nftMintNumber: getNftMintNumber({
+            collectionId: rawTransaction.canister,
+            nftIndex: decodedNft.index,
+        }),
+        sellerAddress: rawTransaction.seller,
+        timestampMillisecond: rawTransaction.time / 1_000_000,
+        transactionId: rawTransaction.id,
+        /** This overrides the listing property from parseRawNftListing(rawNftListing) */
+        listing,
     };
 }

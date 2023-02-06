@@ -19,8 +19,7 @@ export enum BooleanFilterTypeEnum {
 export type BooleanFilterEntry = {
     label: string;
     checked: boolean;
-    /** If value is not provided, the label is used as the filter. */
-    value?: string | boolean;
+    value: string | boolean;
     /** If filterType is not provided, BooleanFilterTypeEnum.Exclusive is used */
     filterType?: BooleanFilterTypeEnum;
 };
@@ -28,6 +27,7 @@ export type BooleanFilterEntry = {
 type NumericRangeFilterEntry = {
     currentMin: number | undefined;
     currentMax: number | undefined;
+    factor?: number | undefined;
 } & (
     | {
           types: ReadonlyArray<string>;

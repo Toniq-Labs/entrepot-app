@@ -2,27 +2,35 @@ import {createEntrepotApiWithIdentity} from '../../../../api/entrepot-apis/entre
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {UserNft} from '../../../nft/user-nft';
-import {nftIdToNft, nftIdsToNfts} from '../../../nft/nft-id';
+import {fetchRawNftListingAndOffers} from '../fetch-raw-nft-listing-and-offers';
+import {BaseNft, parseRawNftData} from '../../../nft/base-nft';
 
 export type UserFavoritesInputs = {
     userAccount: EntrepotUserAccount;
     userIdentity: UserIdentity;
 };
 
-export function makeUserFavoritesKey({userAccount, userIdentity}: UserFavoritesInputs) {
-    return `${userAccount.address}__${userIdentity.getPrincipal().toText()}`;
+export function makeUserFavoritesKey({userIdentity}: UserFavoritesInputs) {
+    return userIdentity.getPrincipal().toText();
 }
 
-async function updateUserFavorites({
-    userAccount,
-    userIdentity,
-}: UserFavoritesInputs): Promise<UserNft[]> {
+async function updateUserFavorites({userIdentity}: UserFavoritesInputs): Promise<BaseNft[]> {
     const favoriteNftIds = await createEntrepotApiWithIdentity(userIdentity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .liked();
 
-    return nftIdsToNfts({userAccount, nftIds: favoriteNftIds});
+    const userOfferedNfts = Promise.all(
+        favoriteNftIds.map(async (favoriteNftId, index) => {
+            const rawNftListingAndOffers = await fetchRawNftListingAndOffers(
+                index + 1,
+                favoriteNftId,
+            );
+
+            return parseRawNftData(rawNftListingAndOffers);
+        }),
+    );
+
+    return userOfferedNfts;
 }
 
 export const userFavoritesCache = defineAutomaticallyUpdatingCache<

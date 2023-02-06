@@ -1,7 +1,7 @@
 import {getCanisterDetails} from '../canisters/canister-details/all-canister-details';
-import {UserNft} from './user-nft';
+import {BaseNft} from './base-nft';
 
-export function getNftMintNumber(nftDetails: Pick<UserNft, 'collectionId' | 'nftIndex'>): number {
+export function getNftMintNumber(nftDetails: Pick<BaseNft, 'collectionId' | 'nftIndex'>): number {
     const collectionDetails = getCanisterDetails(nftDetails.collectionId);
 
     if (collectionDetails.hasWrappedCanister) {

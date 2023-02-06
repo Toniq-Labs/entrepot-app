@@ -37,15 +37,15 @@ export type AnyFullProfileEntries = ReadonlyArrayUnionMap<AnyFullProfileEntryTyp
 export function isNftType<TopTabValueGeneric extends ProfileTopTabValue>(
     nft: TabValueToEntryType[ProfileTopTabValue],
     tabValue: TopTabValueGeneric,
-    state: Pick<ProfilePageStateType, 'currentTopTab'>,
+    state: Pick<ProfilePageStateType, 'currentProfileTab'>,
 ): nft is TabValueToEntryType[TopTabValueGeneric] {
-    return state.currentTopTab.value === tabValue;
+    return state.currentProfileTab.value === tabValue;
 }
 
 export function isEntriesType<TopTabValueGeneric extends ProfileTopTabValue>(
     entries: ReadonlyArray<Readonly<AnyProfileEntryType>>,
     tabValue: TopTabValueGeneric,
-    state: Pick<ProfilePageStateType, 'currentTopTab'>,
+    state: Pick<ProfilePageStateType, 'currentProfileTab'>,
 ): entries is ReadonlyArray<TabValueToFullProfileEntryType[TopTabValueGeneric]> {
-    return state.currentTopTab.value === tabValue;
+    return state.currentProfileTab.value === tabValue;
 }

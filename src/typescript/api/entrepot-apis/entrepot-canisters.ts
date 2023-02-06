@@ -1,5 +1,5 @@
 import {defaultEntrepotApi} from './entrepot-data-api';
-import {RawNftOffer} from '../../data/nft/nft-offers';
+import {RawNftOffer} from '../../data/nft/nft-offer';
 
 export const entrepotCanisters = {
     /**

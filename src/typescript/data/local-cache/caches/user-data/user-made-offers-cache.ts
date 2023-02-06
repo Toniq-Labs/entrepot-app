@@ -2,8 +2,8 @@ import {createEntrepotApiWithIdentity} from '../../../../api/entrepot-apis/entre
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {UserNft} from '../../../nft/user-nft';
-import {nftIdsToNfts} from '../../../nft/nft-id';
+import {BaseNft, parseRawNftData} from '../../../nft/base-nft';
+import {fetchRawNftListingAndOffers} from '../fetch-raw-nft-listing-and-offers';
 
 export type UserOffersInputs = {
     userAccount: EntrepotUserAccount;
@@ -17,12 +17,23 @@ export function makeUserOffersKey({userAccount, userIdentity}: UserOffersInputs)
 async function updateUserMadeOffers({
     userAccount,
     userIdentity,
-}: UserOffersInputs): Promise<UserNft[]> {
+}: UserOffersInputs): Promise<BaseNft[]> {
     const offersMadeNftIds = await createEntrepotApiWithIdentity(userIdentity)
         .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
         .offered();
 
-    return nftIdsToNfts({userAccount, nftIds: offersMadeNftIds});
+    const userOfferedNfts = Promise.all(
+        offersMadeNftIds.map(async (offerMadeNftId, index) => {
+            const rawNftListingAndOffers = await fetchRawNftListingAndOffers(
+                index + 1,
+                offerMadeNftId,
+            );
+
+            return parseRawNftData(rawNftListingAndOffers);
+        }),
+    );
+
+    return userOfferedNfts;
 }
 
 export const userMadeOffersCache = defineAutomaticallyUpdatingCache<
