@@ -1,25 +1,20 @@
 import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from '../profile-tabs';
-import {NftListing, emptyNftListing} from '../../../../../data/nft/nft-listing';
 import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
-import {
-    ProfileFullUserNft,
-    createUserNftFilterInputs,
-} from '../user-nft-profile-parts/user-nft-profile-filters';
-import {
-    ProfileFullUserTransaction,
-    createUserTransactionFilterInputs,
-} from '../user-transaction-profile-parts/user-transaction-profile-filters';
+import {createProfileBaseNftFilterInputs} from '../nft-profile-parts/create-profile-nft-filter-inputs';
+import {createUserTransactionFilterInputs} from '../user-transaction-profile-parts/create-profile-transaction-nft-filter-inputs';
 import {
     AnyProfileEntriesAsyncState,
     AnyFullProfileEntries,
     isNftType,
     isEntriesType,
-} from './profile-entry-types';
+} from './profile-nft-types';
 import {CollectionMap} from '../../../../../data/models/collection';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
+import {ProfileCompleteTransactionNft} from '../user-transaction-profile-parts/transaction-profile-filters';
+import {ProfileCompleteNft} from '../nft-profile-parts/nft-profile-filters';
 
 function combineOffers({
     userOffersMade,
@@ -88,7 +83,7 @@ export function generateProfileWithFiltersInput({
               const collection = collectionMap[nft.collectionId];
 
               if (isNftType(nft, profileTabMap.activity.value, currentProfilePageState)) {
-                  const fullTransaction: ProfileFullUserTransaction = {
+                  const fullTransaction: ProfileCompleteTransactionNft = {
                       ...nft,
                       nftNri,
                       collection,
@@ -104,7 +99,7 @@ export function generateProfileWithFiltersInput({
                   };
                   return fullEarn;
               } else {
-                  const fullUserNft: ProfileFullUserNft = {
+                  const fullUserNft: ProfileCompleteNft = {
                       ...nft,
                       nftNri,
                       isListed: !!nft.listing.price,
@@ -127,7 +122,7 @@ export function generateProfileWithFiltersInput({
     } else if (isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)) {
         return {} as any;
     } else {
-        return createUserNftFilterInputs({
+        return createProfileBaseNftFilterInputs({
             ...currentProfilePageState,
             entries,
             isRenderReady: isEntriesRenderReady,

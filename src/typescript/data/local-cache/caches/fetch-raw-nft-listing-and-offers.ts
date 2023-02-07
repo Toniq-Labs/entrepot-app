@@ -15,9 +15,13 @@ export async function fetchRawNftListingAndOffers(
 
     await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
 
-    const rawNftOffers = await entrepotCanisters.nftOffers.offers(getExtNftId(nftId));
+    console.log({nftId});
 
-    console.log({rawNftOffers, nftId, extId: getExtNftId(nftId)});
+    if (nftId.startsWith('0fb0d53c19')) {
+        console.log('here');
+    }
+
+    const rawNftOffers = await entrepotCanisters.nftOffers.offers(getExtNftId(nftId));
 
     const rawNftListing: RawNftListing = await (
         await fetch(

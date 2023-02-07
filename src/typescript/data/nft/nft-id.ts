@@ -5,18 +5,18 @@ import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-i
 import {CanisterId} from '../models/canister-id';
 
 export function decodeNftId(nftId: string) {
-    var p: any = [...Principal.fromText(nftId).toUint8Array()];
-    var padding = p.splice(0, 4);
+    const p = [...Principal.fromText(nftId).toUint8Array()];
+    const padding = p.splice(0, 4);
     if (toHexString(padding) !== toHexString(Buffer.from('\x0Atid'))) {
         return {
             index: 0,
-            canister: nftId as CanisterId,
+            canister: nftId,
             token: encodeNftId(nftId, 0),
         };
     } else {
         return {
             index: from32bits(p.splice(-4)),
-            canister: Principal.fromUint8Array(p).toText() as CanisterId,
+            canister: Principal.fromUint8Array(p as any).toText(),
             token: nftId,
         };
     }
@@ -33,6 +33,7 @@ export function encodeNftId(principal: any, index: any) {
 }
 
 export function getExtNftId(nftId: string) {
+    console.log({nftId});
     const {index, canister} = decodeNftId(nftId);
     return encodeNftId(getExtCanisterId(canister), index);
 }

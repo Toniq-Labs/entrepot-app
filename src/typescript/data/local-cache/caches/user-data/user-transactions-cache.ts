@@ -31,14 +31,13 @@ async function updateUserTransactions({
     const transactions = await Promise.all(
         rawTransactions.map(
             async (rawTransaction, index): Promise<UserTransactionWithDirection | undefined> => {
-                if (!rawTransaction.token) {
+                const nftId = rawTransaction.token;
+
+                if (!nftId) {
                     return undefined;
                 }
 
-                const rawNftListingAndOffers = await fetchRawNftListingAndOffers(
-                    index + 1,
-                    rawTransaction.id,
-                );
+                const rawNftListingAndOffers = await fetchRawNftListingAndOffers(index + 1, nftId);
 
                 const transaction = parseRawUserNftTransaction({
                     ...rawNftListingAndOffers,
