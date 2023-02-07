@@ -3,13 +3,13 @@ import {assign, css, html, renderIf} from 'element-vir';
 import {defineToniqElement, toniqFontStyles, Icp16Icon, ToniqIcon} from '@toniq-labs/design-system';
 import {EntrepotNftCardElement} from '../../common/toniq-entrepot-nft-card.element';
 import {toIcp} from '../../../../data/icp';
-import {BaseFullProfileEntry} from './profile-entries/base-full-profile-entry';
+import {BaseFullProfileNft} from './profile-nfts/base-full-profile-nft';
 import {isRuntimeTypeOf} from '@augment-vir/common';
 import {BaseNft} from '../../../../data/nft/base-nft';
 
 export const EntrepotProfileCardElement = defineToniqElement<{
     nft: Pick<
-        BaseNft & BaseFullProfileEntry,
+        BaseNft & BaseFullProfileNft,
         'collectionId' | 'nftId' | 'nftIndex' | 'listing' | 'nftNri'
     >;
 }>()({

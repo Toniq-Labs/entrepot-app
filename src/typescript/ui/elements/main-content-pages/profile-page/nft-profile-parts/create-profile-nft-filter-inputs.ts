@@ -1,15 +1,6 @@
-import {wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
-import {
-    FilterTypeEnum,
-    FilterDefinitions,
-    SortDefinition,
-    BooleanFilterTypeEnum,
-} from '../../../common/with-filters/filters-types';
-import {ReadonlyDeep} from 'type-fest';
-import {assign, html, isRenderReady, listen} from 'element-vir';
+import {assign, html, listen} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
 import {ProfilePageStateType} from '../profile-page-state';
-import {BaseFullProfileEntry} from '../profile-entries/base-full-profile-entry';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
 import {
     ToniqIcon,
@@ -19,78 +10,12 @@ import {
     toniqColors,
 } from '@toniq-labs/design-system';
 import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
-import {ProfileTab, ProfileTopTabValue} from '../profile-tabs';
+import {ProfileTab} from '../profile-tabs';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
+import {ProfileCompleteNft, profileNftSortDefinitions} from './nft-profile-filters';
 
-export type ProfileFullUserNft = BaseNft & BaseFullProfileEntry & {isListed: boolean};
-
-export const defaultProfileUserNftFilters = wrapNarrowTypeWithTypeCheck<
-    ReadonlyDeep<FilterDefinitions<ProfileFullUserNft>>
->()({
-    'List Status': {
-        filterType: FilterTypeEnum.Radio,
-        radios: [
-            {
-                label: 'All',
-                value: 'All',
-                filterType: BooleanFilterTypeEnum.Everything,
-            },
-            {
-                label: 'Listed',
-                value: true,
-            },
-            {
-                label: 'Unlisted',
-                value: false,
-            },
-        ],
-        filterField: ['isListed'],
-        value: 'All',
-    },
-    'List Price': {
-        filterType: FilterTypeEnum.NumericRange,
-        currentMin: undefined,
-        currentMax: undefined,
-        filterField: [
-            'listing',
-            'price',
-        ],
-    },
-    NRI: {
-        filterType: FilterTypeEnum.NumericRange,
-        currentMin: undefined,
-        currentMax: undefined,
-        filterField: ['nftNri'],
-        factor: 100,
-    },
-} as const);
-
-export const profileUserNftSortDefinitions = wrapNarrowTypeWithTypeCheck<
-    ReadonlyArray<ReadonlyDeep<SortDefinition<ProfileFullUserNft>>>
->()([
-    {
-        sortName: 'Mint #',
-        sortField: [
-            'nftMintNumber',
-        ],
-    },
-    {
-        sortName: 'Price',
-        sortField: [
-            'listing',
-            'price',
-        ],
-    },
-    {
-        sortName: 'Rarity',
-        sortField: [
-            'nftNri',
-        ],
-    },
-] as const);
-
-export function createUserNftFilterInputs({
+export function createProfileBaseNftFilterInputs({
     showFilters,
     currentSort,
     filters,
@@ -102,19 +27,22 @@ export function createUserNftFilterInputs({
     userAccount,
 }: {
     isRenderReady: boolean;
-    entries: ReadonlyArray<Readonly<ProfileFullUserNft>>;
+    entries: ReadonlyArray<Readonly<ProfileCompleteNft>>;
     sellCallback: (nftId: string) => void;
     transferCallback: (nftId: string) => void;
     userAccount: EntrepotUserAccount | undefined;
 } & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentProfileTab'>) {
     return createWithFiltersInputs({
-        ...createBaseProfileWithFiltersInputs({isRenderReady, showFilters}),
+        ...createBaseProfileWithFiltersInputs({
+            isRenderReady,
+            showFilters,
+            filters,
+            currentProfileTab,
+        }),
         currentSort: currentSort[currentProfileTab.value],
-        sortDefinitions: profileUserNftSortDefinitions,
-        defaultFilters: defaultProfileUserNftFilters,
-        currentFilters: filters[currentProfileTab.value],
+        sortDefinitions: profileNftSortDefinitions,
         allEntries: entries,
-        createEntryTemplateCallback: (entry: ProfileFullUserNft) => {
+        createEntryTemplateCallback: (entry: ProfileCompleteNft) => {
             if (!isRenderReady) {
                 return html`
                     <${ToniqIcon}
@@ -124,8 +52,6 @@ export function createUserNftFilterInputs({
                     ></${ToniqIcon}>
                 `;
             }
-
-            console.log({entry, userAccount});
 
             const rightSideTemplate = createRightSideTemplate({
                 sellCallback: () => {

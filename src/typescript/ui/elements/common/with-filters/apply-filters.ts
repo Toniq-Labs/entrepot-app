@@ -63,13 +63,9 @@ function applyNumericRangeFilter<EntryData extends object>(
     if (filter.currentMax == undefined && filter.currentMin == undefined) {
         return true;
     }
-    const value: unknown = getValueFromNestedKeys(
-        dataEntry,
-        filter.filterField as NestedSequentialKeys<EntryData>,
-    );
-    if (value == undefined) {
-        return false;
-    }
+    const value: unknown =
+        getValueFromNestedKeys(dataEntry, filter.filterField as NestedSequentialKeys<EntryData>) ??
+        0;
     const factor = filter.factor || 1;
     const matchThisData: number = Number(value) * factor;
 

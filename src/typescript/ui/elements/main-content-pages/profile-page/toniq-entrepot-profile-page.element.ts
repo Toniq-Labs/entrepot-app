@@ -28,7 +28,7 @@ import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {getAllowedTabs, ProfileTab} from './profile-tabs';
 import {profilePageStateInit} from './profile-page-state';
-import {generateProfileWithFiltersInput} from './profile-entries/profile-entries';
+import {generateProfileWithFiltersInput} from './profile-nfts/profile-nfts';
 import {BaseNft} from '../../../../data/nft/base-nft';
 
 function getAllCollectionIds(
@@ -142,6 +142,8 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             state.userOffersMade,
             state.userTransactions,
         ];
+
+        console.log({...state});
 
         const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
 
