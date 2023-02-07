@@ -6,7 +6,7 @@ import {CanisterId} from '../../../../data/models/canister-id';
 import {ReadonlyDeep} from 'type-fest';
 import {ProfileTopTabValue, profileTabMap, ProfileTab} from './profile-tabs';
 import {UserTransactionWithDirection} from '../../../../data/nft/user-nft-transaction';
-import {BaseFullProfileNft} from './profile-nfts/base-full-profile-nft';
+import {FullProfileNft} from './profile-nfts/full-profile-nft';
 import {BaseNft} from '../../../../data/nft/base-nft';
 import {
     defaultProfileNftFilters,
@@ -20,7 +20,7 @@ import {
 export type ProfileFullEarnNft = {
     earn: boolean;
 } & BaseNft &
-    BaseFullProfileNft;
+    FullProfileNft;
 
 function generateFilters() {
     const filters = wrapNarrowTypeWithTypeCheck<

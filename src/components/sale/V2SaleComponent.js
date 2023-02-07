@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import extjs from '../../ic/extjs.js';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Timestamp from 'react-timestamp';
@@ -374,6 +373,8 @@ export default function V2SaleComponent(props) {
                             {sold !== false
                                 ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
                                     ? sold + 362
+                                    : collection.canister === 'tfpyv-wyaaa-aaaal-qbonq-cai'
+                                    ? sold + 68
                                     : sold
                                 : 'Loading...'}
                         </span>

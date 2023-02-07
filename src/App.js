@@ -179,6 +179,10 @@ export default function App() {
         setShowBuyForm,
     ] = React.useState(false);
     const [
+        stats,
+        setStats,
+    ] = React.useState([]);
+    const [
         openListingForm,
         setOpenListingForm,
     ] = React.useState(false);
@@ -264,16 +268,8 @@ export default function App() {
     ] = React.useState(0);
 
     const _updates = async () => {
-        try {
-            EntrepotUpdateUSD();
-        } catch (error) {
-            console.error(error);
-        }
-        try {
-            await EntrepotUpdateStats();
-        } catch (error) {
-            console.error(error);
-        }
+        EntrepotUpdateUSD();
+        setStats(await EntrepotUpdateStats());
     };
 
     const navigate = useNavigate();
@@ -641,7 +637,7 @@ export default function App() {
 
     useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
     useInterval(() => updateCollections(), 5 * 60 * 1000);
-    useInterval(_updates, 10 * 60 * 1000);
+    useInterval(_updates, 2 * 60 * 1000);
     const alert = (title, message, buttonLabel) => {
         return new Promise(async (resolve, reject) => {
             setAlertData({
@@ -841,8 +837,13 @@ export default function App() {
                         style={{
                             margin: '-32px',
                         }}
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
+                        onSellClick={event =>
+                            listNft({
+                                ...event.detail,
+                                id: event.detail.nftId,
+                            })
+                        }
+                        onTransferClick={event => transferNft(event.detail)}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
@@ -858,8 +859,13 @@ export default function App() {
                         style={{
                             margin: '-32px',
                         }}
-                        onSellClick={listNft}
-                        onTransferClick={transferNft}
+                        onSellClick={event =>
+                            listNft({
+                                ...event.detail,
+                                id: event.detail.nftId,
+                            })
+                        }
+                        onTransferClick={event => transferNft(event.detail)}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
@@ -1274,6 +1280,7 @@ export default function App() {
                                         <ListingsActivity
                                             error={error}
                                             view={'listings'}
+                                            stats={stats}
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             alert={alert}
                                             confirm={confirm}
@@ -1346,6 +1353,7 @@ export default function App() {
                                             alert={alert}
                                             confirm={confirm}
                                             loader={loader}
+                                            stats={stats}
                                             balance={balance}
                                             identity={identity}
                                             account={
@@ -2134,6 +2142,7 @@ export default function App() {
                                 alert={alert}
                                 open={openListingForm}
                                 close={closeListingForm}
+                                stats={stats}
                                 loader={loader}
                                 confirm={confirm}
                                 error={error}
@@ -2142,6 +2151,7 @@ export default function App() {
                             <PawnForm
                                 refresher={refresher}
                                 buttonLoader={buttonLoader}
+                                stats={stats}
                                 collections={collections}
                                 pawn={pawn}
                                 alert={alert}

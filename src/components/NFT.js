@@ -62,7 +62,6 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-
 export default function NFT(props) {
     const classes = useStyles();
     const tokenid = props.tokenid;
@@ -236,6 +235,8 @@ export default function NFT(props) {
         await props.refresh('/earn-requests');
     };
     var buttonLoadingText = <CircularProgress size={20.77} style={{color: 'white', margin: 1}} />;
+    const collection = getCollection(canister);
+
     const getButtons = () => {
         var buttons = [];
         if (props.view == 'new-request') {
@@ -244,7 +245,7 @@ export default function NFT(props) {
                     'Select',
                     () =>
                         props.pawnNft(
-                            {id: tokenid, canister: canister, listing: listing},
+                            {id: tokenid, canister, listing},
                             props.loader,
                             transferRefreshEarn,
                         ),
@@ -256,16 +257,13 @@ export default function NFT(props) {
                 // Contains a listing, must be EXT
                 buttons.push([
                     currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Update',
-                    () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
+                    () => {
+                        props.listNft({id: tokenid, listing, collection}, buttonLoader, refresh);
+                    },
                 ]);
                 buttons.push([
                     currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
-                    () =>
-                        props.transferNft(
-                            {id: tokenid, listing: listing},
-                            props.loader,
-                            transferRefresh,
-                        ),
+                    () => props.transferNft({id: tokenid, listing}, props.loader, transferRefresh),
                 ]);
             } else {
                 if (isNotEXT) {
@@ -316,13 +314,19 @@ export default function NFT(props) {
                     //EXT only no wrapper
                     buttons.push([
                         currentBtn == 0 && currentBtnText ? buttonLoadingText : 'Sell',
-                        () => props.listNft({id: tokenid, listing: listing}, buttonLoader, refresh),
+                        () => {
+                            props.listNft(
+                                {id: tokenid, listing, collection},
+                                buttonLoader,
+                                refresh,
+                            );
+                        },
                     ]);
                     buttons.push([
                         currentBtn == 1 && currentBtnText ? buttonLoadingText : 'Transfer',
                         () =>
                             props.transferNft(
-                                {id: tokenid, listing: listing},
+                                {id: tokenid, listing, collection},
                                 props.loader,
                                 transferRefresh,
                             ),
@@ -334,7 +338,7 @@ export default function NFT(props) {
                         'Open',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 props.loader,
                                 transferRefresh,
                             ),
@@ -350,7 +354,7 @@ export default function NFT(props) {
                         'Hatch',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 props.loader,
                                 refresh,
                             ),
@@ -361,7 +365,7 @@ export default function NFT(props) {
                         'Toniq Earn',
                         () =>
                             props.pawnNft(
-                                {id: tokenid, canister: canister, listing: listing},
+                                {id: tokenid, canister, listing},
                                 props.loader,
                                 transferRefreshEarn,
                             ),
@@ -376,7 +380,7 @@ export default function NFT(props) {
                         'Cash Out',
                         () =>
                             props.unpackNft(
-                                {id: tokenid, listing: listing, canister: canister},
+                                {id: tokenid, listing, canister},
                                 buttonLoader,
                                 refresh,
                             ),
@@ -392,7 +396,6 @@ export default function NFT(props) {
             nftIndex: index,
         });
     };
-    const collection = getCollection(canister);
     const showWrapped = () => {
         if (isNotEXT)
             return (

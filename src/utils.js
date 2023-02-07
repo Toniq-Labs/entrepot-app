@@ -11,6 +11,19 @@ import {
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
+
+export const toWrappedMap = {
+    'qcg3w-tyaaa-aaaah-qakea-cai': 'bxdf4-baaaa-aaaah-qaruq-cai',
+    '4nvhy-3qaaa-aaaah-qcnoq-cai': 'y3b7h-siaaa-aaaah-qcnwa-cai',
+    'd3ttm-qaaaa-aaaai-qam4a-cai': '3db6u-aiaaa-aaaah-qbjbq-cai',
+    'xkbqi-2qaaa-aaaah-qbpqq-cai': 'q6hjz-kyaaa-aaaah-qcama-cai',
+    'fl5nr-xiaaa-aaaai-qbjmq-cai': 'jeghr-iaaaa-aaaah-qco7q-cai',
+};
+export const getEXTCanister = c => {
+    if (toWrappedMap.hasOwnProperty(c)) return toWrappedMap[c];
+    else return c;
+};
+
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement('textarea');
     textArea.value = text;

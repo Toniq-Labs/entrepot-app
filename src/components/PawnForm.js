@@ -5,16 +5,12 @@ import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
-import extjs from '../ic/extjs.js';
-
-import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 
@@ -53,19 +49,20 @@ export default function PawnForm(props) {
             let {canister, index} = decodeNftId(props.nft.id);
             setIndex(index);
             setCanister(canister);
-            var s = EntrepotCollectionStats(canister);
-            if (!isNaN(Number(s.floor))) {
-                setFloor(Number(s.floor));
-            } else {
-                EntrepotUpdateStats().then(r => {
-                    var s = EntrepotCollectionStats(canister);
-                    if (!isNaN(Number(s.floor))) {
-                        setFloor(Number(s.floor));
-                    }
-                });
+            if (props.stats) {
+                const canisterStats = props.stats.filter(
+                    statWrapper => statWrapper.canister === canister,
+                )[0]?.stats;
+                const floor = Number(canisterStats?.floor);
+                if (!isNaN(floor)) {
+                    setFloor(floor);
+                }
             }
         }
-    }, [props.nft.id]);
+    }, [
+        props.nft,
+        props.stats,
+    ]);
 
     const _submit = () => {
         if (!floor) return props.error('Trying to retrieve floor, please try again shortly.');

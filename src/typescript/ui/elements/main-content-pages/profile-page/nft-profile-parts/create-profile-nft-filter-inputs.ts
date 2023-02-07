@@ -14,8 +14,9 @@ import {ProfileTab} from '../profile-tabs';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteNft, profileNftSortDefinitions} from './nft-profile-filters';
+import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 
-export function createProfileBaseNftFilterInputs({
+export function createProfileNftFilterInputs({
     showFilters,
     currentSort,
     filters,
@@ -28,8 +29,8 @@ export function createProfileBaseNftFilterInputs({
 }: {
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileCompleteNft>>;
-    sellCallback: (nftId: string) => void;
-    transferCallback: (nftId: string) => void;
+    sellCallback: (nft: FullProfileNft) => void;
+    transferCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
 } & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentProfileTab'>) {
     return createWithFiltersInputs({
@@ -55,10 +56,10 @@ export function createProfileBaseNftFilterInputs({
 
             const rightSideTemplate = createRightSideTemplate({
                 sellCallback: () => {
-                    sellCallback(entry.nftId);
+                    sellCallback(entry);
                 },
                 transferCallback: () => {
-                    transferCallback(entry.nftId);
+                    transferCallback(entry);
                 },
                 currentProfileTab,
                 offers: entry.offers,

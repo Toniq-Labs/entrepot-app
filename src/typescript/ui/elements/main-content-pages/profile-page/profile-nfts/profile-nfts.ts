@@ -2,7 +2,7 @@ import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from '../profile-tabs';
 import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
-import {createProfileBaseNftFilterInputs} from '../nft-profile-parts/create-profile-nft-filter-inputs';
+import {createProfileNftFilterInputs} from '../nft-profile-parts/create-profile-nft-filter-inputs';
 import {createUserTransactionFilterInputs} from '../user-transaction-profile-parts/create-profile-transaction-nft-filter-inputs';
 import {
     AnyProfileEntriesAsyncState,
@@ -15,6 +15,7 @@ import {EntrepotUserAccount} from '../../../../../data/models/user-data/account'
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteTransactionNft} from '../user-transaction-profile-parts/transaction-profile-filters';
 import {ProfileCompleteNft} from '../nft-profile-parts/nft-profile-filters';
+import {FullProfileNft} from './full-profile-nft';
 
 function combineOffers({
     userOffersMade,
@@ -63,8 +64,8 @@ export function generateProfileWithFiltersInput({
 }: {
     currentProfilePageState: ProfilePageStateType;
     collectionMap: CollectionMap;
-    sellCallback: (nftId: string) => void;
-    transferCallback: (nftId: string) => void;
+    sellCallback: (nft: FullProfileNft) => void;
+    transferCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
 }) {
     const asyncEntries: AnyProfileEntriesAsyncState =
@@ -122,7 +123,7 @@ export function generateProfileWithFiltersInput({
     } else if (isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)) {
         return {} as any;
     } else {
-        return createProfileBaseNftFilterInputs({
+        return createProfileNftFilterInputs({
             ...currentProfilePageState,
             entries,
             isRenderReady: isEntriesRenderReady,

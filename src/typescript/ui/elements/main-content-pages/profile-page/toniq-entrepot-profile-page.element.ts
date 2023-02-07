@@ -30,6 +30,7 @@ import {getAllowedTabs, ProfileTab} from './profile-tabs';
 import {profilePageStateInit} from './profile-page-state';
 import {generateProfileWithFiltersInput} from './profile-nfts/profile-nfts';
 import {BaseNft} from '../../../../data/nft/base-nft';
+import {FullProfileNft} from './profile-nfts/full-profile-nft';
 
 function getAllCollectionIds(
     asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<BaseNft, 'collectionId'>>>>,
@@ -73,9 +74,9 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         }
     `,
     events: {
-        sellClick: defineElementEvent<{nftId: string}>(),
-        transferClick: defineElementEvent<{nftId: string}>(),
-        nftClick: defineElementEvent<{nftId: string}>(),
+        sellClick: defineElementEvent<FullProfileNft>(),
+        transferClick: defineElementEvent<FullProfileNft>(),
+        nftClick: defineElementEvent<FullProfileNft>(),
     },
     stateInit: profilePageStateInit,
     initCallback: ({inputs, state, updateState, dispatch, events}) => {
@@ -231,11 +232,11 @@ export const EntrepotProfilePageElement = defineToniqElement<{
         const filterInputs = generateProfileWithFiltersInput({
             currentProfilePageState: {...state},
             collectionMap: inputs.collectionMap,
-            sellCallback: nftId => {
-                dispatch(new events.sellClick({nftId}));
+            sellCallback: nft => {
+                dispatch(new events.sellClick(nft));
             },
-            transferCallback: nftId => {
-                dispatch(new events.transferClick({nftId}));
+            transferCallback: nft => {
+                dispatch(new events.transferClick(nft));
             },
             userAccount: inputs.userAccount,
         });

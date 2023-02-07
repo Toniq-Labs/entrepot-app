@@ -1,6 +1,5 @@
 /* global BigInt */
 import React from 'react';
-import extjs from '../../ic/extjs.js';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';

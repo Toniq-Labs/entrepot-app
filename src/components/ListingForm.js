@@ -9,6 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
+import {EntrepotNftDisplayReact} from '../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 
 export default function ListingForm(props) {
@@ -16,11 +17,80 @@ export default function ListingForm(props) {
         price,
         setPrice,
     ] = React.useState(props.nft.listing?.price ? Number(props.nft.listing.price) / 100000000 : 0);
-    var collection;
-    if (props.nft.id) {
-        const {index, canister} = decodeNftId(props.nft.id);
-        collection = props.collections.find(e => e.canister === canister);
-    }
+
+    const [
+        pricePercentBelowFloor,
+        setPricePercentBelowFloor,
+    ] = React.useState(1);
+    const [
+        currentCollectionFloorPrice,
+        setCurrentCollectionFloorPrice,
+    ] = React.useState(undefined);
+    const [
+        decodedToken,
+        setDecodedToken,
+    ] = React.useState(undefined);
+    const [
+        collection,
+        setCollection,
+    ] = React.useState(undefined);
+
+    React.useEffect(() => {
+        if (props.nft?.id) {
+            setDecodedToken(decodeNftId(props.nft.id));
+        } else {
+            setDecodedToken(undefined);
+        }
+    }, [props.nft]);
+
+    React.useEffect(() => {
+        setCollection(
+            decodedToken
+                ? props.collections.find(
+                      collection => collection.canister === decodedToken.canister,
+                  )
+                : undefined,
+        );
+    }, [
+        props.collections,
+        decodedToken,
+    ]);
+
+    React.useEffect(() => {
+        const collection = decodedToken
+            ? props.collections.find(collection => collection.canister === decodedToken.canister)
+            : undefined;
+        if (props.stats && props.nft && collection) {
+            setCurrentCollectionFloorPrice(
+                Number(
+                    props.stats.find(collection => collection.canister === props.nft.collection?.id)
+                        ?.stats?.floor,
+                ),
+            );
+        } else {
+            setCurrentCollectionFloorPrice(undefined);
+        }
+    }, [
+        props.stats,
+        props.nft,
+        collection,
+        decodedToken,
+    ]);
+
+    React.useEffect(() => {
+        if (!currentCollectionFloorPrice) {
+            return;
+        }
+        const priceNumber = Number(price);
+        const currentPercentOfFloorPrice = priceNumber
+            ? priceNumber / currentCollectionFloorPrice
+            : 1;
+        setPricePercentBelowFloor(Math.round(100 - Math.trunc(currentPercentOfFloorPrice * 100)));
+    }, [
+        price,
+        currentCollectionFloorPrice,
+    ]);
+
     const error = e => {
         props.error(e);
     };
@@ -44,6 +114,7 @@ export default function ListingForm(props) {
             return;
         props.list(props.nft.id, p, props.buttonLoader, props.refresher);
     };
+
     const handleClose = () => {
         setPrice(0);
         props.close();
@@ -85,17 +156,42 @@ export default function ListingForm(props) {
                         </strong>{' '}
                         for the Creators, and a <strong>1% Marketplace fee</strong>
                     </Alert>
-                    <TextField
-                        style={{width: '100%'}}
-                        margin="dense"
-                        label={'Listing price in ICP'}
-                        value={price}
-                        onChange={e => setPrice(e.target.value)}
-                        type="text"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    {currentCollectionFloorPrice ? (
+                        <div style={{marginTop: '8px'}}>
+                            Current collection floor price: {currentCollectionFloorPrice}
+                        </div>
+                    ) : (
+                        ''
+                    )}
+                    <div style={{display: 'flex', gap: '16px', marginTop: '16px'}}>
+                        <EntrepotNftDisplayReact
+                            style={{flexShrink: 0}}
+                            collectionId={props.nft?.collection?.id}
+                            nftIndex={decodedToken?.index}
+                            nftId={props.nft?.id}
+                            min={{width: 75, height: 75}}
+                            max={{width: 75, height: 75}}
+                        />
+                        <TextField
+                            style={{width: '100%'}}
+                            margin="dense"
+                            label={'Listing price in ICP'}
+                            value={price}
+                            onChange={e => setPrice(e.target.value)}
+                            type="text"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </div>
+                    {pricePercentBelowFloor > 10 ? (
+                        <p style={{color: 'red'}}>
+                            Warning: this price is <b>{pricePercentBelowFloor}% below</b> the
+                            collection's current floor price.
+                        </p>
+                    ) : (
+                        ''
+                    )}
                 </DialogContent>
 
                 <DialogActions>

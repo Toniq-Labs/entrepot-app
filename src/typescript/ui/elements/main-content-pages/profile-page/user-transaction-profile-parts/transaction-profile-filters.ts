@@ -10,9 +10,9 @@ import {
     TransactionDirection,
     UserTransactionWithDirection,
 } from '../../../../../data/nft/user-nft-transaction';
-import {BaseFullProfileNft} from '../profile-nfts/base-full-profile-nft';
+import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 
-export type ProfileCompleteTransactionNft = UserTransactionWithDirection & BaseFullProfileNft;
+export type ProfileCompleteTransactionNft = UserTransactionWithDirection & FullProfileNft;
 
 export const defaultProfileUserTransactionFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileCompleteTransactionNft>>

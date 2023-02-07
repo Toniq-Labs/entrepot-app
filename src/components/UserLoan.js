@@ -1,6 +1,5 @@
 /* global BigInt */
 import React from 'react';
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,7 +14,6 @@ import Grid from '@material-ui/core/Grid';
 import {useNavigate} from 'react-router';
 import {useParams} from 'react-router';
 import Pagination from '@material-ui/lab/Pagination';
-import extjs from '../ic/extjs.js';
 import {useTheme} from '@material-ui/core/styles';
 import Pawn from './Pawn';
 import UserDetail from './UserDetail';

@@ -6,10 +6,10 @@ import {
     BooleanFilterTypeEnum,
 } from '../../../common/with-filters/filters-types';
 import {ReadonlyDeep} from 'type-fest';
-import {BaseFullProfileNft} from '../profile-nfts/base-full-profile-nft';
+import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 
-export type ProfileCompleteNft = BaseNft & BaseFullProfileNft & {isListed: boolean};
+export type ProfileCompleteNft = BaseNft & FullProfileNft & {isListed: boolean};
 
 export const defaultProfileNftFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileCompleteNft>>
