@@ -302,6 +302,18 @@ const DetailBody = props => {
         return false;
     };
 
+    const getPriceData = () => {
+        if (listing.price > 0n) {
+            return listing.price;
+        } else if (offers && offers.length > 0) {
+            return offers[0].amount;
+        } else if (transactions && transactions.length > 0) {
+            return transactions[0].price;
+        } else {
+            return undefined;
+        }
+    };
+
     React.useEffect(() => {
         props.loader(true);
         _refresh().then(() => props.loader(false));
@@ -324,8 +336,7 @@ const DetailBody = props => {
                     tokenid={tokenid}
                     owner={owner}
                     listing={listing}
-                    offers={offers}
-                    transactions={transactions}
+                    getPriceData={getPriceData}
                     _afterList={_afterList}
                     _afterBuy={_afterBuy}
                     setOpenOfferForm={setOpenOfferForm}
@@ -333,6 +344,7 @@ const DetailBody = props => {
                 />
                 <DetailSectionDetails
                     offerListing={offerListing}
+                    getPriceData={getPriceData}
                     floor={floor}
                     index={index}
                     canister={canister}

@@ -13,7 +13,7 @@ import {html, css, assign, listen, onResize} from 'element-vir';
 import {throttle} from '../../../augments/function';
 import {Collection} from '../../../data/models/collection';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
-import {decodeNftId} from '../../../data/nft/nft-id';
+import {getExtNftId} from '../../../data/nft/nft-id';
 
 export type CarouselItem = {
     imageUrl: string;
@@ -181,17 +181,17 @@ export const EntrepotCarouselElement = defineToniqElement<{
                     ></${ToniqIcon}>
                 </div>
                 ${inputs.items.map(item => {
-                    let {index, canister} = decodeNftId(item.id);
+                    const tokenId = getExtNftId(item.id);
                     return html`
-                        <a href="${`marketplace/asset/${item.id}`}">
+                        <a href="${`marketplace/asset/${tokenId}`}">
                             <div class="carousel-image-wrapper">
                                 <${EntrepotNftDisplayElement}
                                     ${assign(EntrepotNftDisplayElement, {
-                                        collectionId: canister,
+                                        collectionId: item.id,
                                         fullSize: false,
                                         cachePriority: 0,
-                                        nftId: item.id,
-                                        nftIndex: index,
+                                        nftId: tokenId,
+                                        nftIndex: 0,
                                         ref: 0,
                                         min: {width: 360, height: 360},
                                         max: {width: 360, height: 360},

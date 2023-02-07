@@ -96,6 +96,7 @@ function ListRow({items, classes, style}) {
 export default function DetailSectionDetails(props) {
     const {
         offerListing,
+        getPriceData,
         floor,
         index,
         canister,
@@ -457,7 +458,9 @@ export default function DetailSectionDetails(props) {
                                     <span className={classes.noDataText}>
                                         THERE ARE NO OPEN OFFERS
                                     </span>
-                                    {props.identity && props.account.address !== owner ? (
+                                    {props.identity &&
+                                    props.account.address !== owner &&
+                                    getPriceData() ? (
                                         <ToniqButton
                                             className={'toniq-button-outline'}
                                             text="Make an Offer"

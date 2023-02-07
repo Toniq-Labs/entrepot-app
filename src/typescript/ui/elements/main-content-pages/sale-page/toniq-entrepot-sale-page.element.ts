@@ -79,7 +79,7 @@ export const EntrepotSalePageElement = defineElement<{
                     (prev: CollectionSales, next: CollectionSales) =>
                         prev.sales.endDate - next.sales.endDate,
                 );
-            console.log(collectionSales, upcoming, inProgress, endingSoon);
+
             updateState({collectionSales});
             updateState({upcoming});
             updateState({inProgress});
