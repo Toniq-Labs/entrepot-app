@@ -10,24 +10,23 @@ import {
 
 export function createUserTransactionFilterInputs({
     showFilters,
-    currentSort,
-    filters,
+    allSorts,
+    allFilters,
     isRenderReady,
     entries,
     currentProfileTab,
 }: {
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileCompleteTransactionNft>>;
-} & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentProfileTab'>) {
+} & Pick<ProfilePageStateType, 'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts'>) {
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({
             isRenderReady,
             showFilters,
-            filters,
+            allFilters,
+            allSorts,
             currentProfileTab,
         }),
-        currentSort: currentSort[currentProfileTab.value],
-        sortDefinitions: profileUserTransactionSortDefinitions,
         allEntries: entries ? entries : [],
         createEntryTemplateCallback: (entry: ProfileCompleteTransactionNft) => {
             if (!isRenderReady) {

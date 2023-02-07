@@ -1,21 +1,32 @@
-import {defaultProfileFilters, filterKeyByTab, ProfilePageStateType} from './profile-page-state';
+import {
+    defaultProfileFilters,
+    filterSortKeyByTab,
+    ProfilePageStateType,
+    sortDefinitions,
+} from './profile-page-state';
 import {AnyFullProfileEntryType} from './profile-nfts/profile-nft-types';
 
 export function createBaseProfileWithFiltersInputs({
     showFilters,
     isRenderReady,
     currentProfileTab,
-    filters,
+    allFilters,
+    allSorts,
 }: {
     isRenderReady: boolean;
-} & Pick<ProfilePageStateType, 'showFilters' | 'currentProfileTab' | 'filters'>) {
+} & Pick<ProfilePageStateType, 'showFilters' | 'currentProfileTab' | 'allSorts' | 'allFilters'>) {
     return {
         countName: 'NFTs',
         showFilters,
         isLoading: !isRenderReady,
         searchPlaceholder: 'Search: Collection Name or Keywords',
-        defaultFilters: defaultProfileFilters[filterKeyByTab[currentProfileTab.value]] as any,
-        currentFilters: filters[filterKeyByTab[currentProfileTab.value]],
+
+        currentSort: allSorts[filterSortKeyByTab[currentProfileTab.value]],
+        sortDefinitions: sortDefinitions[filterSortKeyByTab[currentProfileTab.value]] as any,
+
+        currentFilters: allFilters[filterSortKeyByTab[currentProfileTab.value]],
+        defaultFilters: defaultProfileFilters[filterSortKeyByTab[currentProfileTab.value]] as any,
+
         searchCallback: (searchTerm: string, entry: AnyFullProfileEntryType) => {
             return (
                 entry.nftId.includes(searchTerm) ||

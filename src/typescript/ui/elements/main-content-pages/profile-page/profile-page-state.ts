@@ -1,6 +1,10 @@
 import {ensureType, wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
 import {asyncState, MaybeAsyncStateToSync} from 'element-vir';
-import {CurrentSort, FilterDefinitions} from '../../common/with-filters/filters-types';
+import {
+    CurrentSort,
+    FilterDefinitions,
+    SortDefinition,
+} from '../../common/with-filters/filters-types';
 import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {ReadonlyDeep} from 'type-fest';
@@ -11,6 +15,7 @@ import {BaseNft} from '../../../../data/nft/base-nft';
 import {
     defaultProfileNftFilters,
     profileNftSortDefinitions,
+    ProfileCompleteNft,
 } from './nft-profile-parts/nft-profile-filters';
 import {
     profileUserTransactionSortDefinitions,
@@ -22,21 +27,39 @@ export type ProfileFullEarnNft = {
 } & BaseNft &
     FullProfileNft;
 
-function generateFilters() {
-    const filters = wrapNarrowTypeWithTypeCheck<
-        Record<string, ReadonlyDeep<FilterDefinitions<any>>>
-    >()({
-        base: defaultProfileNftFilters,
-        activity: defaultProfileUserTransactionFilters,
-        earn: defaultProfileNftFilters,
-    } as const);
+export const defaultProfileFilters = wrapNarrowTypeWithTypeCheck<
+    Record<string, ReadonlyDeep<FilterDefinitions<any>>>
+>()({
+    base: defaultProfileNftFilters,
+    activity: defaultProfileUserTransactionFilters,
+    earn: defaultProfileNftFilters,
+} as const);
 
-    return filters;
-}
+const defaultProfileSort: Record<keyof typeof defaultProfileFilters, ReadonlyDeep<CurrentSort>> = {
+    activity: {
+        ascending: false,
+        name: profileUserTransactionSortDefinitions[0].sortName,
+    },
+    earn: {
+        ascending: false,
+        name: profileNftSortDefinitions[0].sortName,
+    },
+    base: {
+        ascending: false,
+        name: profileNftSortDefinitions[0].sortName,
+    },
+} as const;
 
-export const defaultProfileFilters = generateFilters();
+export const sortDefinitions: Record<
+    keyof typeof defaultProfileFilters,
+    ReadonlyArray<ReadonlyDeep<SortDefinition<any>>>
+> = {
+    activity: profileUserTransactionSortDefinitions,
+    earn: profileNftSortDefinitions,
+    base: profileNftSortDefinitions,
+} as const;
 
-export const filterKeyByTab: Record<ProfileTopTabValue, keyof typeof defaultProfileFilters> = {
+export const filterSortKeyByTab: Record<ProfileTopTabValue, keyof typeof defaultProfileFilters> = {
     'my-nfts': 'base',
     favorites: 'base',
     offers: 'base',
@@ -46,7 +69,7 @@ export const filterKeyByTab: Record<ProfileTopTabValue, keyof typeof defaultProf
 
 export const profilePageStateInit = {
     showFilters: false,
-    filters: defaultProfileFilters,
+    allFilters: defaultProfileFilters,
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
@@ -54,28 +77,7 @@ export const profilePageStateInit = {
     userOffersMade: asyncState<ReadonlyArray<BaseNft>>(),
     collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
     userEarnNfts: asyncState<ReadonlyArray<ProfileFullEarnNft>>(),
-    currentSort: ensureType<Record<ProfileTopTabValue, ReadonlyDeep<CurrentSort>>>({
-        activity: {
-            ascending: false,
-            name: profileUserTransactionSortDefinitions[0].sortName,
-        },
-        earn: {
-            ascending: false,
-            name: profileNftSortDefinitions[0].sortName,
-        },
-        favorites: {
-            ascending: false,
-            name: profileNftSortDefinitions[0].sortName,
-        },
-        'my-nfts': {
-            ascending: false,
-            name: profileNftSortDefinitions[0].sortName,
-        },
-        offers: {
-            ascending: false,
-            name: profileNftSortDefinitions[0].sortName,
-        },
-    }),
+    allSorts: defaultProfileSort,
 };
 
 export type ProfilePageStateType = Readonly<MaybeAsyncStateToSync<typeof profilePageStateInit>>;

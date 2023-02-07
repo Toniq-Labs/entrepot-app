@@ -27,7 +27,7 @@ import {collectionNriCache} from '../../../../data/local-cache/caches/collection
 import {CollectionNriData} from '../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {getAllowedTabs, ProfileTab} from './profile-tabs';
-import {profilePageStateInit} from './profile-page-state';
+import {profilePageStateInit, filterSortKeyByTab} from './profile-page-state';
 import {generateProfileWithFiltersInput} from './profile-nfts/profile-nfts';
 import {BaseNft} from '../../../../data/nft/base-nft';
 import {FullProfileNft} from './profile-nfts/full-profile-nft';
@@ -143,8 +143,6 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             state.userOffersMade,
             state.userTransactions,
         ];
-
-        console.log({...state});
 
         const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
 
@@ -265,16 +263,16 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                 })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
                     updateState({
-                        filters: {
-                            ...state.filters,
-                            [state.currentProfileTab.value]: event.detail,
+                        allFilters: {
+                            ...state.allFilters,
+                            [filterSortKeyByTab[state.currentProfileTab.value]]: event.detail,
                         },
                     });
                 })}
                 ${listen(EntrepotWithFiltersElement.events.sortChange, event => {
                     updateState({
-                        currentSort: {
-                            ...state.currentSort,
+                        allSorts: {
+                            ...state.allSorts,
                             [state.currentProfileTab.value]: event.detail,
                         },
                     });

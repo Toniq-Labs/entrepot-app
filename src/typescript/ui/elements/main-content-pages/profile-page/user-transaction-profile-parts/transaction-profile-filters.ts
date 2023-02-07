@@ -17,7 +17,7 @@ export type ProfileCompleteTransactionNft = UserTransactionWithDirection & FullP
 export const defaultProfileUserTransactionFilters = wrapNarrowTypeWithTypeCheck<
     ReadonlyDeep<FilterDefinitions<ProfileCompleteTransactionNft>>
 >()({
-    Listed: {
+    Type: {
         filterType: FilterTypeEnum.Radio,
         radios: [
             {

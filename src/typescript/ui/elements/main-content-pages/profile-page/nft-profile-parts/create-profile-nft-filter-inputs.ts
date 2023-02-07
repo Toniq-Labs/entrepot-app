@@ -18,8 +18,8 @@ import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 
 export function createProfileNftFilterInputs({
     showFilters,
-    currentSort,
-    filters,
+    allSorts,
+    allFilters,
     isRenderReady,
     entries,
     currentProfileTab,
@@ -32,16 +32,15 @@ export function createProfileNftFilterInputs({
     sellCallback: (nft: FullProfileNft) => void;
     transferCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
-} & Pick<ProfilePageStateType, 'currentSort' | 'filters' | 'showFilters' | 'currentProfileTab'>) {
+} & Pick<ProfilePageStateType, 'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts'>) {
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({
             isRenderReady,
             showFilters,
-            filters,
+            allFilters,
             currentProfileTab,
+            allSorts,
         }),
-        currentSort: currentSort[currentProfileTab.value],
-        sortDefinitions: profileNftSortDefinitions,
         allEntries: entries,
         createEntryTemplateCallback: (entry: ProfileCompleteNft) => {
             if (!isRenderReady) {
