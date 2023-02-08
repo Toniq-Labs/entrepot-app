@@ -1,4 +1,4 @@
-import {RequiredAndNotNullBy} from '@augment-vir/common';
+import {PartialAndNullable, RequiredAndNotNullBy} from '@augment-vir/common';
 import {scrollSnapToNext, getScrollSnapPositions} from 'scroll-snap-api';
 import {classMap} from 'lit/directives/class-map.js';
 import {
@@ -13,17 +13,19 @@ import {html, css, assign, listen, onResize} from 'element-vir';
 import {throttle} from '../../../augments/function';
 import {Collection} from '../../../data/models/collection';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
-import {getExtNftId} from '../../../data/nft/nft-id';
+import {NftImageInputs} from '../../../data/canisters/get-nft-image-data';
+import {DimensionConstraints} from '@electrovir/resizable-image-element';
 
-export type CarouselItem = {
-    imageUrl: string;
-    link: string;
+export type NftRoute = {
+    nftRoute: string;
 };
 
 const carouselImageWidth = 340;
 
 export const EntrepotCarouselElement = defineToniqElement<{
-    items: ReadonlyArray<Collection>;
+    items: ReadonlyArray<
+        Collection & NftRoute & NftImageInputs & PartialAndNullable<DimensionConstraints>
+    >;
     automaticRotation?: boolean;
 }>()({
     tagName: 'toniq-entrepot-carousel',
@@ -181,20 +183,21 @@ export const EntrepotCarouselElement = defineToniqElement<{
                     ></${ToniqIcon}>
                 </div>
                 ${inputs.items.map(item => {
-                    const tokenId = getExtNftId(item.id);
+                    const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
+                        item;
                     return html`
-                        <a href="${`marketplace/asset/${tokenId}`}">
+                        <a href="${`marketplace/asset/${item.nftRoute}`}">
                             <div class="carousel-image-wrapper">
                                 <${EntrepotNftDisplayElement}
                                     ${assign(EntrepotNftDisplayElement, {
-                                        collectionId: item.id,
-                                        fullSize: false,
-                                        cachePriority: 0,
-                                        nftId: tokenId,
-                                        nftIndex: 0,
-                                        ref: 0,
-                                        min: {width: 360, height: 360},
-                                        max: {width: 360, height: 360},
+                                        collectionId,
+                                        fullSize,
+                                        cachePriority,
+                                        nftId,
+                                        nftIndex,
+                                        ref,
+                                        min,
+                                        max,
                                     })}
                                 ></${EntrepotNftDisplayElement}>
                             </div>

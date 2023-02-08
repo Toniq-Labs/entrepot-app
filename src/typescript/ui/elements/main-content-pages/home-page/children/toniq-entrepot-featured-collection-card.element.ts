@@ -1,14 +1,17 @@
-import {defineElement, html, css, assign, listen, defineElementEvent} from 'element-vir';
+import {html, css, assign, listen, defineElementEvent} from 'element-vir';
 import {
     EntrepotSocialLinkElement,
     SocialLinkDetails,
 } from '../../../common/toniq-entrepot-social-link.element';
 import {EntrepotFlipCardElement} from '../../../common/toniq-entrepot-flip-card.element';
 import {ToniqButton, toniqFontStyles, defineToniqElement} from '@toniq-labs/design-system';
+import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
+import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-display.element';
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 
 export type FeaturedCollectionInputs = {
     collectionName: string;
-    imageUrls: ReadonlyArray<string>;
+    nfts: ReadonlyArray<NftImageInputs>;
     longDescription: string;
     socialLinks: ReadonlyArray<SocialLinkDetails>;
     collectionRoute: string;
@@ -205,13 +208,36 @@ export const EntrepotFeaturedCollectionCardElement = defineToniqElement<Featured
                     ${cardHeaderTemplate}
                     <div class="pics">
                         <div class="big-pic-wrapper">
-                            <img class="big-pic" src=${inputs.imageUrls[0]} />
+                            <${EntrepotNftDisplayElement}
+                                ${assign(EntrepotNftDisplayElement, {
+                                    collectionId: inputs.nfts[0]!.collectionId,
+                                    fullSize: inputs.nfts[0]!.fullSize,
+                                    cachePriority: inputs.nfts[0]!.cachePriority,
+                                    nftId: inputs.nfts[0]!.nftId,
+                                    nftIndex: inputs.nfts[0]!.nftIndex,
+                                    ref: inputs.nfts[0]!.ref,
+                                    min: {width: 360, height: 360},
+                                    max: {width: 360, height: 360},
+                                })}
+                            ></${EntrepotNftDisplayElement}>
                         </div>
                         <div class="secondary-pics">
-                            ${inputs.imageUrls.slice(1).map(imageUrl => {
+                            ${inputs.nfts.slice(1).map(nfts => {
+                                const {collectionId, cachePriority, nftId, nftIndex, ref} = nfts;
                                 return html`
                                     <div class="pic-wrapper">
-                                        <img src=${imageUrl} />
+                                        <${EntrepotNftDisplayElement}
+                                            ${assign(EntrepotNftDisplayElement, {
+                                                collectionId,
+                                                fullSize: false,
+                                                cachePriority,
+                                                nftId,
+                                                nftIndex,
+                                                ref,
+                                                min: {width: 176, height: 176},
+                                                max: {width: 176, height: 176},
+                                            })}
+                                        ></${EntrepotNftDisplayElement}>
                                     </div>
                                 `;
                             })}
@@ -221,7 +247,7 @@ export const EntrepotFeaturedCollectionCardElement = defineToniqElement<Featured
                 </div>
                 <div class="card-face back" slot="back">
                     ${cardHeaderTemplate}
-                    <p>${inputs.longDescription}</p>
+                    <p>${unsafeHTML(inputs.longDescription)}</p>
                     ${cardFooterTemplate}
                 </div>
             </${EntrepotFlipCardElement}>

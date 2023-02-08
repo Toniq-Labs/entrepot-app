@@ -2065,13 +2065,27 @@ export default function App() {
                                     <Route
                                         path="/test"
                                         exact
-                                        element={<EntrepotTestPage collections={collections} />}
+                                        element={
+                                            <EntrepotTestPage
+                                                collections={collections}
+                                                onCollectionRouteClicked={event => {
+                                                    navigate(`/marketplace/${event.detail}`);
+                                                }}
+                                            />
+                                        }
                                     />
                                 )}
                                 <Route
                                     path="/"
                                     exact
-                                    element={<EntrepotTestPage collections={collections} />}
+                                    element={
+                                        <EntrepotTestPage
+                                            collections={collections}
+                                            onCollectionRouteClicked={event => {
+                                                navigate(`/marketplace/${event.detail}`);
+                                            }}
+                                        />
+                                    }
                                 />
                                 <Route
                                     path="/sale"

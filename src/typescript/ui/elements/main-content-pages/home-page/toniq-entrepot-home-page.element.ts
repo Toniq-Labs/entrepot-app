@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign, listen} from 'element-vir';
+import {html, css, assign, listen, defineElementEvent} from 'element-vir';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
 import {
     FeaturedCollectionInputs,
@@ -9,16 +9,20 @@ import {
     TopCardInputs,
     EntrepotHomePageTopCardElement,
 } from './children/toniq-entrepot-top-card.element';
-import {EntrepotCarouselElement} from '../../common/toniq-entrepot-carousel.element';
-import {isTruthy} from '@augment-vir/common';
+import {EntrepotCarouselElement, NftRoute} from '../../common/toniq-entrepot-carousel.element';
+import {isTruthy, PartialAndNullable} from '@augment-vir/common';
 import {toniqColors, toniqFontStyles, defineToniqElement} from '@toniq-labs/design-system';
 import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-top-card-header.element';
 import {Collection} from '../../../../data/models/collection';
+import {NftImageInputs} from '../../../../data/canisters/get-nft-image-data';
+import {DimensionConstraints} from '@electrovir/resizable-image-element';
 
 export const EntrepotHomePageElement = defineToniqElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
     topCollections: Readonly<Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>>;
-    carouselItems: ReadonlyArray<Collection>;
+    carouselItems: ReadonlyArray<
+        Collection & NftRoute & NftImageInputs & PartialAndNullable<DimensionConstraints>
+    >;
 }>()({
     tagName: 'toniq-entrepot-home-page',
     stateInit: {
@@ -106,7 +110,10 @@ export const EntrepotHomePageElement = defineToniqElement<{
             }
         }
     `,
-    renderCallback: ({inputs, state, updateState}) => {
+    events: {
+        collectionRouteClicked: defineElementEvent<string>(),
+    },
+    renderCallback: ({inputs, state, updateState, events}) => {
         const tabs: ReadonlyArray<TopTab<ReadonlyArray<TopCardInputs>>> = [
             inputs.topCollections.past24Hours.length
                 ? {
@@ -185,6 +192,12 @@ export const EntrepotHomePageElement = defineToniqElement<{
                     return html`
                         <${EntrepotFeaturedCollectionCardElement}
                             ${assign(EntrepotFeaturedCollectionCardElement, featuredCollection)}
+                            ${listen(
+                                EntrepotFeaturedCollectionCardElement.events.collectionRouteClicked,
+                                event => {
+                                    new events.collectionRouteClicked(event.detail);
+                                },
+                            )}
                         ></${EntrepotFeaturedCollectionCardElement}>
                         `;
                 })}
