@@ -28,8 +28,45 @@ function applyIndividualFilter<EntryData extends object>(
         return applyExpandingListFilter(dataEntry, filter);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
         return applyNumericRangeFilter(dataEntry, filter);
+    } else if (filter.filterType === FilterTypeEnum.ImageToggles) {
+        return applyImageTogglesFilter(dataEntry, filter);
     } else {
         throw new Error(`Invalid filterType received: ${(filter as any).filterType}`);
+    }
+}
+
+function applyImageTogglesFilter<EntryData extends object>(
+    dataEntry: EntryData,
+    filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.ImageToggles}>,
+): boolean {
+    const areAnyChecked = Object.values(filter.entries).some(filterEntry => filterEntry.checked);
+
+    if (areAnyChecked) {
+        const shouldShow = Object.entries(filter.entries).some(
+            ([
+                filterName,
+                filterEntry,
+            ]) => {
+                if (!filterEntry.checked) {
+                    return false;
+                }
+                const matchedCheckboxFilter = matchSingleCheckboxFilter({
+                    checkbox: {
+                        checked: true,
+                        label: filterName,
+                        value: filterEntry.filterValue,
+                    },
+                    dataEntry,
+                    fieldKeys: filter.filterField as string[],
+                });
+
+                return matchedCheckboxFilter;
+            },
+        );
+
+        return shouldShow;
+    } else {
+        return true;
     }
 }
 

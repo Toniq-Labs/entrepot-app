@@ -1,21 +1,25 @@
 import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
-import {profileTabMap, ProfileTopTabValue} from '../profile-tabs';
-import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
-import {createProfileNftFilterInputs} from '../nft-profile-parts/create-profile-nft-filter-inputs';
-import {createUserTransactionFilterInputs} from '../user-transaction-profile-parts/create-profile-transaction-nft-filter-inputs';
+import {profileTabMap, ProfileTopTabValue} from './profile-tabs';
+import {ProfilePageStateType, ProfileFullEarnNft} from './profile-page-state';
+import {createProfileNftFilterInputs} from './nft-profile-parts/create-profile-nft-filter-inputs';
+import {createUserTransactionFilterInputs} from './user-transaction-profile-parts/create-profile-transaction-nft-filter-inputs';
 import {
     AnyProfileEntriesAsyncState,
     AnyFullProfileEntries,
     isNftType,
     isEntriesType,
-} from './profile-nft-types';
-import {CollectionMap} from '../../../../../data/models/collection';
-import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
-import {BaseNft} from '../../../../../data/nft/base-nft';
-import {ProfileCompleteTransactionNft} from '../user-transaction-profile-parts/transaction-profile-filters';
-import {ProfileCompleteNft} from '../nft-profile-parts/nft-profile-filters';
-import {FullProfileNft} from './full-profile-nft';
+    AnyProfileEntryType,
+} from './profile-nfts/profile-nft-types';
+import {CollectionMap} from '../../../../data/models/collection';
+import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
+import {BaseNft} from '../../../../data/nft/base-nft';
+import {ProfileCompleteTransactionNft} from './user-transaction-profile-parts/transaction-profile-filters';
+import {ProfileCompleteNft} from './nft-profile-parts/nft-profile-filters';
+import {FullProfileNft} from './profile-nfts/full-profile-nft';
+import {createCollectionsFilter} from './profile-nfts/profile-collections-filter';
+import {WithFiltersElementInputs} from '../../common/with-filters/toniq-entrepot-with-filters.element';
+import {FilterDefinitions, SingleFilterDefinition} from '../../common/with-filters/filters-types';
 
 function combineOffers({
     userOffersMade,
@@ -69,7 +73,7 @@ export function generateProfileWithFiltersInput({
     transferCallback: (nft: FullProfileNft) => void;
     nftClickCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
-}) {
+}): WithFiltersElementInputs<AnyProfileEntryType, FilterDefinitions<AnyProfileEntryType>> {
     const asyncEntries: AnyProfileEntriesAsyncState =
         getAsyncStateForCurrentTab(currentProfilePageState);
 
@@ -116,24 +120,52 @@ export function generateProfileWithFiltersInput({
 
     const areEntriesRenderReady = isRenderReady(asyncEntries);
 
-    if (isEntriesType(entries, profileTabMap.activity.value, currentProfilePageState)) {
-        return createUserTransactionFilterInputs({
-            ...currentProfilePageState,
-            entries,
-            isRenderReady: areEntriesRenderReady,
-            nftClickCallback,
-        });
-    } else if (isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)) {
-        return {} as any;
-    } else {
-        return createProfileNftFilterInputs({
-            ...currentProfilePageState,
-            entries,
-            isRenderReady: areEntriesRenderReady,
-            sellCallback,
-            transferCallback,
-            userAccount,
-            nftClickCallback,
-        });
-    }
+    const currentCollectionsFilter = createCollectionsFilter({
+        entries,
+        collectionsExpanded: currentProfilePageState.collectionsFilterExpanded,
+        selectedCollectionIds:
+            currentProfilePageState.selectedCollections[
+                currentProfilePageState.currentProfileTab.value
+            ],
+    });
+
+    const defaultCollectionsFilter = createCollectionsFilter({
+        entries,
+        collectionsExpanded: false,
+        selectedCollectionIds: [],
+    });
+
+    const filterInputs: WithFiltersElementInputs<
+        AnyProfileEntryType,
+        FilterDefinitions<AnyProfileEntryType>
+    > = isEntriesType(entries, profileTabMap.activity.value, currentProfilePageState)
+        ? createUserTransactionFilterInputs({
+              ...currentProfilePageState,
+              entries,
+              isRenderReady: areEntriesRenderReady,
+              nftClickCallback,
+          })
+        : isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)
+        ? ({} as any)
+        : createProfileNftFilterInputs({
+              ...currentProfilePageState,
+              entries,
+              isRenderReady: areEntriesRenderReady,
+              sellCallback,
+              transferCallback,
+              userAccount,
+              nftClickCallback,
+          });
+
+    return {
+        ...filterInputs,
+        currentFilters: {
+            ...filterInputs.currentFilters,
+            Collections: currentCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
+        },
+        defaultFilters: {
+            ...filterInputs.currentFilters,
+            Collections: defaultCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
+        },
+    };
 }

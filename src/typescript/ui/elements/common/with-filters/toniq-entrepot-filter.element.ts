@@ -1,4 +1,4 @@
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen} from 'element-vir';
 import {classMap} from 'lit/directives/class-map.js';
 import {SingleFilterDefinition, FilterTypeEnum, FilterDefinitions} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
@@ -12,9 +12,11 @@ import {
     removeNativeFormStyles,
     defineToniqElement,
     ToniqRadioGroup,
+    toniqColors,
 } from '@toniq-labs/design-system';
-import {isRuntimeTypeOf, removeCommasFromNumberString} from '@augment-vir/common';
+import {isRuntimeTypeOf, mapObjectValues, removeCommasFromNumberString} from '@augment-vir/common';
 import {EntrepotExpandingListFilterElement} from './toniq-entrepot-expanding-list-filter.element';
+import {EntrepotImageToggleFilterElement} from './toniq-entrepot-image-toggle-filter.element';
 
 export const EntrepotFilterElement = defineToniqElement<{
     filterName: string;
@@ -74,7 +76,7 @@ export const EntrepotFilterElement = defineToniqElement<{
         if (!filterInternalsTemplate) {
             console.error(
                 new Error(
-                    `Invalid filter type "${inputs.filter.filterType}" for "${inputs.filterName}"`,
+                    `Invalid filter type for rendering "${inputs.filter.filterType}" for "${inputs.filterName}"`,
                 ),
             );
             return html``;
@@ -122,6 +124,8 @@ function createFilterCountString(filter: SingleFilterDefinition<any>): string {
     let count: undefined | number;
     if (filter.filterType === FilterTypeEnum.ExpandingList) {
         count = filter.entries.length;
+    } else if (filter.filterType === FilterTypeEnum.ImageToggles) {
+        count = Object.keys(filter.entries).length;
     }
 
     if (count) {
@@ -132,7 +136,7 @@ function createFilterCountString(filter: SingleFilterDefinition<any>): string {
 }
 
 function createExpandingIconTemplate(filter: SingleFilterDefinition<any>): HTMLTemplateResult {
-    if (filter.filterType === FilterTypeEnum.ExpandingList) {
+    if ('expanded' in filter) {
         return html`
             <${ToniqIcon}
                 ${assign(ToniqIcon, {
@@ -199,6 +203,8 @@ function createFilterInternals(
         `;
     } else if (filter.filterType === FilterTypeEnum.ExpandingList) {
         return createExpandingListTemplate(filter, changeCallback);
+    } else if (filter.filterType === FilterTypeEnum.ImageToggles) {
+        return createImageTogglesFilterTemplate(filter, changeCallback);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
         return html`
             <div class="numeric-row">
@@ -217,6 +223,106 @@ function createFilterInternals(
     } else {
         return undefined;
     }
+}
+
+function createImageTogglesFilterTemplate<
+    FilterGeneric extends Extract<
+        SingleFilterDefinition<any>,
+        {filterType: FilterTypeEnum.ImageToggles}
+    >,
+>(filter: FilterGeneric, changeCallback: (newFilter: FilterGeneric) => void): HTMLTemplateResult {
+    const {anyChecked, totalCount} = Object.values(filter.entries).reduce(
+        (combined, entry) => {
+            return {
+                anyChecked: combined.anyChecked || entry.checked,
+                totalCount: entry.count + combined.totalCount,
+            };
+        },
+        {
+            anyChecked: false,
+            totalCount: 0,
+        },
+    );
+
+    const firstImages = Object.values(filter.entries)
+        .slice(0, 4)
+        .map(entry => entry.imageUrl);
+
+    const styleCss = css`
+        .image-toggle-header {
+            margin-bottom: 8px;
+        }
+
+        hr {
+            width: 100%;
+            background-color: ${toniqColors.divider.foregroundColor};
+            height: 1px;
+            border: 0;
+        }
+
+        hr + ${EntrepotImageToggleFilterElement} {
+            margin-top: 8px;
+        }
+    `;
+
+    return html`
+        <style>
+            ${String(styleCss)}
+        </style>
+        <div class="expanding-entries">
+            <${EntrepotImageToggleFilterElement}
+                class="image-toggle-header"
+                ${assign(EntrepotImageToggleFilterElement, {
+                    name: filter.allEntriesTitle,
+                    imageToggleEntry: {
+                        checked: !anyChecked,
+                        count: totalCount,
+                        imageUrl: '',
+                    },
+                    headerImages: firstImages,
+                })}
+                ${listen(EntrepotImageToggleFilterElement.events.select, event => {
+                    changeCallback({
+                        ...filter,
+                        entries: mapObjectValues(filter.entries, (filterName, filterEntry) => {
+                            return {
+                                ...filterEntry,
+                                checked: false,
+                            };
+                        }),
+                    });
+                })}
+            ></${EntrepotImageToggleFilterElement}>
+            <hr>
+            ${Object.entries(filter.entries).map(
+                ([
+                    name,
+                    imageToggleEntry,
+                ]) => {
+                    return html`
+                    <${EntrepotImageToggleFilterElement}
+                        ${assign(EntrepotImageToggleFilterElement, {
+                            imageToggleEntry,
+                            name,
+                        })}
+                        ${listen(EntrepotImageToggleFilterElement.events.select, event => {
+                            const entries = {
+                                ...filter.entries,
+                                [name]: {
+                                    ...filter.entries[name],
+                                    checked: event.detail,
+                                },
+                            };
+                            changeCallback({
+                                ...filter,
+                                entries,
+                            });
+                        })}
+                    ></${EntrepotImageToggleFilterElement}>`;
+                },
+            )}
+        </div>
+    `;
 }
 
 function createExpandingListTemplate<

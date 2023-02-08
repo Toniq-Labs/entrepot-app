@@ -3,8 +3,12 @@ import {NestedSequentialKeys} from '@augment-vir/common';
 export enum FilterTypeEnum {
     Checkboxes = 'checkboxes',
     Radio = 'radio',
+    /** For filters like traits */
     ExpandingList = 'expanding-list',
+    /** For filters like "min to max" */
     NumericRange = 'numeric-range',
+    /** For filters like the collections */
+    ImageToggles = 'image-toggles',
 }
 
 export enum BooleanFilterTypeEnum {
@@ -46,6 +50,13 @@ export type ExpandingListFilterEntry = {
     checkboxes: ReadonlyArray<BooleanFilterEntry>;
 };
 
+export type ImageToggleEntry = {
+    filterValue: string;
+    count: number;
+    checked: boolean;
+    imageUrl: string;
+};
+
 export type SingleFilterDefinition<EntryGeneric extends object> =
     | ((
           | {
@@ -60,6 +71,12 @@ export type SingleFilterDefinition<EntryGeneric extends object> =
           | ({
                 filterType: FilterTypeEnum.NumericRange;
             } & NumericRangeFilterEntry)
+          | {
+                filterType: FilterTypeEnum.ImageToggles;
+                allEntriesTitle: string;
+                expanded: boolean;
+                entries: Readonly<{[title: string]: ImageToggleEntry}>;
+            }
       ) & {
           filterField: NestedSequentialKeys<EntryGeneric>;
       })

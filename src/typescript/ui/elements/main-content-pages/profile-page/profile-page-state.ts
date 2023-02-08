@@ -1,5 +1,18 @@
-import {ensureType, wrapNarrowTypeWithTypeCheck} from '@augment-vir/common';
-import {asyncState, MaybeAsyncStateToSync} from 'element-vir';
+import {
+    ensureType,
+    wrapNarrowTypeWithTypeCheck,
+    isRuntimeTypeOf,
+    isPromiseLike,
+    getEnumTypedValues,
+    mapObjectValues,
+} from '@augment-vir/common';
+import {
+    asyncState,
+    MaybeAsyncStateToSync,
+    UpdateStateCallback,
+    AsyncState,
+    isRenderReady,
+} from 'element-vir';
 import {
     CurrentSort,
     FilterDefinitions,
@@ -21,6 +34,17 @@ import {
     profileUserTransactionSortDefinitions,
     defaultProfileUserTransactionFilters,
 } from './user-transaction-profile-parts/transaction-profile-filters';
+import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
+import {userOwnedNftsCache} from '../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
+import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
+import {
+    userMadeOffersCache,
+    makeUserOffersKey,
+} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
+import {collectionNriCache} from '../../../../data/local-cache/caches/collection-nri-cache';
+import {CollectionMap} from '../../../../data/models/collection';
+import {UserIdentity} from '../../../../data/models/user-data/identity';
+import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
 
 export type ProfileFullEarnNft = {
     earn: boolean;
@@ -67,9 +91,16 @@ export const filterSortKeyByTab: Record<ProfileTopTabValue, keyof typeof default
     earn: 'activity',
 } as const;
 
+const selectedCollections: Readonly<Record<ProfileTopTabValue, ReadonlyArray<CanisterId>>> =
+    mapObjectValues(profileTabMap, () => {
+        return [];
+    });
+
 export const profilePageStateInit = {
     showFilters: false,
     allFilters: defaultProfileFilters,
+    selectedCollections,
+    collectionsFilterExpanded: false,
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
@@ -80,4 +111,190 @@ export const profilePageStateInit = {
     allSorts: defaultProfileSort,
 };
 
+export type ProfilePageInputs = {
+    collectionMap: CollectionMap;
+    userIdentity: UserIdentity | undefined;
+    userAccount: EntrepotUserAccount | undefined;
+    isToniqEarnAllowed: boolean;
+};
+
 export type ProfilePageStateType = Readonly<MaybeAsyncStateToSync<typeof profilePageStateInit>>;
+
+function getAllCollectionIds(
+    asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<BaseNft, 'collectionId'>>>>,
+): CanisterId[] {
+    const collectionIds = new Set<CanisterId>();
+
+    asyncStates.forEach(possibleArray => {
+        if (isRuntimeTypeOf(possibleArray, 'array')) {
+            possibleArray.forEach(entry => {
+                collectionIds.add(entry.collectionId);
+            });
+        }
+    });
+
+    return Array.from(collectionIds).sort();
+}
+
+export function createAsyncProfileStateUpdate({
+    state,
+    inputs,
+}: {
+    state: ProfilePageStateType;
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    const asyncUserNftArrays = [
+        state.userFavorites,
+        state.userOwnedNfts,
+        state.userOffersMade,
+        state.userTransactions,
+    ];
+
+    const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
+    // update nft data
+    return {
+        userTransactions: {
+            createPromise: async () =>
+                inputs.userAccount
+                    ? userTransactionsCache.get({
+                          userAccount: inputs.userAccount,
+                      })
+                    : [],
+            trigger: {
+                account: inputs.userAccount?.address,
+            },
+        },
+        userOwnedNfts: {
+            createPromise: async () => {
+                return inputs.userAccount && inputs.userIdentity
+                    ? userOwnedNftsCache.get({
+                          userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
+                      })
+                    : [];
+            },
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+        collectionNriData: {
+            createPromise: async () => {
+                let waitIndex = 1;
+                const nriData = await Promise.all(
+                    allUserCollectionIds.map(async collectionId => {
+                        return collectionNriCache.get({
+                            collectionId,
+                            waitIndex: waitIndex++,
+                        });
+                    }),
+                );
+
+                const nriDataByCollectionId: Record<CanisterId, CollectionNriData> =
+                    Object.fromEntries(
+                        nriData.map((nriEntry): [CanisterId, CollectionNriData] => {
+                            return [
+                                nriEntry.collectionId,
+                                nriEntry,
+                            ];
+                        }),
+                    );
+
+                return nriDataByCollectionId;
+            },
+            trigger: allUserCollectionIds,
+        },
+        userFavorites: {
+            createPromise: async () =>
+                inputs.userAccount && inputs.userIdentity
+                    ? userFavoritesCache.get({
+                          userIdentity: inputs.userIdentity,
+                          userAccount: inputs.userAccount,
+                      })
+                    : [],
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+        userOffersMade: {
+            createPromise: async () =>
+                inputs.userAccount && inputs.userIdentity
+                    ? userMadeOffersCache.get({
+                          userIdentity: inputs.userIdentity,
+                          userAccount: inputs.userAccount,
+                      })
+                    : [],
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+    };
+}
+
+export function initProfileElement({
+    state,
+    inputs,
+    updateState,
+}: {
+    state: ProfilePageStateType;
+    inputs: ProfilePageInputs;
+    updateState: UpdateStateCallback<typeof profilePageStateInit>;
+}) {
+    userTransactionsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+        if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
+            updateState({
+                userTransactions: {
+                    resolvedValue: newValue,
+                },
+            });
+        }
+    });
+    userOwnedNftsCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+        if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
+            updateState({
+                userOwnedNfts: {
+                    resolvedValue: newValue,
+                },
+            });
+        }
+    });
+    userFavoritesCache.subscribe(({generatedKey: updatedAddress, newValue}) => {
+        if (inputs.userAccount && inputs.userAccount.address === updatedAddress) {
+            updateState({
+                userFavorites: {
+                    resolvedValue: newValue,
+                },
+            });
+        }
+    });
+    userMadeOffersCache.subscribe(({generatedKey: updatedGeneratedKey, newValue}) => {
+        if (inputs.userAccount && inputs.userIdentity) {
+            const userKey = makeUserOffersKey({
+                userAccount: inputs.userAccount,
+                userIdentity: inputs.userIdentity,
+            });
+            if (userKey === updatedGeneratedKey) {
+                updateState({
+                    userOffersMade: {
+                        resolvedValue: newValue,
+                    },
+                });
+            }
+        }
+    });
+    collectionNriCache.subscribe(async ({generatedKey: collectionId, newValue}) => {
+        if (isPromiseLike(state.collectionNriData)) {
+            await state.collectionNriData;
+        }
+        updateState({
+            collectionNriData: {
+                resolvedValue: {
+                    ...(isRenderReady(state.collectionNriData) ? state.collectionNriData : {}),
+                    [collectionId]: newValue,
+                },
+            },
+        });
+    });
+}

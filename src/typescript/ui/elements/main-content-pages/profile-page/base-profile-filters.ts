@@ -5,6 +5,14 @@ import {
     sortDefinitions,
 } from './profile-page-state';
 import {AnyFullProfileEntryType} from './profile-nfts/profile-nft-types';
+import {FullProfileNft} from './profile-nfts/full-profile-nft';
+import {
+    FilterTypeEnum,
+    SingleFilterDefinition,
+    ImageToggleEntry,
+} from '../../common/with-filters/filters-types';
+import {CanisterId} from '../../../../data/models/canister-id';
+import {Collection} from '../../../../data/models/collection';
 
 export function createBaseProfileWithFiltersInputs({
     showFilters,
@@ -25,7 +33,9 @@ export function createBaseProfileWithFiltersInputs({
         sortDefinitions: sortDefinitions[filterSortKeyByTab[currentProfileTab.value]] as any,
 
         currentFilters: allFilters[filterSortKeyByTab[currentProfileTab.value]],
-        defaultFilters: defaultProfileFilters[filterSortKeyByTab[currentProfileTab.value]] as any,
+        defaultFilters: {
+            ...(defaultProfileFilters[filterSortKeyByTab[currentProfileTab.value]] as any),
+        },
 
         searchCallback: (searchTerm: string, entry: AnyFullProfileEntryType) => {
             return (
