@@ -40,7 +40,6 @@ export const EntrepotMarketplacePageElement = defineToniqElement<{
         }),
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        console.log({collections: inputs.collections});
         return html`
             <${EntrepotPageHeaderElement}
                 ${assign(EntrepotPageHeaderElement, {

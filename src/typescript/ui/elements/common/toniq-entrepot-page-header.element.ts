@@ -7,7 +7,7 @@ export const EntrepotPageHeaderElement = defineToniqElement<{headerText: string}
         h1 {
             ${toniqFontStyles.h1Font}
             ${toniqFontStyles.extraBoldFont}
-            margin: 0 32px;
+            margin: 32px 32px 8px;
         }
 
         @media (max-width: 1200px) {

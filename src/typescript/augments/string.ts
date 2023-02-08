@@ -4,7 +4,6 @@ export function toHexString(byteArray: Buffer | ReadonlyArray<number>) {
     }).join('');
 }
 export function fromHexString(hexString: string) {
-    console.log({hexString});
     if (hexString.substring(0, 2) === '0x') hexString = hexString.substring(2);
     const bytes = [];
     for (let index = 0; index < hexString.length; index += 2)

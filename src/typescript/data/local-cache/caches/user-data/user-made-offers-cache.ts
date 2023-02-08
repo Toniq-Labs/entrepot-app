@@ -21,8 +21,6 @@ async function updateUserMadeOffers({
 }: UserOffersInputs): Promise<BaseNft[]> {
     const offersMadeNftIds = await getEntrepotCanister({userIdentity}).nftOffers.offered();
 
-    console.log({rawOffersMade: offersMadeNftIds, userIdentity});
-
     const userOfferedNfts = Promise.all(
         offersMadeNftIds.map(async (offerMadeNftId, index) => {
             const rawNftListingAndOffers = await fetchRawNftListingAndOffers(

@@ -15,8 +15,6 @@ export async function fetchRawNftListingAndOffers(
 
     await wait(waitIndex + (Math.random() * waitIndex || 1) / 10);
 
-    console.log({nftId});
-
     if (nftId.startsWith('0fb0d53c19')) {
         console.log('here');
     }

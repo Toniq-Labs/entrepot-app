@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {isPromiseLike, isRuntimeTypeOf, mapObjectValues} from '@augment-vir/common';
+import {isPromiseLike, isRuntimeTypeOf, mapObjectValues, truncateNumber} from '@augment-vir/common';
 import {
     assign,
     AsyncState,
@@ -12,7 +12,7 @@ import {
 import {CollectionMap} from '../../../../data/models/collection';
 import {EntrepotWithFiltersElement} from '../../common/with-filters/toniq-entrepot-with-filters.element';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
-import {defineToniqElement} from '@toniq-labs/design-system';
+import {defineToniqElement, ToniqSvg} from '@toniq-labs/design-system';
 import {UserIdentity} from '../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
 import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
@@ -31,6 +31,7 @@ import {profilePageStateInit, filterSortKeyByTab} from './profile-page-state';
 import {generateProfileWithFiltersInput} from './profile-nfts/profile-nfts';
 import {BaseNft} from '../../../../data/nft/base-nft';
 import {FullProfileNft} from './profile-nfts/full-profile-nft';
+import {createOverallStatsTemplate} from './overall-profile-stats';
 
 function getAllCollectionIds(
     asyncStates: ReadonlyArray<AsyncState<ReadonlyArray<Pick<BaseNft, 'collectionId'>>>>,
@@ -248,6 +249,7 @@ export const EntrepotProfilePageElement = defineToniqElement<{
                     headerText: 'My Profile',
                 })}
             ></${EntrepotPageHeaderElement}>
+            ${createOverallStatsTemplate(state)}
             <${EntrepotTopTabsElement}
                 ${assign(EntrepotTopTabsElement, {
                     selected: state.currentProfileTab,

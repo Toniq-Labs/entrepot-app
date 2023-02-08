@@ -33,7 +33,6 @@ export function encodeNftId(principal: any, index: any) {
 }
 
 export function getExtNftId(nftId: string) {
-    console.log({nftId});
     const {index, canister} = decodeNftId(nftId);
     return encodeNftId(getExtCanisterId(canister), index);
 }
