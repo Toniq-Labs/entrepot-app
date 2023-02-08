@@ -23,7 +23,7 @@ const quantities = [
     },
 ];
 
-export function getRelativeDate(input) {
+export function getRelativeDate(input: number) {
     const nowNumber = Date.now();
     const thenNumber = Number(input);
     const diff = nowNumber - thenNumber;

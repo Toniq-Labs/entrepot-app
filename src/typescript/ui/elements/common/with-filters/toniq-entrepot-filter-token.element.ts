@@ -163,7 +163,7 @@ function createTokens({
         if (!selectedRadio) {
             throw new Error(`Failed to find the selected radio filter.`);
         }
-        return [{text: `${filterName}=${selectedRadio.label}`, resetValue: defaultFilter}];
+        return [{text: `${filterName} = ${selectedRadio.label}`, resetValue: defaultFilter}];
     } else {
         throw new Error(
             `Unsupported filter type for tokens: '${defaultFilter.filterType}', '${filter.filterType}'`,

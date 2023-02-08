@@ -8,6 +8,7 @@ import {
 import {ReadonlyDeep} from 'type-fest';
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {BaseNft} from '../../../../../data/nft/base-nft';
+import {icpFactor} from '../../../../../data/icp';
 
 export type ProfileCompleteNft = BaseNft & FullProfileNft & {isListed: boolean};
 
@@ -42,6 +43,7 @@ export const defaultProfileNftFilters = wrapNarrowTypeWithTypeCheck<
             'listing',
             'price',
         ],
+        factor: 1 / icpFactor,
     },
     NRI: {
         filterType: FilterTypeEnum.NumericRange,

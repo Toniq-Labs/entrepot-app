@@ -3,7 +3,7 @@ import {cssToReactStyleObject, toniqFontStyles, toniqColors} from '@toniq-labs/d
 import {ToniqButton} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {ProfileTabs, nftStatusesByTab, ProfileViewType} from './ProfileTabs';
 import PriceICP from '../../components/PriceICP';
-import {getRelativeDate} from '../../utilities/relative-date';
+import {getRelativeDate} from '../../typescript/augments/relative-date';
 
 export function ListRow({items, style}) {
     return (

@@ -236,6 +236,9 @@ export const EntrepotProfilePageElement = defineToniqElement<{
             transferCallback: nft => {
                 dispatch(new events.transferClick(nft));
             },
+            nftClickCallback: nft => {
+                dispatch(new events.nftClick(nft));
+            },
             userAccount: inputs.userAccount,
         });
 

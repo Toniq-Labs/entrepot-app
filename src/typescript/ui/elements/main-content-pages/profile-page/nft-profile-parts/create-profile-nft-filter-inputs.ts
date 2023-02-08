@@ -15,6 +15,7 @@ import {EntrepotUserAccount} from '../../../../../data/models/user-data/account'
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteNft, profileNftSortDefinitions} from './nft-profile-filters';
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
+import {createRightSideTextTemplate} from '../profile-nfts/create-right-column-template';
 
 export function createProfileNftFilterInputs({
     showFilters,
@@ -26,11 +27,13 @@ export function createProfileNftFilterInputs({
     sellCallback,
     transferCallback,
     userAccount,
+    nftClickCallback,
 }: {
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileCompleteNft>>;
     sellCallback: (nft: FullProfileNft) => void;
     transferCallback: (nft: FullProfileNft) => void;
+    nftClickCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
 } & Pick<ProfilePageStateType, 'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts'>) {
     return createWithFiltersInputs({
@@ -73,6 +76,9 @@ export function createProfileNftFilterInputs({
                         nft: {
                             ...entry,
                         },
+                    })}
+                    ${listen('click', () => {
+                        nftClickCallback(entry);
                     })}
                 >
                     ${rightSideTemplate}
@@ -124,33 +130,11 @@ function createRightSideTemplate({
         const offersDisplay = `${offers.length} Offer${plural}${received}`;
 
         const offersIncludeCurrentUser = false;
-        const includingYoursDisplay = offersIncludeCurrentUser
-            ? 'including yours'
-            : html`
-                  &nbsp
-              `;
+        const includingYoursDisplay = offersIncludeCurrentUser ? 'including yours' : '';
 
-        return html`
-            <style>
-                .offers-column {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-
-                .offers {
-                    ${toniqFontStyles.boldParagraphFont};
-                }
-
-                .including-yours {
-                    ${toniqFontStyles.labelFont};
-                    color: ${toniqColors.pageSecondary.foregroundColor};
-                }
-            </style>
-            <div class="offers-column">
-                <div class="offers">${offersDisplay}</div>
-                <div class="including-yours">${includingYoursDisplay}</div>
-            </div>
-        `;
+        return createRightSideTextTemplate({
+            topString: offersDisplay,
+            bottomString: includingYoursDisplay,
+        });
     }
 }

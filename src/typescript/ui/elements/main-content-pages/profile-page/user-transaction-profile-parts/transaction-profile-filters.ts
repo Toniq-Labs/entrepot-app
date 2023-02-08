@@ -45,7 +45,7 @@ export const profileUserTransactionSortDefinitions = wrapNarrowTypeWithTypeCheck
     {
         sortName: 'Time',
         sortField: [
-            'timestampMillisecond',
+            'transactionTimeMillisecond',
         ],
     },
     {

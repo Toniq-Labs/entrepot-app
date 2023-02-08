@@ -61,11 +61,13 @@ export function generateProfileWithFiltersInput({
     sellCallback,
     transferCallback,
     userAccount,
+    nftClickCallback,
 }: {
     currentProfilePageState: ProfilePageStateType;
     collectionMap: CollectionMap;
     sellCallback: (nft: FullProfileNft) => void;
     transferCallback: (nft: FullProfileNft) => void;
+    nftClickCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
 }) {
     const asyncEntries: AnyProfileEntriesAsyncState =
@@ -112,13 +114,14 @@ export function generateProfileWithFiltersInput({
           }) as AnyFullProfileEntries)
         : [];
 
-    const isEntriesRenderReady = isRenderReady(asyncEntries);
+    const areEntriesRenderReady = isRenderReady(asyncEntries);
 
     if (isEntriesType(entries, profileTabMap.activity.value, currentProfilePageState)) {
         return createUserTransactionFilterInputs({
             ...currentProfilePageState,
             entries,
-            isRenderReady: isEntriesRenderReady,
+            isRenderReady: areEntriesRenderReady,
+            nftClickCallback,
         });
     } else if (isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)) {
         return {} as any;
@@ -126,10 +129,11 @@ export function generateProfileWithFiltersInput({
         return createProfileNftFilterInputs({
             ...currentProfilePageState,
             entries,
-            isRenderReady: isEntriesRenderReady,
+            isRenderReady: areEntriesRenderReady,
             sellCallback,
             transferCallback,
             userAccount,
+            nftClickCallback,
         });
     }
 }

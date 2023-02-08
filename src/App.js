@@ -843,6 +843,11 @@ export default function App() {
                                 id: event.detail.nftId,
                             })
                         }
+                        onNftClick={event => {
+                            navigate({
+                                pathname: '/marketplace/asset/' + event.detail.nftId,
+                            });
+                        }}
                         onTransferClick={event => transferNft(event.detail)}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
@@ -865,6 +870,11 @@ export default function App() {
                                 id: event.detail.nftId,
                             })
                         }
+                        onNftClick={event => {
+                            navigate({
+                                pathname: '/marketplace/asset/' + event.detail.nftId,
+                            });
+                        }}
                         onTransferClick={event => transferNft(event.detail)}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}

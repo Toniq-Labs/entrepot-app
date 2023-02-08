@@ -1,6 +1,7 @@
 import {truncateNumber} from '@augment-vir/common';
 import {BigNumber} from 'bignumber.js';
 
+export const icpFactor = 100_000_000;
 export type ValidIcp = BigNumber | number | BigInt;
 
 export function toIcp(input: ValidIcp) {
@@ -10,7 +11,7 @@ export function toIcp(input: ValidIcp) {
 
 export function convertToIcpNumber(input: ValidIcp): number {
     if (input instanceof BigNumber || isBigInt(input)) {
-        return Number(input) / 100000000;
+        return Number(input) / icpFactor;
     } else {
         return input;
     }

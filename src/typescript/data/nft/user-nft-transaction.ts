@@ -8,7 +8,7 @@ import {parseRawNftOffers, RawNftOffer} from './nft-offer';
 export type UserNftTransaction = BaseNft & {
     buyerAddress: string;
     sellerAddress: string;
-    timestampMillisecond: number;
+    transactionTimeMillisecond: number;
     transactionId: string;
 };
 
@@ -64,7 +64,7 @@ export function parseRawUserNftTransaction({
             nftIndex: decodedNft.index,
         }),
         sellerAddress: rawTransaction.seller,
-        timestampMillisecond: rawTransaction.time / 1_000_000,
+        transactionTimeMillisecond: rawTransaction.time / 1_000_000,
         transactionId: rawTransaction.id,
         /** This overrides the listing property from parseRawNftListing(rawNftListing) */
         listing,
