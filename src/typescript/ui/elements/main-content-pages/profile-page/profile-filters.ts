@@ -157,21 +157,15 @@ export function generateProfileWithFiltersInput({
               nftClickCallback,
           });
 
-    const collectionsFilterName = `Collections (${
-        Object.keys(currentCollectionsFilter.entries).length
-    })`;
-
     return {
         ...filterInputs,
         currentFilters: {
             ...filterInputs.currentFilters,
-            [collectionsFilterName]:
-                currentCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
+            Collections: currentCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
         },
         defaultFilters: {
             ...filterInputs.currentFilters,
-            [collectionsFilterName]:
-                defaultCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
+            Collections: defaultCollectionsFilter as SingleFilterDefinition<AnyProfileEntryType>,
         },
     };
 }

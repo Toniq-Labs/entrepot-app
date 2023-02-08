@@ -15,6 +15,9 @@ import {
 import {generateProfileWithFiltersInput} from './profile-filters';
 import {FullProfileNft} from './profile-nfts/full-profile-nft';
 import {createOverallStatsTemplate} from './overall-profile-stats';
+import {FilterTypeEnum} from '../../common/with-filters/filters-types';
+import {isTruthy} from '@augment-vir/common';
+import {CanisterId} from '../../../../data/models/canister-id';
 
 export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>()({
     tagName: 'toniq-entrepot-profile-page',
@@ -87,6 +90,25 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                     updateState({showFilters: event.detail});
                 })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
+                    const collectionFilter = event.detail.Collections;
+                    if (collectionFilter?.filterType === FilterTypeEnum.ImageToggles) {
+                        const selectedCollectionIds = Object.values(collectionFilter.entries)
+                            .map(filterEntry => {
+                                if (filterEntry.checked) {
+                                    return filterEntry.filterValue as CanisterId;
+                                } else {
+                                    return undefined;
+                                }
+                            })
+                            .filter(isTruthy);
+                        updateState({
+                            collectionsFilterExpanded: collectionFilter.expanded,
+                            selectedCollections: {
+                                ...state.selectedCollections,
+                                [state.currentProfileTab.value]: selectedCollectionIds,
+                            },
+                        });
+                    }
                     updateState({
                         allFilters: {
                             ...state.allFilters,

@@ -39,8 +39,35 @@ function applyImageTogglesFilter<EntryData extends object>(
     dataEntry: EntryData,
     filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.ImageToggles}>,
 ): boolean {
-    // todo implement me
-    return true;
+    const areAnyChecked = Object.values(filter.entries).some(filterEntry => filterEntry.checked);
+
+    if (areAnyChecked) {
+        const shouldShow = Object.entries(filter.entries).some(
+            ([
+                filterName,
+                filterEntry,
+            ]) => {
+                if (!filterEntry.checked) {
+                    return false;
+                }
+                const matchedCheckboxFilter = matchSingleCheckboxFilter({
+                    checkbox: {
+                        checked: true,
+                        label: filterName,
+                        value: filterEntry.filterValue,
+                    },
+                    dataEntry,
+                    fieldKeys: filter.filterField as string[],
+                });
+
+                return matchedCheckboxFilter;
+            },
+        );
+
+        return shouldShow;
+    } else {
+        return true;
+    }
 }
 
 function applyExpandingListFilter<EntryData extends object>(
