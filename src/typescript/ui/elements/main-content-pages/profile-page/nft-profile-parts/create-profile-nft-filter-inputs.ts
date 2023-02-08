@@ -1,19 +1,13 @@
-import {assign, html, listen} from 'element-vir';
+import {assign, html, listen, AsyncState, isRenderReady} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
 import {ProfilePageStateType} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
-import {
-    ToniqIcon,
-    LoaderAnimated24Icon,
-    ToniqButton,
-    toniqFontStyles,
-    toniqColors,
-} from '@toniq-labs/design-system';
+import {ToniqIcon, LoaderAnimated24Icon, ToniqButton} from '@toniq-labs/design-system';
 import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
 import {ProfileTab} from '../profile-tabs';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
-import {ProfileCompleteNft, profileNftSortDefinitions} from './nft-profile-filters';
+import {ProfileCompleteNft} from './nft-profile-filters';
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {createRightSideTextTemplate} from '../profile-nfts/create-right-column-template';
 

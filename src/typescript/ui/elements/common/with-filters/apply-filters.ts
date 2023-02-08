@@ -28,9 +28,19 @@ function applyIndividualFilter<EntryData extends object>(
         return applyExpandingListFilter(dataEntry, filter);
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
         return applyNumericRangeFilter(dataEntry, filter);
+    } else if (filter.filterType === FilterTypeEnum.ImageToggles) {
+        return applyImageTogglesFilter(dataEntry, filter);
     } else {
         throw new Error(`Invalid filterType received: ${(filter as any).filterType}`);
     }
+}
+
+function applyImageTogglesFilter<EntryData extends object>(
+    dataEntry: EntryData,
+    filter: Extract<SingleFilterDefinition<EntryData>, {filterType: FilterTypeEnum.ImageToggles}>,
+): boolean {
+    // todo implement me
+    return true;
 }
 
 function applyExpandingListFilter<EntryData extends object>(

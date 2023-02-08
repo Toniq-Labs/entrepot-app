@@ -8,20 +8,19 @@ function calculateOverallProfileStats(profileState: Pick<ProfilePageStateType, '
     const ready = isRenderReady(profileState.userOwnedNfts);
 
     const floorValue = ready
-        ? truncateNumber(
-              convertToIcpNumber(
-                  BigInt(
-                      profileState.userOwnedNfts.reduce((lowest, nft) => {
-                          if (nft.listing.price && nft.listing.price < lowest) {
-                              return nft.listing.price;
-                          } else {
-                              return lowest;
-                          }
-                      }, Infinity),
-                  ),
-              ),
-          )
-        : '-';
+        ? profileState.userOwnedNfts.reduce((lowest, nft) => {
+              if (nft.listing.price && nft.listing.price < lowest) {
+                  return nft.listing.price;
+              } else {
+                  return lowest;
+              }
+          }, Infinity)
+        : Infinity;
+
+    const floorDisplayString =
+        ready && floorValue !== Infinity
+            ? truncateNumber(convertToIcpNumber(BigInt(floorValue)))
+            : '-';
 
     const collectionCount = ready
         ? truncateNumber(new Set(profileState.userOwnedNfts.map(nft => nft.collectionId)).size)
@@ -39,7 +38,7 @@ function calculateOverallProfileStats(profileState: Pick<ProfilePageStateType, '
         {
             title: 'FLOOR VALUE',
             icon: Icp16Icon,
-            count: floorValue,
+            count: floorDisplayString,
         },
     ];
 
@@ -71,7 +70,7 @@ export function createOverallStatsTemplate(
             .profile-stats-wrapper {
                 display: flex;
                 gap: 16px;
-                margin: 0 32px;
+                margin: 16px 32px;
             }
 
             .profile-stat-wrapper {

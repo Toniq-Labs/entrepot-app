@@ -1,3 +1,5 @@
+import {CanisterId} from './canister-id';
+
 export type BaseCollection = {
     /** Image url */
     avatar: string;
@@ -23,7 +25,7 @@ export type BaseCollection = {
     external: boolean;
     filter: boolean;
     /** Canister id for the collection */
-    id: string;
+    id: CanisterId;
     /** Space separated list */
     keywords: string;
     kyc: boolean;

@@ -74,7 +74,7 @@ export const EntrepotFilterElement = defineToniqElement<{
         if (!filterInternalsTemplate) {
             console.error(
                 new Error(
-                    `Invalid filter type "${inputs.filter.filterType}" for "${inputs.filterName}"`,
+                    `Invalid filter type for rendering "${inputs.filter.filterType}" for "${inputs.filterName}"`,
                 ),
             );
             return html``;
@@ -199,6 +199,9 @@ function createFilterInternals(
         `;
     } else if (filter.filterType === FilterTypeEnum.ExpandingList) {
         return createExpandingListTemplate(filter, changeCallback);
+    } else if (filter.filterType === FilterTypeEnum.ImageToggles) {
+        // todo: implement this
+        return html``;
     } else if (filter.filterType === FilterTypeEnum.NumericRange) {
         return html`
             <div class="numeric-row">

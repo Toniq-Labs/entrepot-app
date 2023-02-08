@@ -4,11 +4,17 @@ import {
     FilterDefinitions,
     SortDefinition,
     BooleanFilterTypeEnum,
+    SingleFilterDefinition,
+    ExpandingListFilterEntry,
+    ImageToggleEntry,
 } from '../../../common/with-filters/filters-types';
 import {ReadonlyDeep} from 'type-fest';
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {icpFactor} from '../../../../../data/icp';
+import {AsyncState, isRenderReady} from 'element-vir';
+import {CanisterId} from '../../../../../data/models/canister-id';
+import {Collection} from '../../../../../data/models/collection';
 
 export type ProfileCompleteNft = BaseNft & FullProfileNft & {isListed: boolean};
 

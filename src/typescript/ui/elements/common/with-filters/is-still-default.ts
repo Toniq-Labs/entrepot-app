@@ -1,4 +1,4 @@
-import {isTruthy} from '@augment-vir/common';
+import {areJsonEqual, isTruthy} from '@augment-vir/common';
 import {
     FilterTypeEnum,
     SingleFilterDefinition,
@@ -56,6 +56,13 @@ export function isStillAtDefaults({
         filter.filterType === FilterTypeEnum.Radio
     ) {
         return defaultFilter.value === filter.value;
+    } else if (
+        defaultFilter.filterType === FilterTypeEnum.ImageToggles &&
+        filter.filterType === FilterTypeEnum.ImageToggles
+    ) {
+        const defaultEnabledMap = Object.values(defaultFilter.entries).map(entry => entry.checked);
+        const currentEnabledMap = Object.values(defaultFilter.entries).map(entry => entry.checked);
+        return areJsonEqual(defaultEnabledMap, currentEnabledMap);
     } else {
         throw new Error(
             `Unsupported filter types for calculating if at default value: ${defaultFilter.filterType}, ${filter.filterType}`,

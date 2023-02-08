@@ -3,7 +3,6 @@ import {createSearchParams, useSearchParams} from 'react-router-dom';
 import {LoaderAnimated24Icon} from '@toniq-labs/design-system';
 import {loadVolt, loadVoltBalance} from '../volt';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {nftStatusesByTab, ProfileTabs, ProfileViewType} from '../views/Profile/ProfileTabs';
 import {spreadableSearchParams} from '../utilities/search-params';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
 import {useNavigate} from 'react-router';
@@ -38,6 +37,8 @@ import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
+
+const {nftStatusesByTab, ProfileTabs, ProfileViewType} = {};
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();

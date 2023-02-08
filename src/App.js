@@ -13,7 +13,6 @@ import {getAllCollectionsWithCaching} from './typescript/data/local-cache/dexie/
 import {isProd} from './typescript/environment/environment-by-url';
 import {makeStyles} from '@material-ui/core/styles';
 import {MissingPage404} from './views/MissingPage404';
-import {Profile} from './views/Profile/Profile';
 import {Route, Routes, useLocation} from 'react-router-dom';
 import {StoicIdentity} from 'ic-stoic-identity';
 import {throttle} from './typescript/augments/function';
