@@ -1,7 +1,7 @@
 import {assign, html, listen} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
-import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
-import {ProfilePageStateType} from '../profile-page-state';
+import {EntrepotProfileNftCardElement} from '../toniq-entrepot-profile-nft-card.element';
+import {ProfilePageStateType, ProfileViewStyleEnum} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
 import {ProfileCompleteTransactionNft} from './transaction-profile-filters';
 import {
@@ -14,6 +14,7 @@ import {TransactionDirection} from '../../../../../data/nft/user-nft-transaction
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {getRelativeDate} from '../../../../../augments/relative-date';
 import {createRightSideTextTemplate} from '../profile-nfts/create-right-column-template';
+import {EntrepotProfileNftListItemElement} from '../toniq-entrepot-profile-nft-list-item.element';
 
 export function createUserTransactionFilterInputs({
     showFilters,
@@ -23,11 +24,15 @@ export function createUserTransactionFilterInputs({
     entries,
     currentProfileTab,
     nftClickCallback,
+    viewStyle,
 }: {
     isRenderReady: boolean;
     nftClickCallback: (nft: FullProfileNft) => void;
     entries: ReadonlyArray<Readonly<ProfileCompleteTransactionNft>>;
-} & Pick<ProfilePageStateType, 'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts'>) {
+} & Pick<
+    ProfilePageStateType,
+    'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts' | 'viewStyle'
+>) {
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({
             isRenderReady,
@@ -53,9 +58,10 @@ export function createUserTransactionFilterInputs({
                 direction: entry.directionForCurrentUser,
             });
 
-            return html`
-                <${EntrepotProfileCardElement}
-                    ${assign(EntrepotProfileCardElement, {
+            if (viewStyle === ProfileViewStyleEnum.Grid) {
+                return html`
+                <${EntrepotProfileNftCardElement}
+                    ${assign(EntrepotProfileNftCardElement, {
                         nft: {
                             ...entry,
                         },
@@ -65,7 +71,21 @@ export function createUserTransactionFilterInputs({
                     })}
                 >
                     ${rightSideTemplate}
-                </${EntrepotProfileCardElement}>`;
+                </${EntrepotProfileNftCardElement}>`;
+            } else {
+                return html`
+                    <${EntrepotProfileNftListItemElement}
+                        ${assign(EntrepotProfileNftListItemElement, {
+                            nft: entry,
+                        })}
+                        ${listen('click', () => {
+                            nftClickCallback(entry);
+                        })}
+                    >
+                        ${rightSideTemplate}
+                    </${EntrepotProfileNftListItemElement}>
+                `;
+            }
         },
     });
 }
@@ -83,5 +103,6 @@ function createRightSideTemplate({
     return createRightSideTextTemplate({
         topString: relativeDateDisplayString,
         bottomString: directionDisplayString,
+        useNbsp: true,
     });
 }

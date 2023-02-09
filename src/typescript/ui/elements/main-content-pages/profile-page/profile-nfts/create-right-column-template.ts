@@ -1,13 +1,24 @@
-import {html} from 'element-vir';
+import {html, renderIf} from 'element-vir';
 import {toniqFontStyles, toniqColors} from '@toniq-labs/design-system';
 
 export function createRightSideTextTemplate({
     topString,
     bottomString,
+    useNbsp,
 }: {
     topString: string;
     bottomString: string;
+    useNbsp: boolean;
 }) {
+    const empty = useNbsp
+        ? html`
+              &nbsp;
+          `
+        : '';
+
+    const topDisplay = topString || empty;
+    const bottomDisplay = bottomString || empty;
+
     return html`
         <style>
             .right-side-column {
@@ -26,18 +37,18 @@ export function createRightSideTextTemplate({
             }
         </style>
         <div class="right-side-column">
-            <div class="top">
-                ${topString ||
+            ${renderIf(
+                !!topDisplay,
                 html`
-                    &nbsp;
-                `}
-            </div>
-            <div class="bottom">
-                ${bottomString ||
+                    <div class="top">${topDisplay}</div>
+                `,
+            )}
+            ${renderIf(
+                !!bottomDisplay,
                 html`
-                    &nbsp;
-                `}
-            </div>
+                    <div class="bottom">${bottomDisplay}</div>
+                `,
+            )}
         </div>
     `;
 }

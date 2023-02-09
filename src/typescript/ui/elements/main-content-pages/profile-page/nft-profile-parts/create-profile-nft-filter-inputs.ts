@@ -1,15 +1,16 @@
-import {assign, html, listen, AsyncState, isRenderReady} from 'element-vir';
+import {assign, html, listen} from 'element-vir';
 import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
-import {ProfilePageStateType} from '../profile-page-state';
+import {ProfilePageStateType, ProfileViewStyleEnum} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
 import {ToniqIcon, LoaderAnimated24Icon, ToniqButton} from '@toniq-labs/design-system';
-import {EntrepotProfileCardElement} from '../toniq-entrepot-profile-nft-card.element';
+import {EntrepotProfileNftCardElement} from '../toniq-entrepot-profile-nft-card.element';
 import {ProfileTab} from '../profile-tabs';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteNft} from './nft-profile-filters';
 import {FullProfileNft} from '../profile-nfts/full-profile-nft';
 import {createRightSideTextTemplate} from '../profile-nfts/create-right-column-template';
+import {EntrepotProfileNftListItemElement} from '../toniq-entrepot-profile-nft-list-item.element';
 
 export function createProfileNftFilterInputs({
     showFilters,
@@ -22,6 +23,7 @@ export function createProfileNftFilterInputs({
     transferCallback,
     userAccount,
     nftClickCallback,
+    viewStyle,
 }: {
     isRenderReady: boolean;
     entries: ReadonlyArray<Readonly<ProfileCompleteNft>>;
@@ -29,7 +31,10 @@ export function createProfileNftFilterInputs({
     transferCallback: (nft: FullProfileNft) => void;
     nftClickCallback: (nft: FullProfileNft) => void;
     userAccount: EntrepotUserAccount | undefined;
-} & Pick<ProfilePageStateType, 'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts'>) {
+} & Pick<
+    ProfilePageStateType,
+    'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts' | 'viewStyle'
+>) {
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({
             isRenderReady,
@@ -59,24 +64,39 @@ export function createProfileNftFilterInputs({
                 },
                 currentProfileTab,
                 offers: entry.offers,
+                viewStyle,
                 userOwns:
                     userAccount?.address != undefined &&
                     userAccount?.address === entry.ownerAddress,
             });
 
-            return html`
-                <${EntrepotProfileCardElement}
-                    ${assign(EntrepotProfileCardElement, {
-                        nft: {
-                            ...entry,
-                        },
-                    })}
-                    ${listen('click', () => {
-                        nftClickCallback(entry);
-                    })}
-                >
-                    ${rightSideTemplate}
-                </${EntrepotProfileCardElement}>`;
+            if (viewStyle === ProfileViewStyleEnum.Grid) {
+                return html`
+                    <${EntrepotProfileNftCardElement}
+                        ${assign(EntrepotProfileNftCardElement, {
+                            nft: entry,
+                        })}
+                        ${listen('click', () => {
+                            nftClickCallback(entry);
+                        })}
+                    >
+                        ${rightSideTemplate}
+                    </${EntrepotProfileNftCardElement}>
+                `;
+            } else {
+                return html`
+                    <${EntrepotProfileNftListItemElement}
+                        ${assign(EntrepotProfileNftListItemElement, {
+                            nft: entry,
+                        })}
+                        ${listen('click', () => {
+                            nftClickCallback(entry);
+                        })}
+                    >
+                        ${rightSideTemplate}
+                    </${EntrepotProfileNftListItemElement}>
+                `;
+            }
         },
     });
 }
@@ -87,12 +107,14 @@ function createRightSideTemplate({
     currentProfileTab,
     offers,
     userOwns,
+    viewStyle,
 }: {
     currentProfileTab: ProfileTab;
     sellCallback: () => void;
     transferCallback: () => void;
     offers: Readonly<BaseNft['offers']>;
     userOwns: boolean;
+    viewStyle: ProfileViewStyleEnum;
 }) {
     if (currentProfileTab.value === 'my-nfts') {
         return html`
@@ -129,6 +151,7 @@ function createRightSideTemplate({
         return createRightSideTextTemplate({
             topString: offersDisplay,
             bottomString: includingYoursDisplay,
+            useNbsp: viewStyle !== ProfileViewStyleEnum.List,
         });
     }
 }

@@ -7,13 +7,13 @@ import {FullProfileNft} from './profile-nfts/full-profile-nft';
 import {isRuntimeTypeOf} from '@augment-vir/common';
 import {BaseNft} from '../../../../data/nft/base-nft';
 
-export const EntrepotProfileCardElement = defineToniqElement<{
+export const EntrepotProfileNftCardElement = defineToniqElement<{
     nft: Pick<
         BaseNft & FullProfileNft,
         'collectionId' | 'nftId' | 'nftIndex' | 'listing' | 'nftNri'
     >;
 }>()({
-    tagName: 'toniq-entrepot-profile-card',
+    tagName: 'toniq-entrepot-nft-profile-card',
     styles: css`
         .footer-contents {
             display: flex;

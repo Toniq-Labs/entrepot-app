@@ -1,8 +1,17 @@
+import {classMap} from 'lit/directives/class-map.js';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, css, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {EntrepotWithFiltersElement} from '../../common/with-filters/toniq-entrepot-with-filters.element';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
-import {defineToniqElement} from '@toniq-labs/design-system';
+import {
+    defineToniqElement,
+    interactionDuration,
+    LayoutGrid24Icon,
+    ListDetails24Icon,
+    removeNativeFormStyles,
+    toniqColors,
+    ToniqIcon,
+} from '@toniq-labs/design-system';
 import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.element';
 import {getAllowedTabs, ProfileTab} from './profile-tabs';
 import {
@@ -11,6 +20,8 @@ import {
     ProfilePageInputs,
     createAsyncProfileStateUpdate,
     initProfileElement,
+    ProfileViewStyleEnum,
+    listViewFinalItemHeaderTitleByTab,
 } from './profile-page-state';
 import {generateProfileWithFiltersInput} from './profile-filters';
 import {FullProfileNft} from './profile-nfts/full-profile-nft';
@@ -18,6 +29,7 @@ import {createOverallStatsTemplate} from './overall-profile-stats';
 import {FilterTypeEnum} from '../../common/with-filters/filters-types';
 import {isTruthy} from '@augment-vir/common';
 import {CanisterId} from '../../../../data/models/canister-id';
+import {EntrepotProfileNftListItemTextItemsElement} from './toniq-entrepot-profile-nft-list-item-text-items.element';
 
 export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>()({
     tagName: 'toniq-entrepot-profile-page',
@@ -37,6 +49,29 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             :host {
                 padding: 16px;
             }
+        }
+
+        .view-style-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .view-style-controls ${ToniqIcon} {
+            color: ${toniqColors.pageTertiary.foregroundColor};
+            transition: ${interactionDuration};
+        }
+
+        .view-style-controls button {
+            ${removeNativeFormStyles}
+        }
+
+        .view-style-controls ${ToniqIcon}.current-view-style-icon {
+            color: ${toniqColors.pagePrimary.foregroundColor};
+        }
+
+        ${EntrepotProfileNftListItemTextItemsElement} {
+            width: 100%;
         }
     `,
     events: {
@@ -65,6 +100,41 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         });
 
         updateState(createAsyncProfileStateUpdate({state, inputs}));
+
+        const extraControlsTemplate = html`
+            <div class="view-style-controls" slot="extra-controls">
+                <button ${listen('click', () => {
+                    updateState({
+                        viewStyle: ProfileViewStyleEnum.Grid,
+                    });
+                })}>
+                    <${ToniqIcon}
+                        ${assign(ToniqIcon, {
+                            icon: LayoutGrid24Icon,
+                        })}
+                        class=${classMap({
+                            'current-view-style-icon':
+                                state.viewStyle === ProfileViewStyleEnum.Grid,
+                        })}
+                    ></${ToniqIcon}>
+                </button>
+                <button ${listen('click', () => {
+                    updateState({
+                        viewStyle: ProfileViewStyleEnum.List,
+                    });
+                })}>
+                    <${ToniqIcon}
+                        ${assign(ToniqIcon, {
+                            icon: ListDetails24Icon,
+                        })}
+                        class=${classMap({
+                            'current-view-style-icon':
+                                state.viewStyle === ProfileViewStyleEnum.List,
+                        })}
+                    ></${ToniqIcon}>
+                </button>
+            </div>
+        `;
 
         return html`
             <${EntrepotPageHeaderElement}
@@ -120,11 +190,27 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                     updateState({
                         allSorts: {
                             ...state.allSorts,
-                            [state.currentProfileTab.value]: event.detail,
+                            [filterSortKeyByTab[state.currentProfileTab.value]]: event.detail,
                         },
                     });
                 })}
             >
+                ${extraControlsTemplate}
+                ${renderIf(
+                    state.viewStyle === ProfileViewStyleEnum.List,
+                    html`
+                        <${EntrepotProfileNftListItemTextItemsElement}
+                            slot="entries-header"
+                            ${assign(EntrepotProfileNftListItemTextItemsElement, {
+                                isHeader: true,
+                                finalItemHeaderTitle:
+                                    listViewFinalItemHeaderTitleByTab[
+                                        state.currentProfileTab.value
+                                    ],
+                            })}
+                        ></${EntrepotProfileNftListItemTextItemsElement}>
+                    `,
+                )}
             </${EntrepotWithFiltersElement}>
         `;
     },

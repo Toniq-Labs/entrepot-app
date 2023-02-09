@@ -96,6 +96,11 @@ const selectedCollections: Readonly<Record<ProfileTopTabValue, ReadonlyArray<Can
         return [];
     });
 
+export enum ProfileViewStyleEnum {
+    Grid = 'grid',
+    List = 'list',
+}
+
 export const profilePageStateInit = {
     showFilters: false,
     allFilters: defaultProfileFilters,
@@ -109,6 +114,7 @@ export const profilePageStateInit = {
     collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
     userEarnNfts: asyncState<ReadonlyArray<ProfileFullEarnNft>>(),
     allSorts: defaultProfileSort,
+    viewStyle: ProfileViewStyleEnum.Grid,
 };
 
 export type ProfilePageInputs = {
@@ -298,3 +304,11 @@ export function initProfileElement({
         });
     });
 }
+
+export const listViewFinalItemHeaderTitleByTab: Record<ProfileTopTabValue, string> = {
+    'my-nfts': '',
+    activity: 'TIME',
+    earn: '',
+    favorites: 'OFFERS',
+    offers: 'OFFERS',
+};

@@ -14,21 +14,20 @@ export type NftCardInputs = {
     nft: Pick<BaseNft & NftListing, 'collectionId' | 'nftId' | 'nftIndex'>;
 };
 
-export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
-    tagName: 'toniq-entrepot-nft-card',
+export const EntrepotNftListItemElement = defineToniqElement<NftCardInputs>()({
+    tagName: 'toniq-entrepot-nft-list-item',
     hostClasses: {
         blockInteraction: false,
     },
     styles: ({hostClassSelectors, hostClassNames}) => css`
         :host {
-            width: 384;
+            max-height: 64px;
             max-width: 100%;
             ${applyBackgroundAndForeground(toniqColors.pagePrimary)}
             color: ${toniqColors.pagePrimary.foregroundColor};
             border-radius: 16px;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
             ${toniqShadows.popupShadow}
             transition: ${interactionDuration};
             padding: 16px;
@@ -52,12 +51,10 @@ export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
             position: relative;
         }
 
-        .image-overlay {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            top: 0;
-            left: 0;
+        .other-contents {
+            display: flex;
+            flex-grow: 1;
+            align-items: stretch;
         }
     `,
     renderCallback: ({inputs}) => {
@@ -71,13 +68,18 @@ export const EntrepotNftCardElement = defineToniqElement<NftCardInputs>()({
                         nftId: inputs.nft.nftId,
                         nftIndex: inputs.nft.nftIndex,
                         ref: 0,
+                        max: {
+                            width: 64,
+                            height: 64,
+                        },
+                        min: {
+                            width: 64,
+                            height: 64,
+                        },
                     })}
                 ></${EntrepotNftDisplayElement}>
-                <div class="image-overlay">
-                    <slot name="image-overlay"></slot>
-                </div>
             </div>
-            <div class="footer-contents">
+            <div class="other-contents">
                 <slot></slot>
             </div>
         `;

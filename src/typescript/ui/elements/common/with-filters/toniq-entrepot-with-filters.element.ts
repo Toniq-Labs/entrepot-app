@@ -362,6 +362,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                         );
                     })}
                 ></${ToniqDropdown}>
+                <slot name="extra-controls"></slot>
             </div>
         `;
 
@@ -459,6 +460,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                             'is-loading-entries': !!inputs.isLoading,
                         })}
                     >
+                        <slot name="entries-header"></slot>
                         ${renderIf(
                             !!inputs.isLoading,
                             html`
