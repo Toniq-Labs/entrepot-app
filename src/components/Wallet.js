@@ -37,6 +37,7 @@ import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {profileTabMap} from '../typescript/ui/elements/main-content-pages/profile-page/profile-tabs';
 
 const {nftStatusesByTab, ProfileTabs, ProfileViewType} = {};
 
@@ -484,7 +485,7 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.MyNfts}`,
+                                    pathname: `/profile/${profileTabMap['my-nfts'].value}`,
                                 });
                             }}
                         >
@@ -498,11 +499,11 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.MyNfts}`,
-                                    search: `?${createSearchParams({
-                                        ...spreadableSearchParams(searchParams),
-                                        status: nftStatusesByTab[ProfileTabs.MyNfts].ForSale,
-                                    })}`,
+                                    pathname: `/profile/${profileTabMap['my-nfts'].value}`,
+                                    // search: `?${createSearchParams({
+                                    //     ...spreadableSearchParams(searchParams),
+                                    //     status: nftStatusesByTab[ProfileTabs.MyNfts].ForSale,
+                                    // })}`,
                                 });
                             }}
                         >
@@ -516,11 +517,11 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.MyNfts}`,
-                                    search: `?${createSearchParams({
-                                        ...spreadableSearchParams(searchParams),
-                                        status: nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived,
-                                    })}`,
+                                    pathname: `/profile/${profileTabMap['my-nfts'].value}`,
+                                    // search: `?${createSearchParams({
+                                    //     ...spreadableSearchParams(searchParams),
+                                    //     status: nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived,
+                                    // })}`,
                                 });
                             }}
                         >
@@ -534,7 +535,7 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.Offers}`,
+                                    pathname: `/profile/${profileTabMap.offers.value}`,
                                 });
                             }}
                         >
@@ -586,7 +587,7 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.Favorites}`,
+                                    pathname: `/profile/${profileTabMap.favorites.value}`,
                                 });
                             }}
                         >
@@ -600,11 +601,11 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${ProfileTabs.Activity}`,
-                                    search: `?${createSearchParams({
-                                        ...spreadableSearchParams(searchParams),
-                                        view: ProfileViewType.List,
-                                    })}`,
+                                    pathname: `/profile/${profileTabMap.activity.value}`,
+                                    // search: `?${createSearchParams({
+                                    //     ...spreadableSearchParams(searchParams),
+                                    //     view: ProfileViewType.List,
+                                    // })}`,
                                 });
                             }}
                         >

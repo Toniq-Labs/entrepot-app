@@ -1,10 +1,10 @@
 import {
-    ensureType,
     wrapNarrowTypeWithTypeCheck,
     isRuntimeTypeOf,
     isPromiseLike,
-    getEnumTypedValues,
     mapObjectValues,
+    isEnumValue,
+    PropertyValueType,
 } from '@augment-vir/common';
 import {
     asyncState,
@@ -28,7 +28,6 @@ import {BaseNft} from '../../../../data/nft/base-nft';
 import {
     defaultProfileNftFilters,
     profileNftSortDefinitions,
-    ProfileCompleteNft,
 } from './nft-profile-parts/nft-profile-filters';
 import {
     profileUserTransactionSortDefinitions,
@@ -45,6 +44,8 @@ import {collectionNriCache} from '../../../../data/local-cache/caches/collection
 import {CollectionMap} from '../../../../data/models/collection';
 import {UserIdentity} from '../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
+import {EntrepotRoutePageEnum, entrepotRouter} from '../../../../routing/entrepot-router';
+import {urlStringToFilters} from '../../common/with-filters/url-filters';
 
 export type ProfileFullEarnNft = {
     earn: boolean;
@@ -302,6 +303,34 @@ export function initProfileElement({
                 },
             },
         });
+    });
+
+    entrepotRouter.addRouteListener(true, routes => {
+        if (routes.paths[0] !== EntrepotRoutePageEnum.Profile) {
+            return;
+        }
+        // tab
+        const profileTab: PropertyValueType<typeof profileTabMap> | undefined =
+            profileTabMap[routes.paths[1] as ProfileTopTabValue];
+        if (profileTab) {
+            updateState({currentProfileTab: profileTab});
+        }
+
+        if (routes.search) {
+            const defaultFilters: ReadonlyDeep<FilterDefinitions<any>> =
+                defaultProfileFilters[filterSortKeyByTab[state.currentProfileTab.value]];
+            // filters
+            const filters = urlStringToFilters({
+                filterString: routes.search.filters,
+                defaultFilters,
+            });
+            updateState({
+                allFilters: {
+                    ...state.allFilters,
+                    [filterSortKeyByTab[state.currentProfileTab.value]]: filters,
+                },
+            });
+        }
     });
 }
 
