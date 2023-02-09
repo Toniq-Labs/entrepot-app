@@ -20,6 +20,7 @@ import {FullProfileNft} from './profile-nfts/full-profile-nft';
 import {createCollectionsFilter} from './profile-nfts/profile-collections-filter';
 import {WithFiltersElementInputs} from '../../common/with-filters/toniq-entrepot-with-filters.element';
 import {FilterDefinitions, SingleFilterDefinition} from '../../common/with-filters/filters-types';
+import {calculateOfferStatus} from './nft-profile-parts/nft-profile-offer-status';
 
 function combineOffers({
     userOffersMade,
@@ -111,6 +112,7 @@ export function generateProfileWithFiltersInput({
                       nftNri,
                       isListed: !!nft.listing.price,
                       collection,
+                      offerStatus: calculateOfferStatus(userAccount?.address ?? '', nft),
                   };
 
                   return fullUserNft;
