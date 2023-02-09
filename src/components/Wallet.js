@@ -302,7 +302,15 @@ export default function Wallet(props) {
                             loading == false &&
                             voltPrincipal ? (
                                 <>
-                                    <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
+                                    <span
+                                        style={{
+                                            width: '100%',
+                                            display: 'block',
+                                            margin: '8px 0',
+                                            height: 0,
+                                            borderBottom: '1px solid grey',
+                                        }}
+                                    ></span>
                                     <PriceICP
                                         bold={false}
                                         volume={true}
