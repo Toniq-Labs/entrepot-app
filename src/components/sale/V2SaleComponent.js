@@ -375,7 +375,7 @@ export default function V2SaleComponent(props) {
                         <span style={{fontWeight: 'bold', color: 'rgb(189 1 1)', fontSize: '2em'}}>
                             {sold !== false
                                 ? collection.canister === '7i54s-nyaaa-aaaal-abomq-cai'
-                                    ? sold + 362
+                                    ? sold + 0
                                     : collection.canister === 'tfpyv-wyaaa-aaaal-qbonq-cai'
                                     ? sold + 68
                                     : sold
