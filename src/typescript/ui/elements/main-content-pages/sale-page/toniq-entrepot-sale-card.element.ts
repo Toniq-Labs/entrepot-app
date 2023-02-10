@@ -40,8 +40,7 @@ export const EntrepotSaleCardElement = defineElement<{
             border-radius: 16px;
             will-change: filter;
             margin: 16px;
-            min-width: 304px;
-            max-width: 100%;
+            width: 304px;
             border: 1px solid transparent;
             cursor: pointer;
             ${applyBackgroundAndForeground(toniqColors.pagePrimary)};
