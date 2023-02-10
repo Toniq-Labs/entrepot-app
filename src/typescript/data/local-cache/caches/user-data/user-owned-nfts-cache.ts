@@ -40,7 +40,7 @@ async function updateUserOwnedNfts({userAccount}: UserNftsInput): Promise<BaseNf
     //     identity.getPrincipal().toText(),
     // );
 
-    const userOwnedNfts = Promise.all(
+    const userOwnedNfts = await Promise.all(
         rawUserNfts.map(async (rawUserOwnedNft, index) => {
             const rawNftListingAndOffers = await fetchRawNftListingAndOffers(
                 index + 1,

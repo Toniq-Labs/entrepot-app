@@ -25,6 +25,11 @@ import {applySort} from './apply-sort';
 import {EntrepotFilterTokenElement} from './toniq-entrepot-filter-token.element';
 import {countFiltersNotAtDefaults} from './is-still-default';
 import {ReadonlyDeep} from 'type-fest';
+import {
+    filterScrollHeaderHeight,
+    mainEntrepotHeaderHeight,
+    filterScrollHeaderBottomMargin,
+} from '../../../fixed-sizes';
 
 export type WithFiltersElementInputs<
     EntryData extends object,
@@ -68,7 +73,9 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
 
         .search-sort-header {
             padding-top: 16px;
-            margin-bottom: 24px;
+            margin-bottom: ${filterScrollHeaderBottomMargin}px;
+            box-sizing: border-box;
+            height: ${filterScrollHeaderHeight}px;
             position: sticky;
             top: 70px;
             z-index: 10;
@@ -150,12 +157,19 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
         }
 
         .filters-panel {
+            max-height: calc(
+                100vh -
+                    ${mainEntrepotHeaderHeight +
+                    filterScrollHeaderHeight +
+                    filterScrollHeaderBottomMargin}px
+            );
+            overflow-y: auto;
             position: sticky;
             box-sizing: border-box;
             padding-right: 8px;
             /* sufficient padding for selection outlines */
             padding-left: 8px;
-            padding-bottom: 16px;
+            padding-bottom: 64px;
             right: 0;
             top: 174px;
             width: ${cssVarValues.filterPanelWidth};

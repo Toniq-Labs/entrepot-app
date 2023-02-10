@@ -33,6 +33,7 @@ import {icpToString} from './PriceICP';
 import {subscribe, unsubscribe} from '../events/events';
 import {loadVoltBalance} from '../volt';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
+import {mainEntrepotHeaderHeight} from '../typescript/ui/fixed-sizes';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -210,7 +211,13 @@ export default function Navbar(props) {
                               }),
                     }}
                 >
-                    <Toolbar style={{gap: '4px', alignItems: 'stretch', minHeight: '70px'}}>
+                    <Toolbar
+                        style={{
+                            gap: '4px',
+                            alignItems: 'stretch',
+                            height: `${mainEntrepotHeaderHeight}px`,
+                        }}
+                    >
                         <Typography
                             style={{display: 'flex', alignItems: 'center'}}
                             variant="h6"
