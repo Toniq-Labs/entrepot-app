@@ -38,8 +38,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {profileTabMap} from '../typescript/ui/elements/main-content-pages/profile-page/profile-tabs';
-
-const {nftStatusesByTab, ProfileTabs, ProfileViewType} = {};
+import {ProfileViewStyleEnum} from '../typescript/ui/elements/main-content-pages/profile-page/profile-page-state';
+import {filterValueObjectToUrlString} from '../typescript/ui/elements/common/with-filters/url-filters';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -500,10 +500,12 @@ export default function Wallet(props) {
                                 props.close();
                                 navigate({
                                     pathname: `/profile/${profileTabMap['my-nfts'].value}`,
-                                    // search: `?${createSearchParams({
-                                    //     ...spreadableSearchParams(searchParams),
-                                    //     status: nftStatusesByTab[ProfileTabs.MyNfts].ForSale,
-                                    // })}`,
+                                    search: `?${createSearchParams({
+                                        ...spreadableSearchParams(searchParams),
+                                        filters: filterValueObjectToUrlString({
+                                            'List Status': true,
+                                        }),
+                                    })}`,
                                 });
                             }}
                         >
@@ -517,11 +519,13 @@ export default function Wallet(props) {
                             onClick={() => {
                                 props.close();
                                 navigate({
-                                    pathname: `/profile/${profileTabMap['my-nfts'].value}`,
-                                    // search: `?${createSearchParams({
-                                    //     ...spreadableSearchParams(searchParams),
-                                    //     status: nftStatusesByTab[ProfileTabs.MyNfts].OffersReceived,
-                                    // })}`,
+                                    pathname: `/profile/${profileTabMap.offers.value}`,
+                                    search: `?${createSearchParams({
+                                        ...spreadableSearchParams(searchParams),
+                                        filters: filterValueObjectToUrlString({
+                                            Offers: 'received',
+                                        }),
+                                    })}`,
                                 });
                             }}
                         >
@@ -536,6 +540,12 @@ export default function Wallet(props) {
                                 props.close();
                                 navigate({
                                     pathname: `/profile/${profileTabMap.offers.value}`,
+                                    search: `?${createSearchParams({
+                                        ...spreadableSearchParams(searchParams),
+                                        filters: filterValueObjectToUrlString({
+                                            Offers: 'offered',
+                                        }),
+                                    })}`,
                                 });
                             }}
                         >
@@ -602,10 +612,10 @@ export default function Wallet(props) {
                                 props.close();
                                 navigate({
                                     pathname: `/profile/${profileTabMap.activity.value}`,
-                                    // search: `?${createSearchParams({
-                                    //     ...spreadableSearchParams(searchParams),
-                                    //     view: ProfileViewType.List,
-                                    // })}`,
+                                    search: `?${createSearchParams({
+                                        ...spreadableSearchParams(searchParams),
+                                        view: ProfileViewStyleEnum.List,
+                                    })}`,
                                 });
                             }}
                         >

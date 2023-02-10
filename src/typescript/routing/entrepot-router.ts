@@ -11,7 +11,7 @@ export type EntrepotRoutes = [EntrepotRoutePageEnum, ...string[]];
 export type EntrepotSearch = {
     search: string;
     filters: string;
-    viewType: string;
+    view: string;
 };
 
 // no route sanitization yet because we don't have all the routes enumerated yet

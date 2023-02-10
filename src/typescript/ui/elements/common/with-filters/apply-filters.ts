@@ -128,7 +128,9 @@ function applyRadioFilter<EntryData extends object>(
     )[0];
 
     if (!selectedRadio) {
-        throw new Error(`Failed to find selected radio in '${filter.filterField}' filter.`);
+        throw new Error(
+            `Failed to find selected radio in '${filter.filterField}' filter by value '${filter.value}'.`,
+        );
     }
 
     return matchSingleCheckboxFilter({

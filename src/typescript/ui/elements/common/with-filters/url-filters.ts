@@ -1,10 +1,4 @@
-import {
-    copyThroughJson,
-    getObjectTypedKeys,
-    isObject,
-    isTruthy,
-    JsonCompatibleObject,
-} from '@augment-vir/common';
+import {copyThroughJson, getObjectTypedKeys, isObject, isTruthy} from '@augment-vir/common';
 import {ReadonlyDeep} from 'type-fest';
 import {FilterDefinitions, FilterTypeEnum, SingleFilterDefinition} from './filters-types';
 import {isStillAtDefaults} from './is-still-default';
@@ -74,7 +68,9 @@ export function urlStringToFilters<T extends object>({
             defaultFilters as FilterDefinitions<T>,
         );
 
-        const parsedFilterString: Record<string, string> | undefined = JSON.parse(filterString);
+        const parsedFilterString: Record<string, string> | undefined = JSON.parse(
+            decodeURIComponent(filterString),
+        );
 
         if (!isObject(parsedFilterString)) {
             throw new Error('parsed filter string is not an object');
@@ -97,6 +93,13 @@ export function urlStringToFilters<T extends object>({
                     }
                 });
             } else if (filter.filterType === FilterTypeEnum.Radio) {
+                if (!filter.radios.some(radio => radio.value === urlValue)) {
+                    console.error(
+                        `Found no radio in filter '${filterKey}' with value '${urlValue}'`,
+                    );
+                    return;
+                }
+
                 if (typeof filter.value === 'boolean') {
                     filter.value = Boolean(urlValue);
                 } else {
@@ -108,10 +111,10 @@ export function urlStringToFilters<T extends object>({
                     max,
                 ] = urlValue.split(',').map(value => (value === '' ? '' : Number(value)));
 
-                if (min !== '') {
+                if (min !== '' && min != undefined && !isNaN(min)) {
                     filter.currentMin = min;
                 }
-                if (max !== '') {
+                if (max !== '' && max != undefined && !isNaN(max)) {
                     filter.currentMax = max;
                 }
             }

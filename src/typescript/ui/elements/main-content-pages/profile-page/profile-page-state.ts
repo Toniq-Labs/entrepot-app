@@ -317,19 +317,25 @@ export function initProfileElement({
         }
 
         if (routes.search) {
-            const defaultFilters: ReadonlyDeep<FilterDefinitions<any>> =
-                defaultProfileFilters[filterSortKeyByTab[state.currentProfileTab.value]];
-            // filters
-            const filters = urlStringToFilters({
-                filterString: routes.search.filters,
-                defaultFilters,
-            });
-            updateState({
-                allFilters: {
-                    ...state.allFilters,
-                    [filterSortKeyByTab[state.currentProfileTab.value]]: filters,
-                },
-            });
+            if (routes.search.filters) {
+                try {
+                    const defaultFilters: ReadonlyDeep<FilterDefinitions<any>> =
+                        defaultProfileFilters[filterSortKeyByTab[state.currentProfileTab.value]];
+                    // filters
+                    const filters = urlStringToFilters({
+                        filterString: routes.search.filters,
+                        defaultFilters,
+                    });
+                    updateState({
+                        allFilters: {
+                            ...state.allFilters,
+                            [filterSortKeyByTab[state.currentProfileTab.value]]: filters,
+                        },
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }
     });
 }
