@@ -1,4 +1,4 @@
-import {BaseNft} from '../../../../../data/nft/base-nft';
+import {BaseNft} from '../../../../../../data/nft/base-nft';
 
 export type ProfileNftOfferStatus = 'none' | 'received' | 'offered' | 'offered received';
 

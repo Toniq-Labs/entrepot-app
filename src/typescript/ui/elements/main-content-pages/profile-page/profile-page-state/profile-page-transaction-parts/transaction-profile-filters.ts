@@ -4,13 +4,13 @@ import {
     FilterDefinitions,
     SortDefinition,
     BooleanFilterTypeEnum,
-} from '../../../common/with-filters/filters-types';
+} from '../../../../common/with-filters/filters-types';
 import {ReadonlyDeep} from 'type-fest';
 import {
     TransactionDirection,
     UserTransactionWithDirection,
-} from '../../../../../data/nft/user-nft-transaction';
-import {FullProfileNft} from '../profile-nfts/full-profile-nft';
+} from '../../../../../../data/nft/user-nft-transaction';
+import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
 
 export type ProfileCompleteTransactionNft = UserTransactionWithDirection & FullProfileNft;
 

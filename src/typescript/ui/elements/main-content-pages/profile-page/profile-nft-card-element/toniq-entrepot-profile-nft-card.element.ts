@@ -1,11 +1,11 @@
 import {classMap} from 'lit/directives/class-map.js';
 import {assign, css, html, renderIf} from 'element-vir';
 import {defineToniqElement, toniqFontStyles, Icp16Icon, ToniqIcon} from '@toniq-labs/design-system';
-import {EntrepotNftCardElement} from '../../common/toniq-entrepot-nft-card.element';
-import {toIcp} from '../../../../data/icp';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
+import {EntrepotNftCardElement} from '../../../common/toniq-entrepot-nft-card.element';
+import {toIcp} from '../../../../../data/icp';
+import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
 import {isRuntimeTypeOf} from '@augment-vir/common';
-import {BaseNft} from '../../../../data/nft/base-nft';
+import {BaseNft} from '../../../../../data/nft/base-nft';
 
 export const EntrepotProfileNftCardElement = defineToniqElement<{
     nft: Pick<

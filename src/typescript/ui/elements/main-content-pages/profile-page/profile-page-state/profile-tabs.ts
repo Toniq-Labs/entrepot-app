@@ -1,5 +1,5 @@
-import {ensureType, mapObjectValues} from '@augment-vir/common';
-import {TopTab} from '../../common/toniq-entrepot-top-tabs.element';
+import {mapObjectValues} from '@augment-vir/common';
+import {TopTab} from '../../../common/toniq-entrepot-top-tabs.element';
 
 const profileTabValueToLabelMap = {
     'my-nfts': 'My NFTs',

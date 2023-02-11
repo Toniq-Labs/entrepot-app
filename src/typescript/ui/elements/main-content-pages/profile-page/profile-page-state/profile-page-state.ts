@@ -17,35 +17,35 @@ import {
     CurrentSort,
     FilterDefinitions,
     SortDefinition,
-} from '../../common/with-filters/filters-types';
-import {CollectionNriData} from '../../../../data/models/collection-nri-data';
-import {CanisterId} from '../../../../data/models/canister-id';
+} from '../../../common/with-filters/filters-types';
+import {CollectionNriData} from '../../../../../data/models/collection-nri-data';
+import {CanisterId} from '../../../../../data/models/canister-id';
 import {ReadonlyDeep} from 'type-fest';
 import {ProfileTopTabValue, profileTabMap, ProfileTab} from './profile-tabs';
-import {UserTransactionWithDirection} from '../../../../data/nft/user-nft-transaction';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
-import {BaseNft} from '../../../../data/nft/base-nft';
+import {UserTransactionWithDirection} from '../../../../../data/nft/user-nft-transaction';
+import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
+import {BaseNft} from '../../../../../data/nft/base-nft';
 import {
     defaultProfileNftFilters,
     profileNftSortDefinitions,
-} from './nft-profile-parts/nft-profile-filters';
+} from './profile-page-nft-parts/nft-profile-filters';
 import {
     profileUserTransactionSortDefinitions,
     defaultProfileUserTransactionFilters,
-} from './user-transaction-profile-parts/transaction-profile-filters';
-import {userTransactionsCache} from '../../../../data/local-cache/caches/user-data/user-transactions-cache';
-import {userOwnedNftsCache} from '../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
-import {userFavoritesCache} from '../../../../data/local-cache/caches/user-data/user-favorites-cache';
+} from './profile-page-transaction-parts/transaction-profile-filters';
+import {userTransactionsCache} from '../../../../../data/local-cache/caches/user-data/user-transactions-cache';
+import {userOwnedNftsCache} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
+import {userFavoritesCache} from '../../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {
     userMadeOffersCache,
     makeUserOffersKey,
-} from '../../../../data/local-cache/caches/user-data/user-made-offers-cache';
-import {collectionNriCache} from '../../../../data/local-cache/caches/collection-nri-cache';
-import {CollectionMap} from '../../../../data/models/collection';
-import {UserIdentity} from '../../../../data/models/user-data/identity';
-import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
-import {EntrepotRoutePageEnum, entrepotRouter} from '../../../../routing/entrepot-router';
-import {urlStringToFilters} from '../../common/with-filters/url-filters';
+} from '../../../../../data/local-cache/caches/user-data/user-made-offers-cache';
+import {collectionNriCache} from '../../../../../data/local-cache/caches/collection-nri-cache';
+import {CollectionMap} from '../../../../../data/models/collection';
+import {UserIdentity} from '../../../../../data/models/user-data/identity';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {EntrepotRoutePageEnum, entrepotRouter} from '../../../../../routing/entrepot-router';
+import {urlStringToFilters} from '../../../common/with-filters/url-filters';
 
 export type ProfileFullEarnNft = {
     earn: boolean;

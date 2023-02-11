@@ -2,25 +2,28 @@ import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from './profile-tabs';
 import {ProfilePageStateType, ProfileFullEarnNft} from './profile-page-state';
-import {createProfileNftFilterInputs} from './nft-profile-parts/create-profile-nft-filter-inputs';
-import {createUserTransactionFilterInputs} from './user-transaction-profile-parts/create-profile-transaction-nft-filter-inputs';
+import {createProfileNftFilterInputs} from './profile-page-nft-parts/create-profile-nft-filter-inputs';
+import {createUserTransactionFilterInputs} from './profile-page-transaction-parts/create-profile-transaction-nft-filter-inputs';
 import {
     AnyProfileEntriesAsyncState,
     AnyFullProfileEntries,
     isNftType,
     isEntriesType,
     AnyProfileEntryType,
-} from './profile-nfts/profile-nft-types';
-import {CollectionMap} from '../../../../data/models/collection';
-import {EntrepotUserAccount} from '../../../../data/models/user-data/account';
-import {BaseNft} from '../../../../data/nft/base-nft';
-import {ProfileCompleteTransactionNft} from './user-transaction-profile-parts/transaction-profile-filters';
-import {ProfileCompleteNft} from './nft-profile-parts/nft-profile-filters';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
-import {createCollectionsFilter} from './profile-nfts/profile-collections-filter';
-import {WithFiltersElementInputs} from '../../common/with-filters/toniq-entrepot-with-filters.element';
-import {FilterDefinitions, SingleFilterDefinition} from '../../common/with-filters/filters-types';
-import {calculateOfferStatus} from './nft-profile-parts/nft-profile-offer-status';
+} from '../profile-page-nfts/profile-nft-types';
+import {CollectionMap} from '../../../../../data/models/collection';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {BaseNft} from '../../../../../data/nft/base-nft';
+import {ProfileCompleteTransactionNft} from './profile-page-transaction-parts/transaction-profile-filters';
+import {ProfileCompleteNft} from './profile-page-nft-parts/nft-profile-filters';
+import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
+import {createCollectionsFilter} from '../profile-page-nfts/profile-collections-filter';
+import {WithFiltersElementInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
+import {
+    FilterDefinitions,
+    SingleFilterDefinition,
+} from '../../../common/with-filters/filters-types';
+import {calculateOfferStatus} from './profile-page-nft-parts/nft-profile-offer-status';
 
 function combineOffers({
     userOffersMade,
@@ -60,7 +63,7 @@ function getAsyncStateForCurrentTab(
     return tabToStateProp[currentState.currentProfileTab.value];
 }
 
-export function generateProfileWithFiltersInput({
+export function createProfileFilterInputs({
     currentProfilePageState,
     collectionMap,
     sellCallback,

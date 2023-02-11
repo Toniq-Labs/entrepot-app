@@ -8,10 +8,10 @@ import {
     applyBackgroundAndForeground,
     toniqColors,
 } from '@toniq-labs/design-system';
-import {toIcp} from '../../../../data/icp';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
+import {toIcp} from '../../../../../data/icp';
+import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
 import {isRuntimeTypeOf} from '@augment-vir/common';
-import {BaseNft} from '../../../../data/nft/base-nft';
+import {BaseNft} from '../../../../../data/nft/base-nft';
 
 const headerTitles = {
     mint: 'MINT #',

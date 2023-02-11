@@ -13,7 +13,7 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.element';
-import {getAllowedTabs, ProfileTab} from './profile-tabs';
+import {getAllowedTabs, ProfileTab} from './profile-page-state/profile-tabs';
 import {
     profilePageStateInit,
     filterSortKeyByTab,
@@ -22,14 +22,14 @@ import {
     initProfileElement,
     ProfileViewStyleEnum,
     listViewFinalItemHeaderTitleByTab,
-} from './profile-page-state';
-import {generateProfileWithFiltersInput} from './profile-filters';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
-import {createOverallStatsTemplate} from './overall-profile-stats';
+} from './profile-page-state/profile-page-state';
+import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
+import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
+import {createOverallStatsTemplate} from './profile-page-state/overall-profile-stats';
 import {FilterTypeEnum} from '../../common/with-filters/filters-types';
 import {isTruthy} from '@augment-vir/common';
 import {CanisterId} from '../../../../data/models/canister-id';
-import {EntrepotProfileNftListItemTextItemsElement} from './toniq-entrepot-profile-nft-list-item-text-items.element';
+import {EntrepotProfileNftListItemTextItemsElement} from './profile-nft-card-element/toniq-entrepot-profile-nft-list-item-text-items.element';
 
 export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>()({
     tagName: 'toniq-entrepot-profile-page',
@@ -84,7 +84,7 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         initProfileElement({inputs, state, updateState});
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        const filterInputs = generateProfileWithFiltersInput({
+        const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
             collectionMap: inputs.collectionMap,
             sellCallback: nft => {

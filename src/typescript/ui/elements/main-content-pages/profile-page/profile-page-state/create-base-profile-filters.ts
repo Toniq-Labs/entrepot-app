@@ -4,15 +4,7 @@ import {
     ProfilePageStateType,
     sortDefinitions,
 } from './profile-page-state';
-import {AnyFullProfileEntryType} from './profile-nfts/profile-nft-types';
-import {FullProfileNft} from './profile-nfts/full-profile-nft';
-import {
-    FilterTypeEnum,
-    SingleFilterDefinition,
-    ImageToggleEntry,
-} from '../../common/with-filters/filters-types';
-import {CanisterId} from '../../../../data/models/canister-id';
-import {Collection} from '../../../../data/models/collection';
+import {AnyFullProfileEntryType} from '../profile-page-nfts/profile-nft-types';
 
 export function createBaseProfileWithFiltersInputs({
     showFilters,

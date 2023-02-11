@@ -1,9 +1,9 @@
 import {PropertyValueType} from '@augment-vir/common';
 import {AsyncState} from 'element-vir';
-import {ProfileTopTabValue} from '../profile-tabs';
-import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state';
-import {ProfileCompleteNft} from '../nft-profile-parts/nft-profile-filters';
-import {ProfileCompleteTransactionNft} from '../user-transaction-profile-parts/transaction-profile-filters';
+import {ProfileTopTabValue} from '../profile-page-state/profile-tabs';
+import {ProfilePageStateType, ProfileFullEarnNft} from '../profile-page-state/profile-page-state';
+import {ProfileCompleteNft} from '../profile-page-state/profile-page-nft-parts/nft-profile-filters';
+import {ProfileCompleteTransactionNft} from '../profile-page-state/profile-page-transaction-parts/transaction-profile-filters';
 
 type StateEntryType<SpecificKey extends keyof ProfilePageStateType> =
     ProfilePageStateType[SpecificKey] extends AsyncState<ReadonlyArray<infer EntryType>>

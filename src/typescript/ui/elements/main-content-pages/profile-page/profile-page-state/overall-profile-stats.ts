@@ -2,8 +2,8 @@ import {ProfilePageStateType} from './profile-page-state';
 import {truncateNumber} from '@augment-vir/common';
 import {assign, html, isRenderReady} from 'element-vir';
 import {Icp16Icon, ToniqChip, toniqFontStyles, ToniqSvg} from '@toniq-labs/design-system';
-import {convertToIcpNumber} from '../../../../data/icp';
-import {CollectionMap} from '../../../../data/models/collection';
+import {convertToIcpNumber} from '../../../../../data/icp';
+import {CollectionMap} from '../../../../../data/models/collection';
 
 function calculateOverallProfileStats(
     profileState: Pick<ProfilePageStateType, 'userOwnedNfts'>,

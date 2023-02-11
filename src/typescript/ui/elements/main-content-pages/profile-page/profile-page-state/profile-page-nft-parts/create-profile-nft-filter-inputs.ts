@@ -1,16 +1,16 @@
 import {assign, html, listen} from 'element-vir';
-import {createWithFiltersInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
+import {createWithFiltersInputs} from '../../../../common/with-filters/toniq-entrepot-with-filters.element';
 import {ProfilePageStateType, ProfileViewStyleEnum} from '../profile-page-state';
-import {createBaseProfileWithFiltersInputs} from '../base-profile-filters';
+import {createBaseProfileWithFiltersInputs} from '../create-base-profile-filters';
 import {ToniqIcon, LoaderAnimated24Icon, ToniqButton} from '@toniq-labs/design-system';
-import {EntrepotProfileNftCardElement} from '../toniq-entrepot-profile-nft-card.element';
+import {EntrepotProfileNftCardElement} from '../../profile-nft-card-element/toniq-entrepot-profile-nft-card.element';
 import {ProfileTab} from '../profile-tabs';
-import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
-import {BaseNft} from '../../../../../data/nft/base-nft';
+import {EntrepotUserAccount} from '../../../../../../data/models/user-data/account';
+import {BaseNft} from '../../../../../../data/nft/base-nft';
 import {ProfileCompleteNft} from './nft-profile-filters';
-import {FullProfileNft} from '../profile-nfts/full-profile-nft';
-import {createRightSideTextTemplate} from '../profile-nfts/create-right-column-template';
-import {EntrepotProfileNftListItemElement} from '../toniq-entrepot-profile-nft-list-item.element';
+import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
+import {createRightSideTextTemplate} from '../../profile-page-nfts/create-right-column-template';
+import {EntrepotProfileNftListItemElement} from '../../profile-nft-card-element/toniq-entrepot-profile-nft-list-item.element';
 
 export function createProfileNftFilterInputs({
     showFilters,

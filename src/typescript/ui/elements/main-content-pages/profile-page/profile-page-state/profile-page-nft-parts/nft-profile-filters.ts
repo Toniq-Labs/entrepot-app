@@ -4,11 +4,11 @@ import {
     FilterDefinitions,
     SortDefinition,
     BooleanFilterTypeEnum,
-} from '../../../common/with-filters/filters-types';
+} from '../../../../common/with-filters/filters-types';
 import {ReadonlyDeep} from 'type-fest';
-import {FullProfileNft} from '../profile-nfts/full-profile-nft';
-import {BaseNft} from '../../../../../data/nft/base-nft';
-import {icpFactor} from '../../../../../data/icp';
+import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
+import {BaseNft} from '../../../../../../data/nft/base-nft';
+import {icpFactor} from '../../../../../../data/icp';
 import {ProfileNftOfferStatus} from './nft-profile-offer-status';
 
 export type ProfileCompleteNft = BaseNft &
