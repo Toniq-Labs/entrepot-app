@@ -74,4 +74,4 @@ export type Collection = BaseCollection & {
     stats: CollectionStats | undefined;
 };
 
-export type CollectionMap = Readonly<Record<string, Collection>>;
+export type CollectionMap = Readonly<Record<CanisterId, Collection>>;

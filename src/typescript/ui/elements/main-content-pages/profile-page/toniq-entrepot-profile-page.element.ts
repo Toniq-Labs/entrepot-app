@@ -142,7 +142,7 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                     headerText: 'My Profile',
                 })}
             ></${EntrepotPageHeaderElement}>
-            ${createOverallStatsTemplate(state)}
+            ${createOverallStatsTemplate(state, inputs.collectionMap)}
             <${EntrepotTopTabsElement}
                 ${assign(EntrepotTopTabsElement, {
                     selected: state.currentProfileTab,

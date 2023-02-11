@@ -791,6 +791,7 @@ export default function App() {
         const collectionMap = await getAllCollectionsWithCaching();
         const allCollectionsWithCaching = Object.values(collectionMap);
         setCollections(allCollectionsWithCaching);
+        console.log({collectionMap});
         setCollectionMap(collectionMap);
         allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
 

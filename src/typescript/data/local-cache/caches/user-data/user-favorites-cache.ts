@@ -1,4 +1,3 @@
-import {createEntrepotApiWithIdentity} from '../../../../api/entrepot-apis/entrepot-data-api';
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {UserIdentity} from '../../../models/user-data/identity';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
