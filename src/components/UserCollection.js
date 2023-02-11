@@ -37,6 +37,7 @@ import {
     createCloudFunctionsEndpointUrl,
 } from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
 const perPage = 60;
 
@@ -281,7 +282,7 @@ export default function UserCollection(props) {
                     createCloudFunctionsEndpointUrl([
                         'user',
                         address,
-                        'yigae-jqaaa-aaaah-qczbq-cai',
+                        treasureCanisterId,
                         'all',
                     ]),
                 );
@@ -460,7 +461,7 @@ export default function UserCollection(props) {
         console.log('Hook: start');
         setDisplayedResults(false);
         defaultEntrepotApi
-            .canister('yigae-jqaaa-aaaah-qczbq-cai')
+            .canister(treasureCanisterId)
             .tp_whitelisted()
             .then(r => {
                 setWhitelistedPawnCanisters(r);

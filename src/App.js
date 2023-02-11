@@ -899,7 +899,7 @@ export default function App() {
         if (loader) loader(true, 'Creating Earn Request...');
         try {
             var r = await createEntrepotApiWithIdentity(identity)
-                .canister('yigae-jqaaa-aaaah-qczbq-cai')
+                .canister(treasureCanisterId)
                 .tp_create(
                     id,
                     extjs.toSubAccount(currentAccount ?? 0),
@@ -917,7 +917,7 @@ export default function App() {
                 .transfer(
                     identity.getPrincipal().toText(),
                     currentAccount,
-                    'yigae-jqaaa-aaaah-qczbq-cai',
+                    treasureCanisterId,
                     BigInt(1),
                     BigInt(0),
                     '00',

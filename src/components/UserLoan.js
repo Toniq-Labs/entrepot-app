@@ -45,6 +45,7 @@ import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 import CloseIcon from '@material-ui/icons/Close';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
 import {decodeNftId} from '../typescript/data/nft/nft-id';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
 const perPage = 60;
 function useInterval(callback, delay) {
@@ -162,7 +163,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-var pawnApi = defaultEntrepotApi.canister('yigae-jqaaa-aaaah-qczbq-cai');
+var pawnApi = defaultEntrepotApi.canister(treasureCanisterId);
 const getDays = a => Number(a.length / (24n * 60n * 60n * 1000000000n));
 const getApr = a =>
     ((Number(a.reward) / 100000000 / getDays(a)) * 365) / (Number(a.amount) / 100000000);
