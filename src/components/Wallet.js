@@ -37,8 +37,8 @@ import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import {defaultEntrepotApi} from '../typescript/api/entrepot-apis/entrepot-data-api';
-import {profileTabMap} from '../typescript/ui/elements/main-content-pages/profile-page/profile-tabs';
-import {ProfileViewStyleEnum} from '../typescript/ui/elements/main-content-pages/profile-page/profile-page-state';
+import {profileTabMap} from '../typescript/ui/elements/main-content-pages/profile-page/profile-page-state/profile-tabs';
+import {ProfileViewStyleEnum} from '../typescript/ui/elements/main-content-pages/profile-page/profile-page-state/profile-page-state';
 import {filterValueObjectToUrlString} from '../typescript/ui/elements/common/with-filters/url-filters';
 
 function useInterval(callback, delay) {

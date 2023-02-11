@@ -2,8 +2,8 @@ import {ArrayElement} from '@augment-vir/common';
 import {AsyncState, isRenderReady} from 'element-vir';
 import {profileTabMap, ProfileTopTabValue} from './profile-tabs';
 import {ProfilePageStateType, ProfileFullEarnNft} from './profile-page-state';
-import {createProfileNftFilterInputs} from './profile-page-nft-parts/create-profile-nft-filter-inputs';
-import {createUserTransactionFilterInputs} from './profile-page-transaction-parts/create-profile-transaction-nft-filter-inputs';
+import {createProfileNftFilterInputs} from './profile-page-nft-filters/create-profile-nft-filter-inputs';
+import {createUserTransactionFilterInputs} from './profile-page-transaction-filters/create-profile-transaction-filter-inputs';
 import {
     AnyProfileEntriesAsyncState,
     AnyFullProfileEntries,
@@ -14,8 +14,8 @@ import {
 import {CollectionMap} from '../../../../../data/models/collection';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
-import {ProfileCompleteTransactionNft} from './profile-page-transaction-parts/transaction-profile-filters';
-import {ProfileCompleteNft} from './profile-page-nft-parts/nft-profile-filters';
+import {ProfileCompleteTransactionNft} from './profile-page-transaction-filters/profile-transaction-filters';
+import {ProfileCompleteNft} from './profile-page-nft-filters/profile-nft-filters';
 import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
 import {createCollectionsFilter} from '../profile-page-nfts/profile-collections-filter';
 import {WithFiltersElementInputs} from '../../../common/with-filters/toniq-entrepot-with-filters.element';
@@ -23,7 +23,8 @@ import {
     FilterDefinitions,
     SingleFilterDefinition,
 } from '../../../common/with-filters/filters-types';
-import {calculateOfferStatus} from './profile-page-nft-parts/nft-profile-offer-status';
+import {calculateOfferStatus} from './profile-page-nft-filters/profile-nft-offer-status';
+import {createProfileOfferFilterInputs} from './profile-page-offer-filters/create-profile-offer-filter-inputs';
 
 function combineOffers({
     userOffersMade,
@@ -152,6 +153,16 @@ export function createProfileFilterInputs({
           })
         : isEntriesType(entries, profileTabMap.earn.value, currentProfilePageState)
         ? ({} as any)
+        : currentProfilePageState.currentProfileTab.value === profileTabMap.offers.value
+        ? createProfileOfferFilterInputs({
+              ...currentProfilePageState,
+              entries,
+              isRenderReady: areEntriesRenderReady,
+              sellCallback,
+              transferCallback,
+              userAccount,
+              nftClickCallback,
+          })
         : createProfileNftFilterInputs({
               ...currentProfilePageState,
               entries,

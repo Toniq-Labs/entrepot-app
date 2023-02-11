@@ -3,7 +3,7 @@ import {createWithFiltersInputs} from '../../../../common/with-filters/toniq-ent
 import {EntrepotProfileNftCardElement} from '../../profile-nft-card-element/toniq-entrepot-profile-nft-card.element';
 import {ProfilePageStateType, ProfileViewStyleEnum} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../create-base-profile-filters';
-import {ProfileCompleteTransactionNft} from './transaction-profile-filters';
+import {ProfileCompleteTransactionNft} from './profile-transaction-filters';
 import {
     ToniqIcon,
     LoaderAnimated24Icon,

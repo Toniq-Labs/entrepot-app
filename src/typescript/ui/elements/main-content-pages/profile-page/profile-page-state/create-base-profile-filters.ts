@@ -1,10 +1,10 @@
-import {
-    defaultProfileFilters,
-    filterSortKeyByTab,
-    ProfilePageStateType,
-    sortDefinitions,
-} from './profile-page-state';
+import {ProfilePageStateType} from './profile-page-state';
 import {AnyFullProfileEntryType} from '../profile-page-nfts/profile-nft-types';
+import {
+    filterSortKeyByTab,
+    sortDefinitions,
+    defaultProfileFilters,
+} from './profile-page-filter-definitions';
 
 export function createBaseProfileWithFiltersInputs({
     showFilters,

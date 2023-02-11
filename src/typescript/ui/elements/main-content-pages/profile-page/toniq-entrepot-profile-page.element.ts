@@ -16,7 +16,6 @@ import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.eleme
 import {getAllowedTabs, ProfileTab} from './profile-page-state/profile-tabs';
 import {
     profilePageStateInit,
-    filterSortKeyByTab,
     ProfilePageInputs,
     createAsyncProfileStateUpdate,
     initProfileElement,
@@ -30,6 +29,7 @@ import {FilterTypeEnum} from '../../common/with-filters/filters-types';
 import {isTruthy} from '@augment-vir/common';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {EntrepotProfileNftListItemTextItemsElement} from './profile-nft-card-element/toniq-entrepot-profile-nft-list-item-text-items.element';
+import {filterSortKeyByTab} from './profile-page-state/profile-page-filter-definitions';
 
 export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>()({
     tagName: 'toniq-entrepot-profile-page',

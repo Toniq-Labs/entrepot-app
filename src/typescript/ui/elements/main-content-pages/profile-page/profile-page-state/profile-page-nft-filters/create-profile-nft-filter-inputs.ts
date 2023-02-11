@@ -7,7 +7,7 @@ import {EntrepotProfileNftCardElement} from '../../profile-nft-card-element/toni
 import {ProfileTab} from '../profile-tabs';
 import {EntrepotUserAccount} from '../../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../../data/nft/base-nft';
-import {ProfileCompleteNft} from './nft-profile-filters';
+import {ProfileCompleteNft} from './profile-nft-filters';
 import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
 import {createRightSideTextTemplate} from '../../profile-page-nfts/create-right-column-template';
 import {EntrepotProfileNftListItemElement} from '../../profile-nft-card-element/toniq-entrepot-profile-nft-list-item.element';

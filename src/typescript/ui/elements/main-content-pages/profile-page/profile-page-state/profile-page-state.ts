@@ -1,9 +1,7 @@
 import {
-    wrapNarrowTypeWithTypeCheck,
     isRuntimeTypeOf,
     isPromiseLike,
     mapObjectValues,
-    isEnumValue,
     PropertyValueType,
 } from '@augment-vir/common';
 import {
@@ -13,11 +11,7 @@ import {
     AsyncState,
     isRenderReady,
 } from 'element-vir';
-import {
-    CurrentSort,
-    FilterDefinitions,
-    SortDefinition,
-} from '../../../common/with-filters/filters-types';
+import {FilterDefinitions} from '../../../common/with-filters/filters-types';
 import {CollectionNriData} from '../../../../../data/models/collection-nri-data';
 import {CanisterId} from '../../../../../data/models/canister-id';
 import {ReadonlyDeep} from 'type-fest';
@@ -25,14 +19,6 @@ import {ProfileTopTabValue, profileTabMap, ProfileTab} from './profile-tabs';
 import {UserTransactionWithDirection} from '../../../../../data/nft/user-nft-transaction';
 import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
 import {BaseNft} from '../../../../../data/nft/base-nft';
-import {
-    defaultProfileNftFilters,
-    profileNftSortDefinitions,
-} from './profile-page-nft-parts/nft-profile-filters';
-import {
-    profileUserTransactionSortDefinitions,
-    defaultProfileUserTransactionFilters,
-} from './profile-page-transaction-parts/transaction-profile-filters';
 import {userTransactionsCache} from '../../../../../data/local-cache/caches/user-data/user-transactions-cache';
 import {userOwnedNftsCache} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
 import {userFavoritesCache} from '../../../../../data/local-cache/caches/user-data/user-favorites-cache';
@@ -46,51 +32,16 @@ import {UserIdentity} from '../../../../../data/models/user-data/identity';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {EntrepotRoutePageEnum, entrepotRouter} from '../../../../../routing/entrepot-router';
 import {urlStringToFilters} from '../../../common/with-filters/url-filters';
+import {
+    defaultProfileFilters,
+    defaultProfileSort,
+    filterSortKeyByTab,
+} from './profile-page-filter-definitions';
 
 export type ProfileFullEarnNft = {
     earn: boolean;
 } & BaseNft &
     FullProfileNft;
-
-export const defaultProfileFilters = wrapNarrowTypeWithTypeCheck<
-    Record<string, ReadonlyDeep<FilterDefinitions<any>>>
->()({
-    base: defaultProfileNftFilters,
-    activity: defaultProfileUserTransactionFilters,
-    earn: defaultProfileNftFilters,
-} as const);
-
-const defaultProfileSort: Record<keyof typeof defaultProfileFilters, ReadonlyDeep<CurrentSort>> = {
-    activity: {
-        ascending: false,
-        name: profileUserTransactionSortDefinitions[0].sortName,
-    },
-    earn: {
-        ascending: false,
-        name: profileNftSortDefinitions[0].sortName,
-    },
-    base: {
-        ascending: false,
-        name: profileNftSortDefinitions[0].sortName,
-    },
-} as const;
-
-export const sortDefinitions: Record<
-    keyof typeof defaultProfileFilters,
-    ReadonlyArray<ReadonlyDeep<SortDefinition<any>>>
-> = {
-    activity: profileUserTransactionSortDefinitions,
-    earn: profileNftSortDefinitions,
-    base: profileNftSortDefinitions,
-} as const;
-
-export const filterSortKeyByTab: Record<ProfileTopTabValue, keyof typeof defaultProfileFilters> = {
-    'my-nfts': 'base',
-    favorites: 'base',
-    offers: 'base',
-    activity: 'activity',
-    earn: 'activity',
-} as const;
 
 const selectedCollections: Readonly<Record<ProfileTopTabValue, ReadonlyArray<CanisterId>>> =
     mapObjectValues(profileTabMap, () => {

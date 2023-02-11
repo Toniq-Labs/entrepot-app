@@ -9,7 +9,7 @@ import {ReadonlyDeep} from 'type-fest';
 import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
 import {BaseNft} from '../../../../../../data/nft/base-nft';
 import {icpFactor} from '../../../../../../data/icp';
-import {ProfileNftOfferStatus} from './nft-profile-offer-status';
+import {ProfileNftOfferStatus} from './profile-nft-offer-status';
 
 export type ProfileCompleteNft = BaseNft &
     FullProfileNft & {
@@ -44,23 +44,18 @@ export const defaultProfileNftFilters = wrapNarrowTypeWithTypeCheck<
         filterType: FilterTypeEnum.Radio,
         radios: [
             {
-                label: 'Any',
+                label: 'All',
                 value: 'All',
                 filterType: BooleanFilterTypeEnum.Everything,
             },
             {
-                label: 'Has no offers',
-                value: 'none',
-            },
-            {
-                label: 'Has offers from others',
+                label: 'Has offers',
                 value: 'received',
                 filterType: BooleanFilterTypeEnum.Contains,
             },
             {
-                label: 'Has offers from me',
-                value: 'offered',
-                filterType: BooleanFilterTypeEnum.Contains,
+                label: 'No offers',
+                value: 'none',
             },
         ],
         filterField: ['offerStatus'],
