@@ -55,6 +55,18 @@ function useInterval(callback, delay) {
 
 const api = extjs.connect('https://ic0.app/');
 
+/***
+ *
+ * to refactor into @toniq-labs/design-system <toniq-input> properties
+ */
+const shadowRoot = document.querySelector('toniq-input').shadowRoot;
+const label = shadowRoot.querySelector('label');
+const input = shadowRoot.querySelector('input');
+label.style.width = '100%';
+input.style.width = '100%';
+
+
+
 export default function Navbar(props) {
     const navigate = useNavigate();
     const [
@@ -359,7 +371,7 @@ const useStyles = makeStyles(theme => {
         bigScreenInput: {
             [`@media (max-width:${searchHiddenBreakPixel})`]: {
                 display: 'none',
-            }
+            },
         },
         root: {
             display: 'flex',
