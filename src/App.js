@@ -1192,7 +1192,7 @@ export default function App() {
     const footer = (
         <div className={classes.footer}>
             <Typography variant="body1">
-                Developed by ToniqLabs &copy; All rights reserved 2021
+                Developed by ToniqLabs  <sup>&copy;</sup>All rights reserved 2023
                 <br />
                 <a
                     href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit"

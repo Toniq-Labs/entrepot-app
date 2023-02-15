@@ -197,8 +197,8 @@ export default function Home(props) {
                             Explore the Marketplace
                         </Button>
                     </p>
-                    <h1 className={classes.heading}>Latest Collections</h1>
-                    <Grid container direction="row" justifyContent="center" alignItems="center">
+
+                    <Grid container direction="row" justifyContent="center" alignItems="center" style={{marginTop: '8em'}}>
                         {cards.slice(0, 3).map((card, i) => {
                             return (
                                 <Grid key={i} item md={4} style={{marginBottom: 20}}>
@@ -225,7 +225,10 @@ export default function Home(props) {
                             );
                         })}
                     </Grid>
-
+                    <h1 className={classes.heading} style={{
+                        fontSize: '3.3em',
+                        marginTop: '2em',
+                    }}>Four reason to Entrepot</h1>
                     <Features />
                 </div>
             </div>
