@@ -194,6 +194,15 @@ export default function Navbar(props) {
                             style={{display: 'flex', alignItems: 'center'}}
                             variant="h6"
                         >
+                            <ToniqToggleButton
+                                className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+                                active={open}
+                                onClick={() => {
+                                    setWalletOpen(false);
+                                    setOpen(!open);
+                                }}
+                                icon={Menu24Icon}
+                            />
                             <a
                                 style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}
                                 onClick={() => goTo('/')}
@@ -212,15 +221,7 @@ export default function Navbar(props) {
                                 <span style={entrepotTitleStyles}>Entrepot</span>
                             </a>
                         </Typography>
-                        <ToniqToggleButton
-                            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-                            active={open}
-                            onClick={() => {
-                                setWalletOpen(false);
-                                setOpen(!open);
-                            }}
-                            icon={Menu24Icon}
-                        />
+
                         <ToniqInput
                             className={classes.bigScreenInput}
                             style={{alignSelf: 'center', marginLeft: '16px', width: '100%'}}
@@ -358,7 +359,7 @@ const useStyles = makeStyles(theme => {
         bigScreenInput: {
             [`@media (max-width:${searchHiddenBreakPixel})`]: {
                 display: 'none',
-            },
+            }
         },
         root: {
             display: 'flex',
