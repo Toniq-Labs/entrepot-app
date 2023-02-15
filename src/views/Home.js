@@ -168,11 +168,14 @@ export default function Home(props) {
                     ) : (
                         ''
                     )}
-                    <h1 className={classes.heading}>Welcome to Entrepot</h1>
+                    <h1 className={classes.heading} style={{
+                        fontSize: '3.3em',
+                    }}>Welcome to Entrepot</h1>
                     <p
                         style={{
                             textAlign: 'center',
                             fontSize: '1.3em',
+                            lineHeight: '1.5em',
                             padding: '0 30px',
                         }}
                     >
@@ -188,7 +191,8 @@ export default function Home(props) {
                             variant={'outlined'}
                             onClick={() => navigate(`/marketplace`)}
                             color={'primary'}
-                            style={{fontWeight: 'bold', margin: '20px auto'}}
+                            style={{fontWeight: 'bold', margin: '20px auto', borderRadius: '999px',
+                            textTransform: 'capitalize', padding:'0.55em'}}
                         >
                             Explore the Marketplace
                         </Button>

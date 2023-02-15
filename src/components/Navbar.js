@@ -55,17 +55,6 @@ function useInterval(callback, delay) {
 
 const api = extjs.connect('https://ic0.app/');
 
-/***
- *
- * to refactor into @toniq-labs/design-system <toniq-input> properties
- */
-const shadowRoot = document.querySelector('toniq-input').shadowRoot;
-const label = shadowRoot.querySelector('label');
-const input = shadowRoot.querySelector('input');
-label.style.width = '100%';
-input.style.width = '100%';
-
-
 
 export default function Navbar(props) {
     const navigate = useNavigate();
@@ -322,6 +311,8 @@ export default function Navbar(props) {
     );
 }
 
+
+
 const useStyles = makeStyles(theme => {
     console.log({breakpoints: theme.breakpoints, sm: theme.breakpoints.up('sm')});
 
@@ -458,3 +449,23 @@ const useStyles = makeStyles(theme => {
         },
     };
 });
+
+
+/***
+ *
+ * to refactor into @toniq-labs/design-system <toniq-input> properties
+ */
+
+
+let timeout;
+function callFullWidthInput() {
+    timeout = setTimeout(fullWidthInput, 7000);
+}
+function fullWidthInput() {
+    const shadowRoot = document.querySelector('toniq-input').shadowRoot;
+    const label = shadowRoot.querySelector('label');
+    const input = shadowRoot.querySelector('input');
+    label.style.width = '100%';
+    input.style.width = '100%';
+}
+callFullWidthInput();
