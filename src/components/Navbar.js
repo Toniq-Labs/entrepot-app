@@ -171,6 +171,8 @@ export default function Navbar(props) {
     const entrepotTitleStyles = {
         ...cssToReactStyleObject(toniqFontStyles.h2Font),
         ...cssToReactStyleObject(toniqFontStyles.extraBoldFont),
+        marginRight: '10px',
+        overflow: 'initial',
     };
 
     return (
@@ -191,7 +193,6 @@ export default function Navbar(props) {
                         <Typography
                             style={{display: 'flex', alignItems: 'center'}}
                             variant="h6"
-                            noWrap
                         >
                             <a
                                 style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}
@@ -211,9 +212,18 @@ export default function Navbar(props) {
                                 <span style={entrepotTitleStyles}>Entrepot</span>
                             </a>
                         </Typography>
+                        <ToniqToggleButton
+                            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+                            active={open}
+                            onClick={() => {
+                                setWalletOpen(false);
+                                setOpen(!open);
+                            }}
+                            icon={Menu24Icon}
+                        />
                         <ToniqInput
                             className={classes.bigScreenInput}
-                            style={{alignSelf: 'center', marginLeft: '16px'}}
+                            style={{alignSelf: 'center', marginLeft: '16px', width: '100%'}}
                             icon={Search24Icon}
                             placeholder="Search for NFTs..."
                             value={query}
@@ -228,18 +238,9 @@ export default function Navbar(props) {
                                 });
                             }}
                         />
+
                         <div className={classes.grow} />
                         <div className={classes.bigScreenNavButtons}>{navBarButtons}</div>
-
-                        <ToniqToggleButton
-                            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-                            active={open}
-                            onClick={() => {
-                                setWalletOpen(false);
-                                setOpen(!open);
-                            }}
-                            icon={Menu24Icon}
-                        />
                         <ToniqToggleButton
                             className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
                             active={walletOpen}
@@ -345,7 +346,7 @@ const useStyles = makeStyles(theme => {
             top: 72,
             width: '250px',
             display: 'flex',
-            right: 0,
+            left: 0,
             backgroundColor: 'white',
             height: '100vh',
             justifyContent: 'flex-start',
