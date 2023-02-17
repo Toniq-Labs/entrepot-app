@@ -12,9 +12,9 @@ import {Collection} from '../../../../../data/models/collection';
 import {TopTab} from '../../../common/toniq-entrepot-top-tabs.element';
 
 export const EntrepotSaleFeatureTabElement = defineElement<{
-    upcoming: ReadonlyArray<CollectionSales> | undefined;
-    inProgress: ReadonlyArray<CollectionSales> | undefined;
-    endingSoon: ReadonlyArray<CollectionSales> | undefined;
+    upcoming: ReadonlyArray<CollectionSales> | [];
+    inProgress: ReadonlyArray<CollectionSales> | [];
+    endingSoon: ReadonlyArray<CollectionSales> | [];
     updateState: (newState: any) => void;
 }>()({
     tagName: 'toniq-entrepot-sale-feature-tab',
@@ -48,8 +48,6 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
         collectionSelected: defineElementEvent<Collection>(),
     },
     renderCallback: ({inputs, dispatch, events}) => {
-        const preloader = new Array(Math.floor(Math.random() * (8 - 4) + 4)).fill(0);
-
         function goToTab(tab: TopTab) {
             inputs.updateState({SaleSelectedTab: tab});
             window.scrollTo({behavior: 'smooth', top: 0});
@@ -57,6 +55,8 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
 
         return html`
             <div class="tab-content">
+                ${inputs.upcoming.length
+                    ? html`
                 <div>
                     <div class="header">
                         <span class="title">Upcoming</span>
@@ -67,69 +67,48 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             See All
                         </button>
                     </div>
-                    ${inputs.upcoming && inputs.upcoming.length
-                        ? html`
-							<${EntrepotHorizontalScrollElement}
-								${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${inputs.upcoming.map(collection => {
-                                            return html`
-												<${EntrepotSaleCardElement}
-													${assign(EntrepotSaleCardElement, {
-                                                        collectionImageUrl: collection.collection,
-                                                        collectionName: collection.name,
-                                                        descriptionText: collection.brief,
-                                                        date: collection.sales.startDate,
-                                                        dateMessage: 'Just Launched',
-                                                        statsArray: [
-                                                            {
-                                                                title: 'PRICE',
-                                                                icon: Icp16Icon,
-                                                                stat: collection.sales.salePrice,
-                                                            },
-                                                            {
-                                                                title: 'SIZE',
-                                                                stat: collection.sales.quantity,
-                                                            },
-                                                            {
-                                                                title: 'FOR SALE',
-                                                                stat: collection.sales.remaining,
-                                                            },
-                                                        ],
-                                                    })}
-													${listen('click', () => {
-                                                        dispatch(
-                                                            new events.collectionSelected(
-                                                                collection,
-                                                            ),
-                                                        );
-                                                    })}
-												></${EntrepotSaleCardElement}>
-											`;
-                                        })}
-                                    `,
-                                    maxCardHeight: 460,
+                    <${EntrepotHorizontalScrollElement}
+                        ${assign(EntrepotHorizontalScrollElement, {
+                            children: html`
+                                ${inputs.upcoming.map(collection => {
+                                    return html`
+                                        <${EntrepotSaleCardElement}
+                                            ${assign(EntrepotSaleCardElement, {
+                                                collectionImageUrl: collection.collection,
+                                                collectionName: collection.name,
+                                                descriptionText: collection.brief,
+                                                date: collection.sales.startDate,
+                                                dateMessage: 'Just Launched',
+                                                statsArray: [
+                                                    {
+                                                        title: 'PRICE',
+                                                        icon: Icp16Icon,
+                                                        stat: collection.sales.salePrice,
+                                                    },
+                                                    {
+                                                        title: 'SIZE',
+                                                        stat: collection.sales.quantity,
+                                                    },
+                                                    {
+                                                        title: 'FOR SALE',
+                                                        stat: collection.sales.remaining,
+                                                    },
+                                                ],
+                                            })}
+                                            ${listen('click', () => {
+                                                dispatch(new events.collectionSelected(collection));
+                                            })}
+                                        ></${EntrepotSaleCardElement}>
+                                    `;
                                 })}
-							></${EntrepotHorizontalScrollElement}>
-						`
-                        : html`
-                              <${EntrepotHorizontalScrollElement}
-								${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${preloader.map(() => {
-                                            return html`
-												<${EntrepotSaleCardElement}
-                                                ${assign(EntrepotSaleCardElement, {})}
-												></${EntrepotSaleCardElement}>
-											`;
-                                        })}
-                                    `,
-                                    maxCardHeight: 460,
-                                })}
-							></${EntrepotHorizontalScrollElement}>
-                          `}
-                </div>
-
+                            `,
+                            maxCardHeight: 460,
+                        })}
+                    ></${EntrepotHorizontalScrollElement}>
+                </div>`
+                    : ''}
+                ${inputs.inProgress.length
+                    ? html`
                 <div>
                     <div class="header">
                         <span class="title">In Progress</span>
@@ -140,75 +119,49 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             See All
                         </button>
                     </div>
-
-                    ${inputs.inProgress && inputs.inProgress.length
-                        ? html`
-							<${EntrepotHorizontalScrollElement}
-								${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${inputs.inProgress.map(collection => {
-                                            return html`
-												<${EntrepotSaleCardElement}
-													${assign(EntrepotSaleCardElement, {
-                                                        collectionImageUrl: collection.collection,
-                                                        collectionName: collection.name,
-                                                        descriptionText: collection.brief,
-                                                        date: collection.sales.endDate,
-                                                        statsArray: [
-                                                            {
-                                                                title: 'PRICE',
-                                                                icon: Icp16Icon,
-                                                                stat: collection.sales.salePrice,
-                                                            },
-                                                            {
-                                                                title: 'SOLD',
-                                                                stat:
-                                                                    Number(
-                                                                        collection.sales.quantity,
-                                                                    ) -
-                                                                    Number(
-                                                                        collection.sales.remaining,
-                                                                    ),
-                                                            },
-                                                            {
-                                                                title: 'REMAINING',
-                                                                stat: collection.sales.remaining,
-                                                            },
-                                                        ],
-                                                        progress: collection.sales.percentMinted,
-                                                    })}
-													${listen('click', () => {
-                                                        dispatch(
-                                                            new events.collectionSelected(
-                                                                collection,
-                                                            ),
-                                                        );
-                                                    })}
-												></${EntrepotSaleCardElement}>
-											`;
-                                        })}
-                                    `,
+                    <${EntrepotHorizontalScrollElement}
+                        ${assign(EntrepotHorizontalScrollElement, {
+                            children: html`
+                                ${inputs.inProgress.map(collection => {
+                                    return html`
+                                        <${EntrepotSaleCardElement}
+                                            ${assign(EntrepotSaleCardElement, {
+                                                collectionImageUrl: collection.collection,
+                                                collectionName: collection.name,
+                                                descriptionText: collection.brief,
+                                                date: collection.sales.endDate,
+                                                statsArray: [
+                                                    {
+                                                        title: 'PRICE',
+                                                        icon: Icp16Icon,
+                                                        stat: collection.sales.salePrice,
+                                                    },
+                                                    {
+                                                        title: 'SOLD',
+                                                        stat:
+                                                            Number(collection.sales.quantity) -
+                                                            Number(collection.sales.remaining),
+                                                    },
+                                                    {
+                                                        title: 'REMAINING',
+                                                        stat: collection.sales.remaining,
+                                                    },
+                                                ],
+                                                progress: collection.sales.percentMinted,
+                                            })}
+                                            ${listen('click', () => {
+                                                dispatch(new events.collectionSelected(collection));
+                                            })}
+                                        ></${EntrepotSaleCardElement}>
+                                    `;
                                 })}
-							></${EntrepotHorizontalScrollElement}>
-						`
-                        : html`
-                            <${EntrepotHorizontalScrollElement}
-                                ${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${preloader.map(() => {
-                                            return html`
-                                                <${EntrepotSaleCardElement}
-                                                ${assign(EntrepotSaleCardElement, {})}
-                                                ></${EntrepotSaleCardElement}>
-                                            `;
-                                        })}
-                                    `,
-                                    maxCardHeight: 460,
-                                })}
-                            ></${EntrepotHorizontalScrollElement}>
-                        `}
-                </div>
-
+                            `,
+                        })}
+                    ></${EntrepotHorizontalScrollElement}>
+                </div>`
+                    : ''}
+                ${inputs.endingSoon.length
+                    ? html`
                 <div>
                     <div class="header">
                         <span class="title">Ending Soon</span>
@@ -219,73 +172,47 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
                             See All
                         </button>
                     </div>
-                    ${inputs.endingSoon && inputs.endingSoon.length
-                        ? html`
-							<${EntrepotHorizontalScrollElement}
-								${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${inputs.endingSoon.map(collection => {
-                                            return html`
-												<${EntrepotSaleCardElement}
-													${assign(EntrepotSaleCardElement, {
-                                                        collectionImageUrl: collection.collection,
-                                                        collectionName: collection.name,
-                                                        descriptionText: collection.brief,
-                                                        date: collection.sales.endDate,
-                                                        statsArray: [
-                                                            {
-                                                                title: 'PRICE',
-                                                                icon: Icp16Icon,
-                                                                stat: collection.sales.salePrice,
-                                                            },
-                                                            {
-                                                                title: 'SOLD',
-                                                                stat:
-                                                                    Number(
-                                                                        collection.sales.quantity,
-                                                                    ) -
-                                                                    Number(
-                                                                        collection.sales.remaining,
-                                                                    ),
-                                                            },
-                                                            {
-                                                                title: 'REMAINING',
-                                                                stat: collection.sales.remaining,
-                                                            },
-                                                        ],
-                                                        progress: collection.sales.percentMinted,
-                                                    })}
-													${listen('click', () => {
-                                                        dispatch(
-                                                            new events.collectionSelected(
-                                                                collection,
-                                                            ),
-                                                        );
-                                                    })}
-												></${EntrepotSaleCardElement}>
-											`;
-                                        })}
-                                    `,
+                    <${EntrepotHorizontalScrollElement}
+                        ${assign(EntrepotHorizontalScrollElement, {
+                            children: html`
+                                ${inputs.endingSoon.map(collection => {
+                                    return html`
+                                        <${EntrepotSaleCardElement}
+                                            ${assign(EntrepotSaleCardElement, {
+                                                collectionImageUrl: collection.collection,
+                                                collectionName: collection.name,
+                                                descriptionText: collection.brief,
+                                                date: collection.sales.endDate,
+                                                statsArray: [
+                                                    {
+                                                        title: 'PRICE',
+                                                        icon: Icp16Icon,
+                                                        stat: collection.sales.salePrice,
+                                                    },
+                                                    {
+                                                        title: 'SOLD',
+                                                        stat:
+                                                            Number(collection.sales.quantity) -
+                                                            Number(collection.sales.remaining),
+                                                    },
+                                                    {
+                                                        title: 'REMAINING',
+                                                        stat: collection.sales.remaining,
+                                                    },
+                                                ],
+                                                progress: collection.sales.percentMinted,
+                                            })}
+                                            ${listen('click', () => {
+                                                dispatch(new events.collectionSelected(collection));
+                                            })}
+                                        ></${EntrepotSaleCardElement}>
+                                    `;
                                 })}
-							></${EntrepotHorizontalScrollElement}>
-						`
-                        : html`
-                            <${EntrepotHorizontalScrollElement}
-                                ${assign(EntrepotHorizontalScrollElement, {
-                                    children: html`
-                                        ${preloader.map(() => {
-                                            return html`
-                                                <${EntrepotSaleCardElement}
-                                                ${assign(EntrepotSaleCardElement, {})}
-                                                ></${EntrepotSaleCardElement}>
-                                            `;
-                                        })}
-                                    `,
-                                    maxCardHeight: 460,
-                                })}
-                            ></${EntrepotHorizontalScrollElement}>
-                        `}
-                </div>
+                            `,
+                        })}
+                    ></${EntrepotHorizontalScrollElement}>
+                </div>`
+                    : ''}
             </div>
         `;
     },

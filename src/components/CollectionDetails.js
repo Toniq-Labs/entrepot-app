@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Link, Avatar, makeStyles} from '@material-ui/core';
+import {Grid, Link, Avatar, makeStyles, Tooltip} from '@material-ui/core';
 import {EntrepotUpdateStats, EntrepotAllStats, EntrepotCollectionStats} from '../utils';
 import {
     cssToReactStyleObject,
@@ -90,6 +90,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         marginTop: 32,
+        gap: 8,
         [theme.breakpoints.down('sm')]: {
             marginTop: 0,
             justifyContent: 'center',
@@ -344,10 +345,18 @@ export default function CollectionDetails(props) {
                     <div className={classes.nftNameWrapper}>
                         <span className={classes.nftName}>{collection.name}</span>
                         {collection.kyc && (
-                            <ToniqIcon
-                                icon={CircleWavyCheck24Icon}
-                                style={{color: toniqColors.pageInteraction.foregroundColor}}
-                            />
+                            <Tooltip
+                                title="This badge indicates that the collection creator has completed KYC with Toniq"
+                                arrow
+                                placement="right"
+                            >
+                                <div>
+                                    <ToniqIcon
+                                        icon={CircleWavyCheck24Icon}
+                                        style={{color: toniqColors.pageInteraction.foregroundColor}}
+                                    />
+                                </div>
+                            </Tooltip>
                         )}
                     </div>
                     <div className={classes.contentWrapper}>

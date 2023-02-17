@@ -9,7 +9,7 @@ import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
-import {Icp16Icon} from '@toniq-labs/design-system';
+import {Icp16Icon, LoaderAnimated24Icon, ToniqIcon} from '@toniq-labs/design-system';
 
 export const EntrepotSalePageElement = defineElement<{
     collections: Array<Collection>;
@@ -26,6 +26,11 @@ export const EntrepotSalePageElement = defineElement<{
             margin: 32px;
         }
 
+        .loader {
+            width: 24px;
+            margin: 0 auto;
+        }
+
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
             ${EntrepotTopTabsElement} {
                 margin-right: 0;
@@ -37,13 +42,17 @@ export const EntrepotSalePageElement = defineElement<{
         collectionSelected: defineElementEvent<Collection>(),
     },
     stateInit: {
-        SaleSelectedTab: undefined as undefined | TopTab,
-        collectionSales: undefined as undefined | Array<CollectionSales>,
-        upcoming: undefined as undefined | Array<CollectionSales>,
-        inProgress: undefined as undefined | Array<CollectionSales>,
-        endingSoon: undefined as undefined | Array<CollectionSales>,
+        saleSelectedTab: {
+            label: 'Featured',
+            value: 'featured',
+        } as TopTab | TopTab,
+        collectionSales: [] as Array<CollectionSales> | Array<CollectionSales>,
+        upcoming: [] as Array<CollectionSales> | Array<CollectionSales>,
+        inProgress: [] as Array<CollectionSales> | Array<CollectionSales>,
+        endingSoon: [] as Array<CollectionSales> | Array<CollectionSales>,
+        tabs: [] as Array<TopTab> | Array<TopTab>,
     },
-    initCallback: ({inputs, updateState}) => {
+    initCallback: ({state, inputs, updateState}) => {
         const saleCollections = inputs.collections.filter(collection => collection.sale);
         getCollectionSales(saleCollections).then(collectionSales => {
             const upcoming = collectionSales
@@ -84,30 +93,39 @@ export const EntrepotSalePageElement = defineElement<{
             updateState({upcoming});
             updateState({inProgress});
             updateState({endingSoon});
+
+            const tabs = state.tabs;
+            tabs.push({
+                label: 'Featured',
+                value: 'featured',
+            });
+            if (upcoming.length) {
+                tabs.push({
+                    label: 'Upcoming',
+                    value: 'upcoming',
+                });
+            }
+
+            if (inProgress.length) {
+                tabs.push({
+                    label: 'In Progress',
+                    value: 'inProgress',
+                });
+            }
+
+            if (endingSoon.length) {
+                tabs.push({
+                    label: 'Ending Soon',
+                    value: 'endingSoon',
+                });
+            }
+
+            updateState({tabs});
         });
     },
     renderCallback: ({state, updateState, events, dispatch}) => {
         const preloader = new Array(Math.floor(Math.random() * (8 - 4) + 4)).fill(0);
-        const tabs = [
-            {
-                label: 'Featured',
-                value: 'featured',
-            },
-            {
-                label: 'Upcoming',
-                value: 'upcoming',
-            },
-            {
-                label: 'In Progress',
-                value: 'inProgress',
-            },
-            {
-                label: 'Ending Soon',
-                value: 'endingSoon',
-            },
-        ];
-
-        const selectedTopTab: TopTab | undefined = state.SaleSelectedTab ?? tabs[0];
+        const selectedTopTab: TopTab = state.saleSelectedTab;
 
         return html`
 			<${EntrepotPageHeaderElement}
@@ -115,43 +133,54 @@ export const EntrepotSalePageElement = defineElement<{
                     headerText: 'All Launches',
                 })}
             ></${EntrepotPageHeaderElement}>
+            <div>
+                ${
+                    state.tabs.length
+                        ? html`
+                            <${EntrepotTopTabsElement}
+                                ${assign(EntrepotTopTabsElement, {
+                                    tabs: state.tabs,
+                                    selected: selectedTopTab,
+                                })}
+                                ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                                    const selectedTab = event.detail;
+                                    updateState({saleSelectedTab: selectedTab});
+                                })}
+                            ></${EntrepotTopTabsElement}>`
+                        : ''
+                }
 
-			${
-                selectedTopTab
-                    ? html`
-                        <${EntrepotTopTabsElement}
-                            ${assign(EntrepotTopTabsElement, {
-                                tabs,
-                                selected: selectedTopTab,
-                            })}
-                            ${listen(EntrepotTopTabsElement.events.tabChange, event => {
-                                const selectedTab = event.detail;
-                                updateState({SaleSelectedTab: selectedTab});
-                            })}
-                        ></${EntrepotTopTabsElement}>`
-                    : ''
-            }
-
-            ${
-                selectedTopTab?.value === 'featured'
-                    ? html`
-                        <${EntrepotSaleFeatureTabElement}
-                            ${assign(EntrepotSaleFeatureTabElement, {
-                                upcoming: state.upcoming,
-                                inProgress: state.inProgress,
-                                endingSoon: state.endingSoon,
-                                updateState,
-                            })}
-                            ${listen(
-                                EntrepotSaleFeatureTabElement.events.collectionSelected,
-                                event => {
-                                    new events.collectionSelected(event.detail);
-                                },
-                            )}
-                        ></${EntrepotSaleFeatureTabElement}>
-                    `
-                    : ''
-            }
+                ${
+                    selectedTopTab?.value === 'featured'
+                        ? html`
+                              ${state.upcoming.length ||
+                              state.inProgress.length ||
+                              state.endingSoon.length
+                                  ? html`
+                                  <${EntrepotSaleFeatureTabElement}
+                                    ${assign(EntrepotSaleFeatureTabElement, {
+                                        upcoming: state.upcoming,
+                                        inProgress: state.inProgress,
+                                        endingSoon: state.endingSoon,
+                                        updateState,
+                                    })}
+                                    ${listen(
+                                        EntrepotSaleFeatureTabElement.events.collectionSelected,
+                                        event => {
+                                            new events.collectionSelected(event.detail);
+                                        },
+                                    )}
+                                ></${EntrepotSaleFeatureTabElement}>`
+                                  : html`
+                                    <${ToniqIcon}
+                                        class="loader"
+                                        ${assign(ToniqIcon, {icon: LoaderAnimated24Icon})}
+                                    ></${ToniqIcon}>
+                                `}
+                          `
+                        : ''
+                }
+            </div>
 
             ${
                 selectedTopTab?.value === 'upcoming'

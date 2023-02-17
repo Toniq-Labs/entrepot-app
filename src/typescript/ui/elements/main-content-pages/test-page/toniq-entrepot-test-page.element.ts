@@ -78,9 +78,6 @@ const EntrepotTestElement = defineElement<{
     initCallback: ({inputs, updateState}) => {
         const carouselItems = inputs.collections
             .filter(collection => !collection.dev)
-            .filter(collection => {
-                return mockCanister.includes(collection.canister);
-            })
             .slice(0, 26)
             .map(collection => {
                 const tokenid = encodeNftId(
@@ -104,45 +101,51 @@ const EntrepotTestElement = defineElement<{
             });
         updateState({carouselItems});
 
-        const featuredCollections = carouselItems.slice(0, 4).map(collection => {
-            return {
-                collectionName: collection.name,
-                nfts: Array(3)
-                    .fill(0)
-                    .map(() => {
-                        const tokenid = encodeNftId(
-                            collection.canister,
-                            Math.floor(Math.random() * (collection.stats?.listings! - 0) + 0),
-                        );
-                        const {index, canister} = decodeNftId(tokenid);
+        const featuredCollections = inputs.collections
+            .filter(collection => !collection.dev)
+            .filter(collection => {
+                return mockCanister.includes(collection.canister);
+            })
+            .slice(0, 4)
+            .map(collection => {
+                return {
+                    collectionName: collection.name,
+                    nfts: Array(10)
+                        .fill(0)
+                        .map(() => {
+                            const tokenid = encodeNftId(
+                                collection.canister,
+                                Math.floor(Math.random() * (collection.stats?.listings! - 0) + 0),
+                            );
+                            const {index, canister} = decodeNftId(tokenid);
 
-                        return {
-                            collectionId: canister,
-                            nftId: tokenid,
-                            nftIndex: index,
-                            fullSize: true,
-                            cachePriority: 0,
-                            ref: 0,
-                        };
-                    }),
-                longDescription: collection.blurb,
-                collectionRoute: collection.route,
-                socialLinks: [
-                    {
-                        link: collection.discord,
-                        type: SocialLinkTypeEnum.Discord,
-                    },
-                    {
-                        link: collection.twitter,
-                        type: SocialLinkTypeEnum.Twitter,
-                    },
-                    {
-                        link: collection.telegram,
-                        type: SocialLinkTypeEnum.Telegram,
-                    },
-                ].filter(social => social.link !== ''),
-            };
-        });
+                            return {
+                                collectionId: canister,
+                                nftId: tokenid,
+                                nftIndex: index,
+                                fullSize: true,
+                                cachePriority: 0,
+                                ref: 0,
+                            };
+                        }),
+                    longDescription: collection.blurb,
+                    collectionRoute: collection.route,
+                    socialLinks: [
+                        {
+                            link: collection.discord,
+                            type: SocialLinkTypeEnum.Discord,
+                        },
+                        {
+                            link: collection.twitter,
+                            type: SocialLinkTypeEnum.Twitter,
+                        },
+                        {
+                            link: collection.telegram,
+                            type: SocialLinkTypeEnum.Telegram,
+                        },
+                    ].filter(social => social.link !== ''),
+                };
+            });
         updateState({featuredCollections});
 
         const topCollections = {

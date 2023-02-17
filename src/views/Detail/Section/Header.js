@@ -5,6 +5,7 @@ import {
     DialogContent,
     Grid,
     makeStyles,
+    Tooltip,
     useMediaQuery,
     useTheme,
 } from '@material-ui/core';
@@ -152,12 +153,21 @@ const DetailSectionHeader = props => {
                                         </span>
                                     </button>
                                     {collection.kyc ? (
-                                        <ToniqIcon
-                                            icon={CircleWavyCheck24Icon}
-                                            style={{
-                                                color: toniqColors.pageInteraction.foregroundColor,
-                                            }}
-                                        />
+                                        <Tooltip
+                                            title="This badge indicates that the collection creator has completed KYC with Toniq"
+                                            arrow
+                                            placement="right"
+                                        >
+                                            <div>
+                                                <ToniqIcon
+                                                    icon={CircleWavyCheck24Icon}
+                                                    style={{
+                                                        color: toniqColors.pageInteraction
+                                                            .foregroundColor,
+                                                    }}
+                                                />
+                                            </div>
+                                        </Tooltip>
                                     ) : (
                                         ''
                                     )}
