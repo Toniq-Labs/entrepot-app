@@ -14,8 +14,8 @@ export type TopTab<ValueGeneric = unknown> = {
 };
 
 export const EntrepotTopTabsElement = defineToniqElement<{
-    tabs: ReadonlyArray<TopTab>;
-    selected: Readonly<TopTab>;
+    tabs?: ReadonlyArray<TopTab>;
+    selected?: Readonly<TopTab>;
 }>()({
     tagName: 'toniq-entrepot-top-tabs',
     styles: css`
@@ -97,6 +97,11 @@ export const EntrepotTopTabsElement = defineToniqElement<{
             z-index: 1;
         }
 
+        li.selected > button > .title-preloader {
+            background-color: ${toniqColors.pageInteraction.foregroundColor};
+            opacity: 0.6;
+        }
+
         li {
             margin: 0;
             padding: 6px 6px 10px;
@@ -106,25 +111,51 @@ export const EntrepotTopTabsElement = defineToniqElement<{
         li:last-of-type {
             flex-grow: 1;
         }
+
+        .title-preloader {
+            display: block;
+            height: 24px;
+            width: 90px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
+        }
     `,
     events: {
         tabChange: defineElementEvent<TopTab>(),
     },
     renderCallback: ({inputs, dispatch, events}) => {
+        const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
+
         return html`
-            <ul>
-                ${inputs.tabs.map(tab =>
-                    makeTopTab(tab, tab.label === inputs.selected.label, () => {
-                        dispatch(new events.tabChange(tab));
-                    }),
-                )}
-                <li class="take up remaining space"></li>
-            </ul>
+            ${inputs.tabs
+                ? html`
+                      <ul>
+                          ${inputs.tabs.map(tab =>
+                              makeTopTab(tab, tab.label === inputs.selected?.label, () => {
+                                  dispatch(new events.tabChange(tab));
+                              }),
+                          )}
+                          <li class="take up remaining space"></li>
+                      </ul>
+                  `
+                : html`
+                      <ul>
+                          ${preloader.map((preloaderTab, preloaderTabIndex) =>
+                              makeTopTab(preloaderTab, preloaderTabIndex === 0, () => {}, true),
+                          )}
+                          <li class="take up remaining space"></li>
+                      </ul>
+                  `}
         `;
     },
 });
 
-function makeTopTab(tab: TopTab, isSelected: boolean, clickCallback: () => void) {
+function makeTopTab(
+    tab: TopTab,
+    isSelected: boolean,
+    clickCallback: () => void,
+    preloader: boolean = false,
+) {
     return html`
         <li
             class=${classMap({
@@ -132,7 +163,13 @@ function makeTopTab(tab: TopTab, isSelected: boolean, clickCallback: () => void)
             })}
             ${listen('click', clickCallback)}
         >
-            <button><a data-text=${tab.label}>${tab.label}</a></button>
+            ${preloader
+                ? html`
+                      <button><a class="title-preloader"></a></button>
+                  `
+                : html`
+                      <button><a data-text=${tab.label}>${tab.label}</a></button>
+                  `}
         </li>
     `;
 }

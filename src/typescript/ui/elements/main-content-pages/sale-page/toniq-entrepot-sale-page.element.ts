@@ -10,6 +10,7 @@ import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
 import {Icp16Icon, LoaderAnimated24Icon, ToniqIcon} from '@toniq-labs/design-system';
+import {EntrepotSalePreloaderElement} from './toniq-entrepot-sale-preloader.element';
 
 export const EntrepotSalePageElement = defineElement<{
     collections: Array<Collection>;
@@ -147,7 +148,14 @@ export const EntrepotSalePageElement = defineElement<{
                                     updateState({saleSelectedTab: selectedTab});
                                 })}
                             ></${EntrepotTopTabsElement}>`
-                        : ''
+                        : html`
+                        <${EntrepotTopTabsElement}
+                            ${assign(EntrepotTopTabsElement, {})}
+                            ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                                const selectedTab = event.detail;
+                                updateState({saleSelectedTab: selectedTab});
+                            })}
+                        ></${EntrepotTopTabsElement}>`
                 }
 
                 ${
@@ -172,10 +180,7 @@ export const EntrepotSalePageElement = defineElement<{
                                     )}
                                 ></${EntrepotSaleFeatureTabElement}>`
                                   : html`
-                                    <${ToniqIcon}
-                                        class="loader"
-                                        ${assign(ToniqIcon, {icon: LoaderAnimated24Icon})}
-                                    ></${ToniqIcon}>
+                                    <${EntrepotSalePreloaderElement}></${EntrepotSalePreloaderElement}>
                                 `}
                           `
                         : ''
