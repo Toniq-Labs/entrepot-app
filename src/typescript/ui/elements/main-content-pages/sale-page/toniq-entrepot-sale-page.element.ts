@@ -95,7 +95,7 @@ export const EntrepotSalePageElement = defineElement<{
             updateState({inProgress});
             updateState({endingSoon});
 
-            const tabs = state.tabs;
+            const tabs = [];
             tabs.push({
                 label: 'Featured',
                 value: 'featured',

@@ -37,7 +37,7 @@ import {getExtNftId} from '../../typescript/data/nft/nft-id';
 const useStyles = makeStyles(theme => ({
     nftCard: {
         position: 'relative',
-        height: '100%',
+        gap: 16,
         '&:hover .hoverCard': {
             display: 'flex',
         },
@@ -582,64 +582,63 @@ export function ListingsNftCard(props) {
                                                         style={{
                                                             display: 'flex',
                                                             flexDirection: 'column',
-                                                            minHeight: '116px',
+                                                            gap: 12,
                                                         }}
                                                     >
-                                                        <span
+                                                        <div
                                                             style={{
-                                                                marginBottom: '16px',
-                                                                marginTop: '16px',
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                gap: 4,
                                                             }}
                                                         >
                                                             <span
-                                                                style={{
-                                                                    display: 'flex',
-                                                                    ...cssToReactStyleObject(
-                                                                        toniqFontStyles.h3Font,
-                                                                    ),
-                                                                }}
-                                                            >
-                                                                {listing.price ? (
-                                                                    <PriceICP
-                                                                        large={true}
-                                                                        volume={true}
-                                                                        clean={false}
-                                                                        price={listing.price}
-                                                                    />
-                                                                ) : (
-                                                                    'Unlisted'
+                                                                style={cssToReactStyleObject(
+                                                                    toniqFontStyles.boldParagraphFont,
                                                                 )}
+                                                            >
+                                                                #{listing.mintNumber || ''}
                                                             </span>
-                                                        </span>
+                                                            {typeof listing.rarity === 'number' && (
+                                                                <span
+                                                                    style={{
+                                                                        ...cssToReactStyleObject(
+                                                                            toniqFontStyles.labelFont,
+                                                                        ),
+                                                                        opacity: '0.64',
+                                                                    }}
+                                                                >
+                                                                    NRI: {listing.rarity}%
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                         <div style={{display: 'flex'}}>
-                                                            <div
+                                                            <span
                                                                 style={{
-                                                                    display: 'flex',
                                                                     flexGrow: 1,
-                                                                    flexDirection: 'column',
+                                                                    margin: 'auto 0',
                                                                 }}
                                                             >
                                                                 <span
-                                                                    style={cssToReactStyleObject(
-                                                                        toniqFontStyles.boldParagraphFont,
-                                                                    )}
+                                                                    style={{
+                                                                        display: 'flex',
+                                                                        ...cssToReactStyleObject(
+                                                                            toniqFontStyles.h3Font,
+                                                                        ),
+                                                                    }}
                                                                 >
-                                                                    #{listing.mintNumber || ''}
+                                                                    {listing.price ? (
+                                                                        <PriceICP
+                                                                            large={true}
+                                                                            volume={true}
+                                                                            clean={false}
+                                                                            price={listing.price}
+                                                                        />
+                                                                    ) : (
+                                                                        'Unlisted'
+                                                                    )}
                                                                 </span>
-                                                                {typeof listing.rarity ===
-                                                                    'number' && (
-                                                                    <span
-                                                                        style={{
-                                                                            ...cssToReactStyleObject(
-                                                                                toniqFontStyles.labelFont,
-                                                                            ),
-                                                                            opacity: '0.64',
-                                                                        }}
-                                                                    >
-                                                                        NRI: {listing.rarity}%
-                                                                    </span>
-                                                                )}
-                                                            </div>
+                                                            </span>
                                                             {listing.price ? (
                                                                 <ToniqButton
                                                                     text="Buy Now"
@@ -663,6 +662,7 @@ export function ListingsNftCard(props) {
                                                         style={{
                                                             display: 'flex',
                                                             flexDirection: 'column',
+                                                            gap: 12,
                                                         }}
                                                     >
                                                         <div
@@ -670,8 +670,6 @@ export function ListingsNftCard(props) {
                                                                 display: 'flex',
                                                                 justifyContent: 'space-between',
                                                                 alignItems: 'center',
-                                                                marginBottom: '12px',
-                                                                marginTop: '16px',
                                                             }}
                                                         >
                                                             <span
@@ -693,7 +691,7 @@ export function ListingsNftCard(props) {
                                                                     'Unlisted'
                                                                 )}
                                                             </span>
-                                                            <span
+                                                            {/* <span
                                                                 style={{
                                                                     ...cssToReactStyleObject(
                                                                         toniqFontStyles.labelFont,
@@ -703,7 +701,7 @@ export function ListingsNftCard(props) {
                                                                 }}
                                                             >
                                                                 #{listing.mintNumber || ''}
-                                                            </span>
+                                                            </span> */}
                                                         </div>
                                                         {listing.price ? (
                                                             <ToniqButton

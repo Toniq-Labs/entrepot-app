@@ -20,7 +20,6 @@ export function NftCard(props) {
     const contentStyles = cssToReactStyleObject(css`
         width: 100%;
         max-width: 100%;
-        flex-grow: 1;
         display: flex;
         flex-direction: column;
     `);
