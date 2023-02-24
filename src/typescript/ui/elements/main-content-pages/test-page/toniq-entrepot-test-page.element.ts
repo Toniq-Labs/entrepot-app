@@ -78,6 +78,9 @@ const EntrepotTestElement = defineElement<{
     initCallback: ({inputs, updateState}) => {
         const carouselItems = inputs.collections
             .filter(collection => !collection.dev)
+            .filter(collection => {
+                return mockCanister.includes(collection.canister);
+            })
             .slice(0, 26)
             .map(collection => {
                 const tokenid = encodeNftId(
