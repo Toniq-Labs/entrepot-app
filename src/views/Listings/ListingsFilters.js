@@ -257,6 +257,8 @@ export function ListingsFilters(props) {
             return 'listed';
         } else if (currentFilters.status[filterTypes.status.unlisted] === true) {
             return 'unlisted';
+        } else {
+            return 'listed';
         }
     };
 

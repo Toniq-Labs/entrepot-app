@@ -34,15 +34,18 @@ export function NftCard(props) {
             enableHover={true}
             style={{...styles, ...props.style}}
         >
-            <EntrepotNftDisplayReact
-                max={props.max}
-                min={props.min}
-                collectionId={props.collectionId}
-                nftIndex={props.nftIndex}
-                nftId={props.nftId}
-                fullSize={false}
-                cachePriority={props.cachePriority}
-            />
+            <div style={{display: 'flex', position: 'relative'}}>
+                <EntrepotNftDisplayReact
+                    max={props.max}
+                    min={props.min}
+                    collectionId={props.collectionId}
+                    nftIndex={props.nftIndex}
+                    nftId={props.nftId}
+                    fullSize={false}
+                    cachePriority={props.cachePriority}
+                />
+                {props.offer}
+            </div>
             <div style={contentStyles}>{props.children}</div>
         </DropShadowCard>
     );

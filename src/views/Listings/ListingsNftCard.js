@@ -576,6 +576,12 @@ export function ListingsNftCard(props) {
                                                     width: gridSize === 'small' ? 150 : 272,
                                                     height: gridSize === 'small' ? 110 : 200,
                                                 }}
+                                                offer={
+                                                    <MinimumOffer
+                                                        tokenid={listing.tokenid}
+                                                        gridSize={gridSize}
+                                                    />
+                                                }
                                             >
                                                 {gridSize === 'large' ? (
                                                     <div
@@ -691,17 +697,6 @@ export function ListingsNftCard(props) {
                                                                     'Unlisted'
                                                                 )}
                                                             </span>
-                                                            {/* <span
-                                                                style={{
-                                                                    ...cssToReactStyleObject(
-                                                                        toniqFontStyles.labelFont,
-                                                                    ),
-                                                                    fontWeight: 500,
-                                                                    opacity: 0.64,
-                                                                }}
-                                                            >
-                                                                #{listing.mintNumber || ''}
-                                                            </span> */}
                                                         </div>
                                                         {listing.price ? (
                                                             <ToniqButton
@@ -728,10 +723,6 @@ export function ListingsNftCard(props) {
                                                         )}
                                                     </div>
                                                 )}
-                                                <MinimumOffer
-                                                    tokenid={listing.tokenid}
-                                                    gridSize={gridSize}
-                                                />
                                                 <div
                                                     className={classes.favourite}
                                                     style={{

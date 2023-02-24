@@ -55,7 +55,7 @@ export function MinimumOffer(props) {
         if (!offers) return '';
         let sortedOffers = offers
             .map(offer => {
-                return offer[1];
+                return offer.amount;
             })
             .sort((a, b) => {
                 return Number(a) - Number(b);
@@ -72,15 +72,16 @@ export function MinimumOffer(props) {
     }, []);
 
     return (
-        <div style={{display: props.gridSize === 'large' ? 'block' : 'none'}}>
+        <div
+            style={{
+                display: props.gridSize === 'large' ? 'block' : 'none',
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+            }}
+        >
             {offers && offers !== '' && (
-                <div
-                    className={`hoverCard ${classes.hoverCard}`}
-                    style={{
-                        margin: 0,
-                        height: 304,
-                    }}
-                >
+                <div className={`hoverCard ${classes.hoverCard}`}>
                     <div className={classes.offerChip}>
                         Highest Offer is&nbsp;
                         <ToniqIcon icon={Icp16Icon} />
@@ -89,13 +90,7 @@ export function MinimumOffer(props) {
                 </div>
             )}
             {!offers && offers !== '' && (
-                <div
-                    className={`hoverCard ${classes.hoverCard}`}
-                    style={{
-                        margin: 0,
-                        height: 304,
-                    }}
-                >
+                <div className={`hoverCard ${classes.hoverCard}`}>
                     <div className={classes.offerChip}>
                         <ToniqIcon icon={LoaderAnimated24Icon} />
                         &nbsp;Loading Offers
