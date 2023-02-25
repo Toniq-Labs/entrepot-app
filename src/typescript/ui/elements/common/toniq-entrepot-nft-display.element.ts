@@ -78,8 +78,9 @@ export const EntrepotNftDisplayElement = defineToniqElement<
                             imageUrl: resolvedImageData.url,
                             max: dimensionConstraints.max,
                             min: dimensionConstraints.min,
-                            extraHTML: resolvedImageData.extraHtml,
-                            originalImageSize: resolvedImageData.imageDimensions,
+                            extraHtml: resolvedImageData.extraHtml,
+                            forcedOriginalImageSize: resolvedImageData.forcedOriginalImageSize,
+                            htmlSizeQuerySelector: resolvedImageData.htmlSizeQuerySelector,
                         })}
                     >
                         <${ToniqIcon}

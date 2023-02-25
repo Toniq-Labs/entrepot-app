@@ -15,7 +15,8 @@ export type NftImageInputs = {
 export type NftImageDisplayData = {
     url: string;
     extraHtml?: string | undefined | TemplateResult;
-    imageDimensions?: Dimensions;
+    forcedOriginalImageSize?: Dimensions | undefined;
+    htmlSizeQuerySelector?: string | undefined;
 };
 
 export async function getNftImageData({
@@ -42,6 +43,3 @@ export async function getNftImageData({
         ref: Number(ref) || 0,
     });
 }
-
-// https://ugdkf-taaaa-aaaak-acoia-cai.raw.ic0.app/?tokenid=bfx6f-yakor-uwiaa-aaaaa-cqats-aaqca-aaaej-q
-// https://ugdkf-taaaa-aaaak-acoia-cai.raw.ic0.app/?cc=0&tokenid=rsj5w-2ikor-uwiaa-aaaaa-cqats-aaqca-aaal5-q
