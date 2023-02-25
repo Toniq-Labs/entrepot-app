@@ -2,7 +2,6 @@ import {Principal} from '@dfinity/principal';
 import {toHexString} from '../../augments/string';
 import {from32bits, to32bitArray} from '../../augments/bits';
 import {getExtCanisterId} from '../canisters/canister-details/wrapped-canister-id';
-import {CanisterId} from '../models/canister-id';
 
 export function decodeNftId(nftId: string) {
     const p = [...Principal.fromText(nftId).toUint8Array()];
