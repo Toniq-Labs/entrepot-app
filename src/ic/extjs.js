@@ -47,6 +47,7 @@ import licenseIDL from './candid/license.did.js';
 import launchIDL from './candid/launch.did.js';
 import {fromHexString} from '../typescript/augments/string';
 import {encodeNftId, decodeNftId} from '../typescript/data/nft/nft-id';
+import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
 const constructUser = u => {
     if (isHex(u) && u.length === 64) {
@@ -183,7 +184,7 @@ class ExtConnection {
         '6z5wo-yqaaa-aaaah-qcsfa-cai': entrepotIDL,
         'fcwhh-piaaa-aaaak-qazba-cai': voltOffersIDL,
         'ffxbt-cqaaa-aaaak-qazbq-cai': voltAuctionsIDL,
-        'yigae-jqaaa-aaaah-qczbq-cai': treasureIDL,
+        [treasureCanisterId]: treasureIDL,
         'flvm3-zaaaa-aaaak-qazaq-cai': voltFactoryIDL,
     };
     _metadata = {
