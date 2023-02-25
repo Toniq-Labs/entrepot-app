@@ -216,11 +216,19 @@ export default function DetailSectionActivity(props) {
                                                         alignItems: 'center',
                                                     }}
                                                 >
-                                                    (
-                                                    <PriceUSD
-                                                        price={EntrepotGetIcpUsd(transaction.price)}
-                                                    />
-                                                    )
+                                                    {EntrepotGetIcpUsd(transaction.price) ? (
+                                                        <span className={classes.priceUSD}>
+                                                            (
+                                                            <PriceUSD
+                                                                price={EntrepotGetIcpUsd(
+                                                                    transaction.price,
+                                                                )}
+                                                            />
+                                                            )
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
                                                 </span>
                                             </div>,
                                             transaction.seller ? (
