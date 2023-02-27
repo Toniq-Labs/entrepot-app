@@ -1,3 +1,4 @@
+import {html} from 'element-vir';
 import {RawCanisterDetails} from '../canister-details';
 
 export const motokoMechsCanisterDetails: RawCanisterDetails = {
@@ -7,9 +8,9 @@ export const motokoMechsCanisterDetails: RawCanisterDetails = {
         if (fullSize) {
             return {
                 url: nftLinkUrl,
-                imageDimensions: {
+                forcedOriginalImageSize: {
                     width: 850,
-                    height: 1160,
+                    height: 1214,
                 },
             };
         } else {

@@ -20,21 +20,25 @@ export const imaginationProjectCanisterDetails: RawCanisterDetails = {
                     executeBeforeSizing = () => {
                         const img = document.querySelector('.front img');
 
-                        const size = {
-                            width: img.naturalWidth,
-                            height: img.naturalHeight,
-                        };
+                        if (img) {
+                            const size = {
+                                width: img.naturalWidth,
+                                height: img.naturalHeight,
+                            };
 
-                        const mustChange = [
-                            '.container',
-                            '.box',
-                        ];
+                            const mustChange = [
+                                '.container',
+                                '.box',
+                            ];
 
-                        mustChange.forEach(mustChangeQuery => {
-                            const element = document.querySelector(mustChangeQuery);
-                            element.style.height = img.height + 'px';
-                            element.style.width = img.width + 'px';
-                        });
+                            mustChange.forEach(mustChangeQuery => {
+                                const element = document.querySelector(mustChangeQuery);
+                                if (element) {
+                                    element.style.height = img.height + 'px';
+                                    element.style.width = img.width + 'px';
+                                }
+                            });
+                        }
                     };
                 </script>
             `,

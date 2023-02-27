@@ -2,6 +2,7 @@ import type {TemplateResult} from 'lit';
 import type {Dimensions} from '@electrovir/resizable-image-element';
 import {getCanisterDetails} from './canister-details/all-canister-details';
 import {treasureCanisterId} from './treasure-canister';
+import {VirResizableImageInputs} from '@electrovir/resizable-image-element';
 
 export type NftImageInputs = {
     collectionId: string;
@@ -17,7 +18,7 @@ export type NftImageDisplayData = {
     extraHtml?: string | undefined | TemplateResult;
     forcedOriginalImageSize?: Dimensions | undefined;
     htmlSizeQuerySelector?: string | undefined;
-};
+} & Omit<VirResizableImageInputs, 'min' | 'max' | 'imageUrl' | 'blockAutoPlay'>;
 
 export async function getNftImageData({
     collectionId,
