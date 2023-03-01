@@ -359,10 +359,10 @@ const clipboardCopy = text => {
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
-        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai')
+        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai' || collection == '2v5zm-uaaaa-aaaae-qaewa-cai')
             return (
                 <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
-            );
+            );        
         if (collection === TREASURECANISTER) {
             var nftimg = false;
             if (!earnData.hasOwnProperty(tokenid)) {
