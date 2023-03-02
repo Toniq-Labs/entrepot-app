@@ -34,13 +34,13 @@
         ]
     },
     "dependencies": {
-        "@augment-vir/browser": "^12.11.2",
-        "@augment-vir/common": "^12.11.2",
+        "@augment-vir/browser": "^12.14.0",
+        "@augment-vir/common": "^12.14.0",
         "@dfinity/agent": "^0.10.2",
         "@dfinity/auth-client": "^0.10.2",
         "@dfinity/candid": "^0.10.2",
         "@dfinity/principal": "^0.10.2",
-        "@electrovir/resizable-image-element": "^4.2.0",
+        "@electrovir/resizable-image-element": "^4.2.2",
         "@fontsource/roboto": "^4.5.2",
         "@material-ui/core": "^4.11.4",
         "@material-ui/icons": "^4.11.2",
@@ -95,8 +95,8 @@
         "web-vitals": "^2.1.4"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^12.11.2",
-        "@augment-vir/node-js": "^12.11.2",
+        "@augment-vir/browser-testing": "^12.14.0",
+        "@augment-vir/node-js": "^12.14.0",
         "@open-wc/testing": "^3.1.7",
         "@toniq-labs/fleek-iterative-deploy": "1.2.11",
         "@types/eslint": "^8.4.10",
@@ -105,11 +105,11 @@
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.2",
         "@web/dev-server-esbuild": "^0.3.3",
-        "@web/test-runner": "^0.15.0",
+        "@web/test-runner": "^0.15.1",
         "@web/test-runner-commands": "^0.6.5",
         "@web/test-runner-playwright": "^0.9.0",
         "browserslist": "^4.21.4",
-        "cspell": "^6.26.3",
+        "cspell": "^6.27.0",
         "eslint": "^8.32.0",
         "istanbul-smart-text-reporter": "^1.1.1",
         "prettier": "2.8.4",
@@ -122,9 +122,9 @@
         "redux": "^4.1.2",
         "serve": "^13.0.2",
         "ts-node": "^10.9.1",
-        "type-fest": "^3.6.0",
+        "type-fest": "^3.6.1",
         "typescript": "^4.9.5",
-        "virmator": "^5.4.0",
+        "virmator": "^6.2.1",
         "webpack": "5.75.0"
     }
 }

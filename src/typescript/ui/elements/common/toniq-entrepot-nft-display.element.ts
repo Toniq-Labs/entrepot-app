@@ -48,6 +48,11 @@ export const EntrepotNftDisplayElement = defineToniqElement<
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: inherit;
+        }
+
+        ${VirResizableImage} {
+            background-color: inherit;
         }
     `,
     renderCallback: ({inputs, state, updateState}) => {
