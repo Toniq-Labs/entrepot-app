@@ -375,6 +375,7 @@ function createNumericRangeInputTemplate<
             ${assign(ToniqInput, {
                 value: value == undefined ? '' : String(value),
                 placeholder: propName.replace(/^current/, ''),
+                disableBrowserHelps: true,
             })}
             ${listen(ToniqInput.events.valueChange, event => {
                 const numericCast = Number(removeCommasFromNumberString(event.detail));

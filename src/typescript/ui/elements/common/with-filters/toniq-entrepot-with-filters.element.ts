@@ -399,6 +399,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                     value: state.searchValue,
                     placeholder: inputs.searchPlaceholder,
                     icon: Search24Icon,
+                    disableBrowserHelps: true,
                 })}
                 ${listen(ToniqInput.events.valueChange, event => {
                     updateState({

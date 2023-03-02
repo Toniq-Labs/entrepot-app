@@ -48,7 +48,7 @@
         "@mui/icons-material": "^5.3.1",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
-        "@toniq-labs/design-system": "0.5.2",
+        "@toniq-labs/design-system": "0.6.0",
         "@toruslabs/openlogin": "^1.4.0",
         "assert": "^2.0.0",
         "axios": "^0.25.0",
