@@ -168,11 +168,14 @@ export default function Home(props) {
                     ) : (
                         ''
                     )}
-                    <h1 className={classes.heading}>Welcome to Entrepot</h1>
+                    <h1 className={classes.heading} style={{
+                        fontSize: '3.3em',
+                    }}>Welcome to Entrepot</h1>
                     <p
                         style={{
                             textAlign: 'center',
                             fontSize: '1.3em',
+                            lineHeight: '1.5em',
                             padding: '0 30px',
                         }}
                     >
@@ -188,13 +191,14 @@ export default function Home(props) {
                             variant={'outlined'}
                             onClick={() => navigate(`/marketplace`)}
                             color={'primary'}
-                            style={{fontWeight: 'bold', margin: '20px auto'}}
+                            style={{fontWeight: 'bold', margin: '20px auto', borderRadius: '999px',
+                            textTransform: 'capitalize', padding:'0.55em'}}
                         >
                             Explore the Marketplace
                         </Button>
                     </p>
-                    <h1 className={classes.heading}>Latest Collections</h1>
-                    <Grid container direction="row" justifyContent="center" alignItems="center">
+
+                    <Grid container direction="row" justifyContent="center" alignItems="center" style={{marginTop: '8em'}}>
                         {cards.slice(0, 3).map((card, i) => {
                             return (
                                 <Grid key={i} item md={4} style={{marginBottom: 20}}>
@@ -221,7 +225,10 @@ export default function Home(props) {
                             );
                         })}
                     </Grid>
-
+                    <h1 className={classes.heading} style={{
+                        fontSize: '3.3em',
+                        marginTop: '2em',
+                    }}>Four reason to Entrepot</h1>
                     <Features />
                 </div>
             </div>

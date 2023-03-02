@@ -55,6 +55,7 @@ function useInterval(callback, delay) {
 
 const api = extjs.connect('https://ic0.app/');
 
+
 export default function Navbar(props) {
     const navigate = useNavigate();
     const [
@@ -171,6 +172,8 @@ export default function Navbar(props) {
     const entrepotTitleStyles = {
         ...cssToReactStyleObject(toniqFontStyles.h2Font),
         ...cssToReactStyleObject(toniqFontStyles.extraBoldFont),
+        marginRight: '10px',
+        overflow: 'initial',
     };
 
     return (
@@ -191,8 +194,16 @@ export default function Navbar(props) {
                         <Typography
                             style={{display: 'flex', alignItems: 'center'}}
                             variant="h6"
-                            noWrap
                         >
+                            <ToniqToggleButton
+                                className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+                                active={open}
+                                onClick={() => {
+                                    setWalletOpen(false);
+                                    setOpen(!open);
+                                }}
+                                icon={Menu24Icon}
+                            />
                             <a
                                 style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}
                                 onClick={() => goTo('/')}
@@ -211,9 +222,10 @@ export default function Navbar(props) {
                                 <span style={entrepotTitleStyles}>Entrepot</span>
                             </a>
                         </Typography>
+
                         <ToniqInput
                             className={classes.bigScreenInput}
-                            style={{alignSelf: 'center', marginLeft: '16px'}}
+                            style={{alignSelf: 'center', marginLeft: '16px', width: '100%'}}
                             icon={Search24Icon}
                             placeholder="Search for NFTs..."
                             value={query}
@@ -228,18 +240,9 @@ export default function Navbar(props) {
                                 });
                             }}
                         />
+
                         <div className={classes.grow} />
                         <div className={classes.bigScreenNavButtons}>{navBarButtons}</div>
-
-                        <ToniqToggleButton
-                            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-                            active={open}
-                            onClick={() => {
-                                setWalletOpen(false);
-                                setOpen(!open);
-                            }}
-                            icon={Menu24Icon}
-                        />
                         <ToniqToggleButton
                             className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
                             active={walletOpen}
@@ -308,6 +311,8 @@ export default function Navbar(props) {
     );
 }
 
+
+
 const useStyles = makeStyles(theme => {
     console.log({breakpoints: theme.breakpoints, sm: theme.breakpoints.up('sm')});
 
@@ -345,7 +350,7 @@ const useStyles = makeStyles(theme => {
             top: 72,
             width: '250px',
             display: 'flex',
-            right: 0,
+            left: 0,
             backgroundColor: 'white',
             height: '100vh',
             justifyContent: 'flex-start',
@@ -444,3 +449,23 @@ const useStyles = makeStyles(theme => {
         },
     };
 });
+
+
+/***
+ *
+ * to refactor into @toniq-labs/design-system <toniq-input> properties
+ */
+
+
+let timeout;
+function callFullWidthInput() {
+    timeout = setTimeout(fullWidthInput, 7000);
+}
+function fullWidthInput() {
+    const shadowRoot = document.querySelector('toniq-input').shadowRoot;
+    const label = shadowRoot.querySelector('label');
+    const input = shadowRoot.querySelector('input');
+    label.style.width = '100%';
+    input.style.width = '100%';
+}
+callFullWidthInput();

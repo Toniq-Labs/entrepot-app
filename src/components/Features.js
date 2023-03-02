@@ -17,10 +17,15 @@ const useStyles = makeStyles(theme => ({
 export default function Features(props) {
     const classes = useStyles();
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={3}>
-                <div className={classes.center}>
-                    <img style={{width: 100}} alt="Low Fees" src="/icon/fee.png" />
+        <Grid container alignItems="stretch" style={{marginTop: '2em'}}>
+            <Grid item xs={12} sm={12} md={3} style={{backgroundColor: '#00d092', padding:'2em'}}>
+                <div className={classes.center} >
+                    {/*<img style={{width: 100}} alt="Low Fees" src="/icon/fee.png" />*/}
+                    <h1 style={{
+                        fontSize: '4.3em',
+                        marginBottom: '0',
+                        lineHeight: '0.5em'
+                    }}>1.</h1>
                     <h2>Low Fees</h2>
                     <p style={{fontSize: '1.1em', textAlign: 'center'}}>
                         We charge a <strong>1.0%</strong> Marketplace fee, and collection creators
@@ -28,9 +33,14 @@ export default function Features(props) {
                     </p>
                 </div>
             </Grid>
-            <Grid item xs={12} sm={12} md={3}>
+            <Grid item xs={12} sm={12} md={3} style={{backgroundColor: '#00d092', padding:'2em'}}>
                 <div className={classes.center}>
-                    <img style={{width: 100}} alt="Non-custodial" src="/icon/wallet.png" />
+                    {/*<img style={{width: 100}} alt="Non-custodial" src="/icon/wallet.png" />*/}
+                    <h1 style={{
+                        fontSize: '4.3em',
+                        marginBottom: '0',
+                        lineHeight: '0.5em'
+                    }}>2.</h1>
                     <h2>Non-custodial</h2>
                     <p style={{fontSize: '1.1em', textAlign: 'center'}}>
                         All assets remain in your full control - we never take custody any of your
@@ -38,9 +48,14 @@ export default function Features(props) {
                     </p>
                 </div>
             </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-                <div className={classes.center}>
-                    <img style={{width: 100}} alt="Custom Collections" src="/icon/artist.png" />
+            <Grid item xs={12} sm={12} md={3} style={{backgroundColor: '#00d092', padding:'2em'}}>
+                <div className={classes.center} >
+                    {/*<img style={{width: 100}} alt="Custom Collections" src="/icon/artist.png" />*/}
+                    <h1 style={{
+                        fontSize: '4.3em',
+                        marginBottom: '0',
+                        lineHeight: '0.5em'
+                    }}>3.</h1>
                     <h2>Custom Collections</h2>
                     <p style={{fontSize: '1.1em', textAlign: 'center'}}>
                         We plan to work with a wide range of talented curators, artists and
@@ -48,9 +63,14 @@ export default function Features(props) {
                     </p>
                 </div>
             </Grid>
-            <Grid item xs={12} sm={12} md={3}>
+            <Grid item xs={12} sm={12} md={3} style={{backgroundColor: '#00d092', padding:'2em'}}>
                 <div className={classes.center}>
-                    <img style={{width: 100}} alt="First on the IC" src="/icon/infinity.png" />
+                    {/*<img style={{width: 100}} alt="First on the IC" src="/icon/infinity.png" />*/}
+                    <h1 style={{
+                        fontSize: '4.3em',
+                        marginBottom: '0',
+                        lineHeight: '0.5em'
+                    }}>4.</h1>
                     <h2>First on the IC</h2>
                     <p style={{fontSize: '1.1em', textAlign: 'center'}}>
                         Entrepot.app is the first NFT marketplace and DEFI solution on the Internet

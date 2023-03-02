@@ -3,3 +3,4 @@
 /node_modules2
 .DS_Store
 /build
+.idea
