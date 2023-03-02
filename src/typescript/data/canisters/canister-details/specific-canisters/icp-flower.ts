@@ -1,10 +1,11 @@
 import {RawCanisterDetails} from '../canister-details';
 import {encodeNftId} from '../../../../api/ext';
+import {NftImageDisplayData} from '../../get-nft-image-data';
 
 export const icpFlowerCanisterDetails: RawCanisterDetails = {
     collectionName: 'ICP Flower',
     canisterId: '4ggk4-mqaaa-aaaae-qad6q-cai',
-    getNftImageData: ({ref, priority, fullSize, nftIndex}) => {
+    getNftImageData({ref, priority, fullSize, nftIndex}): NftImageDisplayData | undefined {
         if (fullSize) {
             return undefined;
         }

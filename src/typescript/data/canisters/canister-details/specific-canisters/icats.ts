@@ -7,7 +7,7 @@ export const icatsCanisterDetails: RawCanisterDetails = {
         original: '4nvhy-3qaaa-aaaah-qcnoq-cai',
         extWrapped: 'y3b7h-siaaa-aaaah-qcnwa-cai',
     },
-    getNftLinkUrl: ({originalCanisterId, nftIndex}) => {
+    getNftLinkUrl({originalCanisterId, nftIndex}) {
         return [
             getCanisterDomain(originalCanisterId),
             'Token',

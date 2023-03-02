@@ -7,7 +7,7 @@ export const icTurtlesCanisterDetails: RawCanisterDetails = {
         original: 'fl5nr-xiaaa-aaaai-qbjmq-cai',
         extWrapped: 'jeghr-iaaaa-aaaah-qco7q-cai',
     },
-    getNftLinkUrl: ({originalCanisterId, nftIndex}) => {
+    getNftLinkUrl({originalCanisterId, nftIndex}) {
         return [
             getCanisterDomain(originalCanisterId),
             'nft',

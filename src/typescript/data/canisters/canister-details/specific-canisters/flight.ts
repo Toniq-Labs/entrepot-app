@@ -1,10 +1,11 @@
 import {RawCanisterDetails} from '../canister-details';
 import {getDefaultNftImageData} from '../default-canister-details';
+import {NftImageDisplayData} from '../../get-nft-image-data';
 
 export const flightCanisterDetails: RawCanisterDetails = {
     collectionName: 'Flight',
     canisterId: 'dylar-wyaaa-aaaah-qcexq-cai',
-    getNftImageData: inputs => {
+    getNftImageData(inputs): NftImageDisplayData {
         const defaultImageData = getDefaultNftImageData({
             ...inputs,
             canisterId: 'dylar-wyaaa-aaaah-qcexq-cai',
@@ -12,7 +13,7 @@ export const flightCanisterDetails: RawCanisterDetails = {
 
         return {
             ...defaultImageData,
-            imageDimensions: {
+            forcedOriginalImageSize: {
                 width: 200,
                 height: 300,
             },

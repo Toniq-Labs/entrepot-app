@@ -6,7 +6,7 @@ import {html} from 'element-vir';
 export const imaginationProjectCanisterDetails: RawCanisterDetails = {
     collectionName: 'Imagination Project',
     canisterId: 'px5ub-qqaaa-aaaah-qcjxa-cai',
-    getNftImageData({originalCanisterId, nftId, fullSize}) {
+    getNftImageData({originalCanisterId, nftId, fullSize}): NftImageDisplayData {
         const imageData = getDefaultNftImageData({
             canisterId: originalCanisterId,
             nftId: nftId,
