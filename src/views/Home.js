@@ -92,7 +92,7 @@ export default function Home(props) {
             content: (
                 <>
                     Another blockchain game by ToniqLabs, the first set of Magni NFTs will be
-                    available for sale exclusively on <strong>Entrepot.app</strong>. Coming 2022!
+                    available for sale exclusively on <strong>Toniq.app</strong>. Coming 2022!
                 </>
             ),
         },
@@ -166,7 +166,7 @@ export default function Home(props) {
                     ) : (
                         ''
                     )}
-                    <h1 className={classes.heading}>Welcome to Entrepot</h1>
+                    <h1 className={classes.heading}>Welcome to Toniq</h1>
                     <p
                         style={{
                             textAlign: 'center',
@@ -177,7 +177,7 @@ export default function Home(props) {
                         By definition, an entrepôt is a port, city, or trading post where
                         merchandise may be imported, stored or traded. Such centers played a
                         critical role in trade during the days of wind-powered shipping. We
-                        developed <strong>Entrepot.app</strong> to provide a similar role in the
+                        developed <strong>Toniq.app</strong> to provide a similar role in the
                         digital world - a trading post where users can store and trade digital
                         assets in a decentralized, non-custodial way.
                         <Button

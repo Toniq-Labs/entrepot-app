@@ -54,14 +54,14 @@ export function AngelInvestorDialog(props) {
             <DialogContent>
                 <DialogContentText id="angel-investor-description">
                     Hey! It's <a href="https://twitter.com/bobbodily">Bob, CEO of Toniq</a>. I ran
-                    the numbers and you are in the top 2% of most active users on Entrepot. Thank
-                    you! We never would have made it this far without you.
+                    the numbers and you are in the top 2% of most active users on Toniq. Thank you!
+                    We never would have made it this far without you.
                     <br />
                     <br />
                     In the near future, Toniq will be raising investment capital for the next phase
-                    of development for Entrepot, Stoic, and our minting launchpad. Our top priority
-                    is to grow with real input and support from the community. For this reason,
-                    we're giving some community members the{' '}
+                    of development for Toniq, Stoic, and our minting launchpad. Our top priority is
+                    to grow with real input and support from the community. For this reason, we're
+                    giving some community members the{' '}
                     <b>opportunity to become angel investors in Toniq.</b>
                     <br />
                     <br />

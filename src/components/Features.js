@@ -53,7 +53,7 @@ export default function Features(props) {
                     <img style={{width: 100}} alt="First on the IC" src="/icon/infinity.png" />
                     <h2>First on the IC</h2>
                     <p style={{fontSize: '1.1em', textAlign: 'center'}}>
-                        Entrepot.app is the first NFT marketplace and DEFI solution on the Internet
+                        Toniq.app is the first NFT marketplace and DEFI solution on the Internet
                         Computer
                     </p>
                 </div>

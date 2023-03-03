@@ -1,4 +1,4 @@
-# entrepot-app
+# toniq-app
 
 Frontend code for https://entrepot.app.
 

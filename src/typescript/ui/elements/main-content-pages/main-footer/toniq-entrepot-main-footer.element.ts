@@ -167,9 +167,11 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
             display: flex;
             align-items: center;
             gap: 16px;
-            ${toniqFontStyles.h2Font}
-            ${toniqFontStyles.extraBoldFont}
-            color: inherit;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            ${toniqFontStyles.h2Font};
+            font-weight: 200;
+            color: white;
             margin-bottom: 12px;
         }
 
@@ -396,15 +398,18 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
         const logoSection = html`
             <div class="logo-section">
                 <div class="logo">
-                    <${ToniqIcon}
-                        class="toniq-icon-fit-icon"
-                        ${assign(ToniqIcon, {
-                            icon: EntrepotLogo144Icon,
-                        })}
-                    ></${ToniqIcon}>
-                    Entrepot
+                    <img
+                        alt="Toniq Logo"
+                        src="/icon/svg/toniq-site-logo.svg"
+                        style="height: 48px"
+                    />
+                    Toniq
                 </div>
-                <p>Entrepot is a digital trading post where users create, store, and trade digital assets in a decentralized and non-custodial way. Entrepot is home to the most collections, users, and volume across the Internet Computer blockchain.</p>
+                <p>
+                    Toniq is a digital trading post where users create, store, and trade digital
+                    assets in a decentralized and non-custodial way. Toniq is home to the most
+                    collections, users, and volume across the Internet Computer blockchain.
+                </p>
             </div>
         `;
         const linksSection = html`

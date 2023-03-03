@@ -181,7 +181,9 @@ export default function Navbar(props) {
 
     const entrepotTitleStyles = {
         ...cssToReactStyleObject(toniqFontStyles.h2Font),
-        ...cssToReactStyleObject(toniqFontStyles.extraBoldFont),
+        letterSpacing: '0.1em',
+        fontWeight: 200,
+        textTransform: 'uppercase',
     };
 
     return (
@@ -227,18 +229,13 @@ export default function Navbar(props) {
                                 style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}
                                 onClick={() => goTo('/')}
                             >
-                                <ToniqIcon
+                                <img
                                     className={`toniq-icon-fit-icon ${classes.icpButton}`}
-                                    style={{
-                                        height: '54px',
-                                        width: '54px',
-                                        flexShrink: '0',
-                                        margin: '8px',
-                                        color: toniqColors.brandPrimary.foregroundColor,
-                                    }}
-                                    icon={EntrepotLogo144Icon}
+                                    alt="Toniq Logo"
+                                    src="/icon/svg/toniq-site-logo.svg"
+                                    style={{height: 54, width: 54, margin: 8}}
                                 />
-                                <span style={entrepotTitleStyles}>Entrepot</span>
+                                <span style={entrepotTitleStyles}>Toniq</span>
                             </a>
                         </Typography>
                         <ToniqInput

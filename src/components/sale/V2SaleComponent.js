@@ -658,12 +658,12 @@ export default function V2SaleComponent(props) {
                                                     </Grid>
                                                     <p>
                                                         <strong>Please note:</strong> All
-                                                        transactions are secured via Entrepot's
-                                                        escrow platform. There are no refunds or
-                                                        returns, once a transaction is made it can
-                                                        not be reversed. Entrepot provides a
-                                                        transaction service only. By clicking one of
-                                                        the buttons above you show acceptance of our{' '}
+                                                        transactions are secured via Toniq's escrow
+                                                        platform. There are no refunds or returns,
+                                                        once a transaction is made it can not be
+                                                        reversed. Toniq provides a transaction
+                                                        service only. By clicking one of the buttons
+                                                        above you show acceptance of our{' '}
                                                         <a
                                                             href="https://docs.google.com/document/d/13aj8of_UXdByGoFdMEbbIyltXMn0TXHiUie2jO-qnNk/edit"
                                                             target="_blank"

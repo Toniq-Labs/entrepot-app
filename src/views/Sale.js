@@ -113,7 +113,7 @@ export default function Sale(props) {
                                 );
                             })}
                     </Grid>
-                    <h1 className={classes.heading}>Launch your NFT with Entrepot</h1>
+                    <h1 className={classes.heading}>Launch your NFT with Toniq</h1>
                     <p
                         style={{
                             textAlign: 'center',
@@ -122,7 +122,7 @@ export default function Sale(props) {
                         }}
                     >
                         Get in touch with our team to list your NFT to launch on the Internet
-                        Computer with Entrepot!
+                        Computer with Toniq!
                     </p>
                     <Features />
                 </div>

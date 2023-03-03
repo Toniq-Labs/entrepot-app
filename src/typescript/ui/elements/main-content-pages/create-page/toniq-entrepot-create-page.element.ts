@@ -49,7 +49,7 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
             },
             {
                 primary: true,
-                text: 'Add Canister to Entrepot',
+                text: 'Add Canister to Toniq',
             },
         ],
     },
@@ -71,7 +71,7 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
             },
             {
                 primary: true,
-                text: 'Add Canister to Entrepot',
+                text: 'Add Canister to Toniq',
             },
         ],
     },

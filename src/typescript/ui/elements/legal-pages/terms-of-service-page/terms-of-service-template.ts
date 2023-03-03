@@ -3,7 +3,7 @@ import {html} from 'element-vir';
 // cspell:disable
 export const termsOfServiceTemplate = html`
     <h1>
-        <span>Terms Of Service - Entrepot</span>
+        <span>Terms Of Service - Toniq</span>
     </h1>
     <p>
         <span>Effective: September 24, 2021</span>
@@ -22,12 +22,12 @@ export const termsOfServiceTemplate = html`
                 <span><br /></span>
                 <span><br /></span>
                 <span>
-                    Welcome to the Entrepot website, owned and operated by Toniq, Inc. ("Toniq,"
-                    "we," "us" or "our"). These Terms of Use (these "Terms") govern your access to
-                    and use of the Entrepot website; including without limitation the creation,
-                    purchase, sale, exchange, or modification of certain digital assets; our online
-                    and/or mobile services, and software provided on or in connection with those
-                    services (collectively, the "Service").
+                    Welcome to the Toniq website, owned and operated by Toniq, Inc. ("Toniq," "we,"
+                    "us" or "our"). These Terms of Use (these "Terms") govern your access to and use
+                    of the Toniq website; including without limitation the creation, purchase, sale,
+                    exchange, or modification of certain digital assets; our online and/or mobile
+                    services, and software provided on or in connection with those services
+                    (collectively, the "Service").
                 </span>
                 <span><br /></span>
                 <span><br /></span>
@@ -90,16 +90,15 @@ export const termsOfServiceTemplate = html`
                 <span><br /></span>
                 <span><br /></span>
                 <span>
-                    Entrepot reserves the right to change or modify these Terms at any time and in
-                    our sole discretion. If we make changes to these Terms, we will provide notice
-                    of such changes, such as by sending an email notification, providing notice
-                    through the Service or updating the "Last Updated" date at the beginning of
-                    these Terms. By continuing to access or use the Service, you confirm your
-                    acceptance of the revised Terms and all of the terms incorporated therein by
-                    reference. We encourage you to review the Terms frequently to ensure that you
-                    understand the terms and conditions that apply when you access or use the
-                    Service. If you do not agree to the revised Terms, you may not access or use the
-                    Service.
+                    Toniq reserves the right to change or modify these Terms at any time and in our
+                    sole discretion. If we make changes to these Terms, we will provide notice of
+                    such changes, such as by sending an email notification, providing notice through
+                    the Service or updating the "Last Updated" date at the beginning of these Terms.
+                    By continuing to access or use the Service, you confirm your acceptance of the
+                    revised Terms and all of the terms incorporated therein by reference. We
+                    encourage you to review the Terms frequently to ensure that you understand the
+                    terms and conditions that apply when you access or use the Service. If you do
+                    not agree to the revised Terms, you may not access or use the Service.
                 </span>
             </p>
         </li>
@@ -122,7 +121,7 @@ export const termsOfServiceTemplate = html`
                     <p>
                         <span>
                             Notwithstanding anything to the contrary in these Terms, the Service and
-                            Content may include software components provided by Entrepot or its
+                            Content may include software components provided by Toniq or its
                             affiliates or a third party that are subject to separate license terms,
                             in which case those license terms will govern such software components.
                             For example, when you click to get more details about any of the Crypto
@@ -148,9 +147,9 @@ export const termsOfServiceTemplate = html`
                         <span>
                             Unless otherwise indicated in writing by us, the Service and all content
                             and other materials contained therein, including, without limitation,
-                            the Entrepot logo and all designs, text, graphics, pictures,
-                            information, data, software, sound files, other files and the selection
-                            and arrangement thereof (collectively, "Content") are the proprietary
+                            the Toniq logo and all designs, text, graphics, pictures, information,
+                            data, software, sound files, other files and the selection and
+                            arrangement thereof (collectively, "Content") are the proprietary
                             property of Toniq or our affiliates, licensors or users, as applicable.
                         </span>
                     </p>
@@ -168,25 +167,24 @@ export const termsOfServiceTemplate = html`
                 <li>
                     <p>
                         <span>
-                            The Entrepot logo and any Toniq product or service names, logos or
-                            slogans that may appear on the Service or Service are trademarks of
-                            Toniq or our affiliates and may not be copied, imitated or used, in
-                            whole or in part, without our prior written permission. You may not use
-                            any metatags or other "hidden text" utilizing "Entrepot" or any other
-                            name, trademark or product or service name of Toniq or our affiliates
-                            without our prior written permission. In addition, the look and feel of
-                            the Service and Content, including, without limitation, all page
-                            headers, custom graphics, button icons and scripts, constitute the
-                            service mark, trademark or trade dress of Toniq and may not be copied,
-                            imitated or used, in whole or in part, without our prior written
-                            permission. All other trademarks, registered trademarks, product names
-                            and Toniq names or logos mentioned on the Service are the property of
-                            their respective owners and may not be copied, imitated or used, in
-                            whole or in part, without the permission of the applicable trademark
-                            holder. Reference to any products, services, processes or other
-                            information by name, trademark, manufacturer, supplier or otherwise does
-                            not constitute or imply endorsement, sponsorship or recommendation by
-                            Toniq.
+                            The Toniq logo and any Toniq product or service names, logos or slogans
+                            that may appear on the Service or Service are trademarks of Toniq or our
+                            affiliates and may not be copied, imitated or used, in whole or in part,
+                            without our prior written permission. You may not use any metatags or
+                            other "hidden text" utilizing "Toniq" or any other name, trademark or
+                            product or service name of Toniq or our affiliates without our prior
+                            written permission. In addition, the look and feel of the Service and
+                            Content, including, without limitation, all page headers, custom
+                            graphics, button icons and scripts, constitute the service mark,
+                            trademark or trade dress of Toniq and may not be copied, imitated or
+                            used, in whole or in part, without our prior written permission. All
+                            other trademarks, registered trademarks, product names and Toniq names
+                            or logos mentioned on the Service are the property of their respective
+                            owners and may not be copied, imitated or used, in whole or in part,
+                            without the permission of the applicable trademark holder. Reference to
+                            any products, services, processes or other information by name,
+                            trademark, manufacturer, supplier or otherwise does not constitute or
+                            imply endorsement, sponsorship or recommendation by Toniq.
                         </span>
                         <span>
                             <br />
@@ -419,7 +417,7 @@ export const termsOfServiceTemplate = html`
                         <span>
                             Engage in behaviors that have the intention or the effect of
                             artificially increasing view counts, favorites, volume, or other metrics
-                            that Entrepot might use to sort search results;
+                            that Toniq might use to sort search results;
                         </span>
                     </p>
                 </li>
@@ -462,15 +460,15 @@ export const termsOfServiceTemplate = html`
         <li>
             <p>
                 <span>
-                    Entrepot facilitates trade among a diverse community of buyers and sellers.
-                    These policies ensure that our marketplace offers the widest selection of assets
+                    Toniq facilitates trade among a diverse community of buyers and sellers. These
+                    policies ensure that our marketplace offers the widest selection of assets
                     possible while promoting trust and respect, as well as adherence to the law.
                 </span>
                 <span><br /></span>
                 <span><br /></span>
                 <span>
-                    Entrepot has always exercised judgment in allowing or disallowing certain
-                    assets, listings, smart contracts, and collections consistent with the spirit of
+                    Toniq has always exercised judgment in allowing or disallowing certain assets,
+                    listings, smart contracts, and collections consistent with the spirit of
                     openness in a worldwide community of users of a radical new technology. We
                     carefully consider the complete situation and all its details in light of our
                     policies before deciding to remove inappropriate assets, listings, smart
@@ -480,16 +478,16 @@ export const termsOfServiceTemplate = html`
                 <span><br /></span>
                 <span><br /></span>
                 <span>
-                    Assets, listings, smart contracts, and collections that Entrepot deems
-                    inappropriate, disruptive, or illegal are prohibited on Entrepot. Entrepot
-                    reserves the rights to determine the appropriateness of listings on its site and
-                    remove any listing at any time. If you create or offer an asset, listing, smart
+                    Assets, listings, smart contracts, and collections that Toniq deems
+                    inappropriate, disruptive, or illegal are prohibited on Toniq. Toniq reserves
+                    the rights to determine the appropriateness of listings on its site and remove
+                    any listing at any time. If you create or offer an asset, listing, smart
                     contract, or collection in violation of these policies, we will take corrective
                     actions, as appropriate, including but not limited to removing the asset,
-                    listing, smart contract, or collection, deleting your Entrepot account, and
+                    listing, smart contract, or collection, deleting your Toniq account, and
                     permanently withholding referral payments and developer revenue sharing fees.
-                    Entrepot cannot destroy or impound your assets or smart contracts, but we
-                    reserve the right to destroy inappropriate metadata stored on our servers.
+                    Toniq cannot destroy or impound your assets or smart contracts, but we reserve
+                    the right to destroy inappropriate metadata stored on our servers.
                 </span>
                 <span><br /></span>
                 <span><br /></span>
@@ -498,7 +496,7 @@ export const termsOfServiceTemplate = html`
                     violates international or United States intellectual property laws, promotes
                     suicide or self-harm, incites hate or violence against others, degrades or doxes
                     another individual, depicts minors in sexually suggestive situations, or is
-                    otherwise illegal in the United States are prohibited on Entrepot and will be
+                    otherwise illegal in the United States are prohibited on Toniq and will be
                     removed.
                 </span>
                 <span><br /></span>
@@ -509,7 +507,7 @@ export const termsOfServiceTemplate = html`
                     intellectual property laws, promotes suicide or self-harm, incites hate or
                     violence against others, degrades or doxes another individual, depicts minors in
                     sexually suggestive situations, or is otherwise illegal in the United States are
-                    prohibited on Entrepot and will be removed.
+                    prohibited on Toniq and will be removed.
                 </span>
                 <span><br /></span>
                 <span><br /></span>
@@ -521,7 +519,7 @@ export const termsOfServiceTemplate = html`
                 <a href="https://www.state.gov/foreign-terrorist-organizations/">
                     <span>https://www.state.gov/foreign-terrorist-organizations/</span>
                 </a>
-                <span>are prohibited on Entrepot and will be removed.</span>
+                <span>are prohibited on Toniq and will be removed.</span>
                 <span><br /></span>
                 <span><br /></span>
                 <span>
@@ -533,22 +531,22 @@ export const termsOfServiceTemplate = html`
                 <span><br /></span>
                 <span><br /></span>
                 <span>
-                    If you have reason to believe that an asset listed on Entrepot was illegally
+                    If you have reason to believe that an asset listed on Toniq was illegally
                     obtained, please contact us immediately at
                 </span>
                 <span>support@toniqlabs.com</span>
                 <span>
                     . Include the asset's ID, the asset's contract address, and evidence
-                    demonstrating that the asset was illegally obtained. Entrepot will review your
+                    demonstrating that the asset was illegally obtained. Toniq will review your
                     claim and reply within 72 hours. If we determine from the evidence that the
                     asset is stolen, we will hide it or disable trading of it.
                 </span>
                 <span><br /></span>
                 <span>
                     We require all users to be 18 years old or older. If you are under 18, you may
-                    use a parent or guardian's Entrepot account, but only with the involvement of
-                    the account holder. However, the account holder is responsible for everything
-                    done with that account.
+                    use a parent or guardian's Toniq account, but only with the involvement of the
+                    account holder. However, the account holder is responsible for everything done
+                    with that account.
                 </span>
                 <span>
                     <br />
