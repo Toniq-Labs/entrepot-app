@@ -7,7 +7,7 @@ export const icpBunnyCanisterDetails: RawCanisterDetails = {
         original: 'xkbqi-2qaaa-aaaah-qbpqq-cai',
         extWrapped: 'q6hjz-kyaaa-aaaah-qcama-cai',
     },
-    getNftLinkUrl: ({nftIndex}) => {
+    getNftLinkUrl({nftIndex}) {
         const icpBunnyStorage = [
             'efqhu-yqaaa-aaaaf-qaeda-cai',
             'ecrba-viaaa-aaaaf-qaedq-cai',

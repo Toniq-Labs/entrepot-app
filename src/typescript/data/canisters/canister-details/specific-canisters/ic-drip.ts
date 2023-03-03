@@ -7,7 +7,7 @@ export const icDripCanisterDetails: RawCanisterDetails = {
         original: 'd3ttm-qaaaa-aaaai-qam4a-cai',
         extWrapped: '3db6u-aiaaa-aaaah-qbjbq-cai',
     },
-    getNftLinkUrl: ({originalCanisterId, nftIndex}) => {
+    getNftLinkUrl({originalCanisterId, nftIndex}) {
         return [
             getCanisterDomain(originalCanisterId),
             '?tokenId=',

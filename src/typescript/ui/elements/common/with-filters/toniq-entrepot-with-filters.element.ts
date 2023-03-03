@@ -1,3 +1,4 @@
+import {repeat} from 'lit/directives/repeat.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {assign, css, defineElement, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {CurrentSort, FilterDefinitions, SortDefinition} from './filters-types';
@@ -398,6 +399,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                     value: state.searchValue,
                     placeholder: inputs.searchPlaceholder,
                     icon: Search24Icon,
+                    disableBrowserHelps: true,
                 })}
                 ${listen(ToniqInput.events.valueChange, event => {
                     updateState({
@@ -484,9 +486,11 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                                     })}
                                 ></${ToniqIcon}>
                             `,
-                            sortedFilteredEntries.map(entry => {
-                                return inputs.createEntryTemplateCallback(entry);
-                            }),
+                            repeat(
+                                sortedFilteredEntries,
+                                entry => entry,
+                                inputs.createEntryTemplateCallback,
+                            ),
                         )}
                     </div>
                 </div>

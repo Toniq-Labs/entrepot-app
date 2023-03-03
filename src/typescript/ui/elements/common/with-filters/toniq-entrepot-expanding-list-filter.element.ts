@@ -130,6 +130,7 @@ export const EntrepotExpandingListFilterElement = defineToniqElement<{
                         value: state.searchTerm,
                         placeholder: 'Search....',
                         icon: Search24Icon,
+                        disableBrowserHelps: true,
                     })}
                     ${listen(ToniqInput.events.valueChange, event => {
                         updateState({

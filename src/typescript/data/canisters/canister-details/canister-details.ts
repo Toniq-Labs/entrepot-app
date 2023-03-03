@@ -1,4 +1,4 @@
-import {Overwrite} from '@augment-vir/common';
+import {MaybePromise, Overwrite} from '@augment-vir/common';
 import {Promisable, SetOptional} from 'type-fest';
 import {NftImageDisplayData} from '../get-nft-image-data';
 
@@ -37,7 +37,7 @@ export type RawCanisterDetails = {
         | undefined;
     /** If this isn't provided, the default method will be used. */
     getNftImageData?:
-        | ((inputs: RawGetNftImageHtmlInputs) => Promisable<NftImageDisplayData | undefined>)
+        | ((inputs: RawGetNftImageHtmlInputs) => MaybePromise<NftImageDisplayData | undefined>)
         | undefined;
 };
 
