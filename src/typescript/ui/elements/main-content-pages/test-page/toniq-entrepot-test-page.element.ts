@@ -39,7 +39,7 @@ function formatTopCollection(collections: ReadonlyArray<Collection>, canisters: 
     });
 }
 
-async function fetchlast24hData(collections: ReadonlyArray<Collection>) {
+async function fetchLast24hData(collections: ReadonlyArray<Collection>) {
     const data = await fetch('https://api.nftgeek.app/api/1/entrepot/top/volume/last24h').then(r =>
         r.json(),
     );
@@ -177,7 +177,7 @@ const EntrepotTestElement = defineElement<{
 
         setIntervalImmediately(async () => {
             const topCollections = {
-                past24Hours: await fetchlast24hData(inputs.collections),
+                past24Hours: await fetchLast24hData(inputs.collections),
                 allTime: await fetchAllTimeData(inputs.collections),
             };
             updateState({topCollections});
