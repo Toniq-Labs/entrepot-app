@@ -400,7 +400,7 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
                 <div class="logo">
                     <img
                         alt="Toniq Logo"
-                        src="/icon/svg/toniq-site-logo.svg"
+                        src="/icon/svg/toniq-site-logo-white.svg"
                         style="height: 48px"
                     />
                     Toniq
