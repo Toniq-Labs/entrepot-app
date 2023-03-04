@@ -9,7 +9,7 @@ import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
-import {Icp16Icon, LoaderAnimated24Icon, ToniqIcon} from '@toniq-labs/design-system';
+import {Icp16Icon} from '@toniq-labs/design-system';
 import {EntrepotSalePreloaderElement} from './toniq-entrepot-sale-preloader.element';
 
 export const EntrepotSalePageElement = defineElement<{

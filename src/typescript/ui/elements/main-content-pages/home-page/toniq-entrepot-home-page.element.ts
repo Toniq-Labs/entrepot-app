@@ -88,6 +88,14 @@ export const EntrepotHomePageElement = defineToniqElement<{
             margin-bottom: 32px;
         }
 
+        .powered-nft-geek {
+            display: flex;
+            justify-content: end;
+            ${toniqFontStyles.normalWeightFont};
+            font-size: 12px;
+            text-align: right;
+        }
+
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
             .top-cards-header,
             .top-cards,
@@ -115,17 +123,21 @@ export const EntrepotHomePageElement = defineToniqElement<{
     },
     renderCallback: ({inputs, state, updateState, events}) => {
         const tabs: ReadonlyArray<TopTab<ReadonlyArray<TopCardInputs>>> = [
-            inputs.topCollections.past24Hours.length
-                ? {
-                      label: 'Past 24 Hours',
-                      value: inputs.topCollections.past24Hours,
-                  }
+            inputs.topCollections.past24Hours
+                ? inputs.topCollections.past24Hours.length
+                    ? {
+                          label: 'Past 24 Hours',
+                          value: inputs.topCollections.past24Hours,
+                      }
+                    : undefined
                 : undefined,
-            inputs.topCollections.allTime.length
-                ? {
-                      label: 'All Time',
-                      value: inputs.topCollections.allTime,
-                  }
+            inputs.topCollections.allTime
+                ? inputs.topCollections.allTime.length
+                    ? {
+                          label: 'All Time',
+                          value: inputs.topCollections.allTime,
+                      }
+                    : undefined
                 : undefined,
         ].filter(isTruthy);
 
@@ -182,6 +194,7 @@ export const EntrepotHomePageElement = defineToniqElement<{
                         ></${EntrepotHomePageTopCardElement}>
                     `;
                 })}
+                <span class="powered-nft-geek">Data powered by NFT Geek</span>
             </div>
             
             <h2>

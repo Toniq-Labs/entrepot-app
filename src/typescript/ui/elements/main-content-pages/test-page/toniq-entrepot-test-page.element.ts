@@ -15,23 +15,47 @@ import {DimensionConstraints} from '@electrovir/resizable-image-element';
 import {FeaturedCollectionInputs} from '../home-page/children/toniq-entrepot-featured-collection-card.element';
 import {TopCardInputs} from '../home-page/children/toniq-entrepot-top-card.element';
 import {NftRoute} from '../../common/toniq-entrepot-carousel.element';
+import {CanisterId} from '../../../../data/models/canister-id';
+import {ValidIcp} from '../../../../data/icp';
 
-function makeTopCards(
-    highlights: (Collection & NftImageInputs & PartialAndNullable<DimensionConstraints>)[],
-) {
-    return shuffle(highlights).map((highlight, index) => {
+type TopVolume = {
+    canisterId: CanisterId;
+    volumeE8s: ValidIcp;
+    floorPriceE8s: ValidIcp;
+};
+
+function formatTopCollection(collections: ReadonlyArray<Collection>, canisters: Array<TopVolume>) {
+    return canisters.map((canister: TopVolume, collectionIndex: number) => {
+        const collectionMatch = collections.find(
+            (collection: Collection) => collection.canister === canister.canisterId,
+        );
         return {
-            collectionName: highlight.name,
-            floorPrice: highlight.stats?.floor
-                ? Number(highlight.stats?.floor)
-                : Math.random() * 10_000,
-            volume: highlight.stats?.listings
-                ? highlight.stats?.listings
-                : Math.random() * 10_000_000,
-            index: index + 1,
-            id: highlight.id,
+            collectionName: collectionMatch ? collectionMatch.name : '',
+            floorPrice: Number(canister.floorPriceE8s) / 100000000,
+            volume: Number(canister.volumeE8s) / 100000000,
+            index: collectionIndex + 1,
+            id: canister.canisterId,
         };
     });
+}
+
+async function fetchlast24hData(collections: ReadonlyArray<Collection>) {
+    const data = await fetch('https://api.nftgeek.app/api/1/entrepot/top/volume/last24h').then(r =>
+        r.json(),
+    );
+    return formatTopCollection(collections, data.canisters);
+}
+
+async function fetchAllTimeData(collections: ReadonlyArray<Collection>) {
+    const data = await fetch('https://api.nftgeek.app/api/1/entrepot/top/volume/allTime').then(r =>
+        r.json(),
+    );
+    return formatTopCollection(collections, data.canisters);
+}
+
+function setIntervalImmediately(func: Function, interval: number) {
+    func();
+    return setInterval(func, interval);
 }
 
 const EntrepotTestElement = defineElement<{
@@ -151,11 +175,13 @@ const EntrepotTestElement = defineElement<{
             });
         updateState({featuredCollections});
 
-        const topCollections = {
-            past24Hours: makeTopCards(carouselItems),
-            allTime: makeTopCards(carouselItems),
-        };
-        updateState({topCollections});
+        setIntervalImmediately(async () => {
+            const topCollections = {
+                past24Hours: await fetchlast24hData(inputs.collections),
+                allTime: await fetchAllTimeData(inputs.collections),
+            };
+            updateState({topCollections});
+        }, 60000);
     },
     events: {
         collectionRouteClicked: defineElementEvent<string>(),

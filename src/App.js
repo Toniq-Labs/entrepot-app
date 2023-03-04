@@ -463,7 +463,6 @@ export default function App() {
 
         //Process legacy payments first
         var p = identity.getPrincipal().toText();
-        console.log('Scanning for principal...', p);
         if (legacyPrincipalPayouts.hasOwnProperty(p)) {
             for (const canister in legacyPrincipalPayouts[p]) {
                 loader(true, 'Payments found, processing...');
@@ -791,7 +790,6 @@ export default function App() {
         const collectionMap = await getAllCollectionsWithCaching();
         const allCollectionsWithCaching = Object.values(collectionMap);
         setCollections(allCollectionsWithCaching);
-        console.log({collectionMap});
         setCollectionMap(collectionMap);
         allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
 
@@ -923,7 +921,6 @@ export default function App() {
                     '00',
                     true,
                 );
-            console.log(r2);
             if (loader) loader(true, 'Loading NFTs...');
             if (refresh) await refresh();
             if (loader) loader(false);
@@ -1069,7 +1066,6 @@ export default function App() {
                 );
             if (!r2) return error('There was an error transferring this NFT!');
             if (loader) loader(true, 'Loading NFTs...');
-            console.log(refresh);
             if (refresh) await refresh();
             if (loader) loader(false);
             return alert('Transaction complete', 'Your transfer was successful!');
@@ -1084,7 +1080,6 @@ export default function App() {
             var r = await createEntrepotApiWithIdentity(identity)
                 .token(id)
                 .list(currentAccount, price);
-            console.log(r);
             if (r) {
                 if (refresh) await refresh();
                 if (loader) loader(false);
@@ -1353,7 +1348,6 @@ export default function App() {
                                             }}
                                             isToniqEarnAllowed={isToniqEarnAllowed}
                                             onCollectionSelected={event => {
-                                                console.log({selectedCollection: event.detail});
                                                 navigate({
                                                     pathname: '/marketplace/' + event.detail.route,
                                                 });
