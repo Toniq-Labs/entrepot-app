@@ -53,6 +53,7 @@ export const EntrepotHomePageElement = defineToniqElement<{
             column-gap: 32px;
             margin: 64px;
             margin-top: 16px;
+            position: relative;
         }
 
         .top-cards > * {
@@ -89,11 +90,11 @@ export const EntrepotHomePageElement = defineToniqElement<{
         }
 
         .powered-nft-geek {
-            display: flex;
-            justify-content: end;
+            position: absolute;
+            right: 0;
+            width: auto;
             ${toniqFontStyles.normalWeightFont};
             font-size: 12px;
-            text-align: right;
         }
 
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
