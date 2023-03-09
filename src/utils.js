@@ -359,7 +359,7 @@ const clipboardCopy = text => {
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
-        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai' || collection == '2v5zm-uaaaa-aaaae-qaewa-cai')
+        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai' || collection == '2v5zm-uaaaa-aaaae-qaewa-cai' || collection == "umqto-nyaaa-aaaah-abwoa-cai")
             return (
                 <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
             );        
