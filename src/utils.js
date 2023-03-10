@@ -359,10 +359,31 @@ const clipboardCopy = text => {
         )
             avatarImgStyle.objectFit = 'contain';
         if (collection == 'zhibq-piaaa-aaaah-qcvka-cai') avatarImgStyle.objectFit = 'fill';
-        if (collection == 'jeghr-iaaaa-aaaah-qco7q-cai' || collection == '2v5zm-uaaaa-aaaae-qaewa-cai' || collection == "umqto-nyaaa-aaaah-abwoa-cai")
+        if (
+            collection == 'jeghr-iaaaa-aaaah-qco7q-cai' ||
+            collection == '2v5zm-uaaaa-aaaae-qaewa-cai'
+        )
             return (
                 <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
-            );        
+            );
+        // Cubetopia Pets collection
+        if (collection == 'umqto-nyaaa-aaaah-abwoa-cai')
+            return (
+                <embed
+                    alt={tokenid}
+                    style={{
+                        ...avatarImgStyle,
+                        display: 'block',
+                        height: '350px',
+                        width: '350px',
+                        transform: 'scale(0.811)',
+                        top: '-33px',
+                        left: '-33px',
+                        pointerEvents: 'none',
+                    }}
+                    src={image}
+                />
+            );
         if (collection === TREASURECANISTER) {
             var nftimg = false;
             if (!earnData.hasOwnProperty(tokenid)) {
