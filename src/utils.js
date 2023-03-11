@@ -366,24 +366,24 @@ const clipboardCopy = text => {
             return (
                 <embed alt={tokenid} style={{...avatarImgStyle, display: 'block'}} src={image} />
             );
-        // Cubetopia Pets collection
-        if (collection == 'umqto-nyaaa-aaaah-abwoa-cai')
-            return (
-                <embed
-                    alt={tokenid}
-                    style={{
-                        ...avatarImgStyle,
-                        display: 'block',
-                        height: '350px',
-                        width: '350px',
-                        transform: 'scale(0.811)',
-                        top: '-33px',
-                        left: '-33px',
-                        pointerEvents: 'none',
-                    }}
-                    src={image}
-                />
-            );
+//         // Cubetopia Pets collection
+//         if (collection == 'umqto-nyaaa-aaaah-abwoa-cai')
+//             return (
+//                 <embed
+//                     alt={tokenid}
+//                     style={{
+//                         ...avatarImgStyle,
+//                         display: 'block',
+//                         height: '350px',
+//                         width: '350px',
+//                         transform: 'scale(0.811)',
+//                         top: '-33px',
+//                         left: '-33px',
+//                         pointerEvents: 'none',
+//                     }}
+//                     src={image}
+//                 />
+//             );
         if (collection === TREASURECANISTER) {
             var nftimg = false;
             if (!earnData.hasOwnProperty(tokenid)) {
