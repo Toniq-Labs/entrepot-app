@@ -69,7 +69,8 @@ const defaultSortOptionActivity = {
     label: 'Time',
 };
 
-const defaultSortType = 'asc';
+const defaultNftSortType = 'asc';
+const defaultActivitySortType = 'desc';
 
 const defaultOpenedAccordions = [
     'status',
@@ -214,6 +215,7 @@ export function ListingsBody(props) {
     const pageListing = useRef(0);
     const hasListing = useRef(false);
     const loadingRef = createRef();
+    const triggerRef = createRef();
     const forceUpdate = useForceUpdate();
 
     const [
@@ -287,8 +289,8 @@ export function ListingsBody(props) {
             },
             sortOptionNfts: defaultSortOptionNfts,
             sortOptionActivity: defaultSortOptionActivity,
-            sortTypeNfts: defaultSortType,
-            sortTypeActivity: defaultSortType,
+            sortTypeNfts: defaultNftSortType,
+            sortTypeActivity: defaultActivitySortType,
             gridSize: 'large',
             currentTab: 'nfts',
             openedAccordion: defaultOpenedAccordions,
@@ -313,12 +315,12 @@ export function ListingsBody(props) {
     const [
         sortTypeNfts,
         setSortTypeNfts,
-    ] = useState(userPreferences.sortTypeNfts || defaultSortType);
+    ] = useState(userPreferences.sortTypeNfts || defaultNftSortType);
 
     const [
         sortTypeActivity,
         setSortTypeActivity,
-    ] = useState(userPreferences.sortTypeActivity || defaultSortType);
+    ] = useState(userPreferences.sortTypeActivity || defaultActivitySortType);
     const [
         currentTab,
         setCurrentTab,
@@ -590,11 +592,11 @@ export function ListingsBody(props) {
         });
 
         const loadingRefEl = loadingRef.current;
-
+        const triggerRefEl = triggerRef.current;
         const options = {
             root: null,
             rootMargin: '-32px',
-            threshold: 1.0,
+            threshold: 0,
         };
 
         const observer = new IntersectionObserver(entries => {
@@ -608,11 +610,13 @@ export function ListingsBody(props) {
         }, options);
 
         if (loadingRefEl) {
+            observer.observe(triggerRefEl);
             observer.observe(loadingRefEl);
         }
 
         return () => {
             componentMounted.current = false;
+            observer.observe(triggerRefEl);
             observer.observe(loadingRefEl);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -707,6 +711,7 @@ export function ListingsBody(props) {
                         _updates={_updates}
                         listings={listings}
                         loadingRef={loadingRef}
+                        triggerRef={triggerRef}
                         buyNft={buyNft}
                         faveRefresher={faveRefresher}
                         identity={identity}

@@ -1,13 +1,6 @@
 import chunk from 'lodash.chunk';
-import {
-    gridLargeMaxHeight,
-    gridLargeMaxWidth,
-    gridSmallMaxHeight,
-    gridSmallMaxWidth,
-} from '../../model/constants';
-import {NftCardPlaceholder} from '../../shared/NftCardPlaceholder';
-import LazyLoad from 'react-lazyload';
-import {makeStyles} from '@material-ui/core';
+import {gridLargeMaxWidth, gridSmallMaxWidth} from '../../model/constants';
+import {Container, makeStyles} from '@material-ui/core';
 import {
     ArrowsSortAscending24Icon,
     ArrowsSortDescending24Icon,
@@ -156,6 +149,7 @@ export function ListingsNftCard(props) {
         _updates,
         listings,
         loadingRef,
+        triggerRef,
         showFilters,
         sort,
         setSort,
@@ -170,12 +164,11 @@ export function ListingsNftCard(props) {
         defaultFilter,
     } = props;
     const classes = useStyles();
-    const preloaderItemColor = '#f1f1f1';
     const {status, ...appliedFilters} = currentFilters;
 
     const chunkedAndFilteredAndSortedListings = chunk(
         filteredAndSortedListings,
-        gridSize === 'small' ? 24 : 12,
+        gridSize === 'small' ? 48 : 24,
     );
 
     const hasListed = () => {
@@ -461,234 +454,95 @@ export function ListingsNftCard(props) {
                         {getShowListings(chunkedAndFilteredAndSortedListings).map(
                             (listing, index) => {
                                 return (
-                                    <LazyLoad
-                                        key={index}
-                                        offset={[
-                                            500,
-                                            0,
-                                        ]}
-                                        placeholder={
-                                            <NftCardPlaceholder
-                                                small={gridSize === 'small'}
-                                                style={{
-                                                    maxWidth:
-                                                        gridSize === 'small'
-                                                            ? gridSmallMaxWidth
-                                                            : gridLargeMaxWidth,
-                                                    maxHeight:
-                                                        gridSize === 'small'
-                                                            ? gridSmallMaxHeight
-                                                            : gridLargeMaxHeight,
-                                                }}
-                                            >
-                                                {gridSize === 'large' ? (
+                                    <Link
+                                        to={`/marketplace/asset/` + getExtNftId(listing.tokenid)}
+                                        style={{textDecoration: 'none'}}
+                                        rel="noopener noreferrer"
+                                        onClick={() => {
+                                            sessionStorage.setItem(
+                                                'scrollPosition',
+                                                window.pageYOffset,
+                                            );
+                                            sessionStorage.setItem(
+                                                'listingPage',
+                                                String(pageListing.current),
+                                            );
+                                        }}
+                                    >
+                                        <NftCard
+                                            collectionId={getExtCanisterId(listing.canister)}
+                                            nftIndex={listing.index}
+                                            nftId={listing.tokenid}
+                                            cachePriority={0}
+                                            className={classes.nftCard}
+                                            max={{
+                                                width: gridSize === 'small' ? 150 : 272,
+                                                height: gridSize === 'small' ? 330 : 600,
+                                            }}
+                                            min={{
+                                                width: gridSize === 'small' ? 150 : 272,
+                                                height: gridSize === 'small' ? 110 : 200,
+                                            }}
+                                            offer={
+                                                <MinimumOffer
+                                                    tokenid={listing.tokenid}
+                                                    gridSize={gridSize}
+                                                />
+                                            }
+                                        >
+                                            {gridSize === 'large' ? (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: 12,
+                                                    }}
+                                                >
                                                     <div
                                                         style={{
                                                             display: 'flex',
                                                             flexDirection: 'column',
-                                                            minHeight: '116px',
+                                                            gap: 4,
                                                         }}
                                                     >
                                                         <span
-                                                            style={{
-                                                                marginBottom: '16px',
-                                                                marginTop: '16px',
-                                                                backgroundColor: preloaderItemColor,
-                                                                width: 90,
-                                                                height: 36,
-                                                                borderRadius: '8px',
-                                                            }}
-                                                        />
-                                                        <div style={{display: 'flex'}}>
-                                                            <div
-                                                                style={{
-                                                                    display: 'flex',
-                                                                    flexGrow: 1,
-                                                                    flexDirection: 'column',
-                                                                }}
-                                                            >
-                                                                <span
-                                                                    style={{
-                                                                        marginBottom: '8px',
-                                                                        backgroundColor:
-                                                                            preloaderItemColor,
-                                                                        width: 50,
-                                                                        height: 24,
-                                                                        borderRadius: '8px',
-                                                                    }}
-                                                                />
-                                                                <span
-                                                                    style={{
-                                                                        backgroundColor:
-                                                                            preloaderItemColor,
-                                                                        width: 60,
-                                                                        height: 16,
-                                                                        borderRadius: '8px',
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            <span
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        toniqColors.pageInteraction
-                                                                            .foregroundColor,
-                                                                    width: 92,
-                                                                    height: 48,
-                                                                    borderRadius: '8px',
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )}
-                                            </NftCardPlaceholder>
-                                        }
-                                    >
-                                        <Link
-                                            to={
-                                                `/marketplace/asset/` + getExtNftId(listing.tokenid)
-                                            }
-                                            style={{textDecoration: 'none'}}
-                                            rel="noopener noreferrer"
-                                            onClick={() => {
-                                                sessionStorage.setItem(
-                                                    'scrollPosition',
-                                                    window.pageYOffset,
-                                                );
-                                                sessionStorage.setItem(
-                                                    'listingPage',
-                                                    String(pageListing.current),
-                                                );
-                                            }}
-                                        >
-                                            <NftCard
-                                                collectionId={getExtCanisterId(listing.canister)}
-                                                nftIndex={listing.index}
-                                                nftId={listing.tokenid}
-                                                cachePriority={0}
-                                                className={classes.nftCard}
-                                                max={{
-                                                    width: gridSize === 'small' ? 150 : 272,
-                                                    height: gridSize === 'small' ? 330 : 600,
-                                                }}
-                                                min={{
-                                                    width: gridSize === 'small' ? 150 : 272,
-                                                    height: gridSize === 'small' ? 110 : 200,
-                                                }}
-                                                offer={
-                                                    <MinimumOffer
-                                                        tokenid={listing.tokenid}
-                                                        gridSize={gridSize}
-                                                    />
-                                                }
-                                            >
-                                                {gridSize === 'large' ? (
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            gap: 12,
-                                                        }}
-                                                    >
-                                                        <div
-                                                            style={{
-                                                                display: 'flex',
-                                                                flexDirection: 'column',
-                                                                gap: 4,
-                                                            }}
+                                                            style={cssToReactStyleObject(
+                                                                toniqFontStyles.boldParagraphFont,
+                                                            )}
                                                         >
-                                                            <span
-                                                                style={cssToReactStyleObject(
-                                                                    toniqFontStyles.boldParagraphFont,
-                                                                )}
-                                                            >
-                                                                #{listing.mintNumber || ''}
-                                                            </span>
-                                                            {typeof listing.rarity === 'number' && (
-                                                                <span
-                                                                    style={{
-                                                                        ...cssToReactStyleObject(
-                                                                            toniqFontStyles.labelFont,
-                                                                        ),
-                                                                        opacity: '0.64',
-                                                                    }}
-                                                                >
-                                                                    NRI: {listing.rarity}%
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <div style={{display: 'flex'}}>
+                                                            #{listing.mintNumber || ''}
+                                                        </span>
+                                                        {typeof listing.rarity === 'number' && (
                                                             <span
                                                                 style={{
-                                                                    flexGrow: 1,
-                                                                    margin: 'auto 0',
+                                                                    ...cssToReactStyleObject(
+                                                                        toniqFontStyles.labelFont,
+                                                                    ),
+                                                                    opacity: '0.64',
                                                                 }}
                                                             >
-                                                                <span
-                                                                    style={{
-                                                                        display: 'flex',
-                                                                        ...cssToReactStyleObject(
-                                                                            toniqFontStyles.h3Font,
-                                                                        ),
-                                                                    }}
-                                                                >
-                                                                    {listing.price ? (
-                                                                        <PriceICP
-                                                                            large={true}
-                                                                            volume={true}
-                                                                            clean={false}
-                                                                            price={listing.price}
-                                                                        />
-                                                                    ) : (
-                                                                        'Unlisted'
-                                                                    )}
-                                                                </span>
+                                                                NRI: {listing.rarity}%
                                                             </span>
-                                                            {listing.price ? (
-                                                                <ToniqButton
-                                                                    text="Buy Now"
-                                                                    onClick={e => {
-                                                                        e.preventDefault();
-                                                                        buyNft(
-                                                                            listing.canister,
-                                                                            listing.index,
-                                                                            listing,
-                                                                            _updates,
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                ''
-                                                            )}
-                                                        </div>
+                                                        )}
                                                     </div>
-                                                ) : (
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            gap: 12,
-                                                        }}
-                                                    >
-                                                        <div
+                                                    <div style={{display: 'flex'}}>
+                                                        <span
                                                             style={{
-                                                                display: 'flex',
-                                                                justifyContent: 'space-between',
-                                                                alignItems: 'center',
+                                                                flexGrow: 1,
+                                                                margin: 'auto 0',
                                                             }}
                                                         >
                                                             <span
                                                                 style={{
                                                                     display: 'flex',
                                                                     ...cssToReactStyleObject(
-                                                                        toniqFontStyles.boldParagraphFont,
+                                                                        toniqFontStyles.h3Font,
                                                                     ),
                                                                 }}
                                                             >
                                                                 {listing.price ? (
                                                                     <PriceICP
-                                                                        large={false}
+                                                                        large={true}
                                                                         volume={true}
                                                                         clean={false}
                                                                         price={listing.price}
@@ -697,7 +551,7 @@ export function ListingsNftCard(props) {
                                                                     'Unlisted'
                                                                 )}
                                                             </span>
-                                                        </div>
+                                                        </span>
                                                         {listing.price ? (
                                                             <ToniqButton
                                                                 text="Buy Now"
@@ -710,41 +564,93 @@ export function ListingsNftCard(props) {
                                                                         _updates,
                                                                     );
                                                                 }}
-                                                                style={{
-                                                                    height: 32,
-                                                                    ...cssToReactStyleObject(
-                                                                        toniqFontStyles.boldFont,
-                                                                    ),
-                                                                    fontSize: 14,
-                                                                }}
                                                             />
                                                         ) : (
                                                             ''
                                                         )}
                                                     </div>
-                                                )}
+                                                </div>
+                                            ) : (
                                                 <div
-                                                    className={classes.favourite}
                                                     style={{
-                                                        position: 'absolute',
-                                                        top: gridSize === 'small' ? 20 : 24,
-                                                        left: gridSize === 'small' ? 14 : 24,
-                                                        zIndex: 100,
-                                                    }}
-                                                    onClick={e => {
-                                                        e.preventDefault();
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: 12,
                                                     }}
                                                 >
-                                                    <Favourite
-                                                        refresher={faveRefresher}
-                                                        identity={identity}
-                                                        loggedIn={loggedIn}
-                                                        tokenid={listing.tokenid}
-                                                    />
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                display: 'flex',
+                                                                ...cssToReactStyleObject(
+                                                                    toniqFontStyles.boldParagraphFont,
+                                                                ),
+                                                            }}
+                                                        >
+                                                            {listing.price ? (
+                                                                <PriceICP
+                                                                    large={false}
+                                                                    volume={true}
+                                                                    clean={false}
+                                                                    price={listing.price}
+                                                                />
+                                                            ) : (
+                                                                'Unlisted'
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    {listing.price ? (
+                                                        <ToniqButton
+                                                            text="Buy Now"
+                                                            onClick={e => {
+                                                                e.preventDefault();
+                                                                buyNft(
+                                                                    listing.canister,
+                                                                    listing.index,
+                                                                    listing,
+                                                                    _updates,
+                                                                );
+                                                            }}
+                                                            style={{
+                                                                height: 32,
+                                                                ...cssToReactStyleObject(
+                                                                    toniqFontStyles.boldFont,
+                                                                ),
+                                                                fontSize: 14,
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        ''
+                                                    )}
                                                 </div>
-                                            </NftCard>
-                                        </Link>
-                                    </LazyLoad>
+                                            )}
+                                            <div
+                                                className={classes.favourite}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: gridSize === 'small' ? 20 : 24,
+                                                    left: gridSize === 'small' ? 14 : 24,
+                                                    zIndex: 100,
+                                                }}
+                                                onClick={e => {
+                                                    e.preventDefault();
+                                                }}
+                                            >
+                                                <Favourite
+                                                    refresher={faveRefresher}
+                                                    identity={identity}
+                                                    loggedIn={loggedIn}
+                                                    tokenid={listing.tokenid}
+                                                />
+                                            </div>
+                                        </NftCard>
+                                    </Link>
                                 );
                             },
                         )}
@@ -753,6 +659,18 @@ export function ListingsNftCard(props) {
                     ''
                 )}
             </div>
+            <Container
+                innerRef={triggerRef}
+                style={{
+                    position: 'absolute',
+                    margin: 'auto 0',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 20,
+                }}
+            ></Container>
             <StateContainer
                 show={listings && !getShowListings(chunkedAndFilteredAndSortedListings).length}
             >
