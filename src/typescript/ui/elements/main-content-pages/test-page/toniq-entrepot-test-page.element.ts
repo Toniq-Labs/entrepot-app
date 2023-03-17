@@ -4,9 +4,7 @@ import {html, css, assign, defineElement, defineElementEvent, listen} from 'elem
 import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
-import {shuffle} from '../../../../augments/array';
 import {Collection} from '../../../../data/models/collection';
-import {mockCanister} from './toniq-entrepot-home-page-mock-canister';
 import {encodeNftId} from '../../../../api/ext';
 import {decodeNftId, getExtNftId} from '../../../../data/nft/nft-id';
 import {NftImageInputs} from '../../../../data/canisters/get-nft-image-data';
@@ -17,6 +15,9 @@ import {TopCardInputs} from '../home-page/children/toniq-entrepot-top-card.eleme
 import {NftRoute} from '../../common/toniq-entrepot-carousel.element';
 import {CanisterId} from '../../../../data/models/canister-id';
 import {ValidIcp} from '../../../../data/icp';
+import {app} from './../../../../../firebase';
+import {getFirestore} from 'firebase/firestore';
+import {doc, getDoc} from 'firebase/firestore';
 
 type TopVolume = {
     canisterId: CanisterId;
@@ -99,81 +100,100 @@ const EntrepotTestElement = defineElement<{
             | Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>
             | Record<'allTime' | 'past24Hours', ReadonlyArray<TopCardInputs>>,
     },
-    initCallback: ({inputs, updateState}) => {
-        const carouselItems = inputs.collections
-            .filter(collection => !collection.dev)
-            .filter(collection => {
-                return mockCanister.includes(collection.canister);
-            })
-            .slice(0, 26)
-            .map(collection => {
-                const tokenid = encodeNftId(
-                    collection.canister,
-                    Math.floor(Math.random() * (collection.stats?.listings! - 0) + 0),
-                );
-                const {index, canister} = decodeNftId(tokenid);
-                const nftRoute = getExtNftId(tokenid);
-                return {
-                    ...collection,
-                    nftRoute,
-                    collectionId: canister,
-                    fullSize: false,
-                    cachePriority: 0,
-                    nftId: tokenid,
-                    nftIndex: index,
-                    ref: 0,
-                    min: {width: 360, height: 360},
-                    max: {width: 360, height: 360},
-                };
-            });
-        updateState({carouselItems});
+    initCallback: async ({inputs, updateState}) => {
+        const db = getFirestore(app);
+        const docBannerRef = doc(db, 'home', 'banner');
+        const docBannerSnap = await getDoc(docBannerRef);
+        let bannerSnapshot = [] as Array<string>;
 
-        const featuredCollections = inputs.collections
-            .filter(collection => !collection.dev)
-            .filter(collection => {
-                return mockCanister.includes(collection.canister);
-            })
-            .slice(0, 4)
-            .map(collection => {
-                return {
-                    collectionName: collection.name,
-                    nfts: Array(10)
-                        .fill(0)
-                        .map(() => {
-                            const tokenid = encodeNftId(
-                                collection.canister,
-                                Math.floor(Math.random() * (collection.stats?.listings! - 0) + 0),
-                            );
-                            const {index, canister} = decodeNftId(tokenid);
+        if (docBannerSnap.exists()) {
+            bannerSnapshot = Object.values(docBannerSnap.data());
 
-                            return {
-                                collectionId: canister,
-                                nftId: tokenid,
-                                nftIndex: index,
-                                fullSize: true,
-                                cachePriority: 0,
-                                ref: 0,
-                            };
-                        }),
-                    longDescription: collection.blurb,
-                    collectionRoute: collection.route,
-                    socialLinks: [
-                        {
-                            link: collection.discord,
-                            type: SocialLinkTypeEnum.Discord,
-                        },
-                        {
-                            link: collection.twitter,
-                            type: SocialLinkTypeEnum.Twitter,
-                        },
-                        {
-                            link: collection.telegram,
-                            type: SocialLinkTypeEnum.Telegram,
-                        },
-                    ].filter(social => social.link !== ''),
-                };
-            });
-        updateState({featuredCollections});
+            const carouselItems = inputs.collections
+                .filter(collection => !collection.dev)
+                .filter(collection => {
+                    return bannerSnapshot.includes(collection.id);
+                })
+                .slice(0, 26)
+                .map(collection => {
+                    const tokenid = encodeNftId(
+                        collection.canister,
+                        Math.floor(Math.random() * (collection.stats?.listings! - 0) + 0),
+                    );
+                    const {index, canister} = decodeNftId(tokenid);
+                    const nftRoute = getExtNftId(tokenid);
+                    return {
+                        ...collection,
+                        nftRoute,
+                        collectionId: canister,
+                        fullSize: false,
+                        cachePriority: 0,
+                        nftId: tokenid,
+                        nftIndex: index,
+                        ref: 0,
+                        min: {width: 360, height: 360},
+                        max: {width: 360, height: 360},
+                    };
+                });
+            updateState({carouselItems});
+        }
+
+        const docFeaturedRef = doc(db, 'home', 'featured');
+        const docFeaturedSnap = await getDoc(docFeaturedRef);
+        let featuredSnapshot = [] as Array<string>;
+
+        if (docFeaturedSnap.exists()) {
+            featuredSnapshot = Object.values(docFeaturedSnap.data());
+
+            const featuredCollections = inputs.collections
+                .filter(collection => !collection.dev)
+                .filter(collection => {
+                    return featuredSnapshot.includes(collection.id);
+                })
+                .slice(0, 4)
+                .map(collection => {
+                    return {
+                        collectionName: collection.name,
+                        nfts: Array(10)
+                            .fill(0)
+                            .map(() => {
+                                const tokenid = encodeNftId(
+                                    collection.canister,
+                                    Math.floor(
+                                        Math.random() * (collection.stats?.listings! - 0) + 0,
+                                    ),
+                                );
+                                const {index, canister} = decodeNftId(tokenid);
+
+                                return {
+                                    collectionId: canister,
+                                    nftId: tokenid,
+                                    nftIndex: index,
+                                    fullSize: true,
+                                    cachePriority: 0,
+                                    ref: 0,
+                                };
+                            }),
+                        longDescription: collection.blurb,
+                        collectionRoute: collection.route,
+                        socialLinks: [
+                            {
+                                link: collection.discord,
+                                type: SocialLinkTypeEnum.Discord,
+                            },
+                            {
+                                link: collection.twitter,
+                                type: SocialLinkTypeEnum.Twitter,
+                            },
+                            {
+                                link: collection.telegram,
+                                type: SocialLinkTypeEnum.Telegram,
+                            },
+                        ].filter(social => social.link !== ''),
+                    };
+                });
+            updateState({featuredCollections});
+        }
 
         setIntervalImmediately(async () => {
             const topCollections = {
