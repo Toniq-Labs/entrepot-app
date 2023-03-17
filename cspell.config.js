@@ -6,6 +6,7 @@ module.exports = {
         ...baseConfig.ignorePaths,
         'public/',
         'src/ic/candid',
+        'src/firebase.ts',
     ],
     patterns: [
         {
@@ -76,5 +77,7 @@ module.exports = {
         'toruslabs',
         'videos_that_dont_fit_in_frame',
         'localforage',
+        'Firestore',
+        'firestore',
     ],
 };
