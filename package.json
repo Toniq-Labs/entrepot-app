@@ -59,7 +59,6 @@
         "dexie": "^3.2.3",
         "element-vir": "^9.2.1",
         "ethereum-blockies-base64": "^1.0.2",
-        "firebase": "^9.18.0",
         "html-react-parser": "3.0.4",
         "https-browserify": "^1.0.0",
         "ic-stoic-identity": "^2.0.0",
