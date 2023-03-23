@@ -1,4 +1,3 @@
-/* global BigInt */
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
@@ -8,6 +7,7 @@ import {fromHexString} from './typescript/augments/string';
 import {EntrepotMarketplace} from './typescript/ui/elements/main-content-pages/marketplace-page/toniq-entrepot-marketplace-page.element';
 import {EntrepotProfile} from './typescript/ui/elements/main-content-pages/profile-page/toniq-entrepot-profile-page.element';
 import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms-of-service-page/toniq-entrepot-terms-of-service-page.element';
+import {EntrepotSaleRoutePage} from './typescript/ui/elements/main-content-pages/sale-page/route/toniq-entrepot-sale-route-page.element';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/dexie/get-collections';
 import {isProd} from './typescript/environment/environment-by-url';
@@ -26,7 +26,6 @@ import Contact from './views/Contact';
 import Detail from './views/Detail/Detail.js';
 import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
 import extjs from './ic/extjs.js';
-import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
 import getNri from './ic/nftv.js';
 import legacyPrincipalPayouts from './payments.json';
 import ListingForm from './components/ListingForm';
@@ -1971,7 +1970,7 @@ export default function App() {
                                         />
                                     }
                                 />
-                                <Route
+                                {/* <Route
                                     path="/sale/:route"
                                     exact
                                     element={
@@ -1997,6 +1996,11 @@ export default function App() {
                                             accounts={accounts}
                                         />
                                     }
+                                /> */}
+                                <Route
+                                    path="/sale/:route"
+                                    exact
+                                    element={<EntrepotSaleRoutePage collections={collections} />}
                                 />
                                 <Route
                                     path="/mint"

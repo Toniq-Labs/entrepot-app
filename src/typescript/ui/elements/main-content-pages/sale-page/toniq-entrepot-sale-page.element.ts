@@ -69,7 +69,10 @@ export const EntrepotSalePageElement = defineElement<{
 
             const inProgress = collectionSales
                 .filter(collectionSale => {
-                    return collectionSale.sales.percentMinted < 100;
+                    return (
+                        moment(collectionSale.sales.startDate).isBefore(moment()) &&
+                        collectionSale.sales.percentMinted < 100
+                    );
                 })
                 .sort(
                     (prev: CollectionSales, next: CollectionSales) =>
