@@ -1,4 +1,4 @@
-import {removeNativeFormStyles, toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
+import {removeNativeFormStyles, toniqColors} from '@toniq-labs/design-system';
 import {assign, css, defineElementNoInputs, html} from 'element-vir';
 import {EntrepotHorizontalScrollElement} from '../../common/toniq-entrepot-horizontal-scroll.element';
 import {EntrepotSaleCardElement} from './toniq-entrepot-sale-card.element';
