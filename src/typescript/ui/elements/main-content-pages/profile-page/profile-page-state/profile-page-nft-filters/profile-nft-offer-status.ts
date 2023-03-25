@@ -10,18 +10,18 @@ export function calculateOfferStatus(
         return 'none';
     }
 
-    const offered = nft.offers.filter(
+    const received = nft.offers.filter(
         offer => offer.offererAccountAddress === currentUserAccountAddress,
     );
 
-    const received = nft.offers.length - offered.length > 0;
+    const offered = nft.offers.length - received.length > 0;
 
-    if (offered.length && received) {
+    if (received.length && received) {
         return 'offered received';
-    } else if (offered.length) {
-        return 'offered';
-    } else if (received) {
+    } else if (received.length) {
         return 'received';
+    } else if (offered) {
+        return 'offered';
     }
 
     return 'none';
