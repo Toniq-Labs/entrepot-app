@@ -1,4 +1,3 @@
-/* global BigInt */
 import React, {useState} from 'react';
 import {makeStyles, Container} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
@@ -16,8 +15,6 @@ import {
     createEntrepotApiWithIdentity,
     createCloudFunctionsEndpointUrl,
 } from '../../typescript/api/entrepot-apis/entrepot-data-api';
-import {treasureCanisterId} from '../../typescript/data/canisters/treasure-canister';
-import {EntrepotNftDisplayReact} from '../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {decodeNftId} from '../../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../../typescript/data/nft/nft-mint-number';
 
@@ -120,79 +117,6 @@ const DetailBody = props => {
         await _refresh();
     };
 
-    const displayImage = tokenid => {
-        let {index, canister} = decodeNftId(tokenid);
-        let detailPage;
-
-        if (collection.hasOwnProperty('detailpage')) {
-            detailPage = collection['detailpage'];
-        } else {
-            detailPage = 'Missing';
-        }
-
-        if (index === 99 && canister === 'kss7i-hqaaa-aaaah-qbvmq-cai')
-            detailPage = 'interactive_nfts_or_videos';
-
-        switch (detailPage) {
-            case 'asset_canister':
-
-            // for generative collections where assets are all stored on the same canister
-            // case "zvycl-fyaaa-aaaah-qckmq-cai": IC Apes doesn't work
-            // case 'generative_assets_on_nft_canister':
-            //     return extractEmbeddedImage(
-            //         EntrepotNFTImage(canister, index, tokenid, true),
-            //         classes,
-            //     );
-
-            // for interactive NFTs or videos
-            case 'interactive_nfts_or_videos':
-            case treasureCanisterId:
-                return 'IFRAME';
-            // return (
-            //     <iframe
-            //         frameBorder="0"
-            //         src={EntrepotNFTImage(canister, index, tokenid, true)}
-            //         alt=""
-            //         title={tokenid}
-            //         className={classes.nftIframe}
-            //     />
-            // );
-
-            // for videos that don't fit in the iframe and need a video tag
-            case 'videos_that_dont_fit_in_frame':
-            // return extractEmbeddedVideo(
-            //     EntrepotNFTImage(canister, index, tokenid, true),
-            //     classes,
-            // );
-            // for pre-generated images residing on asset canisters
-            // case "rw623-hyaaa-aaaah-qctcq-cai": doesn't work for OG medals
-            case 'asset_canisters':
-            // return extractEmbeddedImage(
-            //     detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
-            //     classes,
-            // );
-
-            // default case is to just use the thumbnail on the detail page
-            default:
-                return (
-                    <EntrepotNftDisplayReact
-                        collectionId={canister}
-                        nftIndex={index}
-                        nftId={tokenid}
-                        fullSize={true}
-                        max={{
-                            width: 477,
-                            height: 1000,
-                        }}
-                    />
-                );
-            // return extractEmbeddedImage(
-            //     detailsUrl ? detailsUrl : EntrepotNFTImage(canister, index, tokenid, true),
-            //     classes,
-            // );
-        }
-    };
-
     useInterval(_refresh, 2 * 1000);
     useInterval(() => {
         var nf = EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '';
@@ -206,6 +130,32 @@ const DetailBody = props => {
         await reloadOffers();
         props.loader(false);
         props.alert('Offer cancelled', 'Your offer was cancelled successfully!');
+    };
+
+    const acceptOffer = async offer => {
+        if (await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')) {
+            props.loader(true, 'Accepting offer...');
+            const entrepotApi = createEntrepotApiWithIdentity(props.identity);
+            var offersAPI = entrepotApi.canister('fcwhh-piaaa-aaaak-qazba-cai');
+            var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
+            await entrepotApi
+                .token(tokenid)
+                .transfer(
+                    props.identity.getPrincipal().toText(),
+                    props.currentAccount,
+                    'fcwhh-piaaa-aaaak-qazba-cai',
+                    BigInt(1),
+                    BigInt(0),
+                    memo,
+                    true,
+                );
+            await _refresh();
+            props.loader(false);
+            props.alert(
+                'Offer accepted',
+                'You have accepted this offer. Your ICP will be transferred to you shortly!',
+            );
+        }
     };
 
     const getAttributes = async index => {
@@ -352,6 +302,7 @@ const DetailBody = props => {
                     owner={owner}
                     attributes={attributes}
                     cancelOffer={cancelOffer}
+                    acceptOffer={acceptOffer}
                     setOpenOfferForm={setOpenOfferForm}
                     {...props}
                 />

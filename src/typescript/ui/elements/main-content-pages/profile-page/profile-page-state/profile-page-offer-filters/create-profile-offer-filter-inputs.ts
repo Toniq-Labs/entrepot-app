@@ -3,6 +3,7 @@ import {EntrepotUserAccount} from '../../../../../../data/models/user-data/accou
 import {ProfileCompleteOffer} from './profile-offer-filters';
 import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
 import {createProfileNftFilterInputs} from '../profile-page-nft-filters/create-profile-nft-filter-inputs';
+import offerBlacklist from './../../../../../../../offer-blacklist.json';
 
 export function createProfileOfferFilterInputs({
     showFilters,
@@ -27,7 +28,7 @@ export function createProfileOfferFilterInputs({
     ProfilePageStateType,
     'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts' | 'viewStyle'
 >) {
-    return createProfileNftFilterInputs({
+    const createProfileFilterInputs = createProfileNftFilterInputs({
         showFilters,
         allSorts,
         allFilters,
@@ -40,4 +41,13 @@ export function createProfileOfferFilterInputs({
         nftClickCallback,
         viewStyle,
     });
+
+    const filteredBlacklistedCanisterOffers = {
+        ...createProfileFilterInputs,
+        allEntries: createProfileFilterInputs.allEntries.filter(entry => {
+            return !offerBlacklist.includes(entry.collectionId);
+        }),
+    };
+
+    return filteredBlacklistedCanisterOffers;
 }

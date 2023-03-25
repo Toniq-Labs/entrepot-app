@@ -35,6 +35,7 @@ import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {EntrepotNftDisplayReact} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getNftMintNumber} from '../../../typescript/data/nft/nft-mint-number';
+import offerBlacklist from './../../../offer-blacklist.json';
 
 const DetailSectionHeader = props => {
     const {
@@ -74,6 +75,10 @@ const DetailSectionHeader = props => {
 
     const onScrollRight = () => {
         benefitsContentWrapperRef.current.scrollBy(100, 0);
+    };
+
+    const isBlacklistedFromOffer = () => {
+        return offerBlacklist.includes(canister);
     };
 
     return (
@@ -296,13 +301,16 @@ const DetailSectionHeader = props => {
                                                                     );
                                                                 }}
                                                             />
-                                                            <ToniqButton
-                                                                text="Make Offer"
-                                                                className="toniq-button-outline"
-                                                                onClick={() => {
-                                                                    makeOffer();
-                                                                }}
-                                                            />
+                                                            {!isBlacklistedFromOffer() && (
+                                                                <ToniqButton
+                                                                    text="Make Offer"
+                                                                    className="toniq-button-outline"
+                                                                    onClick={() => {
+                                                                        makeOffer();
+                                                                    }}
+                                                                />
+                                                            )}
+
                                                             {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
                                                         </div>
                                                     ) : (

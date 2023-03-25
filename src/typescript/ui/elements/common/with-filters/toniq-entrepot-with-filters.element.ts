@@ -1,6 +1,6 @@
 import {repeat} from 'lit/directives/repeat.js';
 import {classMap} from 'lit/directives/class-map.js';
-import {assign, css, defineElement, defineElementEvent, html, listen, renderIf} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {CurrentSort, FilterDefinitions, SortDefinition} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
 import {applyAllFilters} from './apply-filters';

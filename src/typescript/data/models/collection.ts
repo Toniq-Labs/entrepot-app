@@ -37,8 +37,10 @@ export type BaseCollection = {
     name: string;
     nftlicense: string;
     nftv: boolean;
+    owner: string;
     priority: number;
     route: string;
+    royalty: string;
     sale: boolean;
     saletype: 'v1' | 'v2' | 'auction';
     standard: 'legacy' | 'ext' | 'EXT';
