@@ -16,7 +16,7 @@ export function calculateOfferStatus(
 
     const offered = nft.offers.length - received.length > 0;
 
-    if (received.length && received) {
+    if (received.length && offered) {
         return 'offered received';
     } else if (received.length) {
         return 'received';
