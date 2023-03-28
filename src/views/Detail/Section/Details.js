@@ -527,7 +527,7 @@ const useStyles = makeStyles(theme => ({
         padding: '24px',
         width: '50%',
         minHeight: 500,
-        maxHeight: 510,
+        maxHeight: 512,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
             minHeight: 'unset',
