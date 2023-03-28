@@ -10,18 +10,37 @@ export function calculateOfferStatus(
         return 'none';
     }
 
-    const received = nft.offers.filter(
-        offer => offer.offererAccountAddress === currentUserAccountAddress,
-    );
+    const offered = nft.offers.filter(() => nft.ownerAddress !== currentUserAccountAddress);
+    const received = nft.offers.length - offered.length > 0;
 
-    const offered = nft.offers.length - received.length > 0;
-
-    if (received.length && offered) {
+    if (offered.length && received) {
         return 'offered received';
-    } else if (received.length) {
-        return 'received';
-    } else if (offered) {
+    } else if (offered.length) {
         return 'offered';
+    } else if (received) {
+        return 'received';
+    }
+
+    return 'none';
+}
+
+export function calculateOfferStatusFavorites(
+    currentUserAccountAddress: string,
+    nft: BaseNft,
+): ProfileNftOfferStatus {
+    if (!nft.offers.length) {
+        return 'none';
+    }
+
+    const offered = nft.offers.filter(() => nft.ownerAddress === currentUserAccountAddress);
+    const received = nft.offers.length - offered.length > 0;
+
+    if (offered.length && received) {
+        return 'offered received';
+    } else if (offered.length) {
+        return 'offered';
+    } else if (received) {
+        return 'received';
     }
 
     return 'none';

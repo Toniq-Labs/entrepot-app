@@ -23,7 +23,10 @@ import {
     FilterDefinitions,
     SingleFilterDefinition,
 } from '../../../common/with-filters/filters-types';
-import {calculateOfferStatus} from './profile-page-nft-filters/profile-nft-offer-status';
+import {
+    calculateOfferStatus,
+    calculateOfferStatusFavorites,
+} from './profile-page-nft-filters/profile-nft-offer-status';
 import {createProfileOfferFilterInputs} from './profile-page-offer-filters/create-profile-offer-filter-inputs';
 
 function combineOffers({
@@ -116,7 +119,13 @@ export function createProfileFilterInputs({
                       nftNri,
                       isListed: !!nft.listing.price,
                       collection,
-                      offerStatus: calculateOfferStatus(userAccount?.address ?? '', nft),
+                      offerStatus: isNftType(
+                          nft,
+                          profileTabMap.favorites.value,
+                          currentProfilePageState,
+                      )
+                          ? calculateOfferStatusFavorites(userAccount?.address ?? '', nft)
+                          : calculateOfferStatus(userAccount?.address ?? '', nft),
                   };
 
                   return fullUserNft;
