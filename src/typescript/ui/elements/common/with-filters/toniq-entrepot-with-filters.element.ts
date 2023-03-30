@@ -238,7 +238,7 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
         .state-container {
             display: flex;
             justify-content: center;
-            align-ttems: center;
+            align-items: center;
             background: #ffffff;
             border: 1px ${toniqColors.pageInteraction.foregroundColor} solid;
             border-radius: 8px;
