@@ -52,7 +52,7 @@ export const EntrepotProfileNftCardElement = defineToniqElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        const hasListing = inputs.nft.listing.price > 0;
+        const hasListing = inputs.nft.listing.price ? inputs.nft.listing.price > 0 : false;
         const listPriceDisplay = hasListing ? toIcp(BigInt(inputs.nft.listing.price)) : 'Unlisted';
 
         const rarityDisplay = isRuntimeTypeOf(inputs.nft.nftNri, 'number')
