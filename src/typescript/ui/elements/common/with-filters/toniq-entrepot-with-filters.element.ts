@@ -1,5 +1,7 @@
 import {repeat} from 'lit/directives/repeat.js';
 import {classMap} from 'lit/directives/class-map.js';
+import {ref} from 'lit/directives/ref.js';
+import {createRef} from 'lit/directives/ref.js';
 import {assign, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {CurrentSort, FilterDefinitions, SortDefinition} from './filters-types';
 import {HTMLTemplateResult} from 'lit';
@@ -31,6 +33,7 @@ import {
     mainEntrepotHeaderHeight,
     filterScrollHeaderBottomMargin,
 } from '../../../fixed-sizes';
+import chunk from 'lodash.chunk';
 
 export type WithFiltersElementInputs<
     EntryData extends object,
@@ -232,6 +235,22 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             box-shadow: 0 0 10px 15px white;
         }
 
+        .state-container {
+            display: flex;
+            justify-content: center;
+            align-ttems: center;
+            background: #ffffff;
+            border: 1px ${toniqColors.pageInteraction.foregroundColor} solid;
+            border-radius: 8px;
+            padding: 12px 16px;
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 32px;
+            ${toniqFontStyles.boldParagraphFont};
+            text-align: center;
+        }
+
         @media (max-width: 1200px) {
             :host {
                 ${cssVarNames.filterPanelWidth}: 200px;
@@ -285,10 +304,36 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
     `,
     stateInit: {
         searchValue: '',
+        loadingRef: createRef(),
+        pageListing: 0,
+        hasRenderedOnce: false,
     },
-    initCallback: ({updateState}) => {
+    initCallback: ({state, updateState}) => {
         const searchTerm = new URL(document.location.href).searchParams.get('search');
         if (searchTerm !== null) updateState({searchValue: searchTerm});
+
+        const options = {
+            root: null,
+            rootMargin: '-32px',
+            threshold: 0,
+        };
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.intersectionRatio > 0) {
+                    updateState({pageListing: state.pageListing + 1});
+                }
+            });
+        }, options);
+
+        const loadingRefInterval = setInterval(() => {
+            const loadingRefEl = state.loadingRef.value;
+
+            if (loadingRefEl) {
+                observer.observe(loadingRefEl);
+                clearInterval(loadingRefInterval);
+            }
+        }, 1000);
     },
     events: {
         showFiltersChange: defineElementEvent<boolean>(),
@@ -309,6 +354,16 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             ...inputs,
             entries: filteredEntries,
         });
+
+        const chunkedAndSortedFilteredEntries = chunk(sortedFilteredEntries, 4);
+
+        const getEntries = chunkedAndSortedFilteredEntries.reduce((current, entry, index) => {
+            if (index <= state.pageListing) {
+                return current.concat(entry);
+            } else {
+                return current;
+            }
+        }, []);
 
         const filterTemplates = Object.keys(inputs.currentFilters).map((filterName, index) => {
             const filter = inputs.currentFilters[filterName];
@@ -486,11 +541,33 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                                     })}
                                 ></${ToniqIcon}>
                             `,
-                            repeat(
-                                sortedFilteredEntries,
-                                entry => entry,
-                                inputs.createEntryTemplateCallback,
-                            ),
+                            repeat(getEntries, entry => entry, inputs.createEntryTemplateCallback),
+                        )}
+                    </div>
+                    <div ${ref(state.loadingRef)}>
+                        ${renderIf(
+                            !getEntries.length,
+                            html`
+                                <div class="state-container">No Result</div>
+                            `,
+                            html`
+                                ${renderIf(
+                                    state.pageListing >= chunkedAndSortedFilteredEntries.length,
+                                    html`
+                                        <div class="state-container">End of Results</div>
+                                    `,
+                                    html`
+                                <div class="state-container">
+                                    <${ToniqIcon}
+                                        ${assign(ToniqIcon, {
+                                            icon: LoaderAnimated24Icon,
+                                        })}
+                                    ></${ToniqIcon}>
+                                    &nbsp;Loading...
+                                </div>
+                            `,
+                                )}
+                            `,
                         )}
                     </div>
                 </div>
