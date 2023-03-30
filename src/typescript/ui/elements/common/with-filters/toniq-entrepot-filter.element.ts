@@ -294,12 +294,14 @@ function createImageTogglesFilterTemplate<
                 })}
             ></${EntrepotImageToggleFilterElement}>
             <hr>
-            ${Object.entries(filter.entries).map(
-                ([
-                    name,
-                    imageToggleEntry,
-                ]) => {
-                    return html`
+            ${Object.entries(filter.entries)
+                .sort((a, b) => b[1].count - a[1].count)
+                .map(
+                    ([
+                        name,
+                        imageToggleEntry,
+                    ]) => {
+                        return html`
                     <${EntrepotImageToggleFilterElement}
                         ${assign(EntrepotImageToggleFilterElement, {
                             imageToggleEntry,
@@ -319,8 +321,8 @@ function createImageTogglesFilterTemplate<
                             });
                         })}
                     ></${EntrepotImageToggleFilterElement}>`;
-                },
-            )}
+                    },
+                )}
         </div>
     `;
 }
