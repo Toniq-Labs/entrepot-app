@@ -79,6 +79,7 @@ const Detail = props => {
                 loader={props.loader}
                 error={props.error}
                 tokenid={tokenid}
+                {...props}
             />
         </>
     );
