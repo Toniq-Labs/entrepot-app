@@ -256,9 +256,9 @@ const DetailBody = props => {
         if (listing.price > 0n) {
             return listing.price;
         } else if (offers && offers.length > 0) {
-            return offers[0].amount;
+            return offers[0][0].amount;
         } else if (transactions && transactions.length > 0) {
-            return transactions[0].price;
+            return transactions[0][0].price;
         } else {
             return undefined;
         }

@@ -1,6 +1,6 @@
-import {toniqFontStyles} from '@toniq-labs/design-system';
+import {defineToniqElement, toniqFontStyles} from '@toniq-labs/design-system';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {html, css, assign, defineElement, defineElementEvent, listen} from 'element-vir';
+import {html, css, assign, defineElementEvent, listen} from 'element-vir';
 import {EntrepotFlipCardElement} from '../../common/toniq-entrepot-flip-card.element';
 import {SocialLinkTypeEnum} from '../../common/toniq-entrepot-social-link.element';
 import {EntrepotHomePageElement} from '../home-page/toniq-entrepot-home-page.element';
@@ -58,7 +58,7 @@ function setIntervalImmediately(func: Function, interval: number) {
     return setInterval(func, interval);
 }
 
-const EntrepotTestElement = defineElement<{
+const EntrepotTestElement = defineToniqElement<{
     collections: Array<Collection>;
 }>()({
     tagName: 'toniq-entrepot-test-page',

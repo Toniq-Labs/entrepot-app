@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
@@ -9,10 +9,10 @@ import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
-import {Icp16Icon} from '@toniq-labs/design-system';
+import {defineToniqElement, Icp16Icon} from '@toniq-labs/design-system';
 import {EntrepotSalePreloaderElement} from './toniq-entrepot-sale-preloader.element';
 
-export const EntrepotSalePageElement = defineElement<{
+export const EntrepotSalePageElement = defineToniqElement<{
     collections: Array<Collection>;
 }>()({
     tagName: 'toniq-entrepot-sale-page',
@@ -69,7 +69,11 @@ export const EntrepotSalePageElement = defineElement<{
 
             const inProgress = collectionSales
                 .filter(collectionSale => {
-                    return collectionSale.sales.percentMinted < 100;
+                    return (
+                        moment(collectionSale.sales.startDate).isBefore(moment()) &&
+                        moment(collectionSale.sales.endDate).isAfter(moment()) &&
+                        collectionSale.sales.percentMinted < 100
+                    );
                 })
                 .sort(
                     (prev: CollectionSales, next: CollectionSales) =>
