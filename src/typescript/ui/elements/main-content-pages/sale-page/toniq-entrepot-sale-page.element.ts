@@ -53,7 +53,7 @@ export const EntrepotSalePageElement = defineToniqElement<{
         endingSoon: [] as Array<CollectionSales> | Array<CollectionSales>,
         tabs: [] as Array<TopTab> | Array<TopTab>,
     },
-    initCallback: ({state, inputs, updateState}) => {
+    initCallback: ({inputs, updateState}) => {
         const saleCollections = inputs.collections.filter(collection => collection.sale);
         getCollectionSales(saleCollections).then(collectionSales => {
             const upcoming = collectionSales
