@@ -287,36 +287,32 @@ const DetailSectionHeader = props => {
                                                     )}
                                                 </div>
                                             ) : (
-                                                <>
-                                                    {getPriceData() ? (
-                                                        <div style={{display: 'flex', gap: '16px'}}>
-                                                            <ToniqButton
-                                                                text="Buy Now"
-                                                                onClick={() => {
-                                                                    props.buyNft(
-                                                                        collection.canister,
-                                                                        index,
-                                                                        listing,
-                                                                        _afterBuy,
-                                                                    );
-                                                                }}
-                                                            />
-                                                            {!isBlacklistedFromOffer() && (
-                                                                <ToniqButton
-                                                                    text="Make Offer"
-                                                                    className="toniq-button-outline"
-                                                                    onClick={() => {
-                                                                        makeOffer();
-                                                                    }}
-                                                                />
-                                                            )}
-
-                                                            {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
-                                                        </div>
-                                                    ) : (
-                                                        ''
+                                                <div style={{display: 'flex', gap: '16px'}}>
+                                                    {listing && listing.price > 0n && (
+                                                        <ToniqButton
+                                                            text="Buy Now"
+                                                            onClick={() => {
+                                                                props.buyNft(
+                                                                    collection.canister,
+                                                                    index,
+                                                                    listing,
+                                                                    _afterBuy,
+                                                                );
+                                                            }}
+                                                        />
                                                     )}
-                                                </>
+                                                    {!isBlacklistedFromOffer() && (
+                                                        <ToniqButton
+                                                            text="Make Offer"
+                                                            className="toniq-button-outline"
+                                                            onClick={() => {
+                                                                makeOffer();
+                                                            }}
+                                                        />
+                                                    )}
+
+                                                    {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                                                </div>
                                             )}
                                         </div>
                                     ) : (
