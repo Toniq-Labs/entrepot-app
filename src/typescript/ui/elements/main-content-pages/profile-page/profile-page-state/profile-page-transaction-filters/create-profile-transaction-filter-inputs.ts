@@ -4,12 +4,7 @@ import {EntrepotProfileNftCardElement} from '../../profile-nft-card-element/toni
 import {ProfilePageStateType, ProfileViewStyleEnum} from '../profile-page-state';
 import {createBaseProfileWithFiltersInputs} from '../create-base-profile-filters';
 import {ProfileCompleteTransactionNft} from './profile-transaction-filters';
-import {
-    ToniqIcon,
-    LoaderAnimated24Icon,
-    toniqFontStyles,
-    toniqColors,
-} from '@toniq-labs/design-system';
+import {ToniqIcon, LoaderAnimated24Icon} from '@toniq-labs/design-system';
 import {TransactionDirection} from '../../../../../../data/nft/user-nft-transaction';
 import {FullProfileNft} from '../../profile-page-nfts/full-profile-nft';
 import {getRelativeDate} from '../../../../../../augments/relative-date';

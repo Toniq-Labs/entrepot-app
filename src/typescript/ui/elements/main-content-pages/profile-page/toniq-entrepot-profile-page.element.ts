@@ -13,7 +13,7 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.element';
-import {getAllowedTabs, ProfileTab, profileTabMap} from './profile-page-state/profile-tabs';
+import {getAllowedTabs, ProfileTab} from './profile-page-state/profile-tabs';
 import {
     profilePageStateInit,
     ProfilePageInputs,
@@ -21,11 +21,7 @@ import {
     initProfileElement,
     ProfileViewStyleEnum,
     listViewFinalItemHeaderTitleByTab,
-    createAsyncProfileStateUpdateOwnedNfts,
-    createAsyncProfileStateUpdateFavorites,
-    createAsyncProfileStateUpdateOffers,
-    createAsyncProfileStateUpdateActivity,
-    createAsyncProfileStateUpdateEarn,
+    createAsyncProfileStateUpdateNRI,
 } from './profile-page-state/profile-page-state';
 import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
 import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
@@ -87,6 +83,7 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
     stateInit: profilePageStateInit,
     initCallback: ({inputs, state, updateState}) => {
         initProfileElement({inputs, state, updateState});
+        updateState(createAsyncProfileStateUpdateNRI({state}));
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         const filterInputs = createProfileFilterInputs({
@@ -104,19 +101,7 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             userAccount: inputs.userAccount,
         });
 
-        if (state.currentProfileTab.value === profileTabMap['my-nfts'].value) {
-            updateState(createAsyncProfileStateUpdateOwnedNfts({inputs}));
-        } else if (state.currentProfileTab.value === profileTabMap['favorites'].value) {
-            updateState(createAsyncProfileStateUpdateFavorites({inputs}));
-        } else if (state.currentProfileTab.value === profileTabMap['offers'].value) {
-            updateState(createAsyncProfileStateUpdateOffers({inputs}));
-        } else if (state.currentProfileTab.value === profileTabMap['activity'].value) {
-            updateState(createAsyncProfileStateUpdateActivity({inputs}));
-        } else if (state.currentProfileTab.value === profileTabMap['earn'].value) {
-            updateState(createAsyncProfileStateUpdateEarn({state}));
-        } else {
-            updateState(createAsyncProfileStateUpdate({state, inputs}));
-        }
+        updateState(createAsyncProfileStateUpdate({state, inputs}));
 
         const extraControlsTemplate = html`
             <div class="view-style-controls" slot="extra-controls">
