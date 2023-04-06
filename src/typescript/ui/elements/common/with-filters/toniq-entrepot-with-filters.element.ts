@@ -307,8 +307,9 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
         loadingRef: createRef(),
         pageListing: 0,
         hasRenderedOnce: false,
+        showFilters: false,
     },
-    initCallback: ({state, updateState}) => {
+    initCallback: ({inputs, state, updateState}) => {
         const searchTerm = new URL(document.location.href).searchParams.get('search');
         if (searchTerm !== null) updateState({searchValue: searchTerm});
 
@@ -334,6 +335,8 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                 clearInterval(loadingRefInterval);
             }
         }, 1000);
+
+        updateState({showFilters: inputs.showFilters});
     },
     events: {
         showFiltersChange: defineElementEvent<boolean>(),
@@ -440,12 +443,14 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             <${ToniqToggleButton}
                 class="${ToniqToggleButton.hostClasses.textOnly}"
                 ${assign(ToniqToggleButton, {
-                    toggled: inputs.showFilters,
+                    toggled: state.showFilters,
                     text: state.searchValue ? '' : 'Filters',
                     icon: Filter24Icon,
                 })}
                 ${listen('click', () => {
-                    dispatch(new events.showFiltersChange(!inputs.showFilters));
+                    const filterState = !state.showFilters;
+                    updateState({showFilters: filterState});
+                    dispatch(new events.showFiltersChange(filterState));
                 })}
             ></${ToniqToggleButton}>
             <${ToniqInput}

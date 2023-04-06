@@ -86,6 +86,8 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         updateState(createAsyncProfileStateUpdateNRI({state}));
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
+        updateState(createAsyncProfileStateUpdate({state, inputs}));
+
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
             collectionMap: inputs.collectionMap,
@@ -100,8 +102,6 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             },
             userAccount: inputs.userAccount,
         });
-
-        updateState(createAsyncProfileStateUpdate({state, inputs}));
 
         const extraControlsTemplate = html`
             <div class="view-style-controls" slot="extra-controls">
@@ -158,9 +158,6 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             ></${EntrepotTopTabsElement}>
             <${EntrepotWithFiltersElement}
                 ${assign(EntrepotWithFiltersElement, filterInputs)}
-                ${listen(EntrepotWithFiltersElement.events.showFiltersChange, event => {
-                    updateState({showFilters: event.detail});
-                })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
                     const collectionFilter = event.detail.Collections;
                     if (collectionFilter?.filterType === FilterTypeEnum.ImageToggles) {
