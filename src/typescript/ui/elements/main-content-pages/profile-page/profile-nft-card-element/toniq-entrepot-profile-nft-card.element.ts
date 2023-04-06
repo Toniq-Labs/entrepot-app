@@ -52,7 +52,7 @@ export const EntrepotProfileNftCardElement = defineToniqElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        const hasListing = inputs.nft.listing.hasOwnProperty('price')
+        const hasListing = inputs.nft?.listing?.hasOwnProperty('price')
             ? inputs.nft?.listing?.price > 0
             : false;
         const listPriceDisplay = hasListing
