@@ -4,6 +4,7 @@ import {getNftMintNumber} from './nft-mint-number';
 import {BaseNft} from './base-nft';
 import {parseRawNftListing, RawNftListing, NftListingPrice} from './nft-listing';
 import {parseRawNftOffers, RawNftOffer} from './nft-offer';
+import {Collection} from '../models/collection';
 
 export type UserNftTransaction = BaseNft & {
     buyerAddress: string;
@@ -19,6 +20,7 @@ export enum TransactionDirection {
 
 export type UserTransactionWithDirection = UserNftTransaction & {
     directionForCurrentUser: TransactionDirection;
+    collection?: Collection | undefined;
 };
 
 export type RawUserNftTransaction = {

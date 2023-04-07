@@ -7,6 +7,8 @@ import {getNftMintNumber} from './nft-mint-number';
 export type BaseNft = {
     nftIndex: number;
     nftMintNumber: number;
+    timestampNanosecond?: number;
+    listPrice?: number;
 } & NftListing &
     NftOffers;
 
