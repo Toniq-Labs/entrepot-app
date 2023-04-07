@@ -61,7 +61,6 @@ export const EntrepotProfileNftListItemElement = defineToniqElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        console.log(inputs);
         return html`
             <${EntrepotNftListItemElement}
                 ${assign(EntrepotNftListItemElement, {

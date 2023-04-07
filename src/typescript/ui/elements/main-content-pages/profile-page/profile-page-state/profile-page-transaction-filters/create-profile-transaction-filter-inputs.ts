@@ -28,6 +28,7 @@ export function createUserTransactionFilterInputs({
     ProfilePageStateType,
     'allFilters' | 'showFilters' | 'currentProfileTab' | 'allSorts' | 'viewStyle'
 >) {
+    console.log(entries);
     return createWithFiltersInputs({
         ...createBaseProfileWithFiltersInputs({
             isRenderReady,

@@ -35,8 +35,6 @@ export function NftCard(props) {
                 style={{
                     display: 'flex',
                     position: 'relative',
-                    height: `${props.max.height}px`,
-                    width: `${props.max.width}px`,
                 }}
             >
                 <EntrepotNftDisplayReact
