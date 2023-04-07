@@ -102,6 +102,7 @@ export function createProfileFilterInputs({
               if (isNftType(nft, profileTabMap.activity.value, currentProfilePageState)) {
                   const fullTransaction: ProfileCompleteTransactionNft = {
                       buyerAddress: nft.buyerAddress,
+                      collection,
                       collectionId: nft.collectionId,
                       directionForCurrentUser: nft.directionForCurrentUser,
                       listing: nft.hasOwnProperty('listing')
@@ -125,7 +126,6 @@ export function createProfileFilterInputs({
                       transactionTimeMillisecond: nft.transactionTimeMillisecond
                           ? nft.transactionTimeMillisecond
                           : (nft.timestampNanosecond as number) / 1000000,
-                      collection: nft.collection as Collection,
                   };
 
                   return fullTransaction;
