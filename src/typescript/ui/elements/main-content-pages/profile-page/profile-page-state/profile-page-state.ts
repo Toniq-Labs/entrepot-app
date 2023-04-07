@@ -94,10 +94,12 @@ function getAllCollectionIds(
     return Array.from(collectionIds).sort();
 }
 
-export function createAsyncProfileStateUpdateNRI({
+export function createAsyncProfileStateUpdate({
     state,
+    inputs,
 }: {
     state: ProfilePageStateType;
+    inputs: ProfilePageInputs;
 }): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
     const asyncUserNftArrays = [
         state.userFavorites,
@@ -108,43 +110,6 @@ export function createAsyncProfileStateUpdateNRI({
 
     const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
     // update nft data
-    return {
-        collectionNriData: {
-            createPromise: async () => {
-                let waitIndex = 1;
-                const nriData = await Promise.all(
-                    allUserCollectionIds.map(async collectionId => {
-                        return collectionNriCache.get({
-                            collectionId,
-                            waitIndex: waitIndex++,
-                        });
-                    }),
-                );
-
-                const nriDataByCollectionId: Record<CanisterId, CollectionNriData> =
-                    Object.fromEntries(
-                        nriData.map((nriEntry): [CanisterId, CollectionNriData] => {
-                            return [
-                                nriEntry.collectionId,
-                                nriEntry,
-                            ];
-                        }),
-                    );
-
-                return nriDataByCollectionId;
-            },
-            trigger: allUserCollectionIds,
-        },
-    };
-}
-
-export function createAsyncProfileStateUpdate({
-    state,
-    inputs,
-}: {
-    state: ProfilePageStateType;
-    inputs: ProfilePageInputs;
-}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
     return {
         userTransactions: {
             createPromise: async () =>
@@ -170,6 +135,32 @@ export function createAsyncProfileStateUpdate({
                 account: inputs.userAccount?.address,
                 identity: inputs.userIdentity?.getPrincipal().toText(),
             },
+        },
+        collectionNriData: {
+            createPromise: async () => {
+                let waitIndex = 1;
+                const nriData = await Promise.all(
+                    allUserCollectionIds.map(async collectionId => {
+                        return collectionNriCache.get({
+                            collectionId,
+                            waitIndex: waitIndex++,
+                        });
+                    }),
+                );
+
+                const nriDataByCollectionId: Record<CanisterId, CollectionNriData> =
+                    Object.fromEntries(
+                        nriData.map((nriEntry): [CanisterId, CollectionNriData] => {
+                            return [
+                                nriEntry.collectionId,
+                                nriEntry,
+                            ];
+                        }),
+                    );
+
+                return nriDataByCollectionId;
+            },
+            trigger: allUserCollectionIds,
         },
         userFavorites: {
             createPromise: async () =>

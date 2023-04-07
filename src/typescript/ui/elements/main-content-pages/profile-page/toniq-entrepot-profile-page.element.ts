@@ -13,7 +13,7 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.element';
-import {getAllowedTabs, ProfileTab} from './profile-page-state/profile-tabs';
+import {getAllowedTabs, ProfileTab, profileTabMap} from './profile-page-state/profile-tabs';
 import {
     profilePageStateInit,
     ProfilePageInputs,
@@ -21,7 +21,6 @@ import {
     initProfileElement,
     ProfileViewStyleEnum,
     listViewFinalItemHeaderTitleByTab,
-    createAsyncProfileStateUpdateNRI,
 } from './profile-page-state/profile-page-state';
 import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
 import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
@@ -83,7 +82,6 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
     stateInit: profilePageStateInit,
     initCallback: ({inputs, state, updateState}) => {
         initProfileElement({inputs, state, updateState});
-        updateState(createAsyncProfileStateUpdateNRI({state}));
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
         updateState(createAsyncProfileStateUpdate({state, inputs}));
@@ -151,6 +149,15 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                     tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
                 })}
                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                    if ((event.detail as ProfileTab) === profileTabMap['activity']) {
+                        updateState({
+                            viewStyle: ProfileViewStyleEnum.List,
+                        });
+                    } else {
+                        updateState({
+                            viewStyle: ProfileViewStyleEnum.Grid,
+                        });
+                    }
                     updateState({
                         currentProfileTab: event.detail as ProfileTab,
                     });
@@ -158,6 +165,9 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             ></${EntrepotTopTabsElement}>
             <${EntrepotWithFiltersElement}
                 ${assign(EntrepotWithFiltersElement, filterInputs)}
+                ${listen(EntrepotWithFiltersElement.events.showFiltersChange, event => {
+                    updateState({showFilters: event.detail});
+                })}
                 ${listen(EntrepotWithFiltersElement.events.filtersChange, event => {
                     const collectionFilter = event.detail.Collections;
                     if (collectionFilter?.filterType === FilterTypeEnum.ImageToggles) {

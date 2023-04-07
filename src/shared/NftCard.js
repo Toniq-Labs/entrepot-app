@@ -24,9 +24,6 @@ export function NftCard(props) {
         flex-direction: column;
     `);
 
-    //      ?? {height: 456, width: 272}
-    //  ?? {height: 200, width: 272}
-
     return (
         <DropShadowCard
             onClick={props.onClick}
@@ -34,7 +31,14 @@ export function NftCard(props) {
             enableHover={true}
             style={{...styles, ...props.style}}
         >
-            <div style={{display: 'flex', position: 'relative'}}>
+            <div
+                style={{
+                    display: 'flex',
+                    position: 'relative',
+                    height: `${props.max.height}px`,
+                    width: `${props.max.width}px`,
+                }}
+            >
                 <EntrepotNftDisplayReact
                     max={props.max}
                     min={props.min}

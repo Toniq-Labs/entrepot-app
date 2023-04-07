@@ -307,9 +307,8 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
         loadingRef: createRef(),
         pageListing: 0,
         hasRenderedOnce: false,
-        showFilters: false,
     },
-    initCallback: ({inputs, state, updateState}) => {
+    initCallback: ({state, updateState}) => {
         const searchTerm = new URL(document.location.href).searchParams.get('search');
         if (searchTerm !== null) updateState({searchValue: searchTerm});
 
@@ -335,8 +334,6 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                 clearInterval(loadingRefInterval);
             }
         }, 1000);
-
-        updateState({showFilters: inputs.showFilters});
     },
     events: {
         showFiltersChange: defineElementEvent<boolean>(),
@@ -443,14 +440,12 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
             <${ToniqToggleButton}
                 class="${ToniqToggleButton.hostClasses.textOnly}"
                 ${assign(ToniqToggleButton, {
-                    toggled: state.showFilters,
+                    toggled: inputs.showFilters,
                     text: state.searchValue ? '' : 'Filters',
                     icon: Filter24Icon,
                 })}
                 ${listen('click', () => {
-                    const filterState = !state.showFilters;
-                    updateState({showFilters: filterState});
-                    dispatch(new events.showFiltersChange(filterState));
+                    dispatch(new events.showFiltersChange(!inputs.showFilters));
                 })}
             ></${ToniqToggleButton}>
             <${ToniqInput}
@@ -546,7 +541,11 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                                     })}
                                 ></${ToniqIcon}>
                             `,
-                            repeat(getEntries, entry => entry, inputs.createEntryTemplateCallback),
+                            repeat(
+                                getEntries,
+                                entry => entry.nftId,
+                                entry => inputs.createEntryTemplateCallback(entry),
+                            ),
                         )}
                     </div>
                     <div ${ref(state.loadingRef)}>
