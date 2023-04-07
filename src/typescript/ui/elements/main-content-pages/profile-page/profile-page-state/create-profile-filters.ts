@@ -90,7 +90,11 @@ export function createProfileFilterInputs({
     const entries: AnyFullProfileEntries = isRenderReady(asyncEntries)
         ? (asyncEntries.map((nft): ArrayElement<AnyFullProfileEntries> => {
               const nftIndex = nft.nftIndex ? nft.nftIndex : decodeNftId(nft.nftId).index;
-
+              const nftMintNumber = nft.nftMintNumber
+                  ? nft.nftMintNumber
+                  : getCanisterDetails(nft.collectionId).hasWrappedCanister
+                  ? nftIndex
+                  : nftIndex + 1;
               const nftNri: number | undefined = isRenderReady(
                   currentProfilePageState.collectionNriData,
               )
@@ -113,11 +117,7 @@ export function createProfileFilterInputs({
                             },
                       nftId: nft.nftId,
                       nftIndex,
-                      nftMintNumber: nft.nftMintNumber
-                          ? nft.nftMintNumber
-                          : getCanisterDetails(nft.collectionId).hasWrappedCanister
-                          ? nftIndex
-                          : nftIndex + 1,
+                      nftMintNumber,
                       nftNri: nftNri,
                       offers: nft.offers ? nft.offers : [],
                       ownerAddress: nft.ownerAddress ? nft.ownerAddress : '',
@@ -135,6 +135,7 @@ export function createProfileFilterInputs({
                       ...nft,
                       nftNri,
                       collection,
+                      nftMintNumber,
                   };
                   return fullEarn;
               } else {
@@ -150,6 +151,7 @@ export function createProfileFilterInputs({
                       )
                           ? calculateOfferStatusFavorites(userAccount?.address ?? '', nft)
                           : calculateOfferStatus(userAccount?.address ?? '', nft),
+                      nftMintNumber,
                   };
 
                   return fullUserNft;
