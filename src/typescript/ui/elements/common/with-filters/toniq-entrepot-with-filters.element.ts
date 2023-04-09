@@ -541,7 +541,11 @@ export const EntrepotWithFiltersElement = defineToniqElement<WithFiltersElementI
                                     })}
                                 ></${ToniqIcon}>
                             `,
-                            repeat(getEntries, entry => entry, inputs.createEntryTemplateCallback),
+                            repeat(
+                                getEntries,
+                                entry => entry.nftId,
+                                entry => inputs.createEntryTemplateCallback(entry),
+                            ),
                         )}
                     </div>
                     <div ${ref(state.loadingRef)}>

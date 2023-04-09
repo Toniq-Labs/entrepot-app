@@ -10,7 +10,7 @@ import {BaseNft} from '../../../../../data/nft/base-nft';
 export const EntrepotProfileNftCardElement = defineToniqElement<{
     nft: Pick<
         BaseNft & FullProfileNft,
-        'collectionId' | 'nftId' | 'nftIndex' | 'listing' | 'nftNri'
+        'collectionId' | 'nftId' | 'nftIndex' | 'nftMintNumber' | 'listing' | 'nftNri'
     >;
 }>()({
     tagName: 'toniq-entrepot-nft-profile-card',
@@ -52,8 +52,12 @@ export const EntrepotProfileNftCardElement = defineToniqElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        const hasListing = inputs.nft.listing.price ? inputs.nft.listing.price > 0 : false;
-        const listPriceDisplay = hasListing ? toIcp(BigInt(inputs.nft.listing.price)) : 'Unlisted';
+        const hasListing = inputs.nft?.listing?.hasOwnProperty('price')
+            ? inputs.nft?.listing?.price > 0
+            : false;
+        const listPriceDisplay = hasListing
+            ? toIcp(BigInt(inputs.nft?.listing?.price))
+            : 'Unlisted';
 
         const rarityDisplay = isRuntimeTypeOf(inputs.nft.nftNri, 'number')
             ? `NRI: ${(inputs.nft.nftNri * 100).toFixed(1)}%`
@@ -69,7 +73,7 @@ export const EntrepotProfileNftCardElement = defineToniqElement<{
             >
                 <div class="footer-contents">
                     <p>
-                        #${inputs.nft.nftIndex}
+                        #${inputs.nft.nftMintNumber}
                     </p>
                     <div class="button-row">
                         <div class="left-side">

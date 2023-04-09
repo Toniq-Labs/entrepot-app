@@ -5,7 +5,7 @@ import {
     toniqFontStyles,
     defineToniqElement,
 } from '@toniq-labs/design-system';
-import {defineElement, html, css} from 'element-vir';
+import {html, css} from 'element-vir';
 
 export const EntrepotHomePageTopCardHeaderElement = defineToniqElement<{
     hasIndex: boolean;
@@ -73,6 +73,16 @@ export const EntrepotHomePageTopCardHeaderElement = defineToniqElement<{
         .price {
             text-align: right;
             flex-basis: 90px;
+        }
+
+        @media (max-width: 600px) {
+            .price {
+                flex-basis: 65px;
+            }
+
+            .floor-price {
+                margin-right: 0px;
+            }
         }
     `,
     renderCallback: ({inputs}) => {

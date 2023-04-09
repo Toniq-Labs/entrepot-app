@@ -6,7 +6,7 @@ export function calculateOfferStatus(
     currentUserAccountAddress: string,
     nft: BaseNft,
 ): ProfileNftOfferStatus {
-    if (!nft.offers.length) {
+    if (!nft.offers || !nft.offers.length) {
         return 'none';
     }
 
@@ -28,7 +28,7 @@ export function calculateOfferStatusFavorites(
     currentUserAccountAddress: string,
     nft: BaseNft,
 ): ProfileNftOfferStatus {
-    if (!nft.offers.length) {
+    if (!nft.offers || !nft.offers.length) {
         return 'none';
     }
 

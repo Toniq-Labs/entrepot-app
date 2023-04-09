@@ -7,6 +7,7 @@ import {
     removeNativeFormStyles,
     defineToniqElement,
 } from '@toniq-labs/design-system';
+import {ProfileTab} from '../main-content-pages/profile-page/profile-page-state/profile-tabs';
 
 export type TopTab<ValueGeneric = unknown> = {
     label: string;
@@ -122,6 +123,9 @@ export const EntrepotTopTabsElement = defineToniqElement<{
     `,
     events: {
         tabChange: defineElementEvent<TopTab>(),
+    },
+    initCallback: ({inputs, events, dispatch}) => {
+        dispatch(new events.tabChange(inputs.selected as ProfileTab));
     },
     renderCallback: ({inputs, dispatch, events}) => {
         const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);

@@ -1,9 +1,6 @@
-import {classMap} from 'lit/directives/class-map.js';
-import {assign, css, html, renderIf} from 'element-vir';
-import {defineToniqElement, toniqFontStyles, Icp16Icon, ToniqIcon} from '@toniq-labs/design-system';
-import {toIcp} from '../../../../../data/icp';
+import {assign, css, html} from 'element-vir';
+import {defineToniqElement, toniqFontStyles} from '@toniq-labs/design-system';
 import {FullProfileNft} from '../profile-page-nfts/full-profile-nft';
-import {isRuntimeTypeOf} from '@augment-vir/common';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {EntrepotNftListItemElement} from '../../../common/toniq-entrepot-nft-list-item.element';
 import {EntrepotProfileNftListItemTextItemsElement} from './toniq-entrepot-profile-nft-list-item-text-items.element';

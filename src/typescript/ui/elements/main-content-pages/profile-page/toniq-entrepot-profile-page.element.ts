@@ -13,7 +13,7 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {EntrepotTopTabsElement} from '../../common/toniq-entrepot-top-tabs.element';
-import {getAllowedTabs, ProfileTab} from './profile-page-state/profile-tabs';
+import {getAllowedTabs, ProfileTab, profileTabMap} from './profile-page-state/profile-tabs';
 import {
     profilePageStateInit,
     ProfilePageInputs,
@@ -84,6 +84,8 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         initProfileElement({inputs, state, updateState});
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
+        updateState(createAsyncProfileStateUpdate({state, inputs}));
+
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
             collectionMap: inputs.collectionMap,
@@ -98,8 +100,6 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
             },
             userAccount: inputs.userAccount,
         });
-
-        updateState(createAsyncProfileStateUpdate({state, inputs}));
 
         const extraControlsTemplate = html`
             <div class="view-style-controls" slot="extra-controls">
@@ -149,6 +149,15 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                     tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
                 })}
                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                    if ((event.detail as ProfileTab) === profileTabMap['activity']) {
+                        updateState({
+                            viewStyle: ProfileViewStyleEnum.List,
+                        });
+                    } else {
+                        updateState({
+                            viewStyle: ProfileViewStyleEnum.Grid,
+                        });
+                    }
                     updateState({
                         currentProfileTab: event.detail as ProfileTab,
                     });

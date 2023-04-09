@@ -9,7 +9,6 @@ import Wallet from '../components/Wallet';
 import {makeStyles} from '@material-ui/core';
 import {
     ToniqToggleButton,
-    ToniqIcon,
     ToniqButton,
     ToniqInput,
 } from '@toniq-labs/design-system/dist/esm/elements/react-components';
@@ -18,8 +17,6 @@ import {
     BuildingStore24Icon,
     Geometry24Icon,
     Lifebuoy24Icon,
-    EntrepotLogo144Icon,
-    toniqColors,
     cssToReactStyleObject,
     Wallet24Icon,
     toniqFontStyles,
@@ -218,6 +215,8 @@ export default function Navbar(props) {
                             gap: '4px',
                             alignItems: 'stretch',
                             height: `${mainEntrepotHeaderHeight}px`,
+                            display: 'flex',
+                            justifyContent: 'space-between',
                         }}
                     >
                         <Typography
@@ -270,47 +269,49 @@ export default function Navbar(props) {
                         />
                         <div className={classes.bigScreenNavButtons}>{navBarButtons}</div>
 
-                        <ToniqToggleButton
-                            className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
-                            toggled={open}
-                            onClick={() => {
-                                setWalletOpen(false);
-                                setOpen(!open);
-                            }}
-                            icon={Menu24Icon}
-                        />
-                        <ToniqToggleButton
-                            className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
-                            toggled={walletOpen}
-                            onClick={() => {
-                                setWalletOpen(!walletOpen);
-                                setOpen(false);
-                            }}
-                            icon={Wallet24Icon}
-                        />
-                        <ToniqButton
-                            className={`toniq-button-outline ${classes.icpButton}`}
-                            style={{
-                                width: '120px',
-                                marginLeft: '8px',
-                                alignSelf: 'center',
-                                ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
-                                fontSize: '19px',
-                            }}
-                            onClick={handleDrawerToggle}
-                            icon={
-                                totalBalance === undefined
-                                    ? props.account
-                                        ? LoaderAnimated24Icon
-                                        : Wallet24Icon
-                                    : Icp24Icon
-                            }
-                            text={
-                                totalBalance === undefined
-                                    ? ''
-                                    : icpToString(totalBalance, true, true)
-                            }
-                        ></ToniqButton>
+                        <div className={classes.smallScreenButtonsContainer}>
+                            <ToniqToggleButton
+                                className={`toniq-toggle-button-text-only ${classes.smallScreenMenuButton}`}
+                                toggled={open}
+                                onClick={() => {
+                                    setWalletOpen(false);
+                                    setOpen(!open);
+                                }}
+                                icon={Menu24Icon}
+                            />
+                            <ToniqToggleButton
+                                className={`toniq-toggle-button-text-only ${classes.superSmallScreenWalletButton}`}
+                                toggled={walletOpen}
+                                onClick={() => {
+                                    setWalletOpen(!walletOpen);
+                                    setOpen(false);
+                                }}
+                                icon={Wallet24Icon}
+                            />
+                            <ToniqButton
+                                className={`toniq-button-outline ${classes.icpButton}`}
+                                style={{
+                                    width: '120px',
+                                    marginLeft: '8px',
+                                    alignSelf: 'center',
+                                    ...cssToReactStyleObject(toniqFontStyles.monospaceFont),
+                                    fontSize: '19px',
+                                }}
+                                onClick={handleDrawerToggle}
+                                icon={
+                                    totalBalance === undefined
+                                        ? props.account
+                                            ? LoaderAnimated24Icon
+                                            : Wallet24Icon
+                                        : Icp24Icon
+                                }
+                                text={
+                                    totalBalance === undefined
+                                        ? ''
+                                        : icpToString(totalBalance, true, true)
+                                }
+                            ></ToniqButton>
+                        </div>
                         {open && (
                             <div className={classes.smallScreenNav} onClick={() => setOpen(false)}>
                                 {navBarButtons}
@@ -389,6 +390,13 @@ const useStyles = makeStyles(theme => {
             flexDirection: 'column',
             [minHamburgerMenuBreakpoint]: {
                 display: 'none',
+            },
+        },
+        smallScreenButtonsContainer: {
+            display: 'flex',
+            gap: 4,
+            [theme.breakpoints.down('lg')]: {
+                flexDirection: 'row-reverse',
             },
         },
         bigScreenInput: {

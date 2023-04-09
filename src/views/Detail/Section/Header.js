@@ -504,8 +504,9 @@ const useStyles = makeStyles(theme => ({
     detailSectionHeader: {
         display: 'flex',
         gap: 32,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
+            alignItems: 'center',
         },
     },
     removeNativeButtonStyles: {
