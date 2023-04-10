@@ -79,7 +79,9 @@ export const EntrepotProfileNftListItemTextItemsElement = defineToniqElement<{
     renderCallback: ({inputs}) => {
         const isHeader: boolean = !!inputs.isHeader || !inputs.nft;
 
-        const hasListing: boolean = !!inputs.nft && inputs.nft.listing.price > 0;
+        const hasListing: boolean = inputs.nft?.listing?.hasOwnProperty('price')
+            ? inputs.nft?.listing?.price > 0
+            : false;
         const listPriceText =
             hasListing && inputs.nft ? toIcp(BigInt(inputs.nft.listing.price)) : '-';
 

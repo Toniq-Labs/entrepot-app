@@ -111,6 +111,21 @@ export const EntrepotHomePageTopCardElement = defineToniqElement<{
             justify-content: flex-end;
             font-size: 17px;
         }
+
+        @media (max-width: 600px) {
+            .price {
+                flex-basis: 65px;
+            }
+
+            .floor-price {
+                margin-right: 0px;
+            }
+
+            .main-contents {
+                padding: 6px;
+                margin-right: 18px;
+            }
+        }
     `,
     renderCallback: ({inputs}) => {
         const indexTemplate =

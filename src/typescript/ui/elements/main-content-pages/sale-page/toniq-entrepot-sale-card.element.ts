@@ -212,7 +212,7 @@ export const EntrepotSaleCardElement = defineElement<{
         }
 
         .stat-entry ${ToniqChip} {
-            ${toniqFontStyles.boldLabelFont};
+            ${toniqFontStyles.boldParagraphFont};
             ${toniqFontStyles.monospaceFont};
             max-height: 24px;
             flex-grow: 1;

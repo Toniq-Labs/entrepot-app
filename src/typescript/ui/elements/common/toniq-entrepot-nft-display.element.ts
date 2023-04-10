@@ -97,6 +97,8 @@ export const EntrepotNftDisplayElement = defineToniqElement<
         );
 
         const sizeWrapperStyle = css`
+            max-width: ${dimensionConstraints.max.width}px;
+            max-height: ${dimensionConstraints.max.height}px;
             min-width: ${dimensionConstraints.min.width}px;
             min-height: ${dimensionConstraints.min.height}px;
         `;

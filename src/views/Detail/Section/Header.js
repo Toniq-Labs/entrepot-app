@@ -35,6 +35,7 @@ import PriceUSD from '../../../components/PriceUSD';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {EntrepotNftDisplayReact} from '../../../typescript/ui/elements/common/toniq-entrepot-nft-display.element';
 import {getNftMintNumber} from '../../../typescript/data/nft/nft-mint-number';
+import offerBlacklist from './../../../offer-blacklist.json';
 
 const DetailSectionHeader = props => {
     const {
@@ -74,6 +75,10 @@ const DetailSectionHeader = props => {
 
     const onScrollRight = () => {
         benefitsContentWrapperRef.current.scrollBy(100, 0);
+    };
+
+    const isBlacklistedFromOffer = () => {
+        return offerBlacklist.includes(canister);
     };
 
     return (
@@ -282,33 +287,32 @@ const DetailSectionHeader = props => {
                                                     )}
                                                 </div>
                                             ) : (
-                                                <>
-                                                    {getPriceData() ? (
-                                                        <div style={{display: 'flex', gap: '16px'}}>
-                                                            <ToniqButton
-                                                                text="Buy Now"
-                                                                onClick={() => {
-                                                                    props.buyNft(
-                                                                        collection.canister,
-                                                                        index,
-                                                                        listing,
-                                                                        _afterBuy,
-                                                                    );
-                                                                }}
-                                                            />
-                                                            <ToniqButton
-                                                                text="Make Offer"
-                                                                className="toniq-button-outline"
-                                                                onClick={() => {
-                                                                    makeOffer();
-                                                                }}
-                                                            />
-                                                            {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
-                                                        </div>
-                                                    ) : (
-                                                        ''
+                                                <div style={{display: 'flex', gap: '16px'}}>
+                                                    {listing && listing.price > 0n && (
+                                                        <ToniqButton
+                                                            text="Buy Now"
+                                                            onClick={() => {
+                                                                props.buyNft(
+                                                                    collection.canister,
+                                                                    index,
+                                                                    listing,
+                                                                    _afterBuy,
+                                                                );
+                                                            }}
+                                                        />
                                                     )}
-                                                </>
+                                                    {!isBlacklistedFromOffer() && (
+                                                        <ToniqButton
+                                                            text="Make Offer"
+                                                            className="toniq-button-outline"
+                                                            onClick={() => {
+                                                                makeOffer();
+                                                            }}
+                                                        />
+                                                    )}
+
+                                                    {/* <ToniqButton title="More Options" icon={DotsVertical24Icon} className="toniq-button-secondary" /> */}
+                                                </div>
                                             )}
                                         </div>
                                     ) : (
@@ -500,8 +504,9 @@ const useStyles = makeStyles(theme => ({
     detailSectionHeader: {
         display: 'flex',
         gap: 32,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
+            alignItems: 'center',
         },
     },
     removeNativeButtonStyles: {

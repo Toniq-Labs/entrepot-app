@@ -11,7 +11,7 @@ import {
     isEntriesType,
     AnyProfileEntryType,
 } from '../profile-page-nfts/profile-nft-types';
-import {CollectionMap} from '../../../../../data/models/collection';
+import {Collection, CollectionMap} from '../../../../../data/models/collection';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteTransactionNft} from './profile-page-transaction-filters/profile-transaction-filters';
@@ -23,8 +23,13 @@ import {
     FilterDefinitions,
     SingleFilterDefinition,
 } from '../../../common/with-filters/filters-types';
-import {calculateOfferStatus} from './profile-page-nft-filters/profile-nft-offer-status';
+import {
+    calculateOfferStatus,
+    calculateOfferStatusFavorites,
+} from './profile-page-nft-filters/profile-nft-offer-status';
 import {createProfileOfferFilterInputs} from './profile-page-offer-filters/create-profile-offer-filter-inputs';
+import {getCanisterDetails} from '../../../../../data/canisters/canister-details/all-canister-details';
+import {decodeNftId} from '../../../../../data/nft/nft-id';
 
 function combineOffers({
     userOffersMade,
@@ -84,21 +89,43 @@ export function createProfileFilterInputs({
 
     const entries: AnyFullProfileEntries = isRenderReady(asyncEntries)
         ? (asyncEntries.map((nft): ArrayElement<AnyFullProfileEntries> => {
+              const nftIndex = nft.nftIndex ? nft.nftIndex : decodeNftId(nft.nftId).index;
+              const nftMintNumber = nft.nftMintNumber
+                  ? nft.nftMintNumber
+                  : getCanisterDetails(nft.collectionId).hasWrappedCanister
+                  ? nftIndex
+                  : nftIndex + 1;
               const nftNri: number | undefined = isRenderReady(
                   currentProfilePageState.collectionNriData,
               )
-                  ? currentProfilePageState.collectionNriData[nft.collectionId]?.nriData?.[
-                        nft.nftIndex
-                    ]
+                  ? currentProfilePageState.collectionNriData[nft.collectionId]?.nriData?.[nftIndex]
                   : undefined;
 
               const collection = collectionMap[nft.collectionId];
 
               if (isNftType(nft, profileTabMap.activity.value, currentProfilePageState)) {
                   const fullTransaction: ProfileCompleteTransactionNft = {
-                      ...nft,
-                      nftNri,
+                      buyerAddress: nft.buyerAddress,
                       collection,
+                      collectionId: nft.collectionId,
+                      directionForCurrentUser: nft.directionForCurrentUser,
+                      listing: nft.hasOwnProperty('listing')
+                          ? nft.listing
+                          : {
+                                price: nft.listPrice as number,
+                                lockedTimestamp: 0,
+                            },
+                      nftId: nft.nftId,
+                      nftIndex,
+                      nftMintNumber,
+                      nftNri: nftNri,
+                      offers: nft.offers ? nft.offers : [],
+                      ownerAddress: nft.ownerAddress ? nft.ownerAddress : '',
+                      sellerAddress: nft.sellerAddress,
+                      transactionId: nft.transactionId ? nft.transactionId : '',
+                      transactionTimeMillisecond: nft.transactionTimeMillisecond
+                          ? nft.transactionTimeMillisecond
+                          : (nft.timestampNanosecond as number) / 1000000,
                   };
 
                   return fullTransaction;
@@ -108,15 +135,23 @@ export function createProfileFilterInputs({
                       ...nft,
                       nftNri,
                       collection,
+                      nftMintNumber,
                   };
                   return fullEarn;
               } else {
                   const fullUserNft: ProfileCompleteNft = {
                       ...nft,
                       nftNri,
-                      isListed: !!nft.listing.price,
+                      isListed: nft.listing ? !!nft.listing.price : !!(nft.listPrice as number),
                       collection,
-                      offerStatus: calculateOfferStatus(userAccount?.address ?? '', nft),
+                      offerStatus: isNftType(
+                          nft,
+                          profileTabMap.favorites.value,
+                          currentProfilePageState,
+                      )
+                          ? calculateOfferStatusFavorites(userAccount?.address ?? '', nft)
+                          : calculateOfferStatus(userAccount?.address ?? '', nft),
+                      nftMintNumber,
                   };
 
                   return fullUserNft;

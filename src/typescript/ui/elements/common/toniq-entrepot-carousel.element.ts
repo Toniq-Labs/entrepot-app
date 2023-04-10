@@ -127,6 +127,12 @@ export const EntrepotCarouselElement = defineToniqElement<{
             opacity: 0;
             pointer-events: none;
         }
+
+        @media (max-width: 600px) {
+            .arrow ${ToniqIcon} {
+                margin: 12px;
+            }
+        }
     `,
     cleanupCallback: ({state}) => {
         window.clearInterval(state.rotationIntervalId);

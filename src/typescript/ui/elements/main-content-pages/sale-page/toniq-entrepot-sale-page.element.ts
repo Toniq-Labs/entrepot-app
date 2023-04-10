@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
@@ -9,10 +9,10 @@ import moment from 'moment';
 import {EntrepotSaleFeatureTabElement} from './tabs/toniq-entrepot-sale-feature-tab.element';
 import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-category-tab.element';
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
-import {Icp16Icon} from '@toniq-labs/design-system';
+import {defineToniqElement, Icp16Icon} from '@toniq-labs/design-system';
 import {EntrepotSalePreloaderElement} from './toniq-entrepot-sale-preloader.element';
 
-export const EntrepotSalePageElement = defineElement<{
+export const EntrepotSalePageElement = defineToniqElement<{
     collections: Array<Collection>;
 }>()({
     tagName: 'toniq-entrepot-sale-page',
@@ -53,7 +53,7 @@ export const EntrepotSalePageElement = defineElement<{
         endingSoon: [] as Array<CollectionSales> | Array<CollectionSales>,
         tabs: [] as Array<TopTab> | Array<TopTab>,
     },
-    initCallback: ({state, inputs, updateState}) => {
+    initCallback: ({inputs, updateState}) => {
         const saleCollections = inputs.collections.filter(collection => collection.sale);
         getCollectionSales(saleCollections).then(collectionSales => {
             const upcoming = collectionSales
@@ -71,6 +71,7 @@ export const EntrepotSalePageElement = defineElement<{
                 .filter(collectionSale => {
                     return (
                         moment(collectionSale.sales.startDate).isBefore(moment()) &&
+                        moment(collectionSale.sales.endDate).isAfter(moment()) &&
                         collectionSale.sales.percentMinted < 100
                     );
                 })
@@ -129,7 +130,6 @@ export const EntrepotSalePageElement = defineElement<{
     },
     renderCallback: ({state, updateState, events, dispatch}) => {
         const preloader = new Array(Math.floor(Math.random() * (8 - 4) + 4)).fill(0);
-        const selectedTopTab: TopTab = state.saleSelectedTab;
 
         return html`
 			<${EntrepotPageHeaderElement}
@@ -143,8 +143,8 @@ export const EntrepotSalePageElement = defineElement<{
                         ? html`
                             <${EntrepotTopTabsElement}
                                 ${assign(EntrepotTopTabsElement, {
+                                    selected: state.saleSelectedTab,
                                     tabs: state.tabs,
-                                    selected: selectedTopTab,
                                 })}
                                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                                     const selectedTab = event.detail;
@@ -154,15 +154,11 @@ export const EntrepotSalePageElement = defineElement<{
                         : html`
                         <${EntrepotTopTabsElement}
                             ${assign(EntrepotTopTabsElement, {})}
-                            ${listen(EntrepotTopTabsElement.events.tabChange, event => {
-                                const selectedTab = event.detail;
-                                updateState({saleSelectedTab: selectedTab});
-                            })}
                         ></${EntrepotTopTabsElement}>`
                 }
 
                 ${
-                    selectedTopTab?.value === 'featured'
+                    state.saleSelectedTab?.value === 'featured'
                         ? html`
                               ${state.upcoming.length ||
                               state.inProgress.length ||
@@ -191,7 +187,7 @@ export const EntrepotSalePageElement = defineElement<{
             </div>
 
             ${
-                selectedTopTab?.value === 'upcoming'
+                state.saleSelectedTab?.value === 'upcoming'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {
@@ -255,7 +251,7 @@ export const EntrepotSalePageElement = defineElement<{
             }
 
             ${
-                selectedTopTab?.value === 'inProgress'
+                state.saleSelectedTab?.value === 'inProgress'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {
@@ -333,7 +329,7 @@ export const EntrepotSalePageElement = defineElement<{
             }
 
             ${
-                selectedTopTab?.value === 'endingSoon'
+                state.saleSelectedTab?.value === 'endingSoon'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {

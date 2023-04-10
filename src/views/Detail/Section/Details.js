@@ -22,6 +22,7 @@ import TruncateMarkup from 'react-truncate-markup';
 import parse from 'html-react-parser';
 import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
 import {getCanisterDetails} from '../../../typescript/data/canisters/canister-details/all-canister-details';
+import offerBlacklist from './../../../offer-blacklist.json';
 
 function ListRow({items, classes, style}) {
     return (
@@ -104,6 +105,7 @@ export default function DetailSectionDetails(props) {
         owner,
         attributes,
         cancelOffer,
+        acceptOffer,
         setOpenOfferForm,
     } = props;
     const collection = props.collections.find(e => e.canister === canister);
@@ -154,6 +156,10 @@ export default function DetailSectionDetails(props) {
 
     const makeOffer = async () => {
         setOpenOfferForm(true);
+    };
+
+    const isBlacklistedFromOffer = () => {
+        return offerBlacklist.includes(canister);
     };
 
     React.useEffect(() => {
@@ -328,155 +334,173 @@ export default function DetailSectionDetails(props) {
                     </div>
                 </div>
             </div>
-            <div className={classes.detailSectionContainer}>
-                <span className={classes.detailSectionTitle}>Offers</span>
-                <div className={classes.listRowContainer}>
-                    <div className={classes.listRowHeader}>
-                        <ListRow
-                            items={[
-                                true,
-                                'PRICE',
-                                'FLOOR DIFFERENCE',
-                                'FROM',
-                            ]}
-                            classes={classes}
-                            style={{
-                                ...cssToReactStyleObject(toniqFontStyles.labelFont),
-                                height: '32px',
-                            }}
-                        />
-                    </div>
-                    {!offerListing ? (
-                        <span className={classes.noDataText} style={{flexGrow: 1}}>
-                            {reloadIcon()}
-                        </span>
-                    ) : (
-                        <>
-                            {typeof offerListing === 'object' && offerListing.length ? (
-                                <div
-                                    id="offersContent"
-                                    className={classes.detailSectionContent}
-                                    style={{paddingBottom: 24}}
-                                >
-                                    {offerListing.slice().map((offer, index) => {
-                                        return (
-                                            <NftCard
-                                                listStyle={true}
-                                                collectionId={getExtCanisterId(canister)}
-                                                nftIndex={index}
-                                                nftId={tokenid}
-                                                cachePriority={0}
-                                                key={index}
-                                                style={{margin: '0 8px', padding: 12}}
-                                                max={{height: 64, width: 64}}
-                                                min={{height: 64, width: 64}}
-                                            >
-                                                <ListRow
-                                                    items={[
-                                                        '',
-                                                        <div
-                                                            style={{
-                                                                display: 'flex',
-                                                                alignContent: 'center',
-                                                                justifyContent: 'left',
-                                                                alignItems: 'center',
-                                                                ...cssToReactStyleObject(
-                                                                    toniqFontStyles.paragraphFont,
-                                                                ),
-                                                            }}
-                                                        >
-                                                            <PriceICP
-                                                                large={false}
-                                                                volume={true}
-                                                                clean={false}
-                                                                price={offer.amount}
-                                                            />
-                                                        </div>,
-                                                        <div
-                                                            style={{
-                                                                display: 'flex',
-                                                                justifyContent: 'center',
-                                                            }}
-                                                        >
-                                                            {floor ? (
-                                                                getFloorDelta(offer.amount)
-                                                            ) : (
-                                                                <ToniqIcon
-                                                                    style={{
-                                                                        color: String(
-                                                                            toniqColors.pagePrimary
-                                                                                .foregroundColor,
-                                                                        ),
-                                                                        alignSelf: 'center',
-                                                                    }}
-                                                                    icon={LoaderAnimated24Icon}
+            {!isBlacklistedFromOffer() && (
+                <div className={classes.detailSectionContainer}>
+                    <span className={classes.detailSectionTitle}>Offers</span>
+                    <div className={classes.listRowContainer}>
+                        <div className={classes.listRowHeader}>
+                            <ListRow
+                                items={[
+                                    true,
+                                    'PRICE',
+                                    'FLOOR DIFFERENCE',
+                                    'FROM',
+                                ]}
+                                classes={classes}
+                                style={{
+                                    ...cssToReactStyleObject(toniqFontStyles.labelFont),
+                                    height: '32px',
+                                }}
+                            />
+                        </div>
+                        {!offerListing ? (
+                            <span className={classes.noDataText} style={{flexGrow: 1}}>
+                                {reloadIcon()}
+                            </span>
+                        ) : (
+                            <>
+                                {typeof offerListing === 'object' && offerListing.length ? (
+                                    <div
+                                        id="offersContent"
+                                        className={classes.detailSectionContent}
+                                        style={{paddingBottom: 24}}
+                                    >
+                                        {offerListing.slice().map((offer, index) => {
+                                            return (
+                                                <NftCard
+                                                    listStyle={true}
+                                                    collectionId={getExtCanisterId(canister)}
+                                                    nftIndex={index}
+                                                    nftId={tokenid}
+                                                    cachePriority={0}
+                                                    key={index}
+                                                    style={{margin: '0 8px', padding: 12}}
+                                                    max={{height: 64, width: 64}}
+                                                    min={{height: 64, width: 64}}
+                                                >
+                                                    <ListRow
+                                                        items={[
+                                                            '',
+                                                            <div
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    alignContent: 'center',
+                                                                    justifyContent: 'left',
+                                                                    alignItems: 'center',
+                                                                    ...cssToReactStyleObject(
+                                                                        toniqFontStyles.paragraphFont,
+                                                                    ),
+                                                                }}
+                                                            >
+                                                                <PriceICP
+                                                                    large={false}
+                                                                    volume={true}
+                                                                    clean={false}
+                                                                    price={offer.amount}
                                                                 />
-                                                            )}
-                                                        </div>,
-                                                        <div>
-                                                            {props.identity &&
-                                                            props.identity
-                                                                .getPrincipal()
-                                                                .toText() ===
-                                                                offer.buyer.toText() ? (
-                                                                <ToniqButton
-                                                                    text="Cancel"
-                                                                    onClick={cancelOffer}
-                                                                />
-                                                            ) : (
-                                                                <Link
-                                                                    href={`https://icscan.io/account/${offer.buyer}`}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    underline="none"
-                                                                >
-                                                                    <ToniqMiddleEllipsis
-                                                                        letterCount={4}
-                                                                        text={offer.buyer.toText()}
-                                                                        className={classes.linkText}
+                                                            </div>,
+                                                            <div
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    justifyContent: 'center',
+                                                                }}
+                                                            >
+                                                                {floor ? (
+                                                                    getFloorDelta(offer.amount)
+                                                                ) : (
+                                                                    <ToniqIcon
+                                                                        style={{
+                                                                            color: String(
+                                                                                toniqColors
+                                                                                    .pagePrimary
+                                                                                    .foregroundColor,
+                                                                            ),
+                                                                            alignSelf: 'center',
+                                                                        }}
+                                                                        icon={LoaderAnimated24Icon}
                                                                     />
-                                                                </Link>
-                                                            )}
-                                                        </div>,
-                                                    ]}
-                                                    classes={classes}
-                                                />
-                                            </NftCard>
-                                        );
-                                    })}
-                                </div>
-                            ) : (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flexGrow: 1,
-                                    }}
-                                >
-                                    <span className={classes.noDataText}>
-                                        THERE ARE NO OPEN OFFERS
-                                    </span>
-                                    {props.identity &&
-                                    props.account.address !== owner &&
-                                    getPriceData() ? (
-                                        <ToniqButton
-                                            className={'toniq-button-outline'}
-                                            text="Make an Offer"
-                                            onClick={() => {
-                                                makeOffer();
-                                            }}
-                                        />
-                                    ) : (
-                                        ''
-                                    )}
-                                </div>
-                            )}
-                        </>
-                    )}
+                                                                )}
+                                                            </div>,
+                                                            <div>
+                                                                {owner &&
+                                                                props.account &&
+                                                                props.account.address == owner ? (
+                                                                    <ToniqButton
+                                                                        text="Accept"
+                                                                        onClick={acceptOffer}
+                                                                    />
+                                                                ) : (
+                                                                    <>
+                                                                        {props.identity &&
+                                                                        props.identity
+                                                                            .getPrincipal()
+                                                                            .toText() ===
+                                                                            offer.buyer.toText() ? (
+                                                                            <ToniqButton
+                                                                                text="Cancel"
+                                                                                onClick={
+                                                                                    cancelOffer
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <Link
+                                                                                href={`https://icscan.io/account/${offer.buyer}`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                underline="none"
+                                                                            >
+                                                                                <ToniqMiddleEllipsis
+                                                                                    letterCount={4}
+                                                                                    text={offer.buyer.toText()}
+                                                                                    className={
+                                                                                        classes.linkText
+                                                                                    }
+                                                                                />
+                                                                            </Link>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </div>,
+                                                        ]}
+                                                        classes={classes}
+                                                    />
+                                                </NftCard>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            flexGrow: 1,
+                                        }}
+                                    >
+                                        <span className={classes.noDataText}>
+                                            THERE ARE NO OPEN OFFERS
+                                        </span>
+                                        {props.identity &&
+                                        props.account.address !== owner &&
+                                        getPriceData() ? (
+                                            <ToniqButton
+                                                className={'toniq-button-outline'}
+                                                text="Make an Offer"
+                                                onClick={() => {
+                                                    makeOffer();
+                                                }}
+                                            />
+                                        ) : (
+                                            ''
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
@@ -503,7 +527,7 @@ const useStyles = makeStyles(theme => ({
         padding: '24px',
         width: '50%',
         minHeight: 500,
-        maxHeight: 510,
+        maxHeight: 512,
         overflow: 'hidden',
         [theme.breakpoints.down('md')]: {
             minHeight: 'unset',

@@ -123,6 +123,9 @@ export const EntrepotTopTabsElement = defineToniqElement<{
     events: {
         tabChange: defineElementEvent<TopTab>(),
     },
+    initCallback: ({inputs, events, dispatch}) => {
+        dispatch(new events.tabChange(inputs.selected as TopTab));
+    },
     renderCallback: ({inputs, dispatch, events}) => {
         const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
 
