@@ -54,7 +54,10 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                     })}
                 />
             `;
-        } else if (moment(collectionSale.sales.endDate).isBefore(moment())) {
+        } else if (
+            moment(collectionSale.sales.startDate).isBefore(moment()) &&
+            moment(collectionSale.sales.endDate).isAfter(moment())
+        ) {
             return html`
                 <${EntrepotSaleRouteLiveSalePageElement}
                     ${assign(EntrepotSaleRouteLiveSalePageElement, {
