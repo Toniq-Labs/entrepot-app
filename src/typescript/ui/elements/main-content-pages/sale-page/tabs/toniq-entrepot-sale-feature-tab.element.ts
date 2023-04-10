@@ -49,7 +49,8 @@ export const EntrepotSaleFeatureTabElement = defineElement<{
     },
     renderCallback: ({inputs, dispatch, events}) => {
         function goToTab(tab: TopTab) {
-            inputs.updateState({SaleSelectedTab: tab});
+            console.log(tab);
+            inputs.updateState({saleSelectedTab: tab});
             window.scrollTo({behavior: 'smooth', top: 0});
         }
 
