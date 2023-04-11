@@ -130,7 +130,6 @@ export const EntrepotSalePageElement = defineToniqElement<{
     },
     renderCallback: ({state, updateState, events, dispatch}) => {
         const preloader = new Array(Math.floor(Math.random() * (8 - 4) + 4)).fill(0);
-        const selectedTopTab: TopTab = state.saleSelectedTab;
 
         return html`
 			<${EntrepotPageHeaderElement}
@@ -144,8 +143,8 @@ export const EntrepotSalePageElement = defineToniqElement<{
                         ? html`
                             <${EntrepotTopTabsElement}
                                 ${assign(EntrepotTopTabsElement, {
+                                    selected: state.saleSelectedTab,
                                     tabs: state.tabs,
-                                    selected: selectedTopTab,
                                 })}
                                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                                     const selectedTab = event.detail;
@@ -155,15 +154,11 @@ export const EntrepotSalePageElement = defineToniqElement<{
                         : html`
                         <${EntrepotTopTabsElement}
                             ${assign(EntrepotTopTabsElement, {})}
-                            ${listen(EntrepotTopTabsElement.events.tabChange, event => {
-                                const selectedTab = event.detail;
-                                updateState({saleSelectedTab: selectedTab});
-                            })}
                         ></${EntrepotTopTabsElement}>`
                 }
 
                 ${
-                    selectedTopTab?.value === 'featured'
+                    state.saleSelectedTab?.value === 'featured'
                         ? html`
                               ${state.upcoming.length ||
                               state.inProgress.length ||
@@ -192,7 +187,7 @@ export const EntrepotSalePageElement = defineToniqElement<{
             </div>
 
             ${
-                selectedTopTab?.value === 'upcoming'
+                state.saleSelectedTab?.value === 'upcoming'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {
@@ -256,7 +251,7 @@ export const EntrepotSalePageElement = defineToniqElement<{
             }
 
             ${
-                selectedTopTab?.value === 'inProgress'
+                state.saleSelectedTab?.value === 'inProgress'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {
@@ -334,7 +329,7 @@ export const EntrepotSalePageElement = defineToniqElement<{
             }
 
             ${
-                selectedTopTab?.value === 'endingSoon'
+                state.saleSelectedTab?.value === 'endingSoon'
                     ? html`
                         <${EntrepotSaleCategoryTabElement}
                             ${assign(EntrepotSaleCategoryTabElement, {
