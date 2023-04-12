@@ -49,10 +49,7 @@ export const EntrepotSaleCategoryTabElement = defineElement<{
             }
         }
     `,
-    events: {
-        collectionSelected: defineElementEvent<Collection>(),
-    },
-    renderCallback: ({inputs, dispatch, events}) => {
+    renderCallback: ({inputs}) => {
         return html`
             <div class="tab-content">
                 <div>

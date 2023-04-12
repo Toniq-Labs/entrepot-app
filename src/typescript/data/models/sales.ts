@@ -1,14 +1,17 @@
 import {BigNumber} from 'bignumber.js';
 import {Collection} from './collection';
 
+export type SalesPricing = Array<Array<BigNumber>>;
+
 export type SalesGroup = {
     available: boolean;
     end: BigNumber;
     id: BigNumber;
     name: string;
-    pricing: Array<Array<BigNumber>>;
+    pricing: SalesPricing;
     start: BigNumber;
     public: boolean;
+    limit: Array<BigNumber>;
 };
 
 export type Sales = {

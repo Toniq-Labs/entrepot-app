@@ -36,7 +36,6 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
             inputs.nftImageInputs;
         const {name, blurb} = inputs.collectionSale;
 
-        console.log(inputs.collectionSale);
         return html`
             <div class="page-wrapper">
                 <div class="section-overview">

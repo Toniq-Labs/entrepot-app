@@ -1,5 +1,5 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, css, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {Collection} from '../../../../data/models/collection';
 import {EntrepotPageHeaderElement} from '../../common/toniq-entrepot-page-header.element';
 import {EntrepotTopTabsElement, TopTab} from '../../common/toniq-entrepot-top-tabs.element';
@@ -11,6 +11,7 @@ import {EntrepotSaleCategoryTabElement} from './tabs/toniq-entrepot-sale-categor
 import {EntrepotSaleCategoryCardElement} from './toniq-entrepot-sale-category-card.element';
 import {defineToniqElement, Icp16Icon} from '@toniq-labs/design-system';
 import {EntrepotSalePreloaderElement} from './toniq-entrepot-sale-preloader.element';
+import {repeat} from 'lit/directives/repeat.js';
 
 export const EntrepotSalePageElement = defineToniqElement<{
     collections: Array<Collection>;
@@ -148,7 +149,7 @@ export const EntrepotSalePageElement = defineToniqElement<{
                                 })}
                                 ${listen(EntrepotTopTabsElement.events.tabChange, event => {
                                     const selectedTab = event.detail;
-                                    updateState({saleSelectedTab: selectedTab});
+                                    updateState({saleSelectedTab: selectedTab as TopTab<unknown>});
                                 })}
                             ></${EntrepotTopTabsElement}>`
                         : html`
@@ -193,56 +194,55 @@ export const EntrepotSalePageElement = defineToniqElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'Upcoming',
                                 children: html`
-                                    ${state.upcoming && state.upcoming.length
-                                        ? html`
-                                              ${state.upcoming.map(collection => {
-                                                  return html`
-                                                    <${EntrepotSaleCategoryCardElement}
-                                                        ${assign(EntrepotSaleCategoryCardElement, {
-                                                            collectionImageUrl:
-                                                                collection.collection,
-                                                            collectionName: collection.name,
-                                                            descriptionText: collection.brief,
-                                                            date: collection.sales.endDate,
-                                                            dateMessage: 'Just Launched',
-                                                            statsArray: [
-                                                                {
-                                                                    title: 'PRICE',
-                                                                    icon: Icp16Icon,
-                                                                    stat: collection.sales
-                                                                        .salePrice,
-                                                                },
-                                                                {
-                                                                    title: 'SIZE',
-                                                                    stat: collection.sales.quantity,
-                                                                },
-                                                                {
-                                                                    title: 'FOR SALE',
-                                                                    stat: collection.sales
-                                                                        .remaining,
-                                                                },
-                                                            ],
-                                                        })}
-                                                        ${listen('click', () => {
-                                                            dispatch(
-                                                                new events.collectionSelected(
-                                                                    collection,
-                                                                ),
-                                                            );
-                                                        })}
-                                                    ></${EntrepotSaleCategoryCardElement}>
-                                                    `;
-                                              })}
-                                          `
-                                        : html`
-                                              ${preloader.map(() => {
-                                                  return html`
-                                                    <${EntrepotSaleCategoryCardElement}
-                                                    ${assign(EntrepotSaleCategoryCardElement, {})}
-                                                    ></${EntrepotSaleCategoryCardElement}>
-                                                    `;
-                                              })}
-                                          `}
+                                    ${renderIf(
+                                        !!state.upcoming,
+                                        repeat(
+                                            state.upcoming,
+                                            collection => collection.canister,
+                                            collection => html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                    ${assign(EntrepotSaleCategoryCardElement, {
+                                                        collectionImageUrl: collection.collection,
+                                                        collectionName: collection.name,
+                                                        descriptionText: collection.brief,
+                                                        date: collection.sales.endDate,
+                                                        dateMessage: 'Just Launched',
+                                                        statsArray: [
+                                                            {
+                                                                title: 'PRICE',
+                                                                icon: Icp16Icon,
+                                                                stat: collection.sales.salePrice,
+                                                            },
+                                                            {
+                                                                title: 'SIZE',
+                                                                stat: collection.sales.quantity,
+                                                            },
+                                                            {
+                                                                title: 'FOR SALE',
+                                                                stat: collection.sales.remaining,
+                                                            },
+                                                        ],
+                                                    })}
+                                                    ${listen('click', () => {
+                                                        dispatch(
+                                                            new events.collectionSelected(
+                                                                collection,
+                                                            ),
+                                                        );
+                                                    })}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                            `,
+                                        ),
+                                        repeat(
+                                            preloader,
+                                            preloader => preloader,
+                                            () => html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                ${assign(EntrepotSaleCategoryCardElement, {})}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                            `,
+                                        ),
+                                    )}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>
@@ -257,70 +257,61 @@ export const EntrepotSalePageElement = defineToniqElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'In Progress',
                                 children: html`
-                                    ${state.inProgress && state.inProgress.length
-                                        ? html`
-                                              ${state.inProgress.map(collection => {
-                                                  return html`
-                                                        <${EntrepotSaleCategoryCardElement}
-                                                            ${assign(
-                                                                EntrepotSaleCategoryCardElement,
-                                                                {
-                                                                    collectionImageUrl:
-                                                                        collection.collection,
-                                                                    collectionName: collection.name,
-                                                                    descriptionText:
-                                                                        collection.brief,
-                                                                    date: collection.sales.endDate,
-                                                                    statsArray: [
-                                                                        {
-                                                                            title: 'PRICE',
-                                                                            icon: Icp16Icon,
-                                                                            stat: collection.sales
-                                                                                .salePrice,
-                                                                        },
-                                                                        {
-                                                                            title: 'SOLD',
-                                                                            stat:
-                                                                                Number(
-                                                                                    collection.sales
-                                                                                        .quantity,
-                                                                                ) -
-                                                                                Number(
-                                                                                    collection.sales
-                                                                                        .remaining,
-                                                                                ),
-                                                                        },
-                                                                        {
-                                                                            title: 'REMAINING',
-                                                                            stat: collection.sales
-                                                                                .remaining,
-                                                                        },
-                                                                    ],
-                                                                    progress:
-                                                                        collection.sales
-                                                                            .percentMinted,
-                                                                },
-                                                            )}
-                                                            ${listen('click', () => {
-                                                                dispatch(
-                                                                    new events.collectionSelected(
-                                                                        collection,
+                                    ${renderIf(
+                                        !!state.inProgress,
+                                        repeat(
+                                            state.inProgress,
+                                            collection => collection.canister,
+                                            collection => html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                    ${assign(EntrepotSaleCategoryCardElement, {
+                                                        collectionImageUrl: collection.collection,
+                                                        collectionName: collection.name,
+                                                        descriptionText: collection.brief,
+                                                        date: collection.sales.endDate,
+                                                        statsArray: [
+                                                            {
+                                                                title: 'PRICE',
+                                                                icon: Icp16Icon,
+                                                                stat: collection.sales.salePrice,
+                                                            },
+                                                            {
+                                                                title: 'SOLD',
+                                                                stat:
+                                                                    Number(
+                                                                        collection.sales.quantity,
+                                                                    ) -
+                                                                    Number(
+                                                                        collection.sales.remaining,
                                                                     ),
-                                                                );
-                                                            })}
-                                                        ></${EntrepotSaleCategoryCardElement}>
-                                                    `;
-                                              })}
-                                          `
-                                        : html`
-                                              ${preloader.map(() => {
-                                                  return html`
+                                                            },
+                                                            {
+                                                                title: 'REMAINING',
+                                                                stat: collection.sales.remaining,
+                                                            },
+                                                        ],
+                                                        progress: collection.sales.percentMinted,
+                                                    })}
+                                                    ${listen('click', () => {
+                                                        dispatch(
+                                                            new events.collectionSelected(
+                                                                collection,
+                                                            ),
+                                                        );
+                                                    })}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                            `,
+                                        ),
+                                        repeat(
+                                            preloader,
+                                            preloader => preloader,
+                                            () => html`
                                                 <${EntrepotSaleCategoryCardElement}
                                                 ${assign(EntrepotSaleCategoryCardElement, {})}
                                                 ></${EntrepotSaleCategoryCardElement}>
-                                                `;
-                                              })}
-                                          `}
+                                            `,
+                                        ),
+                                    )}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>
@@ -335,70 +326,61 @@ export const EntrepotSalePageElement = defineToniqElement<{
                             ${assign(EntrepotSaleCategoryTabElement, {
                                 categoryName: 'Ending Soon',
                                 children: html`
-                                    ${state.endingSoon && state.endingSoon.length
-                                        ? html`
-                                              ${state.endingSoon.map(collection => {
-                                                  return html`
-                                                        <${EntrepotSaleCategoryCardElement}
-                                                            ${assign(
-                                                                EntrepotSaleCategoryCardElement,
-                                                                {
-                                                                    collectionImageUrl:
-                                                                        collection.collection,
-                                                                    collectionName: collection.name,
-                                                                    descriptionText:
-                                                                        collection.brief,
-                                                                    date: collection.sales.endDate,
-                                                                    statsArray: [
-                                                                        {
-                                                                            title: 'PRICE',
-                                                                            icon: Icp16Icon,
-                                                                            stat: collection.sales
-                                                                                .salePrice,
-                                                                        },
-                                                                        {
-                                                                            title: 'SOLD',
-                                                                            stat:
-                                                                                Number(
-                                                                                    collection.sales
-                                                                                        .quantity,
-                                                                                ) -
-                                                                                Number(
-                                                                                    collection.sales
-                                                                                        .remaining,
-                                                                                ),
-                                                                        },
-                                                                        {
-                                                                            title: 'REMAINING',
-                                                                            stat: collection.sales
-                                                                                .remaining,
-                                                                        },
-                                                                    ],
-                                                                    progress:
-                                                                        collection.sales
-                                                                            .percentMinted,
-                                                                },
-                                                            )}
-                                                            ${listen('click', () => {
-                                                                dispatch(
-                                                                    new events.collectionSelected(
-                                                                        collection,
+                                    ${renderIf(
+                                        !!state.endingSoon,
+                                        repeat(
+                                            state.endingSoon,
+                                            collection => collection.canister,
+                                            collection => html`
+                                                <${EntrepotSaleCategoryCardElement}
+                                                    ${assign(EntrepotSaleCategoryCardElement, {
+                                                        collectionImageUrl: collection.collection,
+                                                        collectionName: collection.name,
+                                                        descriptionText: collection.brief,
+                                                        date: collection.sales.endDate,
+                                                        statsArray: [
+                                                            {
+                                                                title: 'PRICE',
+                                                                icon: Icp16Icon,
+                                                                stat: collection.sales.salePrice,
+                                                            },
+                                                            {
+                                                                title: 'SOLD',
+                                                                stat:
+                                                                    Number(
+                                                                        collection.sales.quantity,
+                                                                    ) -
+                                                                    Number(
+                                                                        collection.sales.remaining,
                                                                     ),
-                                                                );
-                                                            })}
-                                                        ></${EntrepotSaleCategoryCardElement}>
-                                                    `;
-                                              })}
-                                          `
-                                        : html`
-                                              ${preloader.map(() => {
-                                                  return html`
+                                                            },
+                                                            {
+                                                                title: 'REMAINING',
+                                                                stat: collection.sales.remaining,
+                                                            },
+                                                        ],
+                                                        progress: collection.sales.percentMinted,
+                                                    })}
+                                                    ${listen('click', () => {
+                                                        dispatch(
+                                                            new events.collectionSelected(
+                                                                collection,
+                                                            ),
+                                                        );
+                                                    })}
+                                                ></${EntrepotSaleCategoryCardElement}>
+                                            `,
+                                        ),
+                                        repeat(
+                                            preloader,
+                                            preloader => preloader,
+                                            () => html`
                                                 <${EntrepotSaleCategoryCardElement}
                                                 ${assign(EntrepotSaleCategoryCardElement, {})}
                                                 ></${EntrepotSaleCategoryCardElement}>
-                                                `;
-                                              })}
-                                          `}
+                                            `,
+                                        ),
+                                    )}
                                 `,
                             })}
                         ></${EntrepotSaleCategoryTabElement}>
