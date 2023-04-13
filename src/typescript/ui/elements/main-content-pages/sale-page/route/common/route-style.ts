@@ -1,5 +1,6 @@
 import {toniqColors, toniqFontStyles} from '@toniq-labs/design-system';
 import {css} from 'element-vir';
+import {makeDropShadowCardStyles} from '../../../../styles/drop-shadow-card.style';
 
 export const routeStyle = css`
 	.page-wrapper {
@@ -56,6 +57,33 @@ export const routeStyle = css`
 		display: flex;
 	}
 
+	.section-info {
+		display: flex;
+		gap: 48px;
+		padding: 44px 0px;
+	}
+
+	${makeDropShadowCardStyles('.info-card')}
+
+	.info-card {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		border: 3px solid ${toniqColors.pageInteraction.foregroundColor};
+		padding: 25px 0px;
+	}
+
+	.info-card > span {
+		${toniqFontStyles.boldFont};
+		font-size: 48px;
+		line-height: 64px;
+	}
+
+	.info-card > span:last-of-type {
+		color: ${toniqColors.pageInteraction.foregroundColor};
+	}
+
 	@media (max-width: 1023px) {
 		.section-overview {
 			flex-direction: column;
@@ -69,6 +97,28 @@ export const routeStyle = css`
 
 		.page-wrapper {
 			padding: 16px 0px 32px;
+		}
+
+		.section-info {
+			gap: 12px;
+			padding: 28px 0px;
+		}
+
+		.info-card {
+			flex-direction: column;
+			padding: 16px 0px;
+		}
+
+		.info-card > span {
+			${toniqFontStyles.boldParagraphFont};
+		}
+
+		.info-card > span:last-of-type {
+			${toniqFontStyles.toniqFont};
+			font-weight: 800;
+			font-size: 24px;
+			line-height: 32px;
+			color: ${toniqColors.pageInteraction.foregroundColor};
 		}
 	}
 `;

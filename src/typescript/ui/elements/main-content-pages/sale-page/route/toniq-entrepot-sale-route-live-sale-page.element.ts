@@ -3,9 +3,9 @@ import {DimensionConstraints} from '@electrovir/resizable-image-element';
 import {assign, css, defineElement, html, listen, renderIf} from 'element-vir';
 import parse from 'html-react-parser';
 import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
-import {CollectionSales, Sales, SalesGroup, SalesPricing} from '../../../../../data/models/sales';
+import {CollectionSales, SalesGroup, SalesPricing} from '../../../../../data/models/sales';
 import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-display.element';
-import {EntrepotTopTabsElement, TopTab} from '../../../common/toniq-entrepot-top-tabs.element';
+import {EntrepotPricingTabsElement, PricingTab} from './common/toniq-entrepot-pricing-tabs.element';
 import {routeStyle} from './common/route-style';
 import {repeat} from 'lit/directives/repeat.js';
 import moment, {duration} from 'moment';
@@ -17,6 +17,7 @@ import {
     ToniqIcon,
 } from '@toniq-labs/design-system';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
+import {truncateNumber} from '@augment-vir/common';
 
 export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     collectionSale: CollectionSales;
@@ -80,15 +81,22 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             gap: 10px;
             ${toniqFontStyles.paragraphFont};
         }
+
+        @media (max-width: 600px) {
+            .pricing-other-info-wrapper {
+                max-height: unset;
+                flex-direction: column;
+            }
+        }
     `,
     stateInit: {
-        pricingSelectedTab: undefined as undefined | TopTab<SalesGroup>,
+        pricingSelectedTab: undefined as undefined | PricingTab<SalesGroup>,
     },
     renderCallback: ({inputs, state, updateState}) => {
         const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
             inputs.nftImageInputs;
-        const {name, blurb} = inputs.collectionSale;
-        const tabs: ReadonlyArray<TopTab<SalesGroup>> = inputs.collectionSale.sales.groups
+        const {name, blurb, sales} = inputs.collectionSale;
+        const tabs: ReadonlyArray<PricingTab<SalesGroup>> = inputs.collectionSale.sales.groups
             // TODO: Whitelisting
             .filter(group => {
                 return group.public && moment(Number(group.end) / 1000000).isAfter(moment());
@@ -100,7 +108,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                 };
             });
 
-        const selectedPricingTab: TopTab<SalesGroup> | undefined =
+        const selectedPricingTab: PricingTab<SalesGroup> | undefined =
             state.pricingSelectedTab ?? tabs[0];
         const socials: Array<string> = [
             'telegram',
@@ -181,18 +189,18 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                             ${parse(blurb)}
                         </div>
                         <div class="collection-pricing">
-                            <${EntrepotTopTabsElement}
-                                ${assign(EntrepotTopTabsElement, {
+                            <${EntrepotPricingTabsElement}
+                                ${assign(EntrepotPricingTabsElement, {
                                     tabs,
-                                    selected: selectedPricingTab as TopTab<SalesGroup>,
+                                    selected: selectedPricingTab as PricingTab<SalesGroup>,
                                 })}
-                                ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                                ${listen(EntrepotPricingTabsElement.events.tabChange, event => {
                                     const selectedTab = event.detail;
                                     updateState({
-                                        pricingSelectedTab: selectedTab as TopTab<SalesGroup>,
+                                        pricingSelectedTab: selectedTab as PricingTab<SalesGroup>,
                                     });
                                 })}
-                            ></${EntrepotTopTabsElement}>
+                            ></${EntrepotPricingTabsElement}>
                             ${renderIf(
                                 !!selectedPricingTab,
                                 html`
@@ -203,7 +211,9 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                             pricing =>
                                                 html`
                                                     <button class="pricing-card">
-                                                        <span>Buy ${Number(pricing[0])} NFT</span>
+                                                        <span>Buy ${truncateNumber(
+                                                            Number(pricing[0]),
+                                                        )} NFT</span>
                                                         <span>
                                                             <${ToniqIcon}
                                                                 class="icp-icon"
@@ -211,7 +221,9 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                                     icon: Icp24Icon,
                                                                 })}
                                                             ></${ToniqIcon}>
-                                                            ${Number(pricing[1]) / 100000000}
+                                                            ${truncateNumber(
+                                                                Number(pricing[1]) / 100000000,
+                                                            )}
                                                         </span>
                                                     </button>
                                                 `,
@@ -223,14 +235,25 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                 <span class="pricing-other-info"><strong>Ends: </strong>${limitFormattedDate(
                                     Number(selectedPricingTab?.value?.end) / 1000000,
                                 )}</span>
-                                <span class="pricing-other-info"><strong>Limit: </strong>${Number(
-                                    selectedPricingTab?.value?.limit[0],
+                                <span class="pricing-other-info"><strong>Limit: </strong>${truncateNumber(
+                                    Number(selectedPricingTab?.value?.limit[0]),
                                 )} per wallet</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="section-info"></div>
+                <div class="section-info">
+                    <div class="info-card">
+                        <span>Minted:&nbsp;</span>
+                        <span>${truncateNumber(
+                            Number(sales.quantity) - Number(sales.remaining),
+                        )}</span>
+                    </div>
+                    <div class="info-card">
+                        <span>Remaining:&nbsp;</span>
+                        <span>${truncateNumber(Number(sales.remaining))}</span>
+                    </div>
+                </div>
                 <div class="section-details"></div>
                 <div class="section-artwork"></div>
             </div>

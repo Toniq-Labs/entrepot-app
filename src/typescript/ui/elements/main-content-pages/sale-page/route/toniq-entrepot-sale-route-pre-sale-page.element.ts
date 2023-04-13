@@ -1,6 +1,6 @@
 import {PartialAndNullable} from '@augment-vir/common';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
-import {ToniqButton, ToniqInput} from '@toniq-labs/design-system';
+import {ToniqButton, toniqColors, toniqFontStyles, ToniqInput} from '@toniq-labs/design-system';
 import {assign, css, defineElement, html} from 'element-vir';
 import parse from 'html-react-parser';
 import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
@@ -21,13 +21,88 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
             gap: 12px;
         }
 
-        @media (max-width: 600px) {
+        .info-card {
+            padding: 28px 48px;
+        }
+
+        .info-card > span:last-of-type {
+            display: inline-flex;
+            padding: 28px 48px;
+            gap: 24px;
+        }
+
+        .time-colon {
+            ${toniqFontStyles.toniqFont} !important;
+            font-weight: 500 !important;
+            font-size: 64px !important;
+            line-height: 69px !important;
+        }
+
+        .info-card > span:last-of-type > div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-card > span:last-of-type > div > span:first-of-type {
+            ${toniqFontStyles.toniqFont};
+            font-size: 64px;
+            line-height: 80px;
+            color: ${toniqColors.pageInteraction.foregroundColor};
+        }
+
+        .info-card > span:last-of-type > div > span:last-of-type {
+            ${toniqFontStyles.toniqFont};
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+        }
+
+        @media (max-width: 1300px) {
             .email-notification-wrapper {
                 flex-direction: column;
             }
 
             .email-notification-wrapper > * {
                 width: 100%;
+            }
+
+            .info-card {
+                flex-direction: column;
+                padding: 16px 0px;
+                gap: 12px;
+            }
+
+            .info-card > span:first-of-type {
+                font-weight: 900;
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .info-card > span:last-of-type {
+                gap: 16px;
+                padding: 0;
+            }
+
+            .info-card > span:last-of-type > div {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: unset;
+            }
+
+            .info-card > span:last-of-type > div > span:first-of-type {
+                ${toniqFontStyles.toniqFont};
+                font-size: 36px;
+                line-height: 46px;
+                color: ${toniqColors.pageInteraction.foregroundColor};
+            }
+
+            .info-card > span:last-of-type > div > span:last-of-type {
+                ${toniqFontStyles.toniqFont};
+                font-size: 14px;
+                line-height: 20px;
             }
         }
     `,
@@ -115,7 +190,31 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                         </div>
                     </div>
                 </div>
-                <div class="section-info"></div>
+                <div class="section-info">
+                    <div class="info-card">
+                        <span>Time to Launch</span>
+                        <span>
+                            <div>
+                                <span>00</span>
+                                <span>Days</span>
+                            </div>
+                            <div>
+                                <span class="time-colon">:</span>
+                            </div>
+                            <div>
+                                <span>00</span>
+                                <span>Hours</span>
+                            </div>
+                            <div>
+                                <span class="time-colon">:</span>
+                            </div>
+                            <div>
+                                <span>00</span>
+                                <span>Minutes</span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
                 <div class="section-details"></div>
                 <div class="section-artwork"></div>
             </div>
