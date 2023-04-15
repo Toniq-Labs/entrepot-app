@@ -117,7 +117,6 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             'discord',
             'dscvr',
             'distrikt',
-            'icscan',
         ].filter(
             social =>
                 inputs.collectionSale.hasOwnProperty(social) &&
@@ -254,8 +253,62 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                         <span>${truncateNumber(Number(sales.remaining))}</span>
                     </div>
                 </div>
-                <div class="section-details"></div>
-                <div class="section-artwork"></div>
+                <div class="section-details">
+                    <div class="section-title">
+                        <span>Details</span>
+                    </div>
+                    <div class="detail-card-wrapper">
+                        <div class="detail-card">
+                            <span class="detail-title">Launch Date</span>
+                            <div class="detail-content">${moment(sales.startDate).format(
+                                'MMM DD, YYYY',
+                            )}</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">End Date</span>
+                            <div class="detail-content">${moment(sales.endDate).format(
+                                'MMM DD, YYYY',
+                            )}</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">Low Price</span>
+                            <div class="detail-content">${truncateNumber(
+                                Number(sales.salePrice),
+                            )} ICP</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">High Price</span>
+                            <div class="detail-content">${truncateNumber(
+                                Number(sales.salePrice),
+                            )} ICP</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">Collection Size</span>
+                            <div class="detail-content">${truncateNumber(
+                                Number(sales.quantity),
+                            )}</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">For Sale</span>
+                            <div class="detail-content">${truncateNumber(
+                                Number(sales.quantity),
+                            )}</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">Team Allocation</span>
+                            <div class="detail-content">-</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-title">Airdrops</span>
+                            <div class="detail-content">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-artwork">
+                    <div class="section-title">
+                        <span>Artwork</span>
+                    </div>
+                </div>
             </div>
         `;
     },
