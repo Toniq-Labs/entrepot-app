@@ -34,6 +34,7 @@ function formatTopCollection(collections: ReadonlyArray<Collection>, canisters: 
             floorPrice: Number(canister.floorPriceE8s) / 100000000,
             volume: Number(canister.volumeE8s) / 100000000,
             index: collectionIndex + 1,
+            route: collectionMatch ? collectionMatch.route : '',
             id: canister.canisterId,
         };
     });

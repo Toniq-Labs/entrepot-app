@@ -296,7 +296,6 @@ const DetailBody = props => {
                     offerListing={offerListing}
                     getPriceData={getPriceData}
                     floor={floor}
-                    index={index}
                     canister={canister}
                     tokenid={tokenid}
                     owner={owner}

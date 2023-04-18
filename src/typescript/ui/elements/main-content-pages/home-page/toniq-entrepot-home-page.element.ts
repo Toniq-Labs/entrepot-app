@@ -16,6 +16,7 @@ import {EntrepotHomePageTopCardHeaderElement} from './children/toniq-entrepot-to
 import {Collection} from '../../../../data/models/collection';
 import {NftImageInputs} from '../../../../data/canisters/get-nft-image-data';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
+import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
 
 export const EntrepotHomePageElement = defineToniqElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
@@ -97,6 +98,18 @@ export const EntrepotHomePageElement = defineToniqElement<{
             font-size: 12px;
         }
 
+        a {
+            height: 100%;
+            width: 100%;
+            text-decoration: none;
+            display: flex;
+            align-items: stretch;
+            text-align: left;
+            flex-direction: column;
+            flex-grow: 1;
+            color: inherit;
+        }
+
         @media (max-width: 1200px) and (min-width: 900px), (max-width: 600px) {
             .top-cards-header,
             .top-cards,
@@ -122,7 +135,7 @@ export const EntrepotHomePageElement = defineToniqElement<{
     events: {
         collectionRouteClicked: defineElementEvent<string>(),
     },
-    renderCallback: ({inputs, state, updateState, events}) => {
+    renderCallback: ({inputs, state, updateState, events, dispatch}) => {
         const tabs: ReadonlyArray<TopTab<ReadonlyArray<TopCardInputs>>> = [
             inputs.topCollections.past24Hours
                 ? inputs.topCollections.past24Hours.length
@@ -190,9 +203,19 @@ export const EntrepotHomePageElement = defineToniqElement<{
             <div class="top-cards">
                 ${topCardsToShow.map(topCard => {
                     return html`
-                        <${EntrepotHomePageTopCardElement}
-                            ${assign(EntrepotHomePageTopCardElement, topCard)}
-                        ></${EntrepotHomePageTopCardElement}>
+                        <a
+                            href=${topCard.route}
+                            @click=${(clickEvent: MouseEvent) => {
+                                if (shouldMouseEventTriggerRoutes(clickEvent)) {
+                                    clickEvent.preventDefault();
+                                    dispatch(new events.collectionRouteClicked(topCard.route));
+                                }
+                            }}
+                        >
+                            <${EntrepotHomePageTopCardElement}
+                                ${assign(EntrepotHomePageTopCardElement, topCard)}
+                            ></${EntrepotHomePageTopCardElement}>
+                        </a>
                     `;
                 })}
                 <span class="powered-nft-geek">Data powered by NFT Geek</span>
