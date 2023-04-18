@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import {environmentByUrl, isProd} from '../../environment/environment-by-url';
-import {BrowserOptions as SentryConfig} from '@sentry/browser';
+import {BrowserOptions as SentryConfig, HttpContext} from '@sentry/browser';
 import {ensureError} from '@augment-vir/common';
 import {getEventConsoleLogFunction} from './log-levels';
 
@@ -15,7 +15,7 @@ export const toniqIoSentryConfig: SentryConfig = {
     defaultIntegrations: false,
     environment: environmentByUrl,
     enabled: true,
-    integrations: [],
+    integrations: [new HttpContext()],
     beforeSend(event, hint) {
         const consoleMethod = getEventConsoleLogFunction(event);
 
