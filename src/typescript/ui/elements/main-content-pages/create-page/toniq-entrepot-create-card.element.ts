@@ -1,4 +1,4 @@
-import {assign, css, defineElement, html} from 'element-vir';
+import {assign, css, html, listen} from 'element-vir';
 import {
     applyBackgroundAndForeground,
     ToniqButton,
@@ -16,7 +16,7 @@ export type CreateCardInputs = {
     icon: ToniqSvg;
     subtitle?: string | undefined;
     bullets: ReadonlyArray<string>;
-    buttons: ReadonlyArray<{text: string; primary: boolean}>;
+    buttons: ReadonlyArray<{text: string; primary: boolean; link?: string}>;
 };
 
 export const EntrepotCreateCardElement = defineToniqElement<CreateCardInputs>()({
@@ -96,6 +96,9 @@ export const EntrepotCreateCardElement = defineToniqElement<CreateCardInputs>()(
                     class=${button.primary ? '' : ToniqButton.hostClasses.outline}
                     ${assign(ToniqButton, {
                         text: button.text,
+                    })}
+                    ${listen('click', () => {
+                        if (button.link) window.open(button.link, '_blank');
                     })}
                 ></${ToniqButton}>
             `;

@@ -13,7 +13,6 @@ export const bannerCanisters = [
     'j3dqa-byaaa-aaaah-qcwfa-cai',
     'gtb2b-tiaaa-aaaah-qcxca-cai',
     '3vdxu-laaaa-aaaah-abqxa-cai',
-    '4ggk4-mqaaa-aaaae-qad6q-cai',
     '6wih6-siaaa-aaaah-qczva-cai',
     '4fcza-biaaa-aaaah-abi4q-cai',
     'er7d4-6iaaa-aaaaj-qac2q-cai',
