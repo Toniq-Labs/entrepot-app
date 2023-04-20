@@ -2053,22 +2053,6 @@ export default function App() {
                                         />
                                     }
                                 />
-                                {isProd ? (
-                                    ''
-                                ) : (
-                                    <Route
-                                        path="/test"
-                                        exact
-                                        element={
-                                            <EntrepotTestPage
-                                                collections={collections}
-                                                onCollectionRouteClicked={event => {
-                                                    navigate(`/marketplace/${event.detail}`);
-                                                }}
-                                            />
-                                        }
-                                    />
-                                )}
                                 <Route
                                     path="/"
                                     exact
@@ -2076,7 +2060,7 @@ export default function App() {
                                         <EntrepotTestPage
                                             collections={collections}
                                             onCollectionRouteClicked={event => {
-                                                navigate(`/marketplace/${event.detail}`);
+                                                navigate(event.detail);
                                             }}
                                         />
                                     }
@@ -2101,33 +2085,6 @@ export default function App() {
                                         />
                                     }
                                 />
-                                {/* <Route
-                                    path="/sale"
-                                    exact
-                                    element={
-                                        <Sale
-                                            error={error}
-                                            view={'sale'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                /> */}
                                 <Route path="*" element={<MissingPage404 />} />
                             </Routes>
                             <BuyForm open={showBuyForm} {...buyFormData} />

@@ -62,24 +62,22 @@ const _getStats = async () => {
         .filter(a => _isCanister(a.canister));
     var pxs = [];
     var _ts = [];
-    for (var i = 0; i < collections.length; i++) {
-        if (!collections[i].market) {
+    collections.map(async collection => {
+        if (!collection.market) {
             _ts.push({
-                canister: collections[i].canister,
+                canister: collections.canister,
                 stats: false,
             });
         } else {
-            pxs.push(
-                (c =>
-                    defaultEntrepotApi
-                        .token(c)
-                        .stats()
-                        .then(r => {
-                            return {canister: c, stats: r};
-                        }))(collections[i].canister),
-            );
+            await defaultEntrepotApi
+                .token(collection.canister)
+                .stats()
+                .then(r => {
+                    pxs.push({canister: collection.canister, stats: r});
+                })
+                .catch(err => err);
         }
-    }
+    });
     const results = await Promise.all(pxs.map(p => p.catch(e => e)));
     const validResults = results.filter(result => !(result instanceof Error));
     _stats = validResults.concat(_ts);

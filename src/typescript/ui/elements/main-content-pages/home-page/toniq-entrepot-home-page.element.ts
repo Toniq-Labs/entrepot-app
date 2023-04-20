@@ -17,6 +17,7 @@ import {Collection} from '../../../../data/models/collection';
 import {NftImageInputs} from '../../../../data/canisters/get-nft-image-data';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
 import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
+import {repeat} from 'lit/directives/repeat.js';
 
 export const EntrepotHomePageElement = defineToniqElement<{
     featuredCollections: ReadonlyArray<FeaturedCollectionInputs>;
@@ -201,23 +202,31 @@ export const EntrepotHomePageElement = defineToniqElement<{
                     })}
             </div>
             <div class="top-cards">
-                ${topCardsToShow.map(topCard => {
-                    return html`
-                        <a
-                            href=${topCard.route}
-                            @click=${(clickEvent: MouseEvent) => {
-                                if (shouldMouseEventTriggerRoutes(clickEvent)) {
-                                    clickEvent.preventDefault();
-                                    dispatch(new events.collectionRouteClicked(topCard.route));
-                                }
-                            }}
-                        >
-                            <${EntrepotHomePageTopCardElement}
-                                ${assign(EntrepotHomePageTopCardElement, topCard)}
-                            ></${EntrepotHomePageTopCardElement}>
-                        </a>
-                    `;
-                })}
+                ${repeat(
+                    topCardsToShow,
+                    topCard => topCard.id,
+                    topCard => {
+                        return html`
+                    <a
+                        href=${`/marketplace/${topCard.route}`}
+                        @click=${(clickEvent: MouseEvent) => {
+                            if (shouldMouseEventTriggerRoutes(clickEvent)) {
+                                clickEvent.preventDefault();
+                                dispatch(
+                                    new events.collectionRouteClicked(
+                                        `/marketplace/${topCard.route}`,
+                                    ),
+                                );
+                            }
+                        }}
+                    >
+                        <${EntrepotHomePageTopCardElement}
+                            ${assign(EntrepotHomePageTopCardElement, topCard)}
+                        ></${EntrepotHomePageTopCardElement}>
+                    </a>
+                `;
+                    },
+                )}
                 <span class="powered-nft-geek">Data powered by NFT Geek</span>
             </div>
             
@@ -225,19 +234,23 @@ export const EntrepotHomePageElement = defineToniqElement<{
                 Featured
             </h2>
             <div class="featured-collections">
-                ${inputs.featuredCollections.map(featuredCollection => {
-                    return html`
-                        <${EntrepotFeaturedCollectionCardElement}
-                            ${assign(EntrepotFeaturedCollectionCardElement, featuredCollection)}
-                            ${listen(
-                                EntrepotFeaturedCollectionCardElement.events.collectionRouteClicked,
-                                event => {
-                                    new events.collectionRouteClicked(event.detail);
-                                },
-                            )}
-                        ></${EntrepotFeaturedCollectionCardElement}>
-                        `;
-                })}
+                ${repeat(
+                    inputs.featuredCollections,
+                    featuredCollection => featuredCollection.collectionName,
+                    featuredCollection => {
+                        return html`
+                    <${EntrepotFeaturedCollectionCardElement}
+                        ${assign(EntrepotFeaturedCollectionCardElement, featuredCollection)}
+                        ${listen(
+                            EntrepotFeaturedCollectionCardElement.events.collectionRouteClicked,
+                            event => {
+                                new events.collectionRouteClicked(event.detail);
+                            },
+                        )}
+                    ></${EntrepotFeaturedCollectionCardElement}>
+                    `;
+                    },
+                )}
             </div>
         `;
     },
