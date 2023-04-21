@@ -60,27 +60,66 @@ const _getStats = async () => {
     )
         .map(a => ({...a, canister: a.id}))
         .filter(a => _isCanister(a.canister));
-    var pxs = [];
-    var _ts = [];
-    collections.map(async collection => {
+
+    const api1 = await fetch('https://api.nftgeek.app/api/1/marketCollectionSummaries').then(r =>
+        r.json(),
+    );
+
+    const api2 = await fetch('https://api.nftgeek.app/api/1/collectionSummaries').then(r =>
+        r.json(),
+    );
+
+    const mappedApi1 = api1.marketCollectionSummaries.map(api => {
+        return {
+            canisterId: api.collection.canisterId,
+            floor: (api.floorPrice / 1000000 / 100).toFixed(2),
+            listings: api.listingSize,
+            tokens: api.registryTotal,
+        };
+    });
+
+    const mappedApi2 = api2.collectionSummaries.map(api => {
+        return {
+            canisterId: api.collection.canisterId,
+            total: (api.transactionsVolume / 1000000 / 100).toFixed(2),
+            sales: api.transactions,
+            average: api.transactionsAvgPrice
+                ? (api.transactionsAvgPrice / 1000000 / 100).toFixed(2)
+                : '-',
+        };
+    });
+
+    const mapped3 = mappedApi1.map(api1 => {
+        const matchedApi2 = mappedApi2.find(api2 => api2.canisterId === api1.canisterId);
+        const {canisterId, ...api2} = matchedApi2;
+        return {
+            ...api1,
+            ...api2,
+        };
+    });
+
+    _stats = collections.map(collection => {
         if (!collection.market) {
-            _ts.push({
+            return {
                 canister: collections.canister,
                 stats: false,
-            });
+            };
         } else {
-            await defaultEntrepotApi
-                .token(collection.canister)
-                .stats()
-                .then(r => {
-                    pxs.push({canister: collection.canister, stats: r});
-                })
-                .catch(err => err);
+            const {canisterId, ...matched} = mapped3.find(
+                api => collection.canister === api.canisterId,
+            );
+
+            if (matched) {
+                return {canister: collection.canister, stats: matched};
+            } else {
+                return {
+                    canister: collections.canister,
+                    stats: false,
+                };
+            }
         }
     });
-    const results = await Promise.all(pxs.map(p => p.catch(e => e)));
-    const validResults = results.filter(result => !(result instanceof Error));
-    _stats = validResults.concat(_ts);
+
     return _stats;
 };
 const clipboardCopy = text => {
