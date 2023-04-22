@@ -88,8 +88,6 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         initProfileElement({inputs, state, updateState});
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        updateState(createAsyncProfileStateUpdate({state}));
-
         if (state.currentProfileTab.value === profileTabMap['my-nfts'].value) {
             updateState(createAsyncProfileStateUpdateOwnedNfts({inputs}));
         } else if (state.currentProfileTab.value === profileTabMap['favorites'].value) {
@@ -99,6 +97,8 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         } else if (state.currentProfileTab.value === profileTabMap['activity'].value) {
             updateState(createAsyncProfileStateUpdateActivity({inputs}));
         }
+
+        updateState(createAsyncProfileStateUpdate({state}));
 
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},

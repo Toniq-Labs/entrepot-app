@@ -61,24 +61,26 @@ const _getStats = async () => {
         .map(a => ({...a, canister: a.id}))
         .filter(a => _isCanister(a.canister));
 
-    const api1 = await fetch('https://api.nftgeek.app/api/1/marketCollectionSummaries').then(r =>
-        r.json(),
+    const marketCollectionSummaries = await fetch(
+        'https://api.nftgeek.app/api/1/toniq/marketCollectionSummaries',
+    ).then(r => r.json());
+
+    const collectionSummaries = await fetch(
+        'https://api.nftgeek.app/api/1/toniq/collectionSummaries',
+    ).then(r => r.json());
+
+    const mappedMarketCollectionSummaries = marketCollectionSummaries.marketCollectionSummaries.map(
+        api => {
+            return {
+                canisterId: api.collection.canisterId,
+                floor: (api.floorPrice / 1000000 / 100).toFixed(2),
+                listings: api.listingSize,
+                tokens: api.registryTotal,
+            };
+        },
     );
 
-    const api2 = await fetch('https://api.nftgeek.app/api/1/collectionSummaries').then(r =>
-        r.json(),
-    );
-
-    const mappedApi1 = api1.marketCollectionSummaries.map(api => {
-        return {
-            canisterId: api.collection.canisterId,
-            floor: (api.floorPrice / 1000000 / 100).toFixed(2),
-            listings: api.listingSize,
-            tokens: api.registryTotal,
-        };
-    });
-
-    const mappedApi2 = api2.collectionSummaries.map(api => {
+    const mappedCollectionSummaries = collectionSummaries.collectionSummaries.map(api => {
         return {
             canisterId: api.collection.canisterId,
             total: (api.transactionsVolume / 1000000 / 100).toFixed(2),
@@ -89,14 +91,19 @@ const _getStats = async () => {
         };
     });
 
-    const mapped3 = mappedApi1.map(api1 => {
-        const matchedApi2 = mappedApi2.find(api2 => api2.canisterId === api1.canisterId);
-        const {canisterId, ...api2} = matchedApi2;
-        return {
-            ...api1,
-            ...api2,
-        };
-    });
+    const mergedApiSummaries = mappedMarketCollectionSummaries.map(
+        mappedMarketCollectionSummary => {
+            const matchedMappedCollectionSummary = mappedCollectionSummaries.find(
+                mappedCollectionSummary =>
+                    mappedCollectionSummary.canisterId === mappedMarketCollectionSummary.canisterId,
+            );
+            const {canisterId, ...mappedCollectionSummary} = matchedMappedCollectionSummary;
+            return {
+                ...mappedMarketCollectionSummary,
+                ...mappedCollectionSummary,
+            };
+        },
+    );
 
     _stats = collections.map(collection => {
         if (!collection.market) {
@@ -105,7 +112,7 @@ const _getStats = async () => {
                 stats: false,
             };
         } else {
-            const {canisterId, ...matched} = mapped3.find(
+            const {canisterId, ...matched} = mergedApiSummaries.find(
                 api => collection.canister === api.canisterId,
             );
 
