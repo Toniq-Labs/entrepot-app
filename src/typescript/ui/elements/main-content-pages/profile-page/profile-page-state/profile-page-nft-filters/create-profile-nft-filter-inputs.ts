@@ -130,13 +130,21 @@ function createRightSideTemplate({
                 ${assign(ToniqButton, {
                     text: 'Sell',
                 })}
-                ${listen('click', sellCallback)}
+                ${listen('click', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    sellCallback();
+                })}
             ></${ToniqButton}>
             <${ToniqButton}
                 ${assign(ToniqButton, {
                     text: 'Transfer',
                 })}
-                ${listen('click', transferCallback)}
+                ${listen('click', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    transferCallback();
+                })}
             ></${ToniqButton}>
         </div>
     `;

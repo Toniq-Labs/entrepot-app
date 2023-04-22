@@ -30,6 +30,7 @@ export function ListingsTabs(props) {
                 <StyledTab value="nfts" label="NFTs" />
                 <StyledTab value="activity" label="Activity" />
             </StyledTabs>
+            <span className={classes.poweredByNFTGeek}>Data powered by NFT Geek</span>
             <div className={classes.viewControllerWrapper}>
                 <ToniqIcon
                     icon={LayoutGrid24Icon}
@@ -77,6 +78,17 @@ const useStyles = makeStyles(theme => ({
             top: 0,
             bottom: 0,
             margin: 'auto 0',
+        },
+    },
+    poweredByNFTGeek: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        margin: 'auto',
+        height: 'min-content',
+        [theme.breakpoints.down('sm')]: {
+            top: -60,
         },
     },
 }));

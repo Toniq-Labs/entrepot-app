@@ -23,6 +23,10 @@ import {userTransactionsCache} from '../../../../../data/local-cache/caches/user
 import {userOwnedNftsCache} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
 import {userFavoritesCache} from '../../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {
+    RawUserOwnedNft,
+    userOwnedNftsStatCache,
+} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-stat-cache';
+import {
     userMadeOffersCache,
     makeUserOffersKey,
 } from '../../../../../data/local-cache/caches/user-data/user-made-offers-cache';
@@ -61,6 +65,7 @@ export const profilePageStateInit = {
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
+    userOwnedNftsStat: asyncState<ReadonlyArray<RawUserOwnedNft>>(),
     userFavorites: asyncState<ReadonlyArray<BaseNft>>(),
     userOffersMade: asyncState<ReadonlyArray<BaseNft>>(),
     collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
@@ -148,6 +153,29 @@ export function createAsyncProfileStateUpdateOwnedNfts({
             createPromise: async () => {
                 return inputs.userAccount && inputs.userIdentity
                     ? userOwnedNftsCache.get({
+                          userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
+                      })
+                    : [];
+            },
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+    };
+}
+
+export function createAsyncProfileStateUpdateOwnedNftsStat({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
+        userOwnedNftsStat: {
+            createPromise: async () => {
+                return inputs.userAccount && inputs.userIdentity
+                    ? userOwnedNftsStatCache.get({
                           userAccount: inputs.userAccount,
                           userIdentity: inputs.userIdentity,
                       })

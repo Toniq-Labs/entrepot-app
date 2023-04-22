@@ -25,6 +25,7 @@ import {
     createAsyncProfileStateUpdateFavorites,
     createAsyncProfileStateUpdateOffers,
     createAsyncProfileStateUpdateActivity,
+    createAsyncProfileStateUpdateOwnedNftsStat,
 } from './profile-page-state/profile-page-state';
 import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
 import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
@@ -99,6 +100,7 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         }
 
         updateState(createAsyncProfileStateUpdate({state}));
+        updateState(createAsyncProfileStateUpdateOwnedNftsStat({inputs}));
 
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
