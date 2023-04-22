@@ -455,6 +455,7 @@ export function ListingsNftCard(props) {
                             (listing, index) => {
                                 return (
                                     <Link
+                                        key={index}
                                         to={`/marketplace/asset/` + getExtNftId(listing.tokenid)}
                                         style={{textDecoration: 'none'}}
                                         rel="noopener noreferrer"
@@ -670,7 +671,9 @@ export function ListingsNftCard(props) {
                     right: 0,
                     height: 20,
                 }}
-            ></Container>
+            >
+                <></>
+            </Container>
             <StateContainer
                 show={listings && !getShowListings(chunkedAndFilteredAndSortedListings).length}
             >

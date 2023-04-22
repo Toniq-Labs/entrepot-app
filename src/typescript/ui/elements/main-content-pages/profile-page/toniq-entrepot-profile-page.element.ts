@@ -21,6 +21,10 @@ import {
     initProfileElement,
     ProfileViewStyleEnum,
     listViewFinalItemHeaderTitleByTab,
+    createAsyncProfileStateUpdateOwnedNfts,
+    createAsyncProfileStateUpdateFavorites,
+    createAsyncProfileStateUpdateOffers,
+    createAsyncProfileStateUpdateActivity,
 } from './profile-page-state/profile-page-state';
 import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
 import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
@@ -84,7 +88,17 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         initProfileElement({inputs, state, updateState});
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        updateState(createAsyncProfileStateUpdate({state, inputs}));
+        if (state.currentProfileTab.value === profileTabMap['my-nfts'].value) {
+            updateState(createAsyncProfileStateUpdateOwnedNfts({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['favorites'].value) {
+            updateState(createAsyncProfileStateUpdateFavorites({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['offers'].value) {
+            updateState(createAsyncProfileStateUpdateOffers({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['activity'].value) {
+            updateState(createAsyncProfileStateUpdateActivity({inputs}));
+        }
+
+        updateState(createAsyncProfileStateUpdate({state}));
 
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
