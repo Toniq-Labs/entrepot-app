@@ -6,24 +6,23 @@ import {convertToIcpNumber} from '../../../../../data/icp';
 import {CollectionMap} from '../../../../../data/models/collection';
 
 function calculateOverallProfileStats(
-    profileState: Pick<ProfilePageStateType, 'userOwnedNfts'>,
+    profileState: Pick<ProfilePageStateType, 'userOwnedNftsStat'>,
     collectionMap: CollectionMap,
 ) {
-    const ready = isRenderReady(profileState.userOwnedNfts);
-
+    const ready = isRenderReady(profileState.userOwnedNftsStat);
     const floorValue = ready
-        ? profileState.userOwnedNfts.reduce((sum, nft): number => {
-              const collection = collectionMap[nft.collectionId];
+        ? profileState.userOwnedNftsStat.reduce((sum, nft): number => {
+              const collection = collectionMap[nft.canister];
 
               if (!collection) {
                   console.error(
-                      `Failed to find collection by id '${nft.collectionId}' for NFT '${nft.nftId}'`,
+                      `Failed to find collection by id '${nft.canister}' for NFT '${nft.id}'`,
                   );
                   return sum;
               }
               if (!collection.stats) {
                   console.error(
-                      `No stats yet for collection '${nft.collectionId}', '${collection.name}'  for NFT '${nft.nftId}'`,
+                      `No stats yet for collection '${nft.canister}', '${collection.name}'  for NFT '${nft.id}'`,
                   );
                   return sum;
               }
@@ -32,7 +31,7 @@ function calculateOverallProfileStats(
 
               if (isNaN(collectionFloor)) {
                   console.error(
-                      `Failed to convert floor price '${collection.stats.floor}' into a number from collection '${nft.collectionId}', '${collection.name}'  for NFT '${nft.nftId}'`,
+                      `Failed to convert floor price '${collection.stats.floor}' into a number from collection '${nft.canister}', '${collection.name}'  for NFT '${nft.id}'`,
                   );
                   return sum;
               }
@@ -45,13 +44,13 @@ function calculateOverallProfileStats(
         ready && !!floorValue ? truncateNumber(convertToIcpNumber(floorValue)) : '-';
 
     const collectionCount = ready
-        ? truncateNumber(new Set(profileState.userOwnedNfts.map(nft => nft.collectionId)).size)
+        ? truncateNumber(new Set(profileState.userOwnedNftsStat.map(nft => nft.canister)).size)
         : '-';
 
     const profileStats: ReadonlyArray<{title: string; count: string | number; icon?: ToniqSvg}> = [
         {
             title: 'OWNED NFTS',
-            count: ready ? truncateNumber(profileState.userOwnedNfts.length) : '-',
+            count: ready ? truncateNumber(profileState.userOwnedNftsStat.length) : '-',
         },
         {
             title: 'COLLECTIONS',
@@ -68,7 +67,7 @@ function calculateOverallProfileStats(
 }
 
 export function createOverallStatsTemplate(
-    profileState: Pick<ProfilePageStateType, 'userOwnedNfts'>,
+    profileState: Pick<ProfilePageStateType, 'userOwnedNftsStat'>,
     collectionMap: CollectionMap,
 ) {
     const stats = calculateOverallProfileStats(profileState, collectionMap);

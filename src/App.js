@@ -807,10 +807,8 @@ export default function App() {
     };
 
     React.useEffect(() => {
-        updateCollections();
         _updates();
-        EntrepotUpdateUSD();
-        EntrepotUpdateStats();
+        updateCollections();
         window.document.addEventListener(
             'scroll',
             throttle(250, () => {
