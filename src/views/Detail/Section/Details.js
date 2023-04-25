@@ -423,7 +423,11 @@ export default function DetailSectionDetails(props) {
                                                             <div>
                                                                 {owner &&
                                                                 props.account &&
-                                                                props.account.address == owner ? (
+                                                                props.account.address === owner &&
+                                                                props.identity
+                                                                    .getPrincipal()
+                                                                    .toText() !==
+                                                                    offer.buyer.toText() ? (
                                                                     <ToniqButton
                                                                         text="Accept"
                                                                         onClick={acceptOffer}

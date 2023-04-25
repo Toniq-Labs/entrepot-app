@@ -1,15 +1,15 @@
 import {isTruthy} from '@augment-vir/common';
 import {
     RawUserNftTransaction,
-    parseRawUserNftTransaction,
     UserTransactionWithDirection,
     TransactionDirection,
 } from '../../../nft/user-nft-transaction';
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {fetchRawNftListingAndOffers} from '../fetch-raw-nft-listing-and-offers';
-import {encodeNftId} from '../../../nft/nft-id';
+import {decodeNftId, encodeNftId} from '../../../nft/nft-id';
 import {getExtCanisterId} from '../../../canisters/canister-details/wrapped-canister-id';
+import {NftListingPrice} from '../../../nft/nft-listing';
+import {getNftMintNumber} from '../../../nft/nft-mint-number';
 
 export type UserTransactionsInput = {
     userAccount: EntrepotUserAccount;
@@ -19,14 +19,6 @@ async function updateUserTransactions({
     userAccount,
 }: UserTransactionsInput): Promise<ReadonlyArray<UserTransactionWithDirection>> {
     const userAccountAddress = userAccount.address;
-    // const cloudFunctionsUrl = createCloudFunctionsEndpointUrl([
-    //     'user',
-    //     userAccountAddress,
-    //     'transactions',
-    // ]);
-    // const rawTransactions: ReadonlyArray<RawUserNftTransaction> = await (
-    //     await fetch(cloudFunctionsUrl)
-    // ).json();
 
     const rawTransactions = await fetch(
         `https://api.nftgeek.app/api/1/accountIdentifier/${userAccountAddress}/transactions`,
@@ -52,33 +44,50 @@ async function updateUserTransactions({
             };
         });
 
-    const transactions = await Promise.all(
-        rawTransactionsMapped.map(
-            async (rawTransaction, index): Promise<UserTransactionWithDirection | undefined> => {
-                const nftId = rawTransaction.token;
+    const transactions = await Promise.allSettled(
+        rawTransactionsMapped.map(async (rawTransaction, index): Promise<any | undefined> => {
+            const nftId = rawTransaction.token;
 
-                if (!nftId) {
-                    return undefined;
-                }
+            if (!nftId) {
+                return undefined;
+            }
 
-                const rawNftListingAndOffers = await fetchRawNftListingAndOffers(index + 1, nftId);
+            const decodedNft = decodeNftId(rawTransaction.token);
 
-                const transaction = parseRawUserNftTransaction({
-                    ...rawNftListingAndOffers,
-                    rawTransaction,
-                });
+            const listing: NftListingPrice = {
+                price: rawTransaction.price,
+                lockedTimestamp: rawTransaction.time,
+            };
 
-                const direction =
-                    transaction.buyerAddress === userAccountAddress
-                        ? TransactionDirection.Purchase
-                        : TransactionDirection.Sale;
+            const direction =
+                rawTransaction.buyer === userAccountAddress
+                    ? TransactionDirection.Purchase
+                    : TransactionDirection.Sale;
 
-                return {
-                    ...transaction,
-                    directionForCurrentUser: direction,
-                };
-            },
-        ),
+            return {
+                collectionId: rawTransaction.canister,
+                buyerAddress: rawTransaction.buyer,
+                nftIndex: decodedNft.index,
+                nftId,
+                nftMintNumber: getNftMintNumber({
+                    collectionId: rawTransaction.canister,
+                    nftIndex: decodedNft.index,
+                }),
+                sellerAddress: rawTransaction.seller,
+                transactionTimeMillisecond: rawTransaction.time / 1_000_000,
+                transactionId: rawTransaction.id ? rawTransaction.id : '',
+                listing,
+                directionForCurrentUser: direction,
+            };
+        }),
+    ).then(results =>
+        results.map(result => {
+            if (result.status === 'fulfilled') {
+                return result.value;
+            } else {
+                return undefined;
+            }
+        }),
     );
 
     return transactions.filter(isTruthy);
