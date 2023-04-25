@@ -6,10 +6,10 @@ import {
 } from '../../../nft/user-nft-transaction';
 import {EntrepotUserAccount} from '../../../models/user-data/account';
 import {defineAutomaticallyUpdatingCache, SubKeyRequirementEnum} from '../../define-local-cache';
-import {decodeNftId, encodeNftId} from '../../../nft/nft-id';
-import {getExtCanisterId} from '../../../canisters/canister-details/wrapped-canister-id';
+import {decodeNftId} from '../../../nft/nft-id';
 import {NftListingPrice} from '../../../nft/nft-listing';
 import {getNftMintNumber} from '../../../nft/nft-mint-number';
+import {createCloudFunctionsEndpointUrl} from '../../../../api/entrepot-apis/entrepot-data-api';
 
 export type UserTransactionsInput = {
     userAccount: EntrepotUserAccount;
@@ -20,32 +20,18 @@ async function updateUserTransactions({
 }: UserTransactionsInput): Promise<ReadonlyArray<UserTransactionWithDirection>> {
     const userAccountAddress = userAccount.address;
 
-    const rawTransactions = await fetch(
-        `https://api.nftgeek.app/api/1/accountIdentifier/${userAccountAddress}/transactions`,
-    ).then(r => r.json());
+    const cloudFunctionsUrl = createCloudFunctionsEndpointUrl([
+        'user',
+        userAccountAddress,
+        'transactions',
+    ]);
 
-    const rawTransactionsMapped: ReadonlyArray<RawUserNftTransaction> = Object.keys(
-        rawTransactions.transactions,
-    )
-        .map(key => {
-            return {
-                canister: key,
-                ...rawTransactions.transactions[key][0],
-            };
-        })
-        .map(transaction => {
-            return {
-                buyer: transaction.buyerUniqueIdentifier.id,
-                canister: transaction.canister,
-                price: transaction.price,
-                seller: transaction.sellerUniqueIdentifier.id,
-                time: transaction.timeMillis * 1000000,
-                token: encodeNftId(getExtCanisterId(transaction.canister), transaction.tokenId),
-            };
-        });
+    const rawTransactions: ReadonlyArray<RawUserNftTransaction> = await (
+        await fetch(cloudFunctionsUrl)
+    ).json();
 
     const transactions = await Promise.allSettled(
-        rawTransactionsMapped.map(async (rawTransaction, index): Promise<any | undefined> => {
+        rawTransactions.map(async (rawTransaction): Promise<any | undefined> => {
             const nftId = rawTransaction.token;
 
             if (!nftId) {
