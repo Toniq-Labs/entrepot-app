@@ -9,10 +9,12 @@ import {CollectionSales} from '../../../../../data/models/sales';
 import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-display.element';
 import {routeStyle} from './common/route-style';
 import {repeat} from 'lit/directives/repeat.js';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 
 export const EntrepotSaleRoutePreSalePageElement = defineElement<{
     collectionSale: CollectionSales;
     nftImageInputs: NftImageInputs & PartialAndNullable<DimensionConstraints>;
+    userAccount: EntrepotUserAccount | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-pre-sale-page',
     styles: css`
@@ -149,7 +151,7 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                     </div>
                     <div class="overview-wrapper">
                         <span class="collection-name">${name}</span>
-                        <span class="collection-team">by Team Name</span>
+                        <!-- <span class="collection-team">by Team Name</span> -->
                         <div class="collection-social">
                             <a
                                 href=${
@@ -160,7 +162,7 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                                 class="socialLinkIcon"
                             >
                                 <img
-                                    alt="icsans"
+                                    alt="icscans"
                                     style="width: 24px"
                                     src="/icon/svg/icscan.svg"
                                 />

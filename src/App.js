@@ -1998,7 +1998,12 @@ export default function App() {
                                 <Route
                                     path="/sale/:route"
                                     exact
-                                    element={<EntrepotSaleRoutePage collections={collections} />}
+                                    element={
+                                        <EntrepotSaleRoutePage
+                                            collections={collections}
+                                            userAccount={accounts[currentAccount]}
+                                        />
+                                    }
                                 />
                                 <Route
                                     path="/mint"

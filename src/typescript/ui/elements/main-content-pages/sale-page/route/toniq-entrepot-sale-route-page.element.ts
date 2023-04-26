@@ -8,9 +8,11 @@ import {EntrepotSaleRoutePreSalePageElement} from './toniq-entrepot-sale-route-p
 import {EntrepotSaleRouteLiveSalePageElement} from './toniq-entrepot-sale-route-live-sale-page.element';
 import {encodeNftId} from '../../../../../api/ext';
 import {decodeNftId} from '../../../../../data/nft/nft-id';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 
 export const EntrepotSaleRoutePageElement = defineElement<{
     collections: Array<Collection>;
+    userAccount: EntrepotUserAccount | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-page',
     stateInit: {
@@ -24,9 +26,10 @@ export const EntrepotSaleRoutePageElement = defineElement<{
             updateState({collectionSales});
         });
     },
-    renderCallback: ({state}) => {
+    renderCallback: ({inputs, state}) => {
         const route = window.location.pathname.replace(/\/sale\//, '');
         const collectionSale = state.collectionSales.find(collection => collection.route === route);
+        const userAccount = inputs.userAccount;
 
         if (collectionSale === undefined) return;
 
@@ -51,6 +54,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                     ${assign(EntrepotSaleRoutePreSalePageElement, {
                         collectionSale,
                         nftImageInputs,
+                        userAccount,
                     })}
                 />
             `;
@@ -63,6 +67,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                     ${assign(EntrepotSaleRouteLiveSalePageElement, {
                         collectionSale,
                         nftImageInputs,
+                        userAccount,
                     })}
                 />
             `;
@@ -72,6 +77,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                     ${assign(EntrepotSaleRouteLiveSalePageElement, {
                         collectionSale,
                         nftImageInputs,
+                        userAccount,
                     })}
                 />
             `;

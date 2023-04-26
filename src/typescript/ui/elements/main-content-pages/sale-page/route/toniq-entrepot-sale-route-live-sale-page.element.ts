@@ -3,7 +3,7 @@ import {DimensionConstraints} from '@electrovir/resizable-image-element';
 import {assign, css, defineElement, html, listen, renderIf} from 'element-vir';
 import parse from 'html-react-parser';
 import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
-import {CollectionSales, SalesGroup, SalesPricing} from '../../../../../data/models/sales';
+import {CollectionSales, Sales, SalesGroup, SalesPricing} from '../../../../../data/models/sales';
 import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-display.element';
 import {EntrepotPricingTabsElement, PricingTab} from './common/toniq-entrepot-pricing-tabs.element';
 import {routeStyle} from './common/route-style';
@@ -18,10 +18,16 @@ import {
 } from '@toniq-labs/design-system';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {truncateNumber} from '@augment-vir/common';
+import {defaultEntrepotApi} from '../../../../../api/entrepot-apis/entrepot-data-api';
+import {CanisterId} from '../../../../../data/models/canister-id';
+import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {isEmpty} from 'lodash';
+import {isProd} from '../../../../../environment/environment-by-url';
 
 export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     collectionSale: CollectionSales;
     nftImageInputs: NftImageInputs & PartialAndNullable<DimensionConstraints>;
+    userAccount: EntrepotUserAccount | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-live-sale-page',
     styles: css`
@@ -91,15 +97,59 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     `,
     stateInit: {
         pricingSelectedTab: undefined as undefined | PricingTab<SalesGroup>,
+        saleCurrent: undefined as undefined | Sales,
+    },
+    initCallback: async ({inputs, updateState}) => {
+        const saleCurrent: Sales = (
+            await (
+                (await defaultEntrepotApi.canister(
+                    inputs.collectionSale.canister as CanisterId,
+                    'ext2',
+                )) as any
+            ).ext_saleCurrent()
+        )[0];
+        updateState({saleCurrent});
     },
     renderCallback: ({inputs, state, updateState}) => {
         const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
             inputs.nftImageInputs;
         const {name, blurb, sales} = inputs.collectionSale;
         const tabs: ReadonlyArray<PricingTab<SalesGroup>> = inputs.collectionSale.sales.groups
-            // TODO: Whitelisting
+            .map(group => {
+                if (isEmpty(state.saleCurrent)) {
+                    return group;
+                }
+
+                const matchedSaleCurrent = state.saleCurrent?.groups.find(saleCurrentGroup => {
+                    return (
+                        saleCurrentGroup.name === group.name &&
+                        saleCurrentGroup.start === group.start
+                    );
+                });
+                // Whitelist debugging
+                // if (
+                //     !(matchedSaleCurrent!.participants as string[]).includes(
+                //         inputs.userAccount?.address as string,
+                //     )
+                // )
+                //     matchedSaleCurrent!.participants?.push(inputs.userAccount?.address as string);
+                return {
+                    ...group,
+                    participants: matchedSaleCurrent!.participants as string[],
+                };
+            })
             .filter(group => {
-                return group.public && moment(Number(group.end) / 1000000).isAfter(moment());
+                if (group.public) {
+                    return group.public && moment(Number(group.end) / 1000000).isAfter(moment());
+                } else if (inputs.userAccount?.address) {
+                    return (
+                        (group.participants as string[]).includes(
+                            inputs.userAccount?.address as string,
+                        ) && moment(Number(group.end) / 1000000).isAfter(moment())
+                    );
+                } else {
+                    return false;
+                }
             })
             .map(group => {
                 return {
@@ -147,7 +197,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                     </div>
                     <div class="overview-wrapper">
                         <span class="collection-name">${name}</span>
-                        <span class="collection-team">by Team Name</span>
+                        <!-- <span class="collection-team">by Team Name</span> -->
                         <div class="collection-social">
                             <a
                                 href=${
@@ -158,7 +208,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                 class="socialLinkIcon"
                             >
                                 <img
-                                    alt="icsans"
+                                    alt="icscans"
                                     style="width: 24px"
                                     src="/icon/svg/icscan.svg"
                                 />

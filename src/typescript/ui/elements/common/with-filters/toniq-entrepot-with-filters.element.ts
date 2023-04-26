@@ -33,7 +33,7 @@ import {
     mainEntrepotHeaderHeight,
     filterScrollHeaderBottomMargin,
 } from '../../../fixed-sizes';
-import chunk from 'lodash.chunk';
+import {chunk} from 'lodash';
 
 export type WithFiltersElementInputs<
     EntryData extends object,

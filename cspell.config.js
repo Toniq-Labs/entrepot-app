@@ -78,5 +78,6 @@ module.exports = {
         'videos_that_dont_fit_in_frame',
         'localforage',
         'Millis',
+        'icscans',
     ],
 };

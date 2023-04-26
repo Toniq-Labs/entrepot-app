@@ -12,6 +12,7 @@ export type SalesGroup = {
     start: BigNumber;
     public: boolean;
     limit: Array<BigNumber>;
+    participants?: Array<string>;
 };
 
 export type Sales = {

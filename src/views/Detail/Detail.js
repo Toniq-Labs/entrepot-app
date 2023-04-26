@@ -1,4 +1,4 @@
-import chunk from 'lodash.chunk';
+import {chunk} from 'lodash';
 import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {EntrepotCollectionStats} from '../../utils';

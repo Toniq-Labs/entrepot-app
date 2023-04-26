@@ -6,7 +6,7 @@ import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-ma
 import {WithFilterPanel} from '../../shared/WithFilterPanel.js';
 import {useLocation, useSearchParams} from 'react-router-dom';
 import getNri from '../../ic/nftv.js';
-import orderBy from 'lodash.orderby';
+import {orderBy} from 'lodash';
 import sortBy from 'lodash.sortby';
 import {forceCheck} from 'react-lazyload';
 import {cronicFilterTraits} from '../../model/constants.js';

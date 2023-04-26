@@ -73,6 +73,7 @@ export const routeStyle = css`
 		width: 100%;
 		border: 3px solid ${toniqColors.pageInteraction.foregroundColor};
 		padding: 25px 0px;
+		cursor: auto;
 	}
 
 	.info-card > span {
