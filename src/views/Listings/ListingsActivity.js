@@ -292,7 +292,7 @@ export default function ListingsActivity(props) {
 
         try {
             var response = await fetch(
-                `https://api.nftgeek.app/api/1/collection/${canister}/transactions`,
+                `https://api.nftgeek.app/api/1/toniq/collection/${canister}/transactions`,
             ).then(r => r.json());
 
             // var result = await fetch(

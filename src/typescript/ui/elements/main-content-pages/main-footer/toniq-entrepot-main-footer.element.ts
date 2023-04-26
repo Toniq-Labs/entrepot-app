@@ -32,7 +32,7 @@ const footerSocialIcons: ReadonlyArray<{
     },
     {
         icon: BrandTwitter24Icon,
-        link: 'https://twitter.com/EntrepotApp',
+        link: 'https://twitter.com/toniqMarket',
     },
     // {
     //     icon: BrandTwitch24Icon,

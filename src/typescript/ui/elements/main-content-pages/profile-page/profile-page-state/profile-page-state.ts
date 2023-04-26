@@ -241,9 +241,10 @@ export function createAsyncProfileStateUpdateActivity({
     return {
         userTransactions: {
             createPromise: async () =>
-                inputs.userAccount
+                inputs.userAccount && inputs.userIdentity
                     ? userTransactionsCache.get({
                           userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
                       })
                     : [],
             trigger: {
