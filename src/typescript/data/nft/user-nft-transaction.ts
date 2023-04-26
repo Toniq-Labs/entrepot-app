@@ -26,7 +26,7 @@ export type UserTransactionWithDirection = UserNftTransaction & {
 export type RawUserNftTransaction = {
     buyer: string;
     canister: CanisterId;
-    id: string;
+    id?: string;
     price: number;
     seller: string;
     time: number;
@@ -67,7 +67,7 @@ export function parseRawUserNftTransaction({
         }),
         sellerAddress: rawTransaction.seller,
         transactionTimeMillisecond: rawTransaction.time / 1_000_000,
-        transactionId: rawTransaction.id,
+        transactionId: rawTransaction.id ? rawTransaction.id : '',
         /** This overrides the listing property from parseRawNftListing(rawNftListing) */
         listing,
     };

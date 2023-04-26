@@ -99,7 +99,6 @@ export default function DetailSectionDetails(props) {
         offerListing,
         getPriceData,
         floor,
-        index,
         canister,
         tokenid,
         owner,
@@ -176,7 +175,7 @@ export default function DetailSectionDetails(props) {
                         <ToniqIcon icon={Chain24Icon} />
                         <Link
                             href={getCanisterDetails(collection.canister).getNftLinkUrl({
-                                nftIndex: index,
+                                nftId: tokenid,
                             })}
                             target="_blank"
                             rel="noreferrer"
@@ -424,7 +423,11 @@ export default function DetailSectionDetails(props) {
                                                             <div>
                                                                 {owner &&
                                                                 props.account &&
-                                                                props.account.address == owner ? (
+                                                                props.account.address === owner &&
+                                                                props.identity
+                                                                    .getPrincipal()
+                                                                    .toText() !==
+                                                                    offer.buyer.toText() ? (
                                                                     <ToniqButton
                                                                         text="Accept"
                                                                         onClick={acceptOffer}

@@ -15,6 +15,7 @@ import {Collection} from '../../../data/models/collection';
 import {EntrepotNftDisplayElement} from './toniq-entrepot-nft-display.element';
 import {NftImageInputs} from '../../../data/canisters/get-nft-image-data';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
+import {repeat} from 'lit/directives/repeat.js';
 
 export type NftRoute = {
     nftRoute: string;
@@ -188,10 +189,21 @@ export const EntrepotCarouselElement = defineToniqElement<{
                         })}
                     ></${ToniqIcon}>
                 </div>
-                ${inputs.items.map(item => {
-                    const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
-                        item;
-                    return html`
+                ${repeat(
+                    inputs.items,
+                    item => item.nftId,
+                    item => {
+                        const {
+                            collectionId,
+                            fullSize,
+                            cachePriority,
+                            nftId,
+                            nftIndex,
+                            ref,
+                            min,
+                            max,
+                        } = item;
+                        return html`
                         <a href="${`marketplace/asset/${item.nftRoute}`}">
                             <div class="carousel-image-wrapper">
                                 <${EntrepotNftDisplayElement}
@@ -209,7 +221,8 @@ export const EntrepotCarouselElement = defineToniqElement<{
                             </div>
                         </a>
                     `;
-                })}
+                    },
+                )}
                 <div class="arrow right">
                     <${ToniqIcon}
                         class=${classMap({

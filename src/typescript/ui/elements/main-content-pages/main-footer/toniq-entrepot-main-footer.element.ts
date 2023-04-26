@@ -3,7 +3,6 @@ import {
     BrandDiscord24Icon,
     BrandTelegram24Icon,
     BrandTwitter24Icon,
-    EntrepotLogo144Icon,
     ToniqButton,
     toniqColorCssVarNames,
     toniqColors,
@@ -17,6 +16,7 @@ import {
 import {unsafeCSS} from 'lit';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {html, css, assign, listen} from 'element-vir';
+import {HTMLTemplateResult} from 'lit';
 
 const footerSocialIcons: ReadonlyArray<{
     icon: ToniqSvg;
@@ -32,7 +32,7 @@ const footerSocialIcons: ReadonlyArray<{
     },
     {
         icon: BrandTwitter24Icon,
-        link: 'https://twitter.com/EntrepotApp',
+        link: 'https://twitter.com/toniqMarket',
     },
     // {
     //     icon: BrandTwitch24Icon,
@@ -428,7 +428,7 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
                 })}
             </div>
         `;
-        const communitySection = html`
+        const communitySection: HTMLTemplateResult = html`
             <div class="community-section">
                 <div class="subscribe-section">
                     <h3>Subscribe To Our Newsletter</h3>
@@ -457,7 +457,7 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
                     <div class="social-icons">
                         ${footerSocialIcons.map(icon => {
                             return html`
-                            <a href=${icon.link}>
+                            <a href=${icon.link} target="_blank">
                                 <${ToniqIcon}
                                     ${assign(ToniqIcon, {
                                         icon: icon.icon,

@@ -1,7 +1,6 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {assign, css, html} from 'element-vir';
 import {
-    Api64Icon,
     CircleDashes64Icon,
     Rocket64Icon,
     toniqFontStyles,
@@ -16,40 +15,21 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
         title: 'Launchpad',
         bullets: [
             'No-code',
-            'Highly customizable first come first serve launch page',
-            'No canister code customization',
-            'No application integration',
-            'Closed beta',
+            'Highly customizable launch page',
+            'Canister control upon request',
+            'No external application integration',
+            'Open Beta',
         ],
         buttons: [
             {
                 primary: false,
-                text: 'Access Closed Beta',
+                text: 'Access Application',
+                link: 'https://xqbgo-kqaaa-aaaad-qdb6a-cai.raw.ic0.app/',
             },
             {
                 primary: true,
-                text: 'Apply for Closed Beta',
-            },
-        ],
-    },
-    {
-        icon: Api64Icon,
-        title: 'CLI / Open API',
-        bullets: [
-            'Low-code',
-            'Does not support custom mint page',
-            'Minimum canister code customization',
-            'Supports application integration',
-            'Open beta',
-        ],
-        buttons: [
-            {
-                primary: false,
-                text: 'GitHub',
-            },
-            {
-                primary: true,
-                text: 'Add Canister to Toniq',
+                text: 'User Documentation',
+                link: 'https://toniq-labs.gitbook.io/toniq-mint/',
             },
         ],
     },
@@ -59,19 +39,19 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
         subtitle: '(EXT)',
         bullets: [
             'Code',
-            'Does not support custom mint page',
-            'Maximum canister code customization',
-            'Supports application integration',
-            'Closed beta',
+            'Does not support Toniq launch page',
+            'Deploy & control own canister',
+            'Open Source',
         ],
         buttons: [
             {
                 primary: false,
-                text: 'GitHub',
+                text: 'Github',
+                link: 'https://github.com/Toniq-Labs/ext-v2-token',
             },
             {
                 primary: true,
-                text: 'Add Canister to Toniq',
+                text: 'Add External Canister (Coming Soon)',
             },
         ],
     },
@@ -104,7 +84,7 @@ export const EntrepotCreatePageElement = defineToniqElementNoInputs({
             flex-grow: 1;
             max-width: 1600px;
             flex-wrap: wrap;
-            justify-content: space-evenly;
+            justify-content: center;
             margin: 32px 0;
         }
 

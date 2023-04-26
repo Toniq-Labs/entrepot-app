@@ -34,20 +34,21 @@ function formatTopCollection(collections: ReadonlyArray<Collection>, canisters: 
             floorPrice: Number(canister.floorPriceE8s) / 100000000,
             volume: Number(canister.volumeE8s) / 100000000,
             index: collectionIndex + 1,
+            route: collectionMatch ? collectionMatch.route : '',
             id: canister.canisterId,
         };
     });
 }
 
 async function fetchLast24hData(collections: ReadonlyArray<Collection>) {
-    const data = await fetch('https://api.nftgeek.app/api/1/entrepot/top/volume/last24h').then(r =>
+    const data = await fetch('https://api.nftgeek.app/api/1/toniq/top/volume/last24h').then(r =>
         r.json(),
     );
     return formatTopCollection(collections, data.canisters);
 }
 
 async function fetchAllTimeData(collections: ReadonlyArray<Collection>) {
-    const data = await fetch('https://api.nftgeek.app/api/1/entrepot/top/volume/allTime').then(r =>
+    const data = await fetch('https://api.nftgeek.app/api/1/toniq/top/volume/allTime').then(r =>
         r.json(),
     );
     return formatTopCollection(collections, data.canisters);

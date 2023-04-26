@@ -166,13 +166,13 @@ export default function Navbar(props) {
                 text="Create"
                 icon={Geometry24Icon}
             />
-            <ToniqToggleButton
+            {/* <ToniqToggleButton
                 className="toniq-toggle-button-text-only"
                 toggled={props.view === 'contact'}
                 onClick={() => goTo('/contact')}
                 text="Support"
                 icon={Lifebuoy24Icon}
-            />
+            /> */}
         </>
     );
 

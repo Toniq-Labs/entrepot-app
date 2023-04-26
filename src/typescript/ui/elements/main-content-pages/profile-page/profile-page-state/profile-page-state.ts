@@ -23,6 +23,10 @@ import {userTransactionsCache} from '../../../../../data/local-cache/caches/user
 import {userOwnedNftsCache} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-cache';
 import {userFavoritesCache} from '../../../../../data/local-cache/caches/user-data/user-favorites-cache';
 import {
+    RawUserOwnedNft,
+    userOwnedNftsStatCache,
+} from '../../../../../data/local-cache/caches/user-data/user-owned-nfts-stat-cache';
+import {
     userMadeOffersCache,
     makeUserOffersKey,
 } from '../../../../../data/local-cache/caches/user-data/user-made-offers-cache';
@@ -54,13 +58,14 @@ export enum ProfileViewStyleEnum {
 }
 
 export const profilePageStateInit = {
-    showFilters: false,
+    showFilters: true,
     allFilters: defaultProfileFilters,
     selectedCollections,
     collectionsFilterExpanded: false,
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
+    userOwnedNftsStat: asyncState<ReadonlyArray<RawUserOwnedNft>>(),
     userFavorites: asyncState<ReadonlyArray<BaseNft>>(),
     userOffersMade: asyncState<ReadonlyArray<BaseNft>>(),
     collectionNriData: asyncState<Readonly<Record<CanisterId, CollectionNriData>>>(),
@@ -96,10 +101,8 @@ function getAllCollectionIds(
 
 export function createAsyncProfileStateUpdate({
     state,
-    inputs,
 }: {
     state: ProfilePageStateType;
-    inputs: ProfilePageInputs;
 }): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
     const asyncUserNftArrays = [
         state.userFavorites,
@@ -111,31 +114,6 @@ export function createAsyncProfileStateUpdate({
     const allUserCollectionIds = getAllCollectionIds(asyncUserNftArrays);
     // update nft data
     return {
-        userTransactions: {
-            createPromise: async () =>
-                inputs.userAccount
-                    ? userTransactionsCache.get({
-                          userAccount: inputs.userAccount,
-                      })
-                    : [],
-            trigger: {
-                account: inputs.userAccount?.address,
-            },
-        },
-        userOwnedNfts: {
-            createPromise: async () => {
-                return inputs.userAccount && inputs.userIdentity
-                    ? userOwnedNftsCache.get({
-                          userAccount: inputs.userAccount,
-                          userIdentity: inputs.userIdentity,
-                      })
-                    : [];
-            },
-            trigger: {
-                account: inputs.userAccount?.address,
-                identity: inputs.userIdentity?.getPrincipal().toText(),
-            },
-        },
         collectionNriData: {
             createPromise: async () => {
                 let waitIndex = 1;
@@ -162,6 +140,61 @@ export function createAsyncProfileStateUpdate({
             },
             trigger: allUserCollectionIds,
         },
+    };
+}
+
+export function createAsyncProfileStateUpdateOwnedNfts({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
+        userOwnedNfts: {
+            createPromise: async () => {
+                return inputs.userAccount && inputs.userIdentity
+                    ? userOwnedNftsCache.get({
+                          userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
+                      })
+                    : [];
+            },
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+    };
+}
+
+export function createAsyncProfileStateUpdateOwnedNftsStat({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
+        userOwnedNftsStat: {
+            createPromise: async () => {
+                return inputs.userAccount && inputs.userIdentity
+                    ? userOwnedNftsStatCache.get({
+                          userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
+                      })
+                    : [];
+            },
+            trigger: {
+                account: inputs.userAccount?.address,
+                identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+    };
+}
+
+export function createAsyncProfileStateUpdateFavorites({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
         userFavorites: {
             createPromise: async () =>
                 inputs.userAccount && inputs.userIdentity
@@ -175,6 +208,15 @@ export function createAsyncProfileStateUpdate({
                 identity: inputs.userIdentity?.getPrincipal().toText(),
             },
         },
+    };
+}
+
+export function createAsyncProfileStateUpdateOffers({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
         userOffersMade: {
             createPromise: async () =>
                 inputs.userAccount && inputs.userIdentity
@@ -186,6 +228,27 @@ export function createAsyncProfileStateUpdate({
             trigger: {
                 account: inputs.userAccount?.address,
                 identity: inputs.userIdentity?.getPrincipal().toText(),
+            },
+        },
+    };
+}
+
+export function createAsyncProfileStateUpdateActivity({
+    inputs,
+}: {
+    inputs: ProfilePageInputs;
+}): Parameters<UpdateStateCallback<typeof profilePageStateInit>>[0] {
+    return {
+        userTransactions: {
+            createPromise: async () =>
+                inputs.userAccount && inputs.userIdentity
+                    ? userTransactionsCache.get({
+                          userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
+                      })
+                    : [],
+            trigger: {
+                account: inputs.userAccount?.address,
             },
         },
     };

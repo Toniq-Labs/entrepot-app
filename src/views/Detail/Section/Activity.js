@@ -13,7 +13,7 @@ import moment from 'moment';
 import {EntrepotGetIcpUsd} from '../../../utils';
 import PriceUSD from '../../../components/PriceUSD';
 import orderBy from 'lodash.orderby';
-import {getExtCanisterId} from '../../../typescript/data/canisters/canister-details/wrapped-canister-id';
+
 function ListRow({items, classes, style}) {
     return (
         <div

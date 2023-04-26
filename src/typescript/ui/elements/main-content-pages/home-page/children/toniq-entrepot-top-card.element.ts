@@ -18,6 +18,7 @@ export const EntrepotHomePageTopCardElement = defineToniqElement<{
     floorPrice: ValidIcp;
     volume: ValidIcp;
     id: string;
+    route: string;
     index?: number | undefined;
 }>()({
     tagName: 'toniq-entrepot-home-page-top-card',

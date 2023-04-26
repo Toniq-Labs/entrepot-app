@@ -21,6 +21,11 @@ import {
     initProfileElement,
     ProfileViewStyleEnum,
     listViewFinalItemHeaderTitleByTab,
+    createAsyncProfileStateUpdateOwnedNfts,
+    createAsyncProfileStateUpdateFavorites,
+    createAsyncProfileStateUpdateOffers,
+    createAsyncProfileStateUpdateActivity,
+    createAsyncProfileStateUpdateOwnedNftsStat,
 } from './profile-page-state/profile-page-state';
 import {createProfileFilterInputs} from './profile-page-state/create-profile-filters';
 import {FullProfileNft} from './profile-page-nfts/full-profile-nft';
@@ -73,6 +78,25 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         ${EntrepotProfileNftListItemTextItemsElement} {
             width: 100%;
         }
+
+        .tab-wrapper {
+            position: relative;
+        }
+
+        .powered-nft-geek {
+            top: 0;
+            position: absolute;
+            bottom: 0;
+            right: 32px;
+            margin: auto 0;
+            height: min-content;
+        }
+
+        @media (max-width: 800px) {
+            .powered-nft-geek {
+                display: none;
+            }
+        }
     `,
     events: {
         sellClick: defineElementEvent<FullProfileNft>(),
@@ -84,7 +108,18 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
         initProfileElement({inputs, state, updateState});
     },
     renderCallback: ({inputs, state, updateState, dispatch, events}) => {
-        updateState(createAsyncProfileStateUpdate({state, inputs}));
+        if (state.currentProfileTab.value === profileTabMap['my-nfts'].value) {
+            updateState(createAsyncProfileStateUpdateOwnedNfts({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['favorites'].value) {
+            updateState(createAsyncProfileStateUpdateFavorites({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['offers'].value) {
+            updateState(createAsyncProfileStateUpdateOffers({inputs}));
+        } else if (state.currentProfileTab.value === profileTabMap['activity'].value) {
+            updateState(createAsyncProfileStateUpdateActivity({inputs}));
+        }
+
+        updateState(createAsyncProfileStateUpdate({state}));
+        updateState(createAsyncProfileStateUpdateOwnedNftsStat({inputs}));
 
         const filterInputs = createProfileFilterInputs({
             currentProfilePageState: {...state},
@@ -143,26 +178,29 @@ export const EntrepotProfilePageElement = defineToniqElement<ProfilePageInputs>(
                 })}
             ></${EntrepotPageHeaderElement}>
             ${createOverallStatsTemplate(state, inputs.collectionMap)}
-            <${EntrepotTopTabsElement}
-                ${assign(EntrepotTopTabsElement, {
-                    selected: state.currentProfileTab,
-                    tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
-                })}
-                ${listen(EntrepotTopTabsElement.events.tabChange, event => {
-                    if ((event.detail as ProfileTab) === profileTabMap['activity']) {
+            <div class="tab-wrapper">
+                <span class="powered-nft-geek">Data powered by NFT Geek</span>
+                <${EntrepotTopTabsElement}
+                    ${assign(EntrepotTopTabsElement, {
+                        selected: state.currentProfileTab,
+                        tabs: getAllowedTabs({isToniqEarnAllowed: inputs.isToniqEarnAllowed}),
+                    })}
+                    ${listen(EntrepotTopTabsElement.events.tabChange, event => {
+                        if ((event.detail as ProfileTab) === profileTabMap['activity']) {
+                            updateState({
+                                viewStyle: ProfileViewStyleEnum.List,
+                            });
+                        } else {
+                            updateState({
+                                viewStyle: ProfileViewStyleEnum.Grid,
+                            });
+                        }
                         updateState({
-                            viewStyle: ProfileViewStyleEnum.List,
+                            currentProfileTab: event.detail as ProfileTab,
                         });
-                    } else {
-                        updateState({
-                            viewStyle: ProfileViewStyleEnum.Grid,
-                        });
-                    }
-                    updateState({
-                        currentProfileTab: event.detail as ProfileTab,
-                    });
-                })}
-            ></${EntrepotTopTabsElement}>
+                    })}
+                ></${EntrepotTopTabsElement}>
+            </div>
             <${EntrepotWithFiltersElement}
                 ${assign(EntrepotWithFiltersElement, filterInputs)}
                 ${listen(EntrepotWithFiltersElement.events.showFiltersChange, event => {

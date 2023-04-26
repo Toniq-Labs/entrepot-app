@@ -60,29 +60,73 @@ const _getStats = async () => {
     )
         .map(a => ({...a, canister: a.id}))
         .filter(a => _isCanister(a.canister));
-    var pxs = [];
-    var _ts = [];
-    for (var i = 0; i < collections.length; i++) {
-        if (!collections[i].market) {
-            _ts.push({
-                canister: collections[i].canister,
-                stats: false,
-            });
-        } else {
-            pxs.push(
-                (c =>
-                    defaultEntrepotApi
-                        .token(c)
-                        .stats()
-                        .then(r => {
-                            return {canister: c, stats: r};
-                        }))(collections[i].canister),
+
+    const marketCollectionSummaries = await fetch(
+        'https://api.nftgeek.app/api/1/toniq/marketCollectionSummaries',
+    ).then(r => r.json());
+
+    const collectionSummaries = await fetch(
+        'https://api.nftgeek.app/api/1/toniq/collectionSummaries',
+    ).then(r => r.json());
+
+    const mappedMarketCollectionSummaries = marketCollectionSummaries.marketCollectionSummaries.map(
+        api => {
+            return {
+                canisterId: api.collection.canisterId,
+                floor: (api.floorPrice / 1000000 / 100).toFixed(2),
+                listings: api.listingSize,
+                tokens: api.registryTotal,
+            };
+        },
+    );
+
+    const mappedCollectionSummaries = collectionSummaries.collectionSummaries.map(api => {
+        return {
+            canisterId: api.collection.canisterId,
+            total: (api.transactionsVolume / 1000000 / 100).toFixed(2),
+            sales: api.transactions,
+            average: api.transactionsAvgPrice
+                ? (api.transactionsAvgPrice / 1000000 / 100).toFixed(2)
+                : '-',
+        };
+    });
+
+    const mergedApiSummaries = mappedMarketCollectionSummaries.map(
+        mappedMarketCollectionSummary => {
+            const matchedMappedCollectionSummary = mappedCollectionSummaries.find(
+                mappedCollectionSummary =>
+                    mappedCollectionSummary.canisterId === mappedMarketCollectionSummary.canisterId,
             );
+            const {canisterId, ...mappedCollectionSummary} = matchedMappedCollectionSummary;
+            return {
+                ...mappedMarketCollectionSummary,
+                ...mappedCollectionSummary,
+            };
+        },
+    );
+
+    _stats = collections.map(collection => {
+        if (!collection.market) {
+            return {
+                canister: collections.canister,
+                stats: false,
+            };
+        } else {
+            const {canisterId, ...matched} = mergedApiSummaries.find(
+                api => collection.canister === api.canisterId,
+            );
+
+            if (matched) {
+                return {canister: collection.canister, stats: matched};
+            } else {
+                return {
+                    canister: collections.canister,
+                    stats: false,
+                };
+            }
         }
-    }
-    const results = await Promise.all(pxs.map(p => p.catch(e => e)));
-    const validResults = results.filter(result => !(result instanceof Error));
-    _stats = validResults.concat(_ts);
+    });
+
     return _stats;
 };
 const clipboardCopy = text => {

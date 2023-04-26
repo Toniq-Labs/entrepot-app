@@ -11,7 +11,7 @@ import {
     isEntriesType,
     AnyProfileEntryType,
 } from '../profile-page-nfts/profile-nft-types';
-import {Collection, CollectionMap} from '../../../../../data/models/collection';
+import {CollectionMap} from '../../../../../data/models/collection';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {BaseNft} from '../../../../../data/nft/base-nft';
 import {ProfileCompleteTransactionNft} from './profile-page-transaction-filters/profile-transaction-filters';
