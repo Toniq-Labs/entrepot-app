@@ -58,7 +58,7 @@ export enum ProfileViewStyleEnum {
 }
 
 export const profilePageStateInit = {
-    showFilters: false,
+    showFilters: true,
     allFilters: defaultProfileFilters,
     selectedCollections,
     collectionsFilterExpanded: false,
