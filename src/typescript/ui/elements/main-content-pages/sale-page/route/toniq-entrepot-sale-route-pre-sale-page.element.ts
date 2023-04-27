@@ -232,7 +232,7 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                                 })}
                                 style="flex-grow: 1"
                             ></${ToniqInput}>
-                            <${ToniqButton}>
+                            <${ToniqButton} ${assign(ToniqButton, {text: ''})}>
                                 <div style="display: flex; gap: 4px">
                                     <span>Notify Me</span>
                                     <img

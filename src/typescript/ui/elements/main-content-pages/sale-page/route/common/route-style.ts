@@ -19,6 +19,7 @@ export const routeStyle = css`
 		flex-direction: column;
 		justify-content: center;
 		flex-grow: 1;
+		max-width: 600px;
 	}
 
 	.collection-name {
