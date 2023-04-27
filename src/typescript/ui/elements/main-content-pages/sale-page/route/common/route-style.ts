@@ -64,8 +64,6 @@ export const routeStyle = css`
 		padding: 44px 0px;
 	}
 
-	${makeDropShadowCardStyles('.info-card')}
-
 	.info-card {
 		display: flex;
 		justify-content: center;
@@ -113,24 +111,49 @@ export const routeStyle = css`
 		z-index: 0;
 	}
 
-	.detail-card-wrapper {
+	.detail-card-container {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		gap: 20px;
 	}
 
+	${makeDropShadowCardStyles('.detail-card-wrapper')}
+
+	.detail-card-wrapper {
+		position: relative;
+		width: 100%;
+		padding: 2px;
+	}
+
+	.detail-card-wrapper::after {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: linear-gradient(
+			to left,
+			rgba(0, 208, 147, 0),
+			rgba(0, 208, 147, 0.2),
+			rgba(0, 208, 147, 0.4),
+			rgba(0, 208, 147, 1)
+		);
+		content: '';
+		z-index: -1;
+		border-radius: 9px;
+	}
+
 	.detail-card {
 		display: inline-block;
-		border-radius: 16px;
+		border-radius: 8px;
 		background-color: #ffffff;
-		border: 1px solid ${toniqColors.pageInteraction.foregroundColor};
 		padding: 0px;
-		cursor: pointer;
+		cursor: auto;
 		will-change: filter;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		filter: drop-shadow(0px 12px 8px #D2EEFA);
+		height: 100%;
 	}
 
 	.detail-title {
@@ -139,8 +162,8 @@ export const routeStyle = css`
 		padding: 4px 0;
 		justify-content: center;
 		background-color: #F1F3F6;
-		border-top-left-radius: 16px;
-		border-top-right-radius: 16px;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
 		${toniqFontStyles.paragraphFont}
 	}
 
@@ -149,7 +172,28 @@ export const routeStyle = css`
 		${toniqFontStyles.h3Font};
 	}
 
+	.artwork-card-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		gap: 16px;
+		margin-top: 32px;
+	}
+
+	${makeDropShadowCardStyles('.artwork-wrapper')}
+
+	.artwork-wrapper {
+		max-height: 268px;
+		max-width: 268px;
+	}
+
 	@media (max-width: 1023px) {
+		.detail-card-container {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 1300px) {
 		.section-overview {
 			flex-direction: column;
 		}
@@ -189,10 +233,6 @@ export const routeStyle = css`
 
 		.section-details {
 			padding: 32px 16px;
-		}
-
-		.detail-card-wrapper {
-			grid-template-columns: 1fr;
 		}
 	}
 `;

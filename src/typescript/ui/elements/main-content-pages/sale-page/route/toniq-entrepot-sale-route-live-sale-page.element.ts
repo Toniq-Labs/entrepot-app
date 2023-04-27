@@ -21,8 +21,7 @@ import {truncateNumber} from '@augment-vir/common';
 import {defaultEntrepotApi} from '../../../../../api/entrepot-apis/entrepot-data-api';
 import {CanisterId} from '../../../../../data/models/canister-id';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
-import {isEmpty} from 'lodash';
-import {isProd} from '../../../../../environment/environment-by-url';
+import {isEmpty, fill} from 'lodash';
 
 export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     collectionSale: CollectionSales;
@@ -32,6 +31,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     tagName: 'toniq-entrepot-sale-route-live-sale-page',
     styles: css`
         ${routeStyle}
+
         .collection-pricing {
             display: flex;
             flex-direction: column;
@@ -43,6 +43,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
+
         ${makeDropShadowCardStyles('.pricing-card')}
 
         .pricing-card {
@@ -86,6 +87,13 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             padding: 12px;
             gap: 10px;
             ${toniqFontStyles.paragraphFont};
+        }
+
+        ${makeDropShadowCardStyles('.info-card')}
+
+        .info-card {
+            border: 3px solid ${toniqColors.pageInteraction.foregroundColor};
+            cursor: auto;
         }
 
         @media (max-width: 600px) {
@@ -307,56 +315,97 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                     <div class="section-title">
                         <span>Details</span>
                     </div>
-                    <div class="detail-card-wrapper">
-                        <div class="detail-card">
-                            <span class="detail-title">Launch Date</span>
-                            <div class="detail-content">${moment(sales.startDate).format(
-                                'MMM DD, YYYY',
-                            )}</div>
+                    <div class="detail-card-container">
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Launch Date</span>
+                                <div class="detail-content">${moment(sales.startDate).format(
+                                    'MMM DD, YYYY',
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">End Date</span>
-                            <div class="detail-content">${moment(sales.endDate).format(
-                                'MMM DD, YYYY',
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">End Date</span>
+                                <div class="detail-content">${moment(sales.endDate).format(
+                                    'MMM DD, YYYY',
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Low Price</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.salePrice),
-                            )} ICP</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Low Price</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.salePrice),
+                                )} ICP</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">High Price</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.salePrice),
-                            )} ICP</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">High Price</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.salePrice),
+                                )} ICP</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Collection Size</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.quantity),
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Collection Size</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.quantity),
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">For Sale</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.quantity),
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">For Sale</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.quantity),
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Team Allocation</span>
-                            <div class="detail-content">-</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Team Allocation</span>
+                                <div class="detail-content">-</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Airdrops</span>
-                            <div class="detail-content">-</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Airdrops</span>
+                                <div class="detail-content">-</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="section-artwork">
                     <div class="section-title">
                         <span>Artwork</span>
+                    </div>
+                    <div class="artwork-card-container">
+                        ${repeat(
+                            fill(Array(8), null),
+                            () => {},
+                            () => {
+                                return html`
+                            <div class="artwork-wrapper">
+                                <${EntrepotNftDisplayElement}
+                                    ${assign(EntrepotNftDisplayElement, {
+                                        collectionId,
+                                        fullSize,
+                                        cachePriority,
+                                        nftId,
+                                        nftIndex,
+                                        ref,
+                                        min: {height: 236, width: 236},
+                                        max: {height: 236, width: 236},
+                                    })}
+                                ></${EntrepotNftDisplayElement}>
+                            </div>
+                            `;
+                            },
+                        )}
+
                     </div>
                 </div>
             </div>

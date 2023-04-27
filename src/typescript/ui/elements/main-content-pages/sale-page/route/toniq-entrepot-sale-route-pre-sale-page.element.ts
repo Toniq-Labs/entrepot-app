@@ -10,6 +10,8 @@ import {EntrepotNftDisplayElement} from '../../../common/toniq-entrepot-nft-disp
 import {routeStyle} from './common/route-style';
 import {repeat} from 'lit/directives/repeat.js';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
+import {fill} from 'lodash';
 
 export const EntrepotSaleRoutePreSalePageElement = defineElement<{
     collectionSale: CollectionSales;
@@ -29,6 +31,35 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
             display: flex;
             justify-content: space-around;
             padding: 28px 48px;
+            border-radius: 16px;
+            background-color: ${toniqColors.pagePrimary.backgroundColor};
+            border: 1px solid transparent;
+            width: auto;
+        }
+
+        ${makeDropShadowCardStyles('.info-card-wrapper')}
+
+        .info-card-wrapper {
+            width: 100%;
+            padding: 2px;
+        }
+
+        .info-card-wrapper::after {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(
+                to left,
+                rgba(0, 208, 147, 0),
+                rgba(0, 208, 147, 0.2),
+                rgba(0, 208, 147, 0.4),
+                rgba(0, 208, 147, 1)
+            );
+            content: '';
+            z-index: -1;
+            border-radius: 17px;
         }
 
         .info-card > span:last-of-type {
@@ -215,84 +246,127 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                     </div>
                 </div>
                 <div class="section-info">
-                    <div class="info-card">
-                        <span>Time to Launch</span>
-                        <span>
-                            <div>
-                                <span>${days}</span>
-                                <span>Days</span>
-                            </div>
-                            <div>
-                                <span class="time-colon">:</span>
-                            </div>
-                            <div>
-                                <span>${hours}</span>
-                                <span>Hours</span>
-                            </div>
-                            <div>
-                                <span class="time-colon">:</span>
-                            </div>
-                            <div>
-                                <span>${minutes}</span>
-                                <span>Minutes</span>
-                            </div>
-                        </span>
+                    <div class="info-card-wrapper">
+                        <div class="info-card">
+                            <span>Time to Launch</span>
+                            <span>
+                                <div>
+                                    <span>${days}</span>
+                                    <span>${days > 1 ? 'Days' : 'Day'}</span>
+                                </div>
+                                <div>
+                                    <span class="time-colon">:</span>
+                                </div>
+                                <div>
+                                    <span>${hours}</span>
+                                    <span>${hours > 1 ? 'Hours' : 'Hour'}</span>
+                                </div>
+                                <div>
+                                    <span class="time-colon">:</span>
+                                </div>
+                                <div>
+                                    <span>${minutes}</span>
+                                    <span>${hours > 1 ? 'Minutes' : 'Minute'}</span>
+                                </div>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="section-details">
                     <div class="section-title">
                         <span>Details</span>
                     </div>
-                    <div class="detail-card-wrapper">
-                        <div class="detail-card">
-                            <span class="detail-title">Launch Date</span>
-                            <div class="detail-content">${moment(sales.startDate).format(
-                                'MMM DD, YYYY',
-                            )}</div>
+                    <div class="detail-card-container">
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Launch Date</span>
+                                <div class="detail-content">${moment(sales.startDate).format(
+                                    'MMM DD, YYYY',
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">End Date</span>
-                            <div class="detail-content">${moment(sales.endDate).format(
-                                'MMM DD, YYYY',
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">End Date</span>
+                                <div class="detail-content">${moment(sales.endDate).format(
+                                    'MMM DD, YYYY',
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Low Price</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.salePrice),
-                            )} ICP</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Low Price</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.salePrice),
+                                )} ICP</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">High Price</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.salePrice),
-                            )} ICP</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">High Price</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.salePrice),
+                                )} ICP</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Collection Size</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.quantity),
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Collection Size</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.quantity),
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">For Sale</span>
-                            <div class="detail-content">${truncateNumber(
-                                Number(sales.quantity),
-                            )}</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">For Sale</span>
+                                <div class="detail-content">${truncateNumber(
+                                    Number(sales.quantity),
+                                )}</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Team Allocation</span>
-                            <div class="detail-content">-</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Team Allocation</span>
+                                <div class="detail-content">-</div>
+                            </div>
                         </div>
-                        <div class="detail-card">
-                            <span class="detail-title">Airdrops</span>
-                            <div class="detail-content">-</div>
+                        <div class="detail-card-wrapper">
+                            <div class="detail-card">
+                                <span class="detail-title">Airdrops</span>
+                                <div class="detail-content">-</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="section-artwork">
                     <div class="section-title">
                         <span>Artwork</span>
+                    </div>
+                    <div class="artwork-card-container">
+                        ${repeat(
+                            fill(Array(8), null),
+                            () => {},
+                            () => {
+                                return html`
+                            <div class="artwork-wrapper">
+                                <${EntrepotNftDisplayElement}
+                                    ${assign(EntrepotNftDisplayElement, {
+                                        collectionId,
+                                        fullSize,
+                                        cachePriority,
+                                        nftId,
+                                        nftIndex,
+                                        ref,
+                                        min: {height: 236, width: 236},
+                                        max: {height: 236, width: 236},
+                                    })}
+                                ></${EntrepotNftDisplayElement}>
+                            </div>
+                            `;
+                            },
+                        )}
+
                     </div>
                 </div>
             </div>

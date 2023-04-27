@@ -85,7 +85,10 @@ const DetailSectionHeader = props => {
         <Box className={classes.detailHeader}>
             <div className={`${classes.detailSectionHeader} detail-section-header`}>
                 <Grid item xs={12} sm={5}>
-                    <DropShadowCard style={{padding: '16px'}}>
+                    <DropShadowCard
+                        className={classes.imageWrapperContainer}
+                        style={{padding: '2px'}}
+                    >
                         <EntrepotNftDisplayReact
                             collectionId={props.canister}
                             nftIndex={props.index}
@@ -93,6 +96,7 @@ const DetailSectionHeader = props => {
                             fullSize={true}
                             max={{width: 477, height: 900}}
                             min={{width: 477, height: 350}}
+                            className={classes.imageWrapper}
                         />
                     </DropShadowCard>
                 </Grid>
@@ -573,6 +577,20 @@ const useStyles = makeStyles(theme => ({
     hoverText: {
         '&:hover': {
             color: toniqColors.pageInteraction.foregroundColor,
+        },
+    },
+    imageWrapperContainer: {
+        '&::after': {
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background:
+                'linear-gradient(to left, rgba(0, 208, 147, 0), rgba(0, 208, 147, 0.2), rgba(0, 208, 147, 0.4), rgba(0, 208, 147, 1))',
+            content: '""',
+            zIndex: '-1',
+            borderRadius: '17px',
         },
     },
     imageWrapper: {
