@@ -58,10 +58,10 @@ export enum ProfileViewStyleEnum {
 }
 
 export const profilePageStateInit = {
-    showFilters: true,
+    showFilters: false,
     allFilters: defaultProfileFilters,
     selectedCollections,
-    collectionsFilterExpanded: false,
+    collectionsFilterExpanded: true,
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
