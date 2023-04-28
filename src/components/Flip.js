@@ -120,7 +120,7 @@ export default function Flip(props) {
                         style={{display: !imageLoaded ? 'none' : 'block'}}
                         onLoad={() => setImageLoaded(true)}
                         src={
-                            'https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.ic0.app/?asset=' +
+                            'https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.icp0.io/?asset=' +
                             props.card[0] +
                             traitMap[props.card[1]] +
                             '&type=thumbnail'
@@ -130,7 +130,7 @@ export default function Flip(props) {
                 <div className={classes.back}>
                     <img
                         src={
-                            'https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.ic0.app/?asset=' +
+                            'https://poyn6-dyaaa-aaaah-qcfzq-cai.raw.icp0.io/?asset=' +
                             props.card[0] +
                             'B&type=thumbnail'
                         }

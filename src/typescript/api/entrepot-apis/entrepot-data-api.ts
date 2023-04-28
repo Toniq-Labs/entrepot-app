@@ -30,10 +30,10 @@ type EntrepotApi = {
     token(tokenId?: string, idl?: any): EntrepotTokenApi;
 };
 
-export const defaultEntrepotApi = extjs.connect('https://ic0.app/') as EntrepotApi;
+export const defaultEntrepotApi = extjs.connect('https://icp0.io/') as EntrepotApi;
 
 export function createEntrepotApiWithIdentity(identity: UserIdentity | undefined): EntrepotApi {
-    return extjs.connect('https://ic0.app/', identity);
+    return extjs.connect('https://icp0.io/', identity);
 }
 
 export function createCloudFunctionsEndpointUrl(paths: string[]): string {
