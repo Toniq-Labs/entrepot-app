@@ -28,7 +28,7 @@ import {
     toWrappedMap,
 } from '../utils';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 
 function useInterval(callback, delay) {

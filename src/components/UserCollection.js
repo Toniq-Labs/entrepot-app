@@ -41,7 +41,7 @@ import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
 import offerBlacklist from './../offer-blacklist.json';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -376,7 +376,7 @@ export default function UserCollection(props) {
                 break;
             case 'favorites':
                 var r = await extjs
-                    .connect('https://ic0.app/', props.identity)
+                    .connect('https://icp0.io/', props.identity)
                     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                     .liked();
                 data = r.filter((a, i) => r.indexOf(a) == i);
@@ -392,7 +392,7 @@ export default function UserCollection(props) {
                 break;
             case 'offers-made':
                 var r = await extjs
-                    .connect('https://ic0.app/', props.identity)
+                    .connect('https://icp0.io/', props.identity)
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
                 data = r.filter((a, i) => r.indexOf(a) == i);
@@ -416,7 +416,7 @@ export default function UserCollection(props) {
                                 '/all',
                         ),
                         extjs
-                            .connect('https://ic0.app/', props.identity)
+                            .connect('https://icp0.io/', props.identity)
                             .canister('fcwhh-piaaa-aaaak-qazba-cai')
                             .allOffers(),
                     ].map(p => p.catch(e => e)),
@@ -537,7 +537,7 @@ export default function UserCollection(props) {
     React.useEffect(() => {
         setDisplayedResults(false);
         extjs
-            .connect('https://ic0.app/')
+            .connect('https://icp0.io/')
             .canister('yigae-jqaaa-aaaah-qczbq-cai')
             .tp_whitelisted()
             .then(r => {

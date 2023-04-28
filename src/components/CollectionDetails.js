@@ -10,7 +10,7 @@ import extjs from '../ic/extjs.js';
 import {makeStyles} from '@material-ui/core';
 import {Kyc32Icon} from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const numberWithCommas = x => {
     var parts = x.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');

@@ -14,7 +14,7 @@ import Tab from '@material-ui/core/Tab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -200,7 +200,7 @@ export default function V2SaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://ic0.app/', props.identity);
+            const api = extjs.connect('https://icp0.io/', props.identity);
             var r = await api
                 .canister(collection.canister, 'ext2')
                 .ext_salePurchase(id, price, qty, props.account.address);

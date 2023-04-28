@@ -3,7 +3,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -113,7 +113,7 @@ const icpbunnyimg = i => {
         'f2yud-3iaaa-aaaaf-qaehq-cai',
     ];
 
-    return 'https://' + icbstorage[i % 10] + '.raw.ic0.app/Token/' + i;
+    return 'https://' + icbstorage[i % 10] + '.raw.icp0.io/Token/' + i;
 };
 const clipboardCopy = text => {
         if (!navigator.clipboard) {
@@ -218,7 +218,7 @@ const clipboardCopy = text => {
         if (typeof cachePriority == 'undefined') cachePriority = '10';
 
         if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false) {
-            // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.ic0.app/?type=thumbnail&index=' + index;
+            // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.icp0.io/?type=thumbnail&index=' + index;
 
             return (
                 'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' +
@@ -230,31 +230,31 @@ const clipboardCopy = text => {
         }
 
         if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
-            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
+            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.icp0.io/nft/' + index;
         if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/' + index;
+            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/' + index;
         if (collection === 'y3b7h-siaaa-aaaah-qcnwa-cai')
-            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
+            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.icp0.io/Token/' + index;
         if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
+            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.icp0.io?tokenId=' + index;
         if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpbunnyimg(index);
         if (collection === 'pk6rk-6aaaa-aaaae-qaazq-cai') {
             if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
+                return 'https://' + collection + '.raw.icp0.io/?tokenid=' + id;
             } else {
                 return 'https://images.entrepot.app/t/7budn-wqaaa-aaaah-qcsba-cai/' + id;
             }
         }
         if (collection === 'dhiaa-ryaaa-aaaae-qabva-cai') {
             if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
+                return 'https://' + collection + '.raw.icp0.io/?tokenid=' + id;
             } else {
                 return 'https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/' + id;
             }
         }
         if (collection === 'skjpp-haaaa-aaaae-qac7q-cai') {
             if (fullSize) {
-                return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
+                return 'https://' + collection + '.raw.icp0.io/?tokenid=' + id;
             } else {
                 return 'https://images.entrepot.app/tnc/wtwf2-biaaa-aaaam-qauoq-cai/' + id;
             }
@@ -265,7 +265,7 @@ const clipboardCopy = text => {
             }
         }
         if (fullSize) {
-            return 'https://' + collection + '.raw.ic0.app/?cc=0&tokenid=' + id;
+            return 'https://' + collection + '.raw.icp0.io/?cc=0&tokenid=' + id;
         } else {
             //add collections with wearables or other dynamic traits here
             //these images will not be cached
@@ -305,31 +305,31 @@ const clipboardCopy = text => {
                 return (
                     'https://' +
                     collection +
-                    '.raw.ic0.app/?cc' +
+                    '.raw.icp0.io/?cc' +
                     Date.now() +
                     '&type=thumbnail&tokenid=' +
                     id +
                     ref
                 );
             if (collection === 'kss7i-hqaaa-aaaah-qbvmq-cai')
-                return 'https://' + collection + '.raw.ic0.app/?type=thumbnail&tokenid=' + id;
+                return 'https://' + collection + '.raw.icp0.io/?type=thumbnail&tokenid=' + id;
             return (
                 'https://images.entrepot.app/t/' + collection + '/' + id + '?cache=' + cachePriority
             );
-            //return "https://"+collection+".raw.ic0.app/?cc=0&type=thumbnail&tokenid=" + id;
+            //return "https://"+collection+".raw.icp0.io/?cc=0&type=thumbnail&tokenid=" + id;
         }
     },
     EntrepotNFTLink = (collection, index, id) => {
         if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
-            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.ic0.app/nft/' + index;
+            return 'https://fl5nr-xiaaa-aaaai-qbjmq-cai.raw.icp0.io/nft/' + index;
         if (collection === 'bxdf4-baaaa-aaaah-qaruq-cai')
-            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/' + index;
+            return 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/' + index;
         if (collection === 'y3b7h-siaaa-aaaah-qcnwa-cai')
-            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.ic0.app/Token/' + index;
+            return 'https://4nvhy-3qaaa-aaaah-qcnoq-cai.raw.icp0.io/Token/' + index;
         if (collection === '3db6u-aiaaa-aaaah-qbjbq-cai')
-            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app?tokenId=' + index;
+            return 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.icp0.io?tokenId=' + index;
         if (collection === 'q6hjz-kyaaa-aaaah-qcama-cai') return icpbunnyimg(index);
-        return 'https://' + collection + '.raw.ic0.app/?tokenid=' + id;
+        return 'https://' + collection + '.raw.icp0.io/?tokenid=' + id;
     },
     EntrepotDisplayNFT = (collection, tokenid, imgLoaded, image, onload) => {
         var avatarImgStyle = {
@@ -512,13 +512,13 @@ const clipboardCopy = text => {
     },
     EntrepotUpdateLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://ic0.app/', identity);
+            const _api = extjs.connect('https://icp0.io/', identity);
             _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
         } else _liked = [];
     },
     EntrepotSaveLiked = async identity => {
         if (identity) {
-            const _api = extjs.connect('https://ic0.app/', identity);
+            const _api = extjs.connect('https://icp0.io/', identity);
             await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').saveLiked(_liked);
         }
     },

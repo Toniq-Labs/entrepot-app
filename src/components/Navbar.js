@@ -53,7 +53,7 @@ function useInterval(callback, delay) {
     }, [delay]);
 }
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 
 export default function Navbar(props) {
     const navigate = useNavigate();
