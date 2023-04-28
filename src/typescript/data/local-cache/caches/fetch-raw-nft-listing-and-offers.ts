@@ -21,14 +21,22 @@ export async function fetchRawNftListingAndOffers(
 
     const rawNftOffers = await entrepotCanisters.nftOffers.offers(getExtNftId(nftId));
 
-    const rawNftListing: RawNftListing = await (
-        await fetch(
-            createCloudFunctionsEndpointUrl([
-                'token',
-                nftId,
-            ]),
-        )
-    ).json();
+    const rawNftListing: RawNftListing = await fetch(
+        createCloudFunctionsEndpointUrl([
+            'token',
+            nftId,
+        ]),
+    )
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Something went wrong');
+        })
+        .then(json => {
+            return json;
+        })
+        .catch(err => console.error(err));
 
     return {rawNftListing, rawNftOffers};
 }

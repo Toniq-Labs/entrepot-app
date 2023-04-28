@@ -39,6 +39,9 @@ import {
 import {decodeNftId} from '../typescript/data/nft/nft-id';
 import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister';
 
+import offerBlacklist from './../offer-blacklist.json';
+
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 
 function useInterval(callback, delay) {
@@ -320,14 +323,16 @@ export default function UserCollection(props) {
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
                 data = offeredResponse.filter((a, i) => offeredResponse.indexOf(a) == i);
-                data = data.map(entry => ({
-                    id: entry,
-                    token: entry,
-                    price: 0,
-                    time: 0,
-                    owner: false,
-                    canister: decodeNftId(entry).canister,
-                }));
+                data = data
+                    .map(entry => ({
+                        id: entry,
+                        token: entry,
+                        price: 0,
+                        time: 0,
+                        owner: false,
+                        canister: decodeNftId(entry).canister,
+                    }))
+                    .filter(collection => !offerBlacklist.includes(collection.canister));
                 break;
             case 'offers-received':
                 var r = await Promise.all(
@@ -341,11 +346,11 @@ export default function UserCollection(props) {
                 var r2 = offeredResponse.filter(result => !(result instanceof Error));
                 var r3 = r2[0].data
                     .map(a => ({...a, token: a.id}))
-                    .filter(a => r2[1].indexOf(a.token) >= 0);
+                    .filter(a => r2[1].indexOf(a.token) >= 0)
+                    .filter(collection => !offerBlacklist.includes(collection.canister));
                 data = r3;
                 break;
         }
-        console.log('fetched');
         data = data.map(a =>
             a.hasOwnProperty('price') &&
             a.hasOwnProperty('time') &&
@@ -359,12 +364,9 @@ export default function UserCollection(props) {
         );
         hiddenNfts = hiddenNfts.filter(x => data.map(a => a.id).includes(x));
         data = data.filter(a => hiddenNfts.indexOf(a.id) < 0);
-        console.log('mapped');
         data = filterBefore(data);
-        console.log('filtered');
         setTokenCanisters(data.map(d => d.canister));
         setResults(data);
-        console.log('set');
     };
 
     const theme = useTheme();
@@ -442,23 +444,19 @@ export default function UserCollection(props) {
         //else refresh();
     }, [sort]);
     React.useEffect(() => {
-        console.log('Hook: collectionFilter');
         setPage(1);
         if (displayedResults) setDisplayedResults(false);
         else refresh();
     }, [collectionFilter]);
     React.useEffect(() => {
-        console.log('Hook: displayedResults');
         if (displayedResults === false) refresh();
     }, [displayedResults]);
     React.useEffect(() => {
-        console.log('Hook: results');
         setHideCollectionFilter(false);
         if (results.length) setDisplayedResults(filterAfter(results));
         else setDisplayedResults([]);
     }, [results]);
     React.useEffect(() => {
-        console.log('Hook: start');
         setDisplayedResults(false);
         defaultEntrepotApi
             .canister(treasureCanisterId)
@@ -469,7 +467,6 @@ export default function UserCollection(props) {
     }, []);
 
     React.useEffect(() => {
-        console.log('Hook: account');
         if (address) {
             setHideCollectionFilter(true);
             if (collectionFilter != 'all') setCollectionFilter('all');

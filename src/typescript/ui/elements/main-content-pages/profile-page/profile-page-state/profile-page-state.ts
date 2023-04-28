@@ -61,7 +61,7 @@ export const profilePageStateInit = {
     showFilters: false,
     allFilters: defaultProfileFilters,
     selectedCollections,
-    collectionsFilterExpanded: false,
+    collectionsFilterExpanded: true,
     currentProfileTab: profileTabMap['my-nfts'] as ProfileTab,
     userTransactions: asyncState<ReadonlyArray<UserTransactionWithDirection>>(),
     userOwnedNfts: asyncState<ReadonlyArray<BaseNft>>(),
@@ -241,9 +241,10 @@ export function createAsyncProfileStateUpdateActivity({
     return {
         userTransactions: {
             createPromise: async () =>
-                inputs.userAccount
+                inputs.userAccount && inputs.userIdentity
                     ? userTransactionsCache.get({
                           userAccount: inputs.userAccount,
+                          userIdentity: inputs.userIdentity,
                       })
                     : [],
             trigger: {

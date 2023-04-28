@@ -25,8 +25,7 @@ import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
 import {getExtCanisterId} from '../../typescript/data/canisters/canister-details/wrapped-canister-id';
-import {createCloudFunctionsEndpointUrl} from '../../typescript/api/entrepot-apis/entrepot-data-api';
-import {decodeNftId} from '../../typescript/data/nft/nft-id';
+import {decodeNftId, encodeNftId} from '../../typescript/data/nft/nft-id';
 import {getNftMintNumber} from '../../typescript/data/nft/nft-mint-number';
 
 function useInterval(callback, delay) {
@@ -292,19 +291,43 @@ export default function ListingsActivity(props) {
         canister = canister ?? collection?.canister;
 
         try {
-            var result = await fetch(
-                createCloudFunctionsEndpointUrl([
-                    'canister',
-                    canister,
-                    'transactions',
-                ]),
+            var response = await fetch(
+                `https://api.nftgeek.app/api/1/toniq/collection/${canister}/transactions`,
             ).then(r => r.json());
+
+            // var result = await fetch(
+            //     createCloudFunctionsEndpointUrl([
+            //         'canister',
+            //         canister,
+            //         'transactions',
+            //     ]),
+            // ).then(r => r.json())
+            const result = response.transactions.map(transaction => {
+                return {
+                    buyer: transaction.buyerUniqueIdentifier
+                        ? transaction.buyerUniqueIdentifier?.id
+                        : '-',
+                    canister: canister,
+                    price: transaction.price,
+                    seller: transaction.sellerUniqueIdentifier
+                        ? transaction.sellerUniqueIdentifier?.id
+                        : '-',
+                    time: transaction.timeMillis * 1000000,
+                    token: encodeNftId(getExtCanisterId(canister), transaction.tokenId),
+                };
+            });
             var listings = result.map(listing => {
                 const {index, canister} = decodeNftId(listing.token);
                 const rarity = Number((getNri(canister, index) * 100).toFixed(1));
                 const mintNumber = getNftMintNumber({
                     collectionId: canister,
                     nftIndex: index,
+                });
+                const seller = response.transactions.find(transaction => {
+                    return (
+                        transaction.tokenId === index &&
+                        transaction.buyerUniqueIdentifier.id === listing.buyer
+                    );
                 });
 
                 return {
@@ -315,6 +338,7 @@ export default function ListingsActivity(props) {
                     cachePriority: 0,
                     rarity,
                     mintNumber,
+                    seller: seller.sellerUniqueIdentifier.id,
                 };
             });
 
@@ -324,14 +348,7 @@ export default function ListingsActivity(props) {
         }
     };
 
-    const filteredStatusListings = listings
-        ? listings
-              .filter(
-                  (listing, listingIndex) =>
-                      listings.findIndex(list => list.id === listing.id) === listingIndex,
-              )
-              .filter(listing => listing.token !== '')
-        : [];
+    const filteredStatusListings = listings ? listings.filter(listing => listing.token !== '') : [];
 
     const filteredAndSortedListings = orderBy(
         filteredStatusListings.filter(listing => {
@@ -434,18 +451,20 @@ export default function ListingsActivity(props) {
                             }}
                         />
                     </div>
-                    {activityListing.map(listing => {
+                    {activityListing.map((listing, listingIndex) => {
                         return (
                             <NftCard
                                 listStyle={true}
-                                onClick={() => {
+                                onClick={event => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
                                     navigate(`/marketplace/asset/${listing.token}`);
                                 }}
                                 collectionId={listing.collectionId}
                                 nftIndex={listing.nftIndex}
                                 nftId={listing.nftId}
                                 cachePriority={listing.cachePriority}
-                                key={listing.id}
+                                key={listingIndex}
                                 max={{height: 64, width: 64}}
                                 min={{height: 64, width: 64}}
                             >
@@ -470,9 +489,12 @@ export default function ListingsActivity(props) {
                                             </div>,
                                             listing.seller ? (
                                                 <ToniqMiddleEllipsis
-                                                    externalLink={`https://icscan.io/account/${listing.seller}`}
+                                                    externalLink={`https://icscan.io/principal/${listing.seller}`}
                                                     letterCount={5}
                                                     text={listing.seller}
+                                                    onClick={event => {
+                                                        event.stopPropagation();
+                                                    }}
                                                 />
                                             ) : (
                                                 '-'
@@ -482,6 +504,9 @@ export default function ListingsActivity(props) {
                                                     externalLink={`https://icscan.io/account/${listing.buyer}`}
                                                     letterCount={5}
                                                     text={listing.buyer}
+                                                    onClick={event => {
+                                                        event.stopPropagation();
+                                                    }}
                                                 />
                                             ) : (
                                                 '-'
