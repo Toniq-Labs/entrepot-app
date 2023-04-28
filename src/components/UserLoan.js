@@ -559,7 +559,7 @@ export default function UserLoan(props) {
                                                 protocol
                                             </strong>{' '}
                                             running on the Internet Computer. Learn more{' '}
-                                            <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">
+                                            <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.io/">
                                                 here
                                             </a>
                                             . Users can (1) create an Earn Contract by locking up

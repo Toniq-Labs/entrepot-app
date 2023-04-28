@@ -13,7 +13,7 @@ export function createDefaultCanisterDetails(
         originalCanisterId: canisterId,
         hasWrappedCanister: false,
         getNftLinkUrl: ({nftId}) => {
-            return `https://${canisterId}.raw.ic0.app/?tokenid=${nftId}`;
+            return `https://${canisterId}.raw.ic0.io/?tokenid=${nftId}`;
         },
         getNftImageData: inputs => {
             const priority = inputs.priority ?? 10;
