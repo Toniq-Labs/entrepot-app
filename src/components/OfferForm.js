@@ -43,7 +43,7 @@ export default function OfferForm(props) {
         props.loader(true, 'Loading Volt...');
         try {
             var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister('flvm3-zaaaa-aaaak-qazaq-cai');
             var volt = await voltFactoryAPI.getOwnerCanister(props.identity.getPrincipal());
             if (!volt.length) {
@@ -61,7 +61,7 @@ export default function OfferForm(props) {
             props.loader(true, 'Checking balances...');
             var voltPrincipal = volt[0];
             var voltAPI = extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister(voltPrincipal.toText(), 'volt');
             var resp = await voltAPI.getBalances('icpledger', 'ryjl3-tyaaa-aaaaa-aaaba-cai', []);
             if (resp.hasOwnProperty('ok')) {
@@ -80,7 +80,7 @@ export default function OfferForm(props) {
                         props.loader(true, 'Topping up Volt...');
                         var address = await voltAPI.getAddress();
                         await extjs
-                            .connect('https://ic0.app/', props.identity)
+                            .connect('https://icp0.io/', props.identity)
                             .token()
                             .transfer(
                                 props.identity.getPrincipal(),
@@ -97,7 +97,7 @@ export default function OfferForm(props) {
 
             props.loader(true, 'Submitting offer...');
             var offersAPI = extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister('fcwhh-piaaa-aaaak-qazba-cai');
             var memo = await offersAPI.createMemo(props.tokenid, props.address);
             var resp1 = await voltAPI.authorize(

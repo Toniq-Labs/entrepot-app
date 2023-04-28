@@ -41,7 +41,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import CollectionDetails from '../CollectionDetailsAuction.js';
 import {EntrepotAllStats, EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 const drawerWidth = 0; //300;
 
@@ -432,7 +432,7 @@ export default function Listings(props) {
             var auctions = [];
             if (_showing == 'auction') {
                 var auctionsAPI = extjs
-                    .connect('https://ic0.app/')
+                    .connect('https://icp0.io/')
                     .canister('ffxbt-cqaaa-aaaak-qazbq-cai');
                 auctions = (await auctionsAPI.allAuctions())
                     .map(a => extjs.decodeTokenId(a))

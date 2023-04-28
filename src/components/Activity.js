@@ -26,7 +26,7 @@ import {useNavigate} from 'react-router';
 import CollectionDetails from './CollectionDetails';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 10;
 const drawerWidth = 0; //300;
 function useInterval(callback, delay) {

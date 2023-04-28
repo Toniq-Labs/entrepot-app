@@ -8,7 +8,7 @@ import Timestamp from 'react-timestamp';
 import {useParams} from 'react-router';
 import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -146,7 +146,7 @@ export default function OldSaleComponent(props) {
             } else {
                 props.loader(true, 'Reserving NFTs..');
             }
-            const api = extjs.connect('https://ic0.app/', props.identity);
+            const api = extjs.connect('https://icp0.io/', props.identity);
             var r = await api
                 .canister(collection.canister, 'sale')
                 .reserve(price, qty, props.account.address, _getRandomBytes());

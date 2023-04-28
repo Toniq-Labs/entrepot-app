@@ -45,7 +45,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {EntrepotUpdateStats, EntrepotCollectionStats} from '../utils';
 
 import CloseIcon from '@material-ui/icons/Close';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
@@ -178,7 +178,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-var pawnapi = extjs.connect('https://ic0.app/').canister('yigae-jqaaa-aaaah-qczbq-cai');
+var pawnapi = extjs.connect('https://icp0.io/').canister('yigae-jqaaa-aaaah-qczbq-cai');
 const getDays = a => Number(a.length / (24n * 60n * 60n * 1000000000n));
 const getApr = a =>
     ((Number(a.reward) / 100000000 / getDays(a)) * 365) / (Number(a.amount) / 100000000);
@@ -575,7 +575,7 @@ export default function UserLoan(props) {
                                                 protocol
                                             </strong>{' '}
                                             running on the Internet Computer. Learn more{' '}
-                                            <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.ic0.app/">
+                                            <a href="https://4orvc-saaaa-aaaak-qapjq-cai.raw.icp0.io/">
                                                 here
                                             </a>
                                             . Users can (1) create an Earn Contract by locking up

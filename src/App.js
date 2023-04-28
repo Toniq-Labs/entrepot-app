@@ -45,7 +45,7 @@ import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {AngelInvestorDialog} from './components/AngelInvestorDialog';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 
 const txfee = 10000;
 const txmin = 100000;
@@ -306,7 +306,7 @@ export default function App() {
                 }
                 loader(true, 'Transferring ICP...');
                 await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .token()
                     .transfer(
                         identity.getPrincipal(),
@@ -318,7 +318,7 @@ export default function App() {
             }
             loader(true, 'Closing contract...');
             var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .canister(TREASURECANISTER)
                 .tp_close(token);
             if (r2.hasOwnProperty('err')) throw r2.err;
@@ -342,7 +342,7 @@ export default function App() {
             try {
                 loader(true, 'Cancelling request...');
                 var r = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .canister(TREASURECANISTER)
                     .tp_cancel(tokenid);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -369,7 +369,7 @@ export default function App() {
             try {
                 loader(true, 'Accepting request...');
                 var r = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .canister(TREASURECANISTER)
                     .tp_fill(tokenid, accounts[currentAccount].address, amount);
                 if (r.hasOwnProperty('err')) throw r.err;
@@ -377,12 +377,12 @@ export default function App() {
                 var paytoaddress = r.ok;
                 loader(true, 'Transferring ICP...');
                 await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, paytoaddress, amount, 10000);
                 loader(true, 'Finalizing contract...');
                 var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .canister(TREASURECANISTER)
                     .tp_settle(paytoaddress);
                 loader(true, 'Reloading requests...');
@@ -413,7 +413,7 @@ export default function App() {
                 return false;
             }
             loader(true, 'Locking NFT...');
-            const _api = extjs.connect('https://ic0.app/', identity);
+            const _api = extjs.connect('https://icp0.io/', identity);
             var r = await _api
                 .canister(canisterId)
                 .lock(tokenid, listing.price, accounts[currentAccount].address, _getRandomBytes());
@@ -501,7 +501,7 @@ export default function App() {
             !_collection.legacy
         )
             return true;
-        const _api = extjs.connect('https://ic0.app/', identity);
+        const _api = extjs.connect('https://icp0.io/', identity);
         var payments = await _api.canister(_collection.canister).payments();
         if (payments.length === 0) return true;
         if (payments[0].length === 0) return true;
@@ -752,7 +752,7 @@ export default function App() {
         loader(true, 'Unwrapping NFT...');
         var canister = extjs.decodeTokenId(token.id).canister;
         var r = await extjs
-            .connect('https://ic0.app/', identity)
+            .connect('https://icp0.io/', identity)
             .canister(canister)
             .unwrap(token.id, [extjs.toSubaccount(currentAccount ?? 0)]);
         if (!r) {
@@ -775,13 +775,13 @@ export default function App() {
             if (loader) loader(true, 'Creating wrapper...this may take a few minutes');
             try {
                 var r = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .canister(canister)
                     .wrap(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Sending NFT to wrapper...');
                 var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .token(token.id)
                     .transfer(
                         identity.getPrincipal().toText(),
@@ -794,7 +794,7 @@ export default function App() {
                     );
                 if (!r2) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Wrapping NFT...');
-                await extjs.connect('https://ic0.app/', identity).canister(canister).mint(token.id);
+                await extjs.connect('https://icp0.io/', identity).canister(canister).mint(token.id);
                 if (!r) return error('There was an error wrapping this NFT!');
                 if (loader) loader(true, 'Loading NFTs...');
                 if (refresh) await refresh();
@@ -825,7 +825,7 @@ export default function App() {
         if (loader) loader(true, 'Creating Earn Request...');
         try {
             var r = await extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .canister('yigae-jqaaa-aaaah-qczbq-cai')
                 .tp_create(
                     id,
@@ -840,7 +840,7 @@ export default function App() {
             if (!r.hasOwnProperty('ok')) throw 'Unknown Error';
             if (loader) loader(true, 'Sending NFT to canister...');
             var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -865,7 +865,7 @@ export default function App() {
         loader(true, 'Creating Volt wallet...');
         try {
             var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .canister('flvm3-zaaaa-aaaak-qazaq-cai');
             var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
             if (volt.length) {
@@ -894,7 +894,7 @@ export default function App() {
                     loader(true, 'Transferring ICP...');
                     var address = await voltFactoryAPI.getPaymentAddress(identity.getPrincipal());
                     await extjs
-                        .connect('https://ic0.app/', identity)
+                        .connect('https://icp0.io/', identity)
                         .token()
                         .transfer(
                             identity.getPrincipal(),
@@ -928,20 +928,20 @@ export default function App() {
         }
         try {
             var voltFactoryAPI = extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .canister('flvm3-zaaaa-aaaak-qazaq-cai');
             var volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
             if (volt.length) {
             } else throw 'There was a problem finding your Volt!';
             var voltAPI = extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .canister(volt[0].toText(), 'volt');
 
             if (deposit) {
                 loader(true, 'Transferring ICP to Volt');
                 var address = await voltAPI.getAddress();
                 var r2 = await extjs
-                    .connect('https://ic0.app/', identity)
+                    .connect('https://icp0.io/', identity)
                     .token()
                     .transfer(identity.getPrincipal(), currentAccount, address, amount, 10000);
                 if (refresh) {
@@ -986,7 +986,7 @@ export default function App() {
         if (loader) loader(true, 'Transferring NFT...');
         try {
             var r2 = await extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .token(id)
                 .transfer(
                     identity.getPrincipal().toText(),
@@ -1048,7 +1048,7 @@ export default function App() {
         if (loader) loader(true);
         try {
             var r = await extjs
-                .connect('https://ic0.app/', identity)
+                .connect('https://icp0.io/', identity)
                 .token(id)
                 .list(currentAccount, price);
             console.log(r);

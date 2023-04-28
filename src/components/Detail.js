@@ -62,7 +62,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 
 const shorten = a => {
     return a.substring(0, 12) + '...';
@@ -195,7 +195,7 @@ const Detail = props => {
         if (!license || license == 'Coming soon!') {
             try {
                 var resp = await extjs
-                    .connect('https://ic0.app/')
+                    .connect('https://icp0.io/')
                     .canister(extjs.decodeTokenId(tokenid).canister, 'license')
                     .license(tokenid);
                 if (resp.hasOwnProperty('ok')) {
@@ -242,7 +242,7 @@ const Detail = props => {
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');
-        const _api = extjs.connect('https://ic0.app/', props.identity);
+        const _api = extjs.connect('https://icp0.io/', props.identity);
         await _api.canister('fcwhh-piaaa-aaaak-qazba-cai').cancelOffer(tokenid);
         await reloadOffers();
         props.loader(false);
@@ -252,11 +252,11 @@ const Detail = props => {
         if (await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')) {
             props.loader(true, 'Accepting offer...');
             var offersAPI = extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister('fcwhh-piaaa-aaaak-qazba-cai');
             var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
             var r2 = await extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .token(tokenid)
                 .transfer(
                     props.identity.getPrincipal().toText(),
