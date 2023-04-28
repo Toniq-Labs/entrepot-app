@@ -505,8 +505,8 @@ export default function Listings(props) {
         try {
             var img =
                 canisterId === 'bxdf4-baaaa-aaaah-qaruq-cai'
-                    ? 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.io/Token/' + listing[0]
-                    : 'https://' + canisterId + '.raw.ic0.io/?type=thumbnail&tokenid=' + tokenid;
+                    ? 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/' + listing[0]
+                    : 'https://' + canisterId + '.raw.icp0.io/?type=thumbnail&tokenid=' + tokenid;
             var answer = await buyForm(_showListingPrice(listing[1].price), img);
             if (!answer) {
                 return props.loader(false);

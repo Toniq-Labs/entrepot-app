@@ -1,3 +1,3 @@
 export function getCanisterDomain(canisterId: string): string {
-    return `https://${canisterId}.raw.ic0.io`;
+    return `https://${canisterId}.raw.icp0.io`;
 }

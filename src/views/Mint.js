@@ -470,7 +470,7 @@ export default function Mint(props) {
                                             Mint as NFTs
                                         </Button>
                                         <Button
-                                            href={'https://' + canister + '.raw.ic0.io'}
+                                            href={'https://' + canister + '.raw.icp0.io'}
                                             target="_blank"
                                             variant="contained"
                                             color="primary"

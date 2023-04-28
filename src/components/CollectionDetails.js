@@ -323,7 +323,7 @@ export default function CollectionDetails(props) {
                             </Link>
                             <Link
                                 href={
-                                    'https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.io/collection/' +
+                                    'https://t5t44-naaaa-aaaah-qcutq-cai.raw.icp0.io/collection/' +
                                     collection.canister
                                 }
                                 target="_blank"

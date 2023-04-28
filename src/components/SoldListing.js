@@ -88,7 +88,7 @@ export default function SoldListing(props) {
                                         href={
                                             'https://' +
                                             props.collection +
-                                            '.raw.ic0.io/?tokenid=' +
+                                            '.raw.icp0.io/?tokenid=' +
                                             tokenid
                                         }
                                         rel="noreferrer"

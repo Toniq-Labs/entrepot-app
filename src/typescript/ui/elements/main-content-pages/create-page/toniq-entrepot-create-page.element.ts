@@ -24,7 +24,7 @@ const createCards: ReadonlyArray<CreateCardInputs> = [
             {
                 primary: false,
                 text: 'Access Application',
-                link: 'https://xqbgo-kqaaa-aaaad-qdb6a-cai.raw.ic0.io/',
+                link: 'https://xqbgo-kqaaa-aaaad-qdb6a-cai.raw.icp0.io/',
             },
             {
                 primary: true,
