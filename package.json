@@ -46,6 +46,7 @@
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.60",
         "@mui/icons-material": "^5.3.1",
+        "@sentry/browser": "^7.48.0",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
         "@toniq-labs/design-system": "0.6.0",

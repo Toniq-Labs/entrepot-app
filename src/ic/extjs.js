@@ -750,7 +750,7 @@ class ExtConnection {
 }
 
 const extjs = {
-    connect: (host, identity) => new ExtConnection(host ?? 'https://ic0.app/', identity),
+    connect: (host, identity) => new ExtConnection(host ?? 'https://icp0.io/', identity),
     toAddress: principalToAccountIdentifier,
     toSubAccount: getSubAccountArray,
 };

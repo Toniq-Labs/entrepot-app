@@ -41,7 +41,7 @@ import {treasureCanisterId} from '../typescript/data/canisters/treasure-canister
 
 import offerBlacklist from './../offer-blacklist.json';
 
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 
 function useInterval(callback, delay) {

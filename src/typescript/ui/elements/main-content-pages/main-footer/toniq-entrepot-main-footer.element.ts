@@ -17,6 +17,8 @@ import {unsafeCSS} from 'lit';
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
 import {html, css, assign, listen} from 'element-vir';
 import {HTMLTemplateResult} from 'lit';
+import {sendLogToSentry} from '../../../../services/logging/send-log';
+import {LogSeverityEnum} from '../../../../services/logging/log-levels';
 
 const footerSocialIcons: ReadonlyArray<{
     icon: ToniqSvg;
@@ -432,9 +434,6 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
             <div class="community-section">
                 <div class="subscribe-section">
                     <h3>Subscribe To Our Newsletter</h3>
-                    <!-- <p>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    </p> -->
                     <div class="email-input">
                         <${ToniqInput}
                             ${assign(ToniqInput, {
@@ -448,6 +447,12 @@ const EntrepotFooterElement = defineToniqElementNoInputs({
                         <${ToniqButton}
                             ${assign(ToniqButton, {
                                 text: 'Sign Up',
+                            })}
+                            ${listen('click', () => {
+                                sendLogToSentry('Newsletter sign up clicked', {
+                                    severity: LogSeverityEnum.Info,
+                                    extraData: {input: state.subscriptionInput},
+                                });
                             })}
                         ></${ToniqButton}>
                     </div>
