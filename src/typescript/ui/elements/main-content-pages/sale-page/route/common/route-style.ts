@@ -118,7 +118,7 @@ export const routeStyle = css`
 		gap: 20px;
 	}
 
-	${makeDropShadowCardStyles('.detail-card-wrapper')}
+	${makeDropShadowCardStyles('.detail-card-wrapper', false)}
 
 	.detail-card-wrapper {
 		position: relative;

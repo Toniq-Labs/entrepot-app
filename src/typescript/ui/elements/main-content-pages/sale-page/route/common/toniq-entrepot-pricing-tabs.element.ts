@@ -10,6 +10,7 @@ import {
     ChevronDown24Icon,
 } from '@toniq-labs/design-system';
 import {repeat} from 'lit/directives/repeat.js';
+import {makeDropShadowCardStyles} from '../../../../styles/drop-shadow-card.style';
 
 export type PricingTab<ValueGeneric = unknown> = {
     label: string;
@@ -116,10 +117,12 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             margin: 0;
             padding: 6px 6px 10px;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         li.tab-filler {
             flex-grow: 1;
+            cursor: auto;
         }
 
         .title-preloader {
@@ -130,15 +133,34 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             border-radius: 8px;
         }
 
+        ${makeDropShadowCardStyles('.more-pricing', false)}
+
         .more-pricing {
+            max-height: 32px;
             display: inline-flex;
             align-items: center;
             ${toniqFontStyles.boldFont};
             font-size: 14px;
             line-height: 20px;
+            padding: 4px 6px;
+            gap: 4px;
+            margin-right: 12px;
+        }
+
+        .more-pricing > button {
+            padding: 0;
             color: ${toniqColors.pageInteraction.foregroundColor};
+        }
+
+        .more-pricing > button:disabled {
+            color: rgba(0, 0, 0, 0.08);
             pointer-events: none;
-            z-index: 1;
+        }
+
+        .more-pricing-divider {
+            width: 1px;
+            height: 12px;
+            background-color: rgba(0, 0, 0, 0.08);
         }
     `,
     events: {
@@ -164,16 +186,16 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
                           )}
                           <li class="tab-filler"></li>
                           <li class="more-pricing">
-                              <button><a data-text="more-pricing">More Pricing</a></button>
-                              <button>
+                              <button disabled>
 								<${ToniqIcon}
 									${assign(ToniqIcon, {
                                         icon: ChevronDown24Icon,
                                     })}
 									style="transform: rotate(90deg);"
 								></${ToniqIcon}>
-								</button>
-                              <button>
+                              </button>
+                              <div class="more-pricing-divider"></div>
+                              <button disabled>
 							 	<${ToniqIcon}
 									${assign(ToniqIcon, {
                                         icon: ChevronDown24Icon,

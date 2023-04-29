@@ -149,7 +149,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             .filter(group => {
                 if (group.public) {
                     return group.public && moment(Number(group.end) / 1000000).isAfter(moment());
-                } else if (inputs.userAccount?.address) {
+                } else if (inputs.userAccount?.address && !isEmpty(group.participants)) {
                     return (
                         (group.participants as string[]).includes(
                             inputs.userAccount?.address as string,
