@@ -9,10 +9,12 @@ import {EntrepotSaleRouteLiveSalePageElement} from './toniq-entrepot-sale-route-
 import {encodeNftId} from '../../../../../api/ext';
 import {decodeNftId} from '../../../../../data/nft/nft-id';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
+import {UserIdentity} from '../../../../../data/models/user-data/identity';
 
 export const EntrepotSaleRoutePageElement = defineElement<{
     collections: Array<Collection>;
     userAccount: EntrepotUserAccount | undefined;
+    userIdentity: UserIdentity | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-page',
     stateInit: {
@@ -30,6 +32,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
         const route = window.location.pathname.replace(/\/sale\//, '');
         const collectionSale = state.collectionSales.find(collection => collection.route === route);
         const userAccount = inputs.userAccount;
+        const userIdentity = inputs.userIdentity;
 
         if (collectionSale === undefined) return;
 
@@ -55,6 +58,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                         collectionSale,
                         nftImageInputs,
                         userAccount,
+                        userIdentity,
                     })}
                 />
             `;
@@ -68,6 +72,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                         collectionSale,
                         nftImageInputs,
                         userAccount,
+                        userIdentity,
                     })}
                 />
             `;
@@ -78,6 +83,7 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                         collectionSale,
                         nftImageInputs,
                         userAccount,
+                        userIdentity,
                     })}
                 />
             `;

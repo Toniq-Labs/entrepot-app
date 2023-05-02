@@ -1,4 +1,4 @@
-import {listen, defineElementEvent, html, css, assign} from 'element-vir';
+import {listen, defineElementEvent, html, css, assign, renderIf} from 'element-vir';
 import {classMap} from 'lit/directives/class-map.js';
 import {
     toniqFontStyles,
@@ -114,6 +114,8 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
         }
 
         li {
+            ${toniqFontStyles.toniqFont};
+            ${toniqFontStyles.boldFont}
             margin: 0;
             padding: 6px 6px 10px;
             white-space: nowrap;
@@ -169,8 +171,13 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
     initCallback: ({inputs, events, dispatch}) => {
         dispatch(new events.tabChange(inputs.selected as PricingTab));
     },
-    renderCallback: ({inputs, dispatch, events}) => {
+    renderCallback: ({host, inputs, dispatch, events}) => {
         const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
+
+        const isPricingTabsScrollable = () => {
+            if (host && host.scrollWidth > host.clientWidth) return true;
+            return false;
+        };
 
         return html`
             ${inputs.tabs
@@ -185,26 +192,31 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
                                   }),
                           )}
                           <li class="tab-filler"></li>
-                          <li class="more-pricing">
-                              <button disabled>
-								<${ToniqIcon}
-									${assign(ToniqIcon, {
-                                        icon: ChevronDown24Icon,
-                                    })}
-									style="transform: rotate(90deg);"
-								></${ToniqIcon}>
-                              </button>
-                              <div class="more-pricing-divider"></div>
-                              <button disabled>
-							 	<${ToniqIcon}
-									${assign(ToniqIcon, {
-                                        icon: ChevronDown24Icon,
-                                    })}
-									style="transform: rotate(270deg);"
-								></${ToniqIcon}>
-								</button>
-							  </button>
-                          </li>
+                          ${renderIf(
+                              isPricingTabsScrollable(),
+                              html`
+                                <li class="more-pricing">
+                                    <button disabled>
+                                        <${ToniqIcon}
+                                            ${assign(ToniqIcon, {
+                                                icon: ChevronDown24Icon,
+                                            })}
+                                            style="transform: rotate(90deg);"
+                                        ></${ToniqIcon}>
+                                    </button>
+                                    <div class="more-pricing-divider"></div>
+                                    <button disabled>
+                                        <${ToniqIcon}
+                                            ${assign(ToniqIcon, {
+                                                icon: ChevronDown24Icon,
+                                            })}
+                                            style="transform: rotate(270deg);"
+                                        ></${ToniqIcon}>
+                                        </button>
+                                    </button>
+                                </li>
+                            `,
+                          )}
                       </ul>
                   `
                 : html`

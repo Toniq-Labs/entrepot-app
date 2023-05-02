@@ -18,15 +18,17 @@ import {
 } from '@toniq-labs/design-system';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {truncateNumber} from '@augment-vir/common';
-import {defaultEntrepotApi} from '../../../../../api/entrepot-apis/entrepot-data-api';
+import {createEntrepotApiWithIdentity} from '../../../../../api/entrepot-apis/entrepot-data-api';
 import {CanisterId} from '../../../../../data/models/canister-id';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
-import {isEmpty, fill} from 'lodash';
+import {isEmpty, fill, chain} from 'lodash';
+import {UserIdentity} from '../../../../../data/models/user-data/identity';
 
 export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     collectionSale: CollectionSales;
     nftImageInputs: NftImageInputs & PartialAndNullable<DimensionConstraints>;
     userAccount: EntrepotUserAccount | undefined;
+    userIdentity: UserIdentity | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-live-sale-page',
     styles: css`
@@ -108,21 +110,27 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
         saleCurrent: undefined as undefined | Sales,
     },
     initCallback: async ({inputs, updateState}) => {
-        const saleCurrent: Sales = (
-            await (
-                (await defaultEntrepotApi.canister(
-                    inputs.collectionSale.canister as CanisterId,
-                    'ext2',
-                )) as any
-            ).ext_saleCurrent()
-        )[0];
-        updateState({saleCurrent});
+        const getSaleCurrent = setInterval(async () => {
+            const api = createEntrepotApiWithIdentity(inputs.userIdentity).canister(
+                inputs.collectionSale.canister as CanisterId,
+                'ext2',
+            ) as any;
+            if (api.hasOwnProperty('ext_saleCurrent')) {
+                const saleCurrent: Sales = (await api.ext_saleCurrent())[0];
+                updateState({saleCurrent});
+
+                clearInterval(getSaleCurrent);
+                return;
+            }
+        }, 1000);
     },
     renderCallback: ({inputs, state, updateState}) => {
         const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
             inputs.nftImageInputs;
         const {name, blurb, sales} = inputs.collectionSale;
-        const tabs: ReadonlyArray<PricingTab<SalesGroup>> = inputs.collectionSale.sales.groups
+        const tabs: ReadonlyArray<PricingTab<SalesGroup>> = chain(
+            inputs.collectionSale.sales.groups,
+        )
             .map(group => {
                 if (isEmpty(state.saleCurrent)) {
                     return group;
@@ -164,8 +172,9 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                     label: group.name,
                     value: group,
                 };
-            });
-
+            })
+            .reverse()
+            .value();
         const selectedPricingTab: PricingTab<SalesGroup> | undefined =
             state.pricingSelectedTab ?? tabs[0];
         const socials: Array<string> = [

@@ -2002,6 +2002,7 @@ export default function App() {
                                         <EntrepotSaleRoutePage
                                             collections={collections}
                                             userAccount={accounts[currentAccount]}
+                                            userIdentity={identity || undefined}
                                         />
                                     }
                                 />

@@ -12,11 +12,13 @@ import {repeat} from 'lit/directives/repeat.js';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {fill} from 'lodash';
+import {UserIdentity} from '../../../../../data/models/user-data/identity';
 
 export const EntrepotSaleRoutePreSalePageElement = defineElement<{
     collectionSale: CollectionSales;
     nftImageInputs: NftImageInputs & PartialAndNullable<DimensionConstraints>;
     userAccount: EntrepotUserAccount | undefined;
+    userIdentity: UserIdentity | undefined;
 }>()({
     tagName: 'toniq-entrepot-sale-route-pre-sale-page',
     styles: css`
