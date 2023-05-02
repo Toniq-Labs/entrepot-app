@@ -844,7 +844,7 @@ export default function App() {
                                 pathname: '/marketplace/asset/' + event.detail.nftId,
                             });
                         }}
-                        onTransferClick={event => transferNft(event.detail)}
+                        onTransferClick={event => transferNft({ id:event.detail.nftId, listing:event.detail.listing})}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
@@ -871,7 +871,7 @@ export default function App() {
                                 pathname: '/marketplace/asset/' + event.detail.nftId,
                             });
                         }}
-                        onTransferClick={event => transferNft(event.detail)}
+                        onTransferClick={event => transferNft({ id:event.detail.nftId, listing:event.detail.listing})}
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
