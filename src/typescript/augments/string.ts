@@ -4,9 +4,9 @@ export function toHexString(byteArray: Buffer | ReadonlyArray<number>) {
     }).join('');
 }
 export function fromHexString(hexString: string) {
-    if (hexString.substr(0, 2) === '0x') hexString = hexString.substr(2);
+    if (hexString.substring(0, 2) === '0x') hexString = hexString.substring(2);
     const bytes = [];
     for (let index = 0; index < hexString.length; index += 2)
-        bytes.push(parseInt(hexString.substr(index, 2), 16));
+        bytes.push(parseInt(hexString.substring(index, 2), 16));
     return bytes;
 }
