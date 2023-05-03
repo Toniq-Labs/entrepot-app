@@ -1,4 +1,4 @@
-import {listen, defineElementEvent, html, css, assign, renderIf} from 'element-vir';
+import {listen, defineElementEvent, html, css, assign, renderIf, onResize} from 'element-vir';
 import {classMap} from 'lit/directives/class-map.js';
 import {
     toniqFontStyles,
@@ -11,11 +11,18 @@ import {
 } from '@toniq-labs/design-system';
 import {repeat} from 'lit/directives/repeat.js';
 import {makeDropShadowCardStyles} from '../../../../styles/drop-shadow-card.style';
+import {scrollSnapToNext, getScrollSnapPositions} from 'scroll-snap-api';
+import {RequiredAndNotNullBy} from '@augment-vir/common';
+import {throttle} from '../../../../../../augments/function';
+import {EntrepotCarouselElement} from '../../../../common/toniq-entrepot-carousel.element';
+import {ifDefined} from 'lit/directives/if-defined.js';
 
 export type PricingTab<ValueGeneric = unknown> = {
     label: string;
     value: ValueGeneric;
 };
+
+const carouselImageWidth = 340;
 
 export const EntrepotPricingTabsElement = defineToniqElement<{
     tabs?: ReadonlyArray<PricingTab>;
@@ -96,6 +103,8 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
         ul {
             margin: 0;
             padding: 0;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
         }
 
         li.selected {
@@ -120,6 +129,7 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             padding: 6px 6px 10px;
             white-space: nowrap;
             cursor: pointer;
+            scroll-snap-align: start;
         }
 
         li.tab-filler {
@@ -147,6 +157,11 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             padding: 4px 6px;
             gap: 4px;
             margin-right: 12px;
+            border-radius: 8px;
+            position: absolute;
+            right: 0;
+            margin: 0;
+            z-index: 100;
         }
 
         .more-pricing > button {
@@ -165,24 +180,65 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             background-color: rgba(0, 0, 0, 0.08);
         }
     `,
+    stateInit: {
+        scrollPosition: {
+            left: 0,
+            right: Infinity,
+        },
+        scrollSnapPositions: [] as number[],
+        rotationIntervalId: undefined as undefined | number,
+    },
     events: {
         tabChange: defineElementEvent<PricingTab>(),
     },
     initCallback: ({inputs, events, dispatch}) => {
         dispatch(new events.tabChange(inputs.selected as PricingTab));
     },
-    renderCallback: ({host, inputs, dispatch, events}) => {
+    renderCallback: ({host, inputs, state, updateState, dispatch, events}) => {
         const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
 
+        if (state.rotationIntervalId == undefined) {
+            updateState({
+                rotationIntervalId: window.setInterval(() => {
+                    scrollTab({
+                        host,
+                        direction: 'right',
+                    });
+                }, 4000),
+            });
+        } else if (state.rotationIntervalId != undefined) {
+            window.clearInterval(state.rotationIntervalId);
+            updateState({
+                rotationIntervalId: undefined,
+            });
+        }
+        const leftArrowDisabled = getMidSnapPosition(state.scrollSnapPositions, 0);
+        const rightArrowDisabled = getMidSnapPosition(state.scrollSnapPositions, -1);
+
         const isPricingTabsScrollable = () => {
-            if (host && host.scrollWidth > host.clientWidth) return true;
+            const pricingTabEl = host.shadowRoot.querySelector('ul');
+            if (pricingTabEl && pricingTabEl.scrollWidth > pricingTabEl.clientWidth) return true;
             return false;
         };
 
         return html`
             ${inputs.tabs
                 ? html`
-                      <ul>
+                      <ul
+                          ${onResize(() => {
+                              updateState({
+                                  scrollSnapPositions: getScrollSnapPositions(
+                                      host.shadowRoot.querySelector('ul')!,
+                                  ).x,
+                              });
+                          })}
+                          ${listen('scroll', event => {
+                              throttledUpdateScrollPosition(
+                                  event.target as HTMLElement,
+                                  updateState,
+                              );
+                          })}
+                      >
                           ${repeat(
                               inputs.tabs,
                               tab => tab.value,
@@ -191,26 +247,65 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
                                       dispatch(new events.tabChange(tab));
                                   }),
                           )}
+                          <li>
+                              <button><a>Long Sample Tab Title</a></button>
+                          </li>
+                          <li>
+                              <button><a>Long Sample Tab Title</a></button>
+                          </li>
+                          <li>
+                              <button><a>Long Sample Tab Title</a></button>
+                          </li>
+                          <li>
+                              <button><a>Long Sample Tab Title</a></button>
+                          </li>
+                          <li>
+                              <button><a>Long Sample Tab Title</a></button>
+                          </li>
                           <li class="tab-filler"></li>
                           ${renderIf(
                               isPricingTabsScrollable(),
                               html`
                                 <li class="more-pricing">
-                                    <button disabled>
+                                    <button disabled=${ifDefined(
+                                        state.scrollPosition.left <= (leftArrowDisabled ?? 100)
+                                            ? 'disabled'
+                                            : undefined,
+                                    )}>
                                         <${ToniqIcon}
                                             ${assign(ToniqIcon, {
                                                 icon: ChevronDown24Icon,
                                             })}
                                             style="transform: rotate(90deg);"
+                                            ${listen('click', () => {
+                                                scrollTab({
+                                                    host,
+                                                    direction: 'left',
+                                                });
+                                            })}
                                         ></${ToniqIcon}>
                                     </button>
                                     <div class="more-pricing-divider"></div>
-                                    <button disabled>
+                                    <button disabled=${ifDefined(
+                                        rightArrowDisabled == undefined
+                                            ? state.scrollPosition.right <= 100
+                                                ? 'disabled'
+                                                : undefined
+                                            : state.scrollPosition.left >= rightArrowDisabled
+                                            ? 'disabled'
+                                            : undefined,
+                                    )}>
                                         <${ToniqIcon}
                                             ${assign(ToniqIcon, {
                                                 icon: ChevronDown24Icon,
                                             })}
                                             style="transform: rotate(270deg);"
+                                            ${listen('click', () => {
+                                                scrollTab({
+                                                    host,
+                                                    direction: 'right',
+                                                });
+                                            })}
                                         ></${ToniqIcon}>
                                         </button>
                                     </button>
@@ -238,6 +333,81 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
         `;
     },
 });
+
+function getMidSnapPosition(positions: number[], positionToRead: number): number | undefined {
+    const increment = positionToRead >= 0 ? 1 : -1;
+    const indexToRead: number =
+        positionToRead < 0 ? positions.length + positionToRead : positionToRead;
+    const nextIndex = indexToRead + increment;
+
+    const start = positions[indexToRead];
+    const end = positions[nextIndex];
+
+    if (start == undefined || end == undefined) {
+        return undefined;
+    }
+
+    return (start + end) / 2 + increment * 20;
+}
+
+function scrollTab({
+    host,
+    direction,
+}: {
+    host: RequiredAndNotNullBy<HTMLElement, 'shadowRoot'>;
+    direction: 'left' | 'right';
+}) {
+    const scrollContainer = host.shadowRoot.querySelector('ul')!;
+    const snapPositions = getScrollSnapPositions(host.shadowRoot.querySelector('ul')!).x;
+
+    const currentPosition = getSnapPositionClosestTo(scrollContainer.scrollLeft, snapPositions);
+    const directionFactor = direction === 'right' ? 1 : -1;
+    const nextPosition = getSnapPositionClosestTo(
+        (currentPosition || 0) +
+            (scrollContainer.clientWidth - carouselImageWidth) * directionFactor,
+        snapPositions,
+    );
+
+    if (direction === 'right' && nextPosition > currentPosition) {
+        scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+    } else if (direction === 'left' && nextPosition < currentPosition) {
+        scrollContainer.scrollTo({behavior: 'smooth', left: nextPosition});
+    } else {
+        scrollSnapToNext(scrollContainer, direction);
+    }
+}
+
+function getSnapPositionClosestTo(
+    closestToThis: number,
+    snapPositions: ReadonlyArray<number>,
+): number {
+    const closestPosition = snapPositions.reduce((closest, position) => {
+        const positionDistance = Math.abs(closestToThis - position);
+        const closestDistance = Math.abs(closestToThis - closest);
+        if (positionDistance < closestDistance) {
+            return position;
+        } else {
+            return closest;
+        }
+    }, Infinity);
+
+    return closestPosition;
+}
+
+const throttledUpdateScrollPosition = throttle(
+    250,
+    (
+        element: HTMLElement,
+        updateState: (newState: Partial<(typeof EntrepotCarouselElement)['stateType']>) => void,
+    ) => {
+        updateState({
+            scrollPosition: {
+                left: element.scrollLeft,
+                right: element.scrollWidth - element.scrollLeft - element.clientWidth,
+            },
+        });
+    },
+);
 
 function makePricingTab(
     tab: PricingTab,
