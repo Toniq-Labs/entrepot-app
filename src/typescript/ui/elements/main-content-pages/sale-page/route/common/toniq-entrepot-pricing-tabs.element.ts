@@ -186,7 +186,6 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             right: Infinity,
         },
         scrollSnapPositions: [] as number[],
-        rotationIntervalId: undefined as undefined | number,
     },
     events: {
         tabChange: defineElementEvent<PricingTab>(),
@@ -196,22 +195,6 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
     },
     renderCallback: ({host, inputs, state, updateState, dispatch, events}) => {
         const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
-
-        if (state.rotationIntervalId == undefined) {
-            updateState({
-                rotationIntervalId: window.setInterval(() => {
-                    scrollTab({
-                        host,
-                        direction: 'right',
-                    });
-                }, 4000),
-            });
-        } else if (state.rotationIntervalId != undefined) {
-            window.clearInterval(state.rotationIntervalId);
-            updateState({
-                rotationIntervalId: undefined,
-            });
-        }
         const leftArrowDisabled = getMidSnapPosition(state.scrollSnapPositions, 0);
         const rightArrowDisabled = getMidSnapPosition(state.scrollSnapPositions, -1);
 
@@ -247,21 +230,6 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
                                       dispatch(new events.tabChange(tab));
                                   }),
                           )}
-                          <li>
-                              <button><a>Long Sample Tab Title</a></button>
-                          </li>
-                          <li>
-                              <button><a>Long Sample Tab Title</a></button>
-                          </li>
-                          <li>
-                              <button><a>Long Sample Tab Title</a></button>
-                          </li>
-                          <li>
-                              <button><a>Long Sample Tab Title</a></button>
-                          </li>
-                          <li>
-                              <button><a>Long Sample Tab Title</a></button>
-                          </li>
                           <li class="tab-filler"></li>
                           ${renderIf(
                               isPricingTabsScrollable(),

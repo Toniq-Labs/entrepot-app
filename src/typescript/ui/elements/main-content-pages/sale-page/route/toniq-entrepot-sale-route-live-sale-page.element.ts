@@ -1,6 +1,6 @@
 import {PartialAndNullable} from '@augment-vir/common';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
-import {assign, css, defineElement, html, listen, renderIf} from 'element-vir';
+import {assign, css, defineElement, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import parse from 'html-react-parser';
 import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
 import {CollectionSales, Sales, SalesGroup, SalesPricing} from '../../../../../data/models/sales';
@@ -12,6 +12,7 @@ import moment, {duration} from 'moment';
 import {
     applyBackgroundAndForeground,
     Icp24Icon,
+    LoaderAnimated24Icon,
     toniqColors,
     toniqFontStyles,
     ToniqIcon,
@@ -23,6 +24,14 @@ import {CanisterId} from '../../../../../data/models/canister-id';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
 import {isEmpty, fill, chain} from 'lodash';
 import {UserIdentity} from '../../../../../data/models/user-data/identity';
+import {BigNumber} from 'bignumber.js';
+
+export type BuySale = {
+    id: number | BigNumber | undefined;
+    quantity: number | BigNumber | undefined;
+    price: number | BigNumber | undefined;
+    canister: CanisterId;
+};
 
 export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     collectionSale: CollectionSales;
@@ -68,6 +77,22 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             align-items: center;
         }
 
+        .pricing-card-preloader-title {
+            display: block;
+            height: 28px;
+            width: 110px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
+        }
+
+        .pricing-card-preloader-price {
+            display: block;
+            height: 28px;
+            width: 50px;
+            background-color: #f6f6f6;
+            border-radius: 8px;
+        }
+
         .icp-icon {
             margin-right: 8px;
         }
@@ -108,29 +133,44 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     stateInit: {
         pricingSelectedTab: undefined as undefined | PricingTab<SalesGroup>,
         saleCurrent: undefined as undefined | Sales,
+        saleSetting: undefined as undefined | Sales,
     },
-    initCallback: async ({inputs, updateState}) => {
+    initCallback: async ({inputs, state, updateState}) => {
         const getSaleCurrent = setInterval(async () => {
             const api = createEntrepotApiWithIdentity(inputs.userIdentity).canister(
                 inputs.collectionSale.canister as CanisterId,
                 'ext2',
             ) as any;
-            if (api.hasOwnProperty('ext_saleCurrent')) {
-                const saleCurrent: Sales = (await api.ext_saleCurrent())[0];
-                updateState({saleCurrent});
+            if (api.hasOwnProperty('ext_saleCurrent') || api.hasOwnProperty('ext_saleSettings')) {
+                if (isEmpty(state.saleCurrent)) {
+                    const saleCurrent: Sales = (await api.ext_saleCurrent())[0];
+                    updateState({saleCurrent});
+                }
 
-                clearInterval(getSaleCurrent);
+                if (isEmpty(state.saleSetting)) {
+                    const saleSetting: Sales = (
+                        await api.ext_saleSettings(
+                            inputs.userAccount ? inputs.userAccount.address : '',
+                        )
+                    )[0];
+                    updateState({saleSetting});
+                }
+
+                if (!isEmpty(state.saleCurrent) && !isEmpty(state.saleSetting)) {
+                    clearInterval(getSaleCurrent);
+                }
                 return;
             }
         }, 1000);
     },
-    renderCallback: ({inputs, state, updateState}) => {
+    events: {
+        buyFromSale: defineElementEvent<BuySale>(),
+    },
+    renderCallback: ({inputs, state, updateState, events, dispatch}) => {
         const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
             inputs.nftImageInputs;
-        const {name, blurb, sales} = inputs.collectionSale;
-        const tabs: ReadonlyArray<PricingTab<SalesGroup>> = chain(
-            inputs.collectionSale.sales.groups,
-        )
+        const {name, blurb, sales, canister} = inputs.collectionSale;
+        const tabs: ReadonlyArray<PricingTab<SalesGroup>> = chain(sales.groups)
             .map(group => {
                 if (isEmpty(state.saleCurrent)) {
                     return group;
@@ -195,6 +235,16 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             return dateDuration.humanize(true);
         };
 
+        const getGroupSaleId = (selectedPricingTab: PricingTab<SalesGroup>) => {
+            if (!state.saleSetting) return undefined;
+            const groupId = state.saleSetting?.groups!.find((group: SalesGroup) => {
+                return group.name === selectedPricingTab.value.name;
+            })?.id;
+            return groupId;
+        };
+
+        const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
+
         return html`
             <div class="page-wrapper">
                 <div class="section-overview">
@@ -217,9 +267,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                         <!-- <span class="collection-team">by Team Name</span> -->
                         <div class="collection-social">
                             <a
-                                href=${
-                                    'https://icscan.io/canister/' + inputs.collectionSale.canister
-                                }
+                                href=${'https://icscan.io/canister/' + canister}
                                 target="_blank"
                                 rel="noreferrer"
                                 class="socialLinkIcon"
@@ -268,7 +316,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                 })}
                             ></${EntrepotPricingTabsElement}>
                             ${renderIf(
-                                !!selectedPricingTab,
+                                !!selectedPricingTab && !isEmpty(state.saleSetting),
                                 html`
                                     <div class="pricing-card-wrapper">
                                         ${repeat(
@@ -276,7 +324,22 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                             pricing => pricing[0],
                                             pricing =>
                                                 html`
-                                                    <button class="pricing-card">
+                                                    <button
+                                                        class="pricing-card"
+                                                        ${listen('click', async () => {
+                                                            const buysale = {
+                                                                id: getGroupSaleId(
+                                                                    selectedPricingTab!,
+                                                                ),
+                                                                quantity: pricing[0],
+                                                                price: pricing[1],
+                                                                canister: canister as CanisterId,
+                                                            };
+                                                            dispatch(
+                                                                new events.buyFromSale(buysale),
+                                                            );
+                                                        })}
+                                                    >
                                                         <span>Buy ${truncateNumber(
                                                             Number(pricing[0]),
                                                         )} NFT</span>
@@ -291,6 +354,30 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                                 Number(pricing[1]) / 100000000,
                                                             )}
                                                         </span>
+                                                    </button>
+                                                `,
+                                        )}
+                                    </div>
+                                `,
+                                html`
+                                    <div class="pricing-card-wrapper">
+                                        ${repeat(
+                                            preloader,
+                                            preloader => preloader,
+                                            () =>
+                                                html`
+                                                    <button class="pricing-card">
+                                                        <span
+                                                            class="pricing-card-preloader-title"
+                                                        ></span>
+                                                        <${ToniqIcon}
+                                                            ${assign(ToniqIcon, {
+                                                                icon: LoaderAnimated24Icon,
+                                                            })}
+                                                        ></${ToniqIcon}>
+                                                        <span
+                                                            class="pricing-card-preloader-price"
+                                                        ></span>
                                                     </button>
                                                 `,
                                         )}

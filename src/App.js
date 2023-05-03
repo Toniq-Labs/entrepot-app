@@ -10,7 +10,6 @@ import {EntrepotTermsOfService} from './typescript/ui/elements/legal-pages/terms
 import {EntrepotSaleRoutePage} from './typescript/ui/elements/main-content-pages/sale-page/route/toniq-entrepot-sale-route-page.element';
 import {EntrepotTestPage} from './typescript/ui/elements/main-content-pages/test-page/toniq-entrepot-test-page.element';
 import {getAllCollectionsWithCaching} from './typescript/data/local-cache/dexie/get-collections';
-import {isProd} from './typescript/environment/environment-by-url';
 import {makeStyles} from '@material-ui/core/styles';
 import {MissingPage404} from './views/MissingPage404';
 import {Route, Routes, useLocation} from 'react-router-dom';
@@ -1091,6 +1090,72 @@ export default function App() {
         }
     };
 
+    const buyFromSale = async ({id, quantity, price, canister}) => {
+        if (balance < price + 10000n) {
+            return alert(
+                'There was an error',
+                'Your balance is insufficient to complete this transaction',
+            );
+        }
+        var v = await confirm(
+            'Please confirm',
+            'Are you sure you want to continue with this purchase of ' +
+                quantity +
+                ' NFT' +
+                (quantity === 1 ? '' : 's') +
+                ' for the total price of ' +
+                price +
+                " ICP. All transactions are final on confirmation and can't be reversed.",
+        );
+        if (!v) return;
+        try {
+            if (quantity === 1) {
+                loader(true, 'Reserving NFT...');
+            } else {
+                loader(true, 'Reserving NFTs..');
+            }
+            const entrepotApi = createEntrepotApiWithIdentity(identity);
+            var r = await entrepotApi
+                .canister(canister, 'ext2')
+                .ext_salePurchase(id, price, quantity, accounts[currentAccount].address);
+            if (r.hasOwnProperty('err')) {
+                throw r.err;
+            }
+            var payToAddress = r.ok[0];
+            var priceToPay = r.ok[1];
+            loader(true, 'Transferring ICP...');
+            await entrepotApi
+                .token()
+                .transfer(identity.getPrincipal(), currentAccount, payToAddress, priceToPay, 10000);
+            var r3;
+            while (true) {
+                try {
+                    loader(true, 'Completing purchase...');
+                    r3 = await entrepotApi.canister(canister, 'ext2').ext_saleSettle(payToAddress);
+                } catch (e) {
+                    continue;
+                }
+                if (r3.hasOwnProperty('ok')) break;
+                if (r3.hasOwnProperty('err'))
+                    throw 'Your purchase failed! If ICP was sent and the sale ran out, you will be refunded shortly!';
+            }
+            loader(false);
+            alert(
+                'Transaction complete',
+                'Your purchase was made successfully - your NFT will be sent to your address shortly',
+            );
+        } catch (e) {
+            loader(false);
+            alert(
+                'There was an error',
+                e.Other ??
+                    (typeof e == 'string'
+                        ? e
+                        : 'You may need to enable cookies or try a different browser'),
+            );
+        }
+    };
+
     React.useEffect(() => {
         if (appLoaded) {
             var t = localStorage.getItem('_loginType');
@@ -2003,6 +2068,9 @@ export default function App() {
                                             collections={collections}
                                             userAccount={accounts[currentAccount]}
                                             userIdentity={identity || undefined}
+                                            onBuyFromSale={async event => {
+                                                await buyFromSale(event.detail);
+                                            }}
                                         />
                                     }
                                 />

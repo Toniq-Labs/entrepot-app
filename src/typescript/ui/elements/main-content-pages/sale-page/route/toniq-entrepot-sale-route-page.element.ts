@@ -1,11 +1,14 @@
 import {wrapInReactComponent} from '@toniq-labs/design-system/dist/esm/elements/wrap-native-element';
-import {assign, defineElement, html} from 'element-vir';
+import {assign, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import moment from 'moment';
 import {getCollectionSales} from '../../../../../data/local-cache/dexie/get-sales';
 import {Collection} from '../../../../../data/models/collection';
 import {CollectionSales} from '../../../../../data/models/sales';
 import {EntrepotSaleRoutePreSalePageElement} from './toniq-entrepot-sale-route-pre-sale-page.element';
-import {EntrepotSaleRouteLiveSalePageElement} from './toniq-entrepot-sale-route-live-sale-page.element';
+import {
+    BuySale,
+    EntrepotSaleRouteLiveSalePageElement,
+} from './toniq-entrepot-sale-route-live-sale-page.element';
 import {encodeNftId} from '../../../../../api/ext';
 import {decodeNftId} from '../../../../../data/nft/nft-id';
 import {EntrepotUserAccount} from '../../../../../data/models/user-data/account';
@@ -28,7 +31,10 @@ export const EntrepotSaleRoutePageElement = defineElement<{
             updateState({collectionSales});
         });
     },
-    renderCallback: ({inputs, state}) => {
+    events: {
+        buyFromSale: defineElementEvent<BuySale>(),
+    },
+    renderCallback: ({inputs, state, events, dispatch}) => {
         const route = window.location.pathname.replace(/\/sale\//, '');
         const collectionSale = state.collectionSales.find(collection => collection.route === route);
         const userAccount = inputs.userAccount;
@@ -74,6 +80,9 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                         userAccount,
                         userIdentity,
                     })}
+                    ${listen(EntrepotSaleRouteLiveSalePageElement.events.buyFromSale, event => {
+                        dispatch(new events.buyFromSale(event.detail));
+                    })}
                 />
             `;
         } else {
@@ -84,6 +93,9 @@ export const EntrepotSaleRoutePageElement = defineElement<{
                         nftImageInputs,
                         userAccount,
                         userIdentity,
+                    })}
+                    ${listen(EntrepotSaleRouteLiveSalePageElement.events.buyFromSale, event => {
+                        dispatch(new events.buyFromSale(event.detail));
                     })}
                 />
             `;
