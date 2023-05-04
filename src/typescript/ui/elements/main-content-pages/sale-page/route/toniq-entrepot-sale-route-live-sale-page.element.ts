@@ -290,7 +290,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                     <button
                                                         class="pricing-card"
                                                         ${listen('click', async () => {
-                                                            const buysale = {
+                                                            const buySale = {
                                                                 groupName:
                                                                     selectedPricingTab?.value.name!,
                                                                 quantity: pricing[0],
@@ -298,7 +298,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                                 canister: canister as CanisterId,
                                                             };
                                                             dispatch(
-                                                                new events.buyFromSale(buysale),
+                                                                new events.buyFromSale(buySale),
                                                             );
                                                         })}
                                                     >
