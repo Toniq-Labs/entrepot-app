@@ -12,7 +12,6 @@ import moment, {duration} from 'moment';
 import {
     applyBackgroundAndForeground,
     Icp24Icon,
-    LoaderAnimated24Icon,
     toniqColors,
     toniqFontStyles,
     ToniqIcon,
@@ -27,7 +26,7 @@ import {UserIdentity} from '../../../../../data/models/user-data/identity';
 import {BigNumber} from 'bignumber.js';
 
 export type BuySale = {
-    id: number | BigNumber | undefined;
+    groupName: string;
     quantity: number | BigNumber | undefined;
     price: number | BigNumber | undefined;
     canister: CanisterId;
@@ -77,22 +76,6 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             align-items: center;
         }
 
-        .pricing-card-preloader-title {
-            display: block;
-            height: 28px;
-            width: 110px;
-            background-color: #f6f6f6;
-            border-radius: 8px;
-        }
-
-        .pricing-card-preloader-price {
-            display: block;
-            height: 28px;
-            width: 50px;
-            background-color: #f6f6f6;
-            border-radius: 8px;
-        }
-
         .icp-icon {
             margin-right: 8px;
         }
@@ -133,7 +116,6 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
     stateInit: {
         pricingSelectedTab: undefined as undefined | PricingTab<SalesGroup>,
         saleCurrent: undefined as undefined | Sales,
-        saleSetting: undefined as undefined | Sales,
     },
     initCallback: async ({inputs, state, updateState}) => {
         const getSaleCurrent = setInterval(async () => {
@@ -141,22 +123,13 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                 inputs.collectionSale.canister as CanisterId,
                 'ext2',
             ) as any;
-            if (api.hasOwnProperty('ext_saleCurrent') || api.hasOwnProperty('ext_saleSettings')) {
+            if (api.hasOwnProperty('ext_saleCurrent')) {
                 if (isEmpty(state.saleCurrent)) {
                     const saleCurrent: Sales = (await api.ext_saleCurrent())[0];
                     updateState({saleCurrent});
                 }
 
-                if (isEmpty(state.saleSetting)) {
-                    const saleSetting: Sales = (
-                        await api.ext_saleSettings(
-                            inputs.userAccount ? inputs.userAccount.address : '',
-                        )
-                    )[0];
-                    updateState({saleSetting});
-                }
-
-                if (!isEmpty(state.saleCurrent) && !isEmpty(state.saleSetting)) {
+                if (!isEmpty(state.saleCurrent)) {
                     clearInterval(getSaleCurrent);
                 }
                 return;
@@ -235,16 +208,6 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
             return dateDuration.humanize(true);
         };
 
-        const getGroupSaleId = (selectedPricingTab: PricingTab<SalesGroup>) => {
-            if (!state.saleSetting) return undefined;
-            const groupId = state.saleSetting?.groups!.find((group: SalesGroup) => {
-                return group.name === selectedPricingTab.value.name;
-            })?.id;
-            return groupId;
-        };
-
-        const preloader = new Array(Math.floor(Math.random() * (4 - 3) + 3)).fill(0);
-
         return html`
             <div class="page-wrapper">
                 <div class="section-overview">
@@ -316,7 +279,7 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                 })}
                             ></${EntrepotPricingTabsElement}>
                             ${renderIf(
-                                !!selectedPricingTab && !isEmpty(state.saleSetting),
+                                !!selectedPricingTab,
                                 html`
                                     <div class="pricing-card-wrapper">
                                         ${repeat(
@@ -328,9 +291,8 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                         class="pricing-card"
                                                         ${listen('click', async () => {
                                                             const buysale = {
-                                                                id: getGroupSaleId(
-                                                                    selectedPricingTab!,
-                                                                ),
+                                                                groupName:
+                                                                    selectedPricingTab?.value.name!,
                                                                 quantity: pricing[0],
                                                                 price: pricing[1],
                                                                 canister: canister as CanisterId,
@@ -354,30 +316,6 @@ export const EntrepotSaleRouteLiveSalePageElement = defineElement<{
                                                                 Number(pricing[1]) / 100000000,
                                                             )}
                                                         </span>
-                                                    </button>
-                                                `,
-                                        )}
-                                    </div>
-                                `,
-                                html`
-                                    <div class="pricing-card-wrapper">
-                                        ${repeat(
-                                            preloader,
-                                            preloader => preloader,
-                                            () =>
-                                                html`
-                                                    <button class="pricing-card">
-                                                        <span
-                                                            class="pricing-card-preloader-title"
-                                                        ></span>
-                                                        <${ToniqIcon}
-                                                            ${assign(ToniqIcon, {
-                                                                icon: LoaderAnimated24Icon,
-                                                            })}
-                                                        ></${ToniqIcon}>
-                                                        <span
-                                                            class="pricing-card-preloader-price"
-                                                        ></span>
                                                     </button>
                                                 `,
                                         )}

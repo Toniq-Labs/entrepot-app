@@ -1090,7 +1090,7 @@ export default function App() {
         }
     };
 
-    const buyFromSale = async ({id, quantity, price, canister}) => {
+    const buyFromSale = async ({groupName, quantity, price, canister}) => {
         if (balance < price + 10000n) {
             return alert(
                 'There was an error',
@@ -1109,20 +1109,35 @@ export default function App() {
         );
         if (!v) return;
         try {
+            loader(true, 'Fetching Sale Details...');
+            const entrepotApi = createEntrepotApiWithIdentity(identity);
+            var responseSaleSetting = await entrepotApi
+                .canister(canister, 'ext2')
+                .ext_saleSettings(accounts[currentAccount].address);
+            if (responseSaleSetting.hasOwnProperty('err')) {
+                throw responseSaleSetting.err;
+            }
+
+            var saleSetting = responseSaleSetting[0];
+
+            const groupId = saleSetting.groups.find(group => {
+                return group.name === groupName;
+            })?.id;
+
             if (quantity === 1) {
                 loader(true, 'Reserving NFT...');
             } else {
                 loader(true, 'Reserving NFTs..');
             }
-            const entrepotApi = createEntrepotApiWithIdentity(identity);
             var r = await entrepotApi
                 .canister(canister, 'ext2')
-                .ext_salePurchase(id, price, quantity, accounts[currentAccount].address);
+                .ext_salePurchase(groupId, price, quantity, accounts[currentAccount].address);
             if (r.hasOwnProperty('err')) {
                 throw r.err;
             }
             var payToAddress = r.ok[0];
             var priceToPay = r.ok[1];
+
             loader(true, 'Transferring ICP...');
             await entrepotApi
                 .token()
