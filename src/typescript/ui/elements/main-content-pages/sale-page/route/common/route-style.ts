@@ -37,7 +37,7 @@ export const routeStyle = css`
 
 	.collection-social {
 		display: flex;
-		gap: 24px;
+		gap: 20px;
 		margin-top: 12px;
 	}
 
@@ -86,6 +86,20 @@ export const routeStyle = css`
 	}
 
 	.section-details {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		padding: 64px 0px;
+	}
+
+	.section-artwork {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		padding: 64px 0px;
+	}
+
+	.section-team {
 		display: flex;
 		flex-direction: column;
 		gap: 32px;
@@ -165,7 +179,7 @@ export const routeStyle = css`
 		background-color: #F1F3F6;
 		border-top-left-radius: 8px;
 		border-top-right-radius: 8px;
-		${toniqFontStyles.paragraphFont}
+		${toniqFontStyles.paragraphFont};
 	}
 
 	.detail-content {
@@ -174,11 +188,9 @@ export const routeStyle = css`
 	}
 
 	.artwork-card-container {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-evenly;
-		gap: 16px;
-		margin-top: 32px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+    	gap: 16px;
 	}
 
 	${makeDropShadowCardStyles('.artwork-wrapper')}
@@ -188,9 +200,136 @@ export const routeStyle = css`
 		max-width: 268px;
 	}
 
+	.team-card-container {
+		display: grid;
+    	grid-template-columns: repeat(auto-fit, minmax(362px, 1fr));
+		gap: 32px;
+	}
+
+	${makeDropShadowCardStyles('.team-wrapper')}
+
+	.team-wrapper {
+		max-height: 617px;
+		max-width: 368px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.team-card-details {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.team-card-info {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.team-card-info-title {
+		${toniqFontStyles.h3Font};
+	}
+
+	.team-card-info-social {
+		display: flex;
+		gap: 12px;
+	}
+
+	.team-card-info-blurb {
+		${toniqFontStyles.paragraphFont};
+	}
+
+	.section-faq-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 64px;
+		position: relative;
+	}
+
+	.section-roadmap-wrapper {
+		display: flex;
+		gap: 71px;
+	}
+
+	.section-roadmap-container {
+		display: flex;
+		flex-direction: column;
+		gap: 80px;
+	}
+
+	.section-roadmap-content {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.section-roadmap-timeline-wrapper {
+		height: auto;
+		min-width: 32px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.section-roadmap-timeline {
+		height: 100%;
+		width: 5px;
+		background: ${toniqColors.pageInteraction.foregroundColor};
+	}
+
+	.section-team-shared-wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.section-team-shared-wrapper:not(:last-child)::after {
+		position: absolute;
+		content: "";
+		bottom: -32px;
+		width: 100%;
+		height: 1px;
+		border-bottom: 1px solid rgba(0, 208, 147, 0.16);
+		z-index: 0;
+	}
+
+	.section-team-shared-title {
+		position: relative;
+		${toniqFontStyles.h2Font};
+		font-size: 36px;
+	}
+
+	.section-roadmap-content > .section-team-shared-wrapper > .section-team-shared-title::after {
+		position: absolute;
+		content: "";
+		width: 32px;
+		height: 32px;
+		top: 4px;
+		left: -107px;
+		border-radius: 32px;
+		background: #FFFFFF;
+		border: 4px solid ${toniqColors.pageInteraction.foregroundColor};
+	}
+
+	.section-team-shared-detail {
+		${toniqFontStyles.paragraphFont};
+	}
+
+	.section-team-shared-date {
+		${toniqFontStyles.paragraphFont};
+		color: ${toniqColors.pageInteraction.foregroundColor};
+	}
+
 	@media (max-width: 1023px) {
 		.detail-card-container {
 			grid-template-columns: 1fr;
+		}
+
+		.team-card-container, .artwork-card-container {
+			width: min-content;
+    		margin: 0 auto;
 		}
 	}
 
@@ -234,6 +373,14 @@ export const routeStyle = css`
 
 		.section-details {
 			padding: 32px 16px;
+		}
+
+		.section-roadmap-wrapper {
+			gap: 13px;
+		}
+
+		.section-roadmap-content > .section-team-shared-wrapper > .section-team-shared-title::after {
+			left: -49px;
 		}
 	}
 `;

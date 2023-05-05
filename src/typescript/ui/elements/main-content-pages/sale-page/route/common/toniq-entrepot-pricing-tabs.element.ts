@@ -37,6 +37,8 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             line-height: 20px;
             position: relative;
             color: ${toniqColors.pagePrimary.foregroundColor};
+            overflow-y: hidden;
+            max-height: 49px;
         }
 
         :host::after {
@@ -91,7 +93,12 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             display: flex;
             gap: 16px;
             flex-grow: 1;
-            overflow-x: auto;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            overflow-y: hidden;
+            margin: 0;
+            padding-bottom: 100px;
+            margin-left: -40px;
         }
 
         ${createFocusStyles({
@@ -99,13 +106,6 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             elementBorderSize: 0,
             outlineGap: 0,
         })}
-
-        ul {
-            margin: 0;
-            padding: 0;
-            overflow-x: scroll;
-            scroll-snap-type: x mandatory;
-        }
 
         li.selected {
             ${toniqFontStyles.boldFont};
@@ -115,6 +115,7 @@ export const EntrepotPricingTabsElement = defineToniqElement<{
             border-bottom: 2px solid ${toniqColors.pageInteraction.foregroundColor};
             pointer-events: none;
             z-index: 1;
+            padding-bottom: 42px;
         }
 
         li.selected > button > .title-preloader {

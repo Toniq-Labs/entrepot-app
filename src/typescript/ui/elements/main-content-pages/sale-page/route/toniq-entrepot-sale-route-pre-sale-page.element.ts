@@ -1,7 +1,7 @@
 import {PartialAndNullable, truncateNumber} from '@augment-vir/common';
 import {DimensionConstraints} from '@electrovir/resizable-image-element';
 import {ToniqButton, toniqColors, toniqFontStyles, ToniqInput} from '@toniq-labs/design-system';
-import {assign, css, defineElement, html} from 'element-vir';
+import {assign, css, defineElement, html, listen} from 'element-vir';
 import parse from 'html-react-parser';
 import moment, {duration} from 'moment';
 import {NftImageInputs} from '../../../../../data/canisters/get-nft-image-data';
@@ -13,6 +13,8 @@ import {EntrepotUserAccount} from '../../../../../data/models/user-data/account'
 import {makeDropShadowCardStyles} from '../../../styles/drop-shadow-card.style';
 import {fill} from 'lodash';
 import {UserIdentity} from '../../../../../data/models/user-data/identity';
+import {EntrepotSectionTabsElement, SectionTab} from './common/toniq-entrepot-section-tabs.element';
+import {choose} from 'lit/directives/choose.js';
 
 export const EntrepotSaleRoutePreSalePageElement = defineElement<{
     collectionSale: CollectionSales;
@@ -144,7 +146,10 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
             }
         }
     `,
-    renderCallback: ({inputs}) => {
+    stateInit: {
+        sectionSelectedTab: undefined as undefined | SectionTab,
+    },
+    renderCallback: ({inputs, state, updateState}) => {
         const {collectionId, fullSize, cachePriority, nftId, nftIndex, ref, min, max} =
             inputs.nftImageInputs;
         const {name, blurb, sales} = inputs.collectionSale;
@@ -161,6 +166,26 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                 inputs.collectionSale.hasOwnProperty(social) &&
                 inputs.collectionSale[social as keyof CollectionSales],
         );
+
+        const sectionTab = [
+            {
+                label: 'Team',
+                value: 'team',
+            },
+            {
+                label: 'Roadmap',
+                value: 'roadmap',
+            },
+            {
+                label: 'FAQ',
+                value: 'faq',
+            },
+        ];
+
+        const selectedSectionTab: SectionTab = state.sectionSelectedTab ?? {
+            label: 'Team',
+            value: 'team',
+        };
 
         const dateDuration: any = duration(moment(sales.startDate).diff(moment()));
         const {days, hours, minutes} = dateDuration._data;
@@ -369,6 +394,204 @@ export const EntrepotSaleRoutePreSalePageElement = defineElement<{
                             },
                         )}
 
+                    </div>
+                </div>
+                <div class="section-team">
+                    <${EntrepotSectionTabsElement}
+                        ${assign(EntrepotSectionTabsElement, {
+                            tabs: sectionTab,
+                            selected: selectedSectionTab as SectionTab,
+                        })}
+                         ${listen(EntrepotSectionTabsElement.events.tabChange, event => {
+                             const selectedTab = event.detail;
+                             updateState({
+                                 sectionSelectedTab: selectedTab as SectionTab,
+                             });
+                         })}
+                    ></${EntrepotSectionTabsElement}>
+                    <div>
+                         ${choose(selectedSectionTab.value, [
+                             [
+                                 'team',
+                                 () =>
+                                     html`
+                                         <div class="team-card-container">
+                                             ${repeat(
+                                                 fill(Array(3), null),
+                                                 () => {},
+                                                 () => {
+                                                     return html`
+                                                        <div class="team-wrapper">
+                                                            <${EntrepotNftDisplayElement}
+                                                                ${assign(
+                                                                    EntrepotNftDisplayElement,
+                                                                    {
+                                                                        collectionId,
+                                                                        fullSize,
+                                                                        cachePriority,
+                                                                        nftId,
+                                                                        nftIndex,
+                                                                        ref,
+                                                                        min: {
+                                                                            height: 328,
+                                                                            width: 336,
+                                                                        },
+                                                                        max: {
+                                                                            height: 328,
+                                                                            width: 336,
+                                                                        },
+                                                                    },
+                                                                )}
+                                                            ></${EntrepotNftDisplayElement}>
+                                                            <div class="team-card-details">
+                                                                <div class="team-card-info">
+                                                                    <span class="team-card-info-title">Bob Costas</span>
+                                                                    <div class="team-card-info-social">
+                                                                        ${repeat(
+                                                                            [
+                                                                                'telegram',
+                                                                                'twitter',
+                                                                                'medium',
+                                                                                'discord',
+                                                                                'dscvr',
+                                                                                'distrikt',
+                                                                            ],
+                                                                            social => social,
+                                                                            social => html`
+                                                                                <a
+                                                                                    href=${inputs
+                                                                                        .collectionSale[
+                                                                                        social as keyof CollectionSales
+                                                                                    ]}
+                                                                                    target="_blank"
+                                                                                    rel="noreferrer"
+                                                                                    class="socialLinkIcon"
+                                                                                >
+                                                                                    <img
+                                                                                        alt=${social}
+                                                                                        style="width: 24px"
+                                                                                        src=${'/icon/svg/' +
+                                                                                        social +
+                                                                                        '.svg'}
+                                                                                    />
+                                                                                </a>
+                                                                            `,
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <span class="team-card-info-blurb">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia,</span>
+                                                            </div>
+                                                        </div>
+                                                        `;
+                                                 },
+                                             )}
+                                         </div>
+                                     `,
+                             ],
+                             [
+                                 'roadmap',
+                                 () =>
+                                     html`
+                                         <div class="section-roadmap-wrapper">
+                                             <div class="section-roadmap-timeline-wrapper">
+                                                 <div class="section-roadmap-timeline"></div>
+                                             </div>
+                                             <div class="section-roadmap-container">
+                                                 ${repeat(
+                                                     fill(Array(4), null),
+                                                     () => {},
+                                                     (roadmap, index) => {
+                                                         return html`
+                                                             <div class="section-roadmap-content">
+                                                                 <span
+                                                                     class="section-team-shared-date"
+                                                                 >
+                                                                     December 5
+                                                                 </span>
+                                                                 <div
+                                                                     class="section-team-shared-wrapper"
+                                                                 >
+                                                                     <span
+                                                                         class="section-team-shared-title"
+                                                                     >
+                                                                         Question ${index + 1}
+                                                                     </span>
+                                                                     <span
+                                                                         class="section-team-shared-detail"
+                                                                     >
+                                                                         There are many variations
+                                                                         of passages of Lorem Ipsum
+                                                                         available, but the majority
+                                                                         have suffered alteration in
+                                                                         some form, by injected
+                                                                         humour, or randomised words
+                                                                         which don't look even
+                                                                         slightly believable. If you
+                                                                         are going to use a passage
+                                                                         of Lorem Ipsum, you need to
+                                                                         be sure there isn't
+                                                                         anything embarrassing
+                                                                         hidden in the middle of
+                                                                         text. All the Lorem Ipsum
+                                                                         generators on the Internet
+                                                                         tend to repeat predefined
+                                                                         chunks as necessary, making
+                                                                         this the first true
+                                                                         generator on the Internet.
+                                                                     </span>
+                                                                 </div>
+                                                             </div>
+                                                         `;
+                                                     },
+                                                 )}
+                                             </div>
+                                         </div>
+                                     `,
+                             ],
+                             [
+                                 'faq',
+                                 () =>
+                                     html`
+                                         <div class="section-faq-wrapper">
+                                             ${repeat(
+                                                 fill(Array(4), null),
+                                                 () => {},
+                                                 (faq, index) => {
+                                                     return html`
+                                                         <div class="section-team-shared-wrapper">
+                                                             <span
+                                                                 class="section-team-shared-title"
+                                                             >
+                                                                 Question ${index + 1}
+                                                             </span>
+                                                             <span
+                                                                 class="section-team-shared-detail"
+                                                             >
+                                                                 There are many variations of
+                                                                 passages of Lorem Ipsum available,
+                                                                 but the majority have suffered
+                                                                 alteration in some form, by
+                                                                 injected humour, or randomised
+                                                                 words which don't look even
+                                                                 slightly believable. If you are
+                                                                 going to use a passage of Lorem
+                                                                 Ipsum, you need to be sure there
+                                                                 isn't anything embarrassing hidden
+                                                                 in the middle of text. All the
+                                                                 Lorem Ipsum generators on the
+                                                                 Internet tend to repeat predefined
+                                                                 chunks as necessary, making this
+                                                                 the first true generator on the
+                                                                 Internet.
+                                                             </span>
+                                                         </div>
+                                                     `;
+                                                 },
+                                             )}
+                                         </div>
+                                     `,
+                             ],
+                         ])}
                     </div>
                 </div>
             </div>
