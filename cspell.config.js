@@ -79,5 +79,10 @@ module.exports = {
         'localforage',
         'Millis',
         'icscans',
+        'Roadmap',
+        'roadmap',
+        'Costas',
+        'Clintock',
+        'randomised',
     ],
 };
