@@ -1,4 +1,4 @@
-import chunk from 'lodash.chunk';
+import {chunk} from 'lodash';
 import {gridLargeMaxWidth, gridSmallMaxWidth} from '../../model/constants';
 import {Container, makeStyles} from '@material-ui/core';
 import {

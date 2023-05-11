@@ -212,11 +212,7 @@ export const EntrepotHomePageElement = defineToniqElement<{
                         @click=${(clickEvent: MouseEvent) => {
                             if (shouldMouseEventTriggerRoutes(clickEvent)) {
                                 clickEvent.preventDefault();
-                                dispatch(
-                                    new events.collectionRouteClicked(
-                                        `/marketplace/${topCard.route}`,
-                                    ),
-                                );
+                                dispatch(new events.collectionRouteClicked(topCard.route));
                             }
                         }}
                     >

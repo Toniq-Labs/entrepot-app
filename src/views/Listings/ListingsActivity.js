@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core';
 import getNri from '../../ic/nftv.js';
-import orderBy from 'lodash.orderby';
+import {orderBy} from 'lodash';
 import {useNavigate} from 'react-router';
 import {EntrepotGetIcpUsd} from '../../utils';
 import {
@@ -20,7 +20,7 @@ import {
 } from '@toniq-labs/design-system';
 import {NftCard} from '../../shared/NftCard.js';
 import Timestamp from 'react-timestamp';
-import chunk from 'lodash.chunk';
+import {chunk} from 'lodash';
 import {StateContainer} from '../../components/shared/StateContainer.js';
 import moment from 'moment';
 import PriceUSD from '../../components/PriceUSD.js';
