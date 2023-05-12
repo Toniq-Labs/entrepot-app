@@ -15,7 +15,7 @@ export default function TransferForm(props) {
     ] = React.useState('');
 
     const _submit = () => {
-        console.log("TEST", props.nft, props.nft.id, address);
+        console.log('TEST', props.nft, props.nft.id, address);
         //Validate address
         handleClose();
         props.transfer(props.nft.id, address, props.buttonLoader, props.refresher);

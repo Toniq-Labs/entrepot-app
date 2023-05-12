@@ -3,7 +3,7 @@ import {makeStyles, Container} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
 import {EntrepotCollectionStats} from '../../utils';
 import {redirectIfBlockedFromEarnFeatures} from '../../location/redirect-from-marketplace';
-import chunk from 'lodash.chunk';
+import {chunk} from 'lodash';
 import getGenes from '../../components/CronicStats';
 import {cronicFilterTraits} from '../../model/constants';
 import {uppercaseFirstLetterOfWord} from '../../utilities/string-utils';

@@ -12,7 +12,7 @@ import {NftCard} from '../../../shared/NftCard';
 import moment from 'moment';
 import {EntrepotGetIcpUsd} from '../../../utils';
 import PriceUSD from '../../../components/PriceUSD';
-import orderBy from 'lodash.orderby';
+import {orderBy} from 'lodash';
 
 function ListRow({items, classes, style}) {
     return (

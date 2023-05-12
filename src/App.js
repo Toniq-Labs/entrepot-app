@@ -844,7 +844,9 @@ export default function App() {
                                 pathname: '/marketplace/asset/' + event.detail.nftId,
                             });
                         }}
-                        onTransferClick={event => transferNft({ id:event.detail.nftId, listing:event.detail.listing})}
+                        onTransferClick={event =>
+                            transferNft({id: event.detail.nftId, listing: event.detail.listing})
+                        }
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
@@ -871,7 +873,9 @@ export default function App() {
                                 pathname: '/marketplace/asset/' + event.detail.nftId,
                             });
                         }}
-                        onTransferClick={event => transferNft({ id:event.detail.nftId, listing:event.detail.listing})}
+                        onTransferClick={event =>
+                            transferNft({id: event.detail.nftId, listing: event.detail.listing})
+                        }
                         userIdentity={identity || undefined}
                         userAccount={accounts[currentAccount]}
                         collectionMap={collectionMap}
@@ -1051,7 +1055,7 @@ export default function App() {
     const transfer = async (id, address, loader, refresh) => {
         if (loader) loader(true, 'Transferring NFT...');
         try {
-            console.log("TEST2", id, address);
+            console.log('TEST2', id, address);
             var r2 = await createEntrepotApiWithIdentity(identity)
                 .token(id)
                 .transfer(
@@ -2059,7 +2063,7 @@ export default function App() {
                                         <EntrepotTestPage
                                             collections={collections}
                                             onCollectionRouteClicked={event => {
-                                                navigate(event.detail);
+                                                navigate(`/marketplace/${event.detail}`);
                                             }}
                                         />
                                     }
