@@ -1,13 +1,7 @@
-# entrepot-app
+# DO NOT EDIT THIS BRANCH
 
-Frontend code for https://entrepot.app.
+This branch is controlled by `@toniq-labs/fleek-iterative-deploy` for iterative deploys.
 
-# Dev
+You should set this branch as your deploy branch in your Fleek config.
 
-1. clone the repo
-2. `npm install`
-3. `npm start`
-
-That's it!
-
-Before pushing changes, run `npm run format` first to ensure all code is formatted.
+If you delete this branch, it will be re-created by `@toniq-labs/fleek-iterative-deploy`.
