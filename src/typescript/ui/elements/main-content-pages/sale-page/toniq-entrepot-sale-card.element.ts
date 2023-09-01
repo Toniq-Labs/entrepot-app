@@ -96,7 +96,7 @@ export const EntrepotSaleCardElement = defineElement<{
             height: 100%;
         }
 
-        :host(:hover) {
+        .card-button:hover > .card-wrapper {
             border-color: ${toniqColors.pageInteraction.foregroundColor};
         }
 
