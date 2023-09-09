@@ -11,7 +11,8 @@ import {
 } from '@toniq-labs/design-system';
 import {BigNumber} from 'bignumber.js';
 import {truncateNumber} from '@augment-vir/common';
-import moment, {duration} from 'moment';
+import moment from 'moment';
+import {getDurationDate} from '../../../../augments/duration-date';
 
 type StatsArray = {
     title: string;
@@ -95,7 +96,7 @@ export const EntrepotSaleCardElement = defineElement<{
             height: 100%;
         }
 
-        :host(:hover) {
+        .card-button:hover > .card-wrapper {
             border-color: ${toniqColors.pageInteraction.foregroundColor};
         }
 
@@ -266,8 +267,8 @@ export const EntrepotSaleCardElement = defineElement<{
         function formattedDate(date: number) {
             if (moment(date).isBefore(moment()))
                 return inputs.dateMessage ? inputs.dateMessage : 'Just Ended';
-            const dateDuration: any = duration(moment(date).diff(moment()));
-            const {days, hours, minutes} = dateDuration._data;
+            const {days, hours, minutes} = getDurationDate(date);
+
             return html`
                 <span class="launch-time-unit">
                     ${days}
