@@ -1,120 +1,120 @@
 [
     [
         [
-            2,
-            "Body",
+            0,
+            "Eyes",
             [
                 [
-                    26,
-                    "Yellow Green Wireframe"
-                ],
-                [
-                    16,
-                    "Ocean Split"
-                ],
-                [
-                    20,
-                    "Pink"
-                ],
-                [
-                    9,
-                    "Dfinity Orange"
-                ],
-                [
-                    14,
-                    "Dfinity Sunset"
-                ],
-                [
-                    10,
-                    "Dfinity Pink"
-                ],
-                [
-                    18,
-                    "Pepe Green"
-                ],
-                [
-                    23,
-                    "Rasta"
-                ],
-                [
-                    27,
-                    "Yellow"
-                ],
-                [
-                    17,
-                    "Orange"
-                ],
-                [
-                    19,
-                    "Pink Ladder"
-                ],
-                [
-                    13,
-                    "Dfinity Sunrise"
-                ],
-                [
-                    25,
-                    "White Wireframe"
-                ],
-                [
-                    11,
-                    "Dfinity Purple"
-                ],
-                [
-                    21,
-                    "Purple & Grey"
-                ],
-                [
-                    4,
-                    "Blue Chaos"
-                ],
-                [
                     0,
-                    "Aurora Gradient"
-                ],
-                [
-                    15,
-                    "Dfinity Wireframe"
+                    "Angry Blue"
                 ],
                 [
                     1,
-                    "Black & Grey"
-                ],
-                [
-                    12,
-                    "Dfinity Puzzle"
-                ],
-                [
-                    5,
-                    "Blue"
-                ],
-                [
-                    24,
-                    "Sunrise Wireframe"
-                ],
-                [
-                    6,
-                    "Dfinity Blocks"
-                ],
-                [
-                    22,
-                    "Purple"
-                ],
-                [
-                    7,
-                    "Dfinity Blue"
+                    "Angry Grey"
                 ],
                 [
                     2,
-                    "Black Wireframe"
+                    "Aurora Infinity"
                 ],
                 [
                     3,
-                    "Blue & Pink"
+                    "Aurora Side Eyes"
+                ],
+                [
+                    4,
+                    "Aurora Wireframe"
+                ],
+                [
+                    5,
+                    "Blue Infinity"
+                ],
+                [
+                    6,
+                    "ckBTC"
+                ],
+                [
+                    7,
+                    "Copper Infinity"
                 ],
                 [
                     8,
-                    "Dfinity Gray Blocks"
+                    "Dfinity"
+                ],
+                [
+                    9,
+                    "Distrikt"
+                ],
+                [
+                    10,
+                    "DSCVR"
+                ],
+                [
+                    11,
+                    "GnPunks"
+                ],
+                [
+                    12,
+                    "Golden Infinity"
+                ],
+                [
+                    13,
+                    "Green Infinity"
+                ],
+                [
+                    14,
+                    "ICGhost"
+                ],
+                [
+                    15,
+                    "Infinity Sunrise"
+                ],
+                [
+                    16,
+                    "Ocean Infinity"
+                ],
+                [
+                    17,
+                    "Openchat"
+                ],
+                [
+                    18,
+                    "Pink Gradient Infinity"
+                ],
+                [
+                    19,
+                    "Pink Infinity"
+                ],
+                [
+                    20,
+                    "Plug"
+                ],
+                [
+                    21,
+                    "Purple Infinity"
+                ],
+                [
+                    22,
+                    "Rasta Stoner"
+                ],
+                [
+                    23,
+                    "Silver Infinity"
+                ],
+                [
+                    24,
+                    "SNS-1"
+                ],
+                [
+                    25,
+                    "Sunrise Wireframe"
+                ],
+                [
+                    26,
+                    "Boxxxed"
+                ],
+                [
+                    27,
+                    "Not SNS-1"
                 ]
             ]
         ],
@@ -123,64 +123,52 @@
             "Face",
             [
                 [
-                    16,
-                    "Dfinity Purple"
-                ],
-                [
-                    22,
-                    "Pink"
+                    0,
+                    "Aurora Gradient"
                 ],
                 [
                     1,
                     "Aurora Sunrise"
                 ],
                 [
+                    2,
+                    "Black & Grey"
+                ],
+                [
+                    3,
+                    "Black Wireframe"
+                ],
+                [
                     4,
                     "Blue Chaos"
                 ],
                 [
-                    10,
-                    "Dfinity Ocean"
+                    5,
+                    "Blue Sides"
                 ],
                 [
-                    27,
-                    "Red Wireframe"
-                ],
-                [
-                    18,
-                    "Dfinity Sunrise"
-                ],
-                [
-                    17,
-                    "Dfinity Puzzle"
-                ],
-                [
-                    33,
-                    "White Wireframe"
-                ],
-                [
-                    14,
-                    "Dfinity Pink"
+                    6,
+                    "Blue"
                 ],
                 [
                     7,
                     "Dfinity Blocks"
                 ],
                 [
-                    0,
-                    "Aurora Gradient"
+                    8,
+                    "Dfinity Blue"
                 ],
                 [
-                    24,
-                    "Purple"
+                    9,
+                    "Dfinity Gray Blocks"
                 ],
                 [
-                    28,
-                    "Seagrass Wireframe"
+                    10,
+                    "Dfinity Ocean"
                 ],
                 [
-                    20,
-                    "Neon Green Wireframe"
+                    11,
+                    "Dfinity Orange"
                 ],
                 [
                     12,
@@ -191,198 +179,210 @@
                     "Dfinity Pink Wireframe"
                 ],
                 [
-                    23,
-                    "Purple Sides"
-                ],
-                [
-                    11,
-                    "Dfinity Orange"
-                ],
-                [
-                    2,
-                    "Black & Grey"
-                ],
-                [
-                    25,
-                    "Rasta"
-                ],
-                [
-                    19,
-                    "Green Split"
-                ],
-                [
-                    21,
-                    "Pink Split"
-                ],
-                [
-                    3,
-                    "Black Wireframe"
-                ],
-                [
-                    35,
-                    "Purple Aurora"
-                ],
-                [
-                    26,
-                    "Red Ladder"
-                ],
-                [
-                    6,
-                    "Blue"
-                ],
-                [
-                    9,
-                    "Dfinity Gray Blocks"
+                    14,
+                    "Dfinity Pink"
                 ],
                 [
                     15,
                     "Dfinity Purple Blocks"
                 ],
                 [
-                    31,
-                    "Sunrise Split"
+                    16,
+                    "Dfinity Purple"
                 ],
                 [
-                    34,
-                    "Yumi Purple"
+                    17,
+                    "Dfinity Puzzle"
+                ],
+                [
+                    18,
+                    "Dfinity Sunrise"
+                ],
+                [
+                    19,
+                    "Green Split"
+                ],
+                [
+                    20,
+                    "Neon Green Wireframe"
+                ],
+                [
+                    21,
+                    "Pink Split"
+                ],
+                [
+                    22,
+                    "Pink"
+                ],
+                [
+                    23,
+                    "Purple Sides"
+                ],
+                [
+                    24,
+                    "Purple"
+                ],
+                [
+                    25,
+                    "Rasta"
+                ],
+                [
+                    26,
+                    "Red Ladder"
+                ],
+                [
+                    27,
+                    "Red Wireframe"
+                ],
+                [
+                    28,
+                    "Seagrass Wireframe"
                 ],
                 [
                     29,
                     "Spacetime Wireframe"
                 ],
                 [
-                    8,
-                    "Dfinity Blue"
-                ],
-                [
-                    5,
-                    "Blue Sides"
-                ],
-                [
                     30,
                     "Sunrise Blocks"
                 ],
                 [
+                    31,
+                    "Sunrise Split"
+                ],
+                [
                     32,
                     "Sunrise Wireframe"
+                ],
+                [
+                    33,
+                    "White Wireframe"
+                ],
+                [
+                    34,
+                    "Yumi Purple"
+                ],
+                [
+                    35,
+                    "Purple Aurora"
                 ]
             ]
         ],
         [
-            0,
-            "Eyes",
+            2,
+            "Body",
             [
                 [
-                    9,
-                    "Distrikt"
-                ],
-                [
-                    12,
-                    "Golden Infinity"
-                ],
-                [
-                    3,
-                    "Aurora Side Eyes"
-                ],
-                [
-                    11,
-                    "GnPunks"
-                ],
-                [
-                    6,
-                    "ckBTC"
-                ],
-                [
-                    25,
-                    "Sunrise Wireframe"
-                ],
-                [
-                    16,
-                    "Ocean Infinity"
-                ],
-                [
-                    7,
-                    "Copper Infinity"
-                ],
-                [
-                    2,
-                    "Aurora Infinity"
-                ],
-                [
-                    22,
-                    "Rasta Stoner"
-                ],
-                [
-                    8,
-                    "Dfinity"
-                ],
-                [
-                    13,
-                    "Green Infinity"
-                ],
-                [
-                    19,
-                    "Pink Infinity"
-                ],
-                [
-                    23,
-                    "Silver Infinity"
-                ],
-                [
-                    27,
-                    "Not SNS-1"
-                ],
-                [
-                    18,
-                    "Pink Gradient Infinity"
-                ],
-                [
-                    5,
-                    "Blue Infinity"
-                ],
-                [
-                    24,
-                    "SNS-1"
+                    0,
+                    "Aurora Gradient"
                 ],
                 [
                     1,
-                    "Angry Grey"
+                    "Black & Grey"
                 ],
                 [
-                    21,
-                    "Purple Infinity"
+                    2,
+                    "Black Wireframe"
                 ],
                 [
-                    0,
-                    "Angry Blue"
+                    3,
+                    "Blue & Pink"
                 ],
                 [
                     4,
-                    "Aurora Wireframe"
+                    "Blue Chaos"
                 ],
                 [
-                    14,
-                    "ICGhost"
+                    5,
+                    "Blue"
                 ],
                 [
-                    17,
-                    "Openchat"
+                    6,
+                    "Dfinity Blocks"
                 ],
                 [
-                    15,
-                    "Infinity Sunrise"
+                    7,
+                    "Dfinity Blue"
                 ],
                 [
-                    20,
-                    "Plug"
+                    8,
+                    "Dfinity Gray Blocks"
+                ],
+                [
+                    9,
+                    "Dfinity Orange"
                 ],
                 [
                     10,
-                    "DSCVR"
+                    "Dfinity Pink"
+                ],
+                [
+                    11,
+                    "Dfinity Purple"
+                ],
+                [
+                    12,
+                    "Dfinity Puzzle"
+                ],
+                [
+                    13,
+                    "Dfinity Sunrise"
+                ],
+                [
+                    14,
+                    "Dfinity Sunset"
+                ],
+                [
+                    15,
+                    "Dfinity Wireframe"
+                ],
+                [
+                    16,
+                    "Ocean Split"
+                ],
+                [
+                    17,
+                    "Orange"
+                ],
+                [
+                    18,
+                    "Pepe Green"
+                ],
+                [
+                    19,
+                    "Pink Ladder"
+                ],
+                [
+                    20,
+                    "Pink"
+                ],
+                [
+                    21,
+                    "Purple & Grey"
+                ],
+                [
+                    22,
+                    "Purple"
+                ],
+                [
+                    23,
+                    "Rasta"
+                ],
+                [
+                    24,
+                    "Sunrise Wireframe"
+                ],
+                [
+                    25,
+                    "White Wireframe"
                 ],
                 [
                     26,
-                    "Boxxxed"
+                    "Yellow Green Wireframe"
+                ],
+                [
+                    27,
+                    "Yellow"
                 ]
             ]
         ],
@@ -391,44 +391,44 @@
             "Background",
             [
                 [
-                    5,
-                    "Pink Abyss"
-                ],
-                [
-                    7,
-                    "Red Abyss"
-                ],
-                [
-                    4,
-                    "Light Blue"
-                ],
-                [
-                    3,
-                    "Green Abyss"
-                ],
-                [
-                    8,
-                    "Salmon Pink"
+                    0,
+                    "Aquamarine Abyss"
                 ],
                 [
                     1,
                     "Aurora"
                 ],
                 [
-                    9,
-                    "White"
-                ],
-                [
-                    0,
-                    "Aquamarine Abyss"
-                ],
-                [
                     2,
                     "Blue Abyss"
                 ],
                 [
+                    3,
+                    "Green Abyss"
+                ],
+                [
+                    4,
+                    "Light Blue"
+                ],
+                [
+                    5,
+                    "Pink Abyss"
+                ],
+                [
                     6,
                     "Purple Abyss"
+                ],
+                [
+                    7,
+                    "Red Abyss"
+                ],
+                [
+                    8,
+                    "Salmon Pink"
+                ],
+                [
+                    9,
+                    "White"
                 ]
             ]
         ]
