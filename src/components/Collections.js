@@ -21,7 +21,7 @@ import Sold from './Sold';
 import SoldListing from './SoldListing';
 import BuyForm from './BuyForm';
 import {useNavigate} from 'react-router';
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -500,14 +500,14 @@ export default function Listings(props) {
         try {
             var img =
                 canisterId === 'bxdf4-baaaa-aaaah-qaruq-cai'
-                    ? 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/' + listing[0]
-                    : 'https://' + canisterId + '.raw.ic0.app/?type=thumbnail&tokenid=' + tokenid;
+                    ? 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.icp0.io/Token/' + listing[0]
+                    : 'https://' + canisterId + '.raw.icp0.io/?type=thumbnail&tokenid=' + tokenid;
             var answer = await buyForm(_showListingPrice(listing[1].price), img);
             if (!answer) {
                 return props.loader(false);
             }
             props.loader(true, 'Locking NFT...');
-            const _api = extjs.connect('https://ic0.app/', props.identity);
+            const _api = extjs.connect('https://icp0.io/', props.identity);
             var r = await _api
                 .canister(canisterId)
                 .lock(tokenid, listing[1].price, props.account.address, _getRandomBytes());

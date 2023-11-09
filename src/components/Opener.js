@@ -78,7 +78,7 @@ export default function Opener(props) {
         //hot api, will sign as identity - BE CAREFUL
         try {
             var r = await extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister(props.nft.canister, 'ext')
                 .unpack(props.nft.id, [extjs.toSubaccount(props.currentAccount ?? 0)]);
             if (r.hasOwnProperty('err')) throw r.err;

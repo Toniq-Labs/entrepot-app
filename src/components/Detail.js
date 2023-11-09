@@ -41,6 +41,7 @@ import {
 } from '../utils';
 import {useParams} from 'react-router-dom';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
+import offerBlacklist from './../offer-blacklist.json';
 
 function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -61,7 +62,7 @@ function useInterval(callback, delay) {
         }
     }, [delay]);
 }
-const api = extjs.connect('https://ic0.app/');
+const api = extjs.connect('https://icp0.io/');
 
 const shorten = a => {
     return a.substring(0, 12) + '...';
@@ -194,7 +195,7 @@ const Detail = props => {
         if (!license || license == 'Coming soon!') {
             try {
                 var resp = await extjs
-                    .connect('https://ic0.app/')
+                    .connect('https://icp0.io/')
                     .canister(extjs.decodeTokenId(tokenid).canister, 'license')
                     .license(tokenid);
                 if (resp.hasOwnProperty('ok')) {
@@ -241,7 +242,7 @@ const Detail = props => {
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');
-        const _api = extjs.connect('https://ic0.app/', props.identity);
+        const _api = extjs.connect('https://icp0.io/', props.identity);
         await _api.canister('fcwhh-piaaa-aaaak-qazba-cai').cancelOffer(tokenid);
         await reloadOffers();
         props.loader(false);
@@ -251,11 +252,11 @@ const Detail = props => {
         if (await props.confirm('Please confirm', 'Are you sure you want to accept this offer?')) {
             props.loader(true, 'Accepting offer...');
             var offersAPI = extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .canister('fcwhh-piaaa-aaaak-qazba-cai');
             var memo = await offersAPI.createMemo2(tokenid, offer.offerer, offer.amount);
             var r2 = await extjs
-                .connect('https://ic0.app/', props.identity)
+                .connect('https://icp0.io/', props.identity)
                 .token(tokenid)
                 .transfer(
                     props.identity.getPrincipal().toText(),
@@ -350,6 +351,9 @@ const Detail = props => {
         // }
 
         if (index == 99 && canister == 'kss7i-hqaaa-aaaah-qbvmq-cai')
+            detailPage = 'interactive_nfts_or_videos';    
+        
+        if (index >= 9 && index <= 19 && canister == 'yy7m6-daaaa-aaaag-qciqa-cai')
             detailPage = 'interactive_nfts_or_videos';
 
         switch (detailPage) {
@@ -451,6 +455,10 @@ const Detail = props => {
                 );
                 break;
         }
+    };
+
+    const isBlacklistedFromOffer = () => {
+        return offerBlacklist.includes(canister);
     };
 
     React.useEffect(() => {
@@ -975,20 +983,22 @@ const Detail = props => {
                                                 ''
                                             )}
 
-                                            <Button
-                                                onClick={ev => {
-                                                    makeOffer();
-                                                }}
-                                                variant="outlined"
-                                                color="primary"
-                                                style={{
-                                                    fontWeight: 'bold',
-                                                    marginRight: '10px',
-                                                    marginBottom: 10,
-                                                }}
-                                            >
-                                                Submit Offer
-                                            </Button>
+                                            {!isBlacklistedFromOffer() && (
+                                                <Button
+                                                    onClick={ev => {
+                                                        makeOffer();
+                                                    }}
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginRight: '10px',
+                                                        marginBottom: 10,
+                                                    }}
+                                                >
+                                                    Submit Offer
+                                                </Button>
+                                            )}
                                         </div>
                                     ) : (
                                         ''
@@ -1122,155 +1132,140 @@ const Detail = props => {
                         ) : (
                             ''
                         )}
-                        <Accordion defaultExpanded>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}
-                            >
-                                <LocalOfferIcon style={{marginTop: 3}} />
-                                <Typography className={classes.heading}>Offers</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <TableContainer>
-                                    {offers === false ? (
-                                        <div style={{textAlign: 'center'}}>
-                                            <Typography
-                                                paragraph
-                                                style={{paddingTop: 20, fontWeight: 'bold'}}
-                                                align="center"
-                                            >
-                                                Loading...
-                                            </Typography>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            {offers.length === 0 ? (
-                                                <>
-                                                    <div style={{textAlign: 'center'}}>
-                                                        <Typography
-                                                            paragraph
-                                                            style={{
-                                                                paddingTop: 20,
+                        {!isBlacklistedFromOffer() && (
+                            <Accordion defaultExpanded>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}
+                                >
+                                    <LocalOfferIcon style={{marginTop: 3}} />
+                                    <Typography className={classes.heading}>Offers</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <TableContainer>
+                                        {offers === false ? (
+                                            <div style={{textAlign: 'center'}}>
+                                                <Typography
+                                                    paragraph
+                                                    style={{paddingTop: 20, fontWeight: 'bold'}}
+                                                    align="center"
+                                                >
+                                                    Loading...
+                                                </Typography>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {offers.length === 0 ? (
+                                                    <>
+                                                        <div style={{textAlign: 'center'}}>
+                                                            <Typography
+                                                                paragraph
+                                                                style={{
+                                                                    paddingTop: 20,
+                                                                    fontWeight: 'bold',
+                                                                }}
+                                                                align="center"
+                                                            >
+                                                                There are currently no offers!
+                                                            </Typography>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Alert severity="info">
+                                                            Offers are binding.
+                                                        </Alert>
+                                                        <Table
+                                                            sx={{
+                                                                minWidth: 1500,
                                                                 fontWeight: 'bold',
                                                             }}
-                                                            align="center"
+                                                            aria-label="a dense table"
                                                         >
-                                                            There are currently no offers!
-                                                        </Typography>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Alert severity="info">
-                                                        Offers are binding.
-                                                    </Alert>
-                                                    <Table
-                                                        sx={{minWidth: 1500, fontWeight: 'bold'}}
-                                                        aria-label="a dense table"
-                                                    >
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell align="left"></TableCell>
-                                                                <TableCell align="right">
-                                                                    <strong>Price</strong>
-                                                                </TableCell>
-                                                                <TableCell align="center">
-                                                                    <strong>Floor Delta</strong>
-                                                                </TableCell>
-                                                                <TableCell align="center">
-                                                                    <strong>Time</strong>
-                                                                </TableCell>
-                                                                <TableCell align="center">
-                                                                    <strong>Buyer</strong>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            {offers.slice().map((offer, i) => {
-                                                                return (
-                                                                    <TableRow key={i}>
-                                                                        <TableCell>
-                                                                            <LocalOfferIcon
-                                                                                style={{
-                                                                                    fontSize: 18,
-                                                                                    verticalAlign:
-                                                                                        'middle',
-                                                                                }}
-                                                                            />{' '}
-                                                                            <strong>Offer</strong>
-                                                                        </TableCell>
-                                                                        <TableCell align="right">
-                                                                            <strong>
-                                                                                <PriceICP
-                                                                                    price={
-                                                                                        offer.amount
-                                                                                    }
-                                                                                />
-                                                                            </strong>
-                                                                            <br />
-                                                                            {EntrepotGetICPUSD(
-                                                                                offer.amount,
-                                                                            ) ? (
-                                                                                <small>
-                                                                                    <PriceUSD
-                                                                                        price={EntrepotGetICPUSD(
-                                                                                            offer.amount,
-                                                                                        )}
-                                                                                    />
-                                                                                </small>
-                                                                            ) : (
-                                                                                ''
-                                                                            )}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">
-                                                                            {floor
-                                                                                ? getFloorDelta(
-                                                                                      offer.amount,
-                                                                                  )
-                                                                                : '-'}
-                                                                        </TableCell>
-                                                                        <TableCell align="center">
-                                                                            <Timestamp
-                                                                                relative
-                                                                                autoUpdate
-                                                                                date={Number(
-                                                                                    offer.time /
-                                                                                        1000000000n,
-                                                                                )}
-                                                                            />
-                                                                        </TableCell>
-                                                                        <TableCell align="center">
-                                                                            {owner &&
-                                                                            props.account &&
-                                                                            props.account.address ==
-                                                                                owner ? (
-                                                                                <Button
-                                                                                    onClick={() =>
-                                                                                        acceptOffer(
-                                                                                            offer,
-                                                                                        )
-                                                                                    }
-                                                                                    size={'small'}
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell align="left"></TableCell>
+                                                                    <TableCell align="right">
+                                                                        <strong>Price</strong>
+                                                                    </TableCell>
+                                                                    <TableCell align="center">
+                                                                        <strong>Floor Delta</strong>
+                                                                    </TableCell>
+                                                                    <TableCell align="center">
+                                                                        <strong>Time</strong>
+                                                                    </TableCell>
+                                                                    <TableCell align="center">
+                                                                        <strong>Buyer</strong>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                {offers.slice().map((offer, i) => {
+                                                                    return (
+                                                                        <TableRow key={i}>
+                                                                            <TableCell>
+                                                                                <LocalOfferIcon
                                                                                     style={{
-                                                                                        color: 'white',
-                                                                                        backgroundColor:
-                                                                                            '#c32626',
+                                                                                        fontSize: 18,
+                                                                                        verticalAlign:
+                                                                                            'middle',
                                                                                     }}
-                                                                                    variant={
-                                                                                        'contained'
-                                                                                    }
-                                                                                >
-                                                                                    Accept
-                                                                                </Button>
-                                                                            ) : (
-                                                                                <>
-                                                                                    {props.identity &&
-                                                                                    props.identity
-                                                                                        .getPrincipal()
-                                                                                        .toText() ==
-                                                                                        offer.offerer.toText() ? (
+                                                                                />{' '}
+                                                                                <strong>
+                                                                                    Offer
+                                                                                </strong>
+                                                                            </TableCell>
+                                                                            <TableCell align="right">
+                                                                                <strong>
+                                                                                    <PriceICP
+                                                                                        price={
+                                                                                            offer.amount
+                                                                                        }
+                                                                                    />
+                                                                                </strong>
+                                                                                <br />
+                                                                                {EntrepotGetICPUSD(
+                                                                                    offer.amount,
+                                                                                ) ? (
+                                                                                    <small>
+                                                                                        <PriceUSD
+                                                                                            price={EntrepotGetICPUSD(
+                                                                                                offer.amount,
+                                                                                            )}
+                                                                                        />
+                                                                                    </small>
+                                                                                ) : (
+                                                                                    ''
+                                                                                )}
+                                                                            </TableCell>
+                                                                            <TableCell align="center">
+                                                                                {floor
+                                                                                    ? getFloorDelta(
+                                                                                          offer.amount,
+                                                                                      )
+                                                                                    : '-'}
+                                                                            </TableCell>
+                                                                            <TableCell align="center">
+                                                                                <Timestamp
+                                                                                    relative
+                                                                                    autoUpdate
+                                                                                    date={Number(
+                                                                                        offer.time /
+                                                                                            1000000000n,
+                                                                                    )}
+                                                                                />
+                                                                            </TableCell>
+                                                                            {!isBlacklistedFromOffer() && (
+                                                                                <TableCell align="center">
+                                                                                    {owner &&
+                                                                                    props.account &&
+                                                                                    props.account
+                                                                                        .address ==
+                                                                                        owner ? (
                                                                                         <Button
-                                                                                            onClick={
-                                                                                                cancelOffer
+                                                                                            onClick={() =>
+                                                                                                acceptOffer(
+                                                                                                    offer,
+                                                                                                )
                                                                                             }
                                                                                             size={
                                                                                                 'small'
@@ -1284,36 +1279,63 @@ const Detail = props => {
                                                                                                 'contained'
                                                                                             }
                                                                                         >
-                                                                                            Cancel
+                                                                                            Accept
                                                                                         </Button>
                                                                                     ) : (
-                                                                                        <a
-                                                                                            href={
-                                                                                                'https://icscan.io/account/' +
-                                                                                                offer.offerer.toText()
-                                                                                            }
-                                                                                            target="_blank"
-                                                                                        >
-                                                                                            {shorten(
-                                                                                                offer.offerer.toText(),
+                                                                                        <>
+                                                                                            {props.identity &&
+                                                                                            props.identity
+                                                                                                .getPrincipal()
+                                                                                                .toText() ==
+                                                                                                offer.offerer.toText() ? (
+                                                                                                <Button
+                                                                                                    onClick={
+                                                                                                        cancelOffer
+                                                                                                    }
+                                                                                                    size={
+                                                                                                        'small'
+                                                                                                    }
+                                                                                                    style={{
+                                                                                                        color: 'white',
+                                                                                                        backgroundColor:
+                                                                                                            '#c32626',
+                                                                                                    }}
+                                                                                                    variant={
+                                                                                                        'contained'
+                                                                                                    }
+                                                                                                >
+                                                                                                    Cancel
+                                                                                                </Button>
+                                                                                            ) : (
+                                                                                                <a
+                                                                                                    href={
+                                                                                                        'https://icscan.io/account/' +
+                                                                                                        offer.offerer.toText()
+                                                                                                    }
+                                                                                                    target="_blank"
+                                                                                                >
+                                                                                                    {shorten(
+                                                                                                        offer.offerer.toText(),
+                                                                                                    )}
+                                                                                                </a>
                                                                                             )}
-                                                                                        </a>
+                                                                                        </>
                                                                                     )}
-                                                                                </>
+                                                                                </TableCell>
                                                                             )}
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                );
-                                                            })}
-                                                        </TableBody>
-                                                    </Table>
-                                                </>
-                                            )}
-                                        </>
-                                    )}
-                                </TableContainer>
-                            </AccordionDetails>
-                        </Accordion>
+                                                                        </TableRow>
+                                                                    );
+                                                                })}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </TableContainer>
+                                </AccordionDetails>
+                            </Accordion>
+                        )}
                         <Accordion defaultExpanded>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon style={{fontSize: 35}} />}

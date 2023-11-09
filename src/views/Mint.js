@@ -259,7 +259,7 @@ export default function Mint(props) {
     const classes = useStyles();
     const chunkSize = 1900000;
     const _updates = async () => {
-        const api = extjs.connect('https://ic0.app/', props.identity);
+        const api = extjs.connect('https://icp0.io/', props.identity);
         var cs = await api.canister('33uhc-liaaa-aaaah-qcbra-cai').getCanisters();
         var newcans = cs.map(p => p.toText());
         setCanisters(newcans);
@@ -282,7 +282,7 @@ export default function Mint(props) {
         );
         if (!v) return;
         props.loader(true, 'Attempting Bulk transfer...');
-        var API = extjs.connect('https://ic0.app/', props.identity);
+        var API = extjs.connect('https://icp0.io/', props.identity);
         var _api = API.canister(canister, 'nft');
         var reader = new FileReader();
         reader.onload = function () {
@@ -317,7 +317,7 @@ export default function Mint(props) {
         );
         if (!v) return;
         props.loader(true, 'Attempting Bulk list...');
-        var API = extjs.connect('https://ic0.app/', props.identity);
+        var API = extjs.connect('https://icp0.io/', props.identity);
         var _api = API.canister(canister, 'nft');
         var reader = new FileReader();
         reader.onload = function () {
@@ -346,7 +346,7 @@ export default function Mint(props) {
     const mintaction = async () => {
         if (!selectedFiles.length) return props.error('Please select a file first');
         if (!canister) return props.error('Please select a canister first');
-        var API = extjs.connect('https://ic0.app/', props.identity);
+        var API = extjs.connect('https://icp0.io/', props.identity);
         var _api = API.canister(canister, 'nft');
         for (var i = 0; i < selectedFiles.length; i++) {
             props.loader(true, 'Working on ' + selectedFiles[i].name);
@@ -473,7 +473,7 @@ export default function Mint(props) {
                                             Mint as NFTs
                                         </Button>
                                         <Button
-                                            href={'https://' + canister + '.raw.ic0.app'}
+                                            href={'https://' + canister + '.raw.icp0.io'}
                                             target="_blank"
                                             variant="contained"
                                             color="primary"
