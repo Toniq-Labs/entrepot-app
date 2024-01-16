@@ -32,6 +32,13 @@
             rel="stylesheet"
         />
         <title>Entrepot - Marketplace for NFTs on the Internet Computer</title>
+        <script>
+          // Script to inject Origin Trial token
+          const tokenMetaTag = document.createElement('meta');
+          tokenMetaTag.httpEquiv = 'origin-trial';
+          tokenMetaTag.content = 'Ayfl4fp/WFo5HSyGVliYl2bnpkL3Pa+wm2xyHbpTP5V0kHgpba2f8WZz0lOJnr0dDRk6PIpkOl4NIfhEyJSq7wUAAACYeyJvcmlnaW4iOiJodHRwczovL3d3dy5zdG9pY3dhbGxldC5jb206NDQzIiwiZmVhdHVyZSI6IkRpc2FibGVUaGlyZFBhcnR5U3RvcmFnZVBhcnRpdGlvbmluZyIsImV4cGlyeSI6MTcyNTQwNzk5OSwiaXNTdWJkb21haW4iOnRydWUsImlzVGhpcmRQYXJ0eSI6dHJ1ZX0=';
+          document.head.appendChild(tokenMetaTag);
+        </script>
         <script
             src="https://geoip-js.com/js/apis/geoip2/v2.1/geoip2.js"
             type="text/javascript"
