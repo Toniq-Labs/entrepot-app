@@ -10,14 +10,14 @@ export const icpBunnyCanisterDetails: RawCanisterDetails = {
     getNftLinkUrl({nftIndex}) {
         const icpBunnyStorage = [
             'efqhu-yqaaa-aaaaf-qaeda-cai',
-            'ecrba-viaaa-aaaaf-qaedq-cai',
-            'fp7fo-2aaaa-aaaaf-qaeea-cai',
+            'h3ba2-7aaaa-aaaaf-qaeka-cai',
+            'h4ago-syaaa-aaaaf-qaekq-cai',
             'fi6d2-xyaaa-aaaaf-qaeeq-cai',
             'fb5ig-bqaaa-aaaaf-qaefa-cai',
             'fg4os-miaaa-aaaaf-qaefq-cai',
-            'ft377-naaaa-aaaaf-qaega-cai',
-            'fu2zl-ayaaa-aaaaf-qaegq-cai',
-            'f5zsx-wqaaa-aaaaf-qaeha-cai',
+            'gynj4-lyaaa-aaaaf-qaemq-cai',
+            'groca-5qaaa-aaaaf-qaena-cai',
+            'gwpeu-qiaaa-aaaaf-qaenq-cai',
             'f2yud-3iaaa-aaaaf-qaehq-cai',
         ];
 
