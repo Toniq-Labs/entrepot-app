@@ -136,15 +136,15 @@ export default function Create(props) {
                                         User Guide
                                     </Button>
                                 </Grid>
-                                <Grid item xs={4} sm={3} md={2} style={{textAlign: 'center'}}>
+                                <Grid item xs={4} sm={3} style={{textAlign: 'center'}}>
                                     <Button
                                         size="large"
                                         variant="contained"
                                         style={{backgroundColor: '#00D092', fontWeight: 'bold'}}
                                         target="_blank"
-                                        href="https://toniqmint-access-request.paperform.co"
+                                        href="https://jfosu-pqaaa-aaaal-qcifq-cai.icp0.io/"
                                     >
-                                        Request Access
+                                        Access Application
                                     </Button>
                                 </Grid>
                                 <Grid item xs={4} sm={3} md={2} style={{textAlign: 'left'}}>
