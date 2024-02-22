@@ -142,7 +142,7 @@ export default function Create(props) {
                                         variant="contained"
                                         style={{backgroundColor: '#00D092', fontWeight: 'bold'}}
                                         target="_blank"
-                                        href="https://jfosu-pqaaa-aaaal-qcifq-cai.icp0.io/"
+                                        href="https://jfosu-pqaaa-aaaal-qcifq-cai.raw.icp0.io/"
                                     >
                                         Access Application
                                     </Button>
