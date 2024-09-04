@@ -586,7 +586,7 @@ export default function App() {
             var id;
             switch (t) {
                 case 'stoic':
-                    id = await StoicIdentity.connect(null, "iframe");
+                    id = await StoicIdentity.connect();
                     if (id) {
                         setIdentity(id);
                         id.accounts().then(accs => {
@@ -1080,7 +1080,7 @@ export default function App() {
             if (t) {
                 switch (t) {
                     case 'stoic':
-                        StoicIdentity.load(null, "iframe")
+                        StoicIdentity.load()
                             .then(async identity => {
                                 if (identity !== false) {
                                     //ID is a already connected wallet!
