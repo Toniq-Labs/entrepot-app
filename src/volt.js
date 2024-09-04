@@ -23,7 +23,7 @@ export async function loadVoltBalance(identity) {
     var currentPrincipal = identity.getPrincipal().toText();
     if (loadedVolts.hasOwnProperty(currentPrincipal)) {
         var voltPrincipal = loadedVolts[currentPrincipal];
-        const voltAPI = extjs.connect('https://icp0.io/', identity).canister(voltPrincipal, 'volt');
+        const voltAPI = extjs.connect('https://icp0.io/').canister(voltPrincipal, 'volt');
         const resp = await voltAPI.getBalances('icpledger', 'ryjl3-tyaaa-aaaaa-aaaba-cai', []);
         if (resp.hasOwnProperty('ok')) {
             return [

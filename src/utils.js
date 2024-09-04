@@ -484,7 +484,7 @@ const clipboardCopy = text => {
         else return false;
     },
     EntrepotUpdateStats = async () => {
-        await _getStats();
+        //await _getStats();
         return _stats;
     },
     EntrepotUpdateUSD = async () => {

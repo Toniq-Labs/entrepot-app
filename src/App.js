@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {makeStyles} from '@material-ui/core/styles';
 import AlertDialog from './components/AlertDialog';
 import ConfirmDialog from './components/ConfirmDialog';
-import {StoicIdentity} from 'ic-stoic-identity';
+import {StoicIdentity} from './ic/stoic-identity';//'ic-stoic-identity';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
@@ -494,6 +494,7 @@ export default function App() {
         return true;
     };
     const _processPaymentForCanister = async _collection => {
+      return;//This wont work now...
         if (
             typeof _collection == 'undefined' ||
             !_collection ||
@@ -585,7 +586,7 @@ export default function App() {
             var id;
             switch (t) {
                 case 'stoic':
-                    id = await StoicIdentity.connect();
+                    id = await StoicIdentity.connect(null, "iframe");
                     if (id) {
                         setIdentity(id);
                         id.accounts().then(accs => {
@@ -653,7 +654,7 @@ export default function App() {
         loader(false);
     };
 
-    useInterval(() => EntrepotUpdateLiked(identity), 10 * 1000);
+    //useInterval(() => EntrepotUpdateLiked(identity), 1 * 60 * 1000);
     useInterval(() => updateCollections(), 5 * 60 * 1000);
     useInterval(_updates, 2 * 60 * 1000);
     const alert = (title, message, buttonLabel) => {
@@ -1079,7 +1080,7 @@ export default function App() {
             if (t) {
                 switch (t) {
                     case 'stoic':
-                        StoicIdentity.load()
+                        StoicIdentity.load(null, "iframe")
                             .then(async identity => {
                                 if (identity !== false) {
                                     //ID is a already connected wallet!
