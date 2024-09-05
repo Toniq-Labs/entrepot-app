@@ -511,10 +511,11 @@ const clipboardCopy = text => {
         return _liked;
     },
     EntrepotUpdateLiked = async identity => {
-        if (identity) {
-            const _api = extjs.connect('https://icp0.io/', identity);
-            _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
-        } else _liked = [];
+        // if (identity) {
+            // const _api = extjs.connect('https://icp0.io/', identity);
+            // _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
+        // } else _liked = [];
+        _liked = [];
     },
     EntrepotSaveLiked = async identity => {
         if (identity) {

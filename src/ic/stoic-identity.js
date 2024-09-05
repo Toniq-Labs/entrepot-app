@@ -27,6 +27,7 @@ export class StoicIdentity extends SignIdentity {
   constructor(principal, pubkey, transportMethod) {
     super();
     this._transportMethod = 'popup';
+    this._accounts = [];
     if (transportMethod) this._transportMethod = transportMethod;
     this._principal = principal;
     this._publicKey = pubkey;
@@ -66,14 +67,7 @@ export class StoicIdentity extends SignIdentity {
           new PublicKey(result.key, result.type),
           this._transportMethod
         );
-        id.accounts()
-          .then((r) => {
-            resolve(id);
-          })
-          .catch((e) => {
-            console.log("Couldn't load accounts", e);
-            resolve(false);
-          });
+        resolve(id);
       }
     });
   }
@@ -90,8 +84,17 @@ export class StoicIdentity extends SignIdentity {
     return _stoicSign("sign", data, this.getPrincipal().toText(), this._transportMethod);
   }
 
-  accounts() {
-    return _stoicSign("accounts", "accounts", this.getPrincipal().toText(), this._transportMethod);
+  accounts(force) {
+    return new Promise(async (resolve, reject) => {
+      if (!this._accounts.length || force) {
+        _stoicSign("accounts", "accounts", this.getPrincipal().toText(), this._transportMethod).then(accounts => {
+          this._accounts = accounts;
+          resolve(this._accounts);
+        }).catch(reject);
+      } else {
+        resolve(this._accounts);
+      }
+    });
   }
 
   transformRequest(request) {
@@ -248,7 +251,7 @@ function _postToPopup(data, resolve, reject) {
   const popup = window.open(
     `${_stoicOrigin}/?stoicTunnel&transport=popup&lid=`+thisIndex,
     "stoic_"+thisIndex,
-    "width=500,height=600"
+    "width=500,height=250,top=300,toolbar=no,menubar=no,scrollbars=no,resizable=no,status=no"
   );
   if (!popup) {
     return reject("Failed to open popup window. It may have been blocked by the browser.");

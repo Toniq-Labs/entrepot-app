@@ -375,20 +375,20 @@ export default function UserCollection(props) {
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'favorites':
-                var r = await extjs
-                    .connect('https://icp0.io/', props.identity)
-                    .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-                    .liked();
-                data = r.filter((a, i) => r.indexOf(a) == i);
-                data = data.map(a => ({
-                    id: a,
-                    token: a,
-                    price: 0,
-                    time: 0,
-                    owner: false,
-                    canister: extjs.decodeTokenId(a).canister,
-                    listing: null,
-                }));
+                // var r = await extjs
+                    // .connect('https://icp0.io/', props.identity)
+                    // .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                    // .liked();
+                // data = r.filter((a, i) => r.indexOf(a) == i);
+                // data = data.map(a => ({
+                    // id: a,
+                    // token: a,
+                    // price: 0,
+                    // time: 0,
+                    // owner: false,
+                    // canister: extjs.decodeTokenId(a).canister,
+                    // listing: null,
+                // }));
                 break;
             case 'offers-made':
                 var r = await extjs

@@ -1052,7 +1052,6 @@ export default function App() {
                 .connect('https://icp0.io/', identity)
                 .token(id)
                 .list(currentAccount, price);
-            console.log(r);
             if (r) {
                 if (refresh) await refresh();
                 if (loader) loader(false);
