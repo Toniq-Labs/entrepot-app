@@ -11,7 +11,6 @@ export async function loadVolt(identity) {
     const voltFactoryAPI = extjs
         .connect('https://icp0.io/')
         .canister('flvm3-zaaaa-aaaak-qazaq-cai');
-        console.log("GET OWNER CANISTER");
     const volt = await voltFactoryAPI.getOwnerCanister(identity.getPrincipal());
     if (volt.length) {
         newVoltPrincipal = volt[0].toText();

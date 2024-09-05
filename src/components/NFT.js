@@ -167,7 +167,7 @@ export default function NFT(props) {
     };
     useInterval(() => {
         refresh();
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
 
     React.useEffect(() => {
         if (typeof props.listing == 'undefined') {
