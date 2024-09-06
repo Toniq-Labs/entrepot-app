@@ -52,53 +52,65 @@ var _stats = [],
     lastUpdate = false,
     earnData = {};
 const _getStats = async () => {
-    var collections = (
-        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/collections').then(r =>
-            r.json(),
-        )
+    const collections = (
+        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/collections')
+            .then(r => r.json())
     )
-        .map(a => ({...a, canister: a.id}))
+        .map(a => ({ ...a, canister: a.id }))
         .filter(a => _isCanister(a.canister));
-    var pxs = [];
-    var _ts = [];
-    for (var i = 0; i < collections.length; i++) {
+
+    let pxs = [];
+    let _ts = [];
+
+    for (let i = 0; i < collections.length; i++) {
         if (!collections[i].market) {
             _ts.push({
                 canister: collections[i].canister,
                 stats: false,
             });
         } else {
-            pxs.push(
-                (c =>
-                    api
-                        .token(c)
-                        .stats()
-                        .then(r => {
-                            return {canister: c, stats: r};
-                        }))(collections[i].canister),
-            );
+            pxs.push((c =>
+                api
+                    .token(c)
+                    .stats()
+                    .then(r => ({ canister: c, stats: r }))
+            )(collections[i].canister));
         }
     }
-    const results = await Promise.all(pxs.map(p => p.catch(e => e)));
-    const validResults = results.filter(result => !(result instanceof Error));
-    _stats = validResults.concat(_ts);
+
+    // Helper function to fetch stats in batches
+    const fetchInBatches = async (batchSize = 20, delay = 5000) => {
+        let _stats = [];
+        for (let i = 0; i < pxs.length; i += batchSize) {
+            // Get the current batch of promises
+            const batch = pxs.slice(i, i + batchSize);
+
+            // Wait for the batch to resolve
+            const results = await Promise.all(batch.map(p => p.catch(() => null)));
+
+            // Filter out any null (failed) results
+            const validResults = results.filter(result => result !== null);
+
+            // Add valid results to the stats array
+            _stats = _stats.concat(validResults);
+
+            // Wait 5 seconds before fetching the next batch
+            if (i + batchSize < pxs.length) {
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+        return _stats;
+    };
+
+    // Fetch stats in batches
+    const batchStats = await fetchInBatches(80, 2000);
+
+    // Combine the batch stats with the pre-existing stats (_ts)
+    _stats = batchStats.concat(_ts);
+    
     return _stats;
-    // (c => {
-    // api.token(c).stats().then(r => {
-    // res = {
-    // canister : c,
-    // stats : r
-    // };
-    // _stats.push(res);
-    // }).catch(e => {
-    // res = {
-    // canister : c,
-    // stats : false
-    // };
-    // _stats.push(res);
-    // });
-    // })(collections[i].canister);
 };
+
 const icpbunnyimg = i => {
     const icbstorage = [
         'efqhu-yqaaa-aaaaf-qaeda-cai',

@@ -266,6 +266,8 @@ function _postToPopup(data, resolve, reject) {
       //Keep it open?
     } else {
       _stoicTimer = setTimeout(() => {
+        _stoicOpenConnection = false;
+        _stoicTimer = false;
         _removeFrame(thisIndex);
       }, 5000);
     }
