@@ -309,10 +309,6 @@ export default function Navbar(props) {
 }
 
 const useStyles = makeStyles(theme => {
-    console.log({breakpoints: theme.breakpoints, sm: theme.breakpoints.up('sm')});
-
-    // ideally this value would get calculated at run time based on how wide the nav
-    // bar buttons are
     const hamburgerBreakPixel = '1300px';
     const displayIcpBreakPixel = '450px';
     const searchHiddenBreakPixel = '750px';

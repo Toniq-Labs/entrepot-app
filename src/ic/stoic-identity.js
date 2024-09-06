@@ -255,24 +255,21 @@ function _removeFrame(id) {
 
 function _postToPopup(data, resolve, reject) {
   var thisIndex, existing = false;
-  if (data.endpoint == 'read_state') {
-    if (_stoicOpenConnection){
-      thisIndex = _stoicOpenConnection;
-      existing = true;
-      if (_stoicTimer) {
-        clearTimeout(_stoicTimer);
-      }
-      ((listener) => {
-        _stoicTimer = setTimeout(() => {
-          if (_stoicOpenConnection == listener) {
-            _stoicTimer = false;
-            _stoicOpenConnection = false;
-          }
-          _removeFrame(listener);
-        }, 5000); 
-      })(thisIndex);
-    } 
-  };
+  if (_stoicOpenConnection){
+    thisIndex = _stoicOpenConnection;
+    existing = true;
+    if (_stoicTimer) {
+      clearTimeout(_stoicTimer);
+      _stoicTimer = false;
+    }
+    if (data.endpoint == 'call') {
+      //Keep it open?
+    } else {
+      _stoicTimer = setTimeout(() => {
+        _removeFrame(thisIndex);
+      }, 5000);
+    }
+  }
   if (!thisIndex) {
     thisIndex = _listenerIndex;
     _listenerIndex += 1;    
@@ -288,7 +285,7 @@ function _postToPopup(data, resolve, reject) {
     const popup = window.open(
       `${_stoicOrigin}/?stoicTunnel&transport=popup&lid=`+thisIndex,
       "stoic_"+thisIndex,
-      "width=500,height=250,top=300,toolbar=no,menubar=no,scrollbars=no,resizable=no,status=no"
+      "width=500,height=250,left=100,top=300,toolbar=no,menubar=no,scrollbars=no,resizable=no,status=no"
     );
     if (!popup) {
       return reject("Failed to open popup window. It may have been blocked by the browser.");

@@ -213,7 +213,7 @@ export default function CollectionDetails(props) {
                     .filter(a => collection.hasOwnProperty(a) && collection[a])
                     .map(a => {
                         return (
-                            <h4 style={{marginTop: -20}}>
+                            <h4 key={a} style={{marginTop: -20}}>
                                 Creator royalty: {parseInt(1000 * collection[a]) / 10 - 1}%
                             </h4>
                         );
