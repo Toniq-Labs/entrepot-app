@@ -63,7 +63,7 @@
         "ethereum-blockies-base64": "^1.0.2",
         "html-react-parser": "3.0.4",
         "https-browserify": "^1.0.0",
-        "ic-stoic-identity": "^2.0.0",
+        "ic-stoic-identity": "^6.0.0",
         "json-bigint": "^1.0.0",
         "localforage": "^1.10.0",
         "lodash": "4.17.21",

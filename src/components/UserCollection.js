@@ -304,7 +304,7 @@ export default function UserCollection(props) {
                 data = data.map(a => ({...a, token: a.id}));
                 break;
             case 'favorites':
-                var r = await createEntrepotApiWithIdentity(props.identity)
+                /*var r = await createEntrepotApiWithIdentity(props.identity)
                     .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
                     .liked();
                 data = offeredResponse.filter((a, i) => offeredResponse.indexOf(a) == i);
@@ -316,7 +316,7 @@ export default function UserCollection(props) {
                     owner: false,
                     canister: decodeNftId(a).canister,
                     listing: null,
-                }));
+                }));*/
                 break;
             case 'offers-made':
                 const offeredResponse = await createEntrepotApiWithIdentity(props.identity)

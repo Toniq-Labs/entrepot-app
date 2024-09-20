@@ -485,6 +485,7 @@ export default function App() {
         return true;
     };
     const _processPaymentForCanister = async _collection => {
+        return;//This wont work now...
         if (
             typeof _collection == 'undefined' ||
             !_collection ||

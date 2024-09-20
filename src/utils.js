@@ -245,12 +245,12 @@ const clipboardCopy = text => {
             var b = await defaultEntrepotApi
                 .canister('rkp4c-7iaaa-aaaaa-aaaca-cai')
                 .get_icp_xdr_conversion_rate();
-            var b2 = await fetch(
+            /*var b2 = await fetch(
                 'https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7',
-            ).then(r => r.json());
+            ).then(r => r.json());*/
             _rate =
                 Number(b.data.xdr_permyriad_per_icp / 10000n) *
-                (b2.hasOwnProperty('XDR_USD') ? b2.XDR_USD : 1.331578);
+                1.3491865;
         }
         return _rate;
     },
@@ -265,10 +265,11 @@ const clipboardCopy = text => {
         return _liked;
     },
     EntrepotUpdateLiked = async identity => {
-        if (identity) {
+        /*if (identity) {
             const entrepotApi = createEntrepotApiWithIdentity(identity);
             _liked = await entrepotApi.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
-        } else _liked = [];
+        } else _liked = [];*/
+        _liked = [];
     },
     EntrepotSaveLiked = async identity => {
         if (identity) {
