@@ -1,7 +1,7 @@
 /* global BigInt */
 import {Actor, HttpAgent} from '@dfinity/agent';
 import {Principal} from '@dfinity/principal';
-import { IDL } from '@dfinity/candid';
+import {IDL} from '@dfinity/candid';
 import {
     LEDGER_CANISTER_ID,
     GOVERNANCE_CANISTER_ID,
@@ -153,7 +153,7 @@ for (const a in tokensToLoad) {
 }
 function isQueryCall(idlFactory, methodName) {
     // Parse the IDL using the provided factory function
-    const idl = idlFactory({ IDL });
+    const idl = idlFactory({IDL});
 
     // Retrieve the method definition by its name
     const method = idl._fields.find(([name]) => name === methodName);
@@ -177,7 +177,7 @@ function createLoggingActor(actor, idl) {
             // Check if the property is a function (i.e., a method call)
             if (typeof origMethod === 'function') {
                 return async function (...args) {
-                    const iqc = isQueryCall(idl, propKey);//propKey.startsWith("query");
+                    const iqc = isQueryCall(idl, propKey); //propKey.startsWith("query");
                     //console.log(`Standard Actor: Calling ${iqc} method: ${propKey}`, 'with arguments:', args);
                     const result = await origMethod.apply(target, args);
                     //console.log(`Result from ${iqc} method: ${propKey}`, result);
@@ -187,7 +187,7 @@ function createLoggingActor(actor, idl) {
 
             // If not a function, just return the original property
             return origMethod;
-        }
+        },
     });
 }
 class VirtualActor {
