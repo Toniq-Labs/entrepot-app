@@ -1,7 +1,6 @@
 import React from 'react';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import {useSearchParams} from 'react-router-dom';
-import {useNavigate} from 'react-router';
 import {Link} from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
@@ -55,10 +54,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 export default function Marketplace(props) {
-    const stats = props.stats;
-    const navigate = useNavigate();
     const classes = useStyles();
-    const theme = useTheme();
     const [
         sort,
         setSort,
@@ -70,21 +66,8 @@ export default function Marketplace(props) {
 
     const query = searchParams.get('search') || '';
 
-    const styles = {
-        root: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-        },
-        content: {
-            flexGrow: 1,
-            marginLeft: 0,
-        },
-    };
     const changeSort = event => {
         setSort(event.target.value);
-    };
-    const handleClick = a => {
-        navigate(a);
     };
     return (
         <>
@@ -147,256 +130,27 @@ export default function Marketplace(props) {
                                 return allowed && (query == '' || inQuery);
                             })
                             .sort((a, b) => {
+                                const aStats = a.stats || {};
+                                const bStats = b.stats || {};
                                 switch (sort) {
                                     case 'featured':
                                         return b.priority - a.priority;
-                                        break;
                                     case 'listings_asc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .listings,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .listings,
-                                            )
-                                        );
-                                        break;
+                                        return (aStats.listings || 0) - (bStats.listings || 0);
                                     case 'listings_desc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .listings,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .listings,
-                                            )
-                                        );
-                                        break;
+                                        return (bStats.listings || 0) - (aStats.listings || 0);
                                     case 'total_asc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .total,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .total,
-                                            )
-                                        );
-                                        break;
+                                        return (aStats.total || 0) - (bStats.total || 0);
                                     case 'total_desc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .total,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .total,
-                                            )
-                                        );
-                                        break;
+                                        return (bStats.total || 0) - (aStats.total || 0);
                                     case 'floor_asc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .floor,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .floor,
-                                            )
-                                        );
-                                        break;
+                                        return (aStats.floor || 0) - (bStats.floor || 0);
                                     case 'floor_desc':
-                                        if (
-                                            stats.findIndex(x => x.canister == a.canister) < 0 &&
-                                            stats.findIndex(x => x.canister == b.canister) < 0
-                                        )
-                                            return 0;
-                                        if (stats.findIndex(x => x.canister == a.canister) < 0)
-                                            return 1;
-                                        if (stats.findIndex(x => x.canister == b.canister) < 0)
-                                            return -1;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                                false &&
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                                false
-                                        )
-                                            return 0;
-                                        if (
-                                            stats.find(x => x.canister == a.canister).stats ===
-                                            false
-                                        )
-                                            return 1;
-                                        if (
-                                            stats.find(x => x.canister == b.canister).stats ===
-                                            false
-                                        )
-                                            return -1;
-                                        return (
-                                            Number(
-                                                stats.find(x => x.canister == b.canister).stats
-                                                    .floor,
-                                            ) -
-                                            Number(
-                                                stats.find(x => x.canister == a.canister).stats
-                                                    .floor,
-                                            )
-                                        );
-                                        break;
+                                        return (bStats.floor || 0) - (aStats.floor || 0);
                                     case 'alpha_asc':
-                                        if (a.name < b.name) {
-                                            return -1;
-                                        }
-                                        if (a.name > b.name) {
-                                            return 1;
-                                        }
-                                        return 0;
-                                        break;
+                                        return a.name.localeCompare(b.name);
                                     case 'alpha_desc':
-                                        if (a.name < b.name) {
-                                            return 1;
-                                        }
-                                        if (a.name > b.name) {
-                                            return -1;
-                                        }
-                                        return 0;
-                                        break;
+                                        return b.name.localeCompare(a.name);
                                     default:
                                         return 0;
                                 }
@@ -433,121 +187,89 @@ export default function Marketplace(props) {
                                                     >
                                                         {collection.brief ? collection.brief : ''}
                                                     </Typography>
-                                                    {stats.findIndex(
-                                                        a => a.canister == collection.canister,
-                                                    ) >= 0 ? (
-                                                        <>
-                                                            {
-                                                                stats.find(
-                                                                    a =>
-                                                                        a.canister ==
-                                                                        collection.canister,
-                                                                ).stats ? (
-                                                                    <Grid
-                                                                        container
-                                                                        direction="row"
-                                                                        justifyContent="center"
-                                                                        alignItems="center"
-                                                                        spacing={2}
-                                                                    >
-                                                                        <Grid
-                                                                            style={{
-                                                                                borderRight:
-                                                                                    '1px dashed #ddd',
-                                                                            }}
-                                                                            item
-                                                                            md={4}
-                                                                        >
-                                                                            <span
-                                                                                style={{
-                                                                                    color: '#00d092',
-                                                                                }}
-                                                                            >
-                                                                                Volume
-                                                                            </span>
-                                                                            <br />
-                                                                            <strong>
-                                                                                <PriceICP
-                                                                                    volume={true}
-                                                                                    clean={true}
-                                                                                    price={
-                                                                                        stats.find(
-                                                                                            a =>
-                                                                                                a.canister ==
-                                                                                                collection.canister,
-                                                                                        ).stats
-                                                                                            .total
-                                                                                    }
-                                                                                    size={20}
-                                                                                />
-                                                                            </strong>
-                                                                        </Grid>
-                                                                        <Grid
-                                                                            style={{
-                                                                                borderRight:
-                                                                                    '1px dashed #ddd',
-                                                                            }}
-                                                                            item
-                                                                            md={4}
-                                                                        >
-                                                                            <span
-                                                                                style={{
-                                                                                    color: '#00d092',
-                                                                                }}
-                                                                            >
-                                                                                Listings
-                                                                            </span>
-                                                                            <br />
-                                                                            <strong
-                                                                                style={{
-                                                                                    ...cssToReactStyleObject(
-                                                                                        toniqFontStyles.boldParagraphFont,
-                                                                                    ),
-                                                                                    ...cssToReactStyleObject(
-                                                                                        toniqFontStyles.monospaceFont,
-                                                                                    ),
-                                                                                }}
-                                                                            >
-                                                                                {
-                                                                                    stats.find(
-                                                                                        a =>
-                                                                                            a.canister ==
-                                                                                            collection.canister,
-                                                                                    ).stats.listings
-                                                                                }
-                                                                            </strong>
-                                                                        </Grid>
-                                                                        <Grid item md={4}>
-                                                                            <span
-                                                                                style={{
-                                                                                    color: '#00d092',
-                                                                                }}
-                                                                            >
-                                                                                Floor Price
-                                                                            </span>
-                                                                            <br />
-                                                                            <strong>
-                                                                                <PriceICP
-                                                                                    volume={true}
-                                                                                    clean={true}
-                                                                                    price={
-                                                                                        stats.find(
-                                                                                            a =>
-                                                                                                a.canister ==
-                                                                                                collection.canister,
-                                                                                        ).stats
-                                                                                            .floor
-                                                                                    }
-                                                                                    size={20}
-                                                                                />
-                                                                            </strong>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                ) : (
-                                                                    ''
-                                                                ) /*<span style={{display:"block",fontWeight:"bold",paddingTop:15}}>Not Available</span>*/
-                                                            }
-                                                        </>
+                                                    {collection.stats ? (
+                                                        <Grid
+                                                            container
+                                                            direction="row"
+                                                            justifyContent="center"
+                                                            alignItems="center"
+                                                            spacing={2}
+                                                        >
+                                                            <Grid
+                                                                style={{
+                                                                    borderRight: '1px dashed #ddd',
+                                                                }}
+                                                                item
+                                                                md={4}
+                                                            >
+                                                                <span
+                                                                    style={{
+                                                                        color: '#00d092',
+                                                                    }}
+                                                                >
+                                                                    Volume
+                                                                </span>
+                                                                <br />
+                                                                <strong>
+                                                                    <PriceICP
+                                                                        volume={true}
+                                                                        clean={true}
+                                                                        price={
+                                                                            collection.stats.total
+                                                                        }
+                                                                        size={20}
+                                                                    />
+                                                                </strong>
+                                                            </Grid>
+                                                            <Grid
+                                                                style={{
+                                                                    borderRight: '1px dashed #ddd',
+                                                                }}
+                                                                item
+                                                                md={4}
+                                                            >
+                                                                <span
+                                                                    style={{
+                                                                        color: '#00d092',
+                                                                    }}
+                                                                >
+                                                                    Listings
+                                                                </span>
+                                                                <br />
+                                                                <strong
+                                                                    style={{
+                                                                        ...cssToReactStyleObject(
+                                                                            toniqFontStyles.boldParagraphFont,
+                                                                        ),
+                                                                        ...cssToReactStyleObject(
+                                                                            toniqFontStyles.monospaceFont,
+                                                                        ),
+                                                                    }}
+                                                                >
+                                                                    {collection.stats.listings}
+                                                                </strong>
+                                                            </Grid>
+                                                            <Grid item md={4}>
+                                                                <span
+                                                                    style={{
+                                                                        color: '#00d092',
+                                                                    }}
+                                                                >
+                                                                    Floor Price
+                                                                </span>
+                                                                <br />
+                                                                <strong>
+                                                                    <PriceICP
+                                                                        volume={true}
+                                                                        clean={true}
+                                                                        price={
+                                                                            collection.stats.floor
+                                                                        }
+                                                                        size={20}
+                                                                    />
+                                                                </strong>
+                                                            </Grid>
+                                                        </Grid>
                                                     ) : (
                                                         <span
                                                             style={{
