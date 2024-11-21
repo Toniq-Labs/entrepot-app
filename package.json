@@ -33,6 +33,7 @@
         ]
     },
     "dependencies": {
+        "@augment-vir/common": "^12.14.0",
         "@dfinity/agent": "^0.10.2",
         "@dfinity/auth-client": "^0.10.2",
         "@dfinity/candid": "^0.10.2",
@@ -53,6 +54,7 @@
         "bip39": "^3.0.4",
         "buffer": "^6.0.3",
         "crypto-browserify": "^3.12.0",
+        "dexie": "^3.2.3",
         "ethereum-blockies-base64": "^1.0.2",
         "https-browserify": "^1.0.0",
         "ic-stoic-identity": "^4.0.0",

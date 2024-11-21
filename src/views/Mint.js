@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import {clipboardCopy} from '../utils';
 
-import {StoicIdentity} from '../ic/stoic-identity';//'ic-stoic-identity';
+import {StoicIdentity} from '../ic/stoic-identity'; //'ic-stoic-identity';
 import extjs from '../ic/extjs.js';
 function generateThumbnail(file, boundBox) {
     return new Promise((resolve, reject) => {
