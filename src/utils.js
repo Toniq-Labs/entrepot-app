@@ -230,15 +230,7 @@ const clipboardCopy = text => {
         if (typeof cachePriority == 'undefined') cachePriority = '10';
 
         if (collection === '4ggk4-mqaaa-aaaae-qad6q-cai' && fullSize == false) {
-            // return 'https://dexpm-6aaaa-aaaal-qbgrq-cai.raw.icp0.io/?type=thumbnail&index=' + index;
-
-            return (
-                'https://images.entrepot.app/t/dexpm-6aaaa-aaaal-qbgrq-cai/' +
-                extjs.encodeTokenId('dexpm-6aaaa-aaaal-qbgrq-cai', index) +
-                ref +
-                '&cache=' +
-                cachePriority
-            );
+            return 'https://rvu75-2qaaa-aaaam-qc6ua-cai.raw.icp0.io/?asset=' + index;
         }
 
         if (collection === 'jeghr-iaaaa-aaaah-qco7q-cai')
