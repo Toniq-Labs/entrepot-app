@@ -3,6 +3,11 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PriceICP from './components/PriceICP';
 import Timestamp from 'react-timestamp';
 import extjs from './ic/extjs.js';
+import {
+    getAllCollectionsWithCaching,
+    getBaseCollections,
+    getCollectionsStats,
+} from './local-cache/dexie/get-collections.js';
 const api = extjs.connect('https://icp0.io/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 const _isCanister = c => {
@@ -52,62 +57,10 @@ var _stats = [],
     lastUpdate = false,
     earnData = {};
 const _getStats = async () => {
-    const collections = (
-        await fetch('https://us-central1-entrepot-api.cloudfunctions.net/api/collections')
-            .then(r => r.json())
-    )
-        .map(a => ({ ...a, canister: a.id }))
-        .filter(a => _isCanister(a.canister));
-
-    let pxs = [];
-    let _ts = [];
-
-    for (let i = 0; i < collections.length; i++) {
-        if (!collections[i].market) {
-            _ts.push({
-                canister: collections[i].canister,
-                stats: false,
-            });
-        } else {
-            pxs.push((c =>
-                api
-                    .token(c)
-                    .stats()
-                    .then(r => ({ canister: c, stats: r }))
-            )(collections[i].canister));
-        }
-    }
-
-    // Helper function to fetch stats in batches
-    const fetchInBatches = async (batchSize = 20, delay = 5000) => {
-        let _stats = [];
-        for (let i = 0; i < pxs.length; i += batchSize) {
-            // Get the current batch of promises
-            const batch = pxs.slice(i, i + batchSize);
-
-            // Wait for the batch to resolve
-            const results = await Promise.all(batch.map(p => p.catch(() => null)));
-
-            // Filter out any null (failed) results
-            const validResults = results.filter(result => result !== null);
-
-            // Add valid results to the stats array
-            _stats = _stats.concat(validResults);
-
-            // Wait 5 seconds before fetching the next batch
-            if (i + batchSize < pxs.length) {
-                await new Promise(resolve => setTimeout(resolve, delay));
-            }
-        }
-        return _stats;
-    };
-
-    // Fetch stats in batches
-    const batchStats = await fetchInBatches(80, 2000);
-
-    // Combine the batch stats with the pre-existing stats (_ts)
-    _stats = batchStats.concat(_ts);
-    
+    const collections = await getAllCollectionsWithCaching();
+    _stats = Object.values(collections).map(collection => {
+        return {canister: collection.canister, stats: collection.stats};
+    });
     return _stats;
 };
 
@@ -498,9 +451,7 @@ const clipboardCopy = text => {
             /*var b2 = await fetch(
                 'https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7',
             ).then(r => r.json());*/
-            _rate =
-                Number(b.data.xdr_permyriad_per_icp / 10000n) *
-                1.3491865;
+            _rate = Number(b.data.xdr_permyriad_per_icp / 10000n) * 1.3491865;
         }
         return _rate;
     },
@@ -516,8 +467,8 @@ const clipboardCopy = text => {
     },
     EntrepotUpdateLiked = async identity => {
         // if (identity) {
-            // const _api = extjs.connect('https://icp0.io/', identity);
-            // _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
+        // const _api = extjs.connect('https://icp0.io/', identity);
+        // _liked = await _api.canister('6z5wo-yqaaa-aaaah-qcsfa-cai').liked();
         // } else _liked = [];
         _liked = [];
     },

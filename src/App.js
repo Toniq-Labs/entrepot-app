@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {makeStyles} from '@material-ui/core/styles';
 import AlertDialog from './components/AlertDialog';
 import ConfirmDialog from './components/ConfirmDialog';
-import {StoicIdentity} from './ic/stoic-identity';//'ic-stoic-identity';
+import {StoicIdentity} from './ic/stoic-identity'; //'ic-stoic-identity';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
@@ -44,6 +44,7 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {AngelInvestorDialog} from './components/AngelInvestorDialog';
+import {getAllCollectionsWithCaching} from './local-cache/dexie/get-collections.js';
 
 const api = extjs.connect('https://icp0.io/');
 
@@ -494,7 +495,7 @@ export default function App() {
         return true;
     };
     const _processPaymentForCanister = async _collection => {
-      return;//This wont work now...
+        return; //This wont work now...
         if (
             typeof _collection == 'undefined' ||
             !_collection ||
@@ -1010,34 +1011,10 @@ export default function App() {
         }
     };
     const updateCollections = async () => {
-        var response;
-        //Remove dev marked canisters
-        if (isDevEnv() == false) {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collections',
-            );
-        } else {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collectionsDev',
-            );
-        }
-        var r2 = await response.json();
-        r2 = r2.map(a => ({...a, canister: a.id})).filter(a => _isCanister(a.canister));
-        if (collections.length == 0) {
-            setCollections(r2);
-            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-        } else {
-            for (var i = 0; i < r2.length; i++) {
-                var n = r2[i];
-                var o = collections.find(a => a.canister == n.id);
-                if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
-                    setCollections(r2);
-                    r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-                    console.log('UPDATED');
-                    break;
-                }
-            }
-        }
+        const collectionMap = await getAllCollectionsWithCaching();
+        const allCollectionsWithCaching = Object.values(collectionMap);
+        setCollections(allCollectionsWithCaching);
+        allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
         if (isToniqEarnAllowed === undefined) {
             setToniqEarnAllowed(await checkIfToniqEarnAllowed());
         }
@@ -1340,7 +1317,6 @@ export default function App() {
                                             alert={alert}
                                             confirm={confirm}
                                             loader={loader}
-                                            stats={stats}
                                             balance={balance}
                                             identity={identity}
                                             account={
