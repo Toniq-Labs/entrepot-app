@@ -294,7 +294,7 @@ function _postToPopup(data, resolve, reject) {
     }
     _openConnections[thisIndex] = { target: popup, type: "popup", data : data };
   } else {
-    _openConnections[thisIndex].target.postMessage(data, "*");
+    _openConnections[thisIndex].target.postMessage(data, _stoicOrigin);
   };
 }
 
@@ -311,7 +311,7 @@ function _postToFrame(data, resolve, reject) {
   data.listener = thisIndex;
   _openConnections[thisIndex] = { target: ii, type: "iframe", data: data };
   ii.addEventListener("load", function () {
-    _openConnections[thisIndex].target.contentWindow.postMessage(data, "*");
+    _openConnections[thisIndex].target.contentWindow.postMessage(data, _stoicOrigin);
   });
   ii.setAttribute("src", _stoicOrigin + "/?stoicTunnel");
 }
@@ -362,11 +362,11 @@ window.addEventListener(
           }
         } else if (e.data.action === "stoicPopupLoad") {
           let connection = _openConnections[e.data.listener];
-          connection.target.postMessage(connection.data, "*");
+          connection.target.postMessage(connection.data, _stoicOrigin);
         } else  if (e.data.action == "initiateStoicConnect") {
           _stoicWindow.postMessage(
             { action: "requestAuthorization", apikey: _stoicApiKey },
-            "*"
+            _stoicOrigin
           );
         } else if (e.data.action == "rejectAuthorization") {
           _stoicWindowCB[1]("Authorization Rejected");

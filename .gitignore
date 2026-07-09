@@ -3,3 +3,17 @@
 /node_modules2
 .DS_Store
 /build
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# caches & coverage
+.cache
+coverage
+
+# editors
+.vscode
+.idea
+*.swp

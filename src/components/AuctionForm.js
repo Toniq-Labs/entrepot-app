@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {Principal} from '@dfinity/principal';
+import {icpToE8s} from '../utils/icpAmount';
 
 export default function AuctionForm(props) {
     const [
@@ -38,7 +39,7 @@ export default function AuctionForm(props) {
     };
     const _submit = async () => {
         if (Number(amount) < 0.01) return props.error('Min bid amount is 0.01 ICP');
-        var auctionAmountIcp = BigInt(Math.floor(amount * 10 ** 8));
+        var auctionAmountIcp = icpToE8s(amount);
         if (props.auction.bids.length) {
             if (auctionAmountIcp <= props.auction.bids[props.auction.bids.length - 1].amount)
                 return props.error('You need to beat the winning bid!');

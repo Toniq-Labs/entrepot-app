@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from './hooks/useInterval';
 import extjs from './ic/extjs.js';
 import Navbar from './components/Navbar';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -7,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {makeStyles} from '@material-ui/core/styles';
 import AlertDialog from './components/AlertDialog';
 import ConfirmDialog from './components/ConfirmDialog';
-import {StoicIdentity} from './ic/stoic-identity';//'ic-stoic-identity';
+import {StoicIdentity} from './ic/stoic-identity'; //'ic-stoic-identity';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
@@ -95,25 +96,6 @@ function capitalize(str) {
             str[chr].substring(0, 1).toUpperCase() + str[chr].substring(1, str[chr].length) + ' ';
     }
     return strVal;
-}
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
 }
 const _getRandomBytes = () => {
     var bs = [];
@@ -494,7 +476,7 @@ export default function App() {
         return true;
     };
     const _processPaymentForCanister = async _collection => {
-      return;//This wont work now...
+        return; //This wont work now...
         if (
             typeof _collection == 'undefined' ||
             !_collection ||

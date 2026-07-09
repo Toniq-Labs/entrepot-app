@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import useInterval from '../hooks/useInterval';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Typography from '@material-ui/core/Typography';
@@ -12,25 +13,6 @@ import {
     EntrepotGetLikes,
     EntrepotUpdateLiked,
 } from '../utils';
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 var skipRefresh = false;
 export default function Favourite(props) {
     const [

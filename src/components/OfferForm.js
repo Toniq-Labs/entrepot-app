@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {Principal} from '@dfinity/principal';
+import {icpToE8s} from '../utils/icpAmount';
 
 export default function OfferForm(props) {
     const [
@@ -39,7 +40,7 @@ export default function OfferForm(props) {
         handleClose();
 
         //Submit
-        var offerAmountIcp = BigInt(Math.floor(amount * 10 ** 8));
+        var offerAmountIcp = icpToE8s(amount);
         props.loader(true, 'Loading Volt...');
         try {
             var voltFactoryAPI = extjs

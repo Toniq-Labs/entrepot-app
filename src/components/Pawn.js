@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 import Timestamp from 'react-timestamp';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,25 +16,6 @@ import {
     EntrepotGetICPUSD,
 } from '../utils.js';
 
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 export default function Pawn(props) {
     const getCollection = c => {

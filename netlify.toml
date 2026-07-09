@@ -4,3 +4,21 @@ publish = "build/"
 command = "npm run build"
 # CI set to false until we fix all build warnings
 environment = { NODE_VERSION = "16", CI = "false" }
+
+# Baseline security response headers for all routes. These are safe defaults
+# that don't change app behaviour.
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Content-Type-Options = "nosniff"
+X-Frame-Options = "SAMEORIGIN"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=()"
+# A Content-Security-Policy is the strongest defense against XSS, but it
+# must be tuned against every third-party script/frame the app loads
+# (stoicwallet.com, geoip-js.com, sharethis.com, paperform.co,
+# googletagmanager.com, widget.freshworks.com, IC boundary nodes, NFT
+# asset canisters, etc.). Enable it once verified against production, e.g.:
+# Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; frame-src https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; connect-src 'self' https:;"

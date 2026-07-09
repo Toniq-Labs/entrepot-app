@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -12,7 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import {clipboardCopy} from '../utils';
 
-import {StoicIdentity} from '../ic/stoic-identity';//'ic-stoic-identity';
+import {StoicIdentity} from '../ic/stoic-identity'; //'ic-stoic-identity';
 import extjs from '../ic/extjs.js';
 function generateThumbnail(file, boundBox) {
     return new Promise((resolve, reject) => {
@@ -114,24 +115,6 @@ function dataURItoBlob(dataURI) {
     }
     var blob = new Blob([ab], {type: mimeString});
     return blob;
-}
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
 }
 const useStyles = makeStyles(theme => ({
     root: {

@@ -1,6 +1,9 @@
 /* global BigInt */
 import React, {useState} from 'react';
+import useInterval from '../../hooks/useInterval';
 import extjs from '../../ic/extjs.js';
+import {sanitizeHtml} from '../../utils/sanitizeHtml';
+import {cssUrl} from '../../utils/safeUrl';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -16,24 +19,6 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
     return n.toFixed(8).replace(/0{1,6}$/, '');
@@ -267,7 +252,9 @@ export default function V2SaleComponent(props) {
                             borderRadius: 10,
                             backgroundPosition: 'top',
                             backgroundSize: 'cover',
-                            backgroundImage: "url('" + collection.banner + "')",
+                            backgroundImage: cssUrl(collection.banner)
+                                ? "url('" + cssUrl(collection.banner) + "')"
+                                : 'none',
                         }}
                     ></div>
                     <h1>Welcome to the official {collection.name} sale</h1>
@@ -316,7 +303,7 @@ export default function V2SaleComponent(props) {
                         overflow: 'hidden',
                         fontSize: '1.2em',
                     }}
-                    dangerouslySetInnerHTML={{__html: collection?.blurb}}
+                    dangerouslySetInnerHTML={{__html: sanitizeHtml(collection?.blurb)}}
                 ></div>
                 {collapseBlurb ? (
                     <Button
