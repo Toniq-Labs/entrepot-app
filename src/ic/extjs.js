@@ -812,7 +812,11 @@ class ExtConnection {
         if (this._identity.hasOwnProperty('type')) {
             this._agent = this._identity.type;
         } else {
-            var args = {};
+            // verifyQuerySignatures defaults to true in @dfinity/agent v3, which
+            // adds an extra round-trip (fetching subnet node keys) to every query.
+            // Entrepot is read-heavy and previously (agent 0.10.x) did no query
+            // verification, so we keep it off to preserve latency and behaviour.
+            var args = {verifyQuerySignatures: false};
             if (this._identity) args['identity'] = this._identity;
             if (this._host) args['host'] = this._host;
             this._agent = new HttpAgent(args);
