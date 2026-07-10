@@ -1,5 +1,6 @@
 /* global BigInt */
 import React, {useState} from 'react';
+import useInterval from '../hooks/useInterval';
 import {
     makeStyles,
     Container,
@@ -43,25 +44,6 @@ import {useParams} from 'react-router-dom';
 import {redirectIfBlockedFromEarnFeatures} from '../location/redirect-from-marketplace';
 import offerBlacklist from './../offer-blacklist.json';
 
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const api = extjs.connect('https://icp0.io/');
 
 const shorten = a => {
@@ -234,11 +216,11 @@ const Detail = props => {
         setOpenOfferForm(true);
     };
 
-    useInterval(_refresh, 10 * 1000);
+    useInterval(_refresh, 30 * 1000);
     useInterval(() => {
         var nf = EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '';
         setFloor(nf);
-    }, 10 * 1000);
+    }, 30 * 1000);
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');
@@ -351,8 +333,8 @@ const Detail = props => {
         // }
 
         if (index == 99 && canister == 'kss7i-hqaaa-aaaah-qbvmq-cai')
-            detailPage = 'interactive_nfts_or_videos';    
-        
+            detailPage = 'interactive_nfts_or_videos';
+
         if (index >= 9 && index <= 19 && canister == 'yy7m6-daaaa-aaaag-qciqa-cai')
             detailPage = 'interactive_nfts_or_videos';
 

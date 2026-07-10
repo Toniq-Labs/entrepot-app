@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -45,25 +46,6 @@ const perPage = 60;
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const useStyles = makeStyles(theme => ({
     tabsViewBig: {
         [theme.breakpoints.down('sm')]: {

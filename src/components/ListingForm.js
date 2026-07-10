@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
 import extjs from '../ic/extjs.js';
 import {EntrepotNFTImage, EntrepotDisplayNFT, getEXTCanister} from '../utils';
+import {icpToE8s} from '../utils/icpAmount';
 
 export default function ListingForm(props) {
     const [
@@ -98,7 +99,7 @@ export default function ListingForm(props) {
     };
     const save = () => {
         if (price < 0.01) return error('Min sale amount is 0.01 ICP');
-        _submit(BigInt(Math.floor(price * 10 ** 8)));
+        _submit(icpToE8s(price));
     };
     const _submit = async p => {
         //Submit to blockchain here

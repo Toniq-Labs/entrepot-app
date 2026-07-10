@@ -1,7 +1,6 @@
 /* global BigInt */
 import {Actor, HttpAgent} from '@dfinity/agent';
 import {Principal} from '@dfinity/principal';
-import { IDL } from '@dfinity/candid';
 import {
     LEDGER_CANISTER_ID,
     GOVERNANCE_CANISTER_ID,
@@ -151,45 +150,6 @@ for (const a in tokensToLoad) {
         }
     }
 }
-function isQueryCall(idlFactory, methodName) {
-    // Parse the IDL using the provided factory function
-    const idl = idlFactory({ IDL });
-
-    // Retrieve the method definition by its name
-    const method = idl._fields.find(([name]) => name === methodName);
-
-    if (!method) {
-        throw new Error(`Method ${methodName} not found in IDL`);
-    }
-
-    // Check if the method is a query or update
-    const methodType = method[1].annotations.includes('query') ? 'query' : 'update';
-
-    return methodType;
-}
-
-function createLoggingActor(actor, idl) {
-    return new Proxy(actor, {
-        get(target, propKey) {
-            // Get the original property (which could be a method or property)
-            const origMethod = target[propKey];
-
-            // Check if the property is a function (i.e., a method call)
-            if (typeof origMethod === 'function') {
-                return async function (...args) {
-                    const iqc = isQueryCall(idl, propKey);//propKey.startsWith("query");
-                    //console.log(`Standard Actor: Calling ${iqc} method: ${propKey}`, 'with arguments:', args);
-                    const result = await origMethod.apply(target, args);
-                    //console.log(`Result from ${iqc} method: ${propKey}`, result);
-                    return result;
-                };
-            }
-
-            // If not a function, just return the original property
-            return origMethod;
-        }
-    });
-}
 class VirtualActor {
     _canister = false;
     _idl = false;
@@ -310,11 +270,10 @@ class ExtConnection {
             if (this._agent == 'infinityWallet' || this._agent == 'plug') {
                 this._canisters[cid] = new VirtualActor(cid, idl, this._agent);
             } else {
-                let actor = Actor.createActor(idl, {
+                this._canisters[cid] = Actor.createActor(idl, {
                     agent: this._agent,
                     canisterId: cid,
                 });
-                this._canisters[cid] = createLoggingActor(actor, idl);
             }
         }
         return this._canisters[cid];
@@ -812,7 +771,11 @@ class ExtConnection {
         if (this._identity.hasOwnProperty('type')) {
             this._agent = this._identity.type;
         } else {
-            var args = {};
+            // verifyQuerySignatures defaults to true in @dfinity/agent v3, which
+            // adds an extra round-trip (fetching subnet node keys) to every query.
+            // Entrepot is read-heavy and previously (agent 0.10.x) did no query
+            // verification, so we keep it off to preserve latency and behaviour.
+            var args = {verifyQuerySignatures: false};
             if (this._identity) args['identity'] = this._identity;
             if (this._host) args['host'] = this._host;
             this._agent = new HttpAgent(args);

@@ -1,8 +1,6 @@
 /* global BigInt */
 import {Principal} from '@dfinity/principal';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
-import {getCrc32} from '@dfinity/principal/lib/esm/utils/getCrc';
-import {sha224} from '@dfinity/principal/lib/esm/utils/sha224';
 import RosettaApi from './RosettaApi.js';
 const LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 const GOVERNANCE_CANISTER_ID = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
@@ -12,6 +10,30 @@ const rosettaApi = new RosettaApi();
 const sjcl = require('sjcl');
 const bip39 = require('bip39');
 const pbkdf2 = require('pbkdf2');
+const jsSha224 = require('js-sha256').sha224;
+
+// SHA-224 + CRC32 for IC account-identifier derivation. These were previously
+// imported from @dfinity/principal internal paths
+// (@dfinity/principal/lib/esm/utils/{sha224,getCrc}) which were removed in
+// @dfinity v1+. Reimplemented with the standard algorithms (SHA-224 via
+// js-sha256, standard IEEE CRC32) so the derived account identifiers are
+// byte-identical to before — verified against the 0.10.x output.
+const sha224 = data => new Uint8Array(jsSha224.arrayBuffer(data));
+const CRC32_TABLE = (() => {
+    const table = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        table[n] = c >>> 0;
+    }
+    return table;
+})();
+const getCrc32 = bytes => {
+    const b = bytes instanceof Uint8Array ? bytes : Uint8Array.from(bytes);
+    let crc = 0xffffffff;
+    for (let i = 0; i < b.length; i++) crc = CRC32_TABLE[(crc ^ b[i]) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+};
 
 const getCyclesTopupAddress = canisterId => {
     return principalToAccountIdentifier(

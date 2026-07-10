@@ -38,25 +38,7 @@ import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
 import {loadVolt, loadVoltBalance} from '../volt';
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
+import useInterval from '../hooks/useInterval';
 const api = extjs.connect('https://icp0.io/');
 const drawerWidth = 300;
 
@@ -276,64 +258,87 @@ export default function Wallet(props) {
                             <ListItemText primary="Logout" />
                         </MenuItem>
                     </Menu>
-                    <ListItem style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                      <Typography style={{ width: '100%', textAlign: 'center' }}>
-                        <PriceICP
-                          volume={true}
-                          loader={balance === false || (loadedAccount === 0 && loading === true)}
-                          price={
-                            balance === false
-                              ? false
-                              : Number(balance) + (voltBalances && loadedAccount === 0 ? voltBalances[0] : 0)
-                          }
-                        />
-                        <br />
-                      </Typography>
-
-                      {/* Move the hr outside of Typography */}
-                      {loadedAccount === 0 && balance !== false && loading === false && voltPrincipal ? (
-                        <>
-                          <hr style={{ width: '100%', borderBottom: '1px solid grey' }} />
-
-                          <Typography style={{ width: '100%', textAlign: 'center' }}>
+                    <ListItem
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography style={{width: '100%', textAlign: 'center'}}>
                             <PriceICP
-                              bold={false}
-                              volume={true}
-                              text={
-                                balance === false ? (
-                                  <ToniqIcon
-                                    className="toniq-icon-fit-icon"
-                                    style={{ height: '14px', width: '14px' }}
-                                    icon={LoaderAnimated24Icon}
-                                  />
-                                ) : undefined
-                              }
-                              price={balance}
-                            >
-                              Wallet
-                            </PriceICP>
+                                volume={true}
+                                loader={
+                                    balance === false || (loadedAccount === 0 && loading === true)
+                                }
+                                price={
+                                    balance === false
+                                        ? false
+                                        : Number(balance) +
+                                          (voltBalances && loadedAccount === 0
+                                              ? voltBalances[0]
+                                              : 0)
+                                }
+                            />
                             <br />
-                            <PriceICP bold={false} volume={true} loader={voltBalances === false} price={voltBalances[0] - voltBalances[2]}>
-                              Volt
-                            </PriceICP>
-                            <br />
-                            {voltBalances && voltBalances[2] > 0 ? (
-                              <>
-                                <PriceICP bold={false} volume={true} price={voltBalances[2]}>
-                                  Locked
-                                </PriceICP>
-                                <br />
-                              </>
-                            ) : (
-                              ''
-                            )}
-                          </Typography>
-                        </>
-                      ) : (
-                        ''
-                      )}
-                    </ListItem>
+                        </Typography>
 
+                        {/* Move the hr outside of Typography */}
+                        {loadedAccount === 0 &&
+                        balance !== false &&
+                        loading === false &&
+                        voltPrincipal ? (
+                            <>
+                                <hr style={{width: '100%', borderBottom: '1px solid grey'}} />
+
+                                <Typography style={{width: '100%', textAlign: 'center'}}>
+                                    <PriceICP
+                                        bold={false}
+                                        volume={true}
+                                        text={
+                                            balance === false ? (
+                                                <ToniqIcon
+                                                    className="toniq-icon-fit-icon"
+                                                    style={{height: '14px', width: '14px'}}
+                                                    icon={LoaderAnimated24Icon}
+                                                />
+                                            ) : undefined
+                                        }
+                                        price={balance}
+                                    >
+                                        Wallet
+                                    </PriceICP>
+                                    <br />
+                                    <PriceICP
+                                        bold={false}
+                                        volume={true}
+                                        loader={voltBalances === false}
+                                        price={voltBalances[0] - voltBalances[2]}
+                                    >
+                                        Volt
+                                    </PriceICP>
+                                    <br />
+                                    {voltBalances && voltBalances[2] > 0 ? (
+                                        <>
+                                            <PriceICP
+                                                bold={false}
+                                                volume={true}
+                                                price={voltBalances[2]}
+                                            >
+                                                Locked
+                                            </PriceICP>
+                                            <br />
+                                        </>
+                                    ) : (
+                                        ''
+                                    )}
+                                </Typography>
+                            </>
+                        ) : (
+                            ''
+                        )}
+                    </ListItem>
 
                     {loading == false && loadedAccount === 0 ? (
                         <ListItem>

@@ -1,6 +1,8 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from '../../hooks/useInterval';
 import extjs from '../../ic/extjs.js';
+import {cssUrl} from '../../utils/safeUrl';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -10,24 +12,6 @@ import {useNavigate} from 'react-router';
 import LinearProgress from '@material-ui/core/LinearProgress';
 const api = extjs.connect('https://icp0.io/');
 
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const _showListingPrice = n => {
     n = Number(n) / 100000000;
     return n.toFixed(8).replace(/0{1,6}$/, '');
@@ -208,7 +192,9 @@ export default function DfinityDeckSaleComponent(props) {
                                 borderRadius: 10,
                                 backgroundPosition: 'top',
                                 backgroundSize: 'cover',
-                                backgroundImage: "url('" + collection.banner + "')",
+                                backgroundImage: cssUrl(collection.banner)
+                                    ? "url('" + cssUrl(collection.banner) + "')"
+                                    : 'none',
                             }}
                         ></div>
                         <h1>Welcome to the official {collection.name} sale</h1>

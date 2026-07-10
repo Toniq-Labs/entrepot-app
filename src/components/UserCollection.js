@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -46,25 +47,6 @@ const perPage = 60;
 const _isCanister = c => {
     return c.length == 27 && c.split('-').length == 5;
 };
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 var fromWrappedMap = {
     'bxdf4-baaaa-aaaah-qaruq-cai': 'qcg3w-tyaaa-aaaah-qakea-cai',
     'y3b7h-siaaa-aaaah-qcnwa-cai': '4nvhy-3qaaa-aaaah-qcnoq-cai',
@@ -376,18 +358,18 @@ export default function UserCollection(props) {
                 break;
             case 'favorites':
                 // var r = await extjs
-                    // .connect('https://icp0.io/', props.identity)
-                    // .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
-                    // .liked();
+                // .connect('https://icp0.io/', props.identity)
+                // .canister('6z5wo-yqaaa-aaaah-qcsfa-cai')
+                // .liked();
                 // data = r.filter((a, i) => r.indexOf(a) == i);
                 // data = data.map(a => ({
-                    // id: a,
-                    // token: a,
-                    // price: 0,
-                    // time: 0,
-                    // owner: false,
-                    // canister: extjs.decodeTokenId(a).canister,
-                    // listing: null,
+                // id: a,
+                // token: a,
+                // price: 0,
+                // time: 0,
+                // owner: false,
+                // canister: extjs.decodeTokenId(a).canister,
+                // listing: null,
                 // }));
                 break;
             case 'offers-made':
@@ -395,7 +377,7 @@ export default function UserCollection(props) {
                     .connect('https://icp0.io/', props.identity)
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
-                data = r.filter((a, i) => r.indexOf(a) == i);
+                data = [...new Set(r)];
                 data = data
                     .map(a => ({
                         id: a,
@@ -626,12 +608,8 @@ export default function UserCollection(props) {
                                                 />
                                             </ListItemSecondaryAction>
                                         </ListItem>
-                                        {tokenCanisters
-                                            .filter(
-                                                (a, i) =>
-                                                    tokenCanisters.indexOf(a) == i &&
-                                                    typeof getCollection(a) != 'undefined',
-                                            ) //filter unique
+                                        {[...new Set(tokenCanisters)]
+                                            .filter(a => typeof getCollection(a) != 'undefined') //filter unique
                                             .map(canister => {
                                                 var _collection = getCollection(canister);
                                                 return (

@@ -1,5 +1,6 @@
 /* global BigInt */
 import React from 'react';
+import useInterval from './hooks/useInterval';
 import extjs from './ic/extjs.js';
 import Navbar from './components/Navbar';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -7,31 +8,19 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {makeStyles} from '@material-ui/core/styles';
 import AlertDialog from './components/AlertDialog';
 import ConfirmDialog from './components/ConfirmDialog';
-import {StoicIdentity} from './ic/stoic-identity';//'ic-stoic-identity';
+import {StoicIdentity} from './ic/stoic-identity'; //'ic-stoic-identity';
 import {Ed25519KeyIdentity} from '@dfinity/identity';
 import OpenLogin from '@toruslabs/openlogin';
 import {Route, Routes, useLocation} from 'react-router-dom';
-import Detail from './components/Detail';
-import Listings from './components/Listings';
 import BuyForm from './components/BuyForm';
-import Activity from './components/Activity';
 import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
-import Marketplace from './views/Marketplace';
-import Mint from './views/Mint';
-import Create from './views/Create';
-import Home from './views/Home';
 import Typography from '@material-ui/core/Typography';
-import Sale from './views/Sale';
-import Contact from './views/Contact';
-import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
 import VoltTransferForm from './components/VoltTransferForm';
 import PawnForm from './components/PawnForm';
-import GeneralSaleComponent from './components/sale/GeneralSaleComponent';
-import DfinityDeckSaleComponent from './components/sale/DfinityDeckSaleComponent';
 import legacyPrincipalPayouts from './payments.json';
 import getNri from './ic/nftv.js';
 import {
@@ -44,6 +33,26 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {AngelInvestorDialog} from './components/AngelInvestorDialog';
+import {getAllCollectionsWithCaching} from './local-cache/dexie/get-collections.js';
+
+// Route-level views are code-split (React.lazy) so they stay out of the initial
+// bundle and load on navigation. Rendered inside a <Suspense> around <Routes>.
+const Detail = React.lazy(() => import('./components/Detail'));
+const Listings = React.lazy(() => import('./components/Listings'));
+const Activity = React.lazy(() => import('./components/Activity'));
+const Marketplace = React.lazy(() => import('./views/Marketplace'));
+const Mint = React.lazy(() => import('./views/Mint'));
+const Create = React.lazy(() => import('./views/Create'));
+const Home = React.lazy(() => import('./views/Home'));
+const Sale = React.lazy(() => import('./views/Sale'));
+const Contact = React.lazy(() => import('./views/Contact'));
+const GeneralSaleComponent = React.lazy(() => import('./components/sale/GeneralSaleComponent'));
+const DfinityDeckSaleComponent = React.lazy(() =>
+    import('./components/sale/DfinityDeckSaleComponent'),
+);
+// Opener pulls react-hover-video-player and is only used for the (rare) NFT
+// unpack animation — lazy-load it out of the initial bundle.
+const Opener = React.lazy(() => import('./components/Opener'));
 
 const api = extjs.connect('https://icp0.io/');
 
@@ -53,9 +62,6 @@ const singleSecond = 1000;
 const singleMinute = 60 * singleSecond;
 const PURCHASE_TIME_LIMIT = 1.85 * singleMinute;
 
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
 const useStyles = makeStyles(theme => ({
     backdrop: {
         zIndex: 1600,
@@ -96,25 +102,6 @@ function capitalize(str) {
     }
     return strVal;
 }
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const _getRandomBytes = () => {
     var bs = [];
     for (var i = 0; i < 32; i++) {
@@ -148,12 +135,6 @@ var otherPrincipalsForPlug = [
     'fcwhh-piaaa-aaaak-qazba-cai',
     'ffxbt-cqaaa-aaaak-qazbq-cai',
 ];
-const isDevEnv = () => {
-    if (window.location.hostname == 'localhost') return true;
-    if (window.location.host.indexOf('deploy-preview') == 0) return true;
-    if (window.location.host.indexOf('friendly-raman-30db7b') >= 0) return true;
-    return false;
-};
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 export default function App() {
     const {pathname} = useLocation();
@@ -494,7 +475,7 @@ export default function App() {
         return true;
     };
     const _processPaymentForCanister = async _collection => {
-      return;//This wont work now...
+        return; //This wont work now...
         if (
             typeof _collection == 'undefined' ||
             !_collection ||
@@ -1010,34 +991,10 @@ export default function App() {
         }
     };
     const updateCollections = async () => {
-        var response;
-        //Remove dev marked canisters
-        if (isDevEnv() == false) {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collections',
-            );
-        } else {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collectionsDev',
-            );
-        }
-        var r2 = await response.json();
-        r2 = r2.map(a => ({...a, canister: a.id})).filter(a => _isCanister(a.canister));
-        if (collections.length == 0) {
-            setCollections(r2);
-            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-        } else {
-            for (var i = 0; i < r2.length; i++) {
-                var n = r2[i];
-                var o = collections.find(a => a.canister == n.id);
-                if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
-                    setCollections(r2);
-                    r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-                    console.log('UPDATED');
-                    break;
-                }
-            }
-        }
+        const collectionMap = await getAllCollectionsWithCaching();
+        const allCollectionsWithCaching = Object.values(collectionMap);
+        setCollections(allCollectionsWithCaching);
+        allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
         if (isToniqEarnAllowed === undefined) {
             setToniqEarnAllowed(await checkIfToniqEarnAllowed());
         }
@@ -1231,878 +1188,879 @@ export default function App() {
                     />
                     <main className={classes.content}>
                         <div className={classes.inner}>
-                            <Routes>
-                                <Route
-                                    path="/marketplace/asset/:tokenid"
-                                    exact
-                                    element={
-                                        <Detail
-                                            isToniqEarnAllowed={isToniqEarnAllowed}
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            voltCreate={_voltCreate}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                            buyNft={buyNft}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/marketplace/:route/activity"
-                                    exact
-                                    element={
-                                        <Activity
-                                            error={error}
-                                            view={'listings'}
-                                            stats={stats}
-                                            isToniqEarnAllowed={isToniqEarnAllowed}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/marketplace/:route"
-                                    exact
-                                    element={
-                                        <Listings
-                                            error={error}
-                                            view={'listings'}
-                                            isToniqEarnAllowed={isToniqEarnAllowed}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                            buyNft={buyNft}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/marketplace"
-                                    exact
-                                    element={
-                                        <Marketplace
-                                            isToniqEarnAllowed={isToniqEarnAllowed}
-                                            error={error}
-                                            view={'collections'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            stats={stats}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/favorites"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'favorites'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/selling"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'selling'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/offers-made"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'offers-made'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/offers-received"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'offers-received'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/collected"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'collected'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/:address/activity"
-                                    exact
-                                    element={
-                                        <UserActivity
-                                            error={error}
-                                            view={'activity'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
+                            <React.Suspense fallback={<div style={{minHeight: '60vh'}} />}>
+                                <Routes>
+                                    <Route
+                                        path="/marketplace/asset/:tokenid"
+                                        exact
+                                        element={
+                                            <Detail
+                                                isToniqEarnAllowed={isToniqEarnAllowed}
+                                                error={error}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                voltCreate={_voltCreate}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                                buyNft={buyNft}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/marketplace/:route/activity"
+                                        exact
+                                        element={
+                                            <Activity
+                                                error={error}
+                                                view={'listings'}
+                                                stats={stats}
+                                                isToniqEarnAllowed={isToniqEarnAllowed}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/marketplace/:route"
+                                        exact
+                                        element={
+                                            <Listings
+                                                error={error}
+                                                view={'listings'}
+                                                isToniqEarnAllowed={isToniqEarnAllowed}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                                buyNft={buyNft}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/marketplace"
+                                        exact
+                                        element={
+                                            <Marketplace
+                                                isToniqEarnAllowed={isToniqEarnAllowed}
+                                                error={error}
+                                                view={'collections'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/favorites"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'favorites'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/selling"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'selling'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/offers-made"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'offers-made'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/offers-received"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'offers-received'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/collected"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'collected'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/:address/activity"
+                                        exact
+                                        element={
+                                            <UserActivity
+                                                error={error}
+                                                view={'activity'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
 
-                                <Route
-                                    path="/favorites"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'favorites'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/selling"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'selling'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/offers-made"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'offers-made'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/offers-received"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'offers-received'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/collected"
-                                    exact
-                                    element={
-                                        <UserCollection
-                                            error={error}
-                                            view={'collected'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/earn"
-                                    exact
-                                    element={restrictedEarnAccess(
-                                        <UserLoan
-                                            error={error}
-                                            view={'earn'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            repayContract={repayContract}
-                                            fillRequest={fillRequest}
-                                            cancelRequest={cancelRequest}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />,
-                                    )}
-                                />
-                                <Route
-                                    path="/earn-requests"
-                                    exact
-                                    element={restrictedEarnAccess(
-                                        <UserLoan
-                                            error={error}
-                                            view={'earn-requests'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            repayContract={repayContract}
-                                            fillRequest={fillRequest}
-                                            cancelRequest={cancelRequest}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />,
-                                    )}
-                                />
-                                <Route
-                                    path="/earn-contracts"
-                                    exact
-                                    element={restrictedEarnAccess(
-                                        <UserLoan
-                                            error={error}
-                                            view={'earn-contracts'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            repayContract={repayContract}
-                                            fillRequest={fillRequest}
-                                            cancelRequest={cancelRequest}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />,
-                                    )}
-                                />
-                                <Route
-                                    path="/new-request"
-                                    exact
-                                    element={restrictedEarnAccess(
-                                        <UserCollection
-                                            error={error}
-                                            view={'new-request'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />,
-                                    )}
-                                />
-                                <Route
-                                    path="/earn-nfts"
-                                    exact
-                                    element={restrictedEarnAccess(
-                                        <UserCollection
-                                            error={error}
-                                            view={'earn-nfts'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />,
-                                    )}
-                                />
-                                <Route
-                                    path="/activity"
-                                    exact
-                                    element={
-                                        <UserActivity
-                                            error={error}
-                                            view={'activity'}
-                                            alert={alert}
-                                            list={list}
-                                            unpackNft={unpackNft}
-                                            listNft={listNft}
-                                            wrapAndlistNft={wrapAndlistNft}
-                                            unwrapNft={unwrapNft}
-                                            transferNft={transferNft}
-                                            pawnNft={pawnNft}
-                                            confirm={confirm}
-                                            loggedIn={loggedIn}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/sale/DfinityDeckElements"
-                                    exact
-                                    element={
-                                        <DfinityDeckSaleComponent
-                                            error={error}
-                                            view={'sale'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/sale/:route"
-                                    exact
-                                    element={
-                                        <GeneralSaleComponent
-                                            error={error}
-                                            view={'sale'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/mint"
-                                    exact
-                                    element={
-                                        <Mint
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            address={address}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/create"
-                                    exact
-                                    element={
-                                        <Create
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/contact"
-                                    exact
-                                    element={
-                                        <Contact
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            setBalance={setBalance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/"
-                                    exact
-                                    element={
-                                        <Home
-                                            collections={collections}
-                                            error={error}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                        />
-                                    }
-                                />
-                                <Route
-                                    path="/sale"
-                                    exact
-                                    element={
-                                        <Sale
-                                            error={error}
-                                            view={'sale'}
-                                            alert={alert}
-                                            confirm={confirm}
-                                            loader={loader}
-                                            balance={balance}
-                                            identity={identity}
-                                            account={
-                                                accounts.length > 0
-                                                    ? accounts[currentAccount]
-                                                    : false
-                                            }
-                                            logout={logout}
-                                            login={login}
-                                            collections={collections}
-                                            collection={false}
-                                            currentAccount={currentAccount}
-                                            changeAccount={setCurrentAccount}
-                                            accounts={accounts}
-                                        />
-                                    }
-                                />
-                                <Route path="*" element={<MissingPage404 />} />
-                            </Routes>
+                                    <Route
+                                        path="/favorites"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'favorites'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/selling"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'selling'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/offers-made"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'offers-made'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/offers-received"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'offers-received'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/collected"
+                                        exact
+                                        element={
+                                            <UserCollection
+                                                error={error}
+                                                view={'collected'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/earn"
+                                        exact
+                                        element={restrictedEarnAccess(
+                                            <UserLoan
+                                                error={error}
+                                                view={'earn'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                repayContract={repayContract}
+                                                fillRequest={fillRequest}
+                                                cancelRequest={cancelRequest}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />,
+                                        )}
+                                    />
+                                    <Route
+                                        path="/earn-requests"
+                                        exact
+                                        element={restrictedEarnAccess(
+                                            <UserLoan
+                                                error={error}
+                                                view={'earn-requests'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                repayContract={repayContract}
+                                                fillRequest={fillRequest}
+                                                cancelRequest={cancelRequest}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />,
+                                        )}
+                                    />
+                                    <Route
+                                        path="/earn-contracts"
+                                        exact
+                                        element={restrictedEarnAccess(
+                                            <UserLoan
+                                                error={error}
+                                                view={'earn-contracts'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                repayContract={repayContract}
+                                                fillRequest={fillRequest}
+                                                cancelRequest={cancelRequest}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />,
+                                        )}
+                                    />
+                                    <Route
+                                        path="/new-request"
+                                        exact
+                                        element={restrictedEarnAccess(
+                                            <UserCollection
+                                                error={error}
+                                                view={'new-request'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />,
+                                        )}
+                                    />
+                                    <Route
+                                        path="/earn-nfts"
+                                        exact
+                                        element={restrictedEarnAccess(
+                                            <UserCollection
+                                                error={error}
+                                                view={'earn-nfts'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />,
+                                        )}
+                                    />
+                                    <Route
+                                        path="/activity"
+                                        exact
+                                        element={
+                                            <UserActivity
+                                                error={error}
+                                                view={'activity'}
+                                                alert={alert}
+                                                list={list}
+                                                unpackNft={unpackNft}
+                                                listNft={listNft}
+                                                wrapAndlistNft={wrapAndlistNft}
+                                                unwrapNft={unwrapNft}
+                                                transferNft={transferNft}
+                                                pawnNft={pawnNft}
+                                                confirm={confirm}
+                                                loggedIn={loggedIn}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/sale/DfinityDeckElements"
+                                        exact
+                                        element={
+                                            <DfinityDeckSaleComponent
+                                                error={error}
+                                                view={'sale'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/sale/:route"
+                                        exact
+                                        element={
+                                            <GeneralSaleComponent
+                                                error={error}
+                                                view={'sale'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/mint"
+                                        exact
+                                        element={
+                                            <Mint
+                                                error={error}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                address={address}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/create"
+                                        exact
+                                        element={
+                                            <Create
+                                                error={error}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/contact"
+                                        exact
+                                        element={
+                                            <Contact
+                                                error={error}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                setBalance={setBalance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/"
+                                        exact
+                                        element={
+                                            <Home
+                                                collections={collections}
+                                                error={error}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                            />
+                                        }
+                                    />
+                                    <Route
+                                        path="/sale"
+                                        exact
+                                        element={
+                                            <Sale
+                                                error={error}
+                                                view={'sale'}
+                                                alert={alert}
+                                                confirm={confirm}
+                                                loader={loader}
+                                                balance={balance}
+                                                identity={identity}
+                                                account={
+                                                    accounts.length > 0
+                                                        ? accounts[currentAccount]
+                                                        : false
+                                                }
+                                                logout={logout}
+                                                login={login}
+                                                collections={collections}
+                                                collection={false}
+                                                currentAccount={currentAccount}
+                                                changeAccount={setCurrentAccount}
+                                                accounts={accounts}
+                                            />
+                                        }
+                                    />
+                                    <Route path="*" element={<MissingPage404 />} />
+                                </Routes>
+                            </React.Suspense>
                             <BuyForm open={showBuyForm} {...buyFormData} />
                             <TransferForm
                                 refresher={refresher}
@@ -2152,14 +2110,16 @@ export default function App() {
                                 error={error}
                                 nft={tokenNFT}
                             />
-                            <Opener
-                                alert={alert}
-                                nft={tokenNFT}
-                                identity={identity}
-                                currentAccount={currentAccount}
-                                open={playOpener}
-                                onEnd={closeUnpackNft}
-                            />
+                            <React.Suspense fallback={null}>
+                                <Opener
+                                    alert={alert}
+                                    nft={tokenNFT}
+                                    identity={identity}
+                                    currentAccount={currentAccount}
+                                    open={playOpener}
+                                    onEnd={closeUnpackNft}
+                                />
+                            </React.Suspense>
                         </div>
                     </main>
                     {footer}

@@ -10,6 +10,8 @@ import extjs from '../ic/extjs.js';
 import {makeStyles} from '@material-ui/core';
 import {Kyc32Icon} from '@toniq-labs/design-system';
 import {ToniqIcon} from '@toniq-labs/design-system/dist/esm/elements/react-components';
+import {sanitizeHtml} from '../utils/sanitizeHtml';
+import {cssUrl} from '../utils/safeUrl';
 const api = extjs.connect('https://icp0.io/');
 const numberWithCommas = x => {
     var parts = x.toString().split('.');
@@ -84,10 +86,9 @@ export default function CollectionDetails(props) {
             <div
                 className={classes.banner}
                 style={{
-                    background:
-                        typeof collection.banner != 'undefined' && collection.banner
-                            ? "url('" + collection.banner + "')"
-                            : '#aaa',
+                    background: cssUrl(collection.banner)
+                        ? "url('" + cssUrl(collection.banner) + "')"
+                        : '#aaa',
                 }}
             >
                 <Avatar
@@ -250,7 +251,7 @@ export default function CollectionDetails(props) {
                         overflow: 'hidden',
                         fontSize: '1.2em',
                     }}
-                    dangerouslySetInnerHTML={{__html: collection?.blurb}}
+                    dangerouslySetInnerHTML={{__html: sanitizeHtml(collection?.blurb)}}
                 ></div>
                 {collapseBlurb ? (
                     <Button

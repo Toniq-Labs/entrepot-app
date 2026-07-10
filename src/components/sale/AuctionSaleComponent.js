@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import useInterval from '../../hooks/useInterval';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
@@ -45,25 +46,6 @@ const api = extjs.connect('https://icp0.io/');
 const perPage = 60;
 const drawerWidth = 0; //300;
 
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const useDidMountEffect = (func, deps) => {
     const didMount = React.useRef(false);
 

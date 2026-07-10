@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import useInterval from '../hooks/useInterval';
 import {useNavigate} from 'react-router';
 import AppBar from '@material-ui/core/AppBar';
 import {createSearchParams} from 'react-router-dom';
@@ -33,25 +34,6 @@ import extjs from '../ic/extjs.js';
 import {icpToString} from './PriceICP';
 import {useSearchParams} from 'react-router-dom';
 import {loadVolt, loadVoltBalance} from '../volt';
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 
 const api = extjs.connect('https://icp0.io/');
 

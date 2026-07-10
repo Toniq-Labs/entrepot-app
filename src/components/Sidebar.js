@@ -1,4 +1,5 @@
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,25 +26,6 @@ import Blockie from '../components/Blockie';
 import extjs from '../ic/extjs.js';
 import {clipboardCopy} from '../utils';
 import {useNavigate} from 'react-router';
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const api = extjs.connect('https://icp0.io/');
 const drawerWidth = 300;
 

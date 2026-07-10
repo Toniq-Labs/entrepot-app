@@ -1,4 +1,5 @@
 import React from 'react';
+import useInterval from '../hooks/useInterval';
 
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
@@ -31,25 +32,6 @@ import {
 const api = extjs.connect('https://icp0.io/');
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 
-function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-
-    // Remember the latest callback.
-    React.useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    React.useEffect(() => {
-        function tick() {
-            savedCallback.current();
-        }
-        if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-        }
-    }, [delay]);
-}
 const _showDate = t => {
     return new Date(Number(t / 1000000n)).toLocaleDateString();
 };
@@ -72,7 +54,7 @@ const getEXTID = tokenid => {
     const {index, canister} = extjs.decodeTokenId(tokenid);
     return extjs.encodeTokenId(getEXTCanister(canister), index);
 };
-export default function NFT(props) {
+function NFT(props) {
     const classes = useStyles();
     const tokenid = props.tokenid;
     const {index, canister} = extjs.decodeTokenId(tokenid);
@@ -916,3 +898,7 @@ export default function NFT(props) {
         </Grid>
     );
 }
+
+// Memoized so a card doesn't re-render when its parent grid re-renders (e.g. on
+// the background poll) unless this card's own props actually changed.
+export default React.memo(NFT);
