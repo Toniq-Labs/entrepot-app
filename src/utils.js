@@ -403,6 +403,7 @@ const clipboardCopy = text => {
             <>
                 <img
                     alt={tokenid}
+                    loading="lazy"
                     style={{...avatarImgStyle, display: imgLoaded ? 'block' : 'none'}}
                     src={image}
                     onLoad={onload}

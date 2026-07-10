@@ -17,7 +17,6 @@ import UserCollection from './components/UserCollection';
 import UserLoan from './components/UserLoan';
 import UserActivity from './components/UserActivity';
 import Typography from '@material-ui/core/Typography';
-import Opener from './components/Opener';
 import ListingForm from './components/ListingForm';
 import TransferForm from './components/TransferForm';
 import VoltTransferForm from './components/VoltTransferForm';
@@ -51,6 +50,9 @@ const GeneralSaleComponent = React.lazy(() => import('./components/sale/GeneralS
 const DfinityDeckSaleComponent = React.lazy(() =>
     import('./components/sale/DfinityDeckSaleComponent'),
 );
+// Opener pulls react-hover-video-player and is only used for the (rare) NFT
+// unpack animation — lazy-load it out of the initial bundle.
+const Opener = React.lazy(() => import('./components/Opener'));
 
 const api = extjs.connect('https://icp0.io/');
 
@@ -2108,14 +2110,16 @@ export default function App() {
                                 error={error}
                                 nft={tokenNFT}
                             />
-                            <Opener
-                                alert={alert}
-                                nft={tokenNFT}
-                                identity={identity}
-                                currentAccount={currentAccount}
-                                open={playOpener}
-                                onEnd={closeUnpackNft}
-                            />
+                            <React.Suspense fallback={null}>
+                                <Opener
+                                    alert={alert}
+                                    nft={tokenNFT}
+                                    identity={identity}
+                                    currentAccount={currentAccount}
+                                    open={playOpener}
+                                    onEnd={closeUnpackNft}
+                                />
+                            </React.Suspense>
                         </div>
                     </main>
                     {footer}
