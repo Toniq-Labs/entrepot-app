@@ -27,9 +27,10 @@ by the `@dfinity` packages.
 
 ## Deploy
 
--   Netlify: builds via `netlify.toml` (`npm run build`, publishes `build/`).
--   Fleek: `.github/workflows/fleek-iterative-deploy.yml` runs on `main` and requires
-    `FLEEK_*` secrets.
+-   **Netlify** is the deploy target. Config in `netlify.toml`: `npm run build`, publishes
+    `build/`, Node 20, an SPA catch-all redirect (`/* -> /index.html`) so react-router deep
+    links work, and baseline security headers.
+-   Fleek has been retired (workflow + `@toniq-labs/fleek-iterative-deploy` dep removed).
 
 ## Conventions & gotchas
 

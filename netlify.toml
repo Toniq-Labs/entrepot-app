@@ -3,7 +3,14 @@ base = "./"
 publish = "build/"
 command = "npm run build"
 # CI set to false until we fix all build warnings
-environment = { NODE_VERSION = "16", CI = "false" }
+environment = { NODE_VERSION = "20", CI = "false" }
+
+# Single-page-app fallback: serve index.html for any path so client-side
+# (react-router) deep links like /marketplace/asset/:id work on direct hit/refresh.
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
 # Baseline security response headers for all routes. These are safe defaults
 # that don't change app behaviour.
