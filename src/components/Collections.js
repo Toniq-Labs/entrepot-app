@@ -601,7 +601,7 @@ export default function Listings(props) {
         },
     };
 
-    useInterval(_updates, 10 * 1000);
+    useInterval(_updates, 30 * 1000);
     React.useEffect(() => {
         props.loader(true);
         _updates().then(() => {

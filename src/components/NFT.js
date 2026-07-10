@@ -54,7 +54,7 @@ const getEXTID = tokenid => {
     const {index, canister} = extjs.decodeTokenId(tokenid);
     return extjs.encodeTokenId(getEXTCanister(canister), index);
 };
-export default function NFT(props) {
+function NFT(props) {
     const classes = useStyles();
     const tokenid = props.tokenid;
     const {index, canister} = extjs.decodeTokenId(tokenid);
@@ -898,3 +898,7 @@ export default function NFT(props) {
         </Grid>
     );
 }
+
+// Memoized so a card doesn't re-render when its parent grid re-renders (e.g. on
+// the background poll) unless this card's own props actually changed.
+export default React.memo(NFT);

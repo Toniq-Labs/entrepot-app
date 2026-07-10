@@ -372,12 +372,20 @@ export default function Listings(props) {
         if (!_isCanister(c)) return updateListings([]);
         if (!collection.market) return updateListings([]);
 
-        setSize(await api.token(collection.canister).size());
         try {
-            var listings = await api.token(c).listings();
+            // Fetch size + listings in parallel instead of one after the other.
+            const [
+                sz,
+                allListings,
+            ] = await Promise.all([
+                api.token(collection.canister).size(),
+                api.token(c).listings(),
+            ]);
+            setSize(sz);
+            var listings = allListings;
             if (collection?.canister === '46sy3-aiaaa-aaaah-qczza-cai') {
                 listings = listings.filter((val, idx) => {
-                    if (idx >= size) return false;
+                    if (idx >= sz) return false;
                     return true;
                 });
             }

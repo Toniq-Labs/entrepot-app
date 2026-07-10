@@ -216,11 +216,11 @@ const Detail = props => {
         setOpenOfferForm(true);
     };
 
-    useInterval(_refresh, 10 * 1000);
+    useInterval(_refresh, 30 * 1000);
     useInterval(() => {
         var nf = EntrepotCollectionStats(canister) ? EntrepotCollectionStats(canister).floor : '';
         setFloor(nf);
-    }, 10 * 1000);
+    }, 30 * 1000);
 
     const cancelOffer = async () => {
         props.loader(true, 'Cancelling offer...');

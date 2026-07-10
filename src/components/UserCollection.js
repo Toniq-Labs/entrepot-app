@@ -377,7 +377,7 @@ export default function UserCollection(props) {
                     .connect('https://icp0.io/', props.identity)
                     .canister('fcwhh-piaaa-aaaak-qazba-cai')
                     .offered();
-                data = r.filter((a, i) => r.indexOf(a) == i);
+                data = [...new Set(r)];
                 data = data
                     .map(a => ({
                         id: a,
@@ -608,12 +608,8 @@ export default function UserCollection(props) {
                                                 />
                                             </ListItemSecondaryAction>
                                         </ListItem>
-                                        {tokenCanisters
-                                            .filter(
-                                                (a, i) =>
-                                                    tokenCanisters.indexOf(a) == i &&
-                                                    typeof getCollection(a) != 'undefined',
-                                            ) //filter unique
+                                        {[...new Set(tokenCanisters)]
+                                            .filter(a => typeof getCollection(a) != 'undefined') //filter unique
                                             .map(canister => {
                                                 var _collection = getCollection(canister);
                                                 return (
