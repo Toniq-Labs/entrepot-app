@@ -34,6 +34,7 @@ import {MissingPage404} from './views/MissingPage404';
 import {checkIfToniqEarnAllowed} from './location/geo-ip';
 import {EarnFeaturesBlocked} from './views/EarnBlocked';
 import {AngelInvestorDialog} from './components/AngelInvestorDialog';
+import {getAllCollectionsWithCaching} from './local-cache/dexie/get-collections.js';
 
 // Route-level views are code-split (React.lazy) so they stay out of the initial
 // bundle and load on navigation. Rendered inside a <Suspense> around <Routes>.
@@ -59,9 +60,6 @@ const singleSecond = 1000;
 const singleMinute = 60 * singleSecond;
 const PURCHASE_TIME_LIMIT = 1.85 * singleMinute;
 
-const _isCanister = c => {
-    return c.length == 27 && c.split('-').length == 5;
-};
 const useStyles = makeStyles(theme => ({
     backdrop: {
         zIndex: 1600,
@@ -135,12 +133,6 @@ var otherPrincipalsForPlug = [
     'fcwhh-piaaa-aaaak-qazba-cai',
     'ffxbt-cqaaa-aaaak-qazbq-cai',
 ];
-const isDevEnv = () => {
-    if (window.location.hostname == 'localhost') return true;
-    if (window.location.host.indexOf('deploy-preview') == 0) return true;
-    if (window.location.host.indexOf('friendly-raman-30db7b') >= 0) return true;
-    return false;
-};
 const TREASURECANISTER = 'yigae-jqaaa-aaaah-qczbq-cai';
 export default function App() {
     const {pathname} = useLocation();
@@ -997,34 +989,10 @@ export default function App() {
         }
     };
     const updateCollections = async () => {
-        var response;
-        //Remove dev marked canisters
-        if (isDevEnv() == false) {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collections',
-            );
-        } else {
-            response = await fetch(
-                'https://us-central1-entrepot-api.cloudfunctions.net/api/collectionsDev',
-            );
-        }
-        var r2 = await response.json();
-        r2 = r2.map(a => ({...a, canister: a.id})).filter(a => _isCanister(a.canister));
-        if (collections.length == 0) {
-            setCollections(r2);
-            r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-        } else {
-            for (var i = 0; i < r2.length; i++) {
-                var n = r2[i];
-                var o = collections.find(a => a.canister == n.id);
-                if (typeof o == 'undefined' || JSON.stringify(n) != JSON.stringify(o)) {
-                    setCollections(r2);
-                    r2.filter(a => a?.nftv).forEach(a => getNri(a.canister));
-                    console.log('UPDATED');
-                    break;
-                }
-            }
-        }
+        const collectionMap = await getAllCollectionsWithCaching();
+        const allCollectionsWithCaching = Object.values(collectionMap);
+        setCollections(allCollectionsWithCaching);
+        allCollectionsWithCaching.filter(a => a?.nftv).forEach(a => getNri(a.id));
         if (isToniqEarnAllowed === undefined) {
             setToniqEarnAllowed(await checkIfToniqEarnAllowed());
         }
@@ -1328,7 +1296,6 @@ export default function App() {
                                                 alert={alert}
                                                 confirm={confirm}
                                                 loader={loader}
-                                                stats={stats}
                                                 balance={balance}
                                                 identity={identity}
                                                 account={
