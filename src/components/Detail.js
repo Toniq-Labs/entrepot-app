@@ -351,8 +351,8 @@ const Detail = props => {
         // }
 
         if (index == 99 && canister == 'kss7i-hqaaa-aaaah-qbvmq-cai')
-            detailPage = 'interactive_nfts_or_videos';    
-        
+            detailPage = 'interactive_nfts_or_videos';
+
         if (index >= 9 && index <= 19 && canister == 'yy7m6-daaaa-aaaag-qciqa-cai')
             detailPage = 'interactive_nfts_or_videos';
 
